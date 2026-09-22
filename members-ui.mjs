@@ -1,12 +1,20 @@
 import {db} from './admin-db.mjs';
-import {listMembers,saveMember,listMemberGroups,FIELDS} from './member-management.mjs?v=20260922-members2';
-import {FAITH_OPTIONS,DISTRICTS,ministryOptions,preserveChoice,isInactive} from './member-options.mjs';
+import {listMembers,saveMember,listMemberGroups,setMemberArchived,FIELDS} from './member-management.mjs?v=20260922-members3';
+import {FAITH_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260922-min1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#list'),editor=$('#editor');
 const groupTerm=church==='SHiNE'?'小家':'小組';
-let page=0,search='',generation=0,busy=false,newcomersOnly=false;
+let page=0,search='',generation=0,busy=false,newcomersOnly=false,groupName='',sort='id',archivedOnly=false;
+const selected=new Map();
+let visibleRows=[];
+let compactView=false;
 const text=(tag,value,cls='')=>{const el=document.createElement(tag);el.textContent=value;el.className=cls;return el;};
-function clear(){generation++;list.replaceChildren();editor.replaceChildren();editor.hidden=true;$('#new').disabled=true;$('#newcomer').disabled=true;$('#prev').disabled=true;$('#next').disabled=true;}
+function clear(){generation++;list.replaceChildren();editor.replaceChildren();editor.hidden=true;$('#new').disabled=true;$('#newcomer').disabled=true;$('#prev').disabled=true;$('#next').disabled=true;updateBatchBar();}
+function updateBatchBar(){const bar=$('#batch-actions');if(bar)bar.hidden=selected.size===0;const count=$('#selected-count');if(count)count.textContent=String(selected.size);}
+function exportCsv(){if(!visibleRows.length){status.textContent='目前沒有可匯出的資料。';return;}const keys=['name','gender','phone','group_name','birthday','baptism_date','faith_status','district','growth_progress','ministry','memo','welcome_status','know_us_from','age_group'];const labels=['姓名','性別','電話','小組／小家','生日','受洗日期','信仰成熟度','居住區域','聚會近況','服事恩賜','備註','迎新狀態','認識管道','年齡層'];const esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';const csv='\\uFEFF'+[labels,...visibleRows.map(row=>keys.map(k=>row[k]))].map(row=>row.map(esc).join(',')).join('\\r\\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(church||'church')+'-members-page-'+(page+1)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+async function exportAllCsv(){if(!visibleRows.length){status.textContent='目前沒有可匯出的資料。';return;}if(busy)return;busy=true;const all=[];try{for(let p=0;p<=10000;p++){status.textContent='正在準備匯出第 '+(p+1)+' 頁…';const result=await listMembers(db,church,search,p,newcomersOnly,{groupName,sort});all.push(...result.rows);if(!result.hasNext)break;}const keys=['name','gender','phone','group_name','birthday','baptism_date','faith_status','district','growth_progress','ministry','memo','welcome_status','know_us_from','age_group'];const labels=['姓名','性別','電話','小組／小家','生日','受洗日期','信仰成熟度','居住區域','聚會近況','服事恩賜','備註','迎新狀態','認識管道','年齡層'];const esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';const csv='\\uFEFF'+[labels,...all.map(row=>keys.map(k=>row[k]))].map(row=>row.map(esc).join(',')).join('\\r\\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(church||'church')+'-members.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='已匯出 '+all.length+' 筆會員資料。';}catch(error){status.textContent='匯出失敗：'+error.message;}finally{busy=false;}}
+function setPageSelection(checked){for(const box of list.querySelectorAll('input[data-member-id]')){box.checked=checked;const row=box._memberRow;if(checked)selected.set(row.id,row);else selected.delete(row.id);}updateBatchBar();}
+async function batchSetInactive(inactive){if(busy||!selected.size)return;const rows=[...selected.values()];const action=inactive?'移入關懷收納區':'恢復至名冊';if(!window.confirm('確定要將選取的 '+rows.length+' 位會員'+action+'嗎？資料不會刪除。'))return;busy=true;status.textContent='正在更新 '+rows.length+' 筆資料…';try{for(const row of rows){const input=Object.fromEntries(Object.keys(FIELDS).map(key=>[key,row[key]??'']));input.growth_progress=inactive?'很久沒來(都沒出現）':'穩定聚會(8成以上)';await saveMember(db,church,input,row);}selected.clear();await load();status.textContent='已完成批次更新。';}catch(error){status.textContent=error.message;}finally{busy=false;updateBatchBar();}}
 function selectControl(values,current){
  const input=document.createElement('select');
  for(const value of preserveChoice(values,current))input.append(new Option(value||'未填寫 / 未選擇',value));
@@ -15,7 +23,7 @@ function selectControl(values,current){
 async function edit(row=null,isNewcomer=false){
  const ticket=generation;busy=true;status.textContent='正在準備會友資料…';
  try{
-  const groupNames=await listMemberGroups(db,church);if(ticket!==generation)return;
+  const [groupNames,availableMinistries]=await Promise.all([listMemberGroups(db,church),loadMinistryOptions(db,row?.ministry||'')]);if(ticket!==generation)return;
   editor.replaceChildren();editor.hidden=false;
   const form=document.createElement('form'),grid=text('div','','edit-grid'),inputs={},getters={},supplement=document.createElement('details');let memoWrap;
   supplement.className='registration-details';supplement.append(text('summary','迎新跟進資料'));const extraGrid=text('div','','edit-grid');supplement.append(extraGrid);
@@ -44,9 +52,9 @@ async function edit(row=null,isNewcomer=false){
   let inactiveChanged=false;inactive.onchange=()=>inactiveChanged=true;
   inactiveLabel.append(inactive,text('span','很久沒來（勾選後暫時移至名冊底部收納區）'));form.append(inactiveLabel);
   getters.growth_progress=()=>row&&!inactiveChanged?(row.growth_progress??''):inactive.checked?'很久沒來(都沒出現）':'穩定聚會(8成以上)';
-  const fieldset=document.createElement('fieldset');fieldset.append(text('legend','服事恩賜 / 興趣標籤'));
+  const fieldset=document.createElement('fieldset');fieldset.append(text('legend','服事恩賜'));
   const chips=text('div','','choice-grid'),selected=new Set((row?.ministry||'').split(',').map(s=>s.trim()).filter(Boolean));let ministryChanged=false;
-  for(const option of ministryOptions(church,row?.ministry||'')){
+  for(const option of availableMinistries){
    const label=text('label','','choice'),box=document.createElement('input');box.type='checkbox';box.checked=selected.has(option);
    box.onchange=()=>{ministryChanged=true;if(box.checked)selected.add(option);else selected.delete(option);};
    label.append(box,text('span',option));chips.append(label);
@@ -84,12 +92,12 @@ function memberCard(row){
  for(const [label,value] of [['電話',row.phone],['居住區域',row.district],['服事恩賜',row.ministry]]){dl.append(text('dt',label),text('dd',value||'未填寫'));}
  card.append(dl);
  if(row.memo)card.append(text('p',row.memo,'memo-preview'));
- const editButton=text('button','編輯資料','secondary');editButton.onclick=()=>{if(!busy)edit(row);};card.append(editButton);return card;
+ const actions=text('div','','card-actions'),pick=document.createElement('input');pick.type='checkbox';pick.dataset.memberId=row.id;pick._memberRow=row;pick.checked=selected.has(row.id);pick.setAttribute('aria-label','選取 '+(row.name||'會友'));pick.onchange=()=>{if(pick.checked)selected.set(row.id,row);else selected.delete(row.id);updateBatchBar();};actions.append(pick,text('span','選取'));const editButton=text('button','編輯資料','secondary');editButton.onclick=()=>{if(!busy)edit(row);};const archiveButton=text('button',row.archived_at?'恢復':'封存','secondary');archiveButton.onclick=async()=>{if(busy||!confirm((row.archived_at?'恢復 ':'封存 ')+row.name+'？資料不會被刪除。'))return;busy=true;try{await setMemberArchived(db,church,row,!row.archived_at);await load();status.textContent=row.archived_at?'已恢復會員。':'已封存會員。';}catch(error){status.textContent=error.message;}finally{busy=false;}};actions.append(editButton,archiveButton);card.append(actions);return card;
 }
 async function load(){
  clear();const ticket=generation;status.textContent='正在載入…';
  try{
-  const result=await listMembers(db,church,search,page,newcomersOnly);if(ticket!==generation)return;
+  const result=await listMembers(db,church,search,page,newcomersOnly,{groupName,sort,archivedOnly});if(ticket!==generation)return;visibleRows=result.rows;if(typeof exportButton!=='undefined')exportButton.disabled=!visibleRows.length;
   $('#new').disabled=false;$('#newcomer').disabled=false;$('#prev').disabled=page===0;$('#next').disabled=!result.hasNext;
   $('#page-label').textContent='第 '+(page+1)+' 頁';
   status.textContent=result.rows.length?'本頁顯示 '+result.rows.length+' 位會友。':'沒有符合條件的會友，請調整查詢條件。';
@@ -102,11 +110,30 @@ async function load(){
  }catch(error){if(ticket===generation)status.textContent=error.message;}
 }
 $('#title').textContent=(church==='M+'?'M＋大雅教會':church==='SHiNE'?'火樂教會':'')+' · 會友名冊';
+$('#dashboard').href='admin-dashboard.html?church='+encodeURIComponent(church||'');
 for(const [id,file] of [['review','binding-review.html'],['form-settings','welcome-settings.html']])$('#'+id).href=file+'?church='+encodeURIComponent(church||'');
-$('#search-form').onsubmit=event=>{event.preventDefault();if(busy)return;search=$('#search').value;newcomersOnly=$('#newcomers-only').checked;page=0;load();};
+const auditLink=text('a','操作日誌');auditLink.href='member-audit.html?church='+encodeURIComponent(church||'');$('.page-nav').append(auditLink);
+const groupsLink=text('a',groupTerm+'管理');groupsLink.href='groups.html?church='+encodeURIComponent(church||'');$('.page-nav').append(groupsLink);
+const attendanceLink=text('a','聚會點名');attendanceLink.href='attendance.html?church='+encodeURIComponent(church||'');$('.page-nav').append(attendanceLink);
+const schedulesLink=text('a','服事排班');schedulesLink.href='schedules.html?church='+encodeURIComponent(church||'');$('.page-nav').append(schedulesLink);
+const ministryLink=text('a','恩賜選項');ministryLink.href='ministry-settings.html';$('.page-nav').append(ministryLink);
+const spacesLink=text('a','場地預約');spacesLink.href='spaces.html?church='+encodeURIComponent(church||'');$('.page-nav').append(spacesLink);
+const prayersLink=text('a','代禱關懷');prayersLink.href='prayers.html?church='+encodeURIComponent(church||'');$('.page-nav').append(prayersLink);
+const pastoralLink=text('a','教牧內容');pastoralLink.href='pastoral-content.html?church='+encodeURIComponent(church||'');$('.page-nav').append(pastoralLink);
+const inboxLink=text('a','牧養訊息');inboxLink.href='pastoral-inbox.html?church='+encodeURIComponent(church||'');$('.page-nav').append(inboxLink);
+const adminsLink=text('a','管理員權限');adminsLink.href='admin-accounts.html?church='+encodeURIComponent(church||'');$('.page-nav').append(adminsLink);
+const settingsLink=text('a','堂會設定');settingsLink.href='church-settings.html?church='+encodeURIComponent(church||'');$('.page-nav').append(settingsLink);
+const archivedLabel=text('label','','check-row'),archivedBox=document.createElement('input');archivedBox.type='checkbox';archivedLabel.append(archivedBox,text('span','查看已封存會員'));$('#search-form').append(archivedLabel);
+$('#search-form').onsubmit=event=>{event.preventDefault();if(busy)return;search=$('#search').value;groupName=$('#group-filter').value;sort=$('#sort-order').value;newcomersOnly=$('#newcomers-only').checked;archivedOnly=archivedBox.checked;page=0;selected.clear();load();};
 $('#new').onclick=()=>{if(!busy)edit();};$('#newcomer').onclick=()=>{if(!busy)edit(null,true);};
+const exportButton=text('button','匯出本頁 CSV','secondary');exportButton.disabled=true;exportButton.onclick=exportCsv;$('.toolbar-actions').append(exportButton);const originalLoad=load;const refreshExport=()=>{exportButton.disabled=!visibleRows.length||busy;};
+exportButton.textContent='匯出全部 CSV';
+const viewButton=text('button','切換表格檢視','secondary');viewButton.type='button';viewButton.onclick=()=>{compactView=!compactView;list.classList.toggle('compact-member-list',compactView);viewButton.textContent=compactView?'切換卡片檢視':'切換表格檢視';};$('.toolbar-actions').append(viewButton);
+$('#batch-inactive').onclick=()=>batchSetInactive(true);$('#batch-active').onclick=()=>batchSetInactive(false);
 $('#prev').onclick=()=>{if(!busy&&page>0){page--;load();}};$('#next').onclick=()=>{if(!busy){page++;load();}};
 $('#logout').onclick=async()=>{clear();await db.auth.signOut();location.replace('admin-login.html');};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();else load();});
 db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clear();status.textContent='已登出，請重新登入。';}});
 load();
+exportButton.onclick=exportAllCsv;
+listMemberGroups(db,church).then(groups=>{const select=$('#group-filter');for(const name of groups)select.append(new Option(name,name));}).catch(()=>{});

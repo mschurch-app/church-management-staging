@@ -1,9 +1,9 @@
 export const TAB_PERMISSIONS = Object.freeze({
   members: ['members'], services: ['schedules'],
-  groups: ['groups', 'members'], prayers: ['private_prayers']
+  groups: ['groups', 'members'], prayers: ['private_prayers'], spaces: ['spaces'], pastoral: ['pastoral_chats']
 });
 const churches = new Set(['M+', 'SHiNE']);
-const permissions = new Set(['members','attendance','groups','schedules','private_prayers','pastoral_chats']);
+const permissions = new Set(['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces']);
 
 export async function readAccess(db) {
   const verified = await db.auth.getUser();

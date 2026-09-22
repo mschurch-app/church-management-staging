@@ -1,0 +1,9 @@
+import {db} from './admin-db.mjs';
+import {listMemberAudit} from './member-management.mjs?v=20260922-members3';
+const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
+const $=s=>document.querySelector(s),status=$('#status'),list=$('#audit-list');let limit=50,busy=false;
+const labels={insert:'新增',update:'修改',archive:'封存',restore:'恢復'};
+const fieldLabels={name:'姓名',gender:'性別',phone:'電話',group_name:'小組／小家',birthday:'生日',baptism_date:'受洗日期',faith_status:'信仰成熟度',district:'居住區域',growth_progress:'聚會近況',ministry:'服事恩賜',memo:'牧養備註',welcome_status:'迎新狀態',know_us_from:'認識管道',age_group:'年齡層',archived_at:'封存狀態',member_created:'建立會員'};
+function el(tag,value,cls=''){const node=document.createElement(tag);node.textContent=value;node.className=cls;return node;}
+async function load(){if(busy)return;busy=true;status.textContent='正在載入操作日誌…';try{const rows=await listMemberAudit(db,church,limit);list.replaceChildren();for(const row of rows){const card=el('article','','audit-card'),head=el('div','','audit-head');head.append(el('strong',labels[row.action]||row.action),el('time',new Date(row.created_at).toLocaleString('zh-TW')));card.append(head,el('p','會員編號：'+row.member_id),el('p','變更欄位：'+((row.changed_fields||[]).map(x=>fieldLabels[x]||x).join('、')||'無')),el('p','操作者：'+(row.actor_id?'管理員 '+row.actor_id.slice(0,8):'系統流程'),'muted'));list.append(card);}status.textContent=rows.length?'顯示最近 '+rows.length+' 筆操作。':'目前沒有操作日誌。';$('#more').hidden=rows.length<limit;}catch(error){status.textContent=error.message;}finally{busy=false;}}
+if(!['M+','SHiNE'].includes(church)){status.textContent='堂會連結不正確。';}else{$('#title').textContent=(church==='M+'?'M＋大雅教會':'火樂教會')+' · 會員操作日誌';$('#back').href='members.html?church='+encodeURIComponent(church);$('#more').onclick=()=>{limit=Math.min(limit+50,100);load();};$('#logout').onclick=async()=>{await db.auth.signOut();location.replace('admin-login.html');};load();}

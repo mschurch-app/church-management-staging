@@ -1,1 +1,46 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>服事恩賜選項｜系統設定</title><link rel="stylesheet" href="auth.css?v=20260922-min2"></head><body><main><p class="eyebrow">CHURCH MANAGEMENT · 測試環境</p><h1 id="title">服事恩賜選項</h1><p class="muted">每個堂會各自管理。調整只影響目前堂會的選單，會員已儲存的舊值會保留。</p><nav><a id="back-settings" href="church-settings.html">返回系統設定</a></nav><p id="status" role="status" class="status-message"></p><section id="options"></section><button id="add" class="secondary">＋ 新增項目</button><button id="save">儲存全部</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="ministry-settings.mjs?v=20260922-min2"></script></body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>服事恩賜選項｜系統設定</title>
+  <link rel="stylesheet" href="auth.css?v=20260922-min3">
+</head>
+<body class="ministry-body">
+<main class="ministry-app">
+  <header class="ministry-hero">
+    <span class="hero-orb hero-orb-one" aria-hidden="true"></span>
+    <span class="hero-orb hero-orb-two" aria-hidden="true"></span>
+    <a id="back-settings" class="app-back" href="church-settings.html" aria-label="返回系統設定">‹</a>
+    <div class="hero-content">
+      <span class="hero-kicker">✦ 恩賜資料庫</span>
+      <h1 id="title">服事恩賜選項</h1>
+      <p>建立屬於自己堂會的服事選單，調整後不會影響另一個堂會。</p>
+      <div class="hero-meta">
+        <span id="church-badge" class="hero-chip">目前堂會</span>
+        <span id="option-count" class="hero-chip">0 個項目</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="ministry-list-shell" aria-labelledby="option-heading">
+    <div class="ministry-list-heading">
+      <div><span class="section-kicker">CUSTOMIZE</span><h2 id="option-heading">選項與顯示順序</h2></div>
+      <span class="order-hint">上下鍵可排序</span>
+    </div>
+    <p id="status" role="status" class="app-status">正在確認權限…</p>
+    <section id="options" class="ministry-options" aria-label="服事恩賜選項"></section>
+  </section>
+
+  <div class="ministry-action-bar">
+    <button id="add" type="button" class="app-add">＋ 新增選項</button>
+    <button id="save" type="button" class="app-save" disabled><span aria-hidden="true">✓</span> 儲存變更</button>
+  </div>
+  <p class="ministry-footnote">既有會員已儲存的恩賜內容會完整保留</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
+<script type="module" src="ministry-settings.mjs?v=20260922-min3"></script>
+</body>
+</html>

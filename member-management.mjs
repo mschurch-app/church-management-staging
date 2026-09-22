@@ -1,5 +1,5 @@
 import {readAccess,canOpen} from './admin-access.mjs';
-export const FIELDS={name:['姓名',80],phone:['電話',40],district:['地區',100],birthday:['生日',10],gender:['性別',40],memo:['備註',2000]};
+export const FIELDS={name:['姓名',80],phone:['電話',40],district:['地區',100],birthday:['生日',10],gender:['性別',40],memo:['備註',2000],faith_status:['信仰／聚會狀態',100],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',40]};
 const columns='id,church_id,'+Object.keys(FIELDS).join(',');
 export function normalizeMember(input){
  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!Object.hasOwn(FIELDS,k)))throw new Error('資料欄位不正確。');
@@ -16,10 +16,11 @@ export function normalizeMember(input){
 async function authorize(db,church){
  if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'members'))throw new Error('沒有此堂會的會員管理權限。');
 }
-export async function listMembers(db,church,search='',page=0){
+export async function listMembers(db,church,search='',page=0,newcomersOnly=false){
  await authorize(db,church);
- if(typeof search!=='string'||search.length>80||!Number.isInteger(page)||page<0||page>10000)throw new Error('查詢條件不正確。');
+ if(typeof newcomersOnly!=='boolean'||typeof search!=='string'||search.length>80||!Number.isInteger(page)||page<0||page>10000)throw new Error('查詢條件不正確。');
  let q=db.from('members').select(columns).eq('church_id',church).order('id',{ascending:true}).range(page*25,page*25+25);
+ if(newcomersOnly)q=q.eq('faith_status','新朋友（初次聚會）');
  if(search.trim())q=q.ilike('name','%'+search.trim().replace(/[\\%_]/g,'\\$&')+'%');
  const {data,error}=await q;
  if(error||!Array.isArray(data))throw new Error('無法載入會員，請稍後重試。');

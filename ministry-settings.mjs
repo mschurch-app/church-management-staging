@@ -5,3 +5,5 @@ function render(){area.replaceChildren();options.forEach((value,index)=>{const r
 document.querySelector('#add').onclick=()=>{options.push('');render();area.lastElementChild?.querySelector('input')?.focus();};
 document.querySelector('#save').onclick=async()=>{if(busy)return;busy=true;try{options=await saveMinistryOptions(db,options);render();status.textContent='恩賜選項已儲存，兩個堂會同步生效。';}catch(error){status.textContent=error.message;}finally{busy=false;}};
 loadMinistryOptions(db).then(data=>{options=data;render();status.textContent='已載入 '+data.length+' 個共用項目。';}).catch(error=>status.textContent=error.message);
+
+const church=new URLSearchParams(location.search).get('church')||'M+';document.querySelector('#back-settings').href='church-settings.html?church='+encodeURIComponent(church);

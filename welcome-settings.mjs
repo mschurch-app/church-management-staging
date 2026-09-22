@@ -1,7 +1,7 @@
 import {db} from './admin-db.mjs';import {readAccess,canOpen} from './admin-access.mjs';import {getOptions,GROUPS} from './welcome-options.mjs';
 const church=new URLSearchParams(location.search).get('church'),area=document.querySelector('#options'),status=document.querySelector('#status'),save=document.querySelector('#save');
 let current,version,generation=0,saving=false;
-for(const [id,page] of [['back-members','members.html'],['preview-form','newcomer.html']])document.getElementById(id).href=page+'?church='+encodeURIComponent(church||'');
+for(const [id,page] of [['back-members','church-settings.html'],['preview-form','newcomer.html']])document.getElementById(id).href=page+'?church='+encodeURIComponent(church||'');
 const el=(tag,value)=>{const e=document.createElement(tag);e.textContent=value;return e;};
 async function allowed(){if(!canOpen(await readAccess(db),church,'members'))throw Error('沒有此堂會的迎新設定權限。');}
 function render(){

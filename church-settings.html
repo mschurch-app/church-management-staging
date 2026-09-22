@@ -1,1 +1,72 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>堂會設定｜教牧管理</title><link rel="stylesheet" href="auth.css?v=20260922-cs1"></head><body><main class="member-page"><header class="page-header"><div><p class="eyebrow">CHURCH MANAGEMENT · 測試環境</p><h1 id="title">堂會設定</h1><p class="muted">管理外觀、聚會資訊與每日祝福內容；不會自動發送 LINE。</p></div></header><nav class="page-nav"><a id="members" href="members.html">會員名冊</a><a href="church-settings.html?church=M%2B">M＋設定</a><a href="church-settings.html?church=SHiNE">火樂設定</a></nav><p id="status" role="status" class="status-message"></p><section class="editor-panel settings-panel"><form id="form"><h2>外觀設定</h2><div class="edit-grid"><label>堂會代表色<div class="color-input"><input id="color-picker" type="color"><input id="brand-color" required maxlength="7" pattern="#[0-9A-Fa-f]{6}" placeholder="#F97316"></div></label><label>Logo 圖片網址<input id="logo-url" type="url" placeholder="https://..."></label></div><h2>聚會與位置</h2><div class="edit-grid"><label>聚會資訊<textarea id="service-info" placeholder="聚會時間、場次與簡要說明"></textarea></label><label>地址<textarea id="address" placeholder="教會地址"></textarea></label><label class="full-width">Google Maps 或地圖網址<input id="map-url" type="url" placeholder="https://..."></label></div><h2>「給今天的你」</h2><p class="muted">這裡只管理內容，不會觸發任何 LINE 推播。</p><div class="edit-grid"><label>今日金句與經文<textarea id="todays-verse" placeholder="經文出處與內容"></textarea></label><label>牧者祝福短語<textarea id="todays-prayer" placeholder="今天想送給會友的祝福"></textarea></label></div><div class="editor-actions"><button id="reload" type="button" class="secondary">重新載入</button><button id="save" type="submit">儲存堂會設定</button></div></form></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="church-settings-ui.mjs?v=20260922-cs1"></script></body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>系統設定｜教牧管理</title>
+  <link rel="stylesheet" href="auth.css?v=20260922-sys1">
+</head>
+<body>
+<main class="member-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">CHURCH MANAGEMENT · 測試環境</p>
+      <h1 id="title">系統設定</h1>
+      <p class="muted">集中管理表單選項、帳號權限、外觀與堂會公開資訊。</p>
+    </div>
+  </header>
+  <nav class="page-nav" aria-label="系統設定導覽">
+    <a id="dashboard" href="admin-dashboard.html">管理首頁</a>
+    <a id="members" href="members.html">會友名冊</a>
+    <a href="church-settings.html?church=M%2B">M＋系統設定</a>
+    <a href="church-settings.html?church=SHiNE">火樂系統設定</a>
+  </nav>
+
+  <section class="settings-hub" aria-labelledby="settings-tools-title">
+    <div class="settings-hub-heading">
+      <h2 id="settings-tools-title">設定工具</h2>
+      <p class="muted">設定類功能集中在此，會友名冊保持簡潔。</p>
+    </div>
+    <div class="settings-link-grid">
+      <a id="welcome-options" class="settings-link-card" href="welcome-settings.html">
+        <strong>迎新表單選項</strong><span>管理新朋友表單的欄位選項</span>
+      </a>
+      <a id="ministry-options" class="settings-link-card" href="ministry-settings.html">
+        <strong>服事恩賜選項</strong><span>新增、刪減與調整恩賜名稱</span>
+      </a>
+      <a id="admin-accounts" class="settings-link-card" href="admin-accounts.html">
+        <strong>管理員與權限</strong><span>設定管理帳號可使用的功能</span>
+      </a>
+    </div>
+  </section>
+
+  <p id="status" role="status" class="status-message"></p>
+  <section class="editor-panel settings-panel">
+    <form id="form">
+      <h2>堂會外觀</h2>
+      <div class="edit-grid">
+        <label>堂會代表色<div class="color-input"><input id="color-picker" type="color"><input id="brand-color" required maxlength="7" pattern="#[0-9A-Fa-f]{6}" placeholder="#F97316"></div></label>
+        <label>Logo 圖片網址<input id="logo-url" type="url" placeholder="https://..."></label>
+      </div>
+      <h2>聚會與位置</h2>
+      <div class="edit-grid">
+        <label>聚會資訊<textarea id="service-info" placeholder="聚會時間、場次與簡要說明"></textarea></label>
+        <label>地址<textarea id="address" placeholder="教會地址"></textarea></label>
+        <label class="full-width">Google Maps 或地圖網址<input id="map-url" type="url" placeholder="https://..."></label>
+      </div>
+      <h2>「給今天的你」</h2>
+      <p class="muted">這裡只管理內容，不會觸發任何 LINE 推播。</p>
+      <div class="edit-grid">
+        <label>今日金句與經文<textarea id="todays-verse" placeholder="經文出處與內容"></textarea></label>
+        <label>牧者祝福短語<textarea id="todays-prayer" placeholder="今天想送給會友的祝福"></textarea></label>
+      </div>
+      <div class="editor-actions"><button id="reload" type="button" class="secondary">重新載入</button><button id="save" type="submit">儲存系統設定</button></div>
+    </form>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
+<script type="module" src="church-settings-ui.mjs?v=20260922-sys1"></script>
+</body>
+</html>

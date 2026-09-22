@@ -111,18 +111,8 @@ async function load(){
 }
 $('#title').textContent=(church==='M+'?'M＋大雅教會':church==='SHiNE'?'火樂教會':'')+' · 會友名冊';
 $('#dashboard').href='admin-dashboard.html?church='+encodeURIComponent(church||'');
-for(const [id,file] of [['review','binding-review.html'],['form-settings','welcome-settings.html']])$('#'+id).href=file+'?church='+encodeURIComponent(church||'');
+$('#review').href='binding-review.html?church='+encodeURIComponent(church||'');
 const auditLink=text('a','操作日誌');auditLink.href='member-audit.html?church='+encodeURIComponent(church||'');$('.page-nav').append(auditLink);
-const groupsLink=text('a',groupTerm+'管理');groupsLink.href='groups.html?church='+encodeURIComponent(church||'');$('.page-nav').append(groupsLink);
-const attendanceLink=text('a','聚會點名');attendanceLink.href='attendance.html?church='+encodeURIComponent(church||'');$('.page-nav').append(attendanceLink);
-const schedulesLink=text('a','服事排班');schedulesLink.href='schedules.html?church='+encodeURIComponent(church||'');$('.page-nav').append(schedulesLink);
-const ministryLink=text('a','恩賜選項');ministryLink.href='ministry-settings.html';$('.page-nav').append(ministryLink);
-const spacesLink=text('a','場地預約');spacesLink.href='spaces.html?church='+encodeURIComponent(church||'');$('.page-nav').append(spacesLink);
-const prayersLink=text('a','代禱關懷');prayersLink.href='prayers.html?church='+encodeURIComponent(church||'');$('.page-nav').append(prayersLink);
-const pastoralLink=text('a','教牧內容');pastoralLink.href='pastoral-content.html?church='+encodeURIComponent(church||'');$('.page-nav').append(pastoralLink);
-const inboxLink=text('a','牧養訊息');inboxLink.href='pastoral-inbox.html?church='+encodeURIComponent(church||'');$('.page-nav').append(inboxLink);
-const adminsLink=text('a','管理員權限');adminsLink.href='admin-accounts.html?church='+encodeURIComponent(church||'');$('.page-nav').append(adminsLink);
-const settingsLink=text('a','堂會設定');settingsLink.href='church-settings.html?church='+encodeURIComponent(church||'');$('.page-nav').append(settingsLink);
 const archivedLabel=text('label','','check-row'),archivedBox=document.createElement('input');archivedBox.type='checkbox';archivedLabel.append(archivedBox,text('span','查看已封存會員'));$('#search-form').append(archivedLabel);
 $('#search-form').onsubmit=event=>{event.preventDefault();if(busy)return;search=$('#search').value;groupName=$('#group-filter').value;sort=$('#sort-order').value;newcomersOnly=$('#newcomers-only').checked;archivedOnly=archivedBox.checked;page=0;selected.clear();load();};
 $('#new').onclick=()=>{if(!busy)edit();};$('#newcomer').onclick=()=>{if(!busy)edit(null,true);};

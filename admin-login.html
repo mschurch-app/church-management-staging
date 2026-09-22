@@ -1,1 +1,21 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>測試管理員登入</title><link rel="stylesheet" href="auth.css"></head><body><main><p>獨立測試環境</p><h1>測試管理員登入</h1><p>使用測試專案的管理員帳號；正式系統帳號不能直接使用。</p><form id="form"><label for="email">電子郵件</label><input id="email" type="email" autocomplete="username" required><label for="password">密碼</label><input id="password" type="password" autocomplete="current-password" required><button id="submit">登入管理首頁</button></form><p id="status" role="status"></p></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs"></script></body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>測試管理員登入</title><link rel="stylesheet" href="auth.css?v=20260922-ui1"></head>
+<body class="auth-entry-body">
+<main class="login-app">
+  <section class="login-visual" aria-hidden="true"><span class="login-glow one"></span><span class="login-glow two"></span><div class="login-mark">M<span>＋</span></div><p>CHURCH MANAGEMENT</p><h2>讓服事與關懷<br>更靠近每一個人</h2></section>
+  <section class="login-panel">
+    <div class="login-badge">獨立測試環境</div>
+    <h1>歡迎回來</h1>
+    <p class="muted">使用測試專案的管理員帳號登入</p>
+    <form id="form" class="login-form">
+      <label for="email">電子郵件<input id="email" type="email" autocomplete="username" placeholder="name@example.com" required></label>
+      <label for="password">密碼<input id="password" type="password" autocomplete="current-password" placeholder="請輸入密碼" required></label>
+      <button id="submit">登入管理首頁 <span aria-hidden="true">→</span></button>
+    </form>
+    <p id="status" role="status" class="app-status"></p>
+    <p class="login-note">測試站與正式系統完全分開</p>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs"></script>
+</body></html>

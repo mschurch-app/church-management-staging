@@ -1,7 +1,12 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>教會會員流程｜測試站</title><link rel="stylesheet" href="site.css"></head>
-<body><main><span class="badge">獨立測試環境</span><h1>會員身份綁定測試</h1><p class="intro">僅供指定測試人員使用。請填寫虛構姓名與電話，不要輸入正式會友資料。</p>
-<nav aria-label="測試堂會"><a href="?church=M%2B">M+ 測試</a><a href="?church=SHiNE">火樂測試</a></nav>
-<p><a href="newcomer.html?church=M%2B">M+ 新朋友登記</a> · <a href="newcomer.html?church=SHiNE">火樂新朋友登記</a></p><p id="church-label">請選擇要測試的堂會。</p><div id="formSection"></div>
-<aside><h2>這裡會測試什麼？</h2><ol><li>登入 LINE，確認身份。</li><li>送出綁定申請，等待測試管理員核准。</li><li>核准後更新虛構資料，再驗證撤銷。</li></ol><p>此站不發送群組通知，照片上傳未開放。</p></aside>
-<footer>資料儲存在 church-management-staging，與正式教會系統分開。</footer></main>
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script><script type="module" src="site.mjs"></script></body></html>
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>教會會員流程｜測試站</title><link rel="stylesheet" href="site.css?v=20260922-ui1"></head>
+<body><main class="flow-app">
+  <header class="flow-hero"><span class="flow-orb one"></span><span class="flow-orb two"></span><span class="badge">獨立測試環境</span><div class="flow-mark">M＋</div><p class="eyebrow">CHURCH MEMBER JOURNEY</p><h1>會員身份綁定</h1><p class="intro">在安全的測試環境中完成 LINE 身份確認與會員資料連結。</p></header>
+  <section class="flow-content">
+    <div class="church-picker"><div><small>SELECT CHURCH</small><h2>選擇測試堂會</h2></div><nav aria-label="測試堂會"><a href="?church=M%2B">M＋大雅教會</a><a href="?church=SHiNE">火樂教會</a></nav></div>
+    <div class="quick-entry"><span>第一次來嗎？</span><a href="newcomer.html?church=M%2B">M＋新朋友登記</a><a href="newcomer.html?church=SHiNE">火樂新朋友登記</a></div>
+    <p id="church-label" class="flow-status">請選擇要測試的堂會。</p><div id="formSection" class="flow-form"></div>
+    <aside><span class="aside-icon">✓</span><div><h2>測試流程</h2><ol><li>使用 LINE 確認身份</li><li>送出綁定申請並等待核准</li><li>核准後更新虛構資料並驗證撤銷</li></ol><p>不會發送群組通知，照片上傳未開放。</p></div></aside>
+    <footer>資料儲存在 church-management-staging，與正式教會系統分開。</footer>
+  </section>
+</main><script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script><script type="module" src="site.mjs"></script></body></html>

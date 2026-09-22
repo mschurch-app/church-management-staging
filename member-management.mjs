@@ -1,6 +1,6 @@
 import {readAccess,canOpen} from './admin-access.mjs';
-export const FIELDS={name:['姓名',80],phone:['電話',40],district:['地區',100],birthday:['生日',10],gender:['性別',40],memo:['備註',2000],faith_status:['信仰／聚會狀態',100],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',40]};
-const columns='id,church_id,'+Object.keys(FIELDS).join(',');
+export const FIELDS={name:['姓名',80],phone:['電話',40],district:['地區',100],birthday:['生日',40],gender:['性別',100],memo:['備註',10000],faith_status:['信仰／聚會狀態',100],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',100]};
+const columns='id,church_id,photo_url,desired_feelings,interest_tags,'+Object.keys(FIELDS).join(',');
 export function normalizeMember(input){
  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!Object.hasOwn(FIELDS,k)))throw new Error('資料欄位不正確。');
  const result={};
@@ -10,7 +10,7 @@ export function normalizeMember(input){
   result[key]=value.trim();
  }
  if(!result.name)throw new Error('請填寫姓名。');
- if(result.birthday&&(!/^\d{4}-\d{2}-\d{2}$/.test(result.birthday)||!Number.isFinite(Date.parse(result.birthday))||new Date(result.birthday).toISOString().slice(0,10)!==result.birthday))throw new Error('生日格式不正確。');
+ if(/^\d{4}-\d{2}-\d{2}$/.test(result.birthday)&&(!Number.isFinite(Date.parse(result.birthday))||new Date(result.birthday).toISOString().slice(0,10)!==result.birthday))throw new Error('生日日期不正確。');
  result.birthday=result.birthday||null;return result;
 }
 async function authorize(db,church){

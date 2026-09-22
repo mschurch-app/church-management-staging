@@ -8,10 +8,21 @@ function clear(){generation++;list.replaceChildren();editor.replaceChildren();$(
 function edit(row=null,isNewcomer=false){
  editor.replaceChildren();const form=document.createElement('form'),inputs={};
  form.append(text('h2',row?'編輯會員':isNewcomer?'登記新朋友':'新增測試會員'));
+ if(row){
+  form.append(text('p','期待感受：'+(row.desired_feelings||[]).join('、')),text('p','生活興趣：'+(row.interest_tags||[]).join('、')));
+  if(row.photo_url?.startsWith(church+'/')){
+   const photoStatus=text('p','照片載入中…');form.append(photoStatus);
+   db.storage.from('newcomer-photos').createSignedUrl(row.photo_url,60).then(({data,error})=>{
+    if(!form.isConnected)return;
+    if(error){photoStatus.textContent='照片尚未完成上傳或無權查看。';return;}
+    const img=document.createElement('img');img.alt='新朋友照片';img.style.maxWidth='240px';img.src=data.signedUrl;photoStatus.replaceWith(img);
+   });
+  }
+ }
  for(const [key,[label,max]] of Object.entries(FIELDS)){
   const wrap=text('label',label),input=document.createElement(key==='memo'?'textarea':'input');
   input.maxLength=max;input.value=row?.[key]??(isNewcomer&&key==='faith_status'?'新朋友（初次聚會）':isNewcomer&&key==='welcome_status'?'新朋友':'');input.required=key==='name';
-  if(key==='birthday')input.type='date';if(key==='phone')input.type='tel';
+  if(key==='birthday')input.placeholder='例如：08/15 或 8月15日';if(key==='phone')input.type='tel';
   wrap.append(input);form.append(wrap);inputs[key]=input;
  }
  const save=text('button','儲存'),cancel=text('button','取消');cancel.type='button';cancel.onclick=()=>editor.replaceChildren();
@@ -49,3 +60,5 @@ $('#logout').onclick=async()=>{clear();await db.auth.signOut();location.replace(
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();else load();});
 db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clear();status.textContent='已登出，請重新登入。';}});
 load();
+
+document.querySelector('#form-settings').href='welcome-settings.html?church='+encodeURIComponent(church||'');

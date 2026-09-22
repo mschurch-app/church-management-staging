@@ -1,1 +1,351 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>新朋友登記｜測試站</title><link rel="stylesheet" href="auth.css"></head><body><main style="max-width:620px"><p>獨立測試環境 · 請使用虛構姓名與電話</p><h1 id="title">新朋友登記</h1><nav><a href="?church=M%2B">M+ 登記</a> · <a href="?church=SHiNE">火樂登記</a></nav><p>歡迎認識我們！填寫後由同工接待與跟進，不需要先登入。</p><form id="registration"><label>姓名（必填）<input name="name" maxlength="80" required autocomplete="off"></label><label>聯絡電話<input name="phone" type="tel" maxlength="40" autocomplete="off"></label><label>居住地區<input name="district" maxlength="100"></label><label>生日<input name="birthday" type="date"></label><label>性別<input name="gender" maxlength="40"></label><label>年齡層<input name="age_group" maxlength="40"></label><label>如何認識教會<input name="source" maxlength="300"></label><label>想讓同工知道的事<textarea name="note" maxlength="2000"></textarea></label><button id="submit" disabled>送出登記</button></form><p id="status" role="status"></p><p>此測試表單只建立新朋友紀錄，不會自動取得既有會員資料修改權限，也不發送群組通知。</p></main><script type="module" src="newcomer-ui.mjs"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>遇見你真好 · 歡迎回家</title>
+  
+  <!-- LINE LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  
+  <!-- Tailwind CSS & Supabase & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: radial-gradient(120% 80% at 50% -10%, #FFF4E8 0%, #FAF6F0 50%, #F5EEE6 100%);
+      color: #1c1917;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .card-glass {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(234, 218, 198, 0.85);
+      box-shadow: 0 16px 36px -6px rgba(184, 134, 76, 0.09);
+      border-radius: 28px;
+    }
+
+    .pill-btn {
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid #E7DED3;
+      background: #FFFFFF;
+      color: #57534E;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill-btn:active { transform: scale(0.96); }
+    .pill-btn.active {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #FFFFFF;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 24px -3px rgba(234, 88, 12, 0.42);
+      transition: all 0.25s ease;
+    }
+    .btn-submit:hover { box-shadow: 0 12px 28px -2px rgba(234, 88, 12, 0.52); transform: translateY(-1px); }
+    .btn-submit:active { transform: scale(0.98); }
+  </style>
+</head>
+<body class="p-4 sm:p-8 flex justify-center items-center">
+
+  <div class="w-full max-w-md my-4">
+    
+    <p class="text-center text-xs mb-3">獨立測試環境 · 請使用虛構資料</p><p id="formStatus" role="status" class="text-center text-sm"></p><!-- 表單本體 -->
+    <div id="formSection" class="card-glass p-6 sm:p-8 space-y-6">
+      
+      <!-- 頂部問候區 -->
+      <div class="text-center space-y-2">
+        <div id="headerIconWrapper" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl text-white shadow-lg shadow-orange-500/30" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%)">
+          <i id="headerIcon" class="fa-solid fa-heart"></i>
+        </div>
+        <h1 id="pageMainTitle" class="text-2xl font-black text-stone-800 tracking-tight pt-1">遇見你真好 · 歡迎回家</h1>
+        <p id="pageSubTitle" class="text-xs text-stone-500 leading-relaxed max-w-xs mx-auto">
+          很高興今天有你在我們當中！希望這裡能成為你放鬆心情、充飽電的溫暖角落 🌿
+        </p>
+
+        <!-- LINE 狀態提醒條 -->
+        <div id="lineStatusBadge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] text-emerald-800 font-bold hidden">
+          <i class="fa-brands fa-line text-emerald-600 text-sm"></i>
+          <span>LINE 已成功連動：<strong id="lineUserDisplayName" class="text-emerald-950"></strong></span>
+        </div>
+      </div>
+
+      <!-- 基本通用資料區 (新朋友與舊會友皆具備) -->
+      <div class="space-y-5 text-xs">
+        
+        <!-- 1. 姓名與性別 -->
+        <div class="space-y-2">
+          <label class="font-black text-stone-700 block text-xs">1. 怎麼稱呼你？ *</label>
+          <div class="relative">
+            <input type="text" id="guestName" placeholder="請輸入你的名字" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+            <span id="autoFillNotice" class="absolute right-3.5 top-3.5 text-[10px] text-emerald-700 font-bold bg-emerald-100/90 px-2.5 py-1 rounded-full hidden shadow-sm">
+              <i class="fa-solid fa-check mr-1"></i>已識別為家人 (會友更新模式)
+            </span>
+          </div>
+          
+          <div id="groupGender" class="flex gap-2 pt-1">
+            <div class="pill-btn flex-1 justify-center active">弟兄 / 帥哥</div>
+            <div class="pill-btn flex-1 justify-center">姊妹 / 美女</div>
+          </div>
+        </div>
+
+        <!-- 2. 聯絡手機 -->
+        <div class="space-y-1.5">
+          <label class="font-black text-stone-700 block text-xs">2. 聯絡手機 *</label>
+          <input type="tel" id="guestPhone" placeholder="0912-345-678" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+        </div>
+
+        <!-- 3. 生日 -->
+        <div class="space-y-1.5">
+          <label class="font-black text-stone-700 block text-xs">3. 你的生日 (方便教會在生日前後為你守望祝福)</label>
+          <input type="text" id="guestBirthday" placeholder="例如：08/15 (或 8月15日)" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+        </div>
+
+        <!-- 4. 年齡區間 -->
+        <div class="space-y-2">
+          <label class="font-black text-stone-700 block text-xs">4. 你的年齡區間</label>
+          <div class="flex flex-wrap gap-2" id="groupAge">
+            <div class="pill-btn">🎓 學生學青</div>
+            <div class="pill-btn active">💼 20-30 歲青年</div>
+            <div class="pill-btn">🏡 30-45 歲青壯</div>
+            <div class="pill-btn">🌟 45 歲以上熟齡</div>
+          </div>
+        </div>
+
+        <!-- 5. 生活區域 -->
+        <div class="space-y-2">
+          <label class="font-black text-stone-700 block text-xs">5. 你平時生活在哪一區？</label>
+          <div class="flex flex-wrap gap-2" id="groupDistrict"></div>
+        </div>
+
+        <!-- ======================= 分支 A：新朋友專屬欄位 (第 6, 7, 8, 9 項) ======================= -->
+        <div id="newcomerFieldsWrapper" class="space-y-5">
+          <!-- 6. 認識管道 -->
+          <div class="space-y-2">
+            <label class="font-black text-stone-700 block text-xs">6. 今天是怎麼認識我們的？</label>
+            <div class="flex flex-wrap gap-2" id="groupKnow">
+              <div class="pill-btn active">🙋 朋友家人邀請</div>
+              <div class="pill-btn">📱 IG臉書</div>
+              <div class="pill-btn">💻 YouTube/網站</div>
+              <div class="pill-btn">🚶 散步路過</div>
+              <div class="pill-btn">🎪 社區趣味活動</div>
+            </div>
+            <div id="inviterWrapper" class="pt-1.5">
+              <input type="text" id="inviterName" placeholder="是哪位朋友邀請你來的呢？" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400">
+            </div>
+          </div>
+
+          <!-- 7. 信仰近況調查 -->
+          <div class="space-y-2.5 pt-1 border-t border-stone-200/80">
+            <label class="font-black text-stone-700 block text-xs">7. 關於你的信仰近況 (單選)：</label>
+            <div class="space-y-2" id="groupFaithStatus">
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
+                <input type="radio" name="faithRadio" value="我還不是基督徒，不排斥到教會聚會。" class="mt-0.5 accent-orange-600 w-4 h-4">
+                <span>我還不是基督徒，不排斥到教會聚會。</span>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
+                <input type="radio" name="faithRadio" value="我尚未受洗，希望更進一步認識基督信仰。" class="mt-0.5 accent-orange-600 w-4 h-4">
+                <span>我尚未受洗，希望更進一步認識基督信仰。</span>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
+                <input type="radio" name="faithRadio" value="我是基督徒，因臨時需要來到教會。" class="mt-0.5 accent-orange-600 w-4 h-4">
+                <div class="flex-1 space-y-1.5">
+                  <span id="faithOptionChurchLabel">我是基督徒，因臨時需要來到教會。</span>
+                  <input type="text" id="churchOrigin1" placeholder="請填寫原屬教會名稱..." class="w-full bg-white border border-stone-200 rounded-xl p-2 text-xs text-stone-800 focus:outline-none hidden">
+                </div>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
+                <input type="radio" name="faithRadio" value="我是基督徒，目前正在尋找合適的教會。" class="mt-0.5 accent-orange-600 w-4 h-4">
+                <div class="flex-1 space-y-1.5">
+                  <span>我是基督徒，目前正在尋找合適的教會。</span>
+                  <input type="text" id="churchOrigin2" placeholder="請填寫原屬教會名稱..." class="w-full bg-white border border-stone-200 rounded-xl p-2 text-xs text-stone-800 focus:outline-none hidden">
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 8. 今天想感受的 -->
+          <div class="space-y-2">
+            <label class="font-black text-stone-700 block text-xs">8. 今天來到這裡，最想感受的是什麼？(可多選)</label>
+            <div class="flex flex-wrap gap-2" id="groupFeelings">
+              <div class="pill-btn active">🌿 讓心靈放鬆充電</div>
+              <div class="pill-btn active">🎶 聽聽溫暖的音樂</div>
+              <div class="pill-btn">🤝 認識聊得來的朋友</div>
+              <div class="pill-btn">💡 探索未來的方向</div>
+              <div class="pill-btn">📖 想多了解聖經</div>
+            </div>
+          </div>
+
+          <!-- 9. 平常生活休閒興趣 -->
+          <div class="space-y-2">
+            <label class="font-black text-stone-700 block text-xs">9. 平常的生活興趣與休閒？(可多選)</label>
+            <div class="flex flex-wrap gap-2" id="groupInterests">
+              <div class="pill-btn">☕ 咖啡品嚐與手作</div>
+              <div class="pill-btn active">🎸 音樂欣賞與彈唱</div>
+              <div class="pill-btn">💼 職場交流與成長</div>
+              <div class="pill-btn">🏕️ 戶外踏青與露營</div>
+              <div class="pill-btn">👶 親子育兒與教養</div>
+              <div class="pill-btn">🍳 美食探店與料理</div>
+              <div class="pill-btn">🏸 羽球健走等運動</div>
+              <div class="pill-btn">📖 靜心閱讀與寫作</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================= 分支 B：既有會友專屬欄位 ======================= -->
+        <div id="existingMemberFieldsWrapper" class="space-y-5 hidden pt-2 border-t border-orange-200/60">
+          
+          <!-- 所屬小組/小家展示條 (動態對應堂會術語) -->
+          <div class="p-3.5 rounded-2xl bg-orange-50/80 border border-orange-200 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] text-stone-500 font-bold block">目前所屬<span class="group-term-label">小組</span></span>
+              <strong id="displayCurrentGroupName" class="text-sm font-black text-orange-900">未編組</strong>
+            </div>
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-white text-orange-800 font-bold border border-orange-200">
+              <i class="fa-solid fa-lock text-[9px] mr-1"></i><span class="group-term-label">小組</span>編組維持不變
+            </span>
+          </div>
+
+          <!-- 會友服事恩賜意願 -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <label class="font-black text-stone-700 block text-xs">✨ 服事恩賜與負擔意願 (可多選)</label>
+              <span class="text-[10px] text-orange-600 font-bold">歡迎加入事工團隊</span>
+            </div>
+            <div class="flex flex-wrap gap-2" id="groupMinistries">
+              <div class="pill-btn">🎤 敬拜主領/歌手</div>
+              <div class="pill-btn">🎹 司琴鍵盤</div>
+              <div class="pill-btn">🎸 吉他/貝斯</div>
+              <div class="pill-btn">🥁 爵士鼓</div>
+              <div class="pill-btn">🎛️ 音響控台</div>
+              <div class="pill-btn">💻 投影字幕/導播</div>
+              <div class="pill-btn">🤝 招待迎賓/禮儀</div>
+              <div class="pill-btn">👶 兒童主日學/師資</div>
+              <div class="pill-btn">☕ 咖啡餐點愛宴</div>
+              <div class="pill-btn">🙏 守望代禱團隊</div>
+            </div>
+          </div>
+
+          <!-- 受洗日期 -->
+          <div class="space-y-1.5">
+            <label class="font-black text-stone-700 block text-xs">受洗日期 (選填，補齊名冊檔案)</label>
+            <input type="text" id="memberBaptismDate" placeholder="例如：2023/12/25 (若忘記年份可填月日)" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+          </div>
+
+          <!-- 近況代禱與給牧者的話 -->
+          <div class="space-y-1.5">
+            <label class="font-black text-stone-700 block text-xs">近況代禱 / 想跟牧者同工說的話</label>
+            <textarea id="memberPrayerNote" rows="3" placeholder="最近生活中經歷了什麼？有什麼需要教會團隊為你守望的嗎？" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 focus:outline-none focus:ring-2 focus:ring-orange-400 leading-relaxed"></textarea>
+          </div>
+        </div>
+
+        <!-- 10. 今日照片 (通用) -->
+        <div class="space-y-2.5 pt-2 border-t border-stone-200/80">
+          <div class="flex justify-between items-center">
+            <label id="photoLabelText" class="font-black text-stone-700 block text-xs">10. 今日照片留念 📸 (選填)</label>
+            <span id="photoSourceBadge" class="text-[10px] text-orange-600 font-bold hidden">已帶入 LINE 大頭貼</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="relative w-full h-44 rounded-2xl border border-stone-200 bg-stone-50 overflow-hidden flex items-center justify-center">
+              <img id="photoPreview" class="w-full h-full object-cover hidden" alt="印記照片">
+              <div id="photoPlaceholder" class="flex flex-col items-center justify-center text-stone-400 gap-1">
+                <i class="fa-solid fa-camera-retro text-2xl text-orange-400"></i>
+                <p id="photoPlaceholderText" class="text-xs font-bold text-stone-600">拍照或挑選更新個人照片</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <button type="button" id="cameraButton" class="py-3 px-4 rounded-2xl bg-orange-50 hover:bg-orange-100 text-orange-800 border border-orange-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
+                <i class="fa-solid fa-camera text-sm text-orange-600"></i>
+                <span>打開相機</span>
+              </button>
+              <button type="button" id="galleryButton" class="py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
+                <i class="fa-solid fa-image text-stone-500 text-sm"></i>
+                <span>從相簿挑選</span>
+              </button>
+            </div>
+          </div>
+
+          <input type="file" id="cameraInput" accept="image/*" capture="user" class="hidden">
+          <input type="file" id="galleryInput" accept="image/*" class="hidden">
+        </div>
+
+      </div>
+
+      <!-- 送出按鈕 -->
+      <div class="pt-3">
+        <button disabled id="btnSubmit" class="w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg">
+          <span id="btnSubmitText">✨ 很高興認識你 · 留下今日印記</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 送出成功感謝卡 -->
+    <div id="successSection" class="card-glass p-8 space-y-6 text-center hidden">
+      <div class="w-20 h-20 rounded-3xl mx-auto flex items-center justify-center text-3xl text-white shadow-xl shadow-orange-500/30" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%)">
+        <i id="successIcon" class="fa-solid fa-seedling"></i>
+      </div>
+      <div class="space-y-2">
+        <h2 id="successTitle" class="text-2xl font-black text-stone-800 tracking-tight">謝謝你今天來到我們當中！🌿</h2>
+        <p class="text-xs text-stone-600 leading-relaxed pt-1">
+          親愛的 <span id="successName" class="font-black text-orange-600 text-sm"></span>，<br>
+          <span id="successMessage">生命中的每一次相遇都是珍貴的祝福。<br>願今天成為你這週最充實、放鬆的充電時光！</span>
+        </p>
+      </div>
+      <div id="successVerseBox" class="p-4 rounded-2xl bg-orange-50/70 border border-orange-200/70 text-xs text-stone-700 leading-relaxed">
+        「願你出也蒙福，入也蒙福；心中的一切憂慮，都在這裡化為滿滿的平安與力量。」
+      </div>
+      
+      <!-- 關閉按鈕與提示 -->
+      <div class="pt-2 space-y-2">
+        <button id="btnClosePage" class="w-full py-3.5 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-extrabold transition flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-xmark text-stone-400"></i>
+          <span>完成，關閉頁面</span>
+        </button>
+        <p id="closeTipText" class="text-[11px] text-stone-400 hidden">若視窗未自動關閉，請直接點擊手機右上角關閉或返回 LINE 即可。</p>
+      </div>
+    </div>
+
+  </div>
+
+<script type="module" src="welcome-original-ui.mjs"></script></body></html>

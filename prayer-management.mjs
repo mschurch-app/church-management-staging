@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs';
+import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
 
 async function authorize(db,church){
   if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'prayers'))throw new Error('沒有此堂會的代禱管理權限。');

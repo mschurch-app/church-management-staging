@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {readAccess,chooseChurch} from './admin-access.mjs';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20260923-profile1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 form.addEventListener('submit',async event=>{
  event.preventDefault();button.disabled=true;status.textContent='正在確認登入…';

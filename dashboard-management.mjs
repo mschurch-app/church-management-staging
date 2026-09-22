@@ -1,4 +1,4 @@
-import {readAccess,chooseChurch} from './admin-access.mjs';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20260923-profile1';
 export const MODULES=Object.freeze([
  {permission:'members',title:'會友名冊',description:'會員、新朋友、封存與操作紀錄',file:'members.html',icon:'👥'},
  {permission:'groups',title:'小組／小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🏠'},

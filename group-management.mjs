@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs';
+import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
 async function authorize(db,church){if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'groups'))throw new Error('沒有此堂會的小組管理權限。');}
 export function normalizeGroup(input){const out={};for(const [key,max] of Object.entries({name:100,leader:100,meeting_time:100,location:200,memo:1000})){const value=input?.[key]??'';if(typeof value!=='string'||value.length>max)throw new Error('小組資料格式不正確。');out[key]=value.trim();}if(!out.name||!out.leader)throw new Error('名稱與負責同工為必填。');return out;}
 export async function listGroups(db,church,archivedOnly=false){await authorize(db,church);let q=db.from('groups').select('id,church_id,name,leader,meeting_time,location,memo,archived_at,archived_by').eq('church_id',church);q=archivedOnly?q.not('archived_at','is',null):q.is('archived_at',null);const {data,error}=await q.order('id');if(error||!Array.isArray(data)||data.some(x=>x.church_id!==church))throw new Error('無法載入小組資料。');return data;}

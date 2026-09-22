@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs';
+import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
 async function authorize(db,church){if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'attendance'))throw new Error('沒有此堂會的出席管理權限。');}
 export async function listAttendance(db,church){await authorize(db,church);const {data,error}=await db.from('attendance_records').select('id,church_id,meeting_date,group_name,leader_name,total_expected,total_present,present_list,absent_list,memo,created_at').eq('church_id',church).order('meeting_date',{ascending:false}).limit(100);if(error||!Array.isArray(data)||data.some(x=>x.church_id!==church))throw new Error('無法載入出席紀錄。');return data;}
 export async function listAttendanceMembers(db,church){await authorize(db,church);const {data,error}=await db.from('members').select('id,church_id,name,group_name').eq('church_id',church).is('archived_at',null).order('name');if(error||!Array.isArray(data)||data.some(x=>x.church_id!==church))throw new Error('無法載入點名名單。');return data;}

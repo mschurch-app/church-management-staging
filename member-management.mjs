@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs';
+import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
 export const FIELDS={name:['會友姓名',80],gender:['性別',100],phone:['電話號碼',40],group_name:['所屬小組／小家',100],birthday:['生日（年／月／日）',40],baptism_date:['受洗日期',40],faith_status:['信仰成熟度',100],district:['居住區域',100],growth_progress:['聚會近況',100],ministry:['服事恩賜',2000],memo:['個人牧養備註 / 歷程註記',10000],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',100]};
 const columns='id,church_id,photo_url,desired_feelings,interest_tags,archived_at,archived_by,'+Object.keys(FIELDS).join(',');
 export function normalizeMember(input){

@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs';
+import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
 const TABLES=new Set(['pastoral_templates','spiritual_cards','newcomer_journey_steps','share_greeting_cards']);
 async function authorize(db,church){if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'pastoral'))throw new Error('沒有此堂會的教牧內容管理權限。');}
 async function list(db,church,table,columns,order='id'){await authorize(db,church);const {data,error}=await db.from(table).select(columns).eq('church_id',church).order(order);if(error||!Array.isArray(data))throw new Error('無法載入教牧內容。');return data;}

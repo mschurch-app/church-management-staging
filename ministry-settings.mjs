@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {readAccess,canOpen} from './admin-access.mjs';
+import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
 import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20260922-min2';
 const church=new URLSearchParams(location.search).get('church'),status=document.querySelector('#status'),area=document.querySelector('#options'),add=document.querySelector('#add'),save=document.querySelector('#save');
 let options=[],busy=false,dirty=false;

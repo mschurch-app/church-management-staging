@@ -79,7 +79,7 @@ async function mountAdminIdentity(){
   const header=document.querySelector('.member-page>.page-header');
   if(!header)return;
   try{
-    const [{db},{readAccess}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs')]);
+    const [{db},{readAccess}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs?v=20260923-profile1')]);
     const access=await readAccess(db),content=header.querySelector(':scope>div')||header;
     filterChurchLinks(access);
     const existing=content.querySelector('#welcome');

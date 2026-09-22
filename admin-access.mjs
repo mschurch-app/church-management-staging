@@ -15,15 +15,26 @@ export function profileFromUser(user) {
   };
 }
 
+function serverProfile(value, fallback) {
+  const row = Array.isArray(value) ? value[0] : null;
+  return {
+    name: cleanLabel(row?.display_name) || fallback.name,
+    title: cleanLabel(row?.job_title) || fallback.title
+  };
+}
+
 export async function readAccess(db) {
   const verified = await db.auth.getUser();
   if (verified.error || !verified.data?.user) throw new Error('請重新登入。');
-  const result = await db.rpc('get_my_church_access');
+  const [result, profileResult] = await Promise.all([
+    db.rpc('get_my_church_access'), db.rpc('get_my_admin_profile')
+  ]);
   if (result.error || !Array.isArray(result.data)) throw new Error('無法確認管理權限，請稍後再試。');
   const grants = result.data.filter(row => churches.has(row.church_id) && permissions.has(row.permission));
   if (!grants.length) throw new Error('帳號尚未獲授權，或已停用。');
+  const fallback = profileFromUser(verified.data.user);
   return {
-    user: { id: verified.data.user.id, ...profileFromUser(verified.data.user) },
+    user: { id: verified.data.user.id, ...serverProfile(profileResult.error ? null : profileResult.data, fallback) },
     grants,
     churches: [...new Set(grants.map(row => row.church_id))]
   };

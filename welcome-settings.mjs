@@ -1,6 +1,7 @@
 import {db} from './admin-db.mjs';import {readAccess,canOpen} from './admin-access.mjs';import {getOptions,GROUPS} from './welcome-options.mjs';
 const church=new URLSearchParams(location.search).get('church'),area=document.querySelector('#options'),status=document.querySelector('#status'),save=document.querySelector('#save');
-let current,version,generation=0;
+let current,version,generation=0,saving=false;
+for(const [id,page] of [['back-members','members.html'],['preview-form','newcomer.html']])document.getElementById(id).href=page+'?church='+encodeURIComponent(church||'');
 const el=(tag,value)=>{const e=document.createElement(tag);e.textContent=value;return e;};
 async function allowed(){if(!canOpen(await readAccess(db),church,'members'))throw Error('沒有此堂會的迎新設定權限。');}
 function render(){
@@ -27,19 +28,20 @@ function render(){
   const add=el('button','新增選項');add.onclick=()=>{if(current[key].length<30){current[key].push({label:'新選項',value:'新選項',selected:false});render();}};section.append(add);area.append(section);
  }
 }
-async function load(){
+async function load(reuse=false){
  const ticket=++generation;area.replaceChildren();save.disabled=true;
- try{await allowed();const data=await getOptions(db,church);if(ticket!==generation)return;current=structuredClone(data.options);version=data.version;render();save.disabled=false;status.textContent=(church==='M+'?'M+':'火樂')+' · 選項已載入';}catch(e){status.textContent=e.message;}
+ try{await allowed();const data=reuse&&current?{options:current,version}:await getOptions(db,church);if(ticket!==generation)return;current=structuredClone(data.options);version=data.version;render();save.disabled=saving;status.textContent=(church==='M+'?'M+':'火樂')+' · 選項已載入';}catch(e){status.textContent=e.message;}
 }
 save.onclick=async()=>{
- save.disabled=true;
+ if(saving)return;saving=true;save.disabled=true;const snapshot=structuredClone(current),expected=version,ticket=generation;
+ area.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
  try{
   await allowed();
-  const {data,error}=await db.from('welcome_form_options').update({options:current,version:version+1,updated_at:new Date().toISOString()}).eq('church_id',church).eq('version',version).select('version');
+  const {data,error}=await db.from('welcome_form_options').update({options:snapshot,version:expected+1,updated_at:new Date().toISOString()}).eq('church_id',church).eq('version',expected).select('version');
   if(error||data?.length!==1)throw Error('未儲存：請檢查空白、重複值與預設選項；若別人已修改，請重整後再編輯。');
   version=data[0].version;status.textContent='已儲存。新開啟的迎新表單會使用這些選項。';
- }catch(e){status.textContent=e.message;}finally{save.disabled=false;}
+ }catch(e){if(ticket===generation)status.textContent=e.message;}finally{saving=false;if(ticket===generation&&!document.hidden){save.disabled=false;area.querySelectorAll('input,select,button').forEach(x=>x.disabled=false);}}
 };
-document.addEventListener('visibilitychange',()=>{if(document.hidden){generation++;area.replaceChildren();save.disabled=true;}else load();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){generation++;area.replaceChildren();save.disabled=true;}else load(true);});
 db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){generation++;area.replaceChildren();save.disabled=true;status.textContent='請重新登入。';}});
 load();

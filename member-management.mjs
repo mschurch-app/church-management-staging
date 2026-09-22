@@ -1,5 +1,5 @@
 import {readAccess,canOpen} from './admin-access.mjs';
-export const FIELDS={name:['姓名',80],phone:['電話',40],district:['地區',100],birthday:['生日',40],gender:['性別',100],memo:['備註',10000],faith_status:['信仰／聚會狀態',100],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',100]};
+export const FIELDS={name:['會友姓名',80],gender:['性別',100],phone:['電話號碼',40],group_name:['所屬小組／小家',100],birthday:['生日（年／月／日）',40],baptism_date:['受洗日期',40],faith_status:['信仰成熟度',100],district:['居住區域',100],growth_progress:['聚會近況',100],ministry:['服事恩賜 / 興趣標籤',2000],memo:['個人牧養備註 / 歷程註記',10000],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',100]};
 const columns='id,church_id,photo_url,desired_feelings,interest_tags,'+Object.keys(FIELDS).join(',');
 export function normalizeMember(input){
  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!Object.hasOwn(FIELDS,k)))throw new Error('資料欄位不正確。');
@@ -34,6 +34,7 @@ export async function saveMember(db,church,input,previous=null){
  let q;
  if(previous){
   if(previous.church_id!==church||!/^\d+$/.test(String(previous.id)))throw new Error('會員範圍不正確。');
+  for(const key of Object.keys(FIELDS))if((input[key]??'')===(previous[key]??''))patch[key]=previous[key]??null;
   q=db.from('members').update(patch).eq('id',previous.id).eq('church_id',church);
   // Optimistic concurrency: do not overwrite any changed editable field.
   for(const key of Object.keys(FIELDS))q=previous[key]==null?q.is(key,null):q.eq(key,previous[key]);
@@ -41,4 +42,11 @@ export async function saveMember(db,church,input,previous=null){
  const {data,error}=await q.select('id,church_id');
  if(error||!Array.isArray(data)||data.length!==1||data[0].church_id!==church)throw new Error(previous?'未儲存：資料可能已變更或權限已撤銷。請重新載入。':'新增結果未確認。請先查詢名單，避免重複新增。');
  await authorize(db,church);return data[0];
+}
+
+export async function listMemberGroups(db,church){
+ await authorize(db,church);
+ const {data,error}=await db.rpc('get_member_group_names',{p_church:church});
+ if(error||!Array.isArray(data))throw Error('無法載入小組／小家選項，請稍後重試。');
+ return data.map(x=>x.name);
 }

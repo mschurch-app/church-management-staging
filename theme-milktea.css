@@ -1,0 +1,54 @@
+/* Warm milk-tea palette shared by the public flow and management pages. */
+:root{
+  color:#43372e;
+  background:#f4ece3;
+  --accent:#9a6748;
+  --accent-deep:#76503a;
+  --accent-soft:#f1e3d5;
+  --ink:#43372e;
+  --surface:#fffdf9;
+  --surface-soft:#f8f2eb;
+  --border:#e4d7ca;
+  --muted:#7c7065;
+  --shadow:0 18px 50px rgba(91,63,43,.09)
+}
+body,
+body:not(.ministry-body):not(.auth-entry-body){
+  color:var(--ink);
+  background:radial-gradient(circle at 8% 0%,rgba(217,185,151,.3),transparent 29%),radial-gradient(circle at 96% 8%,rgba(235,207,184,.25),transparent 26%),linear-gradient(160deg,#fbf8f3 0%,#f1e8dd 100%);
+  background-attachment:fixed
+}
+main{border-color:rgba(229,215,201,.92);background:rgba(255,253,249,.96);box-shadow:var(--shadow)}
+h1,h2,h3{color:#43362d}a,.eyebrow{color:var(--accent)}:focus-visible{outline-color:#bf8c68}
+.member-page{background:transparent;box-shadow:none}.member-page:before{background:linear-gradient(90deg,#8c5c40,#c99c78,#e4c7aa)}
+input,select,textarea{border-color:#ddcfc1;background:#fdfaf6;color:var(--ink)}
+input:focus,select:focus,textarea:focus{border-color:#bd8865;background:#fff;box-shadow:0 0 0 4px rgba(166,112,76,.13)}
+button,.content-tabs button.active{background:linear-gradient(135deg,#a87453,#86563d);box-shadow:0 8px 20px rgba(117,77,52,.19)}
+button:hover{background:linear-gradient(135deg,#936345,#70462f);box-shadow:0 12px 24px rgba(117,77,52,.24)}
+.secondary,button.secondary{color:#80583f;border-color:#d9c3ae;background:rgba(255,253,249,.92);box-shadow:none}.secondary:hover,button.secondary:hover{color:#67432f;border-color:#c8a484;background:#f6eadf;box-shadow:none}.ghost-button{color:#7e7064;background:transparent;box-shadow:none}.ghost-button:hover{color:#59483c;background:#f3e9df;box-shadow:none}
+.member-page>.page-header,.library-page>.library-hero{background:linear-gradient(135deg,#73503d 0%,#a87858 55%,#d2a783 100%);box-shadow:0 20px 48px rgba(91,58,37,.2)}
+.member-page>.page-header h1,.library-page>.library-hero h1{color:#fff}.member-page>.page-header .eyebrow,.hero-kicker{color:#ffe4c8}.member-page>.page-header .muted,.library-page>.library-hero .muted{color:#fff9f1c7}
+.member-page>.page-nav,.page-nav{border-color:#eadccf;background:rgba(255,252,247,.9);box-shadow:0 13px 32px rgba(91,63,43,.1)}.page-nav a{color:#715d4d}.member-page>.page-nav a:hover,.page-nav a:hover,.page-nav a.current{color:#84583d;background:#f4e6d9}
+.member-page>.status-message,.flow-status{border-color:#e6d8ca;background:#fffaf4;color:#75695f}
+.toolbar,.member-card,.audit-card,.amenity-card,.summary-card,.admin-account-card{border-color:var(--border);background:rgba(255,253,249,.97);box-shadow:0 10px 28px rgba(91,63,43,.055)}.toolbar input,.toolbar select{background:#faf5ef}
+.member-card:hover,.dashboard-card:hover,.library-card:hover{border-color:#d1ad8e;box-shadow:0 18px 36px rgba(91,63,43,.11)}
+.avatar,.dashboard-icon,.settings-link-icon,.option-number{color:#885b3f;background:linear-gradient(145deg,#f4e4d3,#e9cdb1)}
+.status-badge{color:#76543e;background:#f3e5d8;border-color:#e3cbb6}
+.editor-panel{border-color:#d5b79c;background:linear-gradient(180deg,#fffdf9,#fbf4ec);box-shadow:0 18px 46px rgba(91,63,43,.08)}
+.check-panel,.batch-actions{border-color:#dec5ae;background:#f6e9dd}.choice:has(input:checked){color:#704931;border-color:#c99d79;background:#f2dfce}
+.memo-preview,.registration-details,.prayer-content,.prayer-original{background:#f8f1ea}.pastoral-note{border-color:#e2d2c2;background:#f7efe6}
+.content-tabs{background:#f0e5da;box-shadow:inset 0 0 0 1px #e5d6c7}.content-tabs button{color:#705e50}
+.settings-hub{border-color:#e4d5c6;background:linear-gradient(145deg,rgba(255,253,249,.99),rgba(245,232,218,.94));box-shadow:0 18px 42px rgba(91,63,43,.08)}
+.settings-link-card{border-color:#e6d8ca;color:#4e3e32;background:rgba(255,253,249,.96);box-shadow:0 10px 26px rgba(91,63,43,.06)}.settings-link-card:hover{border-color:#cda889;box-shadow:0 18px 36px rgba(91,63,43,.12)}.settings-link-copy strong{color:#573d2d}.settings-link-copy span{color:#806f62}.settings-link-arrow{color:#b17d59}
+.dashboard-card{border-color:#e5d7c9;background:linear-gradient(145deg,#fffdf9,#f9f2ea)}.dashboard-card:after{background:rgba(179,125,85,.09)}.system-links{border-color:#dfcdbb;background:linear-gradient(145deg,#f4e4d4,#f7eee6)}
+.privacy-notice{border-color:#e1cfbd;background:#f8eee4}.inactive-drawer .member-card,.amenity-card.inactive{background:#f6f0e9}
+.library-hero{border-color:#dfc9b5;background:linear-gradient(125deg,rgba(255,253,249,.99),rgba(245,228,211,.94));box-shadow:0 18px 46px rgba(91,63,43,.08)}.library-hero:after{background:radial-gradient(circle,rgba(255,255,255,.15),rgba(255,255,255,.03) 64%,transparent 65%)}
+.library-insight{border-color:#e4d4c5;background:rgba(255,253,249,.82);box-shadow:0 12px 30px rgba(91,63,43,.05)}.library-insight>div{border-color:#e7dacd}.library-insight span,.library-insight p,.library-note{color:#77695e}.library-insight strong{color:#9a6748}.love-insight strong{color:#b47762}
+.library-card{border-color:var(--border);background:rgba(255,253,249,.98);box-shadow:0 10px 28px rgba(91,63,43,.05)}.scripture-copy{border-left-color:#c89a76;background:#f8efe6;color:#554439}.library-image{background:linear-gradient(145deg,#ead8c6,#f7ede3)}.empty-state{border-color:#d8bda4;background:rgba(255,253,249,.62)}
+.ministry-body{background:radial-gradient(circle at 15% 5%,rgba(222,188,153,.3),transparent 32%),linear-gradient(160deg,#fbf8f3,#f3ebe1 48%,#ede1d5)}.ministry-app{background:#faf6f0;box-shadow:0 24px 70px rgba(91,58,37,.15)}.ministry-hero{background:linear-gradient(140deg,#73503d,#a87858 55%,#d1a480)}.ministry-hero:after{background:#faf6f0}.section-kicker{color:#9a6748}.order-hint{color:#755f4f;background:#efe3d7}#options .ministry-option{border-color:#e5d8cb;box-shadow:0 6px 18px rgba(91,63,43,.05)}#options .ministry-option:focus-within{border-color:#cda787;box-shadow:0 11px 26px rgba(91,63,43,.1)}.option-label{color:#8b7a6c}.option-field input{color:#46372d}#options .option-actions .option-icon{color:#715e50;background:#f5ede5}#options .option-actions .option-icon:hover{background:#eadbcd}.ministry-action-bar{border-color:#e6d8ca;background:rgba(255,253,249,.9);box-shadow:0 14px 38px rgba(91,63,43,.14)}.app-add{color:#80583f;border-color:#ddc6b1;background:#f6ede4}.app-add:hover{background:#eddfd1}.app-save{background:linear-gradient(135deg,#a87453,#86563d);box-shadow:0 8px 18px rgba(117,77,52,.23)}.app-save:hover{background:linear-gradient(135deg,#936345,#70462f)}
+.auth-entry-body{background:radial-gradient(circle at 12% 10%,rgba(222,188,153,.32),transparent 30%),linear-gradient(145deg,#faf6f0,#efe4d8)}.login-app{box-shadow:0 30px 80px rgba(91,58,37,.2)}.login-visual{background:linear-gradient(145deg,#73503d,#a87858 58%,#d2a783)}.login-mark span{color:#ffe1c1}.login-visual>p{color:#ffe5ca}.login-badge{color:#84583d;background:#f2e4d6}
+.flow-app{border-color:#fffaf2;background:#fffdf9;box-shadow:0 28px 75px rgba(91,58,37,.16)}.flow-hero{background:linear-gradient(138deg,#73503d,#a87858 58%,#d2a783)}.flow-hero:after{background:#fffdf9}.badge{color:#fff5e9}.flow-hero .eyebrow{color:#ffe4c8}.church-picker{border-color:#e4d4c5;background:#fffdf9;box-shadow:0 10px 28px rgba(91,63,43,.06)}.church-picker small{color:#966346}.flow-app nav a,.quick-entry a{background:linear-gradient(135deg,#a87453,#86563d)}.quick-entry{background:#f1e5da}.quick-entry span{color:#75675c}.quick-entry a{color:#84583d;border-color:#dfcbb8;background:#fffdf9}.flow-form section,.flow-form>div{border-color:#e5d8cb;background:#fffdf9}.flow-form input{border-color:#dacabb;background:#fdf9f4}.flow-form input:focus{border-color:#bd8865;box-shadow:0 0 0 4px rgba(166,112,76,.13)}aside{border-color:#e0cfbd;background:linear-gradient(145deg,#f7eee5,#f1e5da)}.aside-icon{background:#b07a59}aside ol{color:#69594d}aside p,footer{color:#807268}footer{border-color:#e3d4c6}
+.church-brand{background:#50382a94;box-shadow:0 8px 24px #3822171c}.public-church-brand{background:linear-gradient(135deg,#76513c,#b07c59)!important;box-shadow:0 12px 28px #66412b26!important}
+/* Tailwind-based newcomer form */
+body.newcomer-body{background:radial-gradient(120% 80% at 50% -10%,#ead7c5 0%,#faf6f0 50%,#f0e5da 100%);color:#44372e}.newcomer-body .card-glass{border-color:rgba(229,215,201,.9);background:rgba(255,253,249,.95);box-shadow:0 16px 36px -6px rgba(91,63,43,.11)}.newcomer-body .pill-btn{border-color:#e1d1c1;color:#756255;background:#fffdf9}.newcomer-body .pill-btn.active{color:#fff!important;border-color:transparent}.newcomer-body .pill-btn.active,.newcomer-body .btn-submit,.newcomer-body #headerIconWrapper,.newcomer-body #successSection>div:first-child{background:linear-gradient(135deg,#a87453,#86563d)!important;box-shadow:0 8px 24px -3px rgba(117,77,52,.3)}.newcomer-body input:focus,.newcomer-body textarea:focus{--tw-ring-color:rgba(190,139,102,.55)!important}.newcomer-body input[type=radio],.newcomer-body input[type=checkbox]{accent-color:#9a6748}.newcomer-body #successVerseBox,.newcomer-body #existingMemberFieldsWrapper>div{border-color:#dfc8b4!important;background:#f7ebe0!important}
+@media(max-width:620px){body{background:#fffdf9;background-attachment:scroll}.ministry-body{background:#faf6f0}}

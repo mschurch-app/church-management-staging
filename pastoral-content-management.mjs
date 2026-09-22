@@ -2,6 +2,8 @@ import {readAccess,canOpen} from './admin-access.mjs';
 const TABLES=new Set(['pastoral_templates','spiritual_cards','newcomer_journey_steps','share_greeting_cards']);
 async function authorize(db,church){if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'pastoral'))throw new Error('沒有此堂會的教牧內容管理權限。');}
 async function list(db,church,table,columns,order='id'){await authorize(db,church);const {data,error}=await db.from(table).select(columns).eq('church_id',church).order(order);if(error||!Array.isArray(data))throw new Error('無法載入教牧內容。');return data;}
+export async function listTodaysMessages(db,church){await authorize(db,church);const {data,error}=await db.from('spiritual_cards').select('id,church_id,category,scripture,scripture_ref,prayer_text,created_at,is_active').eq('church_id',church).eq('category','給今天的你').order('id');if(error||!Array.isArray(data))throw new Error('無法載入「給今天的你」經文庫。');return data;}
+export function listLoveShareCards(db,church){return list(db,church,'share_greeting_cards','id,church_id,category,title,image_url,share_caption,created_at,is_active','id');}
 export async function listPastoralContent(db,church){const [templates,cards,journey,greetings]=await Promise.all([
  list(db,church,'pastoral_templates','id,church_id,template_key,title,content,updated_at,is_active'),
  list(db,church,'spiritual_cards','id,church_id,category,scripture,scripture_ref,prayer_text,created_at,is_active'),

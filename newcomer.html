@@ -34,8 +34,8 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background: radial-gradient(120% 80% at 50% -10%, #FFF4E8 0%, #FAF6F0 50%, #F5EEE6 100%);
-      color: #1c1917;
+      background: radial-gradient(120% 80% at 50% -10%, #E8F8F5 0%, #F5FAF9 50%, #EAF3F2 100%);
+      color: #173038;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -44,8 +44,8 @@
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(234, 218, 198, 0.85);
-      box-shadow: 0 16px 36px -6px rgba(184, 134, 76, 0.09);
+      border: 1px solid rgba(205, 228, 224, 0.88);
+      box-shadow: 0 16px 36px -6px rgba(11, 91, 91, 0.09);
       border-radius: 28px;
     }
 
@@ -54,9 +54,9 @@
       border-radius: 9999px;
       font-size: 12px;
       font-weight: 700;
-      border: 1px solid #E7DED3;
+      border: 1px solid #D4E6E2;
       background: #FFFFFF;
-      color: #57534E;
+      color: #48666A;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
       user-select: none;
@@ -66,20 +66,20 @@
     }
     .pill-btn:active { transform: scale(0.96); }
     .pill-btn.active {
-      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
       color: #FFFFFF;
       border-color: transparent;
-      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
       transform: translateY(-1px);
     }
 
     .btn-submit {
-      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
       color: #ffffff;
-      box-shadow: 0 8px 24px -3px rgba(234, 88, 12, 0.42);
+      box-shadow: 0 8px 24px -3px rgba(13, 148, 136, 0.32);
       transition: all 0.25s ease;
     }
-    .btn-submit:hover { box-shadow: 0 12px 28px -2px rgba(234, 88, 12, 0.52); transform: translateY(-1px); }
+    .btn-submit:hover { box-shadow: 0 12px 28px -2px rgba(13, 148, 136, 0.4); transform: translateY(-1px); }
     .btn-submit:active { transform: scale(0.98); }
   </style>
 <link rel="stylesheet" href="church-brand.css?v=20260923-brand1">
@@ -93,7 +93,7 @@
       
       <!-- 頂部問候區 -->
       <div class="text-center space-y-2">
-        <div id="headerIconWrapper" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl text-white shadow-lg shadow-orange-500/30" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%)">
+        <div id="headerIconWrapper" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl text-white shadow-lg shadow-teal-500/30" style="background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%)">
           <i id="headerIcon" class="fa-solid fa-heart"></i>
         </div>
         <h1 id="pageMainTitle" class="text-2xl font-black text-stone-800 tracking-tight pt-1">遇見你真好 · 歡迎回家</h1>
@@ -115,7 +115,7 @@
         <div class="space-y-2">
           <label class="font-black text-stone-700 block text-xs">1. 怎麼稱呼你？ *</label>
           <div class="relative">
-            <input type="text" id="guestName" placeholder="請輸入你的名字" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+            <input type="text" id="guestName" placeholder="請輸入你的名字" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm">
             <span id="autoFillNotice" class="absolute right-3.5 top-3.5 text-[10px] text-emerald-700 font-bold bg-emerald-100/90 px-2.5 py-1 rounded-full hidden shadow-sm">
               <i class="fa-solid fa-check mr-1"></i>已識別為家人 (會友更新模式)
             </span>
@@ -130,13 +130,13 @@
         <!-- 2. 聯絡手機 -->
         <div class="space-y-1.5">
           <label class="font-black text-stone-700 block text-xs">2. 聯絡手機 *</label>
-          <input type="tel" id="guestPhone" placeholder="0912-345-678" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+          <input type="tel" id="guestPhone" placeholder="0912-345-678" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm">
         </div>
 
         <!-- 3. 生日 -->
         <div class="space-y-1.5">
           <label class="font-black text-stone-700 block text-xs">3. 你的生日 (方便教會在生日前後為你守望祝福)</label>
-          <input type="text" id="guestBirthday" placeholder="例如：1990/08/15 (也可只填 08/15)" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+          <input type="text" id="guestBirthday" placeholder="例如：1990/08/15 (也可只填 08/15)" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm">
         </div>
 
         <!-- 4. 年齡區間 -->
@@ -169,7 +169,7 @@
               <div class="pill-btn">🎪 社區趣味活動</div>
             </div>
             <div id="inviterWrapper" class="pt-1.5">
-              <input type="text" id="inviterName" placeholder="是哪位朋友邀請你來的呢？" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400">
+              <input type="text" id="inviterName" placeholder="是哪位朋友邀請你來的呢？" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-teal-400">
             </div>
           </div>
 
@@ -177,23 +177,23 @@
           <div class="space-y-2.5 pt-1 border-t border-stone-200/80">
             <label class="font-black text-stone-700 block text-xs">7. 關於你的信仰近況 (單選)：</label>
             <div class="space-y-2" id="groupFaithStatus">
-              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
-                <input type="radio" name="faithRadio" value="我還不是基督徒，不排斥到教會聚會。" class="mt-0.5 accent-orange-600 w-4 h-4">
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-teal-50/50 transition">
+                <input type="radio" name="faithRadio" value="我還不是基督徒，不排斥到教會聚會。" class="mt-0.5 accent-teal-600 w-4 h-4">
                 <span>我還不是基督徒，不排斥到教會聚會。</span>
               </label>
-              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
-                <input type="radio" name="faithRadio" value="我尚未受洗，希望更進一步認識基督信仰。" class="mt-0.5 accent-orange-600 w-4 h-4">
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-teal-50/50 transition">
+                <input type="radio" name="faithRadio" value="我尚未受洗，希望更進一步認識基督信仰。" class="mt-0.5 accent-teal-600 w-4 h-4">
                 <span>我尚未受洗，希望更進一步認識基督信仰。</span>
               </label>
-              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
-                <input type="radio" name="faithRadio" value="我是基督徒，因臨時需要來到教會。" class="mt-0.5 accent-orange-600 w-4 h-4">
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-teal-50/50 transition">
+                <input type="radio" name="faithRadio" value="我是基督徒，因臨時需要來到教會。" class="mt-0.5 accent-teal-600 w-4 h-4">
                 <div class="flex-1 space-y-1.5">
                   <span id="faithOptionChurchLabel">我是基督徒，因臨時需要來到教會。</span>
                   <input type="text" id="churchOrigin1" placeholder="請填寫原屬教會名稱..." class="w-full bg-white border border-stone-200 rounded-xl p-2 text-xs text-stone-800 focus:outline-none hidden">
                 </div>
               </label>
-              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-orange-50/50 transition">
-                <input type="radio" name="faithRadio" value="我是基督徒，目前正在尋找合適的教會。" class="mt-0.5 accent-orange-600 w-4 h-4">
+              <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-stone-50 border border-stone-200/80 cursor-pointer text-xs text-stone-800 font-bold hover:bg-teal-50/50 transition">
+                <input type="radio" name="faithRadio" value="我是基督徒，目前正在尋找合適的教會。" class="mt-0.5 accent-teal-600 w-4 h-4">
                 <div class="flex-1 space-y-1.5">
                   <span>我是基督徒，目前正在尋找合適的教會。</span>
                   <input type="text" id="churchOrigin2" placeholder="請填寫原屬教會名稱..." class="w-full bg-white border border-stone-200 rounded-xl p-2 text-xs text-stone-800 focus:outline-none hidden">
@@ -231,15 +231,15 @@
         </div>
 
         <!-- ======================= 分支 B：既有會友專屬欄位 ======================= -->
-        <div id="existingMemberFieldsWrapper" class="space-y-5 hidden pt-2 border-t border-orange-200/60">
+        <div id="existingMemberFieldsWrapper" class="space-y-5 hidden pt-2 border-t border-teal-200/60">
           
           <!-- 所屬小組/小家展示條 (動態對應堂會術語) -->
-          <div class="p-3.5 rounded-2xl bg-orange-50/80 border border-orange-200 flex items-center justify-between">
+          <div class="p-3.5 rounded-2xl bg-teal-50/80 border border-teal-200 flex items-center justify-between">
             <div>
               <span class="text-[11px] text-stone-500 font-bold block">目前所屬<span class="group-term-label">小組</span></span>
-              <strong id="displayCurrentGroupName" class="text-sm font-black text-orange-900">未編組</strong>
+              <strong id="displayCurrentGroupName" class="text-sm font-black text-teal-900">未編組</strong>
             </div>
-            <span class="text-[10px] px-2.5 py-1 rounded-full bg-white text-orange-800 font-bold border border-orange-200">
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-white text-teal-800 font-bold border border-teal-200">
               <i class="fa-solid fa-lock text-[9px] mr-1"></i><span class="group-term-label">小組</span>編組維持不變
             </span>
           </div>
@@ -248,7 +248,7 @@
           <div class="space-y-2">
             <div class="flex justify-between items-center">
               <label class="font-black text-stone-700 block text-xs">✨ 服事恩賜與負擔意願 (可多選)</label>
-              <span class="text-[10px] text-orange-600 font-bold">歡迎加入事工團隊</span>
+              <span class="text-[10px] text-teal-600 font-bold">歡迎加入事工團隊</span>
             </div>
             <div class="flex flex-wrap gap-2" id="groupMinistries">
               <div class="pill-btn">🎤 敬拜主領/歌手</div>
@@ -267,13 +267,13 @@
           <!-- 受洗日期 -->
           <div class="space-y-1.5">
             <label class="font-black text-stone-700 block text-xs">受洗日期 (選填，補齊名冊檔案)</label>
-            <input type="text" id="memberBaptismDate" placeholder="例如：2023/12/25 (若忘記年份可填月日)" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+            <input type="text" id="memberBaptismDate" placeholder="例如：2023/12/25 (若忘記年份可填月日)" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm">
           </div>
 
           <!-- 近況代禱與給牧者的話 -->
           <div class="space-y-1.5">
             <label class="font-black text-stone-700 block text-xs">近況代禱 / 想跟牧者同工說的話</label>
-            <textarea id="memberPrayerNote" rows="3" placeholder="最近生活中經歷了什麼？有什麼需要教會團隊為你守望的嗎？" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 focus:outline-none focus:ring-2 focus:ring-orange-400 leading-relaxed"></textarea>
+            <textarea id="memberPrayerNote" rows="3" placeholder="最近生活中經歷了什麼？有什麼需要教會團隊為你守望的嗎？" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 focus:outline-none focus:ring-2 focus:ring-teal-400 leading-relaxed"></textarea>
           </div>
         </div>
 
@@ -281,21 +281,21 @@
         <div class="space-y-2.5 pt-2 border-t border-stone-200/80">
           <div class="flex justify-between items-center">
             <label id="photoLabelText" class="font-black text-stone-700 block text-xs">10. 今日照片留念 📸 (選填)</label>
-            <span id="photoSourceBadge" class="text-[10px] text-orange-600 font-bold hidden">已帶入 LINE 大頭貼</span>
+            <span id="photoSourceBadge" class="text-[10px] text-teal-600 font-bold hidden">已帶入 LINE 大頭貼</span>
           </div>
 
           <div class="space-y-3">
             <div class="relative w-full h-44 rounded-2xl border border-stone-200 bg-stone-50 overflow-hidden flex items-center justify-center">
               <img id="photoPreview" class="w-full h-full object-cover hidden" alt="印記照片">
               <div id="photoPlaceholder" class="flex flex-col items-center justify-center text-stone-400 gap-1">
-                <i class="fa-solid fa-camera-retro text-2xl text-orange-400"></i>
+                <i class="fa-solid fa-camera-retro text-2xl text-teal-400"></i>
                 <p id="photoPlaceholderText" class="text-xs font-bold text-stone-600">拍照或挑選更新個人照片</p>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2.5">
-              <button type="button" id="cameraButton" class="py-3 px-4 rounded-2xl bg-orange-50 hover:bg-orange-100 text-orange-800 border border-orange-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
-                <i class="fa-solid fa-camera text-sm text-orange-600"></i>
+              <button type="button" id="cameraButton" class="py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
+                <i class="fa-solid fa-camera text-sm text-teal-600"></i>
                 <span>打開相機</span>
               </button>
               <button type="button" id="galleryButton" class="py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
@@ -323,17 +323,17 @@
 
     <!-- 送出成功感謝卡 -->
     <div id="successSection" class="card-glass p-8 space-y-6 text-center hidden">
-      <div class="w-20 h-20 rounded-3xl mx-auto flex items-center justify-center text-3xl text-white shadow-xl shadow-orange-500/30" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%)">
+      <div class="w-20 h-20 rounded-3xl mx-auto flex items-center justify-center text-3xl text-white shadow-xl shadow-teal-500/30" style="background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%)">
         <i id="successIcon" class="fa-solid fa-seedling"></i>
       </div>
       <div class="space-y-2">
         <h2 id="successTitle" class="text-2xl font-black text-stone-800 tracking-tight">謝謝你今天來到我們當中！🌿</h2>
         <p class="text-xs text-stone-600 leading-relaxed pt-1">
-          親愛的 <span id="successName" class="font-black text-orange-600 text-sm"></span>，<br>
+          親愛的 <span id="successName" class="font-black text-teal-600 text-sm"></span>，<br>
           <span id="successMessage">生命中的每一次相遇都是珍貴的祝福。<br>願今天成為你這週最充實、放鬆的充電時光！</span>
         </p>
       </div>
-      <div id="successVerseBox" class="p-4 rounded-2xl bg-orange-50/70 border border-orange-200/70 text-xs text-stone-700 leading-relaxed">
+      <div id="successVerseBox" class="p-4 rounded-2xl bg-teal-50/70 border border-teal-200/70 text-xs text-stone-700 leading-relaxed">
         「願你出也蒙福，入也蒙福；心中的一切憂慮，都在這裡化為滿滿的平安與力量。」
       </div>
       

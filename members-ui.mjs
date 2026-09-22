@@ -23,7 +23,7 @@ function selectControl(values,current){
 async function edit(row=null,isNewcomer=false){
  const ticket=generation;busy=true;status.textContent='正在準備會友資料…';
  try{
-  const [groupNames,availableMinistries]=await Promise.all([listMemberGroups(db,church),loadMinistryOptions(db,row?.ministry||'')]);if(ticket!==generation)return;
+  const [groupNames,availableMinistries]=await Promise.all([listMemberGroups(db,church),loadMinistryOptions(db,church,row?.ministry||'')]);if(ticket!==generation)return;
   editor.replaceChildren();editor.hidden=false;
   const form=document.createElement('form'),grid=text('div','','edit-grid'),inputs={},getters={},supplement=document.createElement('details');let memoWrap;
   supplement.className='registration-details';supplement.append(text('summary','迎新跟進資料'));const extraGrid=text('div','','edit-grid');supplement.append(extraGrid);

@@ -16,6 +16,8 @@ async function load(){
       const result=text('p','');result.setAttribute('role','status');
       if(row.status==='pending'){
         const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢完整會員姓名');
+        const searchLabel=text('label','要綁定的會員姓名（完整名稱）');searchLabel.append(input);
+        const hint=text('p','測試會員：'+(church==='M+'?'[TEST ONLY] M+ A 或 [TEST ONLY] M+ B':'[TEST ONLY] SHiNE A')+'。申請姓名可以不同，請自行核對並選擇。');
         const search=text('button','查詢會員'),select=document.createElement('select');select.setAttribute('aria-label','選擇核對過的會員');
         select.append(new Option('請先查詢並選擇會員',''));
         const verified=document.createElement('input');verified.type='checkbox';
@@ -24,7 +26,7 @@ async function load(){
           search.disabled=true;select.replaceChildren(new Option('請選擇會員',''));verified.checked=false;
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation)return;
             for(const member of candidates)select.append(new Option(`${member.name} · 電話 ${member.phone||'未填'} · 編號 ${member.id}`,String(member.id)));
-            result.textContent=candidates.length?'最多顯示 30 筆；請仔細核對，系統不會自動選擇。':'沒有找到同名會員。';
+            result.textContent=candidates.length?'最多顯示 30 筆；請仔細核對，系統不會自動選擇。':'查無完整同名會員。請使用上方測試會員名稱，或先到會員管理新增虛構會員。';
           }catch(error){if(current===generation){clear();status.textContent=error.message;}}
           finally{search.disabled=false;}
         });
@@ -35,7 +37,7 @@ async function load(){
           save(row.id,'approve',select.value);
         });
         reject.addEventListener('click',()=>save(row.id,'reject'));
-        card.append(input,search,select,label,approve,reject);
+        card.append(searchLabel,hint,search,select,label,approve,reject);
       }else if(row.status==='approved'){
         const confirmed=document.createElement('input');confirmed.type='checkbox';
         const label=text('label','確認撤銷這筆綁定 ');label.append(confirmed);

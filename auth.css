@@ -5,3 +5,5 @@ h1 { font-size: 28px; } p { line-height: 1.6; } label { display: block; margin-t
 input { box-sizing: border-box; width: 100%; padding: 12px; margin-top: 6px; border: 1px solid #a8a29e; border-radius: 8px; font: inherit; }
 button { margin-top: 20px; padding: 12px 20px; border: 0; border-radius: 8px; background: #9a3412; color: white; font: inherit; cursor: pointer; }
 button:disabled { opacity: .6; cursor: wait; } a { color: #9a3412; } :focus-visible { outline: 3px solid #ea580c; outline-offset: 3px; }
+
+article{padding:16px 0;border-bottom:1px solid #e7e5e4}select,textarea{font:inherit;max-width:100%;padding:10px}textarea{display:block;width:100%;box-sizing:border-box;min-height:100px}input[type=checkbox]{width:auto;margin:0 8px}nav{line-height:2}button{margin-right:8px}

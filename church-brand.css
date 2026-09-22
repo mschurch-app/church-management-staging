@@ -1,0 +1,15 @@
+.church-brand{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin:0 0 14px;padding:9px 12px;border:1px solid #ffffff38;border-radius:15px;background:#321f1894;box-shadow:0 8px 24px #2b170e1c;backdrop-filter:blur(12px)}
+.church-brand img{display:block;width:auto;height:38px;max-width:min(178px,42vw);object-fit:contain;filter:brightness(0) invert(1);opacity:.98}
+.church-brand--pair{gap:14px;padding:12px 15px}
+.church-brand--pair img{height:42px;max-width:min(175px,35vw)}
+.church-brand--pair .church-brand-divider{width:1px;height:34px;background:#ffffff42}
+.login-visual .church-brand{margin:0;background:#ffffff13}
+.login-visual .login-mark{display:none}
+.flow-hero .church-brand{margin-top:30px;margin-bottom:18px;background:#ffffff13}
+.flow-hero .flow-mark{display:none}
+.ministry-hero .church-brand{margin-bottom:13px;background:#ffffff13}
+.member-page>.page-header .church-brand{margin-bottom:12px;background:#ffffff14}
+.public-church-brand{display:flex!important;width:min(240px,75vw)!important;height:82px!important;margin:0 auto 10px!important;padding:13px 18px!important;border:1px solid #ffffff42!important;border-radius:22px!important;background:linear-gradient(135deg,#5d3727,#9a5935)!important;box-shadow:0 12px 28px #703d2526!important}
+.public-church-brand img{display:block;width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)}
+@media(max-width:760px){.church-brand{padding:7px 10px;border-radius:13px}.church-brand img{height:31px;max-width:min(145px,39vw)}.church-brand--pair{gap:9px;padding:9px 11px}.church-brand--pair img{height:31px;max-width:min(128px,34vw)}.church-brand--pair .church-brand-divider{height:27px}.flow-hero .church-brand{margin-top:24px}.public-church-brand{height:72px!important}}
+

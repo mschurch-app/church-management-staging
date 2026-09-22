@@ -56,3 +56,39 @@ function mount(){
 }
 
 mount();
+
+function filterChurchLinks(access){
+  const groups=new Map();
+  for(const link of document.querySelectorAll('.page-nav a')){
+    const url=new URL(link.href,location.href),target=url.searchParams.get('church');
+    if(!validChurches.has(target))continue;
+    const key=url.pathname;
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push({link,target});
+  }
+  for(const [path,items] of groups){
+    const wasSwitchSet=items.length>1;
+    for(const item of items)if(!access.churches.includes(item.target))item.link.remove();
+    if(access.churches.length===1&&wasSwitchSet&&path===location.pathname){
+      for(const item of items)if(item.link.isConnected)item.link.remove();
+    }
+  }
+}
+
+async function mountAdminIdentity(){
+  const header=document.querySelector('.member-page>.page-header');
+  if(!header)return;
+  try{
+    const [{db},{readAccess}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs')]);
+    const access=await readAccess(db),content=header.querySelector(':scope>div')||header;
+    filterChurchLinks(access);
+    const existing=content.querySelector('#welcome');
+    if(existing){existing.className='admin-identity';existing.textContent=access.user.name+'｜'+access.user.title;return;}
+    if(content.querySelector('.admin-identity'))return;
+    const chip=document.createElement('p'),name=document.createElement('strong'),title=document.createElement('span');
+    chip.className='admin-identity';name.textContent=access.user.name;title.textContent=access.user.title;
+    chip.append(name,document.createTextNode('｜'),title);content.append(chip);
+  }catch{}
+}
+
+mountAdminIdentity();

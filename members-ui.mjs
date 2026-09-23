@@ -1,20 +1,35 @@
 import {db} from './admin-db.mjs';
-import {listMembers,saveMember,listMemberGroups,setMemberArchived,FIELDS} from './member-management.mjs?v=20260922-members3';
-import {FAITH_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260922-min1';
+import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20260923-members5';
+import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260923-members5';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#list'),editor=$('#editor');
 const groupTerm=church==='SHiNE'?'小家':'小組';
 let page=0,search='',generation=0,busy=false,newcomersOnly=false,groupName='',sort='id',archivedOnly=false;
 const selected=new Map();
 let visibleRows=[];
+let memberGroups=[];
 let compactView=false;
 const text=(tag,value,cls='')=>{const el=document.createElement(tag);el.textContent=value;el.className=cls;return el;};
 function clear(){generation++;list.replaceChildren();editor.replaceChildren();editor.hidden=true;$('#new').disabled=true;$('#newcomer').disabled=true;$('#prev').disabled=true;$('#next').disabled=true;updateBatchBar();}
 function updateBatchBar(){const bar=$('#batch-actions');if(bar)bar.hidden=selected.size===0;const count=$('#selected-count');if(count)count.textContent=String(selected.size);}
+function updateBatchValues(){
+ const field=$('#batch-field').value,current=$('#batch-value').value,values=field==='faith_status'?FAITH_OPTIONS:field==='group_name'?['未編組',...memberGroups]:ATTENDANCE_OPTIONS;
+ $('#batch-value').replaceChildren(...values.map(value=>new Option(value,value)));
+ if(values.includes(current))$('#batch-value').value=current;
+}
 function exportCsv(){if(!visibleRows.length){status.textContent='目前沒有可匯出的資料。';return;}const keys=['name','gender','phone','group_name','birthday','baptism_date','faith_status','district','growth_progress','ministry','memo','welcome_status','know_us_from','age_group'];const labels=['姓名','性別','電話','小組／小家','生日','受洗日期','信仰成熟度','居住區域','聚會近況','服事恩賜','備註','迎新狀態','認識管道','年齡層'];const esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';const csv='\\uFEFF'+[labels,...visibleRows.map(row=>keys.map(k=>row[k]))].map(row=>row.map(esc).join(',')).join('\\r\\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(church||'church')+'-members-page-'+(page+1)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 async function exportAllCsv(){if(!visibleRows.length){status.textContent='目前沒有可匯出的資料。';return;}if(busy)return;busy=true;const all=[];try{for(let p=0;p<=10000;p++){status.textContent='正在準備匯出第 '+(p+1)+' 頁…';const result=await listMembers(db,church,search,p,newcomersOnly,{groupName,sort});all.push(...result.rows);if(!result.hasNext)break;}const keys=['name','gender','phone','group_name','birthday','baptism_date','faith_status','district','growth_progress','ministry','memo','welcome_status','know_us_from','age_group'];const labels=['姓名','性別','電話','小組／小家','生日','受洗日期','信仰成熟度','居住區域','聚會近況','服事恩賜','備註','迎新狀態','認識管道','年齡層'];const esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';const csv='\\uFEFF'+[labels,...all.map(row=>keys.map(k=>row[k]))].map(row=>row.map(esc).join(',')).join('\\r\\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(church||'church')+'-members.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='已匯出 '+all.length+' 筆會員資料。';}catch(error){status.textContent='匯出失敗：'+error.message;}finally{busy=false;}}
 function setPageSelection(checked){for(const box of list.querySelectorAll('input[data-member-id]')){box.checked=checked;const row=box._memberRow;if(checked)selected.set(row.id,row);else selected.delete(row.id);}updateBatchBar();}
-async function batchSetInactive(inactive){if(busy||!selected.size)return;const rows=[...selected.values()];const action=inactive?'移入關懷收納區':'恢復至名冊';if(!window.confirm('確定要將選取的 '+rows.length+' 位會員'+action+'嗎？資料不會刪除。'))return;busy=true;status.textContent='正在更新 '+rows.length+' 筆資料…';try{for(const row of rows){const input=Object.fromEntries(Object.keys(FIELDS).map(key=>[key,row[key]??'']));input.growth_progress=inactive?'很久沒來(都沒出現）':'穩定聚會(8成以上)';await saveMember(db,church,input,row);}selected.clear();await load();status.textContent='已完成批次更新。';}catch(error){status.textContent=error.message;}finally{busy=false;updateBatchBar();}}
+async function applyBatchChange(){
+ if(busy||!selected.size)return;
+ const rows=[...selected.values()],field=$('#batch-field').value,value=$('#batch-value').value,labels={growth_progress:'聚會近況',faith_status:'信仰階段',group_name:'所屬'+groupTerm};
+ const names=rows.slice(0,3).map(row=>row.name).join('、')+(rows.length>3?'等 '+rows.length+' 位':'');
+ if(!window.confirm('確定將「'+names+'」的'+labels[field]+'調整為「'+value+'」嗎？\n\n這項變更會寫入操作日誌。'))return;
+ busy=true;$('#batch-apply').disabled=true;status.textContent='正在批次更新 '+rows.length+' 位會友…';
+ try{await batchUpdateMembers(db,church,rows,field,value);selected.clear();await load();status.textContent='已完成：'+rows.length+' 位會友的'+labels[field]+'已調整為「'+value+'」。';}
+ catch(error){status.textContent=error.message;}
+ finally{busy=false;$('#batch-apply').disabled=false;updateBatchBar();}
+}
 function selectControl(values,current){
  const input=document.createElement('select');
  for(const value of preserveChoice(values,current))input.append(new Option(value||'未填寫 / 未選擇',value));
@@ -87,7 +102,8 @@ async function edit(row=null,isNewcomer=false){
 function memberCard(row){
  const card=text('article','','member-card'),head=text('div','','card-head'),avatar=text('span',(row.name||'？').slice(0,1),'avatar');
  const nameBox=text('div');nameBox.append(text('h3',row.name),text('p',(row.gender||'未填性別')+' · '+(row.group_name||'未編組'),'muted'));
- head.append(avatar,nameBox);card.append(head,text('p',row.faith_status||'未填信仰成熟度','status-badge'));
+ const statusRow=text('div','','member-status-row');statusRow.append(text('span',row.faith_status||'未填信仰階段','status-badge'),text('span',row.growth_progress||'未填聚會近況','status-badge attendance-badge'));
+ head.append(avatar,nameBox);card.append(head,statusRow);
  const dl=document.createElement('dl');
  for(const [label,value] of [['電話',row.phone],['居住區域',row.district],['服事恩賜',row.ministry]]){dl.append(text('dt',label),text('dd',value||'未填寫'));}
  card.append(dl);
@@ -107,6 +123,7 @@ async function load(){
    const drawer=document.createElement('details');drawer.className='inactive-drawer';drawer.append(text('summary','很久沒來 · 待關懷羊群（本頁 '+inactive.length+' 人）'));
    const cards=text('div','','member-grid');inactive.forEach(r=>cards.append(memberCard(r)));drawer.append(cards);list.append(drawer);
   }
+  const pageBoxes=[...list.querySelectorAll('input[data-member-id]')];selectPageButton.textContent=pageBoxes.length&&pageBoxes.every(box=>box.checked)?'取消本頁選取':'選取本頁';
  }catch(error){if(ticket===generation)status.textContent=error.message;}
 }
 $('#title').textContent=(church==='M+'?'M＋大雅教會':church==='SHiNE'?'火樂教會':'')+' · 會友名冊';
@@ -119,11 +136,12 @@ $('#new').onclick=()=>{if(!busy)edit();};$('#newcomer').onclick=()=>{if(!busy)ed
 const exportButton=text('button','匯出本頁 CSV','secondary');exportButton.disabled=true;exportButton.onclick=exportCsv;$('.toolbar-actions').append(exportButton);const originalLoad=load;const refreshExport=()=>{exportButton.disabled=!visibleRows.length||busy;};
 exportButton.textContent='匯出全部 CSV';
 const viewButton=text('button','切換表格檢視','secondary');viewButton.type='button';viewButton.onclick=()=>{compactView=!compactView;list.classList.toggle('compact-member-list',compactView);viewButton.textContent=compactView?'切換卡片檢視':'切換表格檢視';};$('.toolbar-actions').append(viewButton);
-$('#batch-inactive').onclick=()=>batchSetInactive(true);$('#batch-active').onclick=()=>batchSetInactive(false);
+$('#batch-field').onchange=updateBatchValues;$('#batch-apply').onclick=applyBatchChange;$('#batch-clear').onclick=()=>{selected.clear();for(const box of list.querySelectorAll('input[data-member-id]'))box.checked=false;updateBatchBar();};updateBatchValues();
 $('#prev').onclick=()=>{if(!busy&&page>0){page--;load();}};$('#next').onclick=()=>{if(!busy){page++;load();}};
 $('#logout').onclick=async()=>{clear();await db.auth.signOut();location.replace('admin-login.html');};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();else load();});
 db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clear();status.textContent='已登出，請重新登入。';}});
-load();
 exportButton.onclick=exportAllCsv;
-listMemberGroups(db,church).then(groups=>{const select=$('#group-filter');for(const name of groups)select.append(new Option(name,name));}).catch(()=>{});
+const selectPageButton=text('button','選取本頁','secondary');selectPageButton.type='button';selectPageButton.onclick=()=>{const boxes=[...list.querySelectorAll('input[data-member-id]')],allSelected=boxes.length&&boxes.every(box=>box.checked);setPageSelection(!allSelected);selectPageButton.textContent=allSelected?'選取本頁':'取消本頁選取';};$('.toolbar-actions').append(selectPageButton);
+listMemberGroups(db,church).then(groups=>{memberGroups=groups;const select=$('#group-filter');for(const name of groups)select.append(new Option(name,name));updateBatchValues();}).catch(()=>{});
+load();

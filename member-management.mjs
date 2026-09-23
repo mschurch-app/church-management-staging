@@ -49,6 +49,21 @@ export async function setMemberArchived(db,church,row,archived){
  return data[0];
 }
 
+export async function batchUpdateMembers(db,church,rows,field,value){
+ await authorize(db,church);
+ const allowed=new Set(['faith_status','growth_progress','group_name']);
+ if(!allowed.has(field)||!Array.isArray(rows)||!rows.length||rows.length>100)throw new Error('批次調整範圍不正確。');
+ const clean=String(value??'').trim(),max=FIELDS[field][1];
+ if(!clean||clean.length>max)throw new Error(FIELDS[field][0]+'內容不正確。');
+ if(rows.some(row=>row?.church_id!==church||!/^\d+$/.test(String(row.id))))throw new Error('選取的會友範圍不正確。');
+ const ids=[...new Set(rows.map(row=>String(row.id)))];
+ if(ids.length!==rows.length)throw new Error('選取名單含有重複資料，請重新載入。');
+ const {data,error}=await db.from('members').update({[field]:clean}).eq('church_id',church).in('id',ids).select('id,church_id');
+ const returned=new Set(Array.isArray(data)?data.map(row=>String(row.id)):[]);
+ if(error||!Array.isArray(data)||data.length!==ids.length||data.some(row=>row.church_id!==church)||ids.some(id=>!returned.has(id)))throw new Error('批次調整未完整儲存，請重新載入後再試。');
+ await authorize(db,church);return data;
+}
+
 export async function listMemberAudit(db,church,limit=50){
  await authorize(db,church);if(!Number.isInteger(limit)||limit<1||limit>100)throw new Error('日誌筆數不正確。');
  const {data,error}=await db.from('member_audit_log').select('id,member_id,actor_id,action,changed_fields,created_at').eq('church_id',church).order('created_at',{ascending:false}).limit(limit);

@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="zh-Hant">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>測試管理員登入</title><link rel="stylesheet" href="auth.css?v=20260923-aurora1"><link rel="stylesheet" href="church-brand.css?v=20260923-brand1"><link rel="stylesheet" href="theme-milktea.css?v=20260923-milktea4">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>管理員登入｜教會管理系統</title><link rel="stylesheet" href="auth.css?v=20260923-aurora1"><link rel="stylesheet" href="church-brand.css?v=20260923-brand1"><link rel="stylesheet" href="theme-milktea.css?v=20260923-milktea4">
 </head>
 <body class="auth-entry-body">
 <main class="login-app">
   <section class="login-visual" aria-hidden="true"><span class="login-glow one"></span><span class="login-glow two"></span><div class="login-mark">M<span>＋</span></div><p>CHURCH MANAGEMENT</p><h2>讓服事與關懷<br>更靠近每一個人</h2></section>
   <section class="login-panel">
-    <div class="login-badge">獨立測試環境</div>
+    <div class="login-badge">教會管理系統</div>
     <h1>歡迎回來</h1>
-    <p class="muted">使用測試專案的管理員帳號登入</p>
+    <p class="muted">使用您的管理員帳號登入；系統會依權限顯示所屬堂會。</p>
     <form id="form" class="login-form">
       <label for="email">電子郵件<input id="email" type="email" autocomplete="username" placeholder="name@example.com" required></label>
       <label for="password">密碼<input id="password" type="password" autocomplete="current-password" placeholder="請輸入密碼" required></label>
@@ -16,7 +16,7 @@
     </form>
     <a class="forgot-password" href="admin-password-reset.html">忘記密碼？寄送重設信</a>
     <p id="status" role="status" class="app-status"></p>
-    <p class="login-note">測試站與正式系統完全分開</p>
+    <p class="login-note">帳號與權限由系統安全管理</p>
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs"></script>

@@ -24,11 +24,25 @@ Deno.serve(async request=>{
   const verified=await userClient.auth.getUser();
   if(verified.error||!verified.data.user)return reply(origin,{ok:false,error:'unauthorized'},401);
   let body:Record<string,unknown>={};try{body=await request.json();}catch{return reply(origin,{ok:false,error:'invalid_request'},400);}
-  const email=clean(body.email,254).toLowerCase(),displayName=clean(body.display_name),jobTitle=clean(body.job_title),churchId=clean(body.church_id,10),roleKey=clean(body.role_key,40),permissions=ROLE_PERMISSIONS[roleKey];
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!displayName||!jobTitle||!['M+','SHiNE'].includes(churchId)||!permissions)return reply(origin,{ok:false,error:'invalid_request'},400);
+  const action=clean(body.action,20)||'invite',email=clean(body.email,254).toLowerCase(),displayName=clean(body.display_name),jobTitle=clean(body.job_title),churchId=clean(body.church_id,10),roleKey=clean(body.role_key,40),permissions=ROLE_PERMISSIONS[roleKey];
+  if(!['invite','resend'].includes(action)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!displayName||!jobTitle)return reply(origin,{ok:false,error:'invalid_request'},400);
+  if(action==='invite'&&(!['M+','SHiNE'].includes(churchId)||!permissions))return reply(origin,{ok:false,error:'invalid_request'},400);
   const ownerCheck=await userClient.rpc('list_admin_accounts_v3');
-  if(ownerCheck.error)return reply(origin,{ok:false,error:'not_owner'},403);
+  if(ownerCheck.error||!Array.isArray(ownerCheck.data))return reply(origin,{ok:false,error:'not_owner'},403);
   const redirectTo=Deno.env.get('ADMIN_INVITE_REDIRECT_URL')||'https://mscos.mchurch.online/admin-set-password.html';
+  if(action==='resend'){
+    const userId=clean(body.user_id,80),account=ownerCheck.data.find((row:Record<string,unknown>)=>String(row.user_id||'')===userId);
+    if(!account||String(account.email||'').toLowerCase()!==email||String(account.invitation_state||'')!=='pending')return reply(origin,{ok:false,error:'not_pending'},409);
+    const target=await service.auth.admin.getUserById(userId);
+    if(target.error||!target.data.user||String(target.data.user.email||'').toLowerCase()!==email||target.data.user.email_confirmed_at)return reply(origin,{ok:false,error:'not_pending'},409);
+    const resent=await service.auth.admin.inviteUserByEmail(email,{redirectTo,data:{display_name:displayName,job_title:jobTitle}});
+    if(resent.error){
+      const message=String(resent.error.message||'').toLowerCase(),code=String(resent.error.code||'').toLowerCase(),status=Number(resent.error.status||0);
+      const error=status===429||message.includes('rate limit')||code.includes('rate_limit')?'email_rate_limited':'email_delivery_failed';
+      return reply(origin,{ok:false,error});
+    }
+    return reply(origin,{ok:true,state:'pending',resent:true});
+  }
   const invited=await service.auth.admin.inviteUserByEmail(email,{redirectTo,data:{display_name:displayName,job_title:jobTitle}});
   if(invited.error||!invited.data.user){
     const message=String(invited.error?.message||'').toLowerCase(),code=String(invited.error?.code||'').toLowerCase(),status=Number(invited.error?.status||0);

@@ -1,5 +1,5 @@
 export const TAB_PERMISSIONS = Object.freeze({
-  members: ['members'], services: ['schedules'],
+  members: ['members'], attendance: ['attendance'], schedules: ['schedules'], services: ['schedules'],
   groups: ['groups', 'members'], prayers: ['private_prayers'], spaces: ['spaces'], pastoral: ['pastoral_chats']
 });
 const churches = new Set(['M+', 'SHiNE']);

@@ -6,10 +6,10 @@
   <meta name="robots" content="noindex,nofollow">
   <title>服事排班｜教牧管理</title>
   <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
-  <link rel="stylesheet" href="church-brand.css?v=20260924-brand2">
-  <link rel="stylesheet" href="theme-vitality.css?v=20260924-vitality1">
-  <link rel="stylesheet" href="schedules.css?v=20260923-3">
-</head>
+  <link rel="stylesheet" href="church-brand.css?v=20260924-brand3">
+  <link rel="stylesheet" href="theme-vitality.css?v=20260924-vitality3">
+  <link rel="stylesheet" href="schedules.css?v=20260924-roles2">
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"></head>
 <body>
   <main class="member-page schedule-page">
     <header class="page-header schedule-hero">
@@ -37,6 +37,11 @@
         <button id="monthPng" class="export-button"><span>本月</span>輸出 PNG</button>
       </div>
     </section>
+    <section class="role-settings-entry">
+      <div><span class="entry-icon" aria-hidden="true">🎛️</span><div><h2>服事項目呈現</h2><p>調整圖示、名稱、顯示狀態及排列順序，網頁與輸出圖片會同步套用。</p></div></div>
+      <button id="manageRoles" class="secondary">管理服事項目</button>
+    </section>
+    <section id="roleSettings" class="role-settings-panel" hidden></section>
     <p id="status" role="status" class="status-message"></p>
     <section id="editor" class="editor-panel" hidden></section>
     <section class="schedule-heading"><div><p class="eyebrow">UPCOMING SERVICES</p><h2>本週與未來服事</h2></div><span id="rangeNote"></span></section>
@@ -47,7 +52,7 @@
     </details>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-  <script type="module" src="schedules-ui.mjs?v=20260923-weeklyart1"></script>
+  <script type="module" src="schedules-ui.mjs?v=20260924-roles2"></script>
   <script type="module" src="church-brand.mjs?v=20260924-brand5"></script>
 </body>
 </html>

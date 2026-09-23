@@ -11,11 +11,8 @@ const modules=[
   {file:'groups.html',label:'小組／小家',icon:'🫶',permission:'groups',also:['group-members.html']},
   {file:'attendance.html',label:'聚會點名',icon:'✅',permission:'attendance'},
   {file:'schedules.html',label:'服事排班',icon:'📅',permission:'schedules'},
-  {file:'prayers.html',label:'代禱關懷',icon:'🙏',permission:'private_prayers'},
-  {file:'pastoral-inbox.html',label:'牧養訊息',icon:'💬',permission:'pastoral_chats'},
-  {file:'pastoral-content.html',label:'教牧內容',icon:'✨',permission:'pastoral_chats',also:['todays-message-settings.html','love-share-settings.html']},
-  {file:'spaces.html',label:'場地預約',icon:'🏛️',permission:'spaces',also:['amenities.html']},
-  {file:'church-settings.html',label:'系統設定',icon:'⚙️',also:['welcome-settings.html','ministry-settings.html','admin-accounts.html']}
+  {file:'prayers.html',label:'代禱關懷',icon:'🙏',permission:'private_prayers',also:['pastoral-inbox.html']},
+  {file:'church-settings.html',label:'系統設定',icon:'⚙️',also:['welcome-settings.html','ministry-settings.html','admin-accounts.html','pastoral-content.html','todays-message-settings.html','love-share-settings.html','spaces.html','amenities.html']}
 ];
 const currentFile=location.pathname.split('/').pop()||'admin-dashboard.html';
 document.documentElement.dataset.church=church||'';

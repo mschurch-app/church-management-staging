@@ -23,18 +23,34 @@ function serverProfile(value, fallback) {
   };
 }
 
-export async function readAccess(db) {
-  const verified = await db.auth.getUser();
-  if (verified.error || !verified.data?.user) throw new Error('請重新登入。');
-  const [result, profileResult] = await Promise.all([
-    db.rpc('get_my_church_access'), db.rpc('get_my_admin_profile')
-  ]);
-  if (result.error || !Array.isArray(result.data)) throw new Error('無法確認管理權限，請稍後再試。');
+const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+export async function readAccess(db, { user: signedInUser = null, retry = true } = {}) {
+  let user = signedInUser;
+  if (!user) {
+    const verified = await db.auth.getUser();
+    if (verified.error || !verified.data?.user) throw new Error('登入狀態尚未建立，請重新登入。');
+    user = verified.data.user;
+  }
+
+  let result, profileResult;
+  const attempts = retry ? 2 : 1;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    [result, profileResult] = await Promise.all([
+      db.rpc('get_my_church_access'), db.rpc('get_my_admin_profile')
+    ]);
+    if (!result.error && Array.isArray(result.data)) break;
+    if (attempt + 1 < attempts) {
+      await db.auth.refreshSession();
+      await wait(250);
+    }
+  }
+  if (result?.error || !Array.isArray(result?.data)) throw new Error('密碼已驗證，但暫時無法讀取管理權限，請再登入一次。');
   const grants = result.data.filter(row => churches.has(row.church_id) && permissions.has(row.permission));
   if (!grants.length) throw new Error('帳號尚未獲授權，或已停用。');
-  const fallback = profileFromUser(verified.data.user);
+  const fallback = profileFromUser(user);
   return {
-    user: { id: verified.data.user.id, ...serverProfile(profileResult.error ? null : profileResult.data, fallback) },
+    user: { id: user.id, ...serverProfile(profileResult?.error ? null : profileResult?.data, fallback) },
     grants,
     churches: [...new Set(grants.map(row => row.church_id))]
   };

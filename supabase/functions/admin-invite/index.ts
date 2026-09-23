@@ -28,7 +28,7 @@ Deno.serve(async request=>{
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!displayName||!jobTitle||!['M+','SHiNE'].includes(churchId)||!permissions)return reply(origin,{ok:false,error:'invalid_request'},400);
   const ownerCheck=await userClient.rpc('list_admin_accounts_v3');
   if(ownerCheck.error)return reply(origin,{ok:false,error:'not_owner'},403);
-  const redirectTo=Deno.env.get('ADMIN_INVITE_REDIRECT_URL')||'https://mschurch-app.github.io/church-management-staging/admin-set-password.html';
+  const redirectTo=Deno.env.get('ADMIN_INVITE_REDIRECT_URL')||'https://mscos.mchurch.online/admin-set-password.html';
   const invited=await service.auth.admin.inviteUserByEmail(email,{redirectTo,data:{display_name:displayName,job_title:jobTitle}});
   if(invited.error||!invited.data.user){
     const message=String(invited.error?.message||'').toLowerCase(),code=String(invited.error?.code||'').toLowerCase(),status=Number(invited.error?.status||0);

@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#fff8e9">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>給今天的你｜今日專屬恩典</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'sans-serif'],
+            serif: ['Noto Serif TC', 'Songti TC', 'PMingLiU', 'serif']
+          },
+          colors: {
+            grace: {50:'#fffdf7',100:'#fff8e9',200:'#f7e7c6',300:'#eccd91',400:'#d9a953',500:'#ba7c2e',700:'#76502d',900:'#3f3227'},
+            leaf: {400:'#8ca876',600:'#607b50'}
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { min-height: 100%; background: #fff8e9; }
+    body {
+      min-height: 100dvh;
+      margin: 0;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(255,255,255,.96) 0 6%, transparent 24%),
+        radial-gradient(circle at 87% 17%, rgba(255,220,151,.44) 0 7%, transparent 25%),
+        linear-gradient(165deg, #fffdf7 0%, #fff5df 48%, #f6dfc1 100%);
+      color: #3f3227;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .34;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.11'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+    }
+    button { touch-action: manipulation; }
+    .safe-top { padding-top: max(18px, env(safe-area-inset-top)); }
+    .safe-bottom { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+    .particle {
+      position: fixed;
+      z-index: 0;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 999px;
+      background: rgba(206,156,71,.34);
+      box-shadow: 0 0 12px rgba(225,174,79,.34);
+      animation: particle-drift var(--duration) ease-in-out infinite alternate;
+      animation-delay: var(--delay);
+      pointer-events: none;
+    }
+    .stage { perspective: 1200px; }
+    .envelope-wrap {
+      position: relative;
+      width: min(82vw, 340px);
+      cursor: pointer;
+      filter: drop-shadow(0 24px 34px rgba(104,70,36,.2));
+      animation: envelope-breathe 3.4s ease-in-out infinite;
+      transition: opacity .48s ease, transform .68s cubic-bezier(.2,.85,.2,1);
+      user-select: none;
+    }
+    .envelope-wrap::before {
+      content: "";
+      position: absolute;
+      inset: -22px;
+      z-index: -1;
+      border-radius: 42px;
+      background: radial-gradient(circle, rgba(250,204,107,.38), transparent 68%);
+      animation: aura 2.7s ease-in-out infinite alternate;
+    }
+    .envelope-wrap.opening { animation: none; transform: translateY(16px) scale(.9); opacity: 0; }
+    .envelope {
+      position: relative;
+      height: 218px;
+      overflow: hidden;
+      border: 1px solid rgba(177,124,54,.35);
+      border-radius: 26px;
+      background: linear-gradient(150deg,#fffdf5,#f5dfb9);
+      box-shadow: inset 0 1px rgba(255,255,255,.9), inset 0 -20px 45px rgba(184,122,46,.11);
+    }
+    .envelope-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(155deg,rgba(255,255,255,.28),transparent 52%);
+    }
+    .envelope-flap {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      z-index: 3;
+      width: 100%;
+      height: 58%;
+      clip-path: polygon(0 0,100% 0,50% 100%);
+      background: linear-gradient(180deg,#fffaf0,#eccd96);
+      transform-origin: top;
+      transition: transform .52s cubic-bezier(.45,0,.2,1);
+    }
+    .opening .envelope-flap { transform: rotateX(178deg); }
+    .envelope-left,.envelope-right {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: linear-gradient(145deg,#f8e6c7,#fff9eb);
+    }
+    .envelope-left { clip-path: polygon(0 0,52% 50%,0 100%); }
+    .envelope-right { clip-path: polygon(100% 0,48% 50%,100% 100%); }
+    .envelope-front {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      clip-path: polygon(0 100%,0 44%,50% 73%,100% 44%,100% 100%);
+      background: linear-gradient(165deg,#f3d9ae,#fffaf0 62%);
+    }
+    .wax-seal {
+      position: absolute;
+      top: 94px;
+      left: 50%;
+      z-index: 6;
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      border: 2px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 28%,#f0b85d,#b56a28 68%,#7f431d);
+      box-shadow: 0 7px 18px rgba(114,64,25,.28), inset 0 0 0 5px rgba(255,225,164,.18);
+      transform: translateX(-50%);
+      color: #fff8e8;
+      font-size: 24px;
+    }
+    .grace-card {
+      width: min(91vw, 430px);
+      border: 1px solid rgba(190,142,72,.28);
+      border-radius: 32px;
+      background: linear-gradient(165deg,rgba(255,255,255,.97),rgba(255,250,238,.96));
+      box-shadow: 0 28px 70px rgba(91,61,31,.2), inset 0 1px rgba(255,255,255,.9);
+      transform-style: preserve-3d;
+      opacity: 0;
+      transform: rotateY(-92deg) translateY(18px) scale(.84);
+      transition: opacity .52s ease, transform .88s cubic-bezier(.2,1.15,.3,1);
+    }
+    .grace-card.revealed { opacity: 1; transform: rotateY(0) translateY(0) scale(1); }
+    .card-line {
+      width: 66px;
+      height: 2px;
+      border-radius: 99px;
+      background: linear-gradient(90deg,transparent,#d3a355,transparent);
+    }
+    .content-rise { opacity: 0; transform: translateY(16px) scale(.98); }
+    .content-rise.show { animation: content-rise .68s cubic-bezier(.2,.9,.3,1) forwards; }
+    .verse-text::after {
+      content: "";
+      display: inline-block;
+      width: 2px;
+      height: 1.05em;
+      margin-left: 3px;
+      vertical-align: -.12em;
+      background: #ba7c2e;
+      animation: cursor .75s steps(1) infinite;
+    }
+    .verse-text.done::after { display: none; }
+    .speak-wave span {
+      display: inline-block;
+      width: 2px;
+      height: 9px;
+      margin: 0 1px;
+      border-radius: 99px;
+      background: currentColor;
+      animation: wave .72s ease-in-out infinite alternate;
+    }
+    .speak-wave span:nth-child(2) { animation-delay: -.25s; }
+    .speak-wave span:nth-child(3) { animation-delay: -.48s; }
+    .heart-spark {
+      position: fixed;
+      z-index: 80;
+      pointer-events: none;
+      animation: heart-fly 1.15s cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .toast { transform: translate(-50%,18px); opacity: 0; transition: .28s ease; }
+    .toast.show { transform: translate(-50%,0); opacity: 1; }
+    @keyframes particle-drift { to { transform: translate3d(var(--dx),var(--dy),0) scale(1.35); opacity:.12; } }
+    @keyframes envelope-breathe { 0%,100% { transform: translateY(0) rotate(-.5deg); } 50% { transform: translateY(-9px) rotate(.5deg); } }
+    @keyframes aura { from { transform: scale(.92); opacity:.45; } to { transform: scale(1.08); opacity:.86; } }
+    @keyframes content-rise { to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes cursor { 50% { opacity:0; } }
+    @keyframes wave { from { transform:scaleY(.45); } to { transform:scaleY(1.3); } }
+    @keyframes heart-fly { 0% { opacity:0; transform:translate(-50%,-20%) scale(.55) rotate(0); } 20% { opacity:1; } 100% { opacity:0; transform:translate(calc(-50% + var(--x)),calc(-180px + var(--y))) scale(1.25) rotate(var(--r)); } }
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased">
+  <div id="particles" aria-hidden="true"></div>
+
+  <main class="safe-top safe-bottom relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-lg flex-col px-4">
+    <header class="flex items-center justify-between py-2 text-[11px] font-bold tracking-[.16em] text-grace-700/70">
+      <a id="homeLink" href="line-member.html" class="flex items-center gap-2 no-underline"><i class="h-2 w-2 rounded-full bg-leaf-400 shadow-[0_0_0_5px_rgba(140,168,118,.14)]"></i><span id="churchLabel">晨光恩典</span></a>
+      <span id="lineState" class="rounded-full border border-white/70 bg-white/55 px-3 py-1.5 tracking-normal backdrop-blur">為你預備</span>
+    </header>
+
+    <section id="giftStage" class="stage flex flex-1 flex-col items-center justify-center pb-10 text-center">
+      <button id="envelopeButton" class="envelope-wrap" type="button" aria-label="拆開今日專屬恩典">
+        <span class="envelope block" aria-hidden="true">
+          <i class="envelope-back"></i><i class="envelope-flap"></i><i class="envelope-left"></i><i class="envelope-right"></i><i class="envelope-front"></i>
+          <b class="wax-seal">✦</b>
+        </span>
+        <span class="mt-7 block text-base font-black tracking-[.08em] text-grace-900">點擊拆開今日專屬恩典</span>
+        <span class="mt-2 block text-xs tracking-[.14em] text-grace-700/60">一份只為今天、只為你的話語</span>
+      </button>
+    </section>
+
+    <section id="revealStage" class="stage hidden flex-1 items-center justify-center py-3">
+      <article id="graceCard" class="grace-card relative overflow-hidden p-5 sm:p-6">
+        <div class="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-amber-200/25 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-lime-200/20 blur-3xl"></div>
+
+        <header id="cardHeader" class="content-rise relative flex items-start justify-between gap-3">
+          <div>
+            <div class="mb-2 flex items-center gap-2"><span class="text-xl">🌱</span><h1 class="font-serif text-xl font-black tracking-[.08em] text-grace-900">給今天的你</h1></div>
+            <p id="todayDate" class="text-[11px] font-bold tracking-[.16em] text-grace-700/65"></p>
+          </div>
+          <button id="speakButton" type="button" class="flex shrink-0 items-center gap-1.5 rounded-full border border-grace-200 bg-white/80 px-3 py-2 text-[11px] font-black text-grace-700 shadow-sm backdrop-blur" aria-label="朗讀經文與祝福">
+            <span id="speakerIcon">🔊</span>
+            <span id="speakerLabel">朗讀</span>
+            <span id="speakWave" class="speak-wave hidden" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+        </header>
+
+        <div class="card-line content-rise mx-auto my-5" data-reveal></div>
+
+        <section id="verseBlock" class="content-rise relative rounded-3xl border border-grace-200/80 bg-grace-50/85 p-5 shadow-[0_14px_35px_rgba(129,86,41,.08)]" data-reveal>
+          <div class="mb-3 inline-flex items-center rounded-full bg-gradient-to-r from-amber-100 to-yellow-50 px-3 py-1.5 text-[11px] font-black tracking-[.12em] text-grace-700">✨ 今日應許</div>
+          <blockquote id="verseText" class="verse-text min-h-[4.5rem] font-serif text-[20px] font-bold leading-[1.8] tracking-[.04em] text-grace-900"></blockquote>
+          <p id="verseReference" class="mt-3 text-right font-serif text-sm font-bold tracking-[.08em] text-grace-700"></p>
+        </section>
+
+        <section id="prayerBlock" class="content-rise mt-4 rounded-3xl border border-lime-200/70 bg-gradient-to-br from-lime-50/90 to-white/80 p-5" data-reveal>
+          <h2 class="mb-2 text-sm font-black tracking-[.08em] text-leaf-600">💡 祝福你：</h2>
+          <p id="prayerText" class="text-[15px] font-medium leading-[1.85] text-grace-900/85"></p>
+        </section>
+
+        <div id="actionBlock" class="content-rise mt-5 grid gap-3" data-reveal>
+          <button id="receiveButton" type="button" class="rounded-2xl bg-gradient-to-r from-rose-400 to-orange-400 px-4 py-3.5 text-sm font-black tracking-[.04em] text-white shadow-[0_12px_24px_rgba(239,112,84,.25)] transition active:scale-[.97]">💖 收下這份恩典</button>
+          <button id="shareButton" type="button" class="rounded-2xl border border-grace-200 bg-white/85 px-4 py-3.5 text-sm font-black tracking-[.04em] text-grace-700 shadow-sm transition active:scale-[.97]">📤 分享給好友</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div id="toast" class="toast fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[90] rounded-full bg-grace-900/90 px-4 py-2.5 text-xs font-bold text-white shadow-xl backdrop-blur" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import {lineConfig, LINE_MEMBER_ENDPOINT} from './line-config.mjs?v=20260923-today1';
+
+    // ── 後續串接資料庫或每日經文 API 時，直接替換這三個常數即可。 ──
+    const todayVerse = '你們心裡不要憂愁；你們信神，也當信我。';
+    const todayVerseReference = '約翰福音 14:1';
+    const todayPrayer = '願上帝的平安今天溫柔環繞你，在每一個選擇裡賜下清楚的方向，也讓你知道：你從未獨自前行。';
+
+    // 無 LINE 登入時使用以上常數作為預覽；正式 LIFF 會以當日堂會經文庫內容覆寫。
+    const params = new URLSearchParams(location.search);
+    const church = ['M+', 'SHiNE'].includes(params.get('church')) ? params.get('church') : '';
+    const brandNames = {'M+':'M＋大雅教會', SHiNE:'火樂教會'};
+    let liveVerse = todayVerse;
+    let liveVerseReference = todayVerseReference;
+    let livePrayer = todayPrayer;
+    let profileName = '主內家人';
+    let LIFF_ID = params.get('liffId') || '';
+
+    const $ = selector => document.querySelector(selector);
+    const envelopeButton = $('#envelopeButton');
+    const giftStage = $('#giftStage');
+    const revealStage = $('#revealStage');
+    const graceCard = $('#graceCard');
+    const speakButton = $('#speakButton');
+    const receiveButton = $('#receiveButton');
+    const shareButton = $('#shareButton');
+    envelopeButton.disabled = true;
+    let hasRevealed = false;
+    let liffReady = false;
+    let toastTimer = 0;
+
+    function createParticles() {
+      const area = $('#particles');
+      for (let i = 0; i < 24; i += 1) {
+        const dot = document.createElement('i');
+        const size = 2 + Math.random() * 5;
+        dot.className = 'particle';
+        dot.style.left = `${Math.random() * 100}vw`;
+        dot.style.top = `${Math.random() * 100}vh`;
+        dot.style.setProperty('--size', `${size}px`);
+        dot.style.setProperty('--duration', `${4 + Math.random() * 8}s`);
+        dot.style.setProperty('--delay', `${-Math.random() * 8}s`);
+        dot.style.setProperty('--dx', `${-24 + Math.random() * 48}px`);
+        dot.style.setProperty('--dy', `${-30 + Math.random() * 60}px`);
+        area.append(dot);
+      }
+    }
+
+    function todayLabel() {
+      const now = new Date();
+      const date = new Intl.DateTimeFormat('zh-TW', { month: 'long', day: 'numeric' }).format(now);
+      const hour = now.getHours();
+      const light = hour < 11 ? '晨光' : hour < 17 ? '日光' : '晚霞';
+      return `${date} ${light}`;
+    }
+
+    function showToast(message) {
+      const toast = $('#toast');
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function celebrateReveal() {
+      if (typeof window.confetti !== 'function') return;
+      const defaults = { origin: { y: .55 }, disableForReducedMotion: true, zIndex: 70 };
+      window.confetti({ ...defaults, particleCount: 65, spread: 68, startVelocity: 34, colors: ['#f8d477','#e8a94f','#fff7d6','#9eb986'] });
+      window.setTimeout(() => window.confetti({ ...defaults, particleCount: 38, spread: 105, startVelocity: 24, scalar: .82, colors: ['#f4bf5d','#fff2b6','#ed9371'] }), 170);
+    }
+
+    function typeText(element, value, speed = 46) {
+      element.textContent = '';
+      return new Promise(resolve => {
+        let index = 0;
+        const write = () => {
+          element.textContent += value[index] || '';
+          index += 1;
+          if (index < value.length) window.setTimeout(write, speed);
+          else { element.classList.add('done'); resolve(); }
+        };
+        write();
+      });
+    }
+
+    function revealInSequence() {
+      $('#todayDate').textContent = todayLabel();
+      $('#verseReference').textContent = `— ${liveVerseReference}`;
+      $('#prayerText').textContent = livePrayer;
+      const items = [$('#cardHeader'), ...document.querySelectorAll('[data-reveal]')];
+      items.forEach((item, index) => window.setTimeout(() => item.classList.add('show'), 180 + index * 230));
+      window.setTimeout(() => typeText($('#verseText'), `「${liveVerse}」`, 52), 760);
+    }
+
+    function revealGrace() {
+      if (hasRevealed) return;
+      hasRevealed = true;
+      navigator.vibrate?.([32, 42, 56]);
+      celebrateReveal();
+      envelopeButton.classList.add('opening');
+      window.setTimeout(() => {
+        giftStage.classList.add('hidden');
+        revealStage.classList.remove('hidden');
+        revealStage.classList.add('flex');
+        requestAnimationFrame(() => requestAnimationFrame(() => graceCard.classList.add('revealed')));
+        revealInSequence();
+      }, 520);
+    }
+
+    function stopSpeaking() {
+      window.speechSynthesis?.cancel();
+      $('#speakWave').classList.add('hidden');
+      $('#speakerIcon').classList.remove('hidden');
+      $('#speakerLabel').textContent = '朗讀';
+      speakButton.dataset.speaking = 'false';
+    }
+
+    function speakGrace() {
+      if (!('speechSynthesis' in window)) { showToast('此瀏覽器暫不支援語音朗讀'); return; }
+      if (speakButton.dataset.speaking === 'true') { stopSpeaking(); return; }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(`${liveVerse}。${liveVerseReference}。祝福你：${livePrayer}`);
+      utterance.lang = 'zh-TW';
+      utterance.rate = .88;
+      utterance.pitch = 1.03;
+      const voices = window.speechSynthesis.getVoices();
+      utterance.voice = voices.find(voice => /^zh-TW/i.test(voice.lang)) || voices.find(voice => /^zh/i.test(voice.lang)) || null;
+      utterance.onend = stopSpeaking;
+      utterance.onerror = stopSpeaking;
+      speakButton.dataset.speaking = 'true';
+      $('#speakerIcon').classList.add('hidden');
+      $('#speakWave').classList.remove('hidden');
+      $('#speakerLabel').textContent = '停止';
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function releaseHearts(button) {
+      const rect = button.getBoundingClientRect();
+      for (let i = 0; i < 14; i += 1) {
+        const heart = document.createElement('span');
+        heart.className = 'heart-spark';
+        heart.textContent = i % 4 === 0 ? '✨' : '💖';
+        heart.style.left = `${rect.left + rect.width / 2}px`;
+        heart.style.top = `${rect.top + rect.height / 2}px`;
+        heart.style.setProperty('--x', `${-90 + Math.random() * 180}px`);
+        heart.style.setProperty('--y', `${-35 + Math.random() * 70}px`);
+        heart.style.setProperty('--r', `${-55 + Math.random() * 110}deg`);
+        heart.style.fontSize = `${12 + Math.random() * 12}px`;
+        heart.style.animationDelay = `${Math.random() * .12}s`;
+        document.body.append(heart);
+        window.setTimeout(() => heart.remove(), 1400);
+      }
+    }
+
+    async function copyShareLink() {
+      const shareUrl = new URL(location.href);
+      shareUrl.searchParams.delete('liffId');
+      try {
+        await navigator.clipboard.writeText(shareUrl.href);
+      } catch {
+        const input = document.createElement('textarea');
+        input.value = shareUrl.href;
+        input.style.position = 'fixed';
+        input.style.opacity = '0';
+        document.body.append(input);
+        input.select();
+        document.execCommand('copy');
+        input.remove();
+      }
+      showToast('已複製連結，可以分享給好友 ✨');
+    }
+
+    async function shareGrace() {
+      const shareUrl = new URL(location.href);
+      shareUrl.searchParams.delete('liffId');
+      if (liffReady && window.liff?.isInClient() && window.liff?.isApiAvailable('shareTargetPicker')) {
+        try {
+          const result = await window.liff.shareTargetPicker([{
+            type: 'text',
+            text: `🌱 給今天的你\n\n「${liveVerse}」\n— ${liveVerseReference}\n\n💡 祝福你：${livePrayer}\n\n${shareUrl.href}`
+          }]);
+          if (result) showToast('恩典已預備好，謝謝你分享祝福 💛');
+          return;
+        } catch (error) {
+          if (error?.code !== 'CANCEL') showToast('LINE 分享暫時無法使用，已改為複製連結');
+        }
+      }
+      await copyShareLink();
+    }
+
+    async function fetchTodayContent(idToken) {
+      const response = await fetch(LINE_MEMBER_ENDPOINT, {
+        method: 'POST',
+        headers: {'content-type':'application/json'},
+        cache: 'no-store',
+        credentials: 'omit',
+        signal: AbortSignal.timeout(20000),
+        body: JSON.stringify({action:'content', feature:'today', church, idToken})
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok !== true || !data.item) throw new Error(data.error || 'content_unavailable');
+      liveVerse = data.item.scripture || todayVerse;
+      liveVerseReference = data.item.scripture_ref || todayVerseReference;
+      livePrayer = data.item.prayer_text || todayPrayer;
+      profileName = data.profile?.name || profileName;
+    }
+
+    async function initLiff() {
+      if (church) {
+        const config = lineConfig(`?church=${encodeURIComponent(church)}&feature=today`);
+        LIFF_ID = LIFF_ID || config.liffId;
+        $('#churchLabel').textContent = brandNames[church];
+        $('#homeLink').href = `line-member.html?church=${encodeURIComponent(church)}&feature=menu`;
+      }
+      if (!church || !LIFF_ID || !window.liff) {
+        $('#lineState').textContent = /Line/i.test(navigator.userAgent) ? 'LINE 預覽模式' : '瀏覽器體驗';
+        return;
+      }
+      try {
+        await window.liff.init({ liffId: LIFF_ID });
+        if (!window.liff.isLoggedIn()) {
+          window.liff.login({redirectUri: location.href});
+          return;
+        }
+        const idToken = window.liff.getIDToken() || '';
+        if (!idToken) throw new Error('missing_token');
+        await fetchTodayContent(idToken);
+        liffReady = true;
+        $('#lineState').textContent = window.liff.isInClient() ? `${profileName} · 今日恩典` : `${profileName} · 瀏覽器體驗`;
+      } catch {
+        $('#lineState').textContent = '內容暫時離線';
+      }
+    }
+
+    envelopeButton.addEventListener('click', revealGrace);
+    speakButton.addEventListener('click', speakGrace);
+    receiveButton.addEventListener('click', () => {
+      navigator.vibrate?.(35);
+      releaseHearts(receiveButton);
+      receiveButton.textContent = '💛 已收下，願平安與你同在';
+      receiveButton.disabled = true;
+      showToast('這份恩典已放進心裡');
+    });
+    shareButton.addEventListener('click', shareGrace);
+    window.addEventListener('pagehide', stopSpeaking);
+
+    createParticles();
+    await initLiff();
+    envelopeButton.disabled = false;
+  </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+project_id = "church-management-staging"
+
+[functions.prayer-wall]
+verify_jwt = false

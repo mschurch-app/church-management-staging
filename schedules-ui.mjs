@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs';import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule} from './schedule-management.mjs';
+import {db} from './admin-db.mjs';import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule} from './schedule-management.mjs?v=20260923-permission2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s),status=$('#status'),editor=$('#editor'),records=$('#records');let schedules=[],members=[],busy=false;
 const el=(tag,value,cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const labels={event:'聚會主題',speaker:'講員',worship_leader:church==='M+'?'敬拜讚美':'敬拜主領',tech_sound:'音控控台',tech_video:church==='M+'?'投影字幕／導播':'直播導播',usher1:'招待一',usher2:'招待二',presider:'司會（主持／報告）',prayer:'主日公禱',sunday_school:'兒主主責老師',sunday_school_ta:'兒主助教同工',singers:'敬拜歌者',keyboard:'司琴鍵盤',guitar:'木／電吉他',bass:'貝斯手',drums:'爵士鼓手',ushers:'主日招待'};

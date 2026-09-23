@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#f8f3eb">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>隨時的幫助｜有人在這裡聽你說</title>
+  <link rel="stylesheet" href="help-companion.css?v=20260923-1">
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"></head>
+<body>
+  <main id="app" class="companion-app">
+    <header class="topbar">
+      <a id="backLink" class="back" href="line-member.html" aria-label="返回六項功能">‹</a>
+      <div class="brand-lockup">
+        <img id="brandLogo" alt="">
+        <div><strong id="brandName">隨時的幫助</strong><span id="lineState">一段安心、不被評斷的對話</span></div>
+      </div>
+      <button id="privacyButton" class="privacy-button" type="button" aria-label="隱私說明">安心鎖</button>
+    </header>
+
+    <section id="conversation" class="conversation" aria-live="polite" aria-label="心靈陪伴對話">
+      <div class="welcome-orb" aria-hidden="true"><span>🕊️</span></div>
+      <article class="welcome-card">
+        <p class="eyebrow">A HELP IN TIME</p>
+        <h1><span id="greetingName">親愛的你</span>，<br>我在這裡陪你</h1>
+        <p>不用整理好情緒才開口。現在最讓你掛心的，是哪一件事？</p>
+        <div id="quickTopics" class="quick-topics" aria-label="常見心靈情境">
+          <button type="button">💼 職場壓力</button><button type="button">🏠 家庭關係</button>
+          <button type="button">🌿 身體疾病</button><button type="button">🕯️ 信心軟弱</button>
+          <button type="button">🌙 孤單焦慮</button><button type="button">💧 失落難過</button>
+        </div>
+        <small>你分享的內容只用於這次陪伴，不會顯示在公開頁面。</small>
+      </article>
+    </section>
+
+    <section id="composer" class="composer">
+      <div class="composer-inner">
+        <textarea id="messageInput" rows="1" maxlength="600" placeholder="慢慢說，我正在聽…" aria-label="輸入想說的話"></textarea>
+        <button id="voiceButton" class="round-button" type="button" aria-label="用語音輸入"><span>🎙️</span></button>
+        <button id="sendButton" class="send-button" type="button" aria-label="送出"><span>↑</span></button>
+      </div>
+      <p id="composerHint">可以自由輸入，或點麥克風說話</p>
+    </section>
+  </main>
+
+  <dialog id="privacyDialog" class="privacy-dialog">
+    <button id="closePrivacy" type="button" aria-label="關閉">×</button>
+    <span class="dialog-icon">🔒</span><h2>安心說，慢慢說</h2>
+    <p>這次對話只用來產生你的心靈處方卡，不會公開在教會頁面。請避免輸入身分證、住址、密碼等敏感資料。</p>
+    <p>這項服務是心靈與信仰陪伴，不能取代醫療或緊急救援。</p>
+  </dialog>
+
+  <template id="thinkingTemplate"><div class="message companion thinking"><span></span><span></span><span></span><b>正在好好聽你說</b></div></template>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script type="module" src="help-companion.mjs?v=20260923-1"></script>
+</body>
+</html>

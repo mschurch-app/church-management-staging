@@ -17,7 +17,7 @@ async function load(){
       if(row.status==='pending'){
         const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢完整會員姓名');
         const searchLabel=text('label','要綁定的會員姓名（完整名稱）');searchLabel.append(input);
-        const hint=text('p','測試會員：'+(church==='M+'?'[TEST ONLY] M+ A 或 [TEST ONLY] M+ B':'[TEST ONLY] SHiNE A')+'。申請姓名可以不同，請自行核對並選擇。');
+        const hint=text('p','請以電話、堂會及既有會員資料核對本人身份；相同姓名不能作為核准依據。');
         const search=text('button','查詢會員'),select=document.createElement('select');select.setAttribute('aria-label','選擇核對過的會員');
         select.append(new Option('請先查詢並選擇會員',''));
         const verified=document.createElement('input');verified.type='checkbox';
@@ -26,7 +26,7 @@ async function load(){
           search.disabled=true;select.replaceChildren(new Option('請選擇會員',''));verified.checked=false;
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation)return;
             for(const member of candidates)select.append(new Option(`${member.name} · 電話 ${member.phone||'未填'} · 編號 ${member.id}`,String(member.id)));
-            result.textContent=candidates.length?'最多顯示 30 筆；請仔細核對，系統不會自動選擇。':'查無完整同名會員。請使用上方測試會員名稱，或先到會員管理新增虛構會員。';
+            result.textContent=candidates.length?'最多顯示 30 筆；請仔細核對，系統不會自動選擇。':'查無完整同名會員。請確認姓名，或先到會友名冊建立資料。';
           }catch(error){if(current===generation){clear();status.textContent=error.message;}}
           finally{search.disabled=false;}
         });

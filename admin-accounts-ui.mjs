@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {PERMISSIONS,ROLE_TEMPLATES,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminProfile,saveAdminAccess} from './admin-accounts-management.mjs?v=20260923-invite5';
+import {PERMISSIONS,ROLE_TEMPLATES,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminProfile,saveAdminAccess} from './admin-accounts-management.mjs?v=20260923-prod1';
 const search=new URLSearchParams(location.search),church=search.get('church')||'M+',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false;
 const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const churchName=value=>value==='M+'?'M＋大雅教會':'火樂教會';

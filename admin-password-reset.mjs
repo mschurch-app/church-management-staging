@@ -1,0 +1,3 @@
+import {db} from './admin-db.mjs';
+const form=document.querySelector('#reset-form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
+form.addEventListener('submit',async event=>{event.preventDefault();button.disabled=true;status.textContent='正在寄送安全連結…';const email=document.querySelector('#email').value.trim();try{await db.auth.resetPasswordForEmail(email,{redirectTo:new URL('admin-set-password.html',location.href).href});status.textContent='若此 Email 為管理員帳號，幾分鐘內會收到重設密碼信。';form.reset();}catch{status.textContent='若此 Email 為管理員帳號，幾分鐘內會收到重設密碼信。';}finally{button.disabled=false;}});

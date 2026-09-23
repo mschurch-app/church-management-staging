@@ -1,2 +1,4 @@
 // Public client key for staging only; access is enforced by Auth and RLS.
-export const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{storageKey:'church-staging-admin-v1',storage:window.sessionStorage,detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
+import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
+export {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';
+export const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{storageKey:ADMIN_AUTH_STORAGE_KEY,storage:window.sessionStorage,detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});

@@ -1,0 +1,7 @@
+import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
+const auth=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{storageKey:ADMIN_AUTH_STORAGE_KEY,storage:window.sessionStorage,detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}}),form=document.querySelector('#password-form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
+let ready=false;
+async function check(){const {data}=await auth.auth.getUser();ready=Boolean(data?.user);form.hidden=!ready;status.textContent=ready?'邀請連結已確認，請設定新密碼。':'此連結無效或已過期，請回到登入頁重新申請。';}
+auth.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'||event==='SIGNED_IN')setTimeout(check,0);});
+form.addEventListener('submit',async event=>{event.preventDefault();if(!ready)return;const password=document.querySelector('#password').value,confirm=document.querySelector('#confirm').value;if(password!==confirm){status.textContent='兩次輸入的密碼不一致。';return;}if(password.length<10){status.textContent='密碼至少需要 10 個字元。';return;}button.disabled=true;status.textContent='正在安全儲存…';try{const {error}=await auth.auth.updateUser({password});if(error)throw error;const accepted=await auth.rpc('accept_my_admin_invitation');if(accepted.error)throw accepted.error;status.textContent='密碼設定完成，管理員帳號已啟用。即將前往登入頁。';form.hidden=true;setTimeout(()=>location.replace('admin-login.html'),1200);}catch{status.textContent='密碼未更新，連結可能已過期，請重新申請。';button.disabled=false;}});
+check();

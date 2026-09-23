@@ -1,0 +1,16 @@
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang TC","Helvetica Neue",Arial,sans-serif;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+html,body,button,input,select,textarea{font-family:inherit!important}
+*{box-sizing:border-box}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button,a,[role="button"]{touch-action:manipulation}
+@media(max-width:760px){
+  html{scroll-padding-top:max(76px,calc(env(safe-area-inset-top) + 62px))}
+  body{min-width:320px}
+  button,input,select,textarea{font-size:max(16px,1em)}
+  button,a,[role="button"]{min-height:44px}
+}

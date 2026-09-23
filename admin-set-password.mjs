@@ -26,6 +26,7 @@ form.addEventListener('submit',async event=>{
   try{
     const {error}=await auth.auth.updateUser({password});if(error)throw error;
     const accepted=await auth.rpc('accept_my_admin_invitation');if(accepted.error&&!String(accepted.error.message||'').includes('invitation_not_found'))throw accepted.error;
+    await auth.auth.signOut({scope:'local'}).catch(()=>{});
     status.textContent='密碼設定完成，管理員帳號已啟用。即將前往登入頁。';form.hidden=true;recovery.hidden=true;
     setTimeout(()=>location.replace('admin-login.html'),1200);
   }catch{fail('密碼未更新。連結可能已使用或過期，請重新取得密碼設定信。');button.disabled=false;}

@@ -310,10 +310,14 @@ async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,
       if(!DEFAULT_WORK_DAYS.includes(date.weekday)||restDays.includes(date.weekday))continue;
       const dayStart=Math.max(slotWindow(date,workStart),start,now);
       const dayEnd=Math.min(slotWindow(date,workEnd),afterThrough);
-      for(let candidate=dayStart;candidate+durationMs<=dayEnd&&slots.length<12;candidate+=30*60000){
+      const halfHour=30*60000;
+      const firstCandidate=Math.ceil(dayStart/halfHour)*halfHour;
+      let daySlots=0;
+      for(let candidate=firstCandidate;candidate+durationMs<=dayEnd&&slots.length<12&&daySlots<3;candidate+=halfHour){
         const bufferedStart=candidate-BUFFER_MS,bufferedEnd=candidate+durationMs+BUFFER_MS;
         if(busy.some(item=>Date.parse(item.start)<bufferedEnd&&Date.parse(item.end)>bufferedStart))continue;
         const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(candidate));
+        daySlots++;
         slots.push({date:dayString(date),time,start:new Date(candidate).toISOString(),end:new Date(candidate+durationMs).toISOString(),
           label:`${localWeekday(candidate)} ${date.month}/${date.day} ${time}`});
       }

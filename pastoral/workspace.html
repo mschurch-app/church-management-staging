@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工工作台｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-8">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-11">
 </head>
 <body>
   <header class="topbar">
@@ -18,7 +18,7 @@
     <a id="login" class="button" href="./" hidden>前往 LINE 登入</a>
     <div id="workspace" hidden>
       <section class="intro">
-        <div><p class="eyebrow" id="church-name">MPLUS PASTORAL AI SUITE</p><h1>教會同工工作台<span>讓每一份託付，都有接續。</span></h1><p class="intro-copy">安排牧養的時間，整理待辦，與同工一起把關每個細節。</p></div>
+        <div><p class="eyebrow" id="church-name">MPLUS PASTORAL AI SUITE</p><h1>教會同工工作台<span>讓每一份託付，都有接續。</span></h1><p class="intro-copy">安排牧養的時間，依同工個人排程搜尋空檔，與同工一起把關每個細節。</p></div>
         <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">牧師與同工</div></div>
       </section>
       <div class="connection" id="calendar-connection"><span class="dot" id="calendar-dot"></span><div><strong id="calendar-connection-title">Google 行事曆尚未連接</strong><p id="calendar-connection-copy">授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。</p></div><button id="connect-calendar" class="button secondary" type="button" hidden>連接共用行事曆</button><span class="phase" id="calendar-connection-label">等待授權</span></div>
@@ -40,6 +40,13 @@
               <label>地點<input id="location" maxlength="500" placeholder="例如：教會辦公室"></label>
               <label class="check-line"><input id="emergency" type="checkbox"> 緊急行程（依同工個人設定決定是否可例外）</label>
               <p class="hint">日期與時間以台灣時間為準。個人休息日與可安排時段依同工設定檢查。</p>
+              <div class="slot-search">
+                <h3>搜尋一段日期內的可約時段</h3>
+                <div class="form-row slot-range"><label>從<input id="slot-date-from" type="date" required></label><label>到<input id="slot-date-through" type="date" required></label></div>
+                <button id="find-slots" class="button secondary" type="button" hidden>搜尋可約時段</button>
+                <p id="slot-search-status" class="hint" role="status"></p>
+                <div id="slot-search-results" class="slot-results" aria-live="polite"></div>
+              </div>
               <button class="button" type="submit">整理行程草稿 <span aria-hidden="true">→</span></button>
             </form>
             <div id="draft-result" class="draft-result" hidden>
@@ -51,7 +58,7 @@
             </div>
             <p id="draft-status" role="status" class="hint"></p>
           </article>
-          <aside class="card quiet"><p class="eyebrow">TIME FOR WHAT MATTERS</p><h2>先守護時間，再安排事情。</h2><p class="muted">預備把以下規則交給系統協助執行，讓牧養與休息都被好好保留。</p><ol class="principles"><li><strong>確認空檔</strong><span>一起檢查個人與教會行事曆。</span></li><li><strong>預留緩衝</strong><span>會面之間保留交通與準備時間。</span></li><li><strong>尊重個人休息日</strong><span>遇到邀約，交給同工協調其他時間。</span></li><li><strong>最後由人確認</strong><span>牧師確認內容後，才建立行程。</span></li></ol><div class="aside-note">目前尚未套用正式排程規則。</div></aside>
+          <aside class="card quiet"><p class="eyebrow">TIME FOR WHAT MATTERS</p><h2>先守護時間，再安排事情。</h2><p class="muted">預備把以下規則交給系統協助執行，讓牧養與休息都被好好保留。</p><ol class="principles"><li><strong>確認空檔</strong><span>一起檢查個人與教會行事曆。</span></li><li><strong>預留緩衝</strong><span>會面之間保留交通與準備時間。</span></li><li><strong>尊重個人休息日</strong><span>遇到邀約，交給同工協調其他時間。</span></li><li><strong>最後由人確認</strong><span>牧師確認內容後，才建立行程。</span></li></ol><div class="aside-note">已套用同工個別休息日、可安排時段與共用行事曆衝突檢查。</div></aside>
         </div>
       </section>
       <dialog id="event-confirm-dialog" aria-labelledby="event-confirm-title">
@@ -107,11 +114,11 @@
         </article>
       </section>
       <section id="panel-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
-        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><em>待接入</em></li><li><span>同工派工、執行回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
+        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><strong>已連接共用行事曆</strong></li><li><span>同工派工、執行回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
       </section>
       <footer>AI 協助預備，牧師與同工共同把關。<span>MPLUS · PASTORAL ASSISTANT</span></footer>
     </div>
   </main>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-10"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-11"></script>
 </body>
 </html>

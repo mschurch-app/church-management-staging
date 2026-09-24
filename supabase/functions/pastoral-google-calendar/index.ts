@@ -1,4 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {BUFFER_MS, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
 
 const CHANNEL_ID='2011645391';
 const APP_ORIGIN='https://mscos.mchurch.online';
@@ -147,32 +148,6 @@ function parseRfc3339(value:unknown){
   const ms=Date.parse(value);
   if(!Number.isFinite(ms))throw new Error('invalid_time');
   return ms;
-}
-
-const TAIPEI_PARTS=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
-const MEETING_MINUTES=[30,60,90,120];
-const BUFFER_MS=30*60*1000;
-function taipeiParts(ms:number){
-  const parts=Object.fromEntries(TAIPEI_PARTS.formatToParts(new Date(ms)).map(part=>[part.type,part.value]));
-  return {weekday:parts.weekday,date:`${parts.year}-${parts.month}-${parts.day}`,minutes:Number(parts.hour)*60+Number(parts.minute)+Number(parts.second)/60};
-}
-function readAppointment(body:Record<string,unknown>){
-  const summary=typeof body.summary==='string'?body.summary.trim():'';
-  const location=typeof body.location==='string'?body.location.trim():'';
-  if(!summary||summary.length>200||location.length>500||typeof body.emergency!=='boolean')return null;
-  let start:number,end:number;
-  try{start=parseRfc3339(body.start);end=parseRfc3339(body.end);}catch{return null;}
-  if(end<=start||!MEETING_MINUTES.includes((end-start)/60000))return null;
-  return {summary,location,start,end,emergency:body.emergency};
-}
-function scheduleError(start:number,end:number,emergency:boolean){
-  if(start<=Date.now())return 'meeting_in_past';
-  const from=taipeiParts(start),to=taipeiParts(end);
-  if(!emergency){
-    if(from.weekday==='Mon')return 'rest_day';
-    if(!['Tue','Wed','Thu','Fri','Sat'].includes(from.weekday)||from.date!==to.date||from.minutes<9*60||to.minutes>17*60)return 'outside_schedule';
-  }
-  return null;
 }
 
 async function accessToken(db:ReturnType<typeof adminClient>){

@@ -257,7 +257,6 @@
 
         <div id="actionBlock" class="content-rise mt-5 grid gap-3" data-reveal>
           <button id="receiveButton" type="button" class="rounded-2xl bg-gradient-to-r from-rose-400 to-orange-400 px-4 py-3.5 text-sm font-black tracking-[.04em] text-white shadow-[0_12px_24px_rgba(239,112,84,.25)] transition active:scale-[.97]">💖 收下這份恩典</button>
-          <button id="shareButton" type="button" class="rounded-2xl border border-grace-200 bg-white/85 px-4 py-3.5 text-sm font-black tracking-[.04em] text-grace-700 shadow-sm transition active:scale-[.97]">📤 分享給好友</button>
         </div>
       </article>
     </section>
@@ -290,7 +289,6 @@
     const graceCard = $('#graceCard');
     const speakButton = $('#speakButton');
     const receiveButton = $('#receiveButton');
-    const shareButton = $('#shareButton');
     envelopeButton.disabled = true;
     let hasRevealed = false;
     let liffReady = false;
@@ -513,42 +511,6 @@
       }
     }
 
-    async function copyShareLink() {
-      const shareUrl = new URL(location.href);
-      shareUrl.searchParams.delete('liffId');
-      try {
-        await navigator.clipboard.writeText(shareUrl.href);
-      } catch {
-        const input = document.createElement('textarea');
-        input.value = shareUrl.href;
-        input.style.position = 'fixed';
-        input.style.opacity = '0';
-        document.body.append(input);
-        input.select();
-        document.execCommand('copy');
-        input.remove();
-      }
-      showToast('已複製連結，可以分享給好友 ✨');
-    }
-
-    async function shareGrace() {
-      const shareUrl = new URL(location.href);
-      shareUrl.searchParams.delete('liffId');
-      if (liffReady && window.liff?.isInClient() && window.liff?.isApiAvailable('shareTargetPicker')) {
-        try {
-          const result = await window.liff.shareTargetPicker([{
-            type: 'text',
-            text: `🌱 給今天的你\n\n「${liveVerse}」\n— ${liveVerseReference}\n\n💡 祝福你：${livePrayer}\n\n${shareUrl.href}`
-          }]);
-          if (result) showToast('恩典已預備好，謝謝你分享祝福 💛');
-          return;
-        } catch (error) {
-          if (error?.code !== 'CANCEL') showToast('LINE 分享暫時無法使用，已改為複製連結');
-        }
-      }
-      await copyShareLink();
-    }
-
     async function fetchTodayContent(idToken) {
       const response = await fetch(LINE_MEMBER_ENDPOINT, {
         method: 'POST',
@@ -602,7 +564,6 @@
       receiveButton.disabled = true;
       showToast('這份恩典已放進心裡');
     });
-    shareButton.addEventListener('click', shareGrace);
     window.addEventListener('pagehide', stopSpeaking);
 
     createParticles();

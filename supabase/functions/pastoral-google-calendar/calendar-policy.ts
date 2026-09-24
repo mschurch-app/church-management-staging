@@ -12,6 +12,12 @@ const TAIPEI_PARTS = new Intl.DateTimeFormat('en-US', {
 
 export const MEETING_MINUTES = [30, 60, 90, 120];
 export const BUFFER_MS = 30 * 60 * 1000;
+export const DEFAULT_WORK_DAYS = [2, 3, 4, 5, 6]; // Tue-Sat
+export const DEFAULT_WORK_START = '09:00';
+export const DEFAULT_WORK_END = '17:00';
+export const WEEKDAY_NUMBER: Record<string, number> = {
+  Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6,
+};
 
 function taipeiParts(ms: number) {
   const parts = Object.fromEntries(
@@ -27,28 +33,57 @@ function taipeiParts(ms: number) {
   };
 }
 
+export type SchedulePreferences = {
+  restDays?: number[];
+  workStart?: string;
+  workEnd?: string;
+  allowEmergencyOverride?: boolean;
+};
+
+function clockMinutes(value: string) {
+  const match = /^(\\d{2}):(\\d{2})$/.exec(value);
+  if (!match) return Number.NaN;
+  const hours = Number(match[1]), minutes = Number(match[2]);
+  return hours <= 23 && minutes <= 59 ? hours * 60 + minutes : Number.NaN;
+}
+
 export function scheduleError(
   start: number,
   end: number,
   emergency: boolean,
+  preferences: SchedulePreferences = {},
   now = Date.now(),
-): 'meeting_in_past' | 'rest_day' | 'outside_schedule' | null {
+): 'meeting_in_past' | 'rest_day' | 'outside_schedule' | 'emergency_not_allowed' | null {
   if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
     return 'outside_schedule';
   }
   if (start <= now) return 'meeting_in_past';
 
-  if (emergency) return null;
+  const restDays = preferences.restDays ?? [];
+  const workStart = clockMinutes(preferences.workStart ?? DEFAULT_WORK_START);
+  const workEnd = clockMinutes(preferences.workEnd ?? DEFAULT_WORK_END);
+  if (
+    !Array.isArray(restDays) ||
+    restDays.some((day) => !Number.isInteger(day) || day < 0 || day > 6) ||
+    !Number.isFinite(workStart) ||
+    !Number.isFinite(workEnd) ||
+    workStart >= workEnd
+  ) return 'outside_schedule';
 
   const from = taipeiParts(start);
   const to = taipeiParts(end);
-  if (from.weekday === 'Mon') return 'rest_day';
+  if (restDays.includes(WEEKDAY_NUMBER[from.weekday])) {
+    if (emergency && preferences.allowEmergencyOverride !== false) return null;
+    return emergency ? 'emergency_not_allowed' : 'rest_day';
+  }
+
+  if (emergency && preferences.allowEmergencyOverride !== false) return null;
 
   if (
-    !['Tue', 'Wed', 'Thu', 'Fri', 'Sat'].includes(from.weekday) ||
+    !DEFAULT_WORK_DAYS.includes(WEEKDAY_NUMBER[from.weekday]) ||
     from.date !== to.date ||
-    from.minutes < 9 * 60 ||
-    to.minutes > 17 * 60
+    from.minutes < workStart ||
+    to.minutes > workEnd
   ) {
     return 'outside_schedule';
   }

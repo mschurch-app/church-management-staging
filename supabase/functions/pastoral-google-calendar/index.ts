@@ -143,6 +143,16 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
   try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false);}
   return Response.redirect(`${APP_ORIGIN}/pastoral/workspace.html?calendar=connected`,303);
 }
+async function scheduleTarget(db:ReturnType<typeof adminClient>,actor:Staff,requested:unknown){
+  const staffId=typeof requested==='string'?requested:actor.id;
+  if(staffId!==actor.id&&actor.role!=='pastor'&&actor.role!=='admin')return null;
+  const result=await db.from('pastoral_staff').select('id,is_active').eq('id',staffId).eq('is_active',true).maybeSingle();
+  if(result.error)throw new Error('db');
+  if(!result.data)return null;
+  const access=await db.from('pastoral_staff_access').select('staff_id').eq('staff_id',staffId).eq('entity_key','mplus').maybeSingle();
+  if(access.error)throw new Error('db');
+  return access.data?staffId:null;
+}
 async function schedulePreferences(db:ReturnType<typeof adminClient>,staffId:string){
   const result=await db.from('pastoral_staff_schedule_preferences')
     .select('rest_days,work_start,work_end,allow_emergency_override')
@@ -162,7 +172,7 @@ async function saveSchedulePreferences(db:ReturnType<typeof adminClient>,staff:S
   const restDays=body.restDays;
   const workStart=body.workStart,workEnd=body.workEnd;
   const allowEmergencyOverride=body.allowEmergencyOverride;
-  const validClock=(value:unknown)=>typeof value==='string'&&/^([01]\\d|2[0-3]):[0-5]\\d$/.test(value);
+  const validClock=(value:unknown)=>typeof value==='string'&&/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(value);
   if(!Array.isArray(restDays)||restDays.some(day=>!Number.isInteger(day)||day<0||day>6)||
     !validClock(workStart)||!validClock(workEnd)||workStart>=workEnd||typeof allowEmergencyOverride!=='boolean')
     return json(APP_ORIGIN,{ok:false,error:'invalid_schedule_preferences'},400);
@@ -294,7 +304,9 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   if(body.action==='check-availability'){
     const appointment=readAppointment(body);
     if(!appointment)return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
-    const preferences=await schedulePreferences(db,staff.id);
+    const targetStaffId=await scheduleTarget(db,staff,body.staffId);
+    if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
+    const preferences=await schedulePreferences(db,targetStaffId);
     const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,preferences);
     if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
     const token=await accessToken(db);

@@ -166,6 +166,12 @@ async function saveSchedulePreferences(db:ReturnType<typeof adminClient>,staff:S
   if(!Array.isArray(restDays)||restDays.some(day=>!Number.isInteger(day)||day<0||day>6)||
     !validClock(workStart)||!validClock(workEnd)||workStart>=workEnd||typeof allowEmergencyOverride!=='boolean')
     return json(APP_ORIGIN,{ok:false,error:'invalid_schedule_preferences'},400);
+  const target=await db.from('pastoral_staff').select('id,is_active').eq('id',staffId).eq('is_active',true).maybeSingle();
+  if(target.error)throw new Error('db');
+  if(!target.data)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},404);
+  const targetAccess=await db.from('pastoral_staff_access').select('staff_id').eq('staff_id',staffId).eq('entity_key','mplus').maybeSingle();
+  if(targetAccess.error)throw new Error('db');
+  if(!targetAccess.data)return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
   const write=await db.from('pastoral_staff_schedule_preferences').upsert({
     staff_id:staffId,rest_days:[...new Set(restDays)].sort((a,b)=>a-b),
     work_start:workStart,work_end:workEnd,timezone:'Asia/Taipei',
@@ -235,7 +241,11 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   if(body.action==='connect')return await startConnect(staff,db);
   if(body.action==='list-schedule-staff'){
     if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
-    const result=await db.from('pastoral_staff').select('id,display_name,role,is_active').eq('is_active',true).order('display_name');
+    const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus');
+    if(access.error)throw new Error('db');
+    const staffIds=[...new Set((access.data||[]).map((row:{staff_id:string})=>row.staff_id))];
+    if(!staffIds.length)return json(APP_ORIGIN,{ok:true,staff:[]});
+    const result=await db.from('pastoral_staff').select('id,display_name,role,is_active').eq('is_active',true).in('id',staffIds).order('display_name');
     if(result.error)throw new Error('db');
     const rows=result.data||[];
     const prefs=rows.length?await db.from('pastoral_staff_schedule_preferences').select('staff_id,rest_days,work_start,work_end,allow_emergency_override').in('staff_id',rows.map((row:{id:string})=>row.id)):{data:[],error:null};

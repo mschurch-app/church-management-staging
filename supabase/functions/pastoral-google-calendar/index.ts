@@ -167,8 +167,10 @@ async function schedulePreferences(db:ReturnType<typeof adminClient>,staffId:str
   } : {};
 }
 async function saveSchedulePreferences(db:ReturnType<typeof adminClient>,staff:Staff,body:Record<string,unknown>){
-  if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
-  const staffId=typeof body.staffId==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.staffId)?body.staffId:staff.id;
+  const requestedStaffId=typeof body.staffId==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.staffId)?body.staffId:staff.id;
+  const canManageSchedule=staff.role==='pastor'||staff.role==='admin';
+  if(!canManageSchedule&&requestedStaffId!==staff.id)return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+  const staffId=requestedStaffId;
   const restDays=body.restDays;
   const workStart=body.workStart,workEnd=body.workEnd;
   const allowEmergencyOverride=body.allowEmergencyOverride;
@@ -262,7 +264,16 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   if(!body||typeof body.action!=='string')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
   if(body.action==='connect')return await startConnect(staff,db);
   if(body.action==='list-schedule-staff'){
-    if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+    const canManageSchedule=staff.role==='pastor'||staff.role==='admin';
+    if(!canManageSchedule){
+      const row=await db.from('pastoral_staff').select('id,display_name,role,is_active').eq('id',staff.id).eq('is_active',true).maybeSingle();
+      if(row.error)throw new Error('db');
+      if(!row.data)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
+      const pref=await schedulePreferences(db,staff.id);
+      return json(APP_ORIGIN,{ok:true,staff:[{id:staff.id,name:row.data.display_name,role:row.data.role,
+        restDays:pref.restDays||[],workStart:pref.workStart||'09:00',workEnd:pref.workEnd||'17:00',
+        allowEmergencyOverride:pref.allowEmergencyOverride??true}]});
+    }
     const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus');
     if(access.error)throw new Error('db');
     const staffIds=[...new Set((access.data||[]).map((row:{staff_id:string})=>row.staff_id))];

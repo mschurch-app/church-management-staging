@@ -8,7 +8,7 @@
   <title>系統設定｜教牧管理</title>
   <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
 <link rel="stylesheet" href="church-brand.css?v=20260924-brand3"><link rel="stylesheet" href="theme-vitality.css?v=20260924-vitality3">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"></head>
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app3"></head>
 <body>
 <main class="member-page">
   <header class="page-header">
@@ -41,21 +41,24 @@
         <span class="settings-link-copy"><strong>管理員與權限</strong><span>設定管理帳號可使用的功能</span></span>
         <span class="settings-link-arrow" aria-hidden="true">›</span>
       </a>
-      <a id="todays-messages" class="settings-link-card" href="todays-message-settings.html">
-        <span class="settings-link-icon" aria-hidden="true">☀</span>
-        <span class="settings-link-copy"><strong>給今天的你</strong><span>管理隨機抽取的經文與祝福</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="love-share" class="settings-link-card" href="love-share-settings.html">
-        <span class="settings-link-icon" aria-hidden="true">♡</span>
-        <span class="settings-link-copy"><strong>把愛傳出去</strong><span>管理照片、祝福情境與經文</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="pastoral-content" class="settings-link-card" href="pastoral-content.html">
-        <span class="settings-link-icon" aria-hidden="true">✨</span>
-        <span class="settings-link-copy"><strong>教牧內容中心</strong><span>管理祝禱範本與新朋友旅程內容</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
+      <section class="line-settings-card" aria-labelledby="line-settings-title">
+        <div class="line-settings-heading">
+          <span class="settings-link-icon" aria-hidden="true">LINE</span>
+          <span><strong id="line-settings-title">LINE 功能與內容</strong><span>六項會員服務的內容、表單與關懷管理集中在這裡</span></span>
+        </div>
+        <nav class="line-settings-shortcuts" aria-label="LINE 六項功能設定">
+          <a id="line-today" href="todays-message-settings.html"><span aria-hidden="true">🌅</span><strong>給今天的你</strong></a>
+          <a id="line-help" href="help-companion.html"><span aria-hidden="true">🕊️</span><strong>隨時的幫助</strong></a>
+          <a id="line-prayer" href="prayers.html"><span aria-hidden="true">🙏</span><strong>需要禱告時</strong></a>
+          <a id="line-newcomer" href="customization-settings.html?tab=form"><span aria-hidden="true">☕</span><strong>歡迎新朋友</strong></a>
+          <a id="line-weekly" href="#church-public-info"><span aria-hidden="true">⛪</span><strong>不見不散喔</strong></a>
+          <a id="line-love" href="love-share-settings.html"><span aria-hidden="true">💌</span><strong>把愛傳出去</strong></a>
+        </nav>
+        <div class="line-hub-actions">
+          <a id="line-pastoral" class="line-preview-link" href="pastoral-content.html">✨ 教牧內容範本</a>
+          <a id="line-preview" class="line-preview-link" href="line-preview.html">▦ 預覽 LINE 六項功能</a>
+        </div>
+      </section>
       <a id="space-settings" class="settings-link-card" href="spaces.html">
         <span class="settings-link-icon" aria-hidden="true">🏛️</span>
         <span class="settings-link-copy"><strong>場地與設備</strong><span>管理教會空間、設備及預約設定</span></span>
@@ -65,7 +68,7 @@
   </section>
 
   <p id="status" role="status" class="status-message"></p>
-  <section class="editor-panel settings-panel">
+  <section id="church-public-info" class="editor-panel settings-panel">
     <form id="form">
       <h2>堂會外觀</h2>
       <div class="edit-grid">
@@ -83,7 +86,7 @@
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-<script type="module" src="church-settings-ui.mjs?v=20260924-integrated1"></script>
+<script type="module" src="church-settings-ui.mjs?v=20260924-linehub1"></script>
 <script type="module" src="church-brand.mjs?v=20260924-brand6"></script>
 </body>
 </html>

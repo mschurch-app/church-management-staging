@@ -43,11 +43,48 @@ input,select,textarea{font-weight:500}
 .admin-role-line span{min-width:0;color:#526c73;font-size:13px;font-weight:550;overflow-wrap:anywhere}
 .admin-accounts-page .admin-card-actions{margin-top:auto;padding-top:18px}
 .admin-accounts-page .admin-card-actions button{flex:1 1 130px}
+
+/* Keep all LINE member-service settings inside one clear hub. */
+.line-settings-card{
+  grid-column:1/-1;
+  padding:22px;
+  border:1px solid #d7e8e6;
+  border-radius:22px;
+  background:linear-gradient(145deg,#fff,#f2fbf9);
+  box-shadow:0 10px 27px rgba(48,90,104,.065);
+}
+.line-settings-heading{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.line-settings-heading .settings-link-icon{flex:0 0 48px}
+.line-settings-heading strong{display:block;color:#294951;font-size:18px}
+.line-settings-heading span:last-child{display:block;color:#526c73;font-size:13px;font-weight:500}
+.line-settings-shortcuts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.line-settings-shortcuts a{display:flex;min-width:0;min-height:98px;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:12px 7px;border:1px solid #dcebea;border-radius:17px;background:#fff;color:#294951;text-align:center;text-decoration:none;box-shadow:0 6px 18px rgba(48,90,104,.045)}
+.line-settings-shortcuts a:hover{border-color:#91d0c9;transform:translateY(-2px)}
+.line-settings-shortcuts span{font-size:25px;line-height:1}
+.line-settings-shortcuts strong{font-size:13px;line-height:1.35}
+.line-hub-actions{display:flex;gap:9px;flex-wrap:wrap}.line-hub-actions .line-preview-link{display:inline-flex;align-items:center;min-height:42px;margin-top:14px;padding:8px 13px;border-radius:12px;background:#e8f7f4;color:#087a74;text-decoration:none}
 @media(max-width:760px){
   html{scroll-padding-top:max(76px,calc(env(safe-area-inset-top) + 62px))}
   body{min-width:320px}
   button,input,select,textarea{font-size:max(16px,1em)}
   button,a,[role="button"]{min-height:44px}
+
+  /* Mobile home screen: three app icons per row instead of full-width rows. */
+  .dashboard-page .dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px 8px!important}
+  .dashboard-page .dashboard-card{display:flex!important;min-height:112px!important;flex-direction:column;align-items:center;justify-content:flex-start;padding:8px 3px!important;border:0!important;background:transparent!important;box-shadow:none!important;text-align:center}
+  .dashboard-page .dashboard-card:after{display:none}
+  .dashboard-page .dashboard-icon{width:58px;height:58px;border-radius:18px;font-size:27px;box-shadow:0 8px 20px rgba(48,90,104,.12)}
+  .dashboard-page .dashboard-card h3{margin:8px 0 0;font-size:13px;line-height:1.35}
+  .dashboard-page .dashboard-card p{display:none}
+  .dashboard-page .system-links{margin-top:18px;padding:16px}
+
+  .line-settings-card{padding:17px 12px}
+  .line-settings-heading{align-items:flex-start;margin-bottom:14px}
+  .line-settings-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .line-settings-shortcuts a{min-height:94px;padding:10px 4px}
+  .line-settings-shortcuts strong{font-size:12px}
+  .line-hub-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .line-hub-actions .line-preview-link{width:100%;justify-content:center}
 }
 @media(max-width:620px){
   .admin-accounts-page .admin-account-card{min-height:0;padding:18px}

@@ -28,12 +28,29 @@ create table if not exists public.pastoral_task_attachments (
 create index if not exists pastoral_task_attachments_task_created_idx
   on public.pastoral_task_attachments (task_id, created_at);
 
+create table if not exists public.pastoral_task_reports (
+  id uuid primary key default gen_random_uuid(),
+  task_id uuid not null references public.pastoral_tasks(id) on delete cascade,
+  entity_key text not null check (entity_key in ('mplus', 'shine', 'tcsc')),
+  created_by uuid not null references public.pastoral_staff(id),
+  report_text text not null check (char_length(btrim(report_text)) between 1 and 3000),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists pastoral_task_reports_task_created_idx
+  on public.pastoral_task_reports (task_id, created_at);
+
 alter table public.pastoral_task_attachments enable row level security;
+alter table public.pastoral_task_reports enable row level security;
 revoke all on table public.pastoral_task_attachments from public, anon, authenticated;
+revoke all on table public.pastoral_task_reports from public, anon, authenticated;
 grant all on table public.pastoral_task_attachments to service_role;
+grant all on table public.pastoral_task_reports to service_role;
 
 comment on table public.pastoral_task_attachments is
   'Private task-file metadata; only the LINE-authenticated pastoral-tasks Edge Function accesses this table.';
+comment on table public.pastoral_task_reports is
+  'Append-only progress reports for approved coworker tasks; only the LINE-authenticated pastoral-tasks Edge Function accesses this table.';
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (

@@ -88,7 +88,7 @@ async function load() {
       $('#auth-status').textContent = '本機介面預覽：示範身分，不連接 LINE、會友資料或 Google 行事曆。';
     } else {
       staff = await authenticateStaff();
-      $('#auth-status').textContent = '已驗證 LINE 身分與幕僚授權。';
+      $('#auth-status').textContent = '已驗證 LINE 身分與教會同工授權。';
     }
     staffRole = staff.role;
     church = assistantChurch(staff, params.get('church'));

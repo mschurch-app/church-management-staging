@@ -44,7 +44,7 @@ Deno.serve(async request=>{
     :respond(origin,{ok:false,error:'forbidden'},403);
   if(request.method!=='POST'||!allowedOrigins.has(origin))return respond(origin,{ok:false,error:'forbidden'},403);
   const authorization=request.headers.get('authorization')||'';
-  const match=authorization.match(/^Bearer ([^\\s]+)$/i);
+  const match=authorization.match(/^Bearer\\s+(\\S+)$/i);
   if(!match)return respond(origin,{ok:false,error:'login_required'},401);
   const subject=await verifyLineIdToken(match[1]);
   if(!subject)return respond(origin,{ok:false,error:'login_required'},401);

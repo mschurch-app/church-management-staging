@@ -113,6 +113,44 @@ async function listAttachments(db:ReturnType<typeof adminClient>,staff:Staff,ent
   }
   return json(APP_ORIGIN,{ok:true,attachments});
 }
+
+const TASK_LIFF_URL='https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=tasks';
+async function sendCoworkerPush(db:ReturnType<typeof adminClient>,entityKey:string,recipientId:string,
+  notificationType:string,taskId:string,message:string){
+  const lookup=await db.from('pastoral_staff').select('display_name,line_subject,is_active').eq('id',recipientId).eq('is_active',true).maybeSingle();
+  if(lookup.error)throw new Error('db');
+  if(!lookup.data)return 'failed';
+  const key=`${notificationType}:${taskId}:${recipientId}`;
+  const previous=await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key',key).maybeSingle();
+  if(previous.error)throw new Error('db');
+  if(previous.data?.status==='sent')return 'sent';
+  let status='failed',errorCode:string|null=null;
+  const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
+  if(!token){status='not_configured';errorCode='channel_token_missing';}
+  else if(!/^U[0-9a-f]{32}$/i.test(lookup.data.line_subject||'')){errorCode='line_identity_missing';}
+  else{
+    try{
+      const response=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),
+        headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
+        body:JSON.stringify({to:lookup.data.line_subject,messages:[{type:'text',text:message}]})});
+      if(response.ok)status='sent';else errorCode=`line_http_${response.status}`;
+    }catch{errorCode='line_unavailable';}
+  }
+  const saved=await db.from('pastoral_notification_deliveries').upsert({
+    entity_key:entityKey,notification_type:notificationType,recipient_staff_id:recipientId,related_id:taskId,
+    idempotency_key:key,status,error_code:errorCode,sent_at:status==='sent'?new Date().toISOString():null,
+    updated_at:new Date().toISOString(),
+  },{onConflict:'idempotency_key'});
+  if(saved.error)throw new Error('db');
+  return status;
+}
+async function notifyTaskAssigned(db:ReturnType<typeof adminClient>,entityKey:string,taskId:string,assigneeId:string,title:string,dueAt:string|null){
+  const due=dueAt?`\n期限：${new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(dueAt))}`:'';
+  const status=await sendCoworkerPush(db,entityKey,assigneeId,'task_assigned',taskId,
+    `有一項工作交接給你，請先核准承接：${title}${due}\n開啟同工工作台：${TASK_LIFF_URL}`);
+  return {status};
+}
+
 async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
   if((request.headers.get('content-type')||'').toLowerCase().startsWith('multipart/form-data'))return await uploadAttachment(request,db,staff);
   const body=await request.json().catch(()=>null);
@@ -120,12 +158,10 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
   const entityKey=body.entityKey as string;
   if(!staff.entityKeys.includes(entityKey))return json(APP_ORIGIN,{ok:false,error:'entity_forbidden'},403);
   if(body.action==='assignees'){
-    if(!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
     const people=await activeEntityStaff(db,entityKey);
     return json(APP_ORIGIN,{ok:true,staff:people.map((p:{id:string;display_name:string;role:string})=>({id:p.id,name:p.display_name,role:p.role}))});
   }
   if(body.action==='create'){
-    if(!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
     if(!validTaskInput(body))return json(APP_ORIGIN,{ok:false,error:'invalid_task'},400);
     const people=await activeEntityStaff(db,entityKey);
     if(!people.some((p:{id:string})=>p.id===body.assignedTo))return json(APP_ORIGIN,{ok:false,error:'invalid_assignee'},400);
@@ -141,6 +177,19 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       throw new Error('db');
     }
     return json(APP_ORIGIN,{ok:true,id:inserted.data.id});
+  }
+  if(body.action==='retry-notification'){
+    if(typeof body.taskId!=='string'||!UUID.test(body.taskId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+    const current=await db.from('pastoral_tasks').select('created_by,assigned_to,title,due_at,status')
+      .eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
+    if(current.error)throw new Error('db');
+    if(!current.data)return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
+    if(current.data.status!=='pending'||(!canManage(staff)&&current.data.created_by!==staff.id))
+      return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},403);
+    const notification=current.data.assigned_to
+      ?await notifyTaskAssigned(db,entityKey,body.taskId,current.data.assigned_to,current.data.title,current.data.due_at)
+      :{status:'failed'};
+    return json(APP_ORIGIN,{ok:true,notification});
   }
   if(body.action==='report-progress'){
     if(typeof body.taskId!=='string'||!UUID.test(body.taskId)||!validTaskReport(body.report))
@@ -159,7 +208,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
   if(body.action==='list'){
     let query=db.from('pastoral_tasks').select('id,title,description,task_type,status,payload,assigned_to,created_by,approved_by,due_at,created_at')
       .eq('entity_key',entityKey).order('created_at',{ascending:false}).limit(100);
-    if(!canManage(staff))query=query.neq('status','draft').or(`assigned_to.eq.${staff.id},created_by.eq.${staff.id}`);
+    if(!canManage(staff))query=query.or(`assigned_to.eq.${staff.id},created_by.eq.${staff.id}`);
     const result=await query;
     if(result.error)throw new Error('db');
     const rows=result.data||[];
@@ -177,8 +226,9 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     }
     return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;payload:Record<string,unknown>|null;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null})=>({
       id:row.id,title:row.title,description:row.description,taskType:row.task_type,status:row.status,assigneeName:row.assigned_to?names.get(row.assigned_to)||'已停用同工':'未指派',dueAt:row.due_at,
-      canSubmit:row.status==='draft'&&canManage(staff)&&row.created_by===staff.id,
-      canApprove:row.status==='pending'&&canManage(staff),
+      canSubmit:row.status==='draft'&&row.created_by===staff.id,
+      canApprove:row.status==='pending'&&(row.assigned_to===staff.id||canManage(staff)),
+      canNotify:row.status==='pending'&&(row.created_by===staff.id||canManage(staff)),
       canComplete:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
       canAttach:(row.status==='draft'&&(row.created_by===staff.id||canManage(staff)))||
         (row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff))),
@@ -192,7 +242,16 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     const currentStatus=body.action==='submit'?'draft':body.action==='approve'?'pending':'approved';
     const nextStatus=({submit:'pending',approve:'approved',complete:'completed'} as Record<string,string>)[body.action];
     if(!validTaskTransition(currentStatus,nextStatus))return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
-    if((body.action==='submit'||body.action==='approve')&&!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+    if(body.action==='submit'||body.action==='approve'){
+      const existing=await db.from('pastoral_tasks').select('created_by,assigned_to,title,due_at,status')
+        .eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
+      if(existing.error)throw new Error('db');
+      if(!existing.data)return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
+      if(body.action==='submit'&&(existing.data.created_by!==staff.id||existing.data.status!=='draft'))
+        return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
+      if(body.action==='approve'&&existing.data.status==='pending'&&!canManage(staff)&&existing.data.assigned_to!==staff.id)
+        return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},403);
+    }
     let completionPayload:Record<string,unknown>|null=null;
     if(body.action==='complete'){
       if(!validCompletionReport(body.report))return json(APP_ORIGIN,{ok:false,error:'completion_report_required'},400);
@@ -210,11 +269,22 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       .eq('id',body.taskId).eq('entity_key',entityKey)
       .eq('status',body.action==='submit'?'draft':body.action==='approve'?'pending':'approved');
     if(body.action==='submit')update=update.eq('created_by',staff.id);
+    if(body.action==='approve'&&!canManage(staff))update=update.eq('assigned_to',staff.id);
     if(body.action==='complete'&&!canManage(staff))update=update.eq('assigned_to',staff.id);
     const saved=await update.select('id').maybeSingle();
     if(saved.error)throw new Error('db');
     if(!saved.data)return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
-    return json(APP_ORIGIN,{ok:true,status:nextStatus});
+    const current=await db.from('pastoral_tasks').select('created_by,assigned_to,title,due_at')
+      .eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
+    if(current.error)throw new Error('db');
+    let notification:{status:string}|null=null;
+    if(body.action==='submit'&&current.data?.assigned_to){
+      notification=await notifyTaskAssigned(db,entityKey,body.taskId,current.data.assigned_to,current.data.title,current.data.due_at);
+    }else if(body.action==='approve'&&current.data?.assigned_to===staff.id&&current.data?.created_by&&current.data.created_by!==staff.id){
+      notification={status:await sendCoworkerPush(db,entityKey,current.data.created_by,'task_accepted',body.taskId,
+        `負責同工已核准承接「${current.data.title}」，工作已開始執行。\n開啟同工工作台：${TASK_LIFF_URL}`)};
+    }
+    return json(APP_ORIGIN,{ok:true,status:nextStatus,notification});
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);
 }

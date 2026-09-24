@@ -53,3 +53,7 @@ export function validAttachmentInput(fileName: unknown, contentType: unknown, si
 export function validCompletionReport(value: unknown) {
   return typeof value === 'string' && value.trim().length > 0 && value.trim().length <= 3000;
 }
+
+export function validTaskReport(value: unknown) {
+  return typeof value === 'string' && value.trim().length > 0 && value.trim().length <= 3000;
+}

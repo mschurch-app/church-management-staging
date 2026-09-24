@@ -1,5 +1,5 @@
 import {assistantChurch, buildAppointmentDraft} from './pastoral-assistant-management.mjs';
-import {authenticateStaff, signOut} from './auth.mjs?v=20260924-4';
+import {authenticateStaff, signOut} from './auth.mjs?v=20260924-5';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
 let church;
@@ -54,7 +54,7 @@ async function load() {
       $('#auth-status').textContent = '本機介面預覽：示範身分，不連接 LINE、會友資料或 Google 行事曆。';
     } else {
       staff = await authenticateStaff();
-      $('#auth-status').textContent = '已驗證 LINE 身分與幕僚授權。';
+      $('#auth-status').textContent = '已驗證 LINE 身分與教會同工授權。';
     }
     church = assistantChurch(staff, params.get('church'));
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / PASTORAL ASSISTANT';

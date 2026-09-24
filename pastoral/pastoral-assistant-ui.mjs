@@ -1,5 +1,5 @@
 import {assistantChurch, buildAppointmentDraft} from './pastoral-assistant-management.mjs';
-import {authenticateStaff, signOut} from './auth.mjs?v=20260924-3';
+import {authenticateStaff, signOut} from './auth.mjs?v=20260924-4';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
 let church;

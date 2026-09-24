@@ -1,6 +1,6 @@
 import {strict as assert} from 'node:assert';
 import {test} from 'node:test';
-import {validAttachmentInput, validCompletionReport, validTaskInput, validTaskTransition} from './task-policy.ts';
+import {validAttachmentInput, validCompletionReport, validTaskInput, validTaskReport, validTaskTransition} from './task-policy.ts';
 
 const valid = {
   title: '整理主日投影片', description: '請於週五前完成。', taskType: 'sermon',
@@ -38,4 +38,10 @@ test('requires a concise completion report before marking work complete', () => 
   assert.equal(validCompletionReport('已整理完成，檔案已附上。'), true);
   assert.equal(validCompletionReport('   '), false);
   assert.equal(validCompletionReport('x'.repeat(3001)), false);
+});
+
+test('requires nonblank bounded progress reports', () => {
+  assert.equal(validTaskReport('已完成初稿，請牧師檢視。'), true);
+  assert.equal(validTaskReport('  '), false);
+  assert.equal(validTaskReport('x'.repeat(3001)), false);
 });

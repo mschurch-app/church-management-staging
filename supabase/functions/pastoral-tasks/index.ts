@@ -1,8 +1,10 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {validTaskInput, validTaskTransition} from './task-policy.ts';
+import {MAX_ATTACHMENTS_PER_TASK, validAttachmentInput, validCompletionReport, validTaskInput, validTaskTransition} from './task-policy.ts';
+
 
 const CHANNEL_ID='2011645391';
 const APP_ORIGIN='https://mscos.mchurch.online';
+const TASK_FILE_BUCKET='pastoral-task-files';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 type Staff={id:string;role:string;entityKeys:string[]};
 const allowedEntity=(value:unknown):value is string=>value==='mplus'||value==='shine'||value==='tcsc';
@@ -53,7 +55,62 @@ async function activeEntityStaff(db:ReturnType<typeof adminClient>,entityKey:str
   if(result.error)throw new Error('db');
   return result.data||[];
 }
+
+function canViewTask(staff:Staff,row:{created_by:string|null;assigned_to:string|null;status:string}){
+  if(canManage(staff)||row.created_by===staff.id)return true;
+  return row.status!=='draft'&&row.assigned_to===staff.id;
+}
+async function uploadAttachment(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
+  let form:FormData;
+  try{form=await request.formData();}catch{return json(APP_ORIGIN,{ok:false,error:'invalid_attachment'},400);}
+  const entityKey=form.get('entityKey'),taskId=form.get('taskId'),file=form.get('file');
+  if(!allowedEntity(entityKey)||!staff.entityKeys.includes(entityKey))return json(APP_ORIGIN,{ok:false,error:'entity_forbidden'},403);
+  if(typeof taskId!=='string'||!UUID.test(taskId)||!(file instanceof File))return json(APP_ORIGIN,{ok:false,error:'invalid_attachment'},400);
+  if(!validAttachmentInput(file.name,file.type,file.size))return json(APP_ORIGIN,{ok:false,error:'invalid_attachment'},400);
+  const task=await db.from('pastoral_tasks').select('id,entity_key,status,created_by,assigned_to')
+    .eq('id',taskId).eq('entity_key',entityKey).maybeSingle();
+  if(task.error)throw new Error('db');
+  if(!task.data)return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
+  if(task.data.status!=='draft'||(!canManage(staff)&&task.data.created_by!==staff.id))
+    return json(APP_ORIGIN,{ok:false,error:'attachment_forbidden'},403);
+  const count=await db.from('pastoral_task_attachments').select('id',{count:'exact',head:true}).eq('task_id',taskId);
+  if(count.error)throw new Error('db');
+  if((count.count||0)>=MAX_ATTACHMENTS_PER_TASK)return json(APP_ORIGIN,{ok:false,error:'attachment_limit'},409);
+  const name=file.name.normalize('NFKC').replace(/[^\p{L}\p{N}._ -]/gu,'_').replace(/^\.+/,'').trim().slice(0,120)||'attachment';
+  const objectPath=`${entityKey}/${taskId}/${crypto.randomUUID()}--${name}`;
+  const uploaded=await db.storage.from(TASK_FILE_BUCKET).upload(objectPath,file,{contentType:file.type,cacheControl:'3600',upsert:false});
+  if(uploaded.error)throw new Error('storage');
+  const saved=await db.from('pastoral_task_attachments').insert({
+    task_id:taskId,entity_key:entityKey,object_path:objectPath,file_name:file.name.slice(0,255),
+    content_type:file.type,size_bytes:file.size,uploaded_by:staff.id,
+  }).select('id').single();
+  if(saved.error){
+    await db.storage.from(TASK_FILE_BUCKET).remove([objectPath]).catch(()=>null);
+    throw new Error('db');
+  }
+  return json(APP_ORIGIN,{ok:true,id:saved.data.id,fileName:file.name,sizeBytes:file.size});
+}
+async function listAttachments(db:ReturnType<typeof adminClient>,staff:Staff,entityKey:string,taskId:unknown){
+  if(typeof taskId!=='string'||!UUID.test(taskId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+  const task=await db.from('pastoral_tasks').select('id,status,created_by,assigned_to')
+    .eq('id',taskId).eq('entity_key',entityKey).maybeSingle();
+  if(task.error)throw new Error('db');
+  if(!task.data||!canViewTask(staff,task.data))return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
+  const rows=await db.from('pastoral_task_attachments')
+    .select('id,object_path,file_name,content_type,size_bytes,created_at')
+    .eq('task_id',taskId).eq('entity_key',entityKey).order('created_at');
+  if(rows.error)throw new Error('db');
+  const attachments=[];
+  for(const row of rows.data||[]){
+    const signed=await db.storage.from(TASK_FILE_BUCKET).createSignedUrl(row.object_path,300);
+    if(signed.error)throw new Error('storage');
+    attachments.push({id:row.id,fileName:row.file_name,contentType:row.content_type,sizeBytes:row.size_bytes,
+      createdAt:row.created_at,url:signed.data.signedUrl});
+  }
+  return json(APP_ORIGIN,{ok:true,attachments});
+}
 async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
+  if((request.headers.get('content-type')||'').toLowerCase().startsWith('multipart/form-data'))return await uploadAttachment(request,db,staff);
   const body=await request.json().catch(()=>null);
   if(!body||typeof body.action!=='string'||!allowedEntity(body.entityKey))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
   const entityKey=body.entityKey as string;
@@ -81,8 +138,9 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     }
     return json(APP_ORIGIN,{ok:true,id:inserted.data.id});
   }
+  if(body.action==='list-attachments')return await listAttachments(db,staff,entityKey,body.taskId);
   if(body.action==='list'){
-    let query=db.from('pastoral_tasks').select('id,title,description,task_type,status,assigned_to,created_by,approved_by,due_at,created_at')
+    let query=db.from('pastoral_tasks').select('id,title,description,task_type,status,payload,assigned_to,created_by,approved_by,due_at,created_at')
       .eq('entity_key',entityKey).order('created_at',{ascending:false}).limit(100);
     if(!canManage(staff))query=query.neq('status','draft').or(`assigned_to.eq.${staff.id},created_by.eq.${staff.id}`);
     const result=await query;
@@ -90,11 +148,13 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     const rows=result.data||[];
     const people=await activeEntityStaff(db,entityKey);
     const names=new Map(people.map((p:{id:string;display_name:string})=>[p.id,p.display_name]));
-    return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null})=>({
+    return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;payload:Record<string,unknown>|null;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null})=>({
       id:row.id,title:row.title,description:row.description,taskType:row.task_type,status:row.status,assigneeName:row.assigned_to?names.get(row.assigned_to)||'已停用同工':'未指派',dueAt:row.due_at,
       canSubmit:row.status==='draft'&&canManage(staff)&&row.created_by===staff.id,
       canApprove:row.status==='pending'&&canManage(staff),
       canComplete:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
+      canAttach:row.status==='draft'&&(row.created_by===staff.id||canManage(staff)),
+      completionReport:typeof row.payload?.completion_report==='string'?row.payload.completion_report:null,
     }))});
   }
   if(['submit','approve','complete'].includes(body.action)){
@@ -103,16 +163,22 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     const nextStatus=({submit:'pending',approve:'approved',complete:'completed'} as Record<string,string>)[body.action];
     if(!validTaskTransition(currentStatus,nextStatus))return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
     if((body.action==='submit'||body.action==='approve')&&!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
-    if(body.action==='complete'&&!canManage(staff)){
-      const assigned=await db.from('pastoral_tasks').select('assigned_to,status').eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
-      if(assigned.error)throw new Error('db');
-      if(!assigned.data||assigned.data.assigned_to!==staff.id||assigned.data.status!=='approved')return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
+    let completionPayload:Record<string,unknown>|null=null;
+    if(body.action==='complete'){
+      if(!validCompletionReport(body.report))return json(APP_ORIGIN,{ok:false,error:'completion_report_required'},400);
+      const current=await db.from('pastoral_tasks').select('assigned_to,status,payload')
+        .eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
+      if(current.error)throw new Error('db');
+      if(!current.data||current.data.status!=='approved'||(!canManage(staff)&&current.data.assigned_to!==staff.id))
+        return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
+      const payload=current.data.payload&&typeof current.data.payload==='object'&&!Array.isArray(current.data.payload)?current.data.payload:{};
+      completionPayload={...payload,completion_report:(body.report as string).trim()};
     }
     let update=db.from('pastoral_tasks').update({status:nextStatus,updated_at:new Date().toISOString(),
-      ...(body.action==='approve'?{approved_by:staff.id}:{}),...(body.action==='complete'?{completed_at:new Date().toISOString()}:{})})
+      ...(body.action==='approve'?{approved_by:staff.id}:{}),
+      ...(body.action==='complete'?{completed_at:new Date().toISOString(),payload:completionPayload}:{})})
       .eq('id',body.taskId).eq('entity_key',entityKey)
       .eq('status',body.action==='submit'?'draft':body.action==='approve'?'pending':'approved');
-    if(body.action==='submit'&&!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
     if(body.action==='submit')update=update.eq('created_by',staff.id);
     if(body.action==='complete'&&!canManage(staff))update=update.eq('assigned_to',staff.id);
     const saved=await update.select('id').maybeSingle();

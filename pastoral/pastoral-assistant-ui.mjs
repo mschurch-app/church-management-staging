@@ -8,6 +8,7 @@ let calendarConnected = false;
 let previewMode = false;
 let staffRole = '';
 let scheduleStaff = [];
+let currentStaffId = '';
 
 async function calendarApi(action, payload = {}) {
   const token = await staffLineIdToken();
@@ -83,6 +84,10 @@ $('#copy').addEventListener('click', async () => {
 async function loadScheduleSettings(){
   const result=await calendarApi('list-schedule-staff');
   scheduleStaff=result.staff||[];
+  const appointmentSelect=$('#appointment-staff');
+  appointmentSelect.replaceChildren(...scheduleStaff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
+  appointmentSelect.value=currentStaffId;
+  $('#appointment-staff-field').hidden=false;
   const select=$('#schedule-staff');
   select.replaceChildren(...scheduleStaff.map(person=>{
     const option=document.createElement('option'); option.value=person.id; option.textContent=person.name; return option;
@@ -131,6 +136,7 @@ async function load() {
       $('#auth-status').textContent = '已驗證 LINE 身分與教會同工授權。';
     }
     staffRole = staff.role;
+    currentStaffId = staff.id || '';
     $('#tab-schedule').hidden = preview || !['pastor','admin'].includes(staffRole);
     church = assistantChurch(staff, params.get('church'));
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / PASTORAL ASSISTANT';
@@ -166,6 +172,7 @@ $('#check-freebusy').addEventListener('click', async () => {
     const end = new Date(start.getTime() + duration * 60000);
     if (!Number.isFinite(start.getTime()) || end <= start) throw new Error('日期或時間不正確。');
     const availability = await calendarApi('check-availability', {
+      staffId:$('#appointment-staff').value || currentStaffId,
       summary:$('#summary').value.trim(), location:$('#location').value.trim(),
       start:start.toISOString(), end:end.toISOString(), emergency:$('#emergency').checked,
     });

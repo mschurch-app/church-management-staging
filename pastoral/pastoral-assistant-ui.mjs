@@ -21,7 +21,7 @@ async function calendarApi(action, payload = {}) {
     const message = {calendar_not_configured:'Google 行事曆授權尚未設定。', calendar_not_connected:'尚未連接 M+ 共用行事曆。',
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
       calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
-      rest_day:'此同工當天是個人休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
+      rest_day:'當天是這位同工設定的休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
       emergency_not_allowed:'此同工的設定不允許緊急行程例外。', pastor_required:'只有牧師或管理者可以調整同工排程。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
   }
@@ -165,8 +165,13 @@ $('#check-freebusy').addEventListener('click', async () => {
     const start = new Date(`${date}T${time}:00+08:00`);
     const end = new Date(start.getTime() + duration * 60000);
     if (!Number.isFinite(start.getTime()) || end <= start) throw new Error('日期或時間不正確。');
-    const busy = await calendarApi('freebusy', {timeMin:new Date(start.getTime()-30*60000).toISOString(), timeMax:new Date(end.getTime()+30*60000).toISOString()});
-    result.textContent = busy.busy.length ? '這段時間或前後 30 分鐘已有行事曆安排，請與同工確認其他時段。' : 'M+ 共用行事曆在此時段及前後 30 分鐘沒有安排。';
+    const availability = await calendarApi('check-availability', {
+      summary:$('#summary').value.trim(), location:$('#location').value.trim(),
+      start:start.toISOString(), end:end.toISOString(), emergency:$('#emergency').checked,
+    });
+    result.textContent = availability.available
+      ? '符合這位同工的個人排程，M+ 共用行事曆在此時段及前後 30 分鐘也沒有安排。'
+      : '這段時間或前後 30 分鐘已有行事曆安排，請與同工確認其他時段。';
   } catch (error) { result.textContent = error.message || '無法查詢行事曆。'; }
   finally { button.disabled = false; }
 });

@@ -20,6 +20,23 @@ test('emergency bypass obeys each staff preference and still validates time', ()
   assert.equal(scheduleError(start, end, true, {restDays:[2]}, end + 1), 'meeting_in_past');
 });
 
+test('all seven weekdays can be configured as each coworker’s rest day', () => {
+  const days = [
+    ['2026-09-27T10:00:00+08:00', 0], // Sunday
+    ['2026-09-28T10:00:00+08:00', 1], // Monday
+    ['2026-09-29T10:00:00+08:00', 2], // Tuesday
+    ['2026-09-30T10:00:00+08:00', 3], // Wednesday
+    ['2026-10-01T10:00:00+08:00', 4], // Thursday
+    ['2026-10-02T10:00:00+08:00', 5], // Friday
+    ['2026-10-03T10:00:00+08:00', 6], // Saturday
+  ];
+  for (const [value, weekday] of days) {
+    const start = taipei(value);
+    assert.equal(scheduleError(start, start + 30*60*1000, false, {restDays:[weekday]}, 0), 'rest_day');
+    assert.equal(scheduleError(start, start + 30*60*1000, false, {restDays:[]}, 0) === 'rest_day', false);
+  }
+});
+
 test('normal appointments enforce weekdays, hours and same-day boundaries', () => {
   const start = taipei('2026-09-26T16:30:00+08:00');
   assert.equal(scheduleError(start, start + 60*60*1000, false, {}, 0), 'outside_schedule');

@@ -9,6 +9,7 @@ let previewMode = false;
 let staffRole = '';
 let scheduleStaff = [];
 let currentStaffId = '';
+let pendingCalendarRequestId = null;
 
 async function calendarApi(action, payload = {}) {
   const token = await staffLineIdToken();
@@ -23,7 +24,7 @@ async function calendarApi(action, payload = {}) {
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
       calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
       rest_day:'當天是這位同工設定的休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
-      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', pastor_required:'只有牧師或管理者可以調整同工排程。'}[result.error];
+      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', calendar_conflict:'行事曆時段已被占用，請重新查詢其他時間。', invalid_staff:'請選擇有效的 M+ 同工。', confirmation_required:'請先在確認視窗按下建立。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
   }
   return result;
@@ -62,11 +63,16 @@ tabs.forEach((button, index) => {
   });
 });
 
-$('#draft-form').addEventListener('input', () => {
+function invalidateDraft(){
   $('#draft-result').hidden = true;
   $('#draft-text').textContent = '';
   $('#draft-status').textContent = '';
-});
+  $('#create-event').hidden = true;
+  $('#create-event-status').textContent = '';
+  pendingCalendarRequestId = null;
+}
+$('#draft-form').addEventListener('input', invalidateDraft);
+$('#draft-form').addEventListener('change', invalidateDraft);
 $('#draft-form').addEventListener('submit', event => {
   event.preventDefault();
   try {
@@ -164,7 +170,10 @@ $('#connect-calendar').addEventListener('click', async () => {
 
 $('#check-freebusy').addEventListener('click', async () => {
   const button = $('#check-freebusy'), result = $('#calendar-query-result');
-  button.disabled = true; result.textContent = '正在查詢 M+ 共用行事曆…';
+  button.disabled = true; result.textContent = '正在檢查同工排程與 M+ 共用行事曆…';
+  $('#create-event').hidden = true;
+  $('#create-event-status').textContent = '';
+  pendingCalendarRequestId = null;
   try {
     const date = $('#date').value, time = $('#time').value, duration = Number($('#duration').value);
     if (!date || !time || ![30, 60, 90, 120].includes(duration)) throw new Error('請先填妥日期、開始時間與時長。');
@@ -179,8 +188,47 @@ $('#check-freebusy').addEventListener('click', async () => {
     result.textContent = availability.available
       ? '符合這位同工的個人排程，M+ 共用行事曆在此時段及前後 30 分鐘也沒有安排。'
       : '這段時間或前後 30 分鐘已有行事曆安排，請與同工確認其他時段。';
+    if (availability.available && ['pastor','admin'].includes(staffRole)) {
+      pendingCalendarRequestId = crypto.randomUUID();
+      $('#create-event').hidden = false;
+    }
   } catch (error) { result.textContent = error.message || '無法查詢行事曆。'; }
   finally { button.disabled = false; }
+});
+
+
+$('#create-event').addEventListener('click', () => {
+  if (!pendingCalendarRequestId) return;
+  const person=scheduleStaff.find(item=>item.id===$('#appointment-staff').value);
+  const target=person?.name||'目前登入同工';
+  $('#event-confirm-details').textContent=`${target}｜${$('#date').value} ${$('#time').value}｜${$('#duration').value} 分鐘｜${$('#summary').value.trim()}${$('#location').value.trim()? `｜${$('#location').value.trim()}`:''}`;
+  $('#event-confirm-status').textContent='';
+  $('#event-confirm-dialog').showModal();
+});
+$('#cancel-create-event').addEventListener('click', () => $('#event-confirm-dialog').close());
+$('#confirm-create-event').addEventListener('click', async () => {
+  const button=$('#confirm-create-event'),status=$('#create-event-status');
+  button.disabled=true; button.textContent='正在建立…';
+  $('#event-confirm-status').textContent='正在再次確認排程與行事曆空檔…';
+  try{
+    const date=$('#date').value,time=$('#time').value,duration=Number($('#duration').value);
+    const start=new Date(`${date}T${time}:00+08:00`),end=new Date(start.getTime()+duration*60000);
+    const result=await calendarApi('create-event',{
+      staffId:$('#appointment-staff').value||currentStaffId,
+      summary:$('#summary').value.trim(),location:$('#location').value.trim(),
+      start:start.toISOString(),end:end.toISOString(),emergency:$('#emergency').checked,
+      requestId:pendingCalendarRequestId,confirmed:true,
+    });
+    $('#event-confirm-status').textContent='';
+    $('#event-confirm-dialog').close();
+    $('#create-event').hidden=true;
+    status.textContent=result.created?'已建立活動到 M+ 共用行事曆，沒有寄送邀請通知。':'這項活動先前已建立，未重複新增。';
+    pendingCalendarRequestId=null;
+  }catch(error){
+    $('#event-confirm-status').textContent=error.message||'目前無法建立活動，請稍後重試。';
+  }finally{
+    button.disabled=false;button.textContent='確認建立';
+  }
 });
 
 $('#draft-form').addEventListener('input', () => { $('#calendar-query-result').textContent = ''; });

@@ -7,6 +7,7 @@ let church;
 let calendarConnected = false;
 let previewMode = false;
 let staffRole = '';
+let scheduleStaff = [];
 
 async function calendarApi(action, payload = {}) {
   const token = await staffLineIdToken();
@@ -19,7 +20,9 @@ async function calendarApi(action, payload = {}) {
   if (!response.ok) {
     const message = {calendar_not_configured:'Google 行事曆授權尚未設定。', calendar_not_connected:'尚未連接 M+ 共用行事曆。',
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
-      calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。'}[result.error];
+      calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
+      rest_day:'此同工當天是個人休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
+      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', pastor_required:'只有牧師或管理者可以調整同工排程。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
   }
   return result;
@@ -77,6 +80,43 @@ $('#copy').addEventListener('click', async () => {
   catch { $('#draft-status').textContent = '無法自動複製，請選取上方文字後複製。'; }
 });
 
+async function loadScheduleSettings(){
+  const result=await calendarApi('list-schedule-staff');
+  scheduleStaff=result.staff||[];
+  const select=$('#schedule-staff');
+  select.replaceChildren(...scheduleStaff.map(person=>{
+    const option=document.createElement('option'); option.value=person.id; option.textContent=person.name; return option;
+  }));
+  select.addEventListener('change',renderScheduleSettings);
+  renderScheduleSettings();
+}
+function renderScheduleSettings(){
+  const person=scheduleStaff.find(item=>item.id===$('#schedule-staff').value);
+  if(!person)return;
+  document.querySelectorAll('input[name="rest-day"]').forEach(box=>{box.checked=person.restDays.includes(Number(box.value));});
+  $('#schedule-start').value=person.workStart;
+  $('#schedule-end').value=person.workEnd;
+  $('#schedule-emergency').checked=person.allowEmergencyOverride;
+  $('#schedule-status').textContent='';
+}
+$('#schedule-form').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const button=$('#save-schedule'),status=$('#schedule-status');
+  button.disabled=true; status.textContent='正在儲存個人排程設定…';
+  try{
+    const person={
+      staffId:$('#schedule-staff').value,
+      restDays:[...document.querySelectorAll('input[name="rest-day"]:checked')].map(box=>Number(box.value)),
+      workStart:$('#schedule-start').value,workEnd:$('#schedule-end').value,
+      allowEmergencyOverride:$('#schedule-emergency').checked,
+    };
+    await calendarApi('save-schedule-preferences',person);
+    Object.assign(scheduleStaff.find(item=>item.id===person.staffId),person);
+    status.textContent='個人設定已儲存，行程檢查會使用這份設定。';
+  }catch(error){status.textContent=error.message||'無法儲存設定。';}
+  finally{button.disabled=false;}
+});
+
 async function load() {
   try {
     let staff;
@@ -101,6 +141,7 @@ async function load() {
       try { const status = await calendarApi('status'); setCalendarStatus(status.connected, status.accountEmail); }
       catch { setCalendarStatus(false, null); $('#calendar-connection-copy').textContent = '目前無法確認行事曆連線狀態，請稍後重新整理。'; }
     } else setCalendarStatus(false, null);
+    if (!preview && ['pastor','admin'].includes(staffRole)) { try { await loadScheduleSettings(); } catch {} }
   } catch (error) {
     $('#workspace').hidden = true;
     $('#auth-status').textContent = error.message || '無法載入工作台。';

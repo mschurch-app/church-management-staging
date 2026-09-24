@@ -6,13 +6,13 @@ const CODE_KEY='pastoral-enrollment-code';
 const savedCode=sessionStorage.getItem(CODE_KEY);
 if(savedCode&&codeInput)codeInput.value=savedCode;
 button.disabled=!loginConfigured();
-status.textContent=button.disabled?'幕僚專用 LINE 入口尚在設定中，完成後將另行提供啟用通知。':'若收到同工邀請碼，先填入後使用 LINE 登錄身分；已核准同工可直接登入。';
+status.textContent=button.disabled?'教會同工專用 LINE 入口尚在設定中，完成後將另行提供啟用通知。':'若收到同工邀請碼，先填入後使用 LINE 登錄身分；已核准同工可直接登入。';
 
 async function login(interactive){
   const enrollmentCode=(codeInput?.value||sessionStorage.getItem(CODE_KEY)||'').trim().toUpperCase();
   if(interactive&&enrollmentCode)sessionStorage.setItem(CODE_KEY,enrollmentCode);
   button.disabled=true;
-  status.textContent='正在確認 LINE 身分與幕僚權限…';
+  status.textContent='正在確認 LINE 身分與教會同工權限…';
   try{
     await authenticateStaff({interactive,enrollmentCode});
     sessionStorage.removeItem(CODE_KEY);

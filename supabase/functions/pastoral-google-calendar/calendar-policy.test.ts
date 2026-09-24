@@ -5,7 +5,7 @@ import { scheduleError } from './calendar-policy.ts';
 const taipei = value => Date.parse(value);
 
 test('rest days are per staff, with no default rest day', () => {
-  const start = taipei('2026-09-29T10:00:00+08:00'); // Monday
+  const start = taipei('2026-09-29T10:00:00+08:00'); // Tuesday
   const end = start + 60 * 60 * 1000;
   assert.equal(scheduleError(start, end, false, {}, 0), null);
   assert.equal(scheduleError(start, end, false, {restDays:[2]}, 0), 'rest_day');

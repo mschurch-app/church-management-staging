@@ -53,7 +53,7 @@ Deno.serve(async request=>{
   if(!staff||!staff.is_active)return respond(origin,{ok:false,error:'staff_forbidden'},403);
   const access=await db.from('pastoral_staff_access').select('entity_key').eq('staff_id',staff.id);
   if(access.error)return respond(origin,{ok:false,error:'unavailable'},503);
-  const churches=[...new Set((access.data||[]).map(row=>({mplus:'M+',shine:'SHiNE'} as Record<string,string>)[row.entity_key]).filter(Boolean))];
+  const churches=[...new Set((access.data||[]).map(row=>({mplus:'M+',shine:'SHiNE',tcsc:'台灣基督教社會關懷協會'} as Record<string,string>)[row.entity_key]).filter(Boolean))];
   if(!churches.length)return respond(origin,{ok:false,error:'staff_forbidden'},403);
   return respond(origin,{ok:true,staff:{name:staff.display_name,role:staff.role,churches}});
 });

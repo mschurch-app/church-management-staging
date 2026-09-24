@@ -188,6 +188,18 @@ function parseRfc3339(value:unknown){
   return ms;
 }
 
+function readAppointment(body:Record<string,unknown>){
+  if(typeof body.summary!=='string'||!body.summary.trim()||body.summary.trim().length>200)return null;
+  if(body.location!==undefined&&typeof body.location!=='string')return null;
+  const location=typeof body.location==='string'?body.location.trim():'';
+  if(location.length>500)return null;
+  let start:number,end:number;
+  try{start=parseRfc3339(body.start);end=parseRfc3339(body.end);}catch{return null;}
+  if(end<=start||end-start>120*60*1000||!MEETING_MINUTES.includes((end-start)/60000))return null;
+  if(body.emergency!==undefined&&typeof body.emergency!=='boolean')return null;
+  return {summary:body.summary.trim(),location,start,end,emergency:body.emergency===true};
+}
+
 async function accessToken(db:ReturnType<typeof adminClient>){
   const refreshToken=await getRefreshToken(db);
   if(!refreshToken)return null;

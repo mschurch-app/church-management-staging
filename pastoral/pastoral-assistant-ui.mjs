@@ -10,6 +10,7 @@ let staffRole = '';
 let scheduleStaff = [];
 let currentStaffId = '';
 let pendingCalendarRequestId = null;
+let slotSearchSequence = 0;
 
 async function calendarApi(action, payload = {}) {
   const token = await staffLineIdToken();
@@ -24,7 +25,7 @@ async function calendarApi(action, payload = {}) {
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
       calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
       rest_day:'當天是這位同工設定的休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
-      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', calendar_conflict:'行事曆時段已被占用，請重新查詢其他時間。', invalid_staff:'請選擇有效的 M+ 同工。', confirmation_required:'請先在確認視窗按下建立。'}[result.error];
+      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', calendar_conflict:'行事曆時段已被占用，請重新查詢其他時間。', invalid_staff:'請選擇有效的 M+ 同工。', invalid_window:'搜尋日期範圍請限 31 天內。', confirmation_required:'請先在確認視窗按下建立。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
   }
   return result;
@@ -40,6 +41,7 @@ function setCalendarStatus(connected, email) {
   $('#calendar-connection-label').textContent = connected ? '已連線' : '等待授權';
   $('#connect-calendar').hidden = previewMode || connected || !['pastor', 'admin'].includes(staffRole);
   $('#check-freebusy').hidden = previewMode || !connected;
+  $('#find-slots').hidden = previewMode || !connected;
 }
 
 function activateTab(tab) {
@@ -69,6 +71,9 @@ function invalidateDraft(){
   $('#draft-status').textContent = '';
   $('#create-event').hidden = true;
   $('#create-event-status').textContent = '';
+  $('#slot-search-status').textContent = '';
+  $('#slot-search-results').replaceChildren();
+  slotSearchSequence++;
   pendingCalendarRequestId = null;
 }
 $('#draft-form').addEventListener('input', invalidateDraft);
@@ -173,6 +178,35 @@ $('#connect-calendar').addEventListener('click', async () => {
   catch (error) { $('#calendar-connection-copy').textContent = error.message; button.disabled = false; button.textContent = '連接共用行事曆'; }
 });
 
+
+$('#find-slots').addEventListener('click', async () => {
+  const button=$('#find-slots'),status=$('#slot-search-status'),results=$('#slot-search-results');
+  const request=++slotSearchSequence;
+  button.disabled=true;results.replaceChildren();status.textContent='正在依照同工休息日、工作時段與共用行事曆搜尋…';
+  try{
+    const dateFrom=$('#slot-date-from').value,dateThrough=$('#slot-date-through').value;
+    if(!dateFrom||!dateThrough)throw new Error('請選擇搜尋的起訖日期。');
+    if(dateThrough<dateFrom)throw new Error('結束日期需晚於或等於開始日期。');
+    const result=await calendarApi('find-available-slots',{
+      staffId:$('#appointment-staff').value||currentStaffId,
+      dateFrom,dateThrough,durationMinutes:Number($('#duration').value),
+    });
+    if(request!==slotSearchSequence)return;
+    const slots=result.slots||[];
+    if(!slots.length){status.textContent='這段日期內沒有符合條件的空檔，可調整日期或時長再搜尋。';return;}
+    status.textContent=`找到 ${slots.length} 個時段；選擇後會再次確認並可由牧師建立行程。`;
+    for(const slot of slots){
+      const option=document.createElement('button');option.type='button';option.className='slot-option';
+      option.textContent=slot.label;option.addEventListener('click',()=>{
+        $('#date').value=slot.date;$('#time').value=slot.time;
+        $('#draft-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+        $('#check-freebusy').click();
+      });
+      results.append(option);
+    }
+  }catch(error){if(request===slotSearchSequence)status.textContent=error.message||'無法搜尋可約時段。';}
+  finally{button.disabled=false;}
+});
 $('#check-freebusy').addEventListener('click', async () => {
   const button = $('#check-freebusy'), result = $('#calendar-query-result');
   button.disabled = true; result.textContent = '正在檢查同工排程與 M+ 共用行事曆…';
@@ -236,6 +270,19 @@ $('#confirm-create-event').addEventListener('click', async () => {
   }
 });
 
+
+function localToday(){
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+function addLocalDays(date,days){
+  const [year,month,day]=date.split('-').map(Number),value=new Date(Date.UTC(year,month-1,day+days));
+  return `${value.getUTCFullYear()}-${String(value.getUTCMonth()+1).padStart(2,'0')}-${String(value.getUTCDate()).padStart(2,'0')}`;
+}
+const today=localToday();
+$('#slot-date-from').value=today;
+$('#slot-date-through').value=addLocalDays(today,7);
 $('#draft-form').addEventListener('input', () => { $('#calendar-query-result').textContent = ''; });
 
 

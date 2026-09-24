@@ -1,8 +1,8 @@
 export function assistantChurch(staff, preferred) {
-  if (!staff || !['pastor', 'secretary', 'admin'].includes(staff.role)) throw new Error('帳號尚未獲授權使用牧師幕僚工作台。');
+  if (!staff || !['pastor', 'secretary', 'admin'].includes(staff.role)) throw new Error('帳號尚未獲授權使用教會同工工作台。');
   const churches = [...new Set((staff.churches || []).filter(church => ['M+', 'SHiNE'].includes(church)))];
-  if (preferred && !churches.includes(preferred)) throw new Error('沒有此堂會的牧師幕僚權限。');
-  if (!churches.length) throw new Error('帳號尚未獲授權使用牧師幕僚工作台。');
+  if (preferred && !churches.includes(preferred)) throw new Error('沒有此堂會的教會同工權限。');
+  if (!churches.length) throw new Error('帳號尚未獲授權使用教會同工工作台。');
   return preferred || churches[0];
 }
 

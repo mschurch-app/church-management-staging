@@ -251,7 +251,9 @@ async function tasksApi(action,payload={}){
     const message={login_required:'LINE 登入已失效，請重新登入。',entity_forbidden:'沒有此堂會的同工工作權限。',
       pastor_required:'只有牧師或管理者可以建立、送交或核准工作。',invalid_assignee:'請選擇此堂會已啟用的同工。',
       invalid_task:'請檢查工作內容、期限及負責同工。',task_not_found:'找不到這項工作，請重新整理。',
-      invalid_transition:'這項工作目前無法進行所選操作。'}[result.error];
+      invalid_transition:'這項工作目前無法進行所選操作。',completion_report_required:'請填寫執行回報後再完成工作。',
+      invalid_attachment:'附件格式或大小不符合規定。',attachment_limit:'每項工作最多附加 5 個檔案。',
+      attachment_forbidden:'附件只能在草稿階段由建立者或管理者加入。'}[result.error];
     throw new Error(message||'同工工作服務暫時無法使用。');
   }
   return result;
@@ -266,7 +268,7 @@ function renderTasks(tasks){
   const list=$('#task-list');list.replaceChildren();
   if(!tasks.length){const p=document.createElement('p');p.className='muted';p.textContent='目前沒有符合權限的工作。';list.append(p);return;}
   for(const task of tasks){
-    const article=document.createElement('article');article.className='task-item';
+    const article=document.createElement('article');article.className='task-item';article.dataset.taskId=task.id;
     const top=document.createElement('div');top.className='task-item-top';
     const title=document.createElement('h3');title.textContent=task.title;top.append(title);
     const badge=document.createElement('span');badge.className='task-badge task-'+task.status;badge.textContent=taskStatusText[task.status]||task.status;top.append(badge);
@@ -275,12 +277,52 @@ function renderTasks(tasks){
     meta.textContent=`${taskTypeText[task.taskType]||'一般'}｜負責：${task.assigneeName||'未指派'}${task.dueAt?'｜期限：'+new Date(task.dueAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):''}`;
     article.append(meta);
     if(task.description){const description=document.createElement('p');description.className='task-description';description.textContent=task.description;article.append(description);}
+    if(task.completionReport){const report=document.createElement('div');report.className='completion-report';const label=document.createElement('strong');label.textContent='執行回報';const text=document.createElement('p');text.textContent=task.completionReport;report.append(label,text);article.append(report);}
     const actions=document.createElement('div');actions.className='task-actions';
+    actions.append(taskButton('查看附件',task.id,'list-attachments',true));
     if(task.canSubmit)actions.append(taskButton('送交同工核准',task.id,'submit'));
     if(task.canApprove)actions.append(taskButton('核准並開始執行',task.id,'approve'));
-    if(task.canComplete)actions.append(taskButton('標記完成',task.id,'complete',true));
-    if(actions.childElementCount)article.append(actions);
+    if(task.canAttach){
+      const input=document.createElement('input');input.type='file';input.multiple=true;
+      input.accept='.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp';
+      input.className='task-file-input';input.setAttribute('aria-label','選擇此工作附件');
+      actions.append(input,taskButton('上傳附件',task.id,'upload-attachments',true));
+    }
+    if(task.canComplete){
+      const report=document.createElement('textarea');report.rows=3;report.maxLength=3000;report.required=true;
+      report.className='task-report-input';report.placeholder='請簡述完成內容、交付結果或需要後續處理的事項';
+      report.setAttribute('aria-label','執行回報');
+      actions.append(report,taskButton('提交回報並完成',task.id,'complete'));
+    }
+    article.append(actions);
+    const attachmentList=document.createElement('div');attachmentList.className='task-attachments';attachmentList.setAttribute('aria-live','polite');article.append(attachmentList);
     list.append(article);
+  }
+}
+async function uploadTaskAttachment(taskId,file){
+  const token=await staffLineIdToken(),form=new FormData();
+  form.append('entityKey',church==='M+'?'mplus':'shine');form.append('taskId',taskId);form.append('file',file);
+  const response=await fetch(PASTORAL_TASKS_ENDPOINT,{
+    method:'POST',headers:{Authorization:`Bearer ${token}`},
+    credentials:'omit',cache:'no-store',redirect:'error',signal:AbortSignal.timeout(30000),body:form,
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok){
+    const message={invalid_attachment:'附件格式不支援或檔案超過 5 MB。',attachment_limit:'每項工作最多附加 5 個檔案。',
+      attachment_forbidden:'附件只能在草稿階段由建立者或管理者加入。',login_required:'LINE 登入已失效，請重新登入。'}[result.error];
+    throw new Error(message||'附件上傳失敗。');
+  }
+  return result;
+}
+async function showTaskAttachments(taskId,container){
+  container.textContent='正在取得安全下載連結…';
+  const result=await tasksApi('list-attachments',{taskId});
+  container.replaceChildren();
+  if(!result.attachments.length){container.textContent='目前沒有附件。';return;}
+  for(const file of result.attachments){
+    const link=document.createElement('a');link.href=file.url;link.target='_blank';link.rel='noopener noreferrer';
+    link.textContent=`${file.fileName}（${(file.sizeBytes/1024/1024).toFixed(2)} MB；連結 5 分鐘有效）`;
+    container.append(link);
   }
 }
 async function loadTasks(){
@@ -304,20 +346,39 @@ $('#task-form').addEventListener('submit',async event=>{
   if(!['pastor','admin'].includes(staffRole))return;
   const button=$('#save-task'),status=$('#task-form-status');button.disabled=true;status.textContent='正在儲存草稿…';
   try{
-    const dueValue=$('#task-due').value;
-    await tasksApi('create',{title:$('#task-title').value.trim(),description:$('#task-description').value.trim(),
+    const dueValue=$('#task-due').value,files=[...$('#task-files').files];
+    if(files.length>5)throw new Error('每項工作最多可附加 5 個檔案。');
+    for(const file of files)if(file.size>5*1024*1024)throw new Error(`「${file.name}」超過 5 MB。`);
+    const created=await tasksApi('create',{title:$('#task-title').value.trim(),description:$('#task-description').value.trim(),
       taskType:$('#task-type').value,assignedTo:$('#task-assignee').value,
       dueAt:dueValue?new Date(dueValue).toISOString():null,idempotencyKey:crypto.randomUUID()});
-    $('#task-form').reset();status.textContent='草稿已儲存。可在工作清單中送交同工核准。';
+    $('#task-form').reset();
+    let uploaded=0;
+    for(const file of files){await uploadTaskAttachment(created.id,file);uploaded++;}
+    status.textContent=files.length?`草稿已儲存，${uploaded} 個附件已安全上傳；可送交同工核准。`:'草稿已儲存。可在工作清單中送交同工核准。';
     await loadTasks();
-  }catch(error){status.textContent=error.message||'無法儲存工作。';}
+  }catch(error){status.textContent=error.message||'無法儲存工作或上傳附件。';await loadTasks();}
   finally{button.disabled=false;}
 });
 $('#task-list').addEventListener('click',async event=>{
   const button=event.target.closest('button[data-task-action]');if(!button)return;
-  button.disabled=true;$('#task-status').textContent='正在更新工作狀態…';
-  try{await tasksApi(button.dataset.taskAction,{taskId:button.dataset.taskId});await loadTasks();}
-  catch(error){$('#task-status').textContent=error.message||'無法更新工作狀態。';button.disabled=false;}
+  const article=button.closest('.task-item'),taskId=button.dataset.taskId,action=button.dataset.taskAction;
+  button.disabled=true;
+  try{
+    if(action==='list-attachments'){await showTaskAttachments(taskId,article.querySelector('.task-attachments'));button.disabled=false;return;}
+    if(action==='upload-attachments'){
+      const input=article.querySelector('.task-file-input'),files=[...(input?.files||[])];
+      if(!files.length)throw new Error('請先選擇附件。');
+      if(files.length>5)throw new Error('每項工作最多可附加 5 個檔案。');
+      $('#task-status').textContent='正在安全上傳附件…';
+      for(const file of files)await uploadTaskAttachment(taskId,file);
+      await loadTasks();$('#task-status').textContent='附件已上傳。';return;
+    }
+    $('#task-status').textContent='正在更新工作狀態…';
+    const payload={taskId};
+    if(action==='complete')payload.report=article.querySelector('.task-report-input')?.value||'';
+    await tasksApi(action,payload);await loadTasks();
+  }catch(error){$('#task-status').textContent=error.message||'無法更新工作或附件。';button.disabled=false;}
 });
 
 load();

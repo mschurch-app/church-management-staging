@@ -41,7 +41,7 @@ export type SchedulePreferences = {
 };
 
 function clockMinutes(value: string) {
-  const match = /^(\\d{2}):(\\d{2})$/.exec(value);
+  const match = /^([0-9]{2}):([0-9]{2})$/.exec(value);
   if (!match) return Number.NaN;
   const hours = Number(match[1]), minutes = Number(match[2]);
   return hours <= 23 && minutes <= 59 ? hours * 60 + minutes : Number.NaN;

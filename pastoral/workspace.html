@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工工作台｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-5">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-7">
 </head>
 <body>
   <header class="topbar">
@@ -65,10 +65,12 @@
         <div class="columns task-layout">
           <article class="card">
             <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>交代清楚，一起完成</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
-            <p class="muted">任務在所選堂會的同工之間流轉。送交後由牧師或管理者核准，核准後由負責同工標記完成。</p>
+            <p class="muted">任務在所選堂會的同工之間流轉。送交後由牧師或管理者核准；負責同工執行後填寫回報，再標記完成。</p>
             <form id="task-form">
               <label>工作事項<input id="task-title" required maxlength="200" placeholder="例如：整理主日講道投影片"></label>
               <label>說明<textarea id="task-description" rows="3" maxlength="5000" placeholder="補充背景、交付內容或需要留意的事項"></textarea></label>
+              <label>附件（最多 5 個，每個不超過 5 MB）<input id="task-files" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp"></label>
+              <p class="hint">附件僅限 PDF、Office 文件、文字與常見圖片格式；只有任務相關同工可開啟。</p>
               <div class="form-row task-fields">
                 <label>工作類型<select id="task-type"><option value="general">一般</option><option value="sermon">講道</option><option value="event">活動</option><option value="care">關懷</option><option value="document">公文</option></select></label>
                 <label>負責同工<select id="task-assignee" required></select></label>
@@ -105,11 +107,11 @@
         </article>
       </section>
       <section id="panel-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
-        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><em>待接入</em></li><li><span>同工工作流程：派交、核准與完成</span><strong>已接通工作台</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
+        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><em>待接入</em></li><li><span>同工派工、執行回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
       </section>
       <footer>AI 協助預備，牧師與同工共同把關。<span>MPLUS · PASTORAL ASSISTANT</span></footer>
     </div>
   </main>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-7"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-9"></script>
 </body>
 </html>

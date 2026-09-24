@@ -1,0 +1,286 @@
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+
+const CHANNEL_ID='2011645391';
+const APP_ORIGIN='https://mscos.mchurch.online';
+const CALENDAR_ID='mbot@tcsc.org.tw';
+const CALENDAR_EMAIL='mbot@tcsc.org.tw';
+const CALENDAR_SCOPES=[
+  'openid',
+  'email',
+  'https://www.googleapis.com/auth/calendar.events.owned',
+  'https://www.googleapis.com/auth/calendar.events.freebusy',
+];
+const encoder=new TextEncoder();
+
+function headers(origin:string, html=false){return {
+  ...(origin===APP_ORIGIN?{'access-control-allow-origin':origin}:{}),
+  'access-control-allow-headers':'authorization,content-type,apikey',
+  'access-control-allow-methods':'POST,OPTIONS,GET',
+  'content-type':html?'text/html; charset=utf-8':'application/json; charset=utf-8',
+  'cache-control':'no-store',
+  'pragma':'no-cache',
+  'vary':'Origin',
+  'x-content-type-options':'nosniff',
+  'referrer-policy':'no-referrer',
+};}
+function json(origin:string,value:unknown,status=200){return new Response(JSON.stringify(value),{status,headers:headers(origin)});}
+function safePage(ok:boolean){
+  const message=ok?'M+ 共用行事曆已連接。可以關閉此頁並返回「教會同工」工作台。':'Google 行事曆授權未完成。請返回工作台，稍後重試或聯絡管理者。';
+  return new Response(`<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="referrer" content="no-referrer"><title>教會同工行事曆</title><body><main><h1>${ok?'連接完成':'無法完成連接'}</h1><p>${message}</p><a href="${APP_ORIGIN}/pastoral/workspace.html">返回工作台</a></main></body></html>`,{status:ok?200:400,headers:headers('',true)});
+}
+function adminClient(){
+  const url=Deno.env.get('SUPABASE_URL')||'';
+  const key=Deno.env.get('SUPABASE_SECRET_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
+  if(!url||!key)throw new Error('config');
+  return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+}
+async function verifyLineIdToken(token:string){
+  if(!token||token.length>8192)return null;
+  try{
+    const response=await fetch('https://api.line.me/oauth2/v2.1/verify',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({id_token:token,client_id:CHANNEL_ID})});
+    if(!response.ok)return null;
+    const claims=await response.json(),now=Math.floor(Date.now()/1000);
+    if(claims.iss!=='https://access.line.me'||claims.aud!==CHANNEL_ID||!Number.isSafeInteger(claims.exp)||claims.exp<=now||!Number.isSafeInteger(claims.iat)||claims.iat>now+60||typeof claims.sub!=='string'||!/^U[0-9a-f]{32}$/.test(claims.sub))return null;
+    return claims.sub as string;
+  }catch{return null;}
+}
+type Staff={id:string;role:string;entityKeys:string[]};
+async function staffFromRequest(request:Request,db:ReturnType<typeof adminClient>):Promise<Staff|null>{
+  const match=(request.headers.get('authorization')||'').match(/^Bearer ([^\s]+)$/i);
+  if(!match)return null;
+  const subject=await verifyLineIdToken(match[1]);
+  if(!subject)return null;
+  const lookup=await db.from('pastoral_staff').select('id,role,is_active').eq('line_subject',subject).maybeSingle();
+  if(lookup.error)throw new Error('db');
+  if(!lookup.data||!lookup.data.is_active)return null;
+  const access=await db.from('pastoral_staff_access').select('entity_key').eq('staff_id',lookup.data.id);
+  if(access.error)throw new Error('db');
+  return {id:lookup.data.id,role:lookup.data.role,entityKeys:[...new Set((access.data||[]).map((r:{entity_key:string})=>r.entity_key))]};
+}
+function base64url(bytes:Uint8Array){let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);return btoa(binary).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');}
+function fromBase64url(value:string){
+  if(!/^[A-Za-z0-9_-]+$/.test(value))throw new Error('state');
+  const binary=atob(value.replaceAll('-','+').replaceAll('_','/')+'='.repeat((4-value.length%4)%4));
+  return Uint8Array.from(binary,c=>c.charCodeAt(0));
+}
+async function stateKey(clientSecret:string){return crypto.subtle.importKey('raw',encoder.encode(clientSecret),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);}
+async function makeState(staffId:string,clientSecret:string){
+  const payload=base64url(encoder.encode(JSON.stringify({staffId,exp:Math.floor(Date.now()/1000)+600,nonce:base64url(crypto.getRandomValues(new Uint8Array(24)))})));
+  const signature=await crypto.subtle.sign('HMAC',await stateKey(clientSecret),encoder.encode(payload));
+  return `${payload}.${base64url(new Uint8Array(signature))}`;
+}
+async function readState(value:string,clientSecret:string){
+  const [payload,signature,extra]=value.split('.');
+  if(!payload||!signature||extra)throw new Error('state');
+  const valid=await crypto.subtle.verify('HMAC',await stateKey(clientSecret),fromBase64url(signature),encoder.encode(payload));
+  if(!valid)throw new Error('state');
+  const data=JSON.parse(new TextDecoder().decode(fromBase64url(payload)));
+  const now=Math.floor(Date.now()/1000);
+  if(typeof data.staffId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.staffId)||!Number.isSafeInteger(data.exp)||data.exp<=now||data.exp>now+610||typeof data.nonce!=='string'||fromBase64url(data.nonce).length!==24)throw new Error('state');
+  return data as {staffId:string;exp:number;nonce:string};
+}
+function redirectUri(){
+  const base=Deno.env.get('SUPABASE_URL');
+  if(!base)throw new Error('config');
+  return new URL('/functions/v1/pastoral-google-calendar',base).toString();
+}
+async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>){
+  if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+  if(!staff.entityKeys.includes('mplus'))return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
+  const clientId=Deno.env.get('GOOGLE_CLIENT_ID')||'';
+  const clientSecret=Deno.env.get('GOOGLE_CLIENT_SECRET')||'';
+  if(!clientId||!clientSecret)return json(APP_ORIGIN,{ok:false,error:'calendar_not_configured'},503);
+  const authUrl=new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  authUrl.searchParams.set('client_id',clientId);
+  authUrl.searchParams.set('redirect_uri',redirectUri());
+  authUrl.searchParams.set('response_type','code');
+  authUrl.searchParams.set('scope',CALENDAR_SCOPES.join(' '));
+  authUrl.searchParams.set('access_type','offline');
+  authUrl.searchParams.set('prompt','consent');
+  authUrl.searchParams.set('include_granted_scopes','true');
+  authUrl.searchParams.set('login_hint',CALENDAR_EMAIL);
+  authUrl.searchParams.set('state',await makeState(staff.id,clientSecret));
+  return json(APP_ORIGIN,{ok:true,authorizationUrl:authUrl.toString()});
+}
+async function storeRefreshToken(db:ReturnType<typeof adminClient>,token:string){
+  const result=await db.rpc('pastoral_store_google_refresh_token',{p_token:token});
+  if(result.error)throw new Error('vault');
+}
+async function getRefreshToken(db:ReturnType<typeof adminClient>){
+  const result=await db.rpc('pastoral_get_google_refresh_token');
+  if(result.error)throw new Error('vault');
+  return typeof result.data==='string'?result.data:'';
+}
+async function callback(request:Request,db:ReturnType<typeof adminClient>){
+  const query=new URL(request.url).searchParams;
+  const code=query.get('code')||'',state=query.get('state')||'';
+  if(query.has('error')||!code||!state)return safePage(false);
+  const clientId=Deno.env.get('GOOGLE_CLIENT_ID')||'';
+  const clientSecret=Deno.env.get('GOOGLE_CLIENT_SECRET')||'';
+  if(!clientId||!clientSecret)return safePage(false);
+  let stateData:{staffId:string;exp:number;nonce:string};
+  try{stateData=await readState(state,clientSecret);}catch{return safePage(false);}
+  const lookup=await db.from('pastoral_staff').select('id,role,is_active').eq('id',stateData.staffId).maybeSingle();
+  if(lookup.error||!lookup.data?.is_active||(lookup.data.role!=='pastor'&&lookup.data.role!=='admin'))return safePage(false);
+  const access=await db.from('pastoral_staff_access').select('entity_key').eq('staff_id',stateData.staffId).eq('entity_key','mplus').maybeSingle();
+  if(access.error||!access.data)return safePage(false);
+  let tokenResponse:Response;
+  try{
+    tokenResponse=await fetch('https://oauth2.googleapis.com/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({code,client_id:clientId,client_secret:clientSecret,redirect_uri:redirectUri(),grant_type:'authorization_code'})});
+  }catch{return safePage(false);}
+  if(!tokenResponse.ok)return safePage(false);
+  const tokens=await tokenResponse.json();
+  if(typeof tokens.refresh_token!=='string'||tokens.refresh_token.length>8192||typeof tokens.access_token!=='string')return safePage(false);
+  const granted=new Set(String(tokens.scope||'').split(' '));
+  const requiredCalendarScopes=CALENDAR_SCOPES.filter(scope=>scope.startsWith('https://www.googleapis.com/auth/calendar.'));
+  if(typeof tokens.scope==='string'&&!requiredCalendarScopes.every(scope=>granted.has(scope)))return safePage(false);
+  let profileResponse:Response;
+  try{profileResponse=await fetch('https://openidconnect.googleapis.com/v1/userinfo',{headers:{authorization:`Bearer ${tokens.access_token}`},redirect:'error',signal:AbortSignal.timeout(8000)});}catch{return safePage(false);}
+  if(!profileResponse.ok)return safePage(false);
+  const profile=await profileResponse.json();
+  if(profile.email!==CALENDAR_EMAIL||profile.email_verified!==true)return safePage(false);
+  try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false);}
+  return Response.redirect(`${APP_ORIGIN}/pastoral/workspace.html?calendar=connected`,303);
+}
+function parseRfc3339(value:unknown){
+  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/.test(value))throw new Error('invalid_time');
+  const ms=Date.parse(value);
+  if(!Number.isFinite(ms))throw new Error('invalid_time');
+  return ms;
+}
+
+const TAIPEI_PARTS=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+const MEETING_MINUTES=[30,60,90,120];
+const BUFFER_MS=30*60*1000;
+function taipeiParts(ms:number){
+  const parts=Object.fromEntries(TAIPEI_PARTS.formatToParts(new Date(ms)).map(part=>[part.type,part.value]));
+  return {weekday:parts.weekday,date:`${parts.year}-${parts.month}-${parts.day}`,minutes:Number(parts.hour)*60+Number(parts.minute)+Number(parts.second)/60};
+}
+function readAppointment(body:Record<string,unknown>){
+  const summary=typeof body.summary==='string'?body.summary.trim():'';
+  const location=typeof body.location==='string'?body.location.trim():'';
+  if(!summary||summary.length>200||location.length>500||typeof body.emergency!=='boolean')return null;
+  let start:number,end:number;
+  try{start=parseRfc3339(body.start);end=parseRfc3339(body.end);}catch{return null;}
+  if(end<=start||!MEETING_MINUTES.includes((end-start)/60000))return null;
+  return {summary,location,start,end,emergency:body.emergency};
+}
+function scheduleError(start:number,end:number,emergency:boolean){
+  if(start<=Date.now())return 'meeting_in_past';
+  const from=taipeiParts(start),to=taipeiParts(end);
+  if(!emergency){
+    if(from.weekday==='Mon')return 'rest_day';
+    if(!['Tue','Wed','Thu','Fri','Sat'].includes(from.weekday)||from.date!==to.date||from.minutes<9*60||to.minutes>17*60)return 'outside_schedule';
+  }
+  return null;
+}
+
+async function accessToken(db:ReturnType<typeof adminClient>){
+  const refreshToken=await getRefreshToken(db);
+  if(!refreshToken)return null;
+  const clientId=Deno.env.get('GOOGLE_CLIENT_ID')||'',clientSecret=Deno.env.get('GOOGLE_CLIENT_SECRET')||'';
+  let response:Response;
+  try{response=await fetch('https://oauth2.googleapis.com/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:clientId,client_secret:clientSecret,refresh_token:refreshToken,grant_type:'refresh_token'})});}catch{return null;}
+  if(!response.ok)return null;
+  const data=await response.json();
+  return typeof data.access_token==='string'?data.access_token:null;
+}
+async function freeBusy(token:string,start:string,end:string){
+  const response=await fetch('https://www.googleapis.com/calendar/v3/freeBusy',{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({timeMin:start,timeMax:end,timeZone:'Asia/Taipei',items:[{id:CALENDAR_ID}]})});
+  if(!response.ok)throw new Error('calendar_api');
+  const data=await response.json(),calendar=data.calendars?.[CALENDAR_ID];
+  if(!calendar||calendar.errors||!Array.isArray(calendar.busy))throw new Error('calendar_api');
+  return calendar.busy as Array<{start:string;end:string}>;
+}
+
+async function eventAlreadyCreated(token:string,requestId:string,eventId:string,appointment:{summary:string;location:string;start:number;end:number}){
+  const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${eventId}`;
+  const response=await fetch(url,{headers:{authorization:`Bearer ${token}`},redirect:'error',signal:AbortSignal.timeout(12000)});
+  if(response.status===404)return false;
+  if(!response.ok)throw new Error('calendar_api');
+  const event=await response.json();
+  const privateProps=event.extendedProperties?.private||{};
+  return privateProps.pastoralRequestId===requestId&&event.summary===appointment.summary&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||'')===appointment.start&&Date.parse(event.end?.dateTime||'')===appointment.end;
+}
+async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number}){
+  const eventId=requestId.toLowerCase().replaceAll('-','');
+  const base=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`;
+  if(await eventAlreadyCreated(token,requestId,eventId,appointment))return {created:false,conflict:false};
+  const busy=await freeBusy(token,new Date(appointment.start-BUFFER_MS).toISOString(),new Date(appointment.end+BUFFER_MS).toISOString());
+  if(busy.length)return {created:false,conflict:true};
+  const event={id:eventId,summary:appointment.summary,...(appointment.location?{location:appointment.location}:{}),
+    start:{dateTime:new Date(appointment.start).toISOString(),timeZone:'Asia/Taipei'},
+    end:{dateTime:new Date(appointment.end).toISOString(),timeZone:'Asia/Taipei'},
+    extendedProperties:{private:{pastoralRequestId:requestId}}};
+  const response=await fetch(`${base}?sendUpdates=none`,{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(event)});
+  if(response.status===409){
+    if(await eventAlreadyCreated(token,requestId,eventId,appointment))return {created:false,conflict:false};
+    return {created:false,conflict:true};
+  }
+  if(!response.ok)throw new Error('calendar_api');
+  return {created:true,conflict:false};
+}
+
+async function handleAction(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
+  if(!staff.entityKeys.includes('mplus'))return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
+  const body=await request.json().catch(()=>null);
+  if(!body||typeof body.action!=='string')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+  if(body.action==='connect')return await startConnect(staff,db);
+  if(body.action==='status'){
+    const token=await getRefreshToken(db).catch(()=>null);
+    return json(APP_ORIGIN,{ok:true,connected:!!token,calendarId:CALENDAR_ID,accountEmail:token?CALENDAR_EMAIL:null});
+  }
+  if(body.action==='freebusy'){
+    let start:number,end:number;
+    try{start=parseRfc3339(body.timeMin);end=parseRfc3339(body.timeMax);}catch{return json(APP_ORIGIN,{ok:false,error:'invalid_time'},400);}
+    if(end<=start||end-start>31*86400000)return json(APP_ORIGIN,{ok:false,error:'invalid_window'},400);
+    const token=await accessToken(db);
+    if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
+    try{
+      const busy=await freeBusy(token,new Date(start).toISOString(),new Date(end).toISOString());
+      return json(APP_ORIGIN,{ok:true,busy});
+    }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
+  }
+  if(body.action==='check-availability'){
+    const appointment=readAppointment(body);
+    if(!appointment)return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency);
+    if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
+    const token=await accessToken(db);
+    if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
+    try{
+      const busy=await freeBusy(token,new Date(appointment.start-BUFFER_MS).toISOString(),new Date(appointment.end+BUFFER_MS).toISOString());
+      return json(APP_ORIGIN,{ok:true,available:busy.length===0});
+    }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
+  }
+  if(body.action==='create-event'){
+    if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+    if(body.confirmed!==true)return json(APP_ORIGIN,{ok:false,error:'confirmation_required'},400);
+    const appointment=readAppointment(body);
+    if(!appointment||typeof body.requestId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(body.requestId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency);
+    if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
+    const token=await accessToken(db);
+    if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
+    try{
+      const result=await createCalendarEvent(token,body.requestId,appointment);
+      if(result.conflict)return json(APP_ORIGIN,{ok:false,error:'calendar_conflict'},409);
+      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID});
+    }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
+  }
+  return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);
+}
+
+Deno.serve(async request=>{
+  const origin=request.headers.get('origin')||'';
+  if(request.method==='OPTIONS')return origin===APP_ORIGIN?new Response('ok',{headers:headers(origin)}):json(origin,{ok:false,error:'forbidden'},403);
+  if(request.method==='GET'){
+    try{return await callback(request,adminClient());}catch{return safePage(false);}
+  }
+  if(request.method!=='POST'||origin!==APP_ORIGIN)return json(origin,{ok:false,error:'forbidden'},403);
+  let db:ReturnType<typeof adminClient>;
+  try{db=adminClient();}catch{return json(origin,{ok:false,error:'unavailable'},503);}
+  const staff=await staffFromRequest(request,db).catch(()=>null);
+  if(!staff)return json(origin,{ok:false,error:'login_required'},401);
+  try{return await handleAction(request,db,staff);}catch{return json(origin,{ok:false,error:'unavailable'},503);}
+});

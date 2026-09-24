@@ -6,7 +6,7 @@ export function loginConfigured(){
   catch{return false;}
 }
 async function initialize(){
-  if(!loginConfigured())throw new Error('幕僚專用 LINE 入口尚在設定中，請等待管理者提供啟用通知。');
+  if(!loginConfigured())throw new Error('教會同工專用 LINE 入口尚在設定中，請等待管理者提供啟用通知。');
   if(!initialization)initialization=(async()=>{
     await new Promise((resolve,reject)=>{
       const script=document.createElement('script');
@@ -35,7 +35,7 @@ export async function authenticateStaff({interactive=false,enrollmentCode=''}={}
       body:JSON.stringify(enrollmentCode?{enrollment_code:enrollmentCode}:{}),
       credentials:'omit',cache:'no-store',redirect:'error',signal:AbortSignal.timeout(12000),
     });
-  }catch{throw new Error('暫時無法確認幕僚權限，請稍後再試。');}
+  }catch{throw new Error('暫時無法確認教會同工權限，請稍後再試。');}
   if(response.status===202){
     const error=new Error('LINE 身分已登記並鎖定為待核實狀態；尚未開放工作台，請等待管理者確認。');
     error.code='identity_recorded';
@@ -54,12 +54,12 @@ export async function authenticateStaff({interactive=false,enrollmentCode=''}={}
     }
     throw new Error('此 LINE 帳號尚未獲授權，請確認是否收到個人邀請碼。');
   }
-  if(!response.ok)throw new Error('幕僚登入暫時無法使用，請稍後再試。');
+  if(!response.ok)throw new Error('教會同工登入暫時無法使用，請稍後再試。');
   const {staff}=await response.json();
   if(!staff||!['pastor','secretary','admin'].includes(staff.role)||typeof staff.name!=='string'||
      !Array.isArray(staff.churches)||!staff.churches.length||
      staff.churches.some(church=>!['M+','SHiNE','台灣基督教社會關懷協會'].includes(church))){
-    throw new Error('無法確認幕僚權限，請聯絡系統管理者。');
+    throw new Error('無法確認教會同工權限，請聯絡系統管理者。');
   }
   return staff;
 }

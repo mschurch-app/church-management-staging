@@ -67,10 +67,11 @@
       <section id="panel-schedule" role="tabpanel" aria-labelledby="tab-schedule" hidden>
         <article class="card">
           <p class="eyebrow">INDIVIDUAL SCHEDULE</p><h2>同工個人休息日與可安排時段</h2>
-          <p class="muted">由牧師或管理者為每位同工個別設定。尚未設定時，預設可安排週二至週六 09:00–17:00，沒有指定休息日。</p>
+          <p class="muted">由牧師或管理者為每位同工個別設定，可選週一至週日任意休息日，也可隨時調整。尚未設定時，預設可安排週二至週六 09:00–17:00，沒有指定休息日。</p>
           <form id="schedule-form">
             <label>設定對象<select id="schedule-staff" required></select></label>
-            <fieldset class="weekday-list"><legend>每週休息日（可複選）</legend>
+            <fieldset class="weekday-list"><legend>每週休息日（週一至週日皆可選，可複選）</legend>
+              <label><input type="checkbox" name="rest-day" value="0"> 週日</label><label><input type="checkbox" name="rest-day" value="1"> 週一</label>
               <label><input type="checkbox" name="rest-day" value="2"> 週二</label><label><input type="checkbox" name="rest-day" value="3"> 週三</label>
               <label><input type="checkbox" name="rest-day" value="4"> 週四</label><label><input type="checkbox" name="rest-day" value="5"> 週五</label>
               <label><input type="checkbox" name="rest-day" value="6"> 週六</label>

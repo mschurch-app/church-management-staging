@@ -12,7 +12,7 @@ const TAIPEI_PARTS = new Intl.DateTimeFormat('en-US', {
 
 export const MEETING_MINUTES = [30, 60, 90, 120];
 export const BUFFER_MS = 30 * 60 * 1000;
-export const DEFAULT_WORK_DAYS = [1, 2, 3, 4, 5, 6]; // Sunday remains closed
+export const DEFAULT_WORK_DAYS = [2, 3, 4, 5, 6]; // Tue-Sat
 export const DEFAULT_WORK_START = '09:00';
 export const DEFAULT_WORK_END = '17:00';
 export const WEEKDAY_NUMBER: Record<string, number> = {

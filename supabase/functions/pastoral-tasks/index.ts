@@ -113,6 +113,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       .eq('status',body.action==='submit'?'draft':body.action==='approve'?'pending':'approved');
     if(body.action==='submit'&&!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
     if(body.action==='submit')update=update.eq('created_by',staff.id);
+    if(body.action==='complete'&&!canManage(staff))update=update.eq('assigned_to',staff.id);
     const saved=await update.select('id').maybeSingle();
     if(saved.error)throw new Error('db');
     if(!saved.data)return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);

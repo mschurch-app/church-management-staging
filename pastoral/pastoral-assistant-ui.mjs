@@ -63,14 +63,16 @@ tabs.forEach((button, index) => {
   });
 });
 
-$('#draft-form').addEventListener('input', () => {
+function invalidateDraft(){
   $('#draft-result').hidden = true;
   $('#draft-text').textContent = '';
   $('#draft-status').textContent = '';
   $('#create-event').hidden = true;
   $('#create-event-status').textContent = '';
   pendingCalendarRequestId = null;
-});
+}
+$('#draft-form').addEventListener('input', invalidateDraft);
+$('#draft-form').addEventListener('change', invalidateDraft);
 $('#draft-form').addEventListener('submit', event => {
   event.preventDefault();
   try {

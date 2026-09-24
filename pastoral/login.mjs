@@ -1,4 +1,4 @@
-import {authenticateStaff, loginConfigured} from './auth.mjs';
+import {authenticateStaff, loginConfigured} from './auth.mjs?v=20260924-3';
 const button = document.querySelector('#line-login'), status = document.querySelector('#login-status');
 button.disabled = !loginConfigured();
 status.textContent = button.disabled ? '幕僚專用 LINE 入口尚在設定中，完成後將另行提供啟用通知。' : '使用教會既有 LINE 登入，進入專屬幕僚空間。';

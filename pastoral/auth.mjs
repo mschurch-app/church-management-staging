@@ -67,3 +67,11 @@ export function signOut(){
   if(window.liff?.isLoggedIn())window.liff.logout();
   location.replace(new URL('./',location.href).href);
 }
+
+export async function staffLineIdToken(){
+  await initialize();
+  if(!window.liff.isLoggedIn())throw new Error('請先使用已獲授權的 LINE 帳號登入。');
+  const token=window.liff.getIDToken();
+  if(!token)throw new Error('LINE 登入資訊已失效，請重新登入。');
+  return token;
+}

@@ -59,6 +59,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
   const entityKey=body.entityKey as string;
   if(!staff.entityKeys.includes(entityKey))return json(APP_ORIGIN,{ok:false,error:'entity_forbidden'},403);
   if(body.action==='assignees'){
+    if(!canManage(staff))return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
     const people=await activeEntityStaff(db,entityKey);
     return json(APP_ORIGIN,{ok:true,staff:people.map((p:{id:string;display_name:string;role:string})=>({id:p.id,name:p.display_name,role:p.role}))});
   }
@@ -83,7 +84,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
   if(body.action==='list'){
     let query=db.from('pastoral_tasks').select('id,title,description,task_type,status,assigned_to,created_by,approved_by,due_at,created_at')
       .eq('entity_key',entityKey).order('created_at',{ascending:false}).limit(100);
-    if(!canManage(staff))query=query.or(`assigned_to.eq.${staff.id},created_by.eq.${staff.id}`);
+    if(!canManage(staff))query=query.neq('status','draft').or(`assigned_to.eq.${staff.id},created_by.eq.${staff.id}`);
     const result=await query;
     if(result.error)throw new Error('db');
     const rows=result.data||[];

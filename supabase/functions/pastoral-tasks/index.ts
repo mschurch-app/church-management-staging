@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {MAX_ATTACHMENTS_PER_TASK, validAttachmentInput, validCompletionReport, validTaskInput, validTaskTransition} from './task-policy.ts';
+import {MAX_ATTACHMENTS_PER_TASK, validAttachmentInput, validCompletionReport, validTaskInput, validTaskReport, validTaskTransition} from './task-policy.ts';
 
 
 const CHANNEL_ID='2011645391';
@@ -71,8 +71,9 @@ async function uploadAttachment(request:Request,db:ReturnType<typeof adminClient
     .eq('id',taskId).eq('entity_key',entityKey).maybeSingle();
   if(task.error)throw new Error('db');
   if(!task.data)return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
-  if(task.data.status!=='draft'||(!canManage(staff)&&task.data.created_by!==staff.id))
-    return json(APP_ORIGIN,{ok:false,error:'attachment_forbidden'},403);
+  const draftAccess=task.data.status==='draft'&&(canManage(staff)||task.data.created_by===staff.id);
+  const executionAccess=task.data.status==='approved'&&(canManage(staff)||task.data.assigned_to===staff.id);
+  if(!draftAccess&&!executionAccess)return json(APP_ORIGIN,{ok:false,error:'attachment_forbidden'},403);
   const count=await db.from('pastoral_task_attachments').select('id',{count:'exact',head:true}).eq('task_id',taskId);
   if(count.error)throw new Error('db');
   if((count.count||0)>=MAX_ATTACHMENTS_PER_TASK)return json(APP_ORIGIN,{ok:false,error:'attachment_limit'},409);
@@ -97,15 +98,18 @@ async function listAttachments(db:ReturnType<typeof adminClient>,staff:Staff,ent
   if(task.error)throw new Error('db');
   if(!task.data||!canViewTask(staff,task.data))return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
   const rows=await db.from('pastoral_task_attachments')
-    .select('id,object_path,file_name,content_type,size_bytes,created_at')
+    .select('id,object_path,file_name,content_type,size_bytes,uploaded_by,created_at')
     .eq('task_id',taskId).eq('entity_key',entityKey).order('created_at');
   if(rows.error)throw new Error('db');
+  const people=await activeEntityStaff(db,entityKey);
+  const names=new Map(people.map((person:{id:string;display_name:string})=>[person.id,person.display_name]));
   const attachments=[];
   for(const row of rows.data||[]){
     const signed=await db.storage.from(TASK_FILE_BUCKET).createSignedUrl(row.object_path,300);
     if(signed.error)throw new Error('storage');
+    const signedUrl=new URL(signed.data.signedUrl);signedUrl.searchParams.set('download',row.file_name);
     attachments.push({id:row.id,fileName:row.file_name,contentType:row.content_type,sizeBytes:row.size_bytes,
-      createdAt:row.created_at,url:signed.data.signedUrl});
+      uploadedBy:names.get(row.uploaded_by)||'同工',createdAt:row.created_at,url:signedUrl.toString()});
   }
   return json(APP_ORIGIN,{ok:true,attachments});
 }
@@ -138,6 +142,19 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     }
     return json(APP_ORIGIN,{ok:true,id:inserted.data.id});
   }
+  if(body.action==='report-progress'){
+    if(typeof body.taskId!=='string'||!UUID.test(body.taskId)||!validTaskReport(body.report))
+      return json(APP_ORIGIN,{ok:false,error:'invalid_report'},400);
+    const task=await db.from('pastoral_tasks').select('status,assigned_to').eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
+    if(task.error)throw new Error('db');
+    if(!task.data||task.data.status!=='approved'||(!canManage(staff)&&task.data.assigned_to!==staff.id))
+      return json(APP_ORIGIN,{ok:false,error:'report_forbidden'},403);
+    const saved=await db.from('pastoral_task_reports').insert({
+      task_id:body.taskId,entity_key:entityKey,created_by:staff.id,report_text:(body.report as string).trim(),
+    }).select('id').single();
+    if(saved.error)throw new Error('db');
+    return json(APP_ORIGIN,{ok:true,id:saved.data.id});
+  }
   if(body.action==='list-attachments')return await listAttachments(db,staff,entityKey,body.taskId);
   if(body.action==='list'){
     let query=db.from('pastoral_tasks').select('id,title,description,task_type,status,payload,assigned_to,created_by,approved_by,due_at,created_at')
@@ -148,12 +165,25 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     const rows=result.data||[];
     const people=await activeEntityStaff(db,entityKey);
     const names=new Map(people.map((p:{id:string;display_name:string})=>[p.id,p.display_name]));
+    const reports=rows.length?await db.from('pastoral_task_reports')
+      .select('id,task_id,created_by,report_text,created_at').in('task_id',rows.map((row:{id:string})=>row.id)).order('created_at',{ascending:true})
+      :{data:[],error:null};
+    if(reports.error)throw new Error('db');
+    const reportsByTask=new Map<string,Array<{id:string;authorName:string;text:string;createdAt:string}>>();
+    for(const report of reports.data||[]){
+      const bucket=reportsByTask.get(report.task_id)||[];
+      bucket.push({id:report.id,authorName:names.get(report.created_by)||'同工',text:report.report_text,createdAt:report.created_at});
+      reportsByTask.set(report.task_id,bucket);
+    }
     return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;payload:Record<string,unknown>|null;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null})=>({
       id:row.id,title:row.title,description:row.description,taskType:row.task_type,status:row.status,assigneeName:row.assigned_to?names.get(row.assigned_to)||'已停用同工':'未指派',dueAt:row.due_at,
       canSubmit:row.status==='draft'&&canManage(staff)&&row.created_by===staff.id,
       canApprove:row.status==='pending'&&canManage(staff),
       canComplete:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
-      canAttach:row.status==='draft'&&(row.created_by===staff.id||canManage(staff)),
+      canAttach:(row.status==='draft'&&(row.created_by===staff.id||canManage(staff)))||
+        (row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff))),
+      canReportProgress:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
+      workReports:reportsByTask.get(row.id)||[],
       completionReport:typeof row.payload?.completion_report==='string'?row.payload.completion_report:null,
     }))});
   }

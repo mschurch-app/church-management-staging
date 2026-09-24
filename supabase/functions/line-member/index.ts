@@ -58,10 +58,15 @@ Deno.serve(async request=>{
       if(gatherings.error)return respond(origin,{ok:false,error:'unavailable'},503);
       return respond(origin,{ok:true,profile:{name:identity.name},items:gatherings.data||[],settings:settings.data||{}});
     }
-    const result=await db.from('share_greeting_cards').select('id,category,title,image_url,share_caption').eq('church_id',church).eq('is_active',true).order('created_at',{ascending:false}).limit(120);
+    const scenarioResult=await db.from('love_share_scenarios').select('name,icon,sort_order').eq('church_id',church).eq('is_active',true).order('sort_order').limit(100);
+    if(scenarioResult.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    const scenarios=scenarioResult.data||[],names=scenarios.map(row=>row.name);
+    if(!names.length)return respond(origin,{ok:true,profile:{name:identity.name},scenarios:[],items:[]});
+    const result=await db.from('share_greeting_cards').select('id,category,title,image_url,share_caption,created_at').eq('church_id',church).eq('is_active',true).in('category',names).order('created_at',{ascending:false}).limit(120);
     if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
-    const items=await Promise.all((result.data||[]).map(async row=>({...row,image_url:await signedImage(db,row.image_url)})));
-    return respond(origin,{ok:true,profile:{name:identity.name},items});
+    const order=new Map(scenarios.map((row,index)=>[row.name,index])),sorted=(result.data||[]).sort((a,b)=>(order.get(a.category)??999)-(order.get(b.category)??999));
+    const items=await Promise.all(sorted.map(async row=>({...row,image_url:await signedImage(db,row.image_url)})));
+    return respond(origin,{ok:true,profile:{name:identity.name},scenarios,items});
   }
 
   if(action==='share_image'){

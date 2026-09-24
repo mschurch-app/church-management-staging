@@ -1,6 +1,7 @@
 import {db} from './admin-db.mjs';
 import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20260923-members5';
-import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260923-members5';
+import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260924-custom2';
+import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#list'),editor=$('#editor');
 const groupTerm=church==='SHiNE'?'小家':'小組';
@@ -8,12 +9,13 @@ let page=0,search='',generation=0,busy=false,newcomersOnly=false,groupName='',so
 const selected=new Map();
 let visibleRows=[];
 let memberGroups=[];
+let faithOptions=[...FAITH_OPTIONS],attendanceOptions=[...ATTENDANCE_OPTIONS],newcomerStages=['新朋友','已聯絡','持續關懷','加入小組／小家','穩定聚會'];
 let compactView=false;
 const text=(tag,value,cls='')=>{const el=document.createElement(tag);el.textContent=value;el.className=cls;return el;};
 function clear(){generation++;list.replaceChildren();editor.replaceChildren();editor.hidden=true;$('#new').disabled=true;$('#newcomer').disabled=true;$('#prev').disabled=true;$('#next').disabled=true;updateBatchBar();}
 function updateBatchBar(){const bar=$('#batch-actions');if(bar)bar.hidden=selected.size===0;const count=$('#selected-count');if(count)count.textContent=String(selected.size);}
 function updateBatchValues(){
- const field=$('#batch-field').value,current=$('#batch-value').value,values=field==='faith_status'?FAITH_OPTIONS:field==='group_name'?['未編組',...memberGroups]:ATTENDANCE_OPTIONS;
+ const field=$('#batch-field').value,current=$('#batch-value').value,values=field==='faith_status'?faithOptions:field==='group_name'?['未編組',...memberGroups]:attendanceOptions;
  $('#batch-value').replaceChildren(...values.map(value=>new Option(value,value)));
  if(values.includes(current))$('#batch-value').value=current;
 }
@@ -51,10 +53,11 @@ async function edit(row=null,isNewcomer=false){
    const wrap=text('label',key==='group_name'?'所屬'+groupTerm:label),input=
     key==='gender'?selectControl(['','弟兄','姊妹'],current):
     key==='group_name'?selectControl(['','未編組',...groupNames],current):
-    key==='faith_status'?selectControl(['',...FAITH_OPTIONS],current):
+    key==='faith_status'?selectControl(['',...faithOptions],current):
+    key==='welcome_status'?selectControl(['',...newcomerStages],current):
     key==='district'?selectControl(['',...(DISTRICTS[church]||[])],current):
     document.createElement(key==='memo'?'textarea':'input');
-   if(!['gender','group_name','faith_status','district'].includes(key)){input.maxLength=max;input.value=current;}
+   if(!['gender','group_name','faith_status','welcome_status','district'].includes(key)){input.maxLength=max;input.value=current;}
    input.name=key;input.required=key==='name';
    if(key==='phone')input.type='tel';
    if(key==='birthday')input.placeholder='例如：1990/08/15；原資料僅有 08/15 也可保留';
@@ -63,10 +66,8 @@ async function edit(row=null,isNewcomer=false){
    wrap.append(input);if(key==='memo')memoWrap=wrap;else if(['welcome_status','know_us_from','age_group'].includes(key))extraGrid.append(wrap);else grid.append(wrap);inputs[key]=input;getters[key]=()=>input.value;
   }
   form.append(grid);
-  const inactiveLabel=text('label','','check-panel'),inactive=document.createElement('input');inactive.type='checkbox';inactive.checked=isInactive(row?.growth_progress);
-  let inactiveChanged=false;inactive.onchange=()=>inactiveChanged=true;
-  inactiveLabel.append(inactive,text('span','很久沒來（勾選後暫時移至名冊底部收納區）'));form.append(inactiveLabel);
-  getters.growth_progress=()=>row&&!inactiveChanged?(row.growth_progress??''):inactive.checked?'很久沒來(都沒出現）':'穩定聚會(8成以上)';
+  const progressWrap=text('label','聚會近況'),progress=selectControl(['',...attendanceOptions],row?.growth_progress||attendanceOptions[0]||'');
+  progressWrap.className='check-panel';progressWrap.append(progress);form.append(progressWrap);getters.growth_progress=()=>progress.value;
   const fieldset=document.createElement('fieldset');fieldset.append(text('legend','服事恩賜'));
   const chips=text('div','','choice-grid'),selected=new Set((row?.ministry||'').split(',').map(s=>s.trim()).filter(Boolean));let ministryChanged=false;
   for(const option of availableMinistries){
@@ -143,5 +144,4 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();els
 db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clear();status.textContent='已登出，請重新登入。';}});
 exportButton.onclick=exportAllCsv;
 const selectPageButton=text('button','選取本頁','secondary');selectPageButton.type='button';selectPageButton.onclick=()=>{const boxes=[...list.querySelectorAll('input[data-member-id]')],allSelected=boxes.length&&boxes.every(box=>box.checked);setPageSelection(!allSelected);selectPageButton.textContent=allSelected?'選取本頁':'取消本頁選取';};$('.toolbar-actions').append(selectPageButton);
-listMemberGroups(db,church).then(groups=>{memberGroups=groups;const select=$('#group-filter');for(const name of groups)select.append(new Option(name,name));updateBatchValues();}).catch(()=>{});
-load();
+Promise.all([listMemberGroups(db,church),loadChurchCustomizations(db,church)]).then(([groups,settings])=>{memberGroups=groups;faithOptions=catalog(settings,'faith_status',FAITH_OPTIONS);attendanceOptions=catalog(settings,'growth_progress',ATTENDANCE_OPTIONS);newcomerStages=catalog(settings,'newcomer_stages',newcomerStages);const select=$('#group-filter');for(const name of groups)select.append(new Option(name,name));updateBatchValues();}).catch(()=>{}).finally(load);

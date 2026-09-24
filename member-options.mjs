@@ -8,7 +8,7 @@ export const MINISTRY_OPTIONS=[
   "司會報告", "主日禱告", "接送同工", "聖餐事奉"
 ];
 export const DISTRICTS={"M+": ["大雅區", "西屯區", "北屯區", "南屯區", "西區", "北區", "東區", "南區", "沙鹿區", "其他"], "SHiNE": ["西屯區", "南屯區", "北屯區", "西區", "北區", "大雅區", "沙鹿區", "東區", "南區", "其他"]};
-export const isInactive=value=>typeof value==='string'&&(value.includes('很久沒來')||value.includes('沒出現'));
+export const isInactive=value=>typeof value==='string'&&/(很久沒來|沒出現|暫停聚會|停聚|轉會|離開|封存)/.test(value);
 export function ministryOptions(church,current=''){
  return [...new Set([...MINISTRY_OPTIONS,...current.split(',').map(x=>x.trim()).filter(Boolean)])];
 }

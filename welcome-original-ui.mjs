@@ -1,10 +1,15 @@
 import {getOptions} from './welcome-options.mjs';
+import {loadChurchCustomizations} from './church-customizations.mjs?v=20260924-custom1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus');
-let options,selection={},photo,pending,busy=false;
+let options,layout=[],selection={},photo,pending,busy=false;
 const groups={gender:'groupGender',age:'groupAge',district:'groupDistrict',source:'groupKnow',faith:'groupFaithStatus',feelings:'groupFeelings',interests:'groupInterests'};
 const multi=key=>['feelings','interests'].includes(key);
+const rule=key=>layout.find(item=>item.key===key)||{visible:true,required:false};
+function layoutNodes(){return{identity:$('guestName').parentElement.parentElement,phone:$('guestPhone').parentElement,birthday:$('guestBirthday').parentElement,age:$('groupAge').parentElement,district:$('groupDistrict').parentElement,source:$('groupKnow').parentElement,faith:$('groupFaithStatus').parentElement,feelings:$('groupFeelings').parentElement,interests:$('groupInterests').parentElement,photo:$('photoLabelText').parentElement.parentElement};}
+function applyLayout(){const nodes=layoutNodes();for(const item of layout){const node=nodes[item.key];if(!node)continue;node.hidden=!item.visible;node.dataset.customField=item.key;node.style.order=String(item.sort_order||0);const label=item.key==='photo'?$('photoLabelText'):node.querySelector(':scope > label');if(label)label.textContent=item.label+(item.required?' *':'');for(const input of node.querySelectorAll('input,textarea,select'))if(!['radio','checkbox','file'].includes(input.type))input.required=Boolean(item.visible&&item.required);}for(const parent of new Set(Object.values(nodes).map(node=>node?.parentElement).filter(Boolean))){[...parent.children].filter(node=>node.dataset.customField).sort((a,b)=>(Number(rule(a.dataset.customField).sort_order)||0)-(Number(rule(b.dataset.customField).sort_order)||0)).forEach(node=>parent.append(node));}}
+function requiredMissing(){const tests={identity:()=>!$('guestName').value.trim()||!selection.gender?.length,phone:()=>!$('guestPhone').value.trim(),birthday:()=>!$('guestBirthday').value.trim(),age:()=>!selection.age?.length,district:()=>!selection.district?.length,source:()=>!selection.source?.length,faith:()=>!selection.faith?.length,feelings:()=>!selection.feelings?.length,interests:()=>!selection.interests?.length,photo:()=>!photo};for(const item of layout)if(item.visible&&item.required&&tests[item.key]?.())return item;return null;}
 function renderGroup(key){
  const area=$(groups[key]);area.replaceChildren();
  for(const option of options[key]){
@@ -51,7 +56,7 @@ $('btnSubmit').onclick=async()=>{
  if(busy||!options)return;
  if(!pending){
   const name=$('guestName').value.trim(),phone=$('guestPhone').value.trim();
-  if(!name||!phone){status.textContent='請填寫姓名與聯絡手機。';(!name?$('guestName'):$('guestPhone')).focus();return;}
+  const missing=requiredMissing();if(missing){status.textContent='請完成必填項目：「'+missing.label+'」。';layoutNodes()[missing.key]?.scrollIntoView({behavior:'smooth',block:'center'});return;}
   let source=selection.source[0]||'',faith=selection.faith[0]||'';
   if(options.source.find(x=>x.value===source)?.detail==='inviter'&&$('inviterName').value.trim())source+=' ('+$('inviterName').value.trim()+')';
   const origin=[...$('groupFaithStatus').querySelectorAll('[data-origin]')].find(x=>x.dataset.origin===faith)?.value.trim();
@@ -72,7 +77,7 @@ $('btnSubmit').onclick=async()=>{
 for(const [id,max] of [['guestName',80],['guestPhone',40],['guestBirthday',40],['inviterName',100]])$(id).maxLength=max;
 lock(true);
 try{
- const data=await getOptions(db,church);options=data.options;
+ const [data,customizations]=await Promise.all([getOptions(db,church),loadChurchCustomizations(db,church)]);options=data.options;layout=customizations.welcome_fields;applyLayout();
  for(const key of Object.keys(groups)){selection[key]=options[key].filter(x=>x.selected).map(x=>x.value);renderGroup(key);}
  sourceDetail();lock(false);
 }catch(e){status.textContent=e.message;}

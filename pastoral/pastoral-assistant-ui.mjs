@@ -73,7 +73,7 @@ $('#draft-form').addEventListener('submit', event => {
   } catch (error) { $('#draft-status').textContent = error.message; }
 });
 $('#copy').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText($('#draft-text').textContent); $('#draft-status').textContent = '已複製草稿，可以貼給秘書確認。'; }
+  try { await navigator.clipboard.writeText($('#draft-text').textContent); $('#draft-status').textContent = '已複製草稿，可以貼給同工確認。'; }
   catch { $('#draft-status').textContent = '無法自動複製，請選取上方文字後複製。'; }
 });
 
@@ -93,7 +93,7 @@ async function load() {
     staffRole = staff.role;
     church = assistantChurch(staff, params.get('church'));
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / PASTORAL ASSISTANT';
-    $('#identity').textContent = `${staff.name}｜${{pastor:'牧師',secretary:'秘書',admin:'管理者'}[staff.role]}`;
+    $('#identity').textContent = `${staff.name}｜${{pastor:'牧師',secretary:'同工',admin:'管理者'}[staff.role]}`;
     $('#back').hidden = false;
     $('#back').addEventListener('click', event => { event.preventDefault(); signOut(); });
     $('#workspace').hidden = false;

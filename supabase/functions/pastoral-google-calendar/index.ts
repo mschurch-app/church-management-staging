@@ -272,7 +272,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
       const pref=await schedulePreferences(db,staff.id);
       return json(APP_ORIGIN,{ok:true,staff:[{id:staff.id,name:row.data.display_name,role:row.data.role,
         restDays:pref.restDays||[],workStart:pref.workStart||'09:00',workEnd:pref.workEnd||'17:00',
-        allowEmergencyOverride:pref.allowEmergencyOverride??true}]});
+        allowEmergencyOverride:pref.allowEmergencyOverride??true,isSelf:true}]});
     }
     const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus');
     if(access.error)throw new Error('db');
@@ -286,7 +286,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     const byId=new Map((prefs.data||[]).map((row:{staff_id:string;rest_days:number[];work_start:string;work_end:string;allow_emergency_override:boolean})=>[row.staff_id,row]));
     return json(APP_ORIGIN,{ok:true,staff:rows.map((row:{id:string;display_name:string;role:string})=>{
       const pref=byId.get(row.id);
-      return {id:row.id,name:row.display_name,role:row.role,restDays:pref?.rest_days||[],workStart:String(pref?.work_start||'09:00').slice(0,5),workEnd:String(pref?.work_end||'17:00').slice(0,5),allowEmergencyOverride:pref?.allow_emergency_override??true};
+      return {id:row.id,name:row.display_name,role:row.role,isSelf:row.id===staff.id,restDays:pref?.rest_days||[],workStart:String(pref?.work_start||'09:00').slice(0,5),workEnd:String(pref?.work_end||'17:00').slice(0,5),allowEmergencyOverride:pref?.allow_emergency_override??true};
     })});
   }
   if(body.action==='save-schedule-preferences')return await saveSchedulePreferences(db,staff,body);

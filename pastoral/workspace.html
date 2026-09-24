@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工工作台｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20260924-1">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-1">
 </head>
 <body>
   <header class="topbar">
@@ -21,7 +21,7 @@
         <div><p class="eyebrow" id="church-name">MPLUS PASTORAL AI SUITE</p><h1>教會同工工作台<span>讓每一份託付，都有接續。</span></h1><p class="intro-copy">安排牧養的時間，整理待辦，與秘書一起把關每個細節。</p></div>
         <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">牧師與秘書</div></div>
       </section>
-      <div class="connection"><span class="dot"></span><div><strong>Google 行事曆尚未連接</strong><p>目前可整理行程草稿。完成帳號授權後，才能查詢空檔與建立真實行程。</p></div><span class="phase">第一階段 · 建置中</span></div>
+      <div class="connection" id="calendar-connection"><span class="dot" id="calendar-dot"></span><div><strong id="calendar-connection-title">Google 行事曆尚未連接</strong><p id="calendar-connection-copy">授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。</p></div><button id="connect-calendar" class="button secondary" type="button" hidden>連接共用行事曆</button><span class="phase" id="calendar-connection-label">等待授權</span></div>
       <nav class="tabs" aria-label="工作區" role="tablist">
         <button id="tab-calendar" role="tab" aria-selected="true" aria-controls="panel-calendar" data-tab="calendar">行程安排</button>
         <button id="tab-tasks" role="tab" aria-selected="false" aria-controls="panel-tasks" tabindex="-1" data-tab="tasks">秘書工作</button>
@@ -41,7 +41,7 @@
             </form>
             <div id="draft-result" class="draft-result" hidden>
               <h3>待確認的行程</h3><pre id="draft-text"></pre><button id="copy" class="button secondary" type="button">複製草稿</button>
-              <p class="hint">草稿只保留在目前頁面；尚未檢查衝突、建立行程或通知秘書。</p>
+              <p class="hint">草稿只保留在目前頁面；查詢會檢查 M+ 共用行事曆，仍不會建立行程或通知秘書。</p><button id="check-freebusy" class="button secondary" type="button" hidden>查詢共用行事曆空檔</button><p id="calendar-query-result" class="hint" role="status"></p>
             </div>
             <p id="draft-status" role="status" class="hint"></p>
           </article>
@@ -57,6 +57,6 @@
       <footer>AI 協助預備，牧師與同工共同把關。<span>MPLUS · PASTORAL ASSISTANT</span></footer>
     </div>
   </main>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20260924-6"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-1"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 import {strict as assert} from 'node:assert';
 import {test} from 'node:test';
-import {validTaskInput, validTaskTransition} from './task-policy.ts';
+import {validAttachmentInput, validCompletionReport, validTaskInput, validTaskTransition} from './task-policy.ts';
 
 const valid = {
   title: '整理主日投影片', description: '請於週五前完成。', taskType: 'sermon',
@@ -25,4 +25,17 @@ test('allows only draft, approval, execution, completion transitions', () => {
   assert.equal(validTaskTransition('draft', 'approved'), false);
   assert.equal(validTaskTransition('completed', 'pending'), false);
   assert.equal(validTaskTransition('approved', 'cancelled'), false);
+});
+
+test('accepts only supported attachment types and files up to five MiB', () => {
+  assert.equal(validAttachmentInput('agenda.pdf', 'application/pdf', 100), true);
+  assert.equal(validAttachmentInput('slides.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 5 * 1024 * 1024), true);
+  assert.equal(validAttachmentInput('large.pdf', 'application/pdf', 5 * 1024 * 1024 + 1), false);
+  assert.equal(validAttachmentInput('script.html', 'text/html', 100), false);
+  assert.equal(validAttachmentInput('fake.pdf', 'image/png', 100), false);
+});
+test('requires a concise completion report before marking work complete', () => {
+  assert.equal(validCompletionReport('已整理完成，檔案已附上。'), true);
+  assert.equal(validCompletionReport('   '), false);
+  assert.equal(validCompletionReport('x'.repeat(3001)), false);
 });

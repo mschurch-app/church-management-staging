@@ -198,6 +198,7 @@ $('#find-slots').addEventListener('click', async () => {
     for(const slot of slots){
       const option=document.createElement('button');option.type='button';option.className='slot-option';
       option.textContent=slot.label;option.addEventListener('click',()=>{
+        if(!$('#summary').value.trim()){status.textContent='請先填寫行程名稱，再選擇可約時段。';$('#summary').focus();return;}
         $('#date').value=slot.date;$('#time').value=slot.time;
         $('#draft-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
         $('#check-freebusy').click();

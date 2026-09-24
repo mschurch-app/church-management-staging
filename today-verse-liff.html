@@ -480,7 +480,7 @@
         $('#homeLink').href = `line-member.html?church=${encodeURIComponent(church)}&feature=menu`;
       }
       if (!church || !LIFF_ID || !window.liff) {
-        $('#lineState').textContent = /Line/i.test(navigator.userAgent) ? 'LINE 預覽模式' : '瀏覽器體驗';
+        $('#lineState').textContent = '今日恩典';
         return;
       }
       try {
@@ -493,9 +493,9 @@
         if (!idToken) throw new Error('missing_token');
         await fetchTodayContent(idToken);
         liffReady = true;
-        $('#lineState').textContent = window.liff.isInClient() ? `${profileName} · 今日恩典` : `${profileName} · 瀏覽器體驗`;
+        $('#lineState').textContent = `${profileName} · 今日恩典`;
       } catch {
-        $('#lineState').textContent = '內容暫時離線';
+        $('#lineState').textContent = '稍後再來領受今天的恩典';
       }
     }
 

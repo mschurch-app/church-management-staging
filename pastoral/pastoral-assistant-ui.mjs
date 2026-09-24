@@ -131,6 +131,7 @@ async function load() {
       $('#auth-status').textContent = '已驗證 LINE 身分與教會同工授權。';
     }
     staffRole = staff.role;
+    $('#tab-schedule').hidden = preview || !['pastor','admin'].includes(staffRole);
     church = assistantChurch(staff, params.get('church'));
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / PASTORAL ASSISTANT';
     $('#identity').textContent = `${staff.name}｜${{pastor:'牧師',secretary:'同工',admin:'管理者'}[staff.role]}`;

@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {BUFFER_MS, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
+import {BUFFER_MS, DEFAULT_WORK_DAYS, DEFAULT_WORK_END, DEFAULT_WORK_START, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
 
 const CHANNEL_ID='2011645391';
 const APP_ORIGIN='https://mscos.mchurch.online';

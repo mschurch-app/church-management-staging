@@ -24,8 +24,8 @@ async function calendarApi(action, payload = {}) {
     const message = {calendar_not_configured:'Google 行事曆授權尚未設定。', calendar_not_connected:'尚未連接 M+ 共用行事曆。',
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
       calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
-      rest_day:'當天是這位同工設定的休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
-      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', calendar_conflict:'行事曆時段已被占用，請重新查詢其他時間。', invalid_staff:'請選擇有效的 M+ 同工。', invalid_window:'搜尋日期範圍請限 31 天內。', confirmation_required:'請先在確認視窗按下建立。'}[result.error];
+      rest_day:'所選同工中有人當天休息，請改選時段。', outside_schedule:'所選同工中有人在這段時間不安排工作。',
+      emergency_not_allowed:'所選同工中有人未開放緊急行程例外。', calendar_conflict:'行事曆時段已被占用，請重新查詢其他時間。', invalid_staff:'請選擇有效的 M+ 同工，最多 10 位。', invalid_window:'搜尋日期範圍請限 31 天內。', confirmation_required:'請先在確認視窗按下建立。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
   }
   return result;
@@ -65,12 +65,25 @@ tabs.forEach((button, index) => {
   });
 });
 
+function calendarParticipantIds(){
+  const primary=$('#appointment-staff').value||currentStaffId;
+  return [...new Set([primary,...[...$('#appointment-participants').selectedOptions].map(option=>option.value)].filter(Boolean))];
+}
+function renderParticipantOptions(){
+  const select=$('#appointment-participants'),previous=new Set([...select.selectedOptions].map(option=>option.value));
+  const primary=$('#appointment-staff').value||currentStaffId;
+  select.replaceChildren(...scheduleStaff.filter(person=>person.id!==primary).map(person=>{
+    const option=document.createElement('option');option.value=person.id;option.textContent=person.name;
+    option.selected=previous.has(person.id);return option;
+  }));
+}
 function invalidateDraft(){
   $('#draft-result').hidden = true;
   $('#draft-text').textContent = '';
   $('#draft-status').textContent = '';
   $('#create-event').hidden = true;
   $('#create-event-status').textContent = '';
+  $('#retry-event-notifications').hidden=true;
   $('#slot-search-status').textContent = '';
   $('#slot-search-results').replaceChildren();
   slotSearchSequence++;
@@ -100,6 +113,8 @@ async function loadScheduleSettings(){
   appointmentSelect.replaceChildren(...scheduleStaff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
   appointmentSelect.value=currentStaffId;
   $('#appointment-staff-field').hidden=false;
+  renderParticipantOptions();
+  appointmentSelect.addEventListener('change',renderParticipantOptions);
   const select=$('#schedule-staff');
   select.replaceChildren(...scheduleStaff.map(person=>{
     const option=document.createElement('option'); option.value=person.id; option.textContent=person.name; return option;
@@ -152,7 +167,7 @@ async function load() {
     }
     staffRole = staff.role;
     currentStaffId = staff.id || '';
-    $('#task-form').hidden = preview || !['pastor','admin'].includes(staffRole);
+    $('#task-form').hidden = preview;
     $('#tab-schedule').hidden = preview;
     church = assistantChurch(staff, params.get('church'));
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / PASTORAL ASSISTANT';
@@ -165,6 +180,9 @@ async function load() {
       catch { setCalendarStatus(false, null); $('#calendar-connection-copy').textContent = '目前無法確認行事曆連線狀態，請稍後重新整理。'; }
     } else setCalendarStatus(false, null);
     if (!preview) { try { await loadScheduleSettings(); } catch { $('#schedule-status').textContent='目前無法載入休息日設定，請稍後重試。'; } }
+    const requestedTab=params.get('tab');
+    if(requestedTab==='tasks'){activateTab('tasks');await loadTasks();}
+    else if(requestedTab==='progress')activateTab('progress');
   } catch (error) {
     $('#workspace').hidden = true;
     $('#auth-status').textContent = error.message || '無法載入工作台。';
@@ -188,13 +206,13 @@ $('#find-slots').addEventListener('click', async () => {
     if(!dateFrom||!dateThrough)throw new Error('請選擇搜尋的起訖日期。');
     if(dateThrough<dateFrom)throw new Error('結束日期需晚於或等於開始日期。');
     const result=await calendarApi('find-available-slots',{
-      staffId:$('#appointment-staff').value||currentStaffId,
+      staffId:$('#appointment-staff').value||currentStaffId,participantIds:calendarParticipantIds(),
       dateFrom,dateThrough,durationMinutes:Number($('#duration').value),
     });
     if(request!==slotSearchSequence)return;
     const slots=result.slots||[];
     if(!slots.length){status.textContent='這段日期內沒有符合條件的空檔，可調整日期或時長再搜尋。';return;}
-    status.textContent=`找到 ${slots.length} 個時段；選擇後會再次確認並可由牧師建立行程。`;
+    status.textContent=`找到 ${slots.length} 個時段；選擇後會再次確認行程與參與同工。`;
     for(const slot of slots){
       const option=document.createElement('button');option.type='button';option.className='slot-option';
       option.textContent=slot.label;option.addEventListener('click',()=>{
@@ -221,14 +239,14 @@ $('#check-freebusy').addEventListener('click', async () => {
     const end = new Date(start.getTime() + duration * 60000);
     if (!Number.isFinite(start.getTime()) || end <= start) throw new Error('日期或時間不正確。');
     const availability = await calendarApi('check-availability', {
-      staffId:$('#appointment-staff').value || currentStaffId,
+      staffId:$('#appointment-staff').value || currentStaffId,participantIds:calendarParticipantIds(),
       summary:$('#summary').value.trim(), location:$('#location').value.trim(),
       start:start.toISOString(), end:end.toISOString(), emergency:$('#emergency').checked,
     });
     result.textContent = availability.available
-      ? '符合這位同工的個人排程，M+ 共用行事曆在此時段及前後 30 分鐘也沒有安排。'
-      : '這段時間或前後 30 分鐘已有行事曆安排，請與同工確認其他時段。';
-    if (availability.available && ['pastor','admin'].includes(staffRole)) {
+      ? '所有參與同工的可安排時間皆符合，M+ 共用行事曆也沒有衝突。'
+      : '共用行事曆已有安排，請改選其他時段。';
+    if (availability.available) {
       pendingCalendarRequestId = crypto.randomUUID();
       $('#create-event').hidden = false;
     }
@@ -240,12 +258,19 @@ $('#check-freebusy').addEventListener('click', async () => {
 $('#create-event').addEventListener('click', () => {
   if (!pendingCalendarRequestId) return;
   const person=scheduleStaff.find(item=>item.id===$('#appointment-staff').value);
+  const names=calendarParticipantIds().map(id=>scheduleStaff.find(person=>person.id===id)?.name).filter(Boolean);
   const target=person?.name||'目前登入同工';
-  $('#event-confirm-details').textContent=`${target}｜${$('#date').value} ${$('#time').value}｜${$('#duration').value} 分鐘｜${$('#summary').value.trim()}${$('#location').value.trim()? `｜${$('#location').value.trim()}`:''}`;
+  $('#event-confirm-details').textContent=`主要安排：${target}｜共同參與：${names.join('、')}｜${$('#date').value} ${$('#time').value}｜${$('#duration').value} 分鐘｜${$('#summary').value.trim()}${$('#location').value.trim()? `｜${$('#location').value.trim()}`:''}`;
   $('#event-confirm-status').textContent='';
   $('#event-confirm-dialog').showModal();
 });
 $('#cancel-create-event').addEventListener('click', () => $('#event-confirm-dialog').close());
+$('#retry-event-notifications').addEventListener('click',()=>{
+  $('#event-confirm-title').textContent='重新通知參與同工';
+  $('#event-confirm-details').textContent='行程已建立。系統只會重試尚未成功的 LINE 通知，不會重複建立活動。';
+  $('#confirm-create-event').textContent='重新通知';
+  $('#event-confirm-dialog').showModal();
+});
 $('#confirm-create-event').addEventListener('click', async () => {
   const button=$('#confirm-create-event'),status=$('#create-event-status');
   button.disabled=true; button.textContent='正在建立…';
@@ -254,20 +279,25 @@ $('#confirm-create-event').addEventListener('click', async () => {
     const date=$('#date').value,time=$('#time').value,duration=Number($('#duration').value);
     const start=new Date(`${date}T${time}:00+08:00`),end=new Date(start.getTime()+duration*60000);
     const result=await calendarApi('create-event',{
-      staffId:$('#appointment-staff').value||currentStaffId,
+      staffId:$('#appointment-staff').value||currentStaffId,participantIds:calendarParticipantIds(),
       summary:$('#summary').value.trim(),location:$('#location').value.trim(),
       start:start.toISOString(),end:end.toISOString(),emergency:$('#emergency').checked,
       requestId:pendingCalendarRequestId,confirmed:true,
     });
     $('#event-confirm-status').textContent='';
     $('#event-confirm-dialog').close();
+    $('#event-confirm-title').textContent='確認建立行事曆活動';
+    $('#confirm-create-event').textContent='確認建立';
     $('#create-event').hidden=true;
-    status.textContent=result.created?'已建立活動到 M+ 共用行事曆，沒有寄送邀請通知。':'這項活動先前已建立，未重複新增。';
-    pendingCalendarRequestId=null;
+    const notify=result.notifications||{status:'not_configured',sent:0,total:calendarParticipantIds().length};
+    status.textContent=`${result.created?'行程已建立。':'這項行程已存在，沒有重複建立。'}LINE 通知：${notify.sent}/${notify.total} 位同工已送出。${notify.status==='not_configured'?'尚未設定 LINE Messaging API 權杖，可稍後重試。':notify.status==='partial'?'部分同工通知失敗，可稍後重試。':notify.status==='failed'?'通知未送出，可稍後重試。':''}`;
+    $('#retry-event-notifications').hidden=notify.status==='sent';
+    pendingCalendarRequestId=notify.status==='sent'?null:pendingCalendarRequestId;
   }catch(error){
     $('#event-confirm-status').textContent=error.message||'目前無法建立活動，請稍後重試。';
   }finally{
-    button.disabled=false;button.textContent='確認建立';
+    button.disabled=false;
+    button.textContent=$('#event-confirm-title').textContent==='重新通知參與同工'?'重新通知':'確認建立';
   }
 });
 
@@ -297,7 +327,7 @@ async function tasksApi(action,payload={}){
   const result=await response.json().catch(()=>({}));
   if(!response.ok){
     const message={login_required:'LINE 登入已失效，請重新登入。',entity_forbidden:'沒有此堂會的同工工作權限。',
-      pastor_required:'只有牧師或管理者可以建立、送交或核准工作。',invalid_assignee:'請選擇此堂會已啟用的同工。',
+      pastor_required:'目前只有牧師或管理者可以執行這項管理操作。',invalid_assignee:'請選擇此堂會已啟用的同工。',
       invalid_task:'請檢查工作內容、期限及負責同工。',task_not_found:'找不到這項工作，請重新整理。',
       invalid_transition:'這項工作目前無法進行所選操作。',completion_report_required:'請填寫執行回報後再完成工作。',
       invalid_report:'請填寫不超過 3,000 字的進度回報。',report_forbidden:'目前無法為這項工作提交進度回報。',
@@ -307,7 +337,7 @@ async function tasksApi(action,payload={}){
   }
   return result;
 }
-const taskStatusText={draft:'草稿',pending:'待牧師核准',approved:'執行中',completed:'已完成',cancelled:'已取消'};
+const taskStatusText={draft:'草稿',pending:'待負責同工核准承接',approved:'執行中',completed:'已完成',cancelled:'已取消'};
 const taskTypeText={general:'一般',sermon:'講道',event:'活動',care:'關懷',document:'公文'};
 function taskButton(label,id,action,secondary=false){
   const button=document.createElement('button');button.type='button';button.className='button'+(secondary?' secondary':'');
@@ -338,8 +368,9 @@ function renderTasks(tasks){
     if(task.completionReport){const report=document.createElement('div');report.className='completion-report';const label=document.createElement('strong');label.textContent='完成回報';const text=document.createElement('p');text.textContent=task.completionReport;report.append(label,text);article.append(report);}
     const actions=document.createElement('div');actions.className='task-actions';
     actions.append(taskButton('檢視／下載附件',task.id,'list-attachments',true));
-    if(task.canSubmit)actions.append(taskButton('送交同工核准',task.id,'submit'));
-    if(task.canApprove)actions.append(taskButton('核准並開始執行',task.id,'approve'));
+    if(task.canSubmit)actions.append(taskButton('派出並通知負責同工',task.id,'submit'));
+    if(task.canApprove)actions.append(taskButton('核准承接並開始執行',task.id,'approve'));
+    if(task.canNotify)actions.append(taskButton('重新通知負責同工',task.id,'retry-notification',true));
     if(task.canAttach){
       const input=document.createElement('input');input.type='file';input.multiple=true;
       input.accept='.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp';
@@ -396,11 +427,9 @@ async function loadTasks(){
   $('#refresh-tasks').disabled=true;
   try{
     const result=await tasksApi('list');
-    if(['pastor','admin'].includes(staffRole)){
-      const people=await tasksApi('assignees'),select=$('#task-assignee'),previous=select.value;
-      select.replaceChildren(...people.staff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
-      if(people.staff.some(person=>person.id===previous))select.value=previous;
-    }
+    const people=await tasksApi('assignees'),select=$('#task-assignee'),previous=select.value;
+    select.replaceChildren(...people.staff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
+    select.value=people.staff.some(person=>person.id===previous)?previous:(people.staff.some(person=>person.id===currentStaffId)?currentStaffId:(people.staff[0]?.id||''));
     renderTasks(result.tasks||[]);
     status.textContent=`已載入 ${(result.tasks||[]).length} 項工作。`;
   }catch(error){status.textContent=error.message||'無法載入同工工作。';}
@@ -410,7 +439,6 @@ $('#tab-tasks').addEventListener('click',()=>loadTasks());
 $('#refresh-tasks').addEventListener('click',()=>loadTasks());
 $('#task-form').addEventListener('submit',async event=>{
   event.preventDefault();
-  if(!['pastor','admin'].includes(staffRole))return;
   const button=$('#save-task'),status=$('#task-form-status');button.disabled=true;status.textContent='正在儲存草稿…';
   try{
     const dueValue=$('#task-due').value,files=[...$('#task-files').files];
@@ -433,6 +461,10 @@ $('#task-list').addEventListener('click',async event=>{
   button.disabled=true;
   try{
     if(action==='list-attachments'){await showTaskAttachments(taskId,article.querySelector('.task-attachments'));button.disabled=false;return;}
+    if(action==='retry-notification'){
+      const result=await tasksApi(action,{taskId});await loadTasks();
+      $('#task-status').textContent=result.notification?.status==='sent'?'已通知負責同工。':result.notification?.status==='not_configured'?'尚未設定 LINE Messaging API 權杖，請稍後再試。':'通知沒有送出，請檢查同工 LINE 帳號設定。';return;
+    }
     if(action==='report-progress'){
       const report=article.querySelector('.task-progress-input')?.value||'';
       await tasksApi('report-progress',{taskId,report});await loadTasks();$('#task-status').textContent='進度回報已送出。';return;
@@ -448,7 +480,12 @@ $('#task-list').addEventListener('click',async event=>{
     $('#task-status').textContent='正在更新工作狀態…';
     const payload={taskId};
     if(action==='complete')payload.report=article.querySelector('.task-report-input')?.value||'';
-    await tasksApi(action,payload);await loadTasks();
+    const result=await tasksApi(action,payload);await loadTasks();
+    if(result.notification){
+      $('#task-status').textContent=result.notification.status==='sent'
+        ?(action==='submit'?'已派出工作並通知負責同工。':'負責同工已承接，建立者已收到通知。')
+        :result.notification.status==='not_configured'?'工作狀態已更新；尚未設定 LINE Messaging API 權杖，請設定後重新通知。':'工作狀態已更新；LINE 通知未送出，請稍後重試。';
+    }
   }catch(error){$('#task-status').textContent=error.message||'無法更新工作或附件。';button.disabled=false;}
 });
 

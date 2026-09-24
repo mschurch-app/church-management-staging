@@ -23,3 +23,5 @@ textarea{min-width:0;width:100%;resize:vertical;background:#fbfcfa;border:1px so
 @media(min-width:900px){.task-layout{grid-template-columns:.9fr 1.1fr}.task-list-card{min-height:560px}.task-item{padding:18px}}
 
 .slot-search{margin:18px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:#fafbf9}.slot-search h3{margin:0 0 8px}.slot-range{grid-template-columns:1fr 1fr}.slot-results{display:flex;gap:8px;flex-wrap:wrap}.slot-option{border:1px solid #b8cabe;background:#fff;color:var(--green);border-radius:8px;padding:10px 13px;font:inherit;font-size:13px;cursor:pointer}.slot-option:hover,.slot-option:focus-visible{background:#e9efe6;outline:2px solid #8fae9f;outline-offset:2px}@media(max-width:760px){.slot-range{grid-template-columns:1fr 1fr}.slot-range label:first-child{grid-column:auto}}
+
+#appointment-participants{min-height:120px;padding:8px}.task-assignee-note{font-size:12px;color:var(--muted)}

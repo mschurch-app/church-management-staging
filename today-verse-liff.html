@@ -295,6 +295,13 @@
     let hasRevealed = false;
     let liffReady = false;
     let toastTimer = 0;
+    let speechParts = [];
+    let speechPartIndex = 0;
+    let activeUtterance = null;
+    let speechStartTimer = 0;
+    let speechKeepAliveTimer = 0;
+    let speechRetryCount = 0;
+    let speechCurrentStarted = false;
 
     function createParticles() {
       const area = $('#particles');
@@ -375,30 +382,117 @@
     }
 
     function stopSpeaking() {
+      clearTimeout(speechStartTimer);
+      clearInterval(speechKeepAliveTimer);
+      speechStartTimer = 0;
+      speechKeepAliveTimer = 0;
+      activeUtterance = null;
+      speechParts = [];
+      speechPartIndex = 0;
+      speechCurrentStarted = false;
       window.speechSynthesis?.cancel();
       $('#speakWave').classList.add('hidden');
       $('#speakerIcon').classList.remove('hidden');
       $('#speakerLabel').textContent = '朗讀';
       speakButton.dataset.speaking = 'false';
+      speakButton.disabled = false;
     }
 
-    function speakGrace() {
-      if (!('speechSynthesis' in window)) { showToast('此瀏覽器暫不支援語音朗讀'); return; }
-      if (speakButton.dataset.speaking === 'true') { stopSpeaking(); return; }
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(`${liveVerse}。${liveVerseReference}。祝福你：${livePrayer}`);
+    function chineseVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      return voices.find(voice => /^zh-TW/i.test(voice.lang))
+        || voices.find(voice => /^zh-(HK|CN)/i.test(voice.lang))
+        || voices.find(voice => /^zh/i.test(voice.lang))
+        || null;
+    }
+
+    function updateSpeakingUi(started = true) {
+      $('#speakerIcon').classList.toggle('hidden', started);
+      $('#speakWave').classList.toggle('hidden', !started);
+      $('#speakerLabel').textContent = started ? '停止' : '準備中';
+      speakButton.dataset.speaking = 'true';
+    }
+
+    function speakNextPart() {
+      if (speakButton.dataset.speaking !== 'true') return;
+      if (speechPartIndex >= speechParts.length) {
+        stopSpeaking();
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(speechParts[speechPartIndex]);
       utterance.lang = 'zh-TW';
       utterance.rate = .88;
       utterance.pitch = 1.03;
-      const voices = window.speechSynthesis.getVoices();
-      utterance.voice = voices.find(voice => /^zh-TW/i.test(voice.lang)) || voices.find(voice => /^zh/i.test(voice.lang)) || null;
-      utterance.onend = stopSpeaking;
-      utterance.onerror = stopSpeaking;
-      speakButton.dataset.speaking = 'true';
-      $('#speakerIcon').classList.add('hidden');
-      $('#speakWave').classList.remove('hidden');
-      $('#speakerLabel').textContent = '停止';
+      utterance.volume = 1;
+      utterance.voice = chineseVoice();
+      activeUtterance = utterance; // iOS/WKWebView 必須保留參照，避免朗讀物件被提早回收。
+      speechCurrentStarted = false;
+
+      utterance.onstart = () => {
+        clearTimeout(speechStartTimer);
+        speechCurrentStarted = true;
+        speechRetryCount = 0;
+        updateSpeakingUi(true);
+      };
+      utterance.onend = () => {
+        clearTimeout(speechStartTimer);
+        speechPartIndex += 1;
+        activeUtterance = null;
+        window.setTimeout(speakNextPart, 90);
+      };
+      utterance.onerror = event => {
+        clearTimeout(speechStartTimer);
+        if (event.error === 'interrupted' || event.error === 'canceled') return;
+        stopSpeaking();
+        showToast('朗讀未能啟動，請確認手機音量後再試一次');
+      };
+
+      window.speechSynthesis.resume();
       window.speechSynthesis.speak(utterance);
+      speechStartTimer = window.setTimeout(() => {
+        if (speechCurrentStarted || !activeUtterance) return;
+        if (speechRetryCount < 1) {
+          speechRetryCount += 1;
+          window.speechSynthesis.cancel();
+          activeUtterance = null;
+          window.setTimeout(speakNextPart, 120);
+          return;
+        }
+        stopSpeaking();
+        showToast('LINE 暫時無法啟動朗讀，請調高媒體音量後再試');
+      }, 1800);
+    }
+
+    function speakGrace() {
+      if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        showToast('此瀏覽器暫不支援語音朗讀');
+        return;
+      }
+      if (speakButton.dataset.speaking === 'true') {
+        stopSpeaking();
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      speechParts = [
+        `今日應許。${liveVerse}`,
+        liveVerseReference,
+        `祝福你。${livePrayer}`
+      ].filter(Boolean);
+      speechPartIndex = 0;
+      speechRetryCount = 0;
+      updateSpeakingUi(false);
+
+      // iOS LINE WebView 偶爾會把語音佇列暫停；週期性 resume 可避免無聲卡住。
+      speechKeepAliveTimer = window.setInterval(() => {
+        if (speakButton.dataset.speaking === 'true' && window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+      }, 700);
+
+      // 先在點擊手勢內建立佇列，再等一個 frame 讓 cancel 完成。
+      window.requestAnimationFrame(speakNextPart);
     }
 
     function releaseHearts(button) {

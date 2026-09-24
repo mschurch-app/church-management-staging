@@ -25,7 +25,7 @@
       <nav class="tabs" aria-label="工作區" role="tablist">
         <button id="tab-calendar" role="tab" aria-selected="true" aria-controls="panel-calendar" data-tab="calendar">行程安排</button>
         <button id="tab-tasks" role="tab" aria-selected="false" aria-controls="panel-tasks" tabindex="-1" data-tab="tasks">同工工作</button>
-        <button id="tab-schedule" role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">休息日設定</button>
+        <button id="tab-schedule" hidden role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">休息日設定</button>
         <button id="tab-progress" role="tab" aria-selected="false" aria-controls="panel-progress" tabindex="-1" data-tab="progress">準備進度</button>
       </nav>
       <section id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar">
@@ -55,7 +55,7 @@
       <section id="panel-schedule" role="tabpanel" aria-labelledby="tab-schedule" hidden>
         <article class="card">
           <p class="eyebrow">INDIVIDUAL SCHEDULE</p><h2>同工個人休息日與可安排時段</h2>
-          <p class="muted">設定會套用在被選取的同工身上。尚未設定時，依週二至週六 09:00–17:00 檢查，不預設任何休息日。</p>
+          <p class="muted">由牧師或管理者為每位同工個別設定。尚未設定時，預設可安排週二至週六 09:00–17:00，沒有指定休息日。</p>
           <form id="schedule-form">
             <label>設定對象<select id="schedule-staff" required></select></label>
             <fieldset class="weekday-list"><legend>每週休息日（可複選）</legend>

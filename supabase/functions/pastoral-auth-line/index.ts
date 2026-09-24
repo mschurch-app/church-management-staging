@@ -63,7 +63,7 @@ Deno.serve(async request=>{
   if(staff&&!staff.is_active)return respond(origin,{ok:false,error:'staff_forbidden'},403);
   if(!staff){
     if(typeof enrollmentCode!=='string'||
-       enrollmentCode.length>40||
+       enrollmentCode.length!==41||
        !/^MPLUS-[0-9A-F]{8}(?:-[0-9A-F]{8}){3}$/.test(enrollmentCode)){
       return respond(origin,{ok:false,error:'staff_forbidden'},403);
     }

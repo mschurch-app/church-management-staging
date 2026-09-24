@@ -90,6 +90,7 @@ $('#copy').addEventListener('click', async () => {
 async function loadScheduleSettings(){
   const result=await calendarApi('list-schedule-staff');
   scheduleStaff=result.staff||[];
+  currentStaffId=scheduleStaff.find(person=>person.isSelf)?.id||currentStaffId;
   const appointmentSelect=$('#appointment-staff');
   appointmentSelect.replaceChildren(...scheduleStaff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
   appointmentSelect.value=currentStaffId;
@@ -100,6 +101,7 @@ async function loadScheduleSettings(){
   }));
   $('#schedule-staff-field').hidden=!['pastor','admin'].includes(staffRole);
   select.disabled=!['pastor','admin'].includes(staffRole);
+  select.value=currentStaffId;
   select.addEventListener('change',renderScheduleSettings);
   renderScheduleSettings();
 }

@@ -1,9 +1,9 @@
-import {LINE_LOGIN_CHANNEL_ID, PASTORAL_LIFF_ID, PASTORAL_API_BASE} from './config.mjs';
+import {LINE_LOGIN_CHANNEL_ID, PASTORAL_LIFF_ID, PASTORAL_AUTH_ENDPOINT} from './config.mjs';
 
 let initialization;
 export function loginConfigured() {
   try {
-    return PASTORAL_LIFF_ID.startsWith(`${LINE_LOGIN_CHANNEL_ID}-`) && new URL(PASTORAL_API_BASE).protocol === 'https:';
+    return PASTORAL_LIFF_ID.startsWith(`${LINE_LOGIN_CHANNEL_ID}-`) && new URL(PASTORAL_AUTH_ENDPOINT).protocol === 'https:';
   } catch { return false; }
 }
 
@@ -32,8 +32,8 @@ export async function authenticateStaff({interactive = false} = {}) {
   if (!token) throw new Error('LINE 登入資訊已失效，請重新登入。');
   let response;
   try {
-    response = await fetch(`${PASTORAL_API_BASE.replace(/\/$/, '')}/api/auth/line`, {
-      method: 'POST', headers: {Authorization: `Bearer ${token}`},
+    response = await fetch(PASTORAL_AUTH_ENDPOINT, {
+      method: 'POST', headers: {Authorization: `Bearer ${token}`, 'Content-Type':'application/json'},
       credentials: 'omit', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(12000),
     });
   } catch { throw new Error('暫時無法確認幕僚權限，請稍後再試。'); }
@@ -45,7 +45,7 @@ export async function authenticateStaff({interactive = false} = {}) {
   if (!response.ok) throw new Error('幕僚登入尚未開放或暫時無法使用，請稍後再試。');
   const {staff} = await response.json();
   if (!staff || !['pastor','secretary','admin'].includes(staff.role) || typeof staff.name !== 'string' ||
-      !Array.isArray(staff.churches) || !staff.churches.length || staff.churches.some(c => !['M+','SHiNE'].includes(c))) {
+      !Array.isArray(staff.churches) || !staff.churches.length || staff.churches.some(c => !['M+','SHiNE','台灣基督教社會關懷協會'].includes(c))) {
     throw new Error('無法確認幕僚權限，請聯絡系統管理者。');
   }
   return staff;

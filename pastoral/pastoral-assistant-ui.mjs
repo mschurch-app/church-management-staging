@@ -7,6 +7,8 @@ let church;
 let calendarConnected = false;
 let previewMode = false;
 let staffRole = '';
+let scheduleStaff = [];
+let currentStaffId = '';
 
 async function calendarApi(action, payload = {}) {
   const token = await staffLineIdToken();
@@ -19,7 +21,9 @@ async function calendarApi(action, payload = {}) {
   if (!response.ok) {
     const message = {calendar_not_configured:'Google 行事曆授權尚未設定。', calendar_not_connected:'尚未連接 M+ 共用行事曆。',
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
-      calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。'}[result.error];
+      calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
+      rest_day:'當天是這位同工設定的休息日。', outside_schedule:'此時間不在該同工可安排時段內。',
+      emergency_not_allowed:'此同工的設定不允許緊急行程例外。', pastor_required:'只有牧師或管理者可以調整同工排程。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
   }
   return result;
@@ -77,6 +81,47 @@ $('#copy').addEventListener('click', async () => {
   catch { $('#draft-status').textContent = '無法自動複製，請選取上方文字後複製。'; }
 });
 
+async function loadScheduleSettings(){
+  const result=await calendarApi('list-schedule-staff');
+  scheduleStaff=result.staff||[];
+  const appointmentSelect=$('#appointment-staff');
+  appointmentSelect.replaceChildren(...scheduleStaff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
+  appointmentSelect.value=currentStaffId;
+  $('#appointment-staff-field').hidden=false;
+  const select=$('#schedule-staff');
+  select.replaceChildren(...scheduleStaff.map(person=>{
+    const option=document.createElement('option'); option.value=person.id; option.textContent=person.name; return option;
+  }));
+  select.addEventListener('change',renderScheduleSettings);
+  renderScheduleSettings();
+}
+function renderScheduleSettings(){
+  const person=scheduleStaff.find(item=>item.id===$('#schedule-staff').value);
+  if(!person)return;
+  document.querySelectorAll('input[name="rest-day"]').forEach(box=>{box.checked=person.restDays.includes(Number(box.value));});
+  $('#schedule-start').value=person.workStart;
+  $('#schedule-end').value=person.workEnd;
+  $('#schedule-emergency').checked=person.allowEmergencyOverride;
+  $('#schedule-status').textContent='';
+}
+$('#schedule-form').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const button=$('#save-schedule'),status=$('#schedule-status');
+  button.disabled=true; status.textContent='正在儲存個人排程設定…';
+  try{
+    const person={
+      staffId:$('#schedule-staff').value,
+      restDays:[...document.querySelectorAll('input[name="rest-day"]:checked')].map(box=>Number(box.value)),
+      workStart:$('#schedule-start').value,workEnd:$('#schedule-end').value,
+      allowEmergencyOverride:$('#schedule-emergency').checked,
+    };
+    await calendarApi('save-schedule-preferences',person);
+    Object.assign(scheduleStaff.find(item=>item.id===person.staffId),person);
+    status.textContent='個人設定已儲存，行程檢查會使用這份設定。';
+  }catch(error){status.textContent=error.message||'無法儲存設定。';}
+  finally{button.disabled=false;}
+});
+
 async function load() {
   try {
     let staff;
@@ -91,6 +136,8 @@ async function load() {
       $('#auth-status').textContent = '已驗證 LINE 身分與教會同工授權。';
     }
     staffRole = staff.role;
+    currentStaffId = staff.id || '';
+    $('#tab-schedule').hidden = preview || !['pastor','admin'].includes(staffRole);
     church = assistantChurch(staff, params.get('church'));
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / PASTORAL ASSISTANT';
     $('#identity').textContent = `${staff.name}｜${{pastor:'牧師',secretary:'同工',admin:'管理者'}[staff.role]}`;
@@ -101,6 +148,7 @@ async function load() {
       try { const status = await calendarApi('status'); setCalendarStatus(status.connected, status.accountEmail); }
       catch { setCalendarStatus(false, null); $('#calendar-connection-copy').textContent = '目前無法確認行事曆連線狀態，請稍後重新整理。'; }
     } else setCalendarStatus(false, null);
+    if (!preview && ['pastor','admin'].includes(staffRole)) { try { await loadScheduleSettings(); } catch {} }
   } catch (error) {
     $('#workspace').hidden = true;
     $('#auth-status').textContent = error.message || '無法載入工作台。';
@@ -123,8 +171,14 @@ $('#check-freebusy').addEventListener('click', async () => {
     const start = new Date(`${date}T${time}:00+08:00`);
     const end = new Date(start.getTime() + duration * 60000);
     if (!Number.isFinite(start.getTime()) || end <= start) throw new Error('日期或時間不正確。');
-    const busy = await calendarApi('freebusy', {timeMin:new Date(start.getTime()-30*60000).toISOString(), timeMax:new Date(end.getTime()+30*60000).toISOString()});
-    result.textContent = busy.busy.length ? '這段時間或前後 30 分鐘已有行事曆安排，請與同工確認其他時段。' : 'M+ 共用行事曆在此時段及前後 30 分鐘沒有安排。';
+    const availability = await calendarApi('check-availability', {
+      staffId:$('#appointment-staff').value || currentStaffId,
+      summary:$('#summary').value.trim(), location:$('#location').value.trim(),
+      start:start.toISOString(), end:end.toISOString(), emergency:$('#emergency').checked,
+    });
+    result.textContent = availability.available
+      ? '符合這位同工的個人排程，M+ 共用行事曆在此時段及前後 30 分鐘也沒有安排。'
+      : '這段時間或前後 30 分鐘已有行事曆安排，請與同工確認其他時段。';
   } catch (error) { result.textContent = error.message || '無法查詢行事曆。'; }
   finally { button.disabled = false; }
 });

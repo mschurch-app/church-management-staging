@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {BUFFER_MS, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
+import {BUFFER_MS, DEFAULT_WORK_DAYS, DEFAULT_WORK_END, DEFAULT_WORK_START, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
 
 const CHANNEL_ID='2011645391';
 const APP_ORIGIN='https://mscos.mchurch.online';
@@ -258,6 +258,74 @@ async function createCalendarEvent(token:string,requestId:string,appointment:{su
   return {created:true,conflict:false};
 }
 
+
+function validCalendarDate(value:unknown){
+  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))return null;
+  const [year,month,day]=value.split('-').map(Number);
+  const check=new Date(Date.UTC(year,month-1,day));
+  return check.getUTCFullYear()===year&&check.getUTCMonth()+1===month&&check.getUTCDate()===day
+    ?{year,month,day,weekday:check.getUTCDay()}:null;
+}
+function dateNumber(value:{year:number;month:number;day:number}){
+  return Math.floor(Date.UTC(value.year,value.month-1,value.day)/86400000);
+}
+function dayString(value:{year:number;month:number;day:number}){
+  return `${value.year}-${String(value.month).padStart(2,'0')}-${String(value.day).padStart(2,'0')}`;
+}
+function slotWindow(value:{year:number;month:number;day:number},clock:string){
+  const [hour,minute]=clock.split(':').map(Number);
+  return Date.UTC(value.year,value.month-1,value.day,hour,minute)-8*60*60*1000;
+}
+function localWeekday(value:number){
+  return new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',weekday:'short'}).format(new Date(value));
+}
+async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,body:Record<string,unknown>){
+  const from=validCalendarDate(body.dateFrom),through=validCalendarDate(body.dateThrough);
+  const duration=body.durationMinutes;
+  if(!from||!through||!MEETING_MINUTES.includes(duration as number))
+    return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+  const dayCount=dateNumber(through)-dateNumber(from)+1;
+  if(dayCount<1||dayCount>31)return json(APP_ORIGIN,{ok:false,error:'invalid_window'},400);
+  const targetStaffId=await scheduleTarget(db,staff,body.staffId);
+  if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
+  const preferences=await schedulePreferences(db,targetStaffId);
+  const restDays=Array.isArray(preferences.restDays)?preferences.restDays:[];
+  const workStart=preferences.workStart||DEFAULT_WORK_START;
+  const workEnd=preferences.workEnd||DEFAULT_WORK_END;
+  const start=slotWindow(from,'00:00');
+  const afterThrough=slotWindow({year:new Date(Date.UTC(through.year,through.month-1,through.day+1)).getUTCFullYear(),
+    month:new Date(Date.UTC(through.year,through.month-1,through.day+1)).getUTCMonth()+1,
+    day:new Date(Date.UTC(through.year,through.month-1,through.day+1)).getUTCDate()},'00:00');
+  const now=Date.now();
+  if(afterThrough<=now)return json(APP_ORIGIN,{ok:true,slots:[]});
+  const token=await accessToken(db);
+  if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
+  try{
+    const busy=await freeBusy(token,new Date(Math.max(start,now)).toISOString(),new Date(afterThrough).toISOString());
+    const durationMs=(duration as number)*60000;
+    const slots:Array<{date:string;time:string;start:string;end:string;label:string}>=[];
+    for(let offset=0;offset<dayCount&&slots.length<12;offset++){
+      const stamp=new Date(Date.UTC(from.year,from.month-1,from.day+offset));
+      const date={year:stamp.getUTCFullYear(),month:stamp.getUTCMonth()+1,day:stamp.getUTCDate(),weekday:stamp.getUTCDay()};
+      if(!DEFAULT_WORK_DAYS.includes(date.weekday)||restDays.includes(date.weekday))continue;
+      const dayStart=Math.max(slotWindow(date,workStart),start,now);
+      const dayEnd=Math.min(slotWindow(date,workEnd),afterThrough);
+      const halfHour=30*60000;
+      const firstCandidate=Math.ceil(dayStart/halfHour)*halfHour;
+      let daySlots=0;
+      for(let candidate=firstCandidate;candidate+durationMs<=dayEnd&&slots.length<12&&daySlots<3;candidate+=halfHour){
+        const bufferedStart=candidate-BUFFER_MS,bufferedEnd=candidate+durationMs+BUFFER_MS;
+        if(busy.some(item=>Date.parse(item.start)<bufferedEnd&&Date.parse(item.end)>bufferedStart))continue;
+        const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(candidate));
+        daySlots++;
+        slots.push({date:dayString(date),time,start:new Date(candidate).toISOString(),end:new Date(candidate+durationMs).toISOString(),
+          label:`${localWeekday(candidate)} ${date.month}/${date.day} ${time}`});
+      }
+    }
+    return json(APP_ORIGIN,{ok:true,slots});
+  }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
+}
+
 async function handleAction(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
   if(!staff.entityKeys.includes('mplus'))return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
   const body=await request.json().catch(()=>null);
@@ -301,6 +369,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     const token=await getRefreshToken(db).catch(()=>null);
     return json(APP_ORIGIN,{ok:true,connected:!!token,calendarId:CALENDAR_ID,accountEmail:token?CALENDAR_EMAIL:null});
   }
+  if(body.action==='find-available-slots')return await findAvailableSlots(db,staff,body);
   if(body.action==='freebusy'){
     let start:number,end:number;
     try{start=parseRfc3339(body.timeMin);end=parseRfc3339(body.timeMax);}catch{return json(APP_ORIGIN,{ok:false,error:'invalid_time'},400);}

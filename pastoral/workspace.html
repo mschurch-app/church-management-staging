@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工工作台｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-1">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-2">
 </head>
 <body>
   <header class="topbar">
@@ -37,6 +37,7 @@
               <label>行程名稱<input id="summary" required maxlength="200" placeholder="例如：與張弟兄會面"></label>
               <div class="form-row"><label>日期<input id="date" type="date" required></label><label>開始時間<input id="time" type="time" required value="14:00"></label><label>時長<select id="duration"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option><option value="120">120 分鐘</option></select></label></div>
               <label>地點<input id="location" maxlength="500" placeholder="例如：教會辦公室"></label>
+              <label class="check-line"><input id="emergency" type="checkbox"> 緊急行程（依同工個人設定決定是否可例外）</label>
               <p class="hint">日期與時間以台灣時間為準。個人休息日與可安排時段依同工設定檢查。</p>
               <button class="button" type="submit">整理行程草稿 <span aria-hidden="true">→</span></button>
             </form>

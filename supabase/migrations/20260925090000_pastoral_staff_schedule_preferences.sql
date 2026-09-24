@@ -16,6 +16,9 @@ create table if not exists public.pastoral_staff_schedule_preferences (
 );
 
 alter table public.pastoral_staff_schedule_preferences enable row level security;
+drop policy if exists pastoral_staff_schedule_preferences_deny_anon on public.pastoral_staff_schedule_preferences;
+drop policy if exists pastoral_staff_schedule_preferences_deny_authenticated on public.pastoral_staff_schedule_preferences;
+
 create policy pastoral_staff_schedule_preferences_deny_anon
   on public.pastoral_staff_schedule_preferences
   for all to anon using (false) with check (false);

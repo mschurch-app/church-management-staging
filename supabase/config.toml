@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.pastoral-auth-line]
 verify_jwt = false
+
+[functions.pastoral-tasks]
+verify_jwt = false

@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工工作台｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-3">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-8">
 </head>
 <body>
   <header class="topbar">
@@ -62,15 +62,39 @@
         </article>
       </dialog>
       <section id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden>
-        <article class="card empty"><span class="empty-icon" aria-hidden="true">↗</span><h2>把事情交接清楚</h2><p>同工任務功能建置中。接通後，這裡會集中呈現待校對、已核准與執行中的工作。</p><div class="workflow"><span>草稿</span><b>→</b><span>待校對</span><b>→</b><span>已核准</span><b>→</b><span>執行完成</span></div><p class="hint">目前尚未載入或建立任何派工任務。</p></article>
+        <div class="columns task-layout">
+          <article class="card">
+            <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>交代清楚，一起完成</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
+            <p class="muted">桌機版支援挑選、上傳與下載附件；負責同工在執行中可提交進度回報，完成時再附成果檔並填寫完成回報。送交後由牧師或管理者核准。</p>
+            <form id="task-form">
+              <label>工作事項<input id="task-title" required maxlength="200" placeholder="例如：整理主日講道投影片"></label>
+              <label>說明<textarea id="task-description" rows="3" maxlength="5000" placeholder="補充背景、交付內容或需要留意的事項"></textarea></label>
+              <label>附件（最多 5 個，每個不超過 5 MB）<input id="task-files" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp"></label>
+              <p class="hint">附件僅限 PDF、Office 文件、文字與常見圖片格式；只有任務相關同工可開啟。</p>
+              <div class="form-row task-fields">
+                <label>工作類型<select id="task-type"><option value="general">一般</option><option value="sermon">講道</option><option value="event">活動</option><option value="care">關懷</option><option value="document">公文</option></select></label>
+                <label>負責同工<select id="task-assignee" required></select></label>
+                <label>期限（選填）<input id="task-due" type="datetime-local"></label>
+              </div>
+              <button id="save-task" class="button" type="submit">儲存草稿</button>
+              <p id="task-form-status" class="hint" role="status"></p>
+            </form>
+          </article>
+          <article class="card task-list-card">
+            <div class="card-heading"><div><p class="eyebrow">TASK BOARD</p><h2>工作清單</h2></div></div>
+            <p id="task-status" class="hint" role="status">尚未載入。</p>
+            <div id="task-list" class="task-list" aria-live="polite"></div>
+          </article>
+        </div>
       </section>
       <section id="panel-schedule" role="tabpanel" aria-labelledby="tab-schedule" hidden>
         <article class="card">
           <p class="eyebrow">INDIVIDUAL SCHEDULE</p><h2>同工個人休息日與可安排時段</h2>
-          <p class="muted">由牧師或管理者為每位同工個別設定。尚未設定時，預設可安排週二至週六 09:00–17:00，沒有指定休息日。</p>
+          <p class="muted">每位同工都可以隨時自訂自己的休息日與可安排時段；牧師或管理者也能協助設定其他同工。尚未設定時，預設可安排週二至週六 09:00–17:00，沒有指定休息日。</p>
           <form id="schedule-form">
-            <label>設定對象<select id="schedule-staff" required></select></label>
-            <fieldset class="weekday-list"><legend>每週休息日（可複選）</legend>
+            <label id="schedule-staff-field">設定對象<select id="schedule-staff" required></select></label>
+            <fieldset class="weekday-list"><legend>每週休息日（週一至週日皆可選，可複選）</legend>
+              <label><input type="checkbox" name="rest-day" value="0"> 週日</label><label><input type="checkbox" name="rest-day" value="1"> 週一</label>
               <label><input type="checkbox" name="rest-day" value="2"> 週二</label><label><input type="checkbox" name="rest-day" value="3"> 週三</label>
               <label><input type="checkbox" name="rest-day" value="4"> 週四</label><label><input type="checkbox" name="rest-day" value="5"> 週五</label>
               <label><input type="checkbox" name="rest-day" value="6"> 週六</label>
@@ -83,11 +107,11 @@
         </article>
       </section>
       <section id="panel-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
-        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><em>待接入</em></li><li><span>同工派工與 LINE 通知</span><em>下一階段</em></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
+        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><em>待接入</em></li><li><span>同工派工、執行回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
       </section>
       <footer>AI 協助預備，牧師與同工共同把關。<span>MPLUS · PASTORAL ASSISTANT</span></footer>
     </div>
   </main>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-5"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-10"></script>
 </body>
 </html>

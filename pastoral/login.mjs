@@ -1,4 +1,4 @@
-import {authenticateStaff, loginConfigured} from './auth.mjs?v=20260924-4';
+import {authenticateStaff, loginConfigured} from './auth.mjs?v=20260924-5';
 const button=document.querySelector('#line-login');
 const status=document.querySelector('#login-status');
 const codeInput=document.querySelector('#enrollment-code');

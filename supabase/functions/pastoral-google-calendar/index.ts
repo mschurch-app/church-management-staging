@@ -321,7 +321,9 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     if(body.confirmed!==true)return json(APP_ORIGIN,{ok:false,error:'confirmation_required'},400);
     const appointment=readAppointment(body);
     if(!appointment||typeof body.requestId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(body.requestId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
-    const preferences=await schedulePreferences(db,staff.id);
+    const targetStaffId=await scheduleTarget(db,staff,body.staffId);
+    if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
+    const preferences=await schedulePreferences(db,targetStaffId);
     const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,preferences);
     if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
     const token=await accessToken(db);

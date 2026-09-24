@@ -145,7 +145,6 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
 }
 async function scheduleTarget(db:ReturnType<typeof adminClient>,actor:Staff,requested:unknown){
   const staffId=typeof requested==='string'?requested:actor.id;
-  if(staffId!==actor.id&&actor.role!=='pastor'&&actor.role!=='admin')return null;
   const result=await db.from('pastoral_staff').select('id,is_active').eq('id',staffId).eq('is_active',true).maybeSingle();
   if(result.error)throw new Error('db');
   if(!result.data)return null;
@@ -230,28 +229,29 @@ async function freeBusy(token:string,start:string,end:string){
   return calendar.busy as Array<{start:string;end:string}>;
 }
 
-async function eventAlreadyCreated(token:string,requestId:string,eventId:string,appointment:{summary:string;location:string;start:number;end:number}){
+async function eventAlreadyCreated(token:string,requestId:string,eventId:string,appointment:{summary:string;location:string;start:number;end:number},participants:Array<{id:string;display_name:string;line_subject:string|null}>){
   const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${eventId}`;
   const response=await fetch(url,{headers:{authorization:`Bearer ${token}`},redirect:'error',signal:AbortSignal.timeout(12000)});
   if(response.status===404)return false;
   if(!response.ok)throw new Error('calendar_api');
   const event=await response.json();
   const privateProps=event.extendedProperties?.private||{};
-  return privateProps.pastoralRequestId===requestId&&event.summary===appointment.summary&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||'')===appointment.start&&Date.parse(event.end?.dateTime||'')===appointment.end;
+  return privateProps.pastoralRequestId===requestId&&privateProps.pastoralParticipantIds===[...participants].map(person=>person.id).sort().join(',')&&event.summary===appointment.summary&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||'')===appointment.start&&Date.parse(event.end?.dateTime||'')===appointment.end;
 }
-async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number}){
+async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number},participants:Array<{id:string;display_name:string;line_subject:string|null}>){
   const eventId=requestId.toLowerCase().replaceAll('-','');
   const base=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`;
-  if(await eventAlreadyCreated(token,requestId,eventId,appointment))return {created:false,conflict:false};
+  if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
   const busy=await freeBusy(token,new Date(appointment.start-BUFFER_MS).toISOString(),new Date(appointment.end+BUFFER_MS).toISOString());
   if(busy.length)return {created:false,conflict:true};
   const event={id:eventId,summary:appointment.summary,...(appointment.location?{location:appointment.location}:{}),
     start:{dateTime:new Date(appointment.start).toISOString(),timeZone:'Asia/Taipei'},
     end:{dateTime:new Date(appointment.end).toISOString(),timeZone:'Asia/Taipei'},
-    extendedProperties:{private:{pastoralRequestId:requestId}}};
+    description:`共同參與同工：${participants.map(person=>person.display_name).join('、')}`,
+    extendedProperties:{private:{pastoralRequestId:requestId,pastoralParticipantIds:participants.map(person=>person.id).sort().join(',')}}};
   const response=await fetch(`${base}?sendUpdates=none`,{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(event)});
   if(response.status===409){
-    if(await eventAlreadyCreated(token,requestId,eventId,appointment))return {created:false,conflict:false};
+    if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
     return {created:false,conflict:true};
   }
   if(!response.ok)throw new Error('calendar_api');
@@ -279,6 +279,55 @@ function slotWindow(value:{year:number;month:number;day:number},clock:string){
 function localWeekday(value:number){
   return new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',weekday:'short'}).format(new Date(value));
 }
+
+async function resolveMeetingParticipants(db:ReturnType<typeof adminClient>,primaryId:string,raw:unknown){
+  if(raw!==undefined&&(!Array.isArray(raw)||raw.length>10||raw.some(id=>typeof id!=='string'||!UUID.test(id))))return null;
+  const ids=[...new Set([primaryId,...(Array.isArray(raw)?raw as string[]:[])])];
+  if(ids.length>10)return null;
+  const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus').in('staff_id',ids);
+  if(access.error)throw new Error('db');
+  if(new Set((access.data||[]).map((row:{staff_id:string})=>row.staff_id)).size!==ids.length)return null;
+  const result=await db.from('pastoral_staff').select('id,display_name,line_subject,is_active').eq('is_active',true).in('id',ids);
+  if(result.error)throw new Error('db');
+  const people=result.data||[];
+  return people.length===ids.length?ids.map(id=>people.find((person:{id:string})=>person.id===id)!):null;
+}
+async function sendCoworkerPush(db:ReturnType<typeof adminClient>,recipient:{id:string;display_name:string;line_subject:string|null},
+  notificationType:string,relatedId:string,message:string){
+  const key=`${notificationType}:${relatedId}:${recipient.id}`;
+  const previous=await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key',key).maybeSingle();
+  if(previous.error)throw new Error('db');
+  if(previous.data?.status==='sent')return 'sent';
+  let status='failed',errorCode:string|null=null;
+  const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
+  if(!token){status='not_configured';errorCode='channel_token_missing';}
+  else if(!/^U[0-9a-f]{32}$/i.test(recipient.line_subject||'')){status='failed';errorCode='line_identity_missing';}
+  else{
+    try{
+      const response=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),
+        headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
+        body:JSON.stringify({to:recipient.line_subject,messages:[{type:'text',text:message}]})});
+      if(response.ok)status='sent';else errorCode=`line_http_${response.status}`;
+    }catch{errorCode='line_unavailable';}
+  }
+  const save=await db.from('pastoral_notification_deliveries').upsert({
+    entity_key:'mplus',notification_type:notificationType,recipient_staff_id:recipient.id,related_id:relatedId,
+    idempotency_key:key,status,error_code:errorCode,sent_at:status==='sent'?new Date().toISOString():null,
+    updated_at:new Date().toISOString(),
+  },{onConflict:'idempotency_key'});
+  if(save.error)throw new Error('db');
+  return status;
+}
+async function notifyMeetingParticipants(db:ReturnType<typeof adminClient>,people:Array<{id:string;display_name:string;line_subject:string|null}>,
+  requestId:string,appointment:{summary:string;location:string;start:number;end:number}){
+  const date=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(appointment.start));
+  const link='https://liff.line.me/2011645391-VgkQRZ9d/workspace.html?tab=calendar';
+  const results=await Promise.all(people.map(person=>sendCoworkerPush(db,person,'calendar_participant',requestId,
+    `M+ 同工行程通知：${appointment.summary}\n時間：${date}\n地點：${appointment.location||'未指定'}\n共同參與：${people.map(item=>item.display_name).join('、')}\n開啟同工工作台：${link}`)));
+  return {sent:results.filter(status=>status==='sent').length,total:people.length,
+    status:results.every(status=>status==='sent')?'sent':results.some(status=>status==='sent')?'partial':results.includes('not_configured')?'not_configured':'failed'};
+}
+
 async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,body:Record<string,unknown>){
   const from=validCalendarDate(body.dateFrom),through=validCalendarDate(body.dateThrough);
   const duration=body.durationMinutes;
@@ -288,7 +337,10 @@ async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,
   if(dayCount<1||dayCount>31)return json(APP_ORIGIN,{ok:false,error:'invalid_window'},400);
   const targetStaffId=await scheduleTarget(db,staff,body.staffId);
   if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
-  const preferences=await schedulePreferences(db,targetStaffId);
+  const participants=await resolveMeetingParticipants(db,targetStaffId,body.participantIds);
+  if(!participants)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},400);
+  const participantPreferences=await Promise.all(participants.map(person=>schedulePreferences(db,person.id)));
+  const preferences=participantPreferences[0]||{};
   const restDays=Array.isArray(preferences.restDays)?preferences.restDays:[];
   const workStart=preferences.workStart||DEFAULT_WORK_START;
   const workEnd=preferences.workEnd||DEFAULT_WORK_END;
@@ -307,14 +359,16 @@ async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,
     for(let offset=0;offset<dayCount&&slots.length<12;offset++){
       const stamp=new Date(Date.UTC(from.year,from.month-1,from.day+offset));
       const date={year:stamp.getUTCFullYear(),month:stamp.getUTCMonth()+1,day:stamp.getUTCDate(),weekday:stamp.getUTCDay()};
-      if(!DEFAULT_WORK_DAYS.includes(date.weekday)||restDays.includes(date.weekday))continue;
+      if(!DEFAULT_WORK_DAYS.includes(date.weekday))continue;
       const dayStart=Math.max(slotWindow(date,workStart),start,now);
       const dayEnd=Math.min(slotWindow(date,workEnd),afterThrough);
       const halfHour=30*60000;
       const firstCandidate=Math.ceil(dayStart/halfHour)*halfHour;
       let daySlots=0;
       for(let candidate=firstCandidate;candidate+durationMs<=dayEnd&&slots.length<12&&daySlots<3;candidate+=halfHour){
-        const bufferedStart=candidate-BUFFER_MS,bufferedEnd=candidate+durationMs+BUFFER_MS;
+        const slotEnd=candidate+durationMs;
+        if(participantPreferences.some(person=>scheduleError(candidate,slotEnd,false,person)!==null))continue;
+        const bufferedStart=candidate-BUFFER_MS,bufferedEnd=slotEnd+BUFFER_MS;
         if(busy.some(item=>Date.parse(item.start)<bufferedEnd&&Date.parse(item.end)>bufferedStart))continue;
         const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(candidate));
         daySlots++;
@@ -333,15 +387,6 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   if(body.action==='connect')return await startConnect(staff,db);
   if(body.action==='list-schedule-staff'){
     const canManageSchedule=staff.role==='pastor'||staff.role==='admin';
-    if(!canManageSchedule){
-      const row=await db.from('pastoral_staff').select('id,display_name,role,is_active').eq('id',staff.id).eq('is_active',true).maybeSingle();
-      if(row.error)throw new Error('db');
-      if(!row.data)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
-      const pref=await schedulePreferences(db,staff.id);
-      return json(APP_ORIGIN,{ok:true,staff:[{id:staff.id,name:row.data.display_name,role:row.data.role,
-        restDays:pref.restDays||[],workStart:pref.workStart||'09:00',workEnd:pref.workEnd||'17:00',
-        allowEmergencyOverride:pref.allowEmergencyOverride??true,isSelf:true}]});
-    }
     const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus');
     if(access.error)throw new Error('db');
     const staffIds=[...new Set((access.data||[]).map((row:{staff_id:string})=>row.staff_id))];
@@ -354,7 +399,11 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     const byId=new Map((prefs.data||[]).map((row:{staff_id:string;rest_days:number[];work_start:string;work_end:string;allow_emergency_override:boolean})=>[row.staff_id,row]));
     return json(APP_ORIGIN,{ok:true,staff:rows.map((row:{id:string;display_name:string;role:string})=>{
       const pref=byId.get(row.id);
-      return {id:row.id,name:row.display_name,role:row.role,isSelf:row.id===staff.id,restDays:pref?.rest_days||[],workStart:String(pref?.work_start||'09:00').slice(0,5),workEnd:String(pref?.work_end||'17:00').slice(0,5),allowEmergencyOverride:pref?.allow_emergency_override??true};
+      const mayView=canManageSchedule||row.id===staff.id;
+      return {id:row.id,name:row.display_name,role:row.role,isSelf:row.id===staff.id,
+        restDays:mayView?(pref?.rest_days||[]):[],workStart:mayView?String(pref?.work_start||'09:00').slice(0,5):'09:00',
+        workEnd:mayView?String(pref?.work_end||'17:00').slice(0,5):'17:00',
+        allowEmergencyOverride:mayView?(pref?.allow_emergency_override??true):true};
     })});
   }
   if(body.action==='save-schedule-preferences')return await saveSchedulePreferences(db,staff,body);
@@ -386,9 +435,12 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     if(!appointment)return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
     const targetStaffId=await scheduleTarget(db,staff,body.staffId);
     if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
-    const preferences=await schedulePreferences(db,targetStaffId);
-    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,preferences);
-    if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
+    const participants=await resolveMeetingParticipants(db,targetStaffId,body.participantIds);
+    if(!participants)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},400);
+    for(const person of participants){
+      const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,await schedulePreferences(db,person.id));
+      if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
+    }
     const token=await accessToken(db);
     if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
     try{
@@ -397,21 +449,24 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
   }
   if(body.action==='create-event'){
-    if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
     if(body.confirmed!==true)return json(APP_ORIGIN,{ok:false,error:'confirmation_required'},400);
     const appointment=readAppointment(body);
     if(!appointment||typeof body.requestId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(body.requestId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
     const targetStaffId=await scheduleTarget(db,staff,body.staffId);
     if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
-    const preferences=await schedulePreferences(db,targetStaffId);
-    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,preferences);
-    if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
+    const participants=await resolveMeetingParticipants(db,targetStaffId,body.participantIds);
+    if(!participants)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},400);
+    for(const person of participants){
+      const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,await schedulePreferences(db,person.id));
+      if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
+    }
     const token=await accessToken(db);
     if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
     try{
-      const result=await createCalendarEvent(token,body.requestId,appointment);
+      const result=await createCalendarEvent(token,body.requestId,appointment,participants);
       if(result.conflict)return json(APP_ORIGIN,{ok:false,error:'calendar_conflict'},409);
-      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID});
+      const notifications=await notifyMeetingParticipants(db,participants,body.requestId,appointment);
+      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID,notifications});
     }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);

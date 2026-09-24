@@ -34,6 +34,7 @@
             <div class="card-heading"><div><p class="eyebrow">CALENDAR & SCHEDULE</p><h2>先整理下一個約定</h2></div><span class="tag">行程草稿</span></div>
             <p class="muted">填寫會面資訊，整理成一段可以交給同工確認的文字。</p>
             <form id="draft-form">
+              <label id="appointment-staff-field" hidden>安排對象<select id="appointment-staff"></select></label>
               <label>行程名稱<input id="summary" required maxlength="200" placeholder="例如：與張弟兄會面"></label>
               <div class="form-row"><label>日期<input id="date" type="date" required></label><label>開始時間<input id="time" type="time" required value="14:00"></label><label>時長<select id="duration"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option><option value="120">120 分鐘</option></select></label></div>
               <label>地點<input id="location" maxlength="500" placeholder="例如：教會辦公室"></label>
@@ -60,7 +61,6 @@
           <form id="schedule-form">
             <label>設定對象<select id="schedule-staff" required></select></label>
             <fieldset class="weekday-list"><legend>每週休息日（可複選）</legend>
-              <label><input type="checkbox" name="rest-day" value="0"> 週日</label><label><input type="checkbox" name="rest-day" value="1"> 週一</label>
               <label><input type="checkbox" name="rest-day" value="2"> 週二</label><label><input type="checkbox" name="rest-day" value="3"> 週三</label>
               <label><input type="checkbox" name="rest-day" value="4"> 週四</label><label><input type="checkbox" name="rest-day" value="5"> 週五</label>
               <label><input type="checkbox" name="rest-day" value="6"> 週六</label>

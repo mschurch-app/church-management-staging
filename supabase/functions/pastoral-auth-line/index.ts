@@ -32,7 +32,8 @@ async function verifyLineIdToken(token:string){
 
 async function hashEnrollmentCode(code:string){
   const hex=code.replace(/^MPLUS-/,'').replaceAll('-','').toLowerCase();
-  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(hex));
+  const codeBytes=Uint8Array.from(hex.match(/.{2}/g)||[],pair=>parseInt(pair,16));
+  const digest=await crypto.subtle.digest('SHA-256',codeBytes);
   return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
 }
 

@@ -8,9 +8,50 @@ html,body,button,input,select,textarea{font-family:inherit!important}
 *{box-sizing:border-box}
 button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 button,a,[role="button"]{touch-action:manipulation}
+
+/* Readability: keep the light visual tone without relying on thin text. */
+body{font-weight:500}
+h1,h2,h3,h4,h5,h6,strong,b,legend{font-weight:750}
+p,li,dd,dt,label,small,.muted,.status-message,.footnote{font-weight:500}
+button,a,.status-badge,.eyebrow{font-weight:700}
+input,select,textarea{font-weight:500}
+.muted,.status-message,.footnote{color:#526c73}
+
+/* Admin accounts use compact app-like cards on wider screens. */
+.admin-accounts-page .admin-account-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));
+  gap:16px;
+}
+.admin-accounts-page .admin-account-card{
+  display:flex;
+  min-width:0;
+  min-height:300px;
+  flex-direction:column;
+  padding:22px;
+  border-radius:22px;
+}
+.admin-profile-head{display:grid;grid-template-columns:52px minmax(0,1fr);gap:13px;align-items:center}
+.admin-profile-avatar{display:grid;place-items:center;width:52px;height:52px;border-radius:17px;font-size:21px;font-weight:800}
+.admin-profile-copy{display:flex;min-width:0;flex-direction:column;line-height:1.4}
+.admin-profile-copy strong{overflow:hidden;font-size:18px;text-overflow:ellipsis;white-space:nowrap}
+.admin-profile-copy span{font-size:14px;font-weight:600}
+.admin-profile-copy small{overflow:hidden;color:#526c73;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.admin-profile-head .status-badge{grid-column:1/-1;justify-self:start;margin:2px 0 0}
+.admin-role-line{display:grid;grid-template-columns:minmax(104px,.78fr) minmax(0,1.6fr);gap:10px;margin:12px 0 0;padding:12px 13px;border-radius:14px;line-height:1.5}
+.admin-role-line strong{font-size:14px}
+.admin-role-line span{min-width:0;color:#526c73;font-size:13px;font-weight:550;overflow-wrap:anywhere}
+.admin-accounts-page .admin-card-actions{margin-top:auto;padding-top:18px}
+.admin-accounts-page .admin-card-actions button{flex:1 1 130px}
 @media(max-width:760px){
   html{scroll-padding-top:max(76px,calc(env(safe-area-inset-top) + 62px))}
   body{min-width:320px}
   button,input,select,textarea{font-size:max(16px,1em)}
   button,a,[role="button"]{min-height:44px}
+}
+@media(max-width:620px){
+  .admin-accounts-page .admin-account-card{min-height:0;padding:18px}
+  .admin-role-line{grid-template-columns:1fr;gap:3px}
+  .admin-accounts-page .admin-card-actions{grid-template-columns:1fr 1fr}
+  .admin-accounts-page .admin-card-actions button:last-child:nth-child(3){grid-column:1/-1}
 }

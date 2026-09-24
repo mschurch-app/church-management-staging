@@ -143,6 +143,38 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
   try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false);}
   return Response.redirect(`${APP_ORIGIN}/pastoral/workspace.html?calendar=connected`,303);
 }
+async function schedulePreferences(db:ReturnType<typeof adminClient>,staffId:string){
+  const result=await db.from('pastoral_staff_schedule_preferences')
+    .select('rest_days,work_start,work_end,allow_emergency_override')
+    .eq('staff_id',staffId).maybeSingle();
+  if(result.error)throw new Error('db');
+  const row=result.data;
+  return row ? {
+    restDays:row.rest_days,
+    workStart:String(row.work_start).slice(0,5),
+    workEnd:String(row.work_end).slice(0,5),
+    allowEmergencyOverride:row.allow_emergency_override,
+  } : {};
+}
+async function saveSchedulePreferences(db:ReturnType<typeof adminClient>,staff:Staff,body:Record<string,unknown>){
+  if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+  const staffId=typeof body.staffId==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.staffId)?body.staffId:staff.id;
+  const restDays=body.restDays;
+  const workStart=body.workStart,workEnd=body.workEnd;
+  const allowEmergencyOverride=body.allowEmergencyOverride;
+  const validClock=(value:unknown)=>typeof value==='string'&&/^([01]\\d|2[0-3]):[0-5]\\d$/.test(value);
+  if(!Array.isArray(restDays)||restDays.some(day=>!Number.isInteger(day)||day<0||day>6)||
+    !validClock(workStart)||!validClock(workEnd)||workStart>=workEnd||typeof allowEmergencyOverride!=='boolean')
+    return json(APP_ORIGIN,{ok:false,error:'invalid_schedule_preferences'},400);
+  const write=await db.from('pastoral_staff_schedule_preferences').upsert({
+    staff_id:staffId,rest_days:[...new Set(restDays)].sort((a,b)=>a-b),
+    work_start:workStart,work_end:workEnd,timezone:'Asia/Taipei',
+    allow_emergency_override:allowEmergencyOverride,updated_at:new Date().toISOString(),
+  },{onConflict:'staff_id'});
+  if(write.error)throw new Error('db');
+  return json(APP_ORIGIN,{ok:true});
+}
+
 function parseRfc3339(value:unknown){
   if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/.test(value))throw new Error('invalid_time');
   const ms=Date.parse(value);
@@ -201,6 +233,27 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   const body=await request.json().catch(()=>null);
   if(!body||typeof body.action!=='string')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
   if(body.action==='connect')return await startConnect(staff,db);
+  if(body.action==='list-schedule-staff'){
+    if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
+    const result=await db.from('pastoral_staff').select('id,display_name,role,is_active').eq('is_active',true).order('display_name');
+    if(result.error)throw new Error('db');
+    const rows=result.data||[];
+    const prefs=rows.length?await db.from('pastoral_staff_schedule_preferences').select('staff_id,rest_days,work_start,work_end,allow_emergency_override').in('staff_id',rows.map((row:{id:string})=>row.id)):{data:[],error:null};
+    if(prefs.error)throw new Error('db');
+    const byId=new Map((prefs.data||[]).map((row:{staff_id:string;rest_days:number[];work_start:string;work_end:string;allow_emergency_override:boolean})=>[row.staff_id,row]));
+    return json(APP_ORIGIN,{ok:true,staff:rows.map((row:{id:string;display_name:string;role:string})=>{
+      const pref=byId.get(row.id);
+      return {id:row.id,name:row.display_name,role:row.role,restDays:pref?.rest_days||[],workStart:String(pref?.work_start||'09:00').slice(0,5),workEnd:String(pref?.work_end||'17:00').slice(0,5),allowEmergencyOverride:pref?.allow_emergency_override??true};
+    })});
+  }
+  if(body.action==='save-schedule-preferences')return await saveSchedulePreferences(db,staff,body);
+  if(body.action==='schedule-preferences'){
+    const preferences=await schedulePreferences(db,staff.id);
+    return json(APP_ORIGIN,{ok:true,preferences:{
+      restDays:preferences.restDays||[],workStart:preferences.workStart||'09:00',workEnd:preferences.workEnd||'17:00',
+      allowEmergencyOverride:preferences.allowEmergencyOverride??true
+    }});
+  }
   if(body.action==='status'){
     const token=await getRefreshToken(db).catch(()=>null);
     return json(APP_ORIGIN,{ok:true,connected:!!token,calendarId:CALENDAR_ID,accountEmail:token?CALENDAR_EMAIL:null});
@@ -219,7 +272,8 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   if(body.action==='check-availability'){
     const appointment=readAppointment(body);
     if(!appointment)return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
-    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency);
+    const preferences=await schedulePreferences(db,staff.id);
+    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,preferences);
     if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
     const token=await accessToken(db);
     if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
@@ -233,7 +287,8 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     if(body.confirmed!==true)return json(APP_ORIGIN,{ok:false,error:'confirmation_required'},400);
     const appointment=readAppointment(body);
     if(!appointment||typeof body.requestId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(body.requestId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
-    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency);
+    const preferences=await schedulePreferences(db,staff.id);
+    const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,preferences);
     if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
     const token=await accessToken(db);
     if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);

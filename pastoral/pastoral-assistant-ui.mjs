@@ -200,12 +200,14 @@ $('#create-event').addEventListener('click', () => {
   const person=scheduleStaff.find(item=>item.id===$('#appointment-staff').value);
   const target=person?.name||'目前登入同工';
   $('#event-confirm-details').textContent=`${target}｜${$('#date').value} ${$('#time').value}｜${$('#duration').value} 分鐘｜${$('#summary').value.trim()}${$('#location').value.trim()? `｜${$('#location').value.trim()}`:''}`;
+  $('#event-confirm-status').textContent='';
   $('#event-confirm-dialog').showModal();
 });
 $('#cancel-create-event').addEventListener('click', () => $('#event-confirm-dialog').close());
 $('#confirm-create-event').addEventListener('click', async () => {
   const button=$('#confirm-create-event'),status=$('#create-event-status');
   button.disabled=true; button.textContent='正在建立…';
+  $('#event-confirm-status').textContent='正在再次確認排程與行事曆空檔…';
   try{
     const date=$('#date').value,time=$('#time').value,duration=Number($('#duration').value);
     const start=new Date(`${date}T${time}:00+08:00`),end=new Date(start.getTime()+duration*60000);
@@ -215,12 +217,13 @@ $('#confirm-create-event').addEventListener('click', async () => {
       start:start.toISOString(),end:end.toISOString(),emergency:$('#emergency').checked,
       requestId:pendingCalendarRequestId,confirmed:true,
     });
+    $('#event-confirm-status').textContent='';
     $('#event-confirm-dialog').close();
     $('#create-event').hidden=true;
     status.textContent=result.created?'已建立活動到 M+ 共用行事曆，沒有寄送邀請通知。':'這項活動先前已建立，未重複新增。';
     pendingCalendarRequestId=null;
   }catch(error){
-    status.textContent=error.message||'目前無法建立活動，請稍後重試。';
+    $('#event-confirm-status').textContent=error.message||'目前無法建立活動，請稍後重試。';
   }finally{
     button.disabled=false;button.textContent='確認建立';
   }

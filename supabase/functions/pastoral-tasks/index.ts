@@ -235,6 +235,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       canReportProgress:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
       workReports:reportsByTask.get(row.id)||[],
       completionReport:typeof row.payload?.completion_report==='string'?row.payload.completion_report:null,
+      isNewcomerCare:row.payload?.workflow==='newcomer_care',
     }))});
   }
   if(['submit','approve','complete'].includes(body.action)){
@@ -261,7 +262,11 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       if(!current.data||current.data.status!=='approved'||(!canManage(staff)&&current.data.assigned_to!==staff.id))
         return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
       const payload=current.data.payload&&typeof current.data.payload==='object'&&!Array.isArray(current.data.payload)?current.data.payload:{};
-      completionPayload={...payload,completion_report:(body.report as string).trim()};
+      const newcomerCare=payload.workflow==='newcomer_care';
+      if(newcomerCare&&(!['line','phone','meeting','other'].includes(body.contactMethod)||typeof body.nextStep!=='string'||!body.nextStep.trim()))
+        return json(APP_ORIGIN,{ok:false,error:'care_report_required'},400);
+      completionPayload={...payload,completion_report:(body.report as string).trim(),completed_by_staff_id:staff.id,
+        ...(newcomerCare?{contact_method:body.contactMethod,next_step:(body.nextStep as string).trim()}:{})};
     }
     let update=db.from('pastoral_tasks').update({status:nextStatus,updated_at:new Date().toISOString(),
       ...(body.action==='approve'?{approved_by:staff.id}:{}),

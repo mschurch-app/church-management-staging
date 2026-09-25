@@ -329,7 +329,7 @@ async function tasksApi(action,payload={}){
     const message={login_required:'LINE 登入已失效，請重新登入。',entity_forbidden:'沒有此堂會的同工工作權限。',
       pastor_required:'目前只有牧師或管理者可以執行這項管理操作。',invalid_assignee:'請選擇此堂會已啟用的同工。',
       invalid_task:'請檢查工作內容、期限及負責同工。',task_not_found:'找不到這項工作，請重新整理。',
-      invalid_transition:'這項工作目前無法進行所選操作。',completion_report_required:'請填寫執行回報後再完成工作。',
+      invalid_transition:'這項工作目前無法進行所選操作。',completion_report_required:'請填寫執行回報後再完成工作。',care_report_required:'請選擇聯絡方式，填寫關懷摘要和下一步後再完成。',
       invalid_report:'請填寫不超過 3,000 字的進度回報。',report_forbidden:'目前無法為這項工作提交進度回報。',
       invalid_attachment:'附件格式或大小不符合規定。',attachment_limit:'每項工作最多附加 5 個檔案。',
       attachment_forbidden:'參考附件只能在邀請送出前，由建立者或管理者加入。'}[result.error];
@@ -385,8 +385,18 @@ function renderTasks(tasks){
       actions.append(progress,taskButton('提交進度回報',task.id,'report-progress',true));
     }
     if(task.canComplete){
+      if(task.isNewcomerCare){
+        const method=document.createElement('select');method.className='care-contact-method';
+        method.setAttribute('aria-label','聯絡方式');
+        method.required=true;
+        method.append(new Option('選擇聯絡方式',''),new Option('LINE','line'),new Option('電話','phone'),new Option('面談','meeting'),new Option('其他','other'));
+        const methodLabel=document.createElement('label');methodLabel.textContent='聯絡方式';methodLabel.append(method);
+        const next=document.createElement('input');next.type='text';next.maxLength=1000;next.className='care-next-step';next.placeholder='下一步，例如邀請下週再來或介紹小組';
+        next.setAttribute('aria-label','下一步');
+        actions.append(methodLabel,next);
+      }
       const report=document.createElement('textarea');report.rows=3;report.maxLength=3000;report.required=true;
-      report.className='task-report-input';report.placeholder='請簡述完成內容、交付結果或需要後續處理的事項';
+      report.className='task-report-input';report.placeholder=task.isNewcomerCare?'請記下關懷摘要':'請簡述完成內容、交付結果或需要後續處理的事項';
       report.setAttribute('aria-label','完成回報');
       actions.append(report,taskButton('提交回報並完成',task.id,'complete'));
     }
@@ -479,7 +489,11 @@ $('#task-list').addEventListener('click',async event=>{
     }
     $('#task-status').textContent='正在更新工作進度…';
     const payload={taskId};
-    if(action==='complete')payload.report=article.querySelector('.task-report-input')?.value||'';
+    if(action==='complete'){
+      payload.report=article.querySelector('.task-report-input')?.value||'';
+      if(article.querySelector('.care-contact-method'))payload.contactMethod=article.querySelector('.care-contact-method').value;
+      if(article.querySelector('.care-next-step'))payload.nextStep=article.querySelector('.care-next-step').value;
+    }
     const result=await tasksApi(action,payload);await loadTasks();
     if(result.notification){
       $('#task-status').textContent=result.notification.status==='sent'

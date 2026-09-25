@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.pastoral-tasks]
 verify_jwt = false
+
+[functions.pastoral-care-reminders]
+verify_jwt = false

@@ -147,7 +147,7 @@ async function sendCoworkerPush(db:ReturnType<typeof adminClient>,entityKey:stri
 async function notifyTaskAssigned(db:ReturnType<typeof adminClient>,entityKey:string,taskId:string,assigneeId:string,title:string,dueAt:string|null){
   const due=dueAt?`\n期限：${new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(dueAt))}`:'';
   const status=await sendCoworkerPush(db,entityKey,assigneeId,'task_assigned',taskId,
-    `有一項工作交接給你，請先核准承接：${title}${due}\n開啟同工工作台：${TASK_LIFF_URL}`);
+    `有同工邀請你一起處理這項工作：${title}${due}\n接受後就可以開始，進度也能在工作台更新。\n開啟同工工作台：${TASK_LIFF_URL}`);
   return {status};
 }
 
@@ -282,7 +282,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       notification=await notifyTaskAssigned(db,entityKey,body.taskId,current.data.assigned_to,current.data.title,current.data.due_at);
     }else if(body.action==='approve'&&current.data?.assigned_to===staff.id&&current.data?.created_by&&current.data.created_by!==staff.id){
       notification={status:await sendCoworkerPush(db,entityKey,current.data.created_by,'task_accepted',body.taskId,
-        `負責同工已核准承接「${current.data.title}」，工作已開始執行。\n開啟同工工作台：${TASK_LIFF_URL}`)};
+        `同工已接受「${current.data.title}」，並開始處理。你可以在工作台查看進度，也可以補充需要的資訊。\n開啟同工工作台：${TASK_LIFF_URL}`)};
     }
     return json(APP_ORIGIN,{ok:true,status:nextStatus,notification});
   }

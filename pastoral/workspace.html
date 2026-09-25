@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
-  <title>M+ 教會同工工作台｜CHURCH MANAGEMENT</title>
+  <title>M+ 教會同工協作空間｜CHURCH MANAGEMENT</title>
   <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-collab-1">
 </head>
 <body>
@@ -18,24 +18,24 @@
     <a id="login" class="button" href="./" hidden>前往 LINE 登入</a>
     <div id="workspace" hidden>
       <section class="intro">
-        <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>教會同工工作台<span>讓每一份託付，都有接續。</span></h1><p class="intro-copy">讓每位同工都能整理工作、協調行程、交接進度，彼此接續服事。</p></div>
-        <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">牧師與同工</div></div>
+        <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>教會同工協作空間<span>一起服事，彼此成全。</span></h1><p class="intro-copy">整理工作、約定時間、分享進度；需要時，彼此搭把手。</p></div>
+        <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">教會同工</div></div>
       </section>
       <div class="connection" id="calendar-connection"><span class="dot" id="calendar-dot"></span><div><strong id="calendar-connection-title">Google 行事曆尚未連接</strong><p id="calendar-connection-copy">授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。</p></div><button id="connect-calendar" class="button secondary" type="button" hidden>連接共用行事曆</button><span class="phase" id="calendar-connection-label">等待授權</span></div>
       <nav class="tabs" aria-label="工作區" role="tablist">
         <button id="tab-calendar" role="tab" aria-selected="true" aria-controls="panel-calendar" data-tab="calendar">行程安排</button>
-        <button id="tab-tasks" role="tab" aria-selected="false" aria-controls="panel-tasks" tabindex="-1" data-tab="tasks">同工工作</button>
+        <button id="tab-tasks" role="tab" aria-selected="false" aria-controls="panel-tasks" tabindex="-1" data-tab="tasks">工作協作</button>
         <button id="tab-schedule" hidden role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">休息日設定</button>
         <button id="tab-progress" role="tab" aria-selected="false" aria-controls="panel-progress" tabindex="-1" data-tab="progress">準備進度</button>
       </nav>
       <section id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar">
         <div class="columns">
           <article class="card">
-            <div class="card-heading"><div><p class="eyebrow">CALENDAR & SCHEDULE</p><h2>先整理下一個約定</h2></div><span class="tag">行程草稿</span></div>
-            <p class="muted">填寫會面資訊，整理成一段可以交給同工確認的文字。</p>
+            <div class="card-heading"><div><p class="eyebrow">CALENDAR & SCHEDULE</p><h2>一起安排下一個約定</h2></div><span class="tag">行程草稿</span></div>
+            <p class="muted">填上時間和地點，邀請相關同工一起確認安排。</p>
             <form id="draft-form">
-              <label id="appointment-staff-field" hidden>主要安排同工<select id="appointment-staff"></select></label>
-              <label>共同參與同工<select id="appointment-participants" multiple size="4" aria-describedby="participants-hint"></select></label><p id="participants-hint" class="hint">按住 Ctrl／Command 可複選。主要安排同工也會收到通知。</p>
+              <label id="appointment-staff-field" hidden>主要聯絡同工<select id="appointment-staff"></select></label>
+              <label>一起參與的同工<select id="appointment-participants" multiple size="4" aria-describedby="participants-hint"></select></label><p id="participants-hint" class="hint">可複選一起參與的同工；活動建立後，大家都會收到 LINE 通知。</p>
               <label>行程名稱<input id="summary" required maxlength="200" placeholder="例如：與張弟兄會面"></label>
               <div class="form-row"><label>日期<input id="date" type="date" required></label><label>開始時間<input id="time" type="time" required value="14:00"></label><label>時長<select id="duration"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option><option value="120">120 分鐘</option></select></label></div>
               <label>地點<input id="location" maxlength="500" placeholder="例如：教會辦公室"></label>
@@ -52,14 +52,14 @@
             </form>
             <div id="draft-result" class="draft-result" hidden>
               <h3>待確認的行程</h3><pre id="draft-text"></pre><button id="copy" class="button secondary" type="button">複製草稿</button>
-              <p class="hint">查詢會檢查所有參與同工的個人排程與共用行事曆。建立前由你確認，建立後通知行程中的同工。</p><button id="check-freebusy" class="button secondary" type="button" hidden>查詢可安排時段</button>
+              <p class="hint">查詢會檢查參與同工的個人排程與共用行事曆。由發起同工確認後建立，並通知所有參與者。</p><button id="check-freebusy" class="button secondary" type="button" hidden>查詢可安排時段</button>
               <p id="calendar-query-result" class="hint" role="status"></p>
               <button id="create-event" class="button" type="button" hidden>建立行事曆活動</button>
               <p id="create-event-status" class="hint" role="status"></p><button id="retry-event-notifications" class="button secondary" type="button" hidden>重新通知參與同工</button>
             </div>
             <p id="draft-status" role="status" class="hint"></p>
           </article>
-          <aside class="card quiet"><p class="eyebrow">TIME FOR WHAT MATTERS</p><h2>先守護時間，再安排事情。</h2><p class="muted">預備把以下規則交給系統協助執行，讓牧養與休息都被好好保留。</p><ol class="principles"><li><strong>確認空檔</strong><span>一起檢查個人與教會行事曆。</span></li><li><strong>預留緩衝</strong><span>會面之間保留交通與準備時間。</span></li><li><strong>尊重個人休息日</strong><span>遇到邀約，交給同工協調其他時間。</span></li><li><strong>最後由人確認</strong><span>建立前由負責同工確認內容。</span></li></ol><div class="aside-note">已套用同工個別休息日、可安排時段與共用行事曆衝突檢查。</div></aside>
+          <aside class="card quiet"><p class="eyebrow">TIME FOR WHAT MATTERS</p><h2>先守護時間，再安排事情。</h2><p class="muted">安排服事，也照顧每位同工的時間與休息。</p><ol class="principles"><li><strong>確認空檔</strong><span>一起檢查個人與教會行事曆。</span></li><li><strong>預留緩衝</strong><span>會面之間保留交通與準備時間。</span></li><li><strong>尊重個人休息日</strong><span>時間不合時，一起找合適的安排。</span></li><li><strong>一起確認</strong><span>建立前，發起同工再確認活動內容。</span></li></ol><div class="aside-note">已套用同工個別休息日、可安排時段與共用行事曆衝突檢查。</div></aside>
         </div>
       </section>
       <dialog id="event-confirm-dialog" aria-labelledby="event-confirm-title">
@@ -72,19 +72,19 @@
       <section id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden>
         <div class="columns task-layout">
           <article class="card">
-            <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>工作交接，彼此補位</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
-            <p class="muted">每位同工都能整理、交接工作。派出後由負責同工核准承接，接著可在這裡回報進度、附上成果檔並完成工作。桌機版支援挑選、下載附件，也可上傳成果與回報。</p>
+            <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>邀請彼此，一起完成</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
+            <p class="muted">把事情和需要說清楚，再邀請一位同工承接。對方收到 LINE 通知後可以接受並開始處理，過程中更新進度、附上檔案；完成時留下回報，讓彼此知道進展。附件可在電腦上傳或下載。</p>
             <form id="task-form">
-              <label>工作事項<input id="task-title" required maxlength="200" placeholder="例如：整理主日講道投影片"></label>
-              <label>說明<textarea id="task-description" rows="3" maxlength="5000" placeholder="補充背景、交付內容或需要留意的事項"></textarea></label>
+              <label>要一起完成的事<input id="task-title" required maxlength="200" placeholder="例如：整理主日講道投影片"></label>
+              <label>背景與需要<textarea id="task-description" rows="3" maxlength="5000" placeholder="補充背景、希望完成的內容，或需要彼此留意的事"></textarea></label>
               <label>附件（最多 5 個，每個不超過 5 MB）<input id="task-files" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp"></label>
               <p class="hint">附件僅限 PDF、Office 文件、文字與常見圖片格式；只有任務相關同工可開啟。</p>
               <div class="form-row task-fields">
                 <label>工作類型<select id="task-type"><option value="general">一般</option><option value="sermon">講道</option><option value="event">活動</option><option value="care">關懷</option><option value="document">公文</option></select></label>
-                <label>負責同工<select id="task-assignee" required></select></label>
+                <label>邀請哪位同工一起承接<select id="task-assignee" required></select></label>
                 <label>期限（選填）<input id="task-due" type="datetime-local"></label>
               </div>
-              <button id="save-task" class="button" type="submit">儲存工作草稿</button>
+              <button id="save-task" class="button" type="submit">先存下來</button>
               <p id="task-form-status" class="hint" role="status"></p>
             </form>
           </article>
@@ -97,7 +97,7 @@
       </section>
       <section id="panel-schedule" role="tabpanel" aria-labelledby="tab-schedule" hidden>
         <article class="card">
-          <p class="eyebrow">INDIVIDUAL SCHEDULE</p><h2>同工個人休息日與可安排時段</h2>
+          <p class="eyebrow">INDIVIDUAL SCHEDULE</p><h2>設定自己的休息日與可安排時段</h2>
           <p class="muted">每位同工都可以隨時自訂自己的休息日與可安排時段；牧師或管理者也能協助設定其他同工。尚未設定時，預設可安排週二至週六 09:00–17:00，沒有指定休息日。</p>
           <form id="schedule-form">
             <label id="schedule-staff-field">設定對象<select id="schedule-staff" required></select></label>
@@ -115,11 +115,11 @@
         </article>
       </section>
       <section id="panel-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
-        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><strong>已連接共用行事曆</strong></li><li><span>同工派工、執行回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
+        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><strong>已連接共用行事曆</strong></li><li><span>同工工作邀請、進度回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
       </section>
       <footer>AI 協助預備，同工彼此支援，一起把服事安排好。<span>MPLUS · COWORKER WORKSPACE</span></footer>
     </div>
   </main>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-collab-1"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20260925-human-cooperation-1"></script>
 </body>
 </html>

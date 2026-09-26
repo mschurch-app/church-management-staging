@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+  <title>教會網站維護｜教會管理系統</title>
+  <link rel="stylesheet" href="auth.css?v=20260922-ui1"><link rel="stylesheet" href="church-brand.css?v=20260924-brand3"><link rel="stylesheet" href="theme-vitality.css?v=20260924-vitality3"><link rel="stylesheet" href="apple-ui.css?v=20260924-app2">
+  <style>
+    .website-editor-layout{display:grid;grid-template-columns:minmax(230px,.72fr) minmax(0,1.8fr);gap:22px;align-items:start}.bulletin-list,.bulletin-editor{background:#fff;border:1px solid #dce7df;border-radius:24px;padding:22px;box-shadow:0 12px 36px #164d420b}.bulletin-list h2,.bulletin-editor h2{margin-top:0}.bulletin-list-items{display:grid;gap:10px}.bulletin-choice{display:flex;flex-direction:column;gap:4px;text-align:left;background:#f4f8f5;border:1px solid transparent;color:#183c34;border-radius:15px;padding:13px 15px;cursor:pointer}.bulletin-choice.current{border-color:#ff762f;background:#fff4e9}.bulletin-choice strong{font-size:1rem}.bulletin-choice small{color:#67756e}.bulletin-toolbar,.website-form-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.website-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.website-form-grid .full{grid-column:1/-1}.website-editor-layout label{display:grid;gap:7px;font-weight:700;color:#24453d}.website-editor-layout input,.website-editor-layout textarea,.website-editor-layout select{width:100%;border:1px solid #cfddd6;border-radius:12px;background:#fff;padding:12px 13px;color:#203c35;font:inherit}.website-editor-layout textarea{min-height:94px;resize:vertical}.bulletin-image-preview{display:block;width:min(100%,520px);max-height:260px;object-fit:cover;border-radius:18px;margin-top:12px;background:#edf4f0}.bulletin-section{border:1px solid #dce7df;border-radius:18px;padding:16px;margin:16px 0;background:#fbfcfa}.bulletin-section-head{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}.bulletin-section-head h3{margin:0}.bulletin-section-fields{display:grid;grid-template-columns:1fr 2fr;gap:12px}.bulletin-entry{display:grid;grid-template-columns:minmax(140px,.8fr) minmax(0,2fr) auto;gap:10px;align-items:start;padding:12px;margin-top:10px;border-radius:14px;background:#f1f6f3}.bulletin-entry textarea{min-height:70px}.bulletin-section-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.schedule-preview{border:1px solid #cfe2d8;border-radius:18px;background:#f2f8f4;padding:18px;margin:14px 0}.schedule-week{margin-top:14px;padding:14px;border-radius:14px;background:#fff}.schedule-week h4{margin:0 0 8px;color:#20584c}.schedule-preview-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}.schedule-role{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #dfeae3}.schedule-role strong{font-weight:750}.publish-state{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.website-hint{color:#65746d;font-size:.9rem;line-height:1.65}.website-status[data-tone="error"]{color:#a12626}.website-status[data-tone="success"]{color:#197453}
+    @media(max-width:850px){.website-editor-layout{grid-template-columns:1fr}.bulletin-list-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:560px){.website-form-grid,.bulletin-section-fields,.bulletin-entry,.schedule-preview-list{grid-template-columns:1fr}.bulletin-list-items{grid-template-columns:1fr}.bulletin-editor,.bulletin-list{padding:16px;border-radius:18px}.bulletin-entry{position:relative;padding-right:48px}.bulletin-entry button{position:absolute;right:8px;top:8px}}
+  </style>
+</head>
+<body><main class="member-page">
+  <header class="page-header"><div><p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p><h1 id="page-title">教會網站維護</h1><p id="page-description" class="muted">建立或更新每週週報；服事人員會依週報日期從服事排班自動帶入。</p></div><a class="secondary" id="dashboard" href="admin-dashboard.html">返回管理首頁</a></header>
+  <nav class="page-nav" aria-label="網站維護導覽"><a id="members" href="members.html">會友名冊</a><a id="schedules" href="schedules.html">服事排班</a><a id="settings" href="church-settings.html">系統設定</a></nav>
+  <p id="status" role="status" class="status-message website-status">正在確認管理權限…</p>
+  <div class="website-editor-layout">
+    <aside class="bulletin-list"><div class="bulletin-toolbar"><h2>每週週報</h2><button id="new-bulletin" type="button">＋ 新增週報</button></div><p class="website-hint">選擇日期後開始編輯。草稿不會顯示在對外網站，發佈後網站會自動更新。</p><div id="bulletin-list" class="bulletin-list-items"></div></aside>
+    <section class="bulletin-editor"><form id="bulletin-form">
+      <h2 id="editor-title">週報內容</h2>
+      <div class="website-form-grid">
+        <label>週報日期<input id="service-date" type="date" required></label>
+        <label>狀態<select id="status-choice"><option value="draft">草稿 · 不公開</option><option value="published">已發佈 · 對外公開</option></select></label>
+        <label class="full">週報標題<input id="bulletin-title" maxlength="100" required placeholder="例如：本週週報"></label>
+        <label class="full">開場文字／副標<textarea id="bulletin-subtitle" maxlength="500" placeholder="本週給家人的說明文字"></textarea></label>
+        <label class="full">主日時間<input id="service-time" maxlength="200" placeholder="主日崇拜 · 每週日上午 10:00"></label>
+        <label class="full">主日預告圖片（JPG、PNG、WebP，最大 8 MB）<input id="hero-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="website-hint">建議使用 16:9 橫式圖片。圖片會顯示在公開週報最上方的主日預告位置。</span><img id="image-preview" class="bulletin-image-preview" alt="主日預告圖片預覽" hidden><button id="remove-hero-image" type="button" class="secondary" hidden>移除目前圖片</button></label>
+      </div>
+      <section id="schedule-preview" class="schedule-preview" aria-live="polite"></section>
+      <h2>週報欄位</h2><p class="website-hint">下方每個標題、說明、項目名稱與內文都可以編輯；需要更多欄位可按「新增一項」。奉獻徵信公開前請遮蔽個人姓名或改用代碼。主日服事表會依日期自動讀取本週及下週排班資料。</p>
+      <div id="sections"></div>
+      <div class="website-form-actions"><button id="save-bulletin" type="submit">儲存週報</button><button id="reload-bulletins" type="button" class="secondary">重新載入</button><span id="save-hint" class="website-hint"></span></div>
+    </form></section>
+  </div>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20260927-cms2"></script></body></html>

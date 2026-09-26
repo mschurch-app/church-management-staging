@@ -59,6 +59,11 @@
           <a id="line-preview" class="line-preview-link" href="line-preview.html">▦ 預覽 LINE 六項功能</a>
         </div>
       </section>
+      <a id="website-maintenance" class="settings-link-card" href="website-maintenance.html">
+        <span class="settings-link-icon" aria-hidden="true">🌐</span>
+        <span class="settings-link-copy"><strong>教會網站維護</strong><span>管理 M+大雅教會週報、主日預告圖片與自動服事表</span></span>
+        <span class="settings-link-arrow" aria-hidden="true">›</span>
+      </a>
       <a id="space-settings" class="settings-link-card" href="spaces.html">
         <span class="settings-link-icon" aria-hidden="true">🏛️</span>
         <span class="settings-link-copy"><strong>場地與設備</strong><span>管理教會空間、設備及預約設定</span></span>
@@ -85,6 +90,7 @@
     </form>
   </section>
 </main>
+<script>const websiteMaintChurch=new URLSearchParams(location.search).get('church')||'M+';document.querySelector('#website-maintenance').href='website-maintenance.html?church='+encodeURIComponent(websiteMaintChurch);</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
 <script type="module" src="church-settings-ui.mjs?v=20260924-linehub1"></script>
 <script type="module" src="church-brand.mjs?v=20260924-brand6"></script>

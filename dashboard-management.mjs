@@ -8,6 +8,7 @@ export const MODULES=Object.freeze([
  {key:'prayers',permission:'private_prayers',title:'代禱關懷',description:'公開與私密代禱追蹤',file:'prayers.html',icon:'🙏'},
  {key:'pastoral_inbox',permission:'pastoral_chats',title:'牧養訊息',description:'一對一訊息與跟進紀錄',file:'pastoral-inbox.html',icon:'💬'},
  {key:'pastoral_content',permission:'pastoral_chats',title:'教牧內容',description:'祝禱、小卡、旅程與圖卡',file:'pastoral-content.html',icon:'✨'},
+ {key:'website_group_resources',permission:'pastoral_chats',title:'小組聚會資源',description:'維護每週小組教材與完整聚會內容',file:'group-resources-management.html',icon:'📚'},
  {key:'website_weekly',permission:'pastoral_chats',title:'教會網站維護',description:'維護 M+大雅教會週報、主日預告圖片與服事表',file:'website-maintenance.html',icon:'🌐'}
 ]);
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}

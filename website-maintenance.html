@@ -25,7 +25,7 @@
         <label class="full">週報標題<input id="bulletin-title" maxlength="100" required placeholder="例如：本週週報"></label>
         <label class="full">開場文字／副標<textarea id="bulletin-subtitle" maxlength="500" placeholder="本週給家人的說明文字"></textarea></label>
         <label class="full">主日時間<input id="service-time" maxlength="200" placeholder="主日崇拜 · 每週日上午 10:00"></label>
-        <label class="full">主日預告圖片（JPG、PNG、WebP，最大 8 MB）<input id="hero-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="website-hint">建議使用 16:9 橫式圖片。圖片會存到教會網站專用的 Supabase 圖片空間。</span><img id="image-preview" class="bulletin-image-preview" alt="主日預告圖片預覽" hidden></label>
+        <label class="full">主日預告圖片（JPG、PNG、WebP，最大 8 MB）<input id="hero-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="website-hint">建議使用 16:9 橫式圖片。圖片會顯示在公開週報最上方的主日預告位置。</span><img id="image-preview" class="bulletin-image-preview" alt="主日預告圖片預覽" hidden><button id="remove-hero-image" type="button" class="secondary" hidden>移除目前圖片</button></label>
       </div>
       <section id="schedule-preview" class="schedule-preview" aria-live="polite"></section>
       <h2>週報欄位</h2><p class="website-hint">下方每個標題、說明、項目名稱與內文都可以編輯；需要更多欄位可按「新增一項」。奉獻徵信公開前請遮蔽個人姓名或改用代碼。主日服事表會依日期自動讀取本週及下週排班資料。</p>
@@ -33,4 +33,4 @@
       <div class="website-form-actions"><button id="save-bulletin" type="submit">儲存週報</button><button id="reload-bulletins" type="button" class="secondary">重新載入</button><span id="save-hint" class="website-hint"></span></div>
     </form></section>
   </div>
-</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20260926-cms1"></script></body></html>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20260927-cms2"></script></body></html>

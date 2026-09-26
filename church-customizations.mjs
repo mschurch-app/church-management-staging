@@ -1,4 +1,4 @@
-export const FEATURE_FILES={members:'members.html',groups:'groups.html',attendance:'attendance.html',schedules:'schedules.html',prayers:'prayers.html',spaces:'spaces.html',pastoral_inbox:'pastoral-inbox.html',pastoral_content:'pastoral-content.html'};
+export const FEATURE_FILES={members:'members.html',groups:'groups.html',attendance:'attendance.html',schedules:'schedules.html',prayers:'prayers.html',spaces:'spaces.html',pastoral_inbox:'pastoral-inbox.html',pastoral_content:'pastoral-content.html',website_weekly:'website-maintenance.html'};
 
 const cleanText=(value,max=100)=>String(value??'').trim().slice(0,max);
 const uniqueStrings=(values,max=50)=>[...new Set((Array.isArray(values)?values:[]).map(value=>cleanText(value,80)).filter(Boolean))].slice(0,max);

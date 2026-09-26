@@ -12,7 +12,7 @@
     @media(max-width:540px){.wrap{width:calc(100% - 28px)}.brandmark{width:39px;height:39px}.brand{font-size:14px}.brand small{font-size:9px}.hero h1{font-size:42px}.hero{padding:48px 0 53px}.section{padding:44px 0}.panel{padding:18px;border-radius:21px}.vision-grid,.team-grid,.service-list,.resource-grid{grid-template-columns:1fr}.faith-row{grid-template-columns:1fr;gap:5px;padding:17px}.time-item{grid-template-columns:44px 1fr;padding:14px}.time-dot{height:40px;width:40px}.team-card{display:grid;grid-template-columns:105px 1fr;align-items:center}.team-card img{height:105px;aspect-ratio:1}.team-info{padding:12px}.team-info h3{font-size:16px}.team-info p{font-size:13px}.embed-frame{height:750px}.copy{flex-direction:column;gap:6px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   </style>
-</head>
+<style>html,body{overflow-x:hidden!important;overflow-y:hidden!important}</style></head>
 <body>
   <div class="topline"></div>
   <header><div class="wrap nav"><a class="brand" href="https://james8308.wixsite.com/website-3" target="_top"><span class="brandmark">M+</span><span>M+ 大雅教會<small>就是你屬靈的家</small></span></a><button class="menu" aria-label="開啟導覽" aria-expanded="false">☰</button><nav class="links" aria-label="主要導覽"><a href="https://james8308.wixsite.com/website-3" target="_top">首頁</a><a data-page="about" href="?page=about">關於教會</a><a data-page="faith" href="?page=faith">信仰宣告</a><a data-page="team" href="?page=team">服事團隊</a><a data-page="myc" href="?page=myc">青年教會 MYC</a><a data-page="weekly" href="?page=weekly">電子週報</a><a data-page="contact" href="?page=contact">聯絡我們</a><a class="navcta" href="?page=contact">第一次來訪　↗</a></nav></div></header>
@@ -34,5 +34,23 @@
     main.innerHTML=`<section class="hero"><div class="wrap"><div class="crumb">M+ 大雅教會　/　${page.title}</div><h1>${page.title}</h1><p>${page.lead}</p><div class="actions"><a class="btn btn-glass" href="${home}">← 回到首頁</a>${key==='about'?`<a class="btn btn-glass" href="?page=faith">信仰宣告</a>`:''}${key==='team'?`<a class="btn btn-glass" href="?page=myc">青年教會 MYC</a>`:''}</div></div></section><section class="section"><div class="wrap"><div class="sectionhead"><span class="eyebrow">M+ DA-YA CHURCH</span><h2>${page.title}</h2></div>${page.body}</div></section>${key==='about'?`<section class="section" style="padding-top:0"><div class="wrap"><div class="panel"><span class="eyebrow">面向世界</span><h2>作困苦流離者的牧人</h2><p class="lead">面向世界 ： 教導真理、傳揚福音 、 醫治病症<br>面向教會 ： 建造門徒 、 差派工人、出去收割莊稼</p></div></div></section>`:''}<section class="section" style="padding-top:0"><div class="wrap panel"><div class="sectionhead"><span class="eyebrow">M+ ONLINE</span><h2>教會生活與資源</h2><p>週報、小組、主日信息與奉獻都可以從這裡快速進入。</p></div><div class="resource-grid"><a class="resource" href="${old.weekly}">電子週報<span>↗</span></a><a class="resource" href="https://daya.mchurch.online/group/xiao-zu-ju-hui-zi-yuan">小組聚會資源<span>↗</span></a><a class="resource" href="https://youtube.com/@M-church">M+Youtube<span>↗</span></a><a class="resource" href="https://tcsc.eoffering.org.tw/contents/project_ct?page=2&p_id=3">線上奉獻<span>↗</span></a><a class="resource" href="https://lin.ee/30vz6X6Av">LINE 官方帳號<span>↗</span></a><a class="resource" href="https://daya.mchurch.online/tcsc">服務社區<span>↗</span></a></div></div></section>`;
     const menu=document.querySelector('.menu'),nav=document.querySelector('.links');menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'×':'☰'});nav.addEventListener('click',e=>{if(e.target.closest('a'))nav.classList.remove('open')});
   </script>
+
+<script>
+(() => {
+  let lastHeight = 0;
+  const reportHeight = () => {
+    const height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    if (height !== lastHeight) {
+      lastHeight = height;
+      window.parent.postMessage({ type: 'mplus-embed-resize', height }, '*');
+    }
+  };
+  window.addEventListener('load', reportHeight);
+  window.addEventListener('resize', reportHeight);
+  new ResizeObserver(reportHeight).observe(document.documentElement);
+  setTimeout(reportHeight, 100);
+  setTimeout(reportHeight, 600);
+})();
+</script>
 </body>
 </html>

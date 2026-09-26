@@ -40,5 +40,5 @@ window.parent.postMessage({type:'weekly-ready'},'*');
 <script>
 const WEEKLY_META=[["♪","本週主日程序","敬拜、信息與祝福的完整流程","program"],["⌂","家人消息","這週家裡的重要消息，一次看清楚","news"],["♡","家人們，我們一起禱告","把國家、城市、教會與家庭帶到神面前","prayer"],["✦","主日服事安排","本週與下週，一眼找到自己的服事","service"],["＋","奉獻徵信","財務公開透明，同心建造神的家","offering"]];
 function polishWeekly(){const c=document.querySelector('#content');if(!c||c.dataset.polished)return;const tables=[...c.children].filter(e=>e.tagName==='TABLE');if(!tables.length)return;c.dataset.polished='1';tables.forEach((t,i)=>{const m=WEEKLY_META[i]||["•","本週消息","M+ 家人資訊","news"],s=document.createElement('section'),h=document.createElement('div');s.className='weekly-section section-'+m[3];h.className='section-head';h.innerHTML='<span class="section-icon">'+m[0]+'</span><div><h2>'+m[1]+'</h2><p>'+m[2]+'</p></div>';t.replaceWith(s);s.append(h,t)});reportHeight();setTimeout(reportHeight,80);setTimeout(reportHeight,400);setTimeout(reportHeight,1200)}window.addEventListener('message',e=>{if(e.data&&e.data.type==='weekly-data')setTimeout(polishWeekly,0)});
-new MutationObserver(polishWeekly).observe(document.querySelector('#content'),{childList:true});
+new MutationObserver(polishWeekly).observe(document.querySelector('#content'),{childList:true});polishWeekly();setTimeout(polishWeekly,250);setTimeout(polishWeekly,900);setTimeout(polishWeekly,1800);
 </script>

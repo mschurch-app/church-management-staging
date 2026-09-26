@@ -7,7 +7,8 @@ export const MODULES=Object.freeze([
  {key:'spaces',permission:'spaces',title:'場地預約',description:'空間、設備與借用審核',file:'spaces.html',icon:'📍'},
  {key:'prayers',permission:'private_prayers',title:'代禱關懷',description:'公開與私密代禱追蹤',file:'prayers.html',icon:'🙏'},
  {key:'pastoral_inbox',permission:'pastoral_chats',title:'牧養訊息',description:'一對一訊息與跟進紀錄',file:'pastoral-inbox.html',icon:'💬'},
- {key:'pastoral_content',permission:'pastoral_chats',title:'教牧內容',description:'祝禱、小卡、旅程與圖卡',file:'pastoral-content.html',icon:'✨'}
+ {key:'pastoral_content',permission:'pastoral_chats',title:'教牧內容',description:'祝禱、小卡、旅程與圖卡',file:'pastoral-content.html',icon:'✨'},
+ {key:'website_weekly',permission:'pastoral_chats',title:'教會網站維護',description:'維護 M+大雅教會週報、主日預告圖片與服事表',file:'website-maintenance.html',icon:'🌐'}
 ]);
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}
 export async function dashboardCounts(db,church,grants){const has=p=>grants.some(g=>g.church_id===church&&g.permission===p),jobs=[];const add=(key,table,permission,apply=q=>q)=>{if(!has(permission))return;jobs.push(apply(db.from(table).select('*',{count:'exact',head:true}).eq('church_id',church)).then(({count,error})=>[key,error?null:count]));};add('members','members','members');add('groups','groups','groups');add('prayers','prayers','private_prayers',q=>q.eq('status','pending'));add('bookings','room_bookings','spaces',q=>q.eq('status','待審核'));const pairs=await Promise.all(jobs);return Object.fromEntries(pairs);}

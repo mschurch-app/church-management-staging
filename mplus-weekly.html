@@ -42,3 +42,10 @@ const WEEKLY_META=[["♪","本週主日程序","敬拜、信息與祝福的完�
 function polishWeekly(){const c=document.querySelector('#content');if(!c||c.dataset.polished)return;const tables=[...c.children].filter(e=>e.tagName==='TABLE');if(!tables.length)return;c.dataset.polished='1';tables.forEach((t,i)=>{const m=WEEKLY_META[i]||["•","本週消息","M+ 家人資訊","news"],s=document.createElement('section'),h=document.createElement('div');s.className='weekly-section section-'+m[3];h.className='section-head';h.innerHTML='<span class="section-icon">'+m[0]+'</span><div><h2>'+m[1]+'</h2><p>'+m[2]+'</p></div>';t.replaceWith(s);s.append(h,t)});reportHeight();setTimeout(reportHeight,80);setTimeout(reportHeight,400);setTimeout(reportHeight,1200)}window.addEventListener('message',e=>{if(e.data&&e.data.type==='weekly-data')setTimeout(polishWeekly,0)});
 new MutationObserver(polishWeekly).observe(document.querySelector('#content'),{childList:true});polishWeekly();setTimeout(polishWeekly,250);setTimeout(polishWeekly,900);setTimeout(polishWeekly,1800);
 </script>
+
+<style>
+.section-offering tr:first-child td{background:#fff0dc!important;padding:13px 15px!important;border-radius:16px!important}.section-offering tr:first-child td+td{background:#eef5f0!important}.section-offering td:empty,.section-offering tr:empty{display:none!important}
+</style>
+<script>
+function cleanOfferingRows(){document.querySelectorAll('.section-offering tr').forEach(r=>{r.querySelectorAll('td').forEach(c=>{if(!c.textContent.replace(/\u00a0/g,' ').trim())c.remove()});if(!r.textContent.replace(/\u00a0/g,' ').trim())r.remove()})}new MutationObserver(cleanOfferingRows).observe(document.querySelector('#content'),{childList:true,subtree:true});window.addEventListener('message',e=>{if(e.data&&e.data.type==='weekly-data')setTimeout(cleanOfferingRows,60)});setTimeout(cleanOfferingRows,300);setTimeout(cleanOfferingRows,1000);
+</script>

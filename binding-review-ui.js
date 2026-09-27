@@ -12,16 +12,16 @@ async function load(){
     for(const row of rows){
       const card=text('article','');
       const names={pending:'待核對',approved:'已核准',rejected:'已拒絕',revoked:'已撤銷'};
-      card.append(text('h2',row.applicant_name),text('p',`申請電話：${row.applicant_phone}`),text('p',names[row.status]||'未知狀態'));
+      card.append(text('h2',row.applicant_name),text('p',`申請手機：${row.applicant_phone}`),text('p',names[row.status]||'未知狀態'));
       const result=text('p','');result.setAttribute('role','status');
       if(row.status==='pending'){
         const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢完整會員姓名');
         const searchLabel=text('label','要綁定的會員姓名（完整名稱）');searchLabel.append(input);
-        const hint=text('p','請以電話、堂會及既有會員資料核對本人身份；相同姓名不能作為核准依據。');
+        const hint=text('p','請確認姓名與本人身份。核准後，申請手機會寫入所選會友資料，並永久綁定這個 LINE 帳號。');
         const search=text('button','查詢會員'),select=document.createElement('select');select.setAttribute('aria-label','選擇核對過的會員');
         select.append(new Option('請先查詢並選擇會員',''));
         const verified=document.createElement('input');verified.type='checkbox';
-        const label=text('label','我已透過既有聯絡方式核對本人身份 ');label.append(verified);
+        const label=text('label','我已確認本人身份，並同意寫入申請手機及綁定 LINE ');label.append(verified);
         search.addEventListener('click',async()=>{
           search.disabled=true;select.replaceChildren(new Option('請選擇會員',''));verified.checked=false;
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation)return;

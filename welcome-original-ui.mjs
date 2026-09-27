@@ -1,5 +1,6 @@
 import {getOptions} from './welcome-options.mjs';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20260924-custom1';
+import {mountMemberPanel} from './member-welcome-ui.mjs?v=20260927-binding1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus');
@@ -75,6 +76,7 @@ $('btnSubmit').onclick=async()=>{
  finally{busy=false;}
 };
 for(const [id,max] of [['guestName',80],['guestPhone',40],['guestBirthday',40],['inviterName',100]])$(id).maxLength=max;
+mountMemberPanel();
 lock(true);
 try{
  const [data,customizations]=await Promise.all([getOptions(db,church),loadChurchCustomizations(db,church)]);options=data.options;layout=customizations.welcome_fields;applyLayout();

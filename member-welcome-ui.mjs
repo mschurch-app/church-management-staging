@@ -11,6 +11,18 @@ export function mountMemberPanel(){
   let client,newcomerMode=false;
   const button=(label,fn,secondary=false)=>{const el=text('button',label);el.type='button';el.className=secondary?'w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black':'w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black';el.addEventListener('click',()=>Promise.resolve().then(fn).catch(()=>{}));return el;};
   const field=(label,type='text')=>{const wrapper=text('label','');wrapper.className='block space-y-1.5 text-xs font-black text-stone-700';wrapper.append(text('span',label));const input=document.createElement('input');input.type=type;input.className='w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm';wrapper.append(input);return{wrapper,input};};
+  const profileCard=member=>{
+    const card=document.createElement('div');card.className='rounded-3xl bg-gradient-to-br from-teal-800 to-teal-950 p-5 text-white shadow-lg shadow-teal-900/10';
+    const head=document.createElement('div');head.className='flex items-center gap-3';
+    const avatar=text('span',String(member.name||'家').trim().slice(0,1)||'家');avatar.className='grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 text-xl font-black ring-1 ring-white/20';
+    const identity=document.createElement('div');identity.className='min-w-0';
+    const name=text('h3',member.name||'教會家人');name.className='truncate text-lg font-black';
+    const group=text('p',member.group_name?`所屬小組｜${member.group_name}`:'目前尚未編組');group.className='mt-0.5 text-xs font-bold text-teal-50/80';
+    identity.append(name,group);head.append(avatar,identity);card.append(head);
+    const details=[['年齡層',member.age_group],['信仰近況',member.faith_status],['受洗日期',member.baptism_date],['聚會近況',member.growth_progress]].filter(([,value])=>String(value||'').trim());
+    if(details.length){const grid=document.createElement('dl');grid.className='mt-4 grid grid-cols-2 gap-2';for(const [label,value] of details){const item=document.createElement('div');item.className='rounded-2xl bg-white/10 px-3 py-2.5';const term=text('dt',label);term.className='text-[10px] font-bold tracking-wide text-teal-50/65';const description=text('dd',value);description.className='mt-0.5 text-xs font-black leading-relaxed';item.append(term,description);grid.append(item);}card.append(grid);}
+    return card;
+  };
   const showForm=value=>{form.classList.toggle('hidden',!value);};
   const normalizePhone=value=>{const digits=String(value||'').replace(/\D/g,'');if(/^8869\d{8}$/.test(digits))return '0'+digits.slice(3);if(/^09\d{8}$/.test(digits))return digits;return'';};
   function render(result){
@@ -36,6 +48,8 @@ export function mountMemberPanel(){
       }),button('我是第一次來，填寫新朋友資料',()=>{newcomerMode=true;panel.hidden=true;showForm(true);},true));
     }
     if(result.state==='approved'){
+      panel.append(profileCard(result.member||{}));
+      const hint=text('p','以下是目前留存的基本資料；有變動可以直接修改。');hint.className='text-xs font-bold leading-relaxed text-stone-500';panel.append(hint);
       const fields={};
       for(const [key,label,max] of [['phone','電話',40],['district','地區',100],['birthday','生日',10],['gender','性別',40]]){
         const item=field(label,key==='birthday'?'date':key==='phone'?'tel':'text'),input=item.input;input.maxLength=max;

@@ -63,3 +63,6 @@ button{background:linear-gradient(135deg,#0b8f88,#087078);box-shadow:0 7px 18px 
 
 /* Administrator invitation and password recovery */
 .invite-permission-preview{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px;padding:15px;border:1px solid #d6e7e3;border-radius:16px;background:#f3faf8}.invite-permission-preview strong{flex-basis:100%;font-size:13px;color:#315e60}.invite-permission-preview span{padding:6px 9px;border-radius:999px;background:#e1f3ef;color:#176967;font-size:11px;font-weight:750}.forgot-password{display:block;margin-top:16px;text-align:center;font-size:13px;font-weight:700}.auth-help{margin-top:16px;padding:12px 14px;border:1px solid #d7e7e3;border-radius:13px;background:#f3faf8;color:#587173;font-size:12px;line-height:1.65}.password-rules{margin:12px 0 0;padding-left:20px;color:#687c7e;font-size:12px}.password-rules li{margin:3px 0}
+
+.member-status-row .line-bound-badge{color:#176657;background:#e7f5f0;border-color:#b8ded1;font-weight:750}
+.member-status-row .line-unbound-badge{color:#687c7e;background:#f0f3f3;border-color:#d8e0e0;font-weight:650}

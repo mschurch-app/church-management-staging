@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20260928-line-status1';
+import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20260928-line-status2';
 import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260924-custom2';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
@@ -103,7 +103,7 @@ async function edit(row=null,isNewcomer=false){
 function memberCard(row){
  const card=text('article','','member-card'),head=text('div','','card-head'),avatar=text('span',(row.name||'？').slice(0,1),'avatar');
  const nameBox=text('div');nameBox.append(text('h3',row.name),text('p',(row.gender||'未填性別')+' · '+(row.group_name||'未編組'),'muted'));
- const statusRow=text('div','','member-status-row');statusRow.append(text('span',row.faith_status||'未填信仰階段','status-badge'),text('span',row.growth_progress||'未填聚會近況','status-badge attendance-badge'));if(row.line_bound)statusRow.append(text('span','已綁定 LINE','status-badge'));
+ const statusRow=text('div','','member-status-row');statusRow.append(text('span',row.faith_status||'未填信仰階段','status-badge'),text('span',row.growth_progress||'未填聚會近況','status-badge attendance-badge'),text('span',row.line_bound?'已綁定 LINE':'尚未綁定 LINE','status-badge '+(row.line_bound?'line-bound-badge':'line-unbound-badge')));
  head.append(avatar,nameBox);card.append(head,statusRow);
  const dl=document.createElement('dl');
  for(const [label,value] of [['電話',row.phone],['居住區域',row.district],['服事恩賜',row.ministry]]){dl.append(text('dt',label),text('dd',value||'未填寫'));}

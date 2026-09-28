@@ -45,9 +45,37 @@ function lovePreview(item){
   const blessing=copy.blessing?'<p class="love-blessing">'+escape(copy.blessing).replace(/\n/g,'<br>')+'</p>':'';
   return '<div class="love-canvas-wrap" id="love-card">'+imageElement(item.image_url,item.title,'bg')+'<div class="love-copy"><img src="'+brand.logo+'" alt="'+brand.name+'"><span class="to">To. '+escape(recipient)+'</span><div class="love-copy-panel">'+verse+reference+blessing+'</div><span class="church">'+brand.name+'</span><span class="from">— '+escape(signature)+' 的誠摯祝福</span></div></div>';
 }
-function lovePage(data){const items=data.items||[];if(!items.length){content.innerHTML=`${hero('SHARE THE LOVE','把愛傳出去','把一句祝福送進好友心裡。')}<div class="surface empty">管理員正在準備祝福圖卡。</div>`;return;}selectedLove=Math.min(selectedLove,items.length-1);payload=data;const categoryNames=[...new Set(items.map(item=>item.category))],configured=(data.scenarios||[]).filter(item=>categoryNames.includes(item.name)),categories=configured.length?configured:categoryNames.map(name=>({name,icon:'💛'})),selected=()=>items[selectedLove];content.innerHTML=`${hero('SHARE THE LOVE','把愛傳出去','挑選照片、改寫祝福，再從 LINE 好友中選擇收件人。')}<section class="surface love-preview" id="love-preview">${lovePreview(selected())}</section><section class="surface love-builder"><div class="category-list">${categories.map((category,i)=>`<button class="${i?'':'active'}" data-love-category="${escape(category.name)}">${escape(category.icon||'💛')} ${escape(category.name)}</button>`).join('')}</div><div class="scene-strip" id="scenes"></div><label class="field">收件人稱呼<input id="recipient" value="親愛的好友" maxlength="30"></label><label class="field">你的署名<input id="signature" value="${escape(profile.name)}" maxlength="30"></label><label class="field">祝福話語<textarea id="message" maxlength="220">${escape(selected().share_caption)}</textarea></label><div class="action-row"><button class="secondary" id="download">下載圖卡</button><button class="primary" id="share">LINE 選好友傳送</button></div><p class="share-status" id="share-status"></p></section>`;
-  let activeCategory=categories[0].name;const drawScenes=()=>{const list=items.map((item,index)=>({item,index})).filter(entry=>entry.item.category===activeCategory);$('#scenes').innerHTML=list.map(entry=>`<button data-scene="${entry.index}" class="${entry.index===selectedLove?'active':''}">${imageElement(entry.item.image_url,entry.item.title)}</button>`).join('');$('#scenes').querySelectorAll('[data-scene]').forEach(button=>button.onclick=()=>{selectedLove=Number(button.dataset.scene);$('#message').value=selected().share_caption;refreshLove();drawScenes();});};
-  content.querySelectorAll('[data-love-category]').forEach(button=>button.onclick=()=>{activeCategory=button.dataset.loveCategory;const first=items.findIndex(item=>item.category===activeCategory);selectedLove=Math.max(0,first);content.querySelectorAll('[data-love-category]').forEach(item=>item.classList.function wrapParagraphs(ctx,text,maxWidth){
+function lovePage(data){
+  const items=data.items||[];
+  if(!items.length){content.innerHTML=hero('SHARE THE LOVE','把愛傳出去','把一句祝福送進好友心裡。')+'<div class="surface empty">管理員正在準備祝福圖卡。</div>';return;}
+  selectedLove=Math.min(selectedLove,items.length-1);payload=data;
+  const categoryNames=[...new Set(items.map(item=>item.category))],configured=(data.scenarios||[]).filter(item=>categoryNames.includes(item.name)),categories=configured.length?configured:categoryNames.map(name=>({name,icon:'💛'})),selected=()=>items[selectedLove];
+  content.innerHTML=hero('SHARE THE LOVE','把愛傳出去','挑選照片、改寫祝福，再從 LINE 好友中選擇收件人。')+
+    '<section class="surface love-preview" id="love-preview">'+lovePreview(selected())+'</section>'+
+    '<section class="surface love-builder"><div class="category-list">'+categories.map((category,i)=>'<button class="'+(i?'':'active')+'" data-love-category="'+escape(category.name)+'">'+escape(category.icon||'💛')+' '+escape(category.name)+'</button>').join('')+'</div>'+
+    '<div class="scene-strip" id="scenes"></div>'+
+    '<label class="field">收件人稱呼<input id="recipient" value="親愛的好友" maxlength="30"></label>'+
+    '<label class="field">你的署名<input id="signature" value="'+escape(profile.name)+'" maxlength="30"></label>'+
+    '<label class="field">祝福話語<textarea id="message" maxlength="220">'+escape(selected().share_caption)+'</textarea></label>'+
+    '<div class="action-row"><button class="secondary" id="download">下載圖卡</button><button class="primary" id="share">LINE 選好友傳送</button></div><p class="share-status" id="share-status"></p></section>';
+  let activeCategory=categories[0].name;
+  const drawScenes=()=>{
+    const list=items.map((item,index)=>({item,index})).filter(entry=>entry.item.category===activeCategory);
+    $('#scenes').innerHTML=list.map(entry=>'<button data-scene="'+entry.index+'" class="'+(entry.index===selectedLove?'active':'')+'">'+imageElement(entry.item.image_url,entry.item.title)+'</button>').join('');
+    $('#scenes').querySelectorAll('[data-scene]').forEach(button=>button.onclick=()=>{selectedLove=Number(button.dataset.scene);$('#message').value=selected().share_caption;refreshLove();drawScenes();});
+  };
+  content.querySelectorAll('[data-love-category]').forEach(button=>button.onclick=()=>{
+    activeCategory=button.dataset.loveCategory;const first=items.findIndex(item=>item.category===activeCategory);selectedLove=Math.max(0,first);
+    content.querySelectorAll('[data-love-category]').forEach(item=>item.classList.toggle('active',item===button));
+    $('#message').value=selected().share_caption;refreshLove();drawScenes();
+  });
+  const refreshLove=()=>{$('#love-preview').innerHTML=lovePreview(selected());};
+  for(const id of ['recipient','signature','message'])$('#'+id).addEventListener('input',refreshLove);
+  drawScenes();
+  $('#download').onclick=async()=>{try{const image=await composeCard(selected()),link=document.createElement('a');link.href=image;link.download='教會祝福卡.jpg';link.click();}catch{$('#share-status').textContent='圖片尚未載入完成，請稍候再試。';}};
+  $('#share').onclick=()=>shareLove(selected());
+}
+function wrapParagraphs(ctx,text,maxWidth){
   const paragraphs=String(text||'').split(/\r?\n/),lines=[];
   for(const paragraph of paragraphs){
     if(!paragraph){lines.push('');continue;}
@@ -93,7 +121,6 @@ async function composeCard(item){
   ctx.textAlign='center';ctx.fillStyle='white';ctx.shadowColor='rgba(0,0,0,.32)';ctx.shadowBlur=7;ctx.font='700 31px sans-serif';ctx.fillText(brand.name,540,1190);ctx.textAlign='right';ctx.font='400 25px sans-serif';ctx.fillText('— '+($('#signature').value||profile.name)+' 的誠摯祝福',970,1240);ctx.shadowBlur=0;
   return canvas.toDataURL('image/jpeg',.92);
 }
-0)');shade.addColorStop(1,'rgba(0,0,0,.78)');ctx.fillStyle=shade;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=3;ctx.strokeRect(58,58,964,1234);try{const logo=await loadImage(brand.logo);const ratio=Math.min(270/logo.width,120/logo.height);ctx.drawImage(logo,(1080-logo.width*ratio)/2,95,logo.width*ratio,logo.height*ratio);}catch{}ctx.fillStyle='white';ctx.textAlign='left';ctx.font='500 38px sans-serif';ctx.fillText('To. '+($('#recipient').value||'親愛的好友'),110,300);ctx.textAlign='center';ctx.font='700 56px sans-serif';const lines=wrap(ctx,$('#message').value||item.share_caption,820),start=515-(lines.length-1)*38;lines.forEach((line,index)=>ctx.fillText(line,540,start+index*78));ctx.font='700 34px sans-serif';ctx.fillText(brand.name,540,1135);ctx.textAlign='right';ctx.font='400 28px sans-serif';ctx.fillText('— '+($('#signature').value||profile.name)+' 的誠摯祝福',970,1200);return canvas.toDataURL('image/jpeg',.9);}
 async function shareLove(item){const button=$('#share'),status=$('#share-status');button.disabled=true;status.textContent='正在製作專屬祝福卡…';try{const image=await composeCard(item),url=await uploadShare(image);canvasUrl=url;if(!window.liff?.isApiAvailable?.('shareTargetPicker'))throw new Error('share_unavailable');const result=await window.liff.shareTargetPicker([{type:'image',originalContentUrl:url,previewImageUrl:url}]);status.textContent=result?'祝福已送出 💛':'已取消選擇好友。';}catch(error){if(error.message==='rate_limited')status.textContent='一小時內製作次數已達上限，請稍後再試。';else if(canvasUrl&&navigator.share){await navigator.share({title:'教會祝福卡',url:canvasUrl}).catch(()=>{});status.textContent='已開啟手機分享選單。';}else status.textContent='目前無法開啟好友選擇，請稍後再試或先下載圖卡。';}finally{button.disabled=false;}}
 
 async function render(){setConnection('為你準備內容中…');if(current==='menu'){menu();setConnection('願平安與你同在');return;}payload=await call(current);profile=payload.profile||profile;setConnection('願今天滿有恩典');if(current==='today')todayPage(payload);if(current==='help')helpPage(payload);if(current==='weekly')weeklyPage(payload);if(current==='love')lovePage(payload);}

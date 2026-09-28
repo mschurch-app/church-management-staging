@@ -596,8 +596,8 @@
       if(themeIndex%5===2||themeIndex%5===4){for(let i=0;i<13;i++)drawFlower(ctx,35+i*72,1060+(i%3)*30,.65+(i%3)*.12,['#ff96aa','#fff4df','#fbac6f','#d6a8f2'][i%4]);}
       ctx.save();ctx.globalAlpha=.2;for(let i=0;i<7;i++)drawLeaf(ctx,35+i*145,905+(i%3)*45,.48+(i%2)*.17,-.5+i*.15,'#4dab7b');ctx.restore();
       ctx.fillStyle='rgba(35,90,76,.94)';roundRect(ctx,55,50,790,108,30);
-      ctx.fillStyle='rgba(255,255,255,.79)';roundRect(ctx,55,250,790,720,42);
-      ctx.strokeStyle='rgba(255,255,255,.96)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(98,251);ctx.arcTo(844,251,844,969,42);ctx.arcTo(844,969,56,969,42);ctx.arcTo(56,969,56,251,42);ctx.arcTo(56,251,844,251,42);ctx.closePath();ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.79)';roundRect(ctx,55,250,790,800,42);
+      ctx.strokeStyle='rgba(255,255,255,.96)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(98,251);ctx.arcTo(844,251,844,1049,42);ctx.arcTo(844,1049,56,1049,42);ctx.arcTo(56,1049,56,251,42);ctx.arcTo(56,251,844,251,42);ctx.closePath();ctx.stroke();
       ctx.fillStyle='rgba(255,255,255,.82)';
       for(let i=0;i<28;i++){const x=(i*197+themeIndex*59)%900,y=(i*311+themeIndex*97)%1200;ctx.beginPath();ctx.arc(x,y,1+(i%3),0,Math.PI*2);ctx.fill();}
     }
@@ -662,13 +662,13 @@
         if(liffReady&&window.liff?.isInClient?.()&&window.liff?.isApiAvailable?.('shareTargetPicker')){
           const dataUrl=await new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.readAsDataURL(blob);});
           const url=await uploadShareImage(dataUrl);
-          const result=await window.liff.shareTargetPicker([{type:'image',originalContentUrl:url,previewImageUrl:url},{type:'text',text:`給今天的你：「${liveVerse}」— ${liveVerseReference}\nM+大雅教會`}]);
+          const result=await window.liff.shareTargetPicker([{type:'image',originalContentUrl:url,previewImageUrl:url}]);
           if(result){showToast('恩典圖卡已分享，願祝福同行 💛');closeCardComposer();}
           else showToast('已取消分享');
           return;
         }
         const file=new File([blob],'today-grace-card.jpg',{type:'image/jpeg'});
-        if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'給今天的你',text:`${liveVerse} — ${liveVerseReference}`});closeCardComposer();return;}
+        if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file]});closeCardComposer();return;}
         const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='給今天的你-經文圖卡.jpg';link.click();URL.revokeObjectURL(link.href);showToast('圖卡已下載，可以從相簿分享 ✨');
       } catch(error) {
         console.error('Share card failed',error);showToast(error.message==='rate_limited'?'製作次數已達上限，請稍後再試':'圖卡分享暫時無法使用，請稍後再試');

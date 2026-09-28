@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs';import {MODULES,dashboardAccess,dashboardCounts} from './dashboard-management.mjs';import {loadChurchCustomizations,featureSettings} from './church-customizations.mjs?v=20260924-custom1';
+import {db} from './admin-db.mjs';import {MODULES,dashboardAccess,dashboardCounts} from './dashboard-management.mjs?v=20260928-modules2';import {loadChurchCustomizations,featureSettings} from './church-customizations.mjs?v=20260924-custom1';
 const preferred=new URLSearchParams(location.search).get('church'),$=s=>document.querySelector(s);let access,church;const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 function href(file){return file+'?church='+encodeURIComponent(church);}
 function renderChurches(){const nav=$('#churches');nav.replaceChildren();for(const value of access.churches){const a=el('a',value==='M+'?'M＋大雅教會':'火樂教會');a.href='admin-dashboard.html?church='+encodeURIComponent(value);if(value===church)a.className='current';nav.append(a);}}

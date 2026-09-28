@@ -7,6 +7,9 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>給今天的你｜今日專屬恩典</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -174,6 +177,15 @@
       animation: cursor .75s steps(1) infinite;
     }
     .verse-text.done::after { display: none; }
+    .verse-text { font-family: 'Klee One','DFKai-SB','BiauKai','KaiTi','STKaiti',cursive; }
+    .written-char { display:inline-block; opacity:0; animation:ink-appear .34s cubic-bezier(.2,.8,.2,1) forwards; }
+    .share-dialog { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:18px; background:rgba(21,39,34,.68); backdrop-filter:blur(14px); }
+    .share-dialog[hidden] { display:none; }
+    .share-panel { width:min(100%,520px); max-height:min(92dvh,900px); overflow:auto; padding:18px; border:1px solid rgba(255,255,255,.72); border-radius:28px; background:#fffdf7; box-shadow:0 28px 90px rgba(0,0,0,.3); }
+    .share-preview { display:block; width:100%; max-height:62dvh; object-fit:contain; border-radius:18px; background:#e8eee7; box-shadow:0 12px 32px rgba(39,69,57,.16); }
+    .share-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .share-actions button { min-height:48px; border-radius:15px; font-weight:800; }
+    @keyframes ink-appear { from { opacity:0; transform:translateY(5px) rotate(2deg); filter:blur(2px); } to { opacity:1; transform:translateY(0) rotate(0); filter:blur(0); } }
     .speak-wave span {
       display: inline-block;
       width: 2px;
@@ -246,7 +258,7 @@
 
         <section id="verseBlock" class="content-rise relative rounded-3xl border border-grace-200/80 bg-grace-50/85 p-5 shadow-[0_14px_35px_rgba(129,86,41,.08)]" data-reveal>
           <div class="mb-3 inline-flex items-center rounded-full bg-gradient-to-r from-amber-100 to-yellow-50 px-3 py-1.5 text-[11px] font-black tracking-[.12em] text-grace-700">✨ 今日應許</div>
-          <blockquote id="verseText" class="verse-text min-h-[4.5rem] font-serif text-[20px] font-bold leading-[1.8] tracking-[.04em] text-grace-900"></blockquote>
+          <blockquote id="verseText" class="verse-text min-h-[4.5rem] text-[20px] font-bold leading-[1.8] tracking-[.04em] text-grace-900"></blockquote>
           <p id="verseReference" class="mt-3 text-right font-serif text-sm font-bold tracking-[.08em] text-grace-700"></p>
         </section>
 
@@ -262,6 +274,21 @@
       </article>
     </section>
   </main>
+
+  <section id="shareDialog" class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="shareTitle" hidden>
+    <div class="share-panel">
+      <div class="mb-3 flex items-center justify-between gap-3">
+        <div><h2 id="shareTitle" class="text-lg font-black text-grace-900">專屬經文圖卡</h2><p class="mt-1 text-xs text-grace-700/70">手寫字跡正在落下，分享時會呈現完整經文。</p></div>
+        <button id="closeShareDialog" type="button" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-grace-100 text-xl text-grace-700" aria-label="關閉">×</button>
+      </div>
+      <canvas id="sharePreview" class="share-preview" width="900" height="1200" aria-label="今日經文分享圖卡預覽"></canvas>
+      <div class="share-actions mt-4">
+        <button id="changeBackgroundButton" type="button" class="border border-grace-200 bg-white text-grace-700">🎨 換一張背景</button>
+        <button id="downloadCardButton" type="button" class="border border-grace-200 bg-white text-grace-700">⬇️ 下載圖卡</button>
+        <button id="sendCardButton" type="button" class="col-span-2 bg-gradient-to-r from-rose-400 to-orange-400 text-white shadow-lg">📤 分享給好友</button>
+      </div>
+    </div>
+  </section>
 
   <div id="toast" class="toast fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[90] rounded-full bg-grace-900/90 px-4 py-2.5 text-xs font-bold text-white shadow-xl backdrop-blur" role="status" aria-live="polite"></div>
 
@@ -291,6 +318,12 @@
     const speakButton = $('#speakButton');
     const receiveButton = $('#receiveButton');
     const shareButton = $('#shareButton');
+    const shareDialog = $('#shareDialog');
+    const sharePreview = $('#sharePreview');
+    const closeShareDialog = $('#closeShareDialog');
+    const changeBackgroundButton = $('#changeBackgroundButton');
+    const downloadCardButton = $('#downloadCardButton');
+    const sendCardButton = $('#sendCardButton');
     envelopeButton.disabled = true;
     let hasRevealed = false;
     let liffReady = false;
@@ -302,6 +335,17 @@
     let speechKeepAliveTimer = 0;
     let speechRetryCount = 0;
     let speechCurrentStarted = false;
+    let currentTheme = -1;
+    let cardAnimationFrame = 0;
+    const cardThemes = [
+      ['#55c8f2','#ffe16a','#ffb36d','#fff9df'],['#79d5bd','#d7f28a','#ffc078','#fffce8'],['#65bdf5','#8de2d2','#ffd86f','#fff8df'],['#ffb9a5','#ffe27d','#ffb66e','#fff8e6'],
+      ['#a9d879','#ffe37a','#ffc28b','#fffbea'],['#72d6e8','#b6ecb4','#ffd36e','#fff9e4'],['#ffcf70','#ff9f82','#ffe496','#fff8e8'],['#83cafa','#c7e88a','#ffbf7f','#fffbea'],
+      ['#f6a9c6','#ffd96f','#ffb985','#fff8e7'],['#65d1b6','#9ee3e9','#ffe079','#fffbea'],['#9acbff','#c1e694','#ffd189','#fff8e7'],['#ffd06b','#ffad9a','#a9e7d2','#fffbea'],
+      ['#83d9c0','#ffe28a','#f9a9b5','#fff9e5'],['#79c9f5','#ffc57d','#ffe68c','#fffbea'],['#c5df78','#77d9c8','#ffd27c','#fff9e6'],['#ffad87','#ffd978','#92d7f3','#fffbea'],
+      ['#69c9e9','#ffe08a','#ffae83','#fff9e2'],['#9ddc87','#8bd9ed','#ffcf72','#fffbea'],['#ffd078','#ff9fab','#83d8c3','#fff8e6'],['#76d5be','#b9e589','#ffd17b','#fffbea']
+    ];
+    const cardLogo = new Image();
+    cardLogo.src = church === 'SHiNE' ? 'assets/brands/shine-logo.png' : 'assets/brands/mplus-logo-white.png';
 
     function createParticles() {
       const area = $('#particles');
@@ -345,10 +389,14 @@
 
     function typeText(element, value, speed = 46) {
       element.textContent = '';
+      element.classList.remove('done');
       return new Promise(resolve => {
         let index = 0;
         const write = () => {
-          element.textContent += value[index] || '';
+          const character = document.createElement('span');
+          character.className = 'written-char';
+          character.textContent = value[index] || '';
+          element.append(character);
           index += 1;
           if (index < value.length) window.setTimeout(write, speed);
           else { element.classList.add('done'); resolve(); }
@@ -513,38 +561,123 @@
       }
     }
 
-    function blessingShareText() {
-      return `🌱 給今天的你\n\n「${liveVerse}」\n— ${liveVerseReference}\n\n💡 祝福你：${livePrayer}`;
+    function roundRect(ctx, x, y, width, height, radius) {
+      const r=Math.min(radius,width/2,height/2);
+      ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+width,y,x+width,y+height,r);ctx.arcTo(x+width,y+height,x,y+height,r);ctx.arcTo(x,y+height,x,y,r);ctx.arcTo(x,y,x+width,y,r);ctx.closePath();ctx.fill();
     }
 
-    async function copyBlessingText() {
-      const text = blessingShareText();
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch {
-        const input = document.createElement('textarea');
-        input.value = text;
-        input.style.position = 'fixed';
-        input.style.opacity = '0';
-        document.body.append(input);
-        input.select();
-        document.execCommand('copy');
-        input.remove();
+    function drawLeaf(ctx, x, y, scale, rotation, color) {
+      ctx.save(); ctx.translate(x,y); ctx.rotate(rotation); ctx.fillStyle=color;
+      ctx.beginPath(); ctx.ellipse(0,0,20*scale,54*scale,0,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.44)';ctx.lineWidth=2*scale;ctx.beginPath();ctx.moveTo(0,42*scale);ctx.quadraticCurveTo(2*scale,0,0,-42*scale);ctx.stroke();ctx.restore();
+    }
+
+    function drawCloud(ctx,x,y,scale,opacity=.78){ctx.save();ctx.globalAlpha=opacity;ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(x,y,64*scale,23*scale,0,0,Math.PI*2);ctx.ellipse(x-35*scale,y+4*scale,34*scale,19*scale,0,0,Math.PI*2);ctx.ellipse(x+27*scale,y-12*scale,39*scale,30*scale,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+
+    function drawHill(ctx, color, y, amplitude, phase) {
+      ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(0,1200);ctx.lineTo(0,y);
+      for(let x=0;x<=900;x+=30){const wave=Math.sin((x/900*Math.PI*2)+phase)*amplitude+Math.sin((x/900*Math.PI*4)+phase*.7)*amplitude*.22;ctx.lineTo(x,y+wave);}
+      ctx.lineTo(900,1200);ctx.closePath();ctx.fill();
+    }
+
+    function drawFlower(ctx,x,y,scale,color){ctx.save();ctx.translate(x,y);ctx.strokeStyle='rgba(48,123,81,.72)';ctx.lineWidth=4*scale;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(-5*scale,-25*scale,0,-47*scale);ctx.stroke();ctx.fillStyle='rgba(81,173,112,.78)';ctx.beginPath();ctx.ellipse(-9*scale,-20*scale,10*scale,4*scale,-.45,0,Math.PI*2);ctx.fill();ctx.fillStyle=color;for(let i=0;i<5;i++){const angle=i*Math.PI*2/5;ctx.beginPath();ctx.ellipse(Math.cos(angle)*9*scale,-49*scale+Math.sin(angle)*9*scale,6*scale,9*scale,angle,0,Math.PI*2);ctx.fill();}ctx.fillStyle='#ffd75a';ctx.beginPath();ctx.arc(0,-49*scale,5*scale,0,Math.PI*2);ctx.fill();ctx.restore();}
+
+    function drawCardBackground(ctx, themeIndex) {
+      const [deep, mid, glow, paper] = cardThemes[themeIndex];
+      const sky=ctx.createLinearGradient(0,0,0,1200);sky.addColorStop(0,paper);sky.addColorStop(.48,glow);sky.addColorStop(1,'#e8f5ce');ctx.fillStyle=sky;ctx.fillRect(0,0,900,1200);
+      const sunX=[690,190,735,300,610][themeIndex%5],sunY=[210,270,170,230,310][themeIndex%5];
+      const sunGlow=ctx.createRadialGradient(sunX,sunY,24,sunX,sunY,310);sunGlow.addColorStop(0,'rgba(255,255,213,.96)');sunGlow.addColorStop(.32,glow+'bb');sunGlow.addColorStop(1,glow+'00');ctx.fillStyle=sunGlow;ctx.fillRect(sunX-320,sunY-320,640,640);
+      ctx.fillStyle='#fff4a8';ctx.beginPath();ctx.arc(sunX,sunY,54,0,Math.PI*2);ctx.fill();
+      drawCloud(ctx,175+(themeIndex%4)*32,315,.85,.76);drawCloud(ctx,710-(themeIndex%3)*35,410,.63,.7);
+      const mountainColors=['#c0dfb3','#b6e1cf','#c9e4b4','#b7dedf','#d5e9aa'];
+      ctx.fillStyle=mountainColors[themeIndex%5];ctx.beginPath();ctx.moveTo(0,660);ctx.lineTo(0,565);ctx.lineTo(160,430);ctx.lineTo(270,555);ctx.lineTo(440,390);ctx.lineTo(620,570);ctx.lineTo(755,445);ctx.lineTo(900,590);ctx.lineTo(900,720);ctx.closePath();ctx.fill();
+      if(themeIndex%4===1||themeIndex%4===3){ctx.fillStyle='rgba(111,202,218,.8)';ctx.beginPath();ctx.moveTo(0,690);ctx.bezierCurveTo(210,640,300,745,485,696);ctx.bezierCurveTo(650,650,760,715,900,674);ctx.lineTo(900,1200);ctx.lineTo(0,1200);ctx.closePath();ctx.fill();for(let i=0;i<7;i++){ctx.strokeStyle='rgba(255,255,255,.38)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(90+i*122,785+i%3*20);ctx.quadraticCurveTo(180+i*95,770+i%2*34,260+i*90,790+i%3*18);ctx.stroke();}}
+      else{drawHill(ctx,'rgba(107,194,127,.84)',675,58,themeIndex*.62);drawHill(ctx,'rgba(64,169,120,.68)',770,70,themeIndex*.47+1.4);}
+      if(themeIndex%5===2||themeIndex%5===4){for(let i=0;i<13;i++)drawFlower(ctx,35+i*72,1060+(i%3)*30,.65+(i%3)*.12,['#ff96aa','#fff4df','#fbac6f','#d6a8f2'][i%4]);}
+      ctx.save();ctx.globalAlpha=.2;for(let i=0;i<7;i++)drawLeaf(ctx,35+i*145,905+(i%3)*45,.48+(i%2)*.17,-.5+i*.15,'#4dab7b');ctx.restore();
+      ctx.fillStyle='rgba(35,90,76,.94)';roundRect(ctx,55,50,790,108,30);
+      ctx.fillStyle='rgba(255,255,255,.79)';roundRect(ctx,55,250,790,720,42);
+      ctx.strokeStyle='rgba(255,255,255,.96)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(98,251);ctx.arcTo(844,251,844,969,42);ctx.arcTo(844,969,56,969,42);ctx.arcTo(56,969,56,251,42);ctx.arcTo(56,251,844,251,42);ctx.closePath();ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.82)';
+      for(let i=0;i<28;i++){const x=(i*197+themeIndex*59)%900,y=(i*311+themeIndex*97)%1200;ctx.beginPath();ctx.arc(x,y,1+(i%3),0,Math.PI*2);ctx.fill();}
+    }
+
+    function wrapCanvasText(ctx, text, maxWidth) {
+      const lines=[]; let line='';
+      for(const character of text){if(line&&ctx.measureText(line+character).width>maxWidth){lines.push(line);line=character;}else line+=character;}
+      if(line)lines.push(line);return lines;
+    }
+
+    function renderShareCard(canvas, themeIndex, progress=1) {
+      const ctx=canvas.getContext('2d');
+      drawCardBackground(ctx,themeIndex);
+      if(cardLogo.complete&&cardLogo.naturalWidth){const maxW=275,maxH=76,scale=Math.min(maxW/cardLogo.naturalWidth,maxH/cardLogo.naturalHeight);ctx.drawImage(cardLogo,85,65,cardLogo.naturalWidth*scale,cardLogo.naturalHeight*scale);}
+      ctx.textAlign='right';ctx.fillStyle='#fff9e9';ctx.font='600 25px "Klee One",serif';ctx.fillText(todayLabel(),810,115);
+      ctx.textAlign='center';ctx.fillStyle='#ec7c45';ctx.font='600 30px "Klee One",serif';ctx.fillText('給今天的你',450,214);
+      const verse=`「${liveVerse}」`.slice(0,Math.ceil(`「${liveVerse}」`.length*progress));
+      let fontSize=50;ctx.textAlign='left';ctx.font=`600 ${fontSize}px "Klee One", "DFKai-SB", serif`;
+      let lines=wrapCanvasText(ctx,verse,660);if(lines.length>8){fontSize=42;ctx.font=`600 ${fontSize}px "Klee One", "DFKai-SB", serif`;lines=wrapCanvasText(ctx,verse,660);}
+      const lineHeight=fontSize*1.72;let y=365;ctx.fillStyle='#21483f';
+      for(const line of lines){ctx.fillText(line,120,y);y+=lineHeight;}
+      if(progress>=1){
+        y+=12;ctx.textAlign='right';ctx.fillStyle='#6b8174';ctx.font='600 30px "Klee One", "DFKai-SB", serif';ctx.fillText(`— ${liveVerseReference}`,780,y);
+        y+=66;ctx.textAlign='left';ctx.fillStyle='#ba7047';ctx.font='600 27px "Klee One", "DFKai-SB", serif';ctx.fillText('今日祝福',120,y);
+        y+=48;ctx.fillStyle='#405b50';ctx.font='400 26px "Klee One", "DFKai-SB", serif';
+        for(const line of wrapCanvasText(ctx,livePrayer,660).slice(0,5)){ctx.fillText(line,120,y);y+=43;}
       }
-      showToast('祝福文字已複製，可以貼給好友 ✨');
+      ctx.textAlign='center';ctx.fillStyle='#255a4c';ctx.font='600 34px "Klee One", "DFKai-SB", serif';ctx.fillText(church==='SHiNE'?'火樂教會':'M+大雅教會',450,1110);
+      ctx.fillStyle='#557a6e';ctx.font='500 19px "Klee One",serif';ctx.fillText('願主的話，成為你今天腳前的燈。',450,1150);
+    }
+
+    function animateCard(themeIndex) {
+      cancelAnimationFrame(cardAnimationFrame);
+      const textLength=Math.max(1,`「${liveVerse}」`.length),start=performance.now(),duration=Math.min(3800,Math.max(1500,textLength*72));
+      const frame=now=>{const progress=Math.min(1,(now-start)/duration);renderShareCard(sharePreview,themeIndex,progress);if(progress<1)cardAnimationFrame=requestAnimationFrame(frame);};
+      cardAnimationFrame=requestAnimationFrame(frame);
+    }
+
+    function openCardComposer() {
+      currentTheme=Math.floor(Math.random()*cardThemes.length);
+      shareDialog.hidden=false;document.body.style.overflow='hidden';
+      animateCard(currentTheme);closeShareDialog.focus();
+    }
+
+    function closeCardComposer() {shareDialog.hidden=true;document.body.style.overflow='';cancelAnimationFrame(cardAnimationFrame);shareButton.focus();}
+
+    async function uploadShareImage(image) {
+      const response=await fetch(LINE_MEMBER_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(30000),body:JSON.stringify({action:'share_image',church,idToken:window.liff?.getIDToken?.()||'',image})});
+      const data=await response.json().catch(()=>({}));if(!response.ok||data.ok!==true)throw new Error(data.error||'upload_failed');return data.url;
     }
 
     async function shareGrace() {
-      if (liffReady && window.liff?.isInClient() && window.liff?.isApiAvailable('shareTargetPicker')) {
-        try {
-          const result = await window.liff.shareTargetPicker([{type:'text', text:blessingShareText()}]);
-          if (result) showToast('祝福已送出 💛');
+      openCardComposer();
+    }
+
+    async function sendShareCard() {
+      sendCardButton.disabled=true;sendCardButton.textContent='正在準備圖卡…';
+      try {
+        renderShareCard(sharePreview,currentTheme,1);
+        const blob=await new Promise(resolve=>sharePreview.toBlob(resolve,'image/jpeg',.9));
+        if(!blob)throw new Error('image_unavailable');
+        if(liffReady&&window.liff?.isInClient?.()&&window.liff?.isApiAvailable?.('shareTargetPicker')){
+          const dataUrl=await new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.readAsDataURL(blob);});
+          const url=await uploadShareImage(dataUrl);
+          const result=await window.liff.shareTargetPicker([{type:'image',originalContentUrl:url,previewImageUrl:url},{type:'text',text:`給今天的你：「${liveVerse}」— ${liveVerseReference}\nM+大雅教會`}]);
+          if(result){showToast('恩典圖卡已分享，願祝福同行 💛');closeCardComposer();}
+          else showToast('已取消分享');
           return;
-        } catch (error) {
-          if (error?.code === 'CANCEL') return;
         }
-      }
-      await copyBlessingText();
+        const file=new File([blob],'today-grace-card.jpg',{type:'image/jpeg'});
+        if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'給今天的你',text:`${liveVerse} — ${liveVerseReference}`});closeCardComposer();return;}
+        const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='給今天的你-經文圖卡.jpg';link.click();URL.revokeObjectURL(link.href);showToast('圖卡已下載，可以從相簿分享 ✨');
+      } catch(error) {
+        console.error('Share card failed',error);showToast(error.message==='rate_limited'?'製作次數已達上限，請稍後再試':'圖卡分享暫時無法使用，請稍後再試');
+      } finally {sendCardButton.disabled=false;sendCardButton.textContent='📤 分享給好友';}
+    }
+
+    function downloadShareCard() {
+      renderShareCard(sharePreview,currentTheme,1);
+      sharePreview.toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='給今天的你-經文圖卡.jpg';link.click();URL.revokeObjectURL(url);showToast('圖卡已下載 ✨');},'image/jpeg',.9);
     }
 
     async function fetchTodayContent(idToken) {
@@ -601,6 +734,12 @@
       showToast('這份恩典已放進心裡');
     });
     shareButton.addEventListener('click', shareGrace);
+    closeShareDialog.addEventListener('click',closeCardComposer);
+    shareDialog.addEventListener('click',event=>{if(event.target===shareDialog)closeCardComposer();});
+    changeBackgroundButton.addEventListener('click',()=>{let next=Math.floor(Math.random()*cardThemes.length);if(next===currentTheme)next=(next+1)%cardThemes.length;currentTheme=next;animateCard(currentTheme);});
+    downloadCardButton.addEventListener('click',downloadShareCard);
+    sendCardButton.addEventListener('click',sendShareCard);
+    window.addEventListener('keydown',event=>{if(event.key==='Escape'&&!shareDialog.hidden)closeCardComposer();});
     window.addEventListener('pagehide', stopSpeaking);
 
     createParticles();

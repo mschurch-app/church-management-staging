@@ -34,8 +34,14 @@ export async function listMembers(db,church,search='',page=0,newcomersOnly=false
  if(error||!Array.isArray(data))throw new Error('無法載入會員，請稍後重試。');
  await authorize(db,church);
  if(data.some(row=>row.church_id!==church))throw new Error('資料範圍不正確。');
- // Do not expose private LINE identifiers to the UI; return only the binding state.
- const rows=data.slice(0,25).map(({line_id,...row})=>({...row,line_bound:typeof line_id==='string'&&line_id.trim().length>0}));
+ // Read LINE status from the private binding table through an authorized RPC.
+ const pageRows=data.slice(0,25);
+ const {data:bindingStates,error:bindingError}=await db.rpc('list_member_binding_statuses',{p_church:church,p_member_ids:pageRows.map(row=>row.id)});
+ if(bindingError||!Array.isArray(bindingStates))throw new Error('無法確認 LINE 綁定狀態，請重新載入。');
+ const bindingByMember=new Map(bindingStates.map(item=>[String(item.member_id),item.line_bound===true]));
+ if(pageRows.some(row=>!bindingByMember.has(String(row.id))))throw new Error('LINE 綁定狀態不完整，請重新載入。');
+ await authorize(db,church);
+ const rows=pageRows.map(({line_id,...row})=>({...row,line_bound:bindingByMember.get(String(row.id))===true}));
  return {rows,hasNext:data.length>25};
 }
 

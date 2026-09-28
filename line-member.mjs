@@ -1,11 +1,11 @@
-import {lineConfig,LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS,PRAYER_LIFF_IDS} from './line-config.mjs';
+本週消息與主日資訊import {lineConfig,LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS,PRAYER_LIFF_IDS} from './line-config.mjs';
 
 const $=selector=>document.querySelector(selector),content=$('#content');
 const BRANDS={
   'M+':{name:'M＋大雅教會',logo:'assets/brands/mplus-logo-white.png',accent:'#b96a40',soft:'#f8e8d8'},
   SHiNE:{name:'火樂教會',logo:'assets/brands/shine-logo.png',accent:'#c45f3e',soft:'#f9e3d7'},
 };
-const SHARED_FEATURES={today:['🌅','給今天的你','每天一句恩典與祝福'],prayer:['🙏','需要禱告時','進入即時動態禱告牆'],newcomer:['☕','歡迎新朋友','留下第一次相遇的印記'],weekly:['⛪','不見不散喔','本週聚會時間與位置'],love:['💌','把愛傳出去','製作祝福卡傳給好友']};
+const SHARED_FEATURES={today:['🌅','給今天的你','每天一句恩典與祝福'],prayer:['🙏','需要禱告時','進入即時動態禱告牆'],newcomer:['☕','歡迎新朋友','留下第一次相遇的印記'],weekly:['⛪','不見不散喔','本週週不見不散weekly:['📰','本週週報','本週消息與主日資訊'],love:SHARED_FEATURES.love'],love:['💌','把愛傳出去','製作祝福卡傳給好友']};
 function features(){return config.church==='M+'?{today:SHARED_FEATURES.today,tree:['🌱','讀經生命樹','2027，讓神的話長成一棵樹'],prayer:SHARED_FEATURES.prayer,newcomer:SHARED_FEATURES.newcomer,weekly:SHARED_FEATURES.weekly,love:SHARED_FEATURES.love}:{today:SHARED_FEATURES.today,help:['🕊️','隨時的幫助','依此刻心情領受經文'],prayer:SHARED_FEATURES.prayer,newcomer:SHARED_FEATURES.newcomer,weekly:SHARED_FEATURES.weekly,love:SHARED_FEATURES.love};}
 let config,token='',profile={name:'主內家人'},current='menu',payload,selectedLove=0,canvasUrl='';
 

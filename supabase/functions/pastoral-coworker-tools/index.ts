@@ -169,7 +169,12 @@ async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body
     if (!canManage(staff)) query = query.eq('staff_id', staff.id);
     const result = await query;
     if (result.error) throw new ApiError('unavailable', 503);
-    return { ok: true, items: result.data || [] };
+    const items = result.data || [];
+    const staffIds = [...new Set(items.map(item => item.staff_id))];
+    const people = staffIds.length ? await db.from('pastoral_staff').select('id,display_name').in('id', staffIds) : { data: [], error: null };
+    if (people.error) throw new ApiError('unavailable', 503);
+    const names = new Map((people.data || []).map(person => [person.id, person.display_name]));
+    return { ok: true, items: items.map(item => ({ ...item, staff_name: names.get(item.staff_id) || '教會同工' })) };
   }
   if (action === 'create-leave') {
     if (!validDate(body.startDate) || !validDate(body.endDate) || body.endDate < body.startDate ||
@@ -246,7 +251,7 @@ async function uploadPhoto(request: Request, db: ReturnType<typeof adminClient>,
   const safeName = file.name.normalize('NFKC').replace(/[^\p{L}\p{N}._ -]/gu, '_').replace(/^\.+/, '').slice(0, 100) || `photo.${ext}`;
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const name = `${stamp}-${crypto.randomUUID().slice(0, 8)}-${safeName}`;
-  const metadata = { name, mimeType: file.type, parents: [setting.data.folder_id], description: cleanText(form.get('caption'), 1000) };
+  const metadata = { name, mimeType: file.type, parents: [setting.data.folder_id], description: [cleanText(form.get('album'), 120), cleanText(form.get('caption'), 1000)].filter(Boolean).join('｜') };
   const upload = new FormData();
   upload.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json; charset=UTF-8' }));
   upload.append('file', new Blob([bytes], { type: file.type }), name);

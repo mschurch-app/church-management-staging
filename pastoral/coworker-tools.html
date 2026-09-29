@@ -51,6 +51,10 @@
           <div class="action-row"><button id="clock-in" class="button" type="button">上班打卡</button><button id="clock-out" class="button secondary" type="button">下班打卡</button></div>
           <p id="attendance-message" class="hint" role="status">系統只記錄打卡時間，不會追蹤位置。</p>
         </article>
+        <article id="attendance-admin-card" class="card" hidden>
+          <div class="card-heading"><div><p class="eyebrow">TEAM ATTENDANCE</p><h2>同工出勤紀錄</h2></div><button id="refresh-attendance" class="button secondary" type="button">重新整理</button></div>
+          <div id="attendance-list" class="record-list" aria-live="polite"></div>
+        </article>
         <article class="card">
           <div class="card-heading"><div><p class="eyebrow">LEAVE</p><h2>提出請假</h2></div></div>
           <form id="leave-form">

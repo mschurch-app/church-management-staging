@@ -5,7 +5,7 @@
 ## 功能與邊界
 
 - 只處理 `source.type = group` 的 webhook；不回覆一對一對話或其他群組來源類型。
-- 只有 `pastoral_staff.is_active = true`，且具有 `mplus` 存取權的同工能呼叫選單。
+- 只接受透過 `LINE_COWORKER_GROUP_ID` 指定的單一既有同工群組；不檢查發話者個人 ID，因 LINE 電腦版群組事件不保證提供 user ID。選單內容只包含一般功能入口，不回傳私人資料。
 - 用 LINE webhook 簽章驗證原始 request body。
 - `備忘錄` 與 `教會行事曆` 回覆既有同工工作台登入網址。
 - `會友關懷` 會提醒使用私下管道。
@@ -20,6 +20,7 @@
 
 - `LINE_CHANNEL_SECRET`：既有 LINE Messaging API channel secret。不要提交到 Git，也不要貼在聊天訊息中。
 - `LINE_MESSAGING_CHANNEL_ACCESS_TOKEN`：既有 Messaging API channel access token。
+- `LINE_COWORKER_GROUP_ID`：既有同工群組 ID，只允許此群組觸發選單。
 - Supabase 專案預設提供的 `SUPABASE_URL` 及 service key。
 
 函式在缺少 channel secret 時會回覆 503，不會接受未驗簽的 webhook。部署後 URL 為：
@@ -32,7 +33,7 @@
 
 1. 在 staging 設好兩個 LINE secrets，部署本函式並確認 `verify_jwt = false`。LINE webhook 以 HMAC 簽章驗證，不使用 Supabase JWT。
 2. 使用 LINE Developers Console 的 webhook 測試，確認錯誤簽章得到 401、缺少 secret 得到 503。
-3. 確認非 M+ 同工、停用同工、非群組事件都不會收到訊息。
+3. 確認未列入的其他群組及一對一對話不會收到訊息。
 4. 在測試群組由已授權同工送出 `help`，確認六格 Flex 顯示、按鈕回覆及隱私提醒。
 5. 完成測試後，才評估如何把 endpoint 接到既有 webhook；不可覆蓋未知用途的現有 callback。
 

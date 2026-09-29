@@ -19,10 +19,10 @@ async function initialize(){
   })();
   try{await initialization;}catch(error){initialization=undefined;throw error;}
 }
-export async function authenticateStaff({interactive=false,enrollmentCode=''}={}){
+export async function authenticateStaff({interactive=false,enrollmentCode='',returnUrl=''}={}){
   await initialize();
   if(!window.liff.isLoggedIn()){
-    if(interactive)window.liff.login({redirectUri:new URL('./',location.href).href});
+    if(interactive)window.liff.login({redirectUri:returnUrl||new URL('./',location.href).href});
     throw new Error('請先使用已獲授權的 LINE 帳號登入。');
   }
   const token=window.liff.getIDToken();

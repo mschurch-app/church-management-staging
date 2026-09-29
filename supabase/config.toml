@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.line-coworker-menu]
 verify_jwt = false
+
+[functions.pastoral-coworker-tools]
+verify_jwt = false

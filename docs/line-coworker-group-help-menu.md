@@ -1,40 +1,36 @@
-# LINE 同工群組 help 選單
+# LINE 同工群組選單與常用工具
 
-此 Edge Function 提供第一階段原型：同工在既有官方 LINE 群組輸入 `help`，收到六格 Flex 功能選單；點選後收到簡短回覆。它不建立新群組、不更改目前 LINE webhook，也不把關懷或出勤個資貼到群組。
+在既有同工 LINE 群組輸入 `help`，回覆六格 Flex 選單。備忘、出勤請假、照片歸檔與行事曆按鈕會開啟既有教會同工 LIFF；會友關懷按鈕不會把個資帶回群組。此設計不新增 LINE 群組。
 
-## 功能與邊界
+## 已實作功能
 
-- 只處理 `source.type = group` 的 webhook；不回覆一對一對話或其他群組來源類型。
-- 只接受透過 `LINE_COWORKER_GROUP_ID` 指定的單一既有同工群組；不檢查發話者個人 ID，因 LINE 電腦版群組事件不保證提供 user ID。選單內容只包含一般功能入口，不回傳私人資料。
-- 用 LINE webhook 簽章驗證原始 request body。
-- `備忘錄` 與 `教會行事曆` 回覆既有同工工作台登入網址。
-- `會友關懷` 會提醒使用私下管道。
-- `出勤請假` 與 `照片上傳歸檔` 目前會明確標示仍未接通 LINE 群組。
-- `教會管理系統` 保留既有登入方式；選單不會建立另一套管理員登入。
+- **備忘錄**：個人備忘預設只有建立者可見；同工共用備忘限同單位已授權同工；可設提醒日期與封存。
+- **出勤請假**：同工可每日上、下班打卡，檢視本人紀錄及請假狀態；牧師與管理者可檢視近七日出勤、核准或退回請假。打卡不記錄 GPS 或背景位置。
+- **照片歸檔**：上傳 JPG、PNG、WebP，單張最大 10 MB；直接傳至管理者選定的 Google 共用雲端硬碟資料夾，資料庫只存照片索引，不存公開副本。
+- 以上功能以既有 LIFF LINE ID Token 在 Edge Function 驗證同工與單位權限。資料表啟用 RLS，anon/authenticated 沒有直接權限。
 
-目前這是選單與路由提示原型，尚未讓六個功能都能在 LINE 對話中完成操作。照片功能接上 Google 共用雲端硬碟之前，仍需另外設計 Drive 權限與檔案歸檔流程。
+## Google Drive 設定
 
-## 部署前設定
+照片歸檔以最小權限 `drive.file` scope 執行，不會擴大既有日曆 OAuth 權限。牧師或管理者從照片頁面按「授權 Google 雲端硬碟」時才會發起增量授權，之後使用 Google Picker 選取共用資料夾；上傳採 `supportsAllDrives=true`。
 
-在 staging Supabase Edge Function Secrets 設定：
+Staging Edge Function Secrets 需設定 `GOOGLE_PICKER_API_KEY` 與 `GOOGLE_CLOUD_PROJECT_NUMBER`，且在 mbot 的 Cloud 專案啟用 Google Drive API 和 Picker API。OAuth Consent 同意 `drive.file` 後，管理者需選一次資料夾。必要時先確認 mbot 在該資料夾有編輯權。
 
-- `LINE_CHANNEL_SECRET`：既有 LINE Messaging API channel secret。不要提交到 Git，也不要貼在聊天訊息中。
-- `LINE_MESSAGING_CHANNEL_ACCESS_TOKEN`：既有 Messaging API channel access token。
-- `LINE_COWORKER_GROUP_ID`：既有同工群組 ID，只允許此群組觸發選單。
-- Supabase 專案預設提供的 `SUPABASE_URL` 及 service key。
+## LINE 群組設定與既有 webhook
 
-函式在缺少 channel secret 時會回覆 503，不會接受未驗簽的 webhook。部署後 URL 為：
+- 只接受 `LINE_COWORKER_GROUP_ID` 指定的單一既有同工群組。電腦版群組訊息不一定包含個人 user ID，因此以群組 ID 作入口白名單；非此群組及一對一聊天不會收到回覆。
+- 驗證 LINE HMAC 簽章；無 channel secret 時回覆 503，拒絕處理。
+- 需要 `LINE_CHANNEL_SECRET`、`LINE_MESSAGING_CHANNEL_ACCESS_TOKEN` 與 `LINE_COWORKER_GROUP_ID` 三個 secrets。
+- LINE Developers Console 需允許官方帳號加入群組。註冊 callback 前，先核對原有 webhook；不可直接覆寫未知用途的 URL。若已有 handler，應將兩種事件路由合併。
 
-`https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/line-coworker-menu`
+## Staging 狀態
 
-正式切換前，需要在 LINE Developers Console 核對目前 webhook 設定。若已有 webhook，應將該 URL 接入現有 handler 或採用支援多個 event handler 的架構；不要直接覆寫既有 URL。還要在同一 Messaging API channel 啟用「Allow bot to join group chats」，並由管理者把既有官方帳號加入目前的同工群組。此 PR 不會執行以上 LINE Console 變更。
+Coworker-tools migration 已套用到 staging，Edge Function 已部署並通過 Supabase 部署編譯；資料表目前只供 Edge Function 使用。Google 日曆一般授權仍只要原本的日曆 scope；新的 `connect-drive` 動作只在管理者主動點選照片授權時要求 Drive 檔案 scope。
 
-## 手動測試
+群組選單 Edge Function 已部署但尚未設定 LINE secrets，也沒有修改或註冊 LINE webhook。網頁和選單路由目前在此 PR 分支；合併後才會由既有靜態網站流程上線。
 
-1. 在 staging 設好兩個 LINE secrets，部署本函式並確認 `verify_jwt = false`。LINE webhook 以 HMAC 簽章驗證，不使用 Supabase JWT。
-2. 使用 LINE Developers Console 的 webhook 測試，確認錯誤簽章得到 401、缺少 secret 得到 503。
-3. 確認未列入的其他群組及一對一對話不會收到訊息。
-4. 在測試群組由已授權同工送出 `help`，確認六格 Flex 顯示、按鈕回覆及隱私提醒。
-5. 完成測試後，才評估如何把 endpoint 接到既有 webhook；不可覆蓋未知用途的現有 callback。
+## 測試建議
 
-LINE 平台在群組中送出的回覆會對群組全員可見。選單只回覆通用功能文字，不會將同工身份或會友內容發到群組。
+1. 用核准同工 LINE 登入 LIFF，確認個人備忘只由本人看見、同工備忘可共同檢視。
+2. 測試同日重複打卡、未上班先下班、重疊請假、一般同工嘗試核准等拒絕條件。
+3. 用牧師／管理者帳號授權 Drive、選擇一個測試資料夾，確認照片進入 Shared Drive，其他同工可開啟但不能變更資料夾設定。
+4. 設定 LINE secrets 後，以既有同工群組測試 `help` 與三個 LIFF 工具按鈕。

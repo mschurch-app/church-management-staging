@@ -9,7 +9,7 @@ const CALENDAR_SCOPES=[
   'openid',
   'email',
   'https://www.googleapis.com/auth/calendar.events.owned',
-  'https://www.googleapis.com/auth/calendar.events.freebusy',
+  'https://www.googleapis.com/auth/calendar.events.freebusy',\n  'https://www.googleapis.com/auth/drive.file',
 ];
 const encoder=new TextEncoder();
 

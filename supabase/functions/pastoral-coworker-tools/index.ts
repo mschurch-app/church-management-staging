@@ -143,6 +143,22 @@ async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body
     if (result.error) throw new ApiError('unavailable', 503);
     return { ok: true, item: result.data || null };
   }
+  if (action === 'list-attendance') {
+    if (!canManage(staff)) throw new ApiError('forbidden', 403);
+    const through = validDate(body.through) ? body.through : taipeiDate();
+    const from = validDate(body.from) ? body.from : new Date(Date.parse(through + 'T00:00:00Z') - 6 * 86400000).toISOString().slice(0, 10);
+    if (from > through || Date.parse(through + 'T00:00:00Z') - Date.parse(from + 'T00:00:00Z') > 31 * 86400000) throw new ApiError('invalid_window');
+    const result = await db.from('pastoral_staff_attendance')
+      .select('id,staff_id,work_date,clocked_in_at,clocked_out_at,note')
+      .eq('entity_key', entityKey).gte('work_date', from).lte('work_date', through)
+      .order('work_date', { ascending: false }).limit(500);
+    if (result.error) throw new ApiError('unavailable', 503);
+    const ids = [...new Set((result.data || []).map(row => row.staff_id))];
+    const people = ids.length ? await db.from('pastoral_staff').select('id,display_name').in('id', ids) : { data: [], error: null };
+    if (people.error) throw new ApiError('unavailable', 503);
+    const names = new Map((people.data || []).map(person => [person.id, person.display_name]));
+    return { ok: true, items: (result.data || []).map(row => ({ ...row, staff_name: names.get(row.staff_id) || '教會同工' })) };
+  }
   if (action === 'clock-in' || action === 'clock-out') {
     const today = taipeiDate();
     if (action === 'clock-in') {

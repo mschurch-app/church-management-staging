@@ -11,6 +11,7 @@ type LineEvent = {
 type WebhookBody = { events?: LineEvent[] };
 
 const APP_URL = 'https://mscos.mchurch.online/pastoral/';
+const LIFF_ID = '2011645391-VGkQRZ9d';
 const featureLabels: Record<string, string> = {
   memo: '備忘錄與工作協作',
   calendar: '教會行事曆',
@@ -75,7 +76,9 @@ function menuMessage() {
     backgroundColor: '#F4F7F5',
     cornerRadius: '12px',
     paddingAll: '12px',
-    action: { type: 'postback', label, data: `feature=${key}` },
+    action: ['memo', 'attendance', 'photos', 'calendar'].includes(key)
+      ? { type: 'uri', label, uri: `https://liff.line.me/${LIFF_ID}/${key === 'memo' || key === 'attendance' || key === 'photos' ? 'coworker-tools.html?tab=' + (key === 'photos' ? 'photos' : key === 'attendance' ? 'attendance' : 'memo') : 'workspace.html'}` }
+      : { type: 'postback', label, data: `feature=${key}` },
     contents: [
       { type: 'text', text: icon, size: 'xl', align: 'center' },
       { type: 'text', text: label, size: 'sm', weight: 'bold', align: 'center', wrap: true, margin: 'sm', color: '#24483E' },
@@ -98,7 +101,7 @@ function menuMessage() {
         paddingAll: '18px',
         contents: [
           { type: 'text', text: '教會同工常用功能', color: '#FFFFFF', weight: 'bold', size: 'lg' },
-          { type: 'text', text: '點選功能，機器人會在群組回覆下一步', color: '#E8F0EC', size: 'xs', margin: 'sm', wrap: true },
+          { type: 'text', text: '點選功能，在 LINE 內開啟同工工具或取得說明', color: '#E8F0EC', size: 'xs', margin: 'sm', wrap: true },
         ],
       },
       body: { type: 'box', layout: 'vertical', spacing: 'sm', paddingAll: '14px', contents: rows },
@@ -124,7 +127,7 @@ function featureReply(key: string) {
   if (key === 'memo' || key === 'calendar') {
     return {
       type: 'text',
-      text: `已選擇「${name}」。目前可從同工工作台使用，登入入口：${APP_URL}`,
+      text: `已選擇「${name}」。請在開啟的同工工具頁使用 LINE 登入。`,
     };
   }
   if (key === 'care') {

@@ -1,0 +1,7 @@
+/* October trial only: live Daya weather controls the landscape palette. */
+.tree-art[data-weather="sunny"][data-season],.tree-art[data-weather="sunny"]{background:linear-gradient(180deg,#9cdef7 0%,#d8f1fa 27%,#fff0bd 64%,#9fd28f 100%)}
+.tree-art[data-weather="partly-cloudy"][data-season],.tree-art[data-weather="partly-cloudy"]{background:linear-gradient(180deg,#b6e5f6 0%,#e5f4f5 30%,#fff3d1 66%,#acd19a 100%)}
+.tree-art[data-weather="cloudy"][data-season],.tree-art[data-weather="cloudy"]{background:linear-gradient(180deg,#9fb9c5 0%,#d0e0e1 35%,#eff0dc 69%,#a6c39a 100%)}
+.tree-art[data-weather="rain"][data-season],.tree-art[data-weather="cold-rain"][data-season],.tree-art[data-weather="rain"],.tree-art[data-weather="cold-rain"]{background:linear-gradient(180deg,#7999ad 0%,#aec8d2 38%,#dce8df 74%,#a4c49f 100%)}
+.tree-art[data-weather="storm"][data-season],.tree-art[data-weather="storm"]{background:linear-gradient(180deg,#526c83 0%,#91a8b4 42%,#c6d5ce 75%,#8ead91 100%)}
+.tree-art[data-weather="windy"][data-season],.tree-art[data-weather="windy"]{background:linear-gradient(180deg,#9bcfe0 0%,#d7ece6 43%,#fff0cb 74%,#9bc890 100%)}

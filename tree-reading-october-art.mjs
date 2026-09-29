@@ -91,4 +91,3 @@ export function renderLifeTree(person, stats, date, gardenMode = false, weather 
     <g class="tree-canopy">${trunk}${branches}${leaves}${blossoms}${fruits}${bird}${baseTufts}${blessingFlowers}</g>${gardenMode ? '' : weatherOverlay(weather)}${storm}${worm}${stormStress}
   </svg>`;
 }
-

@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#f5f8ef">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>箴言十月讀經｜M+大雅教會同工測試</title>
-  <link rel="stylesheet" href="tree-reading-preview.css?v=20260929-full-test">
-  <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20260929-1">
+  <link rel="stylesheet" href="tree-reading-preview.css?v=20260929-login-fallback">
+  <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20260929-login-fallback">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
@@ -24,13 +24,13 @@
 
     <nav class="tabs" aria-label="生命樹讀經"><span class="member-tab">🌱 我的生命樹</span></nav>
 
-    <section id="line-login-gate" class="section-card line-login-gate" aria-labelledby="login-title" hidden>
+    <section id="line-login-gate" class="section-card line-login-gate" aria-labelledby="login-title">
       <p class="eyebrow">LINE IDENTITY · OCTOBER TEST</p><h2 id="login-title">先加入同工測試，找到自己的生命樹</h2>
       <p class="muted">使用 LINE 身分登入。只會讀寫你的十月箴言測試紀錄，與正式會友資料完全分開。</p>
       <label for="invite-code">同工邀請碼<input id="invite-code" type="password" autocomplete="one-time-code" placeholder="請輸入同工群組公告的邀請碼"></label>
-      <p id="login-member-id" class="identity-preview-id">已使用 LINE 登入</p>
-      <button id="login-member" class="primary" type="button">以 LINE 身分加入測試</button>
-      <p id="login-status" class="status-line" role="status"></p>
+      <p id="login-member-id" class="identity-preview-id">正在確認 LINE 登入狀態…</p>
+      <button id="login-member" class="primary" type="button" disabled>以 LINE 身分加入測試</button>
+      <p id="login-status" class="status-line" role="status">請稍候，正在連線同工測試環境。</p>
       <p class="demo-warning">邀請碼只用於同工測試；讀經與手札資料存於隔離測試資料庫。</p>
     </section>
 
@@ -58,6 +58,7 @@
       <section class="section-card challenge-card" id="challenge-section">
         <div class="section-heading"><div><p class="eyebrow">LIFE HAPPENS</p><h2>生命中的風雨</h2></div><span class="challenge-count" id="challenge-count">0</span></div>
         <p class="muted">自然事件每天自動抽選約十分之一的樹；讀經、照料與每棵樹的狀態各自不同，不需要同工逐筆觸發。</p>
+        <p id="challenge-reward-summary" class="challenge-reward-summary" role="status">🌟 每完成一次挑戰，就收藏 1 枚守護星光。</p>
         <div id="drought-alert" class="drought-alert" hidden role="status"></div>
         <div id="active-challenges" class="challenge-list"></div>
         <p id="challenge-empty" class="empty-note">今天沒有新的挑戰，繼續好好照顧你的樹。</p>
@@ -107,6 +108,6 @@
     <footer>© 2026 M+大雅教會 · 十月箴言同工測試</footer>
     <dialog class="admin-gate" id="admin-gate" aria-labelledby="admin-gate-title"><form method="dialog"><button class="gate-close" aria-label="關閉">×</button><p class="eyebrow">STAFF PREVIEW</p><h2 id="admin-gate-title">同工管理</h2><p>年度讀經表、挑戰設定與讀經統計，請由教會管理系統進入。</p><button class="primary" id="open-admin" type="button">開啟管理面板</button><button class="text-button" value="cancel">稍後再說</button></form></dialog>
   </main>
-  <script type="module" src="tree-reading-october-test.mjs?v=20260929-full-test"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20260929-login-fallback"></script>
 </body>
 </html>

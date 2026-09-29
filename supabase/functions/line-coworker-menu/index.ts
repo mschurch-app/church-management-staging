@@ -58,23 +58,6 @@ function adminClient() {
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
 }
 
-async function isAuthorizedCoworker(userId: string) {
-  const db = adminClient();
-  const { data: staff, error } = await db
-    .from('pastoral_staff')
-    .select('id,is_active')
-    .eq('line_subject', userId)
-    .maybeSingle();
-  if (error || !staff?.is_active) return false;
-  const { data: access, error: accessError } = await db
-    .from('pastoral_staff_access')
-    .select('staff_id')
-    .eq('staff_id', staff.id)
-    .eq('entity_key', 'mplus')
-    .maybeSingle();
-  return !accessError && Boolean(access);
-}
-
 function menuMessage() {
   const items = [
     ['📝', '備忘錄', 'memo'],
@@ -175,9 +158,9 @@ async function reply(replyToken: string, messages: unknown[]) {
 }
 
 async function processEvent(event: LineEvent) {
-  if (event.source?.type !== 'group' || !event.source.userId || !event.replyToken) return;
+  const allowedGroupId = Deno.env.get('LINE_COWORKER_GROUP_ID') || '';
+  if (event.source?.type !== 'group' || !event.source.groupId || event.source.groupId !== allowedGroupId || !event.replyToken) return;
   if (event.type !== 'message' && event.type !== 'postback') return;
-  if (!await isAuthorizedCoworker(event.source.userId)) return;
 
   if (event.type === 'message' && event.message?.type === 'text' && event.message.text?.trim().toLowerCase() === 'help') {
     await reply(event.replyToken, [menuMessage()]);
@@ -194,7 +177,8 @@ async function processEvent(event: LineEvent) {
 Deno.serve(async request => {
   if (request.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405);
   const secret = Deno.env.get('LINE_CHANNEL_SECRET') || '';
-  if (!secret) return json({ ok: false, error: 'webhook_not_configured' }, 503);
+  const allowedGroupId = Deno.env.get('LINE_COWORKER_GROUP_ID') || '';
+  if (!secret || !allowedGroupId) return json({ ok: false, error: 'webhook_not_configured' }, 503);
   const signature = request.headers.get('x-line-signature') || '';
   const rawBody = new Uint8Array(await request.arrayBuffer());
   if (rawBody.length > 1024 * 1024) return json({ ok: false, error: 'payload_too_large' }, 413);

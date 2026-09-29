@@ -1,257 +1,61 @@
 import { loadScheduledChapters } from './bible-scripture-loader.mjs';
-import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-2';
+import { renderLifeTree } from './tree-reading-october-art.mjs?v=20260929-art';
+import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-full';
 
 const $ = (selector) => document.querySelector(selector);
-const state = { idToken: '', participant: null, records: [], challenges: [], activeDate: null, admin: false };
-const dayNumber = (date) => Math.floor((Date.parse(`${date}T12:00:00Z`) - Date.parse('2026-10-01T12:00:00Z')) / 86400000) + 1;
-const dayAt = (number) => new Date(Date.parse('2026-10-01T12:00:00Z') + (number - 1) * 86400000).toISOString().slice(0, 10);
-const taipeiDate = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
-const inTestMonth = (date) => date >= OCTOBER_TEST_WINDOW.start && date <= OCTOBER_TEST_WINDOW.end;
-const formatDate = (date) => `${Number(date.slice(5, 7))}/${Number(date.slice(8, 10))}`;
-const chapterPassage = (day) => `🌳 根｜箴言 ${day}　🌿 枝｜—　🍎 果｜—`;
+const state = { idToken:'', participant:null, records:[], challenges:[], notes:[], leaderboard:[], garden:[], admin:false, view:'personal', passage:null, sound:false, journalIndex:0 };
+const today = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+const fmt = (date) => `${Number(date.slice(5,7))}/${Number(date.slice(8,10))}`;
+const chapterDay = (date) => Number(date.slice(8,10));
+const isLaunch = () => today() >= OCTOBER_TEST_WINDOW.start && today() <= OCTOBER_TEST_WINDOW.end;
+const prompt = (date=today()) => `🌳 根｜箴言 ${chapterDay(date)}　🌿 枝｜—　🍎 果｜—`;
+const labels = {worm:{icon:'🐛',title:'小樹蟲來了',text:'嫩葉正遇到小小蟲害。陪它除蟲，保護剛長出的新芽。',button:'🪲 幫小樹除蟲',action:'pest'},wind:{icon:'💨',title:'一陣強風吹來',text:'枝葉被吹得搖晃，扶好枝條，陪小樹站穩。',button:'🌿 扶好枝條',action:'support'},typhoon:{icon:'🌧️',title:'風雨考驗',text:'雨勢和風讓樹根不太安穩，守護根部就能恢復。',button:'🛡️ 守護樹根',action:'guard'},trouble:{icon:'🪵',title:'樹枝需要整理',text:'掉落的枝條需要清理，整理後新芽就能再次生長。',button:'🌱 整理樹枝',action:'repair'}};
+const weatherWords = {sunny:'晴朗', 'partly-cloudy':'多雲時晴', cloudy:'多雲', rain:'降雨', 'cold-rain':'降雨', storm:'雷雨', windy:'強風'};
+let weather = {code:2,wind:8,temp:24,mood:'partly-cloudy',updated:''};
 
-function showSetup(message) {
-  $('#setup-message').textContent = message;
-  $('#setup-notice').hidden = false;
-  $('#login-panel').hidden = true;
-  $('#progress-panel').hidden = true;
-  $('#month-panel').hidden = true;
-}
-
-async function loadLiffSdk() {
-  if (window.liff) return;
-  await new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
-    script.onload = resolve;
-    script.onerror = () => reject(new Error('LINE 登入元件載入失敗，請稍後重試。'));
-    document.head.append(script);
-  });
-}
-
-async function request(action, body = {}) {
-  const response = await fetch(OCTOBER_TEST_API, {
-    method: 'POST', credentials: 'omit', cache: 'no-store', redirect: 'error',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.idToken}` },
-    body: JSON.stringify({ action, ...body }), signal: AbortSignal.timeout(12000)
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const messages = { invite_invalid: '邀請碼不正確，請回同工群組確認。', not_authorized: '目前這個 LINE 帳號沒有測試權限，請聯絡教會管理同工。', test_closed: '十月測試目前未開放。', staff_required: '只有授權管理同工可以查看整體進度。', join_required: '還沒加入十月同工測試，輸入邀請碼即可開始。', read_first: '請先讀完今天的箴言，再回來澆水。', challenge_not_found: '這個挑戰已經處理完成，請更新畫面。', resolution_invalid: '請使用這個挑戰提供的處理方式。' };
-    const error = new Error(messages[data.error] || '暫時無法連線，請稍後再試。'); error.code = data.error; throw error;
-  }
+async function api(action, extra={}) {
+  const response = await fetch(OCTOBER_TEST_API,{method:'POST',credentials:'omit',cache:'no-store',headers:{'content-type':'application/json',authorization:`Bearer ${state.idToken}`},body:JSON.stringify({action,...extra}),signal:AbortSignal.timeout(15000)});
+  const data = await response.json().catch(()=>({}));
+  if (!response.ok) { const messages={invite_invalid:'邀請碼不正確，請回同工群組確認。',not_authorized:'這個 LINE 帳號尚未獲邀參加測試。',test_closed:'十月測試目前未開放。',staff_required:'只有授權同工可以查看管理統計。',join_required:'請輸入同工邀請碼加入測試。',read_first:'請先記錄讀經，再回來澆水。',challenge_not_found:'這個挑戰已處理，請重新整理。',resolution_invalid:'請使用這個挑戰提供的處理方式。',date_not_allowed:'這個日期目前不能記錄。'}; const e=new Error(messages[data.error]||'連線暫時中斷，請稍後重試。'); e.code=data.error; throw e; }
   return data;
 }
-
-function getRecord(date) { return state.records.find((item) => item.reading_date === date); }
-
-function missedStreak() {
-  const today = taipeiDate();
-  if (today < OCTOBER_TEST_WINDOW.start) return 0;
-  let day = Math.min(31, dayNumber(today) - 1), count = 0;
-  while (day >= dayNumber(state.participant.reading_start_date)) {
-    if (getRecord(dayAt(day))) break;
-    count++; day--;
-  }
-  return count;
+function record(date=today()){return state.records.find((r)=>r.reading_date===date)}
+function progressStats(){const n=state.records.filter(r=>r.completion_type==='on_time').length,l=state.records.filter(r=>r.completion_type==='makeup').length; let streak=0; for(let i=30;i>=0;i--){const d=`2026-10-${String(i+1).padStart(2,'0')}`;if(d>today())continue;if(record(d))streak++;else break;}let misses=0;for(let i=Math.min(30,chapterDay(today())-2);i>=0;i--){if(record(`2026-10-${String(i+1).padStart(2,'0')}`))break;misses++;}return{onTime:n,late:l,streak,missedStreak:today()<'2026-10-01'?0:misses,growth:Math.round((n+l)/31*100),health:Math.max(20,100-misses*13),personalEvents:state.challenges.filter(c=>c.status==='active').map(c=>({type:c.challenge_type,impact:12})),blessingCount:state.notes.length,logs:Object.fromEntries(state.records.map(r=>[r.reading_date,{kind:r.completion_type}]))};}
+function season(){return 'autumn'}
+function challengeFx(type){const cls=type==='worm'?'care-pest-active':'care-water-active';const art=$('#tree-art');art.classList.add(cls);const fx=document.createElement('div');fx.className='care-animation';fx.setAttribute('aria-hidden','true');fx.innerHTML=type==='worm'?'<span class="pest-bug">🐛</span><span class="pest-spray">✨</span>':'<span class="water-drop drop-one">💧</span><span class="water-drop drop-two">💧</span><span class="water-drop drop-three">💧</span><span class="care-sparkle sparkle-one">✦</span><span class="care-sparkle sparkle-two">✦</span><span class="care-sparkle sparkle-three">✦</span>';art.append(fx);setTimeout(()=>{art.classList.remove(cls);fx.remove();},2200);}
+function showStatus(text,where='#reading-status'){const node=$(where);if(node)node.textContent=text;}
+function missedMessage(n){return n===1?'今天葉子開始泛黃，回來讀經就能恢復。':n===2?'兩天沒讀，葉片慢慢垂下；補讀就能重新照顧小樹。':n>=3?`連續漏讀 ${n} 天，樹的成長退回一步；補讀後就會恢復。`:''}
+function renderTree(){const stats=progressStats(),active=state.challenges.find(c=>c.status==='active');const art=$('#tree-art');art.dataset.weather=weather.mood;art.dataset.season=season();art.dataset.health=stats.missedStreak>=3?'wilted':stats.missedStreak?'yellow':'healthy';art.innerHTML=renderLifeTree({id:'oct',name:state.participant?.display_name||'同工'},stats,today(),false,weather.mood);$('.tree-card')?.setAttribute('data-weather',weather.mood);$('#tree-date-label').textContent=today()<'2026-10-01'?'COMING SOON · OCT 01':`OCTOBER · ${fmt(today())}`;$('#tree-title').textContent=`${state.participant?.display_name||'同工'}的生命樹`;$('#reading-date').textContent=fmt(today());$('#passage-title').textContent=`箴言 ${today()<'2026-10-01'?1:chapterDay(today())} 章`;$('#passage-detail').textContent=today()<'2026-10-01'?'10 月 1 日開始；加入前日期已保送。':'完整讀完後回到樹下記錄，接著澆水。';$('#late-date').max=today();$('#late-date').min=state.participant?.reading_start_date||'2026-10-01';
+  const status=active?`${labels[active.challenge_type]?.title||'生命中的挑戰'} · 請幫小樹一起面對`:missedMessage(stats.missedStreak)||(state.records.length?'葉片翠綠，正在穩穩成長。':'小樹正在等候第一道活水 ✨');$('#tree-mood').textContent=status;
+  $('#health-badge').textContent=active?'🌧️ 需要陪伴':stats.missedStreak>=3?'🍂 需要照料':stats.missedStreak?'🌿 回來就會好':'🌱 生長中';
+  $('#tree-weather').textContent=`${weather.mood==='sunny'?'☀️':weather.mood.includes('rain')||weather.mood==='storm'?'🌧️':weather.mood==='windy'?'💨':'🌤️'} 台中市大雅區｜${weatherWords[weather.mood]||'多雲'} ${weather.temp}°C · 風速 ${Math.round(weather.wind)} km/h · 更新 ${weather.updated||'稍早'}`;
+  $('#stat-on-time').textContent=stats.onTime;$('#stat-late').textContent=stats.late;$('#stat-streak').textContent=stats.streak;$('#stat-growth').textContent=`${stats.growth}%`;$('#growth-fill').style.width=`${stats.growth}%`;
+  const r=record();$('#mark-read').disabled=!isLaunch()||Boolean(r);$('#mark-read').textContent=r?'今天已記錄 ✓':isLaunch()?'讀完了，記錄今天':'10 月 1 日開跑 · 讀完後記錄';$('#care-tree').disabled=!r||Boolean(r.watered_at);$('#care-tree').textContent=r?.watered_at?'✓ 今天已澆水':'💧 澆水照顧生命樹';$('#mark-late').disabled=!isLaunch();$('#late-date').disabled=!isLaunch();
+  renderChallenges();
 }
-
-function renderTree() {
-  const streak = missedStreak();
-  const dataHealth = streak === 0 ? 'healthy' : streak === 1 ? 'yellow' : 'wilted';
-  const stage = Math.max(0, state.records.length - Math.floor(streak / 3));
-  const activeChallenge = state.challenges.find((item) => item.status === 'active' && item.challenge_date <= taipeiDate());
-  $('#tree-scene').dataset.health = dataHealth;
-  $('#tree-scene').dataset.challenge = activeChallenge?.challenge_type || 'none';
-  $('#tree-age').textContent = `🌱 第 ${stage} 天`;
-  $('#tree-health').textContent = activeChallenge ? `${challengeDetails[activeChallenge.challenge_type]?.title || '生命中的挑戰'} · 按下方按鈕幫助小樹` : streak === 0 ? (state.records.length ? '葉片翠綠，正在成長' : '小樹正在等候第一道活水') : streak === 1 ? '葉片開始泛黃，回來讀經就能恢復' : streak === 2 ? '枝葉有些低垂，補讀經文來守護它' : `連續漏讀 ${streak} 天，成長退後 ${Math.floor(streak / 3)} 天；補讀就能恢復`;
-  const todayRecord = getRecord(taipeiDate());
-  const water = $('#water-tree');
-  water.hidden = !todayRecord || Boolean(todayRecord.watered_at);
-  water.disabled = !todayRecord || Boolean(todayRecord.watered_at);
+function forestSvg(isChurch){const trees=state.garden;const chunk=isChurch?Math.ceil(Math.max(1,trees.length)/3):Math.max(1,trees.length);const rows=isChurch?[trees.slice(0,chunk),trees.slice(chunk,chunk*2),trees.slice(chunk*2)]:[trees];const grove=(list,i)=>`<section class="garden-grove ${isChurch?'church-grove':''}">${isChurch?`<h3 class="grove-name">🌳 十月測試花園 ${String.fromCharCode(65+i)}</h3>`:''}<div class="garden-trees">${list.map((t,j)=>{const stats={...progressStats(),onTime:t.on_time_count,late:Math.max(0,t.completed_count-t.on_time_count),growth:Math.round(t.completed_count/31*100),health:t.challenge_active?65:90,personalEvents:t.challenge_active?[{type:'wind',impact:12}]:[],blessingCount:t.completed_count,missedStreak:0};return `<div class="garden-tree-button"><span class="garden-tree-label">同工樹 ${t.tree_number}</span>${renderLifeTree({id:`t${t.tree_number}`,name:`同工樹 ${t.tree_number}`},stats,today(),true,weather.mood).replace('<svg ','<svg class="garden-tree" ')}<span class="garden-tree-status">💧 ${t.completed_count} 天${t.challenge_active?' · 🌧️ 需要陪伴':''}</span></div>`}).join('')}</div></section>`;
+  $('#forest-art').hidden=false;$('#tree-art').hidden=true;$('#tree-weather').hidden=true;$('#tree-action-dock').hidden=true;$('#reading-status').hidden=true;$('#forest-art').innerHTML=`<div class="garden-heading"><span>${isChurch?'THE CHURCH GROVE':'A SMALL GARDEN'}</span><h2>${isChurch?'M+大雅教會的大花園':'同工測試小花園'}</h2><p>${isChurch?'每一個測試花園都收錄匿名生命樹。':'一起同行，每棵樹都有自己的讀經節奏。'}</p><span class="garden-weather-summary">${weatherWords[weather.mood]} ${weather.temp}°C · 大雅區</span></div><div class="garden-landscape-wrap" data-weather="${weather.mood}" data-season="autumn"><div class="garden-treescape">${rows.map(grove).join('')}</div></div><p class="garden-invite">🌿 ${trees.length} 棵樹，在大雅的陽光裡一起成長</p>`;
 }
-
-const challengeDetails = {
-  worm: {icon:'🪲',title:'樹蟲來了',text:'小小害蟲正在啃咬嫩葉。及時除蟲，保護新芽。',label:'🪲 立即除蟲',action:'pest'},
-  wind: {icon:'🌬️',title:'一陣強風吹來',text:'枝條被風吹歪了，扶正枝幹、陪它站穩。',label:'🌿 扶起枝條',action:'support'},
-  typhoon: {icon:'🌧️',title:'風雨考驗',text:'風雨搖晃著樹根。先安穩根部，樹會重新站起來。',label:'🛡️ 守護樹根',action:'guard'},
-  trouble: {icon:'🪵',title:'樹枝需要整理',text:'掉落的枝條需要清理，整理後就能再次生長。',label:'🌱 照顧樹苗',action:'repair'}
-};
-
-function renderChallenges() {
-  const box = $('#challenge-box'), list = $('#challenge-list'); list.replaceChildren();
-  const visible = state.challenges.filter((item) => item.challenge_date <= taipeiDate());
-  box.hidden = visible.length === 0;
-  for (const challenge of visible.slice(-5).reverse()) {
-    const details = challengeDetails[challenge.challenge_type]; if (!details) continue;
-    const item = document.createElement('article'); item.className = `challenge-item${challenge.status === 'resolved' ? ' resolved' : ''}`;
-    const title = document.createElement('strong'); title.textContent = `${details.icon} ${details.title} · ${formatDate(challenge.challenge_date)}`;
-    const description = document.createElement('p'); description.textContent = challenge.status === 'resolved' ? `已處理：${details.label.replace(/^\S+\s/u,'')}` : details.text;
-    item.append(title, description);
-    if (challenge.status !== 'resolved') {
-      const button = document.createElement('button'); button.type = 'button'; button.textContent = details.label;
-      button.addEventListener('click', () => resolveChallenge(challenge.id, details.action, button)); item.append(button);
-    } else {
-      const resolved = document.createElement('small'); resolved.textContent = '✓ 樹木正在恢復'; item.append(resolved);
-    }
-    list.append(item);
-  }
-}
-
-function renderMonth() {
-  const today = taipeiDate();
-  const joinDate = state.participant.reading_start_date;
-  const lastAvailable = inTestMonth(today) ? today : today < OCTOBER_TEST_WINDOW.start ? '' : OCTOBER_TEST_WINDOW.end;
-  const endDate = lastAvailable || OCTOBER_TEST_WINDOW.start;
-  const readCount = state.records.length;
-  const totalCount = lastAvailable && endDate >= joinDate ? Math.max(0, dayNumber(endDate) - dayNumber(joinDate) + 1) : 0;
-  const passedCount = Math.max(0, Math.min(31, dayNumber(joinDate) - 1));
-  $('#member-name').textContent = state.participant.display_name || '同工';
-  $('#read-count').textContent = String(readCount);
-  $('#total-count').textContent = String(totalCount);
-  $('#join-date').textContent = formatDate(joinDate);
-  $('#progress-bar').style.width = `${totalCount ? Math.min(100, Math.round(readCount / totalCount * 100)) : 0}%`;
-  $('#pass-message').textContent = passedCount ? `加入前的 ${passedCount} 天已全部保送，這些日期不列入漏讀或補讀。從 ${formatDate(joinDate)} 起開始計算。` : `你從 ${formatDate(joinDate)} 開始同行，每天一章，慢慢讀完箴言。`;
-  $('#month-completion').textContent = `${readCount} / ${totalCount}`;
-  renderTree(); renderChallenges();
-  const list = $('#day-list'); list.replaceChildren();
-  for (let day = 1; day <= 31; day++) {
-    const date = dayAt(day), record = getRecord(date), beforeJoin = date < joinDate;
-    const future = today < date;
-    const status = beforeJoin ? '已保送' : record?.completion_type === 'on_time' ? '已讀' : record?.completion_type === 'makeup' ? '補讀' : future ? '未開始' : '待讀';
-    const card = document.createElement('button'); card.type = 'button';
-    card.className = `day-card${beforeJoin ? ' pass' : record?.completion_type === 'on_time' ? ' completed' : record?.completion_type === 'makeup' ? ' makeup' : ''}${date === today ? ' today' : ''}`;
-    card.disabled = beforeJoin || future || Boolean(record) || !inTestMonth(today);
-    card.setAttribute('aria-label', `${formatDate(date)}，箴言第 ${day} 章，${status}`);
-    const dateText = document.createElement('strong'); dateText.textContent = formatDate(date);
-    const detail = document.createElement('small'); detail.textContent = `箴言 ${day} · ${status}`;
-    card.append(dateText, detail);
-    if (!card.disabled) card.addEventListener('click', () => openReading(date));
-    list.append(card);
-  }
-  const todayIndex = inTestMonth(today) ? dayNumber(today) : today < OCTOBER_TEST_WINDOW.start ? 1 : 31;
-  $('#today-label').textContent = inTestMonth(today) ? `TODAY · ${formatDate(today)}` : today < OCTOBER_TEST_WINDOW.start ? 'COMING SOON · OCT 01' : 'OCTOBER JOURNEY COMPLETE';
-  $('#today-title').textContent = `箴言 ${todayIndex} 章`;
-  $('#today-detail').textContent = today < OCTOBER_TEST_WINDOW.start ? '10 月 1 日開始；加入前日期已保送。' : today > OCTOBER_TEST_WINDOW.end ? '十月測試旅程已結束。' : '讀完完整章節後，回來記錄今天的進度。';
-  $('#open-scripture').hidden = !inTestMonth(today) || Boolean(getRecord(today)) || today < joinDate;
-  $('#complete-today').hidden = true;
-}
-
-async function openReading(date) {
-  state.activeDate = date;
-  const chapter = dayNumber(date);
-  const box = $('#scripture');
-  box.hidden = false; box.replaceChildren();
-  const loading = document.createElement('p'); loading.textContent = `正在載入箴言第 ${chapter} 章…`; box.append(loading);
-  $('#progress-message').textContent = '';
-  $('#open-scripture').disabled = true;
-  try {
-    const [loaded] = await loadScheduledChapters(chapterPassage(chapter));
-    const title = document.createElement('h3'); title.textContent = loaded.title; box.replaceChildren(title);
-    loaded.verses.forEach((verse) => { const paragraph = document.createElement('p'); paragraph.textContent = verse; box.append(paragraph); });
-    $('#complete-today').hidden = false;
-    $('#complete-today').textContent = date === taipeiDate() ? '讀完了，記錄今天' : `補讀完成，記錄 ${formatDate(date)}`;
-  } catch (error) { box.replaceChildren(); const message = document.createElement('p'); message.textContent = `${error.message} 請確認網路後再試。`; box.append(message); }
-  finally { $('#open-scripture').disabled = false; }
-}
-
-async function markRead() {
-  const button = $('#complete-today'); button.disabled = true;
-  try {
-    const result = await request('mark_read', { readingDate: state.activeDate });
-    state.records = result.records || state.records;
-    $('#scripture').hidden = true;
-    renderMonth();
-    $('#progress-message').textContent = result.completion_type === 'on_time' ? '✓ 今天已記錄，願神的話陪伴你。' : '✓ 補讀已記錄，謝謝你回到經文裡。';
-  } catch (error) { $('#progress-message').textContent = error.message; }
-  finally { button.disabled = false; }
-}
-
-async function resolveChallenge(challengeId, resolutionAction, button) {
-  button.disabled = true;
-  try {
-    const result = await request('resolve_challenge', { challengeId, resolutionAction });
-    state.challenges = result.challenges || state.challenges;
-    renderChallenges(); renderTree();
-    $('#progress-message').textContent = '🌱 小樹得到照顧了，正在慢慢恢復。';
-    $('#tree-scene').classList.add('watered'); setTimeout(() => $('#tree-scene').classList.remove('watered'), 800);
-  } catch (error) { $('#progress-message').textContent = error.message; button.disabled = false; }
-}
-
-async function waterTree() {
-  const button = $('#water-tree'); button.disabled = true;
-  try {
-    const result = await request('water_tree'); state.records = result.records || state.records;
-    renderTree(); $('#tree-scene').classList.add('watered'); setTimeout(() => $('#tree-scene').classList.remove('watered'), 800);
-    $('#progress-message').textContent = '💧 澆水完成！小樹喝飽水了，今天的照顧已記錄。';
-  } catch (error) { $('#progress-message').textContent = error.message; button.disabled = false; }
-}
-
-function renderAdmin(rows) {
-  const list = $('#admin-list'); list.replaceChildren();
-  if (!rows.length) { $('#admin-message').textContent = '目前還沒有同工加入測試。'; return; }
-  for (const member of rows) {
-    const row = document.createElement('div'); row.className = 'admin-row';
-    const name = document.createElement('strong'); name.textContent = member.display_name || '同工';
-    const count = document.createElement('span'); count.textContent = `${member.completed_count} / ${member.expected_count} 章`;
-    const start = document.createElement('span'); start.textContent = `加入 ${formatDate(member.reading_start_date)}`;
-    row.append(name, count, start); list.append(row);
-  }
-}
-
-async function showSignedIn() {
-  let result;
-  try { result = await request('me'); }
-  catch (error) { if (error.code === 'join_required') { $('#login-panel').hidden = false; return; } throw error; }
-  if (!result.participant) { $('#login-panel').hidden = false; return; }
-  state.participant = result.participant;
-  state.records = result.records || [];
-  state.challenges = result.challenges || [];
-  state.admin = Boolean(result.is_admin);
-  $('#login-panel').hidden = true; $('#progress-panel').hidden = false; $('#month-panel').hidden = false;
-  renderMonth();
-  if (state.admin) { $('#admin-panel').hidden = false; await refreshAdmin(); }
-}
-
-async function refreshAdmin() {
-  try { const result = await request('overview'); renderAdmin(result.members || []); $('#admin-challenges').hidden = false; $('#admin-challenges').textContent = `🌦️ 隨機挑戰 ${result.challenge_count || 0} 次 · 同工已處理 ${result.resolved_challenges || 0} 次`; }
-  catch (error) { $('#admin-message').textContent = error.message; }
-}
-
-async function start() {
-  $('#join-test').addEventListener('click', joinTest);
-  $('#open-scripture').addEventListener('click', () => openReading(taipeiDate()));
-  $('#complete-today').addEventListener('click', markRead);
-  $('#water-tree').addEventListener('click', waterTree);
-  $('#refresh-admin').addEventListener('click', refreshAdmin);
-  $('#logout').addEventListener('click', () => { window.liff?.logout(); location.reload(); });
-  if (!OCTOBER_TEST_LIFF_ID || !OCTOBER_TEST_API) {
-    showSetup(!OCTOBER_TEST_LIFF_ID ? '隔離測試資料庫已準備完成，還差專用 LINE LIFF App ID。接上後同工即可用 LINE 登入；此頁不會連到正式會員資料。' : '測試服務尚未設定完成，請稍後重試。');
-    return;
-  }
-  try {
-    await loadLiffSdk();
-    await window.liff.init({ liffId: OCTOBER_TEST_LIFF_ID });
-    if (!window.liff.isLoggedIn()) { window.liff.login({ redirectUri: location.href }); return; }
-    state.idToken = window.liff.getIDToken() || '';
-    if (!state.idToken) throw new Error('LINE 登入資訊不完整，請重新開啟測試連結。');
-    try { await showSignedIn(); }
-    catch (error) { showSetup(error.message); }
-  } catch (error) { showSetup(error.message || 'LINE 登入暫時無法使用，請稍後重試。'); }
-}
-
-async function joinTest() {
-  const button = $('#join-test'); button.disabled = true;
-  try {
-    const inviteCode = $('#invite-code').value.trim();
-    if (!inviteCode) { $('#login-message').textContent = '請輸入同工群組公告的邀請碼。'; return; }
-    const result = await request('join', { inviteCode });
-    state.participant = result.participant; state.records = result.records || []; state.challenges = result.challenges || []; state.admin = Boolean(result.is_admin);
-    $('#login-panel').hidden = true; $('#progress-panel').hidden = false; $('#month-panel').hidden = false;
-    renderMonth();
-    if (state.admin) { $('#admin-panel').hidden = false; await refreshAdmin(); }
-  } catch (error) { $('#login-message').textContent = error.message; }
-  finally { button.disabled = false; }
-}
-
+function renderView(){const collective=state.view!=='personal';document.querySelectorAll('.tree-view-button').forEach(b=>b.classList.toggle('active',b.dataset.treeView===state.view));$('#tree-art').hidden=collective;$('#forest-art').hidden=!collective;$('#tree-weather').hidden=collective;$('#tree-action-dock').hidden=collective;$('#reading-status').hidden=collective;if(collective)forestSvg(state.view==='church');else renderTree();}
+function renderChallenges(){const box=$('#active-challenges');box.replaceChildren();const list=state.challenges.filter(c=>c.challenge_date<=today()).slice().reverse();$('#challenge-count').textContent=String(list.filter(c=>c.status==='active').length);$('#challenge-empty').hidden=list.length>0;for(const c of list){const spec=labels[c.challenge_type];if(!spec)continue;const card=document.createElement('article');card.className=`challenge-item${c.status==='resolved'?' resolved':''}`;card.innerHTML=`<div class="challenge-copy"><strong>${spec.icon} ${spec.title} · ${fmt(c.challenge_date)}</strong><small>${c.status==='resolved'?`已完成照顧：${spec.button.replace(/^\S+\s/u,'')}`:spec.text}</small><span class="challenge-impact">${c.status==='resolved'?'✓ 樹正在恢復':'需要一點陪伴'}</span></div>`;if(c.status==='active'){const b=document.createElement('button');b.type='button';b.textContent=spec.button;b.onclick=()=>resolve(c,b);card.append(b);}box.append(card);}}
+async function refreshViews(){try{const [rank,garden]=await Promise.all([api('leaderboard'),api('garden')]);state.leaderboard=rank.members||[];state.garden=garden.trees||[];}catch(e){console.warn('共享花園或排行目前不可用',e);}renderLeaderboard();renderView();}
+function renderLeaderboard(){const list=$('#leaderboard');list.replaceChildren();for(const [i,m] of state.leaderboard.entries()){const row=document.createElement('li');row.innerHTML=`<span class="rank-num">${i+1}</span><span class="leader-name">${esc(m.display_name||'同工')}</span><span class="leader-meta">準時讀經</span><span class="leader-score">${m.on_time_count} 天</span>`;list.append(row);}if(!list.children.length)list.innerHTML='<li class="empty-note">測試開始後，這裡會記錄準時同行的腳步。</li>';}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderJournal(){const n=state.notes.length;$('#reflection-book-count').textContent=`${n} 頁`;$('#reflection-reward').textContent=n?`🦋 已收藏 ${n} 頁・陪伴你的蝴蝶正在增加。`:'🦋 寫下亮光，收藏第一隻蝴蝶。';if(!n){$('#book-date').textContent='尚無收藏';$('#book-passage').textContent='每一份亮光，都值得被珍藏。';$('#book-note').textContent='寫下第一份拾光，讓這本手札開始記錄你的旅程。';$('#book-page-count').textContent='尚無頁面';$('#book-older').disabled=$('#book-newer').disabled=true;return;}state.journalIndex=Math.max(0,Math.min(state.journalIndex,n-1));const entry=state.notes[state.journalIndex];$('#book-date').textContent=entry.reading_date;$('#book-passage').textContent=entry.passage||`箴言 ${chapterDay(entry.reading_date)} 章`;( $('#book-note')).textContent=entry.note;$('#book-page-count').textContent=`第 ${state.journalIndex+1} / ${n} 頁`;$('#book-older').disabled=state.journalIndex===0;$('#book-newer').disabled=state.journalIndex===n-1;}
+function pageTurn(direction){const spread=$('#book-spread');spread.classList.remove('page-turn-forward','page-turn-back');void spread.offsetWidth;spread.classList.add(direction==='older'?'page-turn-back':'page-turn-forward');renderJournal();}
+function renderAdmin(result){const m=result||{};$('#metrics').innerHTML=`<article class="metric"><strong>${m.participant_count??0}</strong><span>參與同工</span></article><article class="metric"><strong>${m.completed_count??0}</strong><span>完成閱讀</span></article><article class="metric"><strong>${m.challenge_count??0}</strong><span>自動挑戰</span></article>`;const body=$('#admin-ranking');body.replaceChildren();for(const [i,p] of (m.members||[]).entries()){const row=document.createElement('tr');row.innerHTML=`<td>${i+1}</td><td>${esc(p.display_name||'同工')}</td><td>${p.completed_count} 章</td><td>${fmt(p.reading_start_date)} 加入</td>`;body.append(row);}$('#challenge-history').textContent=`🌦️ 自動挑戰 ${m.challenge_count||0} 次 · 已處理 ${m.resolved_challenges||0} 次`}
+async function refresh(){const result=await api('me');state.participant=result.participant;state.records=result.records||[];state.challenges=result.challenges||[];state.notes=result.notes||[];state.admin=Boolean(result.is_admin);$('#signed-member-name').textContent=state.participant.display_name||'同工';$('#signed-member-id').textContent='LINE 身分已驗證 · 十月隔離測試';$('#line-login-gate').hidden=true;$('#member-view').hidden=false;$('#admin-entry').hidden=!state.admin;renderTree();renderJournal();await refreshViews();if(state.admin){try{renderAdmin(await api('overview'));}catch(e){showStatus(e.message,'#challenge-history');}}}
+async function loadScripture(){const target=$('#scripture-text'),date=isLaunch()?today():'2026-10-01';target.replaceChildren();target.hidden=false;$('#audio-controls').hidden=true;$('#toggle-scripture').setAttribute('aria-expanded','true');$('#toggle-scripture').textContent='📖 收合完整經文';$('#passage-title').textContent=`箴言 ${chapterDay(date)} 章`;$('#passage-detail').textContent=isLaunch()?`${fmt(date)} · 完整章節｜讀完後回到生命樹記錄並澆水`:'預覽十月首日完整經文；正式記錄自 10 月 1 日開始';const loading=document.createElement('p');loading.textContent='正在載入完整經文…';target.append(loading);try{const [chapter]=await loadScheduledChapters(prompt(date));target.replaceChildren();const section=document.createElement('section');section.className='scripture-chapter';const h=document.createElement('h3');h.textContent=chapter.title;section.append(h);chapter.verses.forEach(v=>{const p=document.createElement('p');p.textContent=v;section.append(p)});target.append(section);state.passage=chapter.verses.join(' ');$('#audio-controls').hidden=false;play('open');}catch(e){target.textContent=`${e.message} 請確認網路後再試。`;}}
+function sayScripture(){if(!window.speechSynthesis){showStatus('此瀏覽器不支援朗讀。');return;}const lines=[...$('#scripture-text').querySelectorAll('p')].map(p=>p.textContent.trim()).filter(Boolean);if(!lines.length){showStatus('先展開完整經文再開始朗讀。');return;}speechSynthesis.cancel();let index=0;const next=()=>{if(index>=lines.length){showStatus('朗讀完成，願神的話陪伴你。');return;}const u=new SpeechSynthesisUtterance(lines[index++]);u.lang='zh-TW';u.rate=.86;u.onend=next;speechSynthesis.speak(u);};next();showStatus('正在朗讀經文…');}
+let audioContext=null;
+function play(type){if(!state.sound)return;try{audioContext||=new (window.AudioContext||window.webkitAudioContext)();audioContext.resume();const now=audioContext.currentTime;const seq=type==='water'?[880,660,990]:type==='wind'?[320,240,380]:type==='journal'?[784,1046]:[600,840];seq.forEach((f,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.001,now+i*.12);g.gain.exponentialRampToValueAtTime(.035,now+i*.12+.03);g.gain.exponentialRampToValueAtTime(.001,now+i*.12+.21);o.connect(g);g.connect(audioContext.destination);o.start(now+i*.12);o.stop(now+i*.12+.24);});}catch{}}
+async function markRead(date=today()){const b=$('#mark-read');b.disabled=true;try{const out=await api('mark_read',{readingDate:date});state.records=out.records||state.records;renderTree();challengeFx('water');play('water');showStatus(out.completion_type==='on_time'?'📖 已記錄今天的讀經。現在到樹下按「澆水」，看小樹得到活水。':'✓ 補讀已記錄，謝謝你回到經文裡。');}catch(e){showStatus(e.message)}finally{renderTree();}}
+async function water(){const b=$('#care-tree');b.disabled=true;try{const out=await api('water_tree');state.records=out.records||state.records;renderTree();challengeFx('water');play('water');showStatus('💧 澆水完成！看小樹喝飽活水、慢慢長大。');}catch(e){showStatus(e.message);renderTree();}}
+async function resolve(c,b){b.disabled=true;try{const spec=labels[c.challenge_type];const out=await api('resolve_challenge',{challengeId:c.id,resolutionAction:spec.action});state.challenges=out.challenges||state.challenges;renderTree();challengeFx(c.challenge_type==='worm'?'worm':'water');play(c.challenge_type==='worm'?'worm':'wind');showStatus('🌱 挑戰已處理，小樹正在恢復。');await refreshViews();}catch(e){b.disabled=false;showStatus(e.message);}}
+async function saveJournal(){const note=$('#reflection-note').value.trim();if(!note){showStatus('先寫下一句今天的亮光，再把蝴蝶收藏起來吧。','#reflection-status');return;}if(!record()){showStatus('先完成今天的讀經，才可以收藏今天的拾光。','#reflection-status');return;}const b=$('#save-reflection');b.disabled=true;try{await api('journal_save',{readingDate:today(),note});const result=await api('me');state.notes=result.notes||[];state.journalIndex=state.notes.findIndex(n=>n.reading_date===today());renderJournal();play('journal');challengeFx('butterfly');showStatus('🦋 拾光已收藏，蝴蝶正飛向你的生命樹。','#reflection-status');}catch(e){showStatus(e.message,'#reflection-status');}finally{b.disabled=false;}}
+async function liveWeather(){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=24.229&longitude=120.653&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FTaipei',{cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();weather.code=d.current.weather_code;weather.temp=Math.round(d.current.temperature_2m);weather.wind=d.current.wind_speed_10m;weather.updated=new Intl.DateTimeFormat('zh-TW',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Taipei'}).format(new Date(d.current.time));const c=weather.code;weather.mood=[95,96,99].includes(c)?'storm':[51,53,55,56,57,61,63,65,66,67,80,81,82,71,73,75,77,85,86].includes(c)?'rain':[45,48,3].includes(c)?'cloudy':[1,2].includes(c)?'partly-cloudy':weather.wind>=30?'windy':'sunny';if(state.participant)renderView();}catch{weather.updated='即時資料暫時無法連線';}}
+async function signIn(){if(!window.liff?.isLoggedIn()){window.liff?.login({redirectUri:location.href});return;}state.idToken=window.liff.getIDToken()||'';if(!state.idToken){showStatus('LINE 登入資訊不完整，請重新開啟頁面。','#login-status');return;}try{await refresh();}catch(e){if(e.code==='join_required'){$('#line-login-gate').hidden=false;showStatus('已確認 LINE 身分，輸入同工邀請碼加入測試。','#login-status');}else showStatus(e.message,'#login-status');}}
+async function join(){const b=$('#login-member');b.disabled=true;try{const result=await api('join',{inviteCode:$('#invite-code').value.trim()});state.participant=result.participant;await refresh();}catch(e){showStatus(e.message,'#login-status');}finally{b.disabled=false;}}
+function setup(){document.querySelectorAll('.tree-view-button').forEach(b=>b.addEventListener('click',async()=>{state.view=b.dataset.treeView;if(state.view!=='personal'){try{const res=await api('garden');state.garden=res.trees||[];}catch(e){showStatus(e.message);} }renderView();}));$('#login-member').onclick=join;$('#mark-read').onclick=()=>markRead();$('#care-tree').onclick=water;$('#toggle-scripture').onclick=()=>$('#scripture-text').hidden?loadScripture():(()=>{$('#scripture-text').hidden=true;$('#audio-controls').hidden=true;$('#toggle-scripture').setAttribute('aria-expanded','false');$('#toggle-scripture').textContent='📖 展開完整經文';})();$('#read-aloud').onclick=sayScripture;$('#stop-reading').onclick=()=>{speechSynthesis.cancel();showStatus('已停止朗讀。');};$('#mark-late').onclick=()=>{const d=$('#late-date').value;if(!d||d>=today()){showStatus('補讀日期須早於今天。');return;}markRead(d);};$('#sound-toggle').onclick=async()=>{state.sound=!state.sound;$('#sound-toggle').setAttribute('aria-pressed',String(state.sound));$('#sound-toggle').textContent=state.sound?'🔊 音效開啟':'🔇 音效關閉';if(state.sound){try{audioContext||=new(window.AudioContext||window.webkitAudioContext)();await audioContext.resume();play('toggle');}catch{}}};$('#save-reflection').onclick=saveJournal;$('#reflection-book-toggle').onclick=()=>{const book=$('#reflection-book');book.hidden=!book.hidden;$('#reflection-book-toggle').setAttribute('aria-expanded',String(!book.hidden));renderJournal();if(!book.hidden)book.scrollIntoView({behavior:'smooth',block:'center'});};$('#book-older').onclick=()=>{state.journalIndex=Math.max(0,state.journalIndex-1);pageTurn('older')};$('#book-newer').onclick=()=>{state.journalIndex=Math.min(state.notes.length-1,state.journalIndex+1);pageTurn('newer')};$('#admin-entry').onclick=async()=>{try{if(!state.admin)throw Error('只有測試管理同工可以查看統計。');renderAdmin(await api('overview'));$('#member-view').hidden=true;$('#admin-view').hidden=false;}catch(e){showStatus(e.message);}};$('#back-to-tree').onclick=()=>{$('#admin-view').hidden=true;$('#member-view').hidden=false;};$('#export-ranking').onclick=()=>{const rows=[['名次','同工','準時天數'],...state.leaderboard.map((m,i)=>[i+1,m.display_name,m.on_time_count])];const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`十月箴言同工讀經-${today()}.csv`;a.click();};}
+async function start(){setup();await liveWeather();if(!OCTOBER_TEST_LIFF_ID||!OCTOBER_TEST_API){$('#line-login-gate').hidden=false;showStatus('測試頁尚未完成設定。','#login-status');return;}try{await window.liff.init({liffId:OCTOBER_TEST_LIFF_ID});if(!window.liff.isLoggedIn()){window.liff.login({redirectUri:location.href});return;}await signIn();}catch(e){$('#line-login-gate').hidden=false;showStatus('LINE 登入暫時無法使用，請重新整理。','#login-status');}}
 start();

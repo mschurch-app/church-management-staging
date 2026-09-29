@@ -74,7 +74,7 @@ function activateTab(name) {
   });
   const url = new URL(location.href); url.searchParams.set('tab', name); history.replaceState(null, '', url);
   if (name === 'memo') loadMemos();
-  if (name === 'attendance') { loadAttendance(); loadLeave(); }
+  if (name === 'attendance') { loadAttendance(); loadLeave(); if (['pastor', 'admin'].includes(staff?.role)) loadAttendanceAdmin(); }
   if (name === 'photos') loadPhotos();
 }
 const tabs = [...document.querySelectorAll('[data-tab]')];
@@ -188,6 +188,22 @@ async function loadLeave() {
     }
   } catch (error) { list.textContent = error.message; }
 }
+$('#refresh-attendance').addEventListener('click', loadAttendanceAdmin);
+async function loadAttendanceAdmin() {
+  const list = $('#attendance-list'); if (!list) return;
+  list.replaceChildren();
+  try {
+    const { items } = await api('list-attendance');
+    showItems(list, items, '最近七天尚無出勤紀錄。');
+    for (const item of items) {
+      const inTime = item.clocked_in_at ? new Date(item.clocked_in_at).toLocaleTimeString('zh-TW', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' }) : '未打卡';
+      const outTime = item.clocked_out_at ? new Date(item.clocked_out_at).toLocaleTimeString('zh-TW', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' }) : '尚未下班';
+      const card = newCard(item.staff_name, item.work_date);
+      meta(card, `上班 ${inTime} · 下班 ${outTime}`);
+      list.append(card);
+    }
+  } catch (error) { list.textContent = error.message; }
+}
 $('#refresh-leave').addEventListener('click', loadLeave);
 
 async function loadPhotos() {
@@ -270,7 +286,7 @@ async function start() {
     if (!entityKeys.length) throw new Error('此帳號沒有可用的單位權限。');
     $('#entity').replaceChildren(...entityKeys.map(key => { const option = document.createElement('option'); option.value = key; option.textContent = entityNames[key]; return option; }));
     entityKey = entityKeys.includes('mplus') ? 'mplus' : entityKeys[0]; $('#entity').value = entityKey;
-    $('#drive-admin-tools').hidden = !['pastor', 'admin'].includes(staff.role);
+    $('#drive-admin-tools').hidden = !['pastor', 'admin'].includes(staff.role);\n    $('#attendance-admin-card').hidden = !['pastor', 'admin'].includes(staff.role);
     $('#auth-status').textContent = `已登入：${staff.name}。備忘與個人資料依你的同工權限管理。`;
     $('#tools').hidden = false;
     const initial = ['memo', 'attendance', 'photos'].includes(params.get('tab')) ? params.get('tab') : 'memo';

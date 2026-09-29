@@ -53,7 +53,7 @@ function lovePage(data){
   content.innerHTML=hero('SHARE THE LOVE','把愛傳出去','挑選照片、改寫祝福，再從 LINE 好友中選擇收件人。')+
     '<section class="surface love-preview" id="love-preview">'+lovePreview(selected())+'</section>'+
     '<section class="surface love-builder"><div class="category-list">'+categories.map((category,i)=>'<button class="'+(i?'':'active')+'" data-love-category="'+escape(category.name)+'">'+escape(category.icon||'💛')+' '+escape(category.name)+'</button>').join('')+'</div>'+
-    '<div class="scene-strip" id="scenes"></div>'+
+    '<div class="scene-strip" id="scenes"></div><button type="button" class="secondary" id="next-love-verse">🔄 換一句經文／祝福</button>'+
     '<label class="field">收件人稱呼<input id="recipient" value="親愛的好友" maxlength="30"></label>'+
     '<label class="field">你的署名<input id="signature" value="'+escape(profile.name)+'" maxlength="30"></label>'+
     '<label class="field">祝福話語<textarea id="message" maxlength="220">'+escape(selected().share_caption)+'</textarea></label>'+
@@ -69,6 +69,7 @@ function lovePage(data){
     content.querySelectorAll('[data-love-category]').forEach(item=>item.classList.toggle('active',item===button));
     $('#message').value=selected().share_caption;refreshLove();drawScenes();
   });
+  $('#next-love-verse').onclick=()=>{const list=items.filter(item=>item.category===activeCategory);if(list.length<2){$('#share-status').textContent='這個情境目前只有一則內容，請先切換其他情境。';return;}const currentCaption=$('#message').value,here=list.findIndex(item=>item.share_caption!==currentCaption),next=list[(here<0?0:here+1)%list.length];$('#message').value=next.share_caption;refreshLove();const index=list.indexOf(next)+1;$('#share-status').textContent='已換成這個情境第 '+index+' 則經文／祝福。';};
   const refreshLove=()=>{$('#love-preview').innerHTML=lovePreview(selected());};
   for(const id of ['recipient','signature','message'])$('#'+id).addEventListener('input',refreshLove);
   drawScenes();

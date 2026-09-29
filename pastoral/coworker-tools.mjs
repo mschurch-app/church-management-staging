@@ -244,7 +244,7 @@ async function authorizeDrive() {
   const response = await fetch(PASTORAL_CALENDAR_ENDPOINT, {
     method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
     credentials: 'omit', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(12000),
-    body: JSON.stringify({ action: 'connect' }),
+    body: JSON.stringify({ action: 'connect-drive' }),
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok || !result.authorizationUrl) throw new Error(errorText[result.error] || '無法啟動 Google 授權。');

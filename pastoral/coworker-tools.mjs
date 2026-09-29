@@ -286,7 +286,8 @@ async function start() {
     if (!entityKeys.length) throw new Error('此帳號沒有可用的單位權限。');
     $('#entity').replaceChildren(...entityKeys.map(key => { const option = document.createElement('option'); option.value = key; option.textContent = entityNames[key]; return option; }));
     entityKey = entityKeys.includes('mplus') ? 'mplus' : entityKeys[0]; $('#entity').value = entityKey;
-    $('#drive-admin-tools').hidden = !['pastor', 'admin'].includes(staff.role);\n    $('#attendance-admin-card').hidden = !['pastor', 'admin'].includes(staff.role);
+    $('#drive-admin-tools').hidden = !['pastor', 'admin'].includes(staff.role);
+    $('#attendance-admin-card').hidden = !['pastor', 'admin'].includes(staff.role);
     $('#auth-status').textContent = `已登入：${staff.name}。備忘與個人資料依你的同工權限管理。`;
     $('#tools').hidden = false;
     const initial = ['memo', 'attendance', 'photos'].includes(params.get('tab')) ? params.get('tab') : 'memo';

@@ -11,6 +11,7 @@ const CALENDAR_SCOPES=[
   'https://www.googleapis.com/auth/calendar.events.owned',
   'https://www.googleapis.com/auth/calendar.events.freebusy',
 ];
+const DRIVE_SCOPES=[...CALENDAR_SCOPES,'https://www.googleapis.com/auth/drive.file'];
 const encoder=new TextEncoder();
 
 function headers(origin:string, html=false){return {
@@ -85,7 +86,7 @@ function redirectUri(){
   if(!base)throw new Error('config');
   return new URL('/functions/v1/pastoral-google-calendar',base).toString();
 }
-async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>){
+async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>,scopes=CALENDAR_SCOPES){
   if(staff.role!=='pastor'&&staff.role!=='admin')return json(APP_ORIGIN,{ok:false,error:'pastor_required'},403);
   if(!staff.entityKeys.includes('mplus'))return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
   const clientId=Deno.env.get('GOOGLE_CLIENT_ID')||'';
@@ -95,7 +96,7 @@ async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>){
   authUrl.searchParams.set('client_id',clientId);
   authUrl.searchParams.set('redirect_uri',redirectUri());
   authUrl.searchParams.set('response_type','code');
-  authUrl.searchParams.set('scope',CALENDAR_SCOPES.join(' '));
+  authUrl.searchParams.set('scope',scopes.join(' '));
   authUrl.searchParams.set('access_type','offline');
   authUrl.searchParams.set('prompt','consent');
   authUrl.searchParams.set('include_granted_scopes','true');
@@ -385,6 +386,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   const body=await request.json().catch(()=>null);
   if(!body||typeof body.action!=='string')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
   if(body.action==='connect')return await startConnect(staff,db);
+  if(body.action==='connect-drive')return await startConnect(staff,db,DRIVE_SCOPES);
   if(body.action==='list-schedule-staff'){
     const canManageSchedule=staff.role==='pastor'||staff.role==='admin';
     const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus');

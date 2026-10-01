@@ -2,6 +2,7 @@ import {readAccess,chooseChurch} from './admin-access.mjs?v=20260923-profile1';
 export const MODULES=Object.freeze([
  {key:'members',permission:'members',title:'會友名冊',description:'會員、新朋友、封存與操作紀錄',file:'members.html',icon:'👥'},
  {key:'newcomer_care',permission:'members',title:'新朋友關懷',description:'分派關懷、聯絡紀錄、下一步與逾期追蹤',file:'newcomer-care.html',icon:'🌱'},
+ {key:'tree_reading_admin',permission:'members',title:'讀經生命樹',description:'查看參與同工、讀經進度與生命樹活動',file:'tree-reading-admin.html',icon:'🌳'},
  {key:'binding_review',permission:'members',title:'LINE 綁定審核',description:'確認既有會友、補登手機並綁定 LINE',file:'binding-review.html',icon:'🔗'},
  {key:'groups',permission:'groups',title:'小組／小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🫶'},
  {key:'attendance',permission:'attendance',title:'聚會點名',description:'出席登記、修改與統計',file:'attendance.html',icon:'✅'},

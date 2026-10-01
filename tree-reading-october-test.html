@@ -14,7 +14,7 @@
   <main class="app-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="回 M+ 大雅教會首頁"><span class="brand-mark">M+</span><span>M+大雅教會<small>生命樹讀經計畫</small></span></a>
-      <div class="topbar-actions"><span class="preview-chip">🔒 同工測試</span><button class="admin-entry" id="admin-entry" type="button" aria-label="開啟同工測試管理" hidden>⚙️ <span>管理</span></button></div>
+      <div class="topbar-actions"><span class="preview-chip">🔒 同工測試</span></div>
     </header>
 
     <section class="hero" aria-labelledby="main-title">
@@ -98,15 +98,8 @@
       <p class="privacy-note">同工測試資料使用獨立資料庫；拾光手札只有本人可查看。</p>
     </section>
 
-    <section id="admin-view" class="view" hidden>
-      <div class="admin-intro"><button id="back-to-tree" class="text-button" type="button">← 回生命樹</button><p class="eyebrow">OCTOBER STAFF TEST</p><h2>同工測試進度</h2><p>查看十月參與概況、準時讀經排行與挑戰處理情況。</p></div>
-      <section class="metric-grid" id="metrics"></section>
-      <section class="section-card admin-ranking"><div class="section-heading"><div><p class="eyebrow">PROVERBS · OCTOBER 2026</p><h2>同工讀經狀況</h2></div><button id="export-ranking" class="small-button" type="button">匯出 CSV</button></div><div class="table-wrap"><table><thead><tr><th>名次</th><th>同工</th><th>已讀</th><th>開始同行</th></tr></thead><tbody id="admin-ranking"></tbody></table></div></section>
-      <section class="section-card recent-events"><div class="section-heading"><div><p class="eyebrow">NATURE'S RHYTHM</p><h2>生命中的風雨紀錄</h2></div></div><p id="challenge-history" class="status-line" role="status"></p></section>
-    </section>
     <footer>© 2026 M+大雅教會 · 十月箴言同工測試</footer>
-    <dialog class="admin-gate" id="admin-gate" aria-labelledby="admin-gate-title"><form method="dialog"><button class="gate-close" aria-label="關閉">×</button><p class="eyebrow">STAFF PREVIEW</p><h2 id="admin-gate-title">同工管理</h2><p>年度讀經表、挑戰設定與讀經統計，請由教會管理系統進入。</p><button class="primary" id="open-admin" type="button">開啟管理面板</button><button class="text-button" value="cancel">稍後再說</button></form></dialog>
   </main>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261002-clean-copy1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261002-os-admin1"></script>
 </body>
 </html>

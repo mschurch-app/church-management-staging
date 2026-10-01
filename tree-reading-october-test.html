@@ -51,14 +51,12 @@
         <p id="reading-status" class="status-line tree-action-status" role="status"></p>
         <div class="tree-stats" id="tree-stats"><div><strong id="stat-on-time">0</strong><span>準時讀經</span></div><div><strong id="stat-late">0</strong><span>補讀完成</span></div><div><strong id="stat-streak">0</strong><span>目前連續</span></div><div><strong id="stat-growth">0%</strong><span>十月旅程</span></div></div>
         <div class="growth-track" id="growth-track"><span id="growth-fill"></span></div>
-        <p class="personal-note" id="personal-note">樹的狀態由個人讀經紀錄與遭遇的挑戰共同形成。</p>
       </section>
 
       <div class="identity-strip"><div><strong id="signed-member-name">同工</strong><span id="signed-member-id">LINE 身分已驗證 · 十月測試</span></div><button id="switch-member" class="secondary" type="button">重新整理進度</button></div>
       <div class="tree-view-switch" role="group" aria-label="生命樹觀看視角"><button type="button" class="tree-view-button active" data-tree-view="personal">🌱 個人</button><button type="button" class="tree-view-button" data-tree-view="group">🌿 小組小花園</button><button type="button" class="tree-view-button" data-tree-view="church">🌳 教會大花園</button></div>
       <section class="section-card challenge-card" id="challenge-section">
         <div class="section-heading"><div><p class="eyebrow">LIFE HAPPENS</p><h2>生命中的風雨</h2></div><span class="challenge-count" id="challenge-count">0</span></div>
-        <p class="muted">自然事件每天自動抽選約十分之一的樹；讀經、照料與每棵樹的狀態各自不同，不需要同工逐筆觸發。</p>
         <p id="challenge-reward-summary" class="challenge-reward-summary" role="status">🌟 每完成一次挑戰，就收藏 1 枚守護星光。</p>
         <div id="drought-alert" class="drought-alert" hidden role="status"></div>
         <div id="active-challenges" class="challenge-list"></div>
@@ -104,11 +102,11 @@
       <div class="admin-intro"><button id="back-to-tree" class="text-button" type="button">← 回生命樹</button><p class="eyebrow">OCTOBER STAFF TEST</p><h2>同工測試進度</h2><p>查看十月參與概況、準時讀經排行與挑戰處理情況。</p></div>
       <section class="metric-grid" id="metrics"></section>
       <section class="section-card admin-ranking"><div class="section-heading"><div><p class="eyebrow">PROVERBS · OCTOBER 2026</p><h2>同工讀經狀況</h2></div><button id="export-ranking" class="small-button" type="button">匯出 CSV</button></div><div class="table-wrap"><table><thead><tr><th>名次</th><th>同工</th><th>已讀</th><th>開始同行</th></tr></thead><tbody id="admin-ranking"></tbody></table></div></section>
-      <section class="section-card recent-events"><div class="section-heading"><div><p class="eyebrow">NATURE'S RHYTHM</p><h2>自然事件自動運作</h2></div><span class="preview-only">每天約十分之一</span></div><p class="muted">挑戰由系統自動抽選，不需同工手動觸發；每棵樹的讀經與成長都分別計算。</p><p id="challenge-history" class="status-line" role="status"></p></section>
+      <section class="section-card recent-events"><div class="section-heading"><div><p class="eyebrow">NATURE'S RHYTHM</p><h2>生命中的風雨紀錄</h2></div></div><p id="challenge-history" class="status-line" role="status"></p></section>
     </section>
     <footer>© 2026 M+大雅教會 · 十月箴言同工測試</footer>
     <dialog class="admin-gate" id="admin-gate" aria-labelledby="admin-gate-title"><form method="dialog"><button class="gate-close" aria-label="關閉">×</button><p class="eyebrow">STAFF PREVIEW</p><h2 id="admin-gate-title">同工管理</h2><p>年度讀經表、挑戰設定與讀經統計，請由教會管理系統進入。</p><button class="primary" id="open-admin" type="button">開啟管理面板</button><button class="text-button" value="cancel">稍後再說</button></form></dialog>
   </main>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261001-garden-names1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261002-clean-copy1"></script>
 </body>
 </html>

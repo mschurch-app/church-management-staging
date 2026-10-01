@@ -147,12 +147,13 @@ Deno.serve(async request=>{
       return reply(origin,{ok:true,members});
     }
     if(action==='garden'){
-      const people=await db.from('tree_reading_october_test_participants').select('line_subject,reading_start_date').order('joined_at');
+      const people=await db.from('tree_reading_october_test_participants').select('line_subject,display_name,reading_start_date').order('joined_at');
       const progress=await db.from('tree_reading_october_test_progress').select('line_subject,reading_date,completion_type');
       const events=await db.from('tree_reading_october_test_challenges').select('line_subject,status,challenge_type');
       if(people.error||progress.error||events.error)return reply(origin,{ok:false,error:'unavailable'},503);
-      // Garden scenes deliberately expose no LINE subjects or names.
-      const trees=(people.data||[]).map((person,index)=>({tree_number:index+1,completed_count:(progress.data||[]).filter(item=>item.line_subject===person.line_subject).length,on_time_count:(progress.data||[]).filter(item=>item.line_subject===person.line_subject&&item.completion_type==='on_time').length,challenge_active:(events.data||[]).some(item=>item.line_subject===person.line_subject&&item.status==='active'),reading_start_date:person.reading_start_date}));
+      // Staff test participants explicitly share display names and reading-day totals in the garden.
+      // LINE subjects remain server-side and are never included in the response.
+      const trees=(people.data||[]).map((person,index)=>({tree_number:index+1,display_name:person.display_name,completed_count:(progress.data||[]).filter(item=>item.line_subject===person.line_subject).length,on_time_count:(progress.data||[]).filter(item=>item.line_subject===person.line_subject&&item.completion_type==='on_time').length,challenge_active:(events.data||[]).some(item=>item.line_subject===person.line_subject&&item.status==='active'),reading_start_date:person.reading_start_date}));
       return reply(origin,{ok:true,trees});
     }
     if(action==='overview'){

@@ -34,7 +34,7 @@ function messagesFor(member) {
   return chunks.slice(0, 5).map(text => ({ type: 'text', text }));
 }
 
-export async function notifyMplusNewcomer({ db, memberId, fetcher = fetch, token = Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN') || Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN') || '', groupId = Deno.env.get('LINE_MPLUS_YOUTH_GROUP_ID') || '' }) {
+export async function notifyMplusNewcomer({ db, memberId, fetcher = fetch, token = Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN') || Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN') || '', groupId = '' }) {
   const key = `mplus_newcomer_group:${memberId}`;
   const record = async (status, errorCode = null) => db.from('pastoral_notification_deliveries').upsert({
     entity_key: 'mplus', notification_type: 'newcomer_group_created', recipient_staff_id: null,
@@ -44,7 +44,12 @@ export async function notifyMplusNewcomer({ db, memberId, fetcher = fetch, token
 
   const previous = await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key', key).maybeSingle();
   if (!previous.error && previous.data?.status === 'sent') return { status: 'sent', duplicate: true };
-  if (!token || !groupId) {
+  let targetGroupId = groupId || Deno.env.get('LINE_MPLUS_YOUTH_GROUP_ID') || '';
+  if (!targetGroupId) {
+    const configured = await db.rpc('get_weekly_service_line_group_id');
+    if (!configured.error && typeof configured.data === 'string' && /^C[0-9a-f]{32}$/i.test(configured.data)) targetGroupId = configured.data;
+  }
+  if (!token || !targetGroupId) {
     await record('not_configured', !token ? 'line_channel_token_missing' : 'mplus_youth_group_id_missing');
     return { status: 'not_configured' };
   }
@@ -64,7 +69,7 @@ export async function notifyMplusNewcomer({ db, memberId, fetcher = fetch, token
   const result = await fetcher('https://api.line.me/v2/bot/message/push', {
     method: 'POST', redirect: 'error', signal: AbortSignal.timeout(8000),
     headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ to: groupId, messages: messagesFor(found.data) }),
+    body: JSON.stringify({ to: targetGroupId, messages: messagesFor(found.data) }),
   });
   if (!result.ok) {
     await record('failed', `line_http_${result.status}`);

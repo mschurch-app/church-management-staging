@@ -1,2 +1,10 @@
-# church-management-staging
-Isolated church membership staging website. Synthetic test data only; no production credentials or member records.
+# 教會 OS（正式環境）
+
+這是目前正式使用中的教會管理系統，服務網址為 `mscos.mchurch.online`。
+
+## 維護注意事項
+
+- Supabase 專案代號、瀏覽器登入儲存鍵與媒體儲存桶仍保留早期的 `staging` 名稱，這些是既有技術識別，直接更名可能造成登入狀態或圖片連結失效。
+- 文件與使用者介面一律以「教會 OS」或「正式環境」稱呼本系統。
+- 生命樹同工測試活動及 LINE 預覽頁屬於個別測試功能，不代表整套系統是測試環境。
+- 正式資料包含會友與牧養資訊，維護時不得使用真實個資作為測試輸出。

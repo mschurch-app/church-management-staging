@@ -13,7 +13,7 @@
 
 照片歸檔以最小權限 `drive.file` scope 執行，不會擴大既有日曆 OAuth 權限。牧師或管理者從照片頁面按「授權 Google 雲端硬碟」時才會發起增量授權，之後使用 Google Picker 選取共用資料夾；上傳採 `supportsAllDrives=true`。
 
-Staging Edge Function Secrets 需設定 `GOOGLE_PICKER_API_KEY` 與 `GOOGLE_CLOUD_PROJECT_NUMBER`，且在 mbot 的 Cloud 專案啟用 Google Drive API 和 Picker API。OAuth Consent 同意 `drive.file` 後，管理者需選一次資料夾。必要時先確認 mbot 在該資料夾有編輯權。
+正式環境的 Edge Function Secrets 需設定 `GOOGLE_PICKER_API_KEY` 與 `GOOGLE_CLOUD_PROJECT_NUMBER`，且在 mbot 的 Cloud 專案啟用 Google Drive API 和 Picker API。OAuth Consent 同意 `drive.file` 後，管理者需選一次資料夾。必要時先確認 mbot 在該資料夾有編輯權。
 
 ## LINE 群組設定與既有 webhook
 
@@ -22,9 +22,9 @@ Staging Edge Function Secrets 需設定 `GOOGLE_PICKER_API_KEY` 與 `GOOGLE_CLOU
 - 需要 `LINE_CHANNEL_SECRET`、`LINE_MESSAGING_CHANNEL_ACCESS_TOKEN` 與 `LINE_COWORKER_GROUP_ID` 三個 secrets。
 - LINE Developers Console 需允許官方帳號加入群組。註冊 callback 前，先核對原有 webhook；不可直接覆寫未知用途的 URL。若已有 handler，應將兩種事件路由合併。
 
-## Staging 狀態
+## 正式環境狀態
 
-Coworker-tools migration 已套用到 staging，Edge Function 已部署並通過 Supabase 部署編譯；資料表目前只供 Edge Function 使用。Google 日曆一般授權仍只要原本的日曆 scope；新的 `connect-drive` 動作只在管理者主動點選照片授權時要求 Drive 檔案 scope。
+Coworker-tools migration 已套用到正式環境，Edge Function 已部署並通過 Supabase 部署編譯；資料表目前只供 Edge Function 使用。Google 日曆一般授權仍只要原本的日曆 scope；新的 `connect-drive` 動作只在管理者主動點選照片授權時要求 Drive 檔案 scope。
 
 群組選單 Edge Function 已部署但尚未設定 LINE secrets，也沒有修改或註冊 LINE webhook。網頁和選單路由目前在此 PR 分支；合併後才會由既有靜態網站流程上線。
 

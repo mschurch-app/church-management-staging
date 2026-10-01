@@ -8,6 +8,7 @@ html,body,button,input,select,textarea{font-family:inherit!important}
 *{box-sizing:border-box}
 button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 button,a,[role="button"]{touch-action:manipulation}
+.todo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;margin:0 0 28px}.todo-card{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:88px;padding:15px;border:1px solid #dcebea;border-radius:19px;background:#fff;color:#294951;text-decoration:none;box-shadow:0 8px 24px rgba(48,90,104,.06)}.todo-card.urgent{border-color:#efb5b2;background:#fff7f6}.todo-card.warning{border-color:#ead7a9;background:#fffdf4}.todo-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:#edf8f5;font-size:23px}.todo-copy{display:grid;gap:4px}.todo-copy strong{font-size:15px}.todo-copy small{color:#526c73;line-height:1.45}.todo-count{min-width:34px;padding:7px;border-radius:999px;background:#e7f5f2;color:#087a74;text-align:center}.todo-card.urgent .todo-count{background:#fee3e1;color:#b53a35}.todo-card.warning .todo-count{background:#f8edcf;color:#8b6422}
 
 /* Readability: keep the light visual tone without relying on thin text. */
 body{font-weight:500}

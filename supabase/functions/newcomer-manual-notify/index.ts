@@ -29,9 +29,11 @@ Deno.serve(async request => {
 
   const db = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
   try {
+    const care = await db.rpc('ensure_newcomer_care_case', { p_member_id: Number(body.memberId) });
+    if (care.error) return json({ error: 'care_case_failed' }, 503);
     const result = await notifyMplusNewcomer({ db, memberId: Number(body.memberId) });
-    if (result.status === 'sent') return json({ sent: true });
-    return json({ sent: false, error: result.status }, 503);
+    if (result.status === 'sent') return json({ sent: true, careCreated: true });
+    return json({ sent: false, careCreated: true, error: result.status }, 503);
   } catch {
     return json({ error: 'notification_failed' }, 503);
   }

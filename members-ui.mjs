@@ -109,7 +109,13 @@ function memberCard(row){
  for(const [label,value] of [['電話',row.phone],['居住區域',row.district],['服事恩賜',row.ministry]]){dl.append(text('dt',label),text('dd',value||'未填寫'));}
  card.append(dl);
  if(row.memo)card.append(text('p',row.memo,'memo-preview'));
- const actions=text('div','','card-actions'),pick=document.createElement('input');pick.type='checkbox';pick.dataset.memberId=row.id;pick._memberRow=row;pick.checked=selected.has(row.id);pick.setAttribute('aria-label','選取 '+(row.name||'會友'));pick.onchange=()=>{if(pick.checked)selected.set(row.id,row);else selected.delete(row.id);updateBatchBar();};actions.append(pick,text('span','選取'));const editButton=text('button','編輯資料','secondary');editButton.onclick=()=>{if(!busy)edit(row);};const archiveButton=text('button',row.archived_at?'恢復':'封存','secondary');archiveButton.onclick=async()=>{if(busy||!confirm((row.archived_at?'恢復 ':'封存 ')+row.name+'？資料不會被刪除。'))return;busy=true;try{await setMemberArchived(db,church,row,!row.archived_at);await load();status.textContent=row.archived_at?'已恢復會員。':'已封存會員。';}catch(error){status.textContent=error.message;}finally{busy=false;}};actions.append(editButton,archiveButton);card.append(actions);return card;
+ const actions=text('div','','card-actions'),pick=document.createElement('input');pick.type='checkbox';pick.dataset.memberId=row.id;pick._memberRow=row;pick.checked=selected.has(row.id);pick.setAttribute('aria-label','選取 '+(row.name||'會友'));pick.onchange=()=>{if(pick.checked)selected.set(row.id,row);else selected.delete(row.id);updateBatchBar();};actions.append(pick,text('span','選取'));const editButton=text('button','編輯資料','secondary');editButton.onclick=()=>{if(!busy)edit(row);};const archiveButton=text('button',row.archived_at?'恢復':'封存','secondary');archiveButton.onclick=async()=>{if(busy||!confirm((row.archived_at?'恢復 ':'封存 ')+row.name+'？資料不會被刪除。'))return;busy=true;try{await setMemberArchived(db,church,row,!row.archived_at);await load();status.textContent=row.archived_at?'已恢復會員。':'已封存會員。';}catch(error){status.textContent=error.message;}finally{busy=false;}};actions.append(editButton,archiveButton);
+ if(church==='M+'&&row.faith_status==='新朋友（初次聚會）'&&!row.archived_at){
+  const notifyButton=text('button','傳送新朋友 LINE 通知','secondary');notifyButton.type='button';
+  notifyButton.onclick=async()=>{if(busy)return;busy=true;notifyButton.disabled=true;status.textContent='正在傳送新朋友通知…';try{const result=await db.functions.invoke('newcomer-manual-notify',{body:{memberId:Number(row.id)}});if(result.error||result.data?.sent!==true)throw new Error('LINE 通知未送出，請稍後再試。');status.textContent='新朋友通知已傳送到青年教會 LINE 群組。';}catch(error){status.textContent=error.message||'LINE 通知未送出。';}finally{busy=false;notifyButton.disabled=false;}};
+  actions.append(notifyButton);
+ }
+ card.append(actions);return card;
 }
 async function load(){
  clear();const ticket=generation;status.textContent='正在載入…';

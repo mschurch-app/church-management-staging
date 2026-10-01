@@ -1,15 +1,13 @@
 const MAX_LINE_TEXT = 4500;
 
 const labels = [
-  ['id', '系統編號'], ['church_id', '堂會'], ['register_date', '登記日期'], ['photo', '舊照片欄位'],
+  ['id', '系統編號'], ['church_id', '堂會'],
   ['name', '姓名'], ['gender', '性別'], ['age', '年齡'], ['marital', '婚姻狀況'],
-  ['faith_status', '信仰階段'], ['source', '來源'], ['phone', '電話'], ['line_id', 'LINE ID'],
+  ['faith_status', '信仰階段'], ['phone', '電話'], ['line_id', 'LINE ID'],
   ['district', '居住區域'], ['growth_progress', '聚會近況'], ['group_name', '所屬小組／小家'],
   ['family', '家庭資料'], ['ministry', '服事恩賜'], ['memo', '備註／牧養紀錄'],
-  ['created_at', '建立時間'], ['birthday', '生日'], ['baptism_date', '受洗日期'],
-  ['photo_url', '照片連結'], ['age_group', '年齡層'], ['know_us_from', '認識教會管道'],
-  ['desired_feelings', '期待感受'], ['interest_tags', '生活興趣'], ['welcome_status', '迎新跟進狀態'],
-  ['archived_at', '封存時間'], ['archived_by', '封存者'],
+  ['birthday', '生日'], ['baptism_date', '受洗日期'], ['photo_url', '照片連結'],
+  ['know_us_from', '認識教會管道'], ['desired_feelings', '期待感受'], ['interest_tags', '生活興趣'],
 ];
 
 function valueText(value) {

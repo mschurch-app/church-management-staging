@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20260928-line-status2';
+import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20261001-newcomer-line';
 import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260924-custom2';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
@@ -94,7 +94,7 @@ async function edit(row=null,isNewcomer=false){
   form.onsubmit=async event=>{
    event.preventDefault();if(busy)return;busy=true;form.querySelectorAll('input,select,textarea,button').forEach(x=>x.disabled=true);
    const submitTicket=generation;
-   try{await saveMember(db,church,Object.fromEntries(Object.entries(getters).map(([k,get])=>[k,get()])),row);if(submitTicket===generation){await load();status.textContent='已儲存並重新載入名單。';}}
+   try{const saved=await saveMember(db,church,Object.fromEntries(Object.entries(getters).map(([k,get])=>[k,get()])),row);if(submitTicket===generation){await load();status.textContent=saved.newcomerNotification==='failed'?'新朋友資料已儲存，但 LINE 群組通知未送出，請聯絡系統管理員。':'已儲存並重新載入名單。';}}
    catch(error){if(submitTicket===generation){status.textContent=error.message;form.querySelectorAll('input,select,textarea,button').forEach(x=>x.disabled=false);}}
    finally{busy=false;}
   };

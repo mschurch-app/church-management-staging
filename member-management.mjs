@@ -90,7 +90,12 @@ export async function saveMember(db,church,input,previous=null){
  }else q=db.from('members').insert({...patch,church_id:church});
  const {data,error}=await q.select('id,church_id');
  if(error||!Array.isArray(data)||data.length!==1||data[0].church_id!==church)throw new Error(previous?'未儲存：資料可能已變更或權限已撤銷。請重新載入。':'新增結果未確認。請先查詢名單，避免重複新增。');
- await authorize(db,church);return data[0];
+ await authorize(db,church);
+ if(!previous&&church==='M+'&&patch.faith_status==='新朋友（初次聚會）'){
+  const notification=await db.functions.invoke('newcomer-manual-notify',{body:{memberId:Number(data[0].id)}});
+  return {...data[0],newcomerNotification:notification.error||notification.data?.sent!==true?'failed':'sent'};
+ }
+ return data[0];
 }
 
 export async function listMemberGroups(db,church){

@@ -21,6 +21,21 @@ const modules=[
   {key:'pastoral_content',file:'pastoral-content.html',label:'教牧內容',icon:'✨',permission:'pastoral_chats'},
   {key:'settings',file:'church-settings.html',label:'系統設定',icon:'⚙️',also:['customization-settings.html','welcome-settings.html','ministry-settings.html','admin-accounts.html','todays-message-settings.html','love-share-settings.html']}
 ];
+const contextualModules={
+  members:['members','newcomer_care','binding_review'],
+  newcomer_care:['newcomer_care','members','prayers'],
+  tree_reading_admin:['tree_reading_admin'],
+  binding_review:['binding_review','members'],
+  notification_settings:['notification_settings','settings'],
+  groups:['groups','members','attendance'],
+  attendance:['attendance','groups'],
+  schedules:['schedules','spaces'],
+  prayers:['prayers','newcomer_care','pastoral_inbox'],
+  spaces:['spaces','schedules'],
+  pastoral_inbox:['pastoral_inbox','pastoral_content','prayers'],
+  pastoral_content:['pastoral_content','pastoral_inbox','prayers'],
+  settings:['settings','notification_settings']
+};
 const currentFile=location.pathname.split('/').pop()||'admin-dashboard.html';
 document.documentElement.dataset.church=church||'';
 
@@ -58,10 +73,12 @@ function mountModuleBar(access,selected,settings){
   if(currentFile==='admin-dashboard.html')return;
   const anchor=document.querySelector('.member-page>.page-header')||document.querySelector('.ministry-app>.ministry-hero');
   if(!anchor||document.querySelector('.module-bar'))return;
-  const nav=document.createElement('nav');nav.className='module-bar';nav.setAttribute('aria-label','管理功能');
+  const nav=document.createElement('nav');nav.className='module-bar module-bar--contextual';nav.setAttribute('aria-label','目前功能相關操作');
   const defaults=modules.slice(1,-1).map((module,index)=>({...module,enabled:true,navigation:true,navigation_order:(index+1)*10}));
   const configuredItems=Array.isArray(settings?.feature_modules)?settings.feature_modules:defaults;
-  const configured=new Map(configuredItems.filter(item=>item.enabled&&item.navigation).sort((a,b)=>Number(a.navigation_order)-Number(b.navigation_order)).map(item=>[item.key,item])),visible=[modules[0],...modules.slice(1,-1).filter(module=>configured.has(module.key)).sort((a,b)=>Number(configured.get(a.key)?.navigation_order)-Number(configured.get(b.key)?.navigation_order)),modules.at(-1)];
+  const configured=new Map(configuredItems.filter(item=>item.enabled&&item.navigation).map(item=>[item.key,item]));
+  const current=modules.find(moduleIsCurrent),related=contextualModules[current?.key]||[current?.key].filter(Boolean);
+  const visible=[modules[0],...related.map(key=>modules.find(module=>module.key===key)).filter(Boolean).filter(module=>module===current||module.key==='settings'||configured.has(module.key))];
   for(const module of visible.filter(item=>allowed(access,selected,item))){const setting=configured.get(module.key),link=document.createElement('a'),icon=document.createElement('span'),label=document.createElement('span');link.href=moduleUrl(module.file,selected);link.className=moduleIsCurrent(module)?'current':'';icon.className='module-bar-icon';icon.textContent=setting?.icon||module.icon;icon.setAttribute('aria-hidden','true');label.textContent=setting?.label||module.label;link.append(icon,label);nav.append(link);}
   anchor.after(nav);
 }

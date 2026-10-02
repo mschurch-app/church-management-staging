@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f5f8ef">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>箴言十月讀經｜M+大雅教會同工測試</title>
-  <link rel="stylesheet" href="tree-reading-preview.css?v=20260929-login-fallback">
+  <link rel="stylesheet" href="tree-reading-preview.css?v=20261002-readflow1">
   <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20260929-login-fallback">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -44,8 +44,7 @@
         <div id="forest-art" class="forest-art" hidden></div>
         <p id="tree-mood" class="tree-mood">小樹正在等今天的活水 ✨</p>
         <div class="tree-action-dock" id="tree-action-dock" aria-label="生命樹互動操作">
-          <button id="mark-read" class="primary tree-read-action" type="button">📖 開始讀今天的箴言</button>
-          <button class="care-button tree-care-action" id="care-tree" type="button" disabled>💧 讀完後澆水</button>
+          <button class="care-button tree-care-action" id="care-tree" type="button" disabled hidden>💧 澆水照顧生命樹</button>
           <button id="sound-toggle" class="secondary sound-toggle" type="button" aria-pressed="true">🔊 音樂開啟</button>
         </div>
         <p id="reading-status" class="status-line tree-action-status" role="status"></p>
@@ -69,7 +68,8 @@
         <button id="toggle-scripture" class="scripture-toggle" type="button" aria-expanded="false" aria-controls="scripture-text">📖 展開完整經文</button>
         <div id="scripture-text" class="scripture-text" aria-label="完整經文" hidden></div>
         <div id="audio-controls" class="audio-controls" hidden><button id="read-aloud" class="secondary">🔊 朗讀經文</button><button id="stop-reading" class="text-button">停止朗讀</button><span>可調整手機音量</span></div>
-        <p class="demo-warning">經文預設收起；完整閱讀或朗讀後，再回上方按鈕記錄並澆水。</p>
+        <div id="complete-reading-actions" class="complete-reading-actions" hidden><p id="scripture-read-hint" role="status">請先滑到經文最後，解鎖讀完按鈕。</p><button id="mark-read" class="primary tree-read-action" type="button" disabled>📖 我讀完了，前往小樹</button></div>
+        <p class="demo-warning">請滑到完整經文最下方，再按「我讀完了」回到小樹澆水。</p>
         <div class="reading-actions"><label class="late-date-field">補讀日期<input id="late-date" type="date" min="2026-10-01" max="2026-10-31"></label><button id="mark-late" class="secondary" type="button">記錄補讀</button></div>
       </section>
 
@@ -100,6 +100,6 @@
 
     <footer>© 2026 M+大雅教會 · 十月箴言同工測試</footer>
   </main>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261002-os-admin1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261002-readflow1"></script>
 </body>
 </html>

@@ -73,7 +73,7 @@ function lovePage(data){
   const refreshLove=()=>{$('#love-preview').innerHTML=lovePreview(selected());};
   for(const id of ['recipient','signature','message'])$('#'+id).addEventListener('input',refreshLove);
   drawScenes();
-  $('#download').onclick=async()=>{try{const image=await composeCard(selected()),link=document.createElement('a');link.href=image;link.download='教會祝福卡.jpg';link.click();}catch{$('#share-status').textContent='圖片尚未載入完成，請稍候再試。';}};
+  $('#download').onclick=async()=>{const button=$('#download'),downloadStatus=$('#share-status');button.disabled=true;downloadStatus.textContent='正在製作圖卡…';try{const image=await composeCard(selected());showDownloadPreview(image);downloadStatus.textContent='圖卡已完成，請長按圖片儲存。';}catch{downloadStatus.textContent='圖片尚未載入完成，請稍候再試。';}finally{button.disabled=false;}};
   $('#share').onclick=()=>shareLove(selected());
 }
 function wrapParagraphs(ctx,text,maxWidth){
@@ -93,6 +93,12 @@ function roundedRect(ctx,x,y,width,height,radius){
   ctx.beginPath();
   if(ctx.roundRect){ctx.roundRect(x,y,width,height,radius);return;}
   ctx.moveTo(x+radius,y);ctx.lineTo(x+width-radius,y);ctx.quadraticCurveTo(x+width,y,x+width,y+radius);ctx.lineTo(x+width,y+height-radius);ctx.quadraticCurveTo(x+width,y+height,x+width-radius,y+height);ctx.lineTo(x+radius,y+height);ctx.quadraticCurveTo(x,y+height,x,y+height-radius);ctx.lineTo(x,y+radius);ctx.quadraticCurveTo(x,y,x+radius,y);ctx.closePath();
+}
+function showDownloadPreview(image){
+  document.querySelector('.download-preview')?.remove();
+  const overlay=document.createElement('section');overlay.className='download-preview';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','儲存祝福圖卡');
+  overlay.innerHTML='<div class="download-preview-panel"><div class="download-preview-head"><strong>圖卡已製作完成</strong><button type="button" aria-label="關閉">×</button></div><p>請長按下方圖片，再選擇「儲存影像」或「加入照片」。</p><img alt="已完成的教會祝福圖卡"><button type="button" class="primary download-file">下載圖片檔案</button></div>';
+  const close=()=>overlay.remove(),img=overlay.querySelector('img'),download=overlay.querySelector('.download-file');img.src=image;overlay.querySelector('.download-preview-head button').onclick=close;overlay.onclick=event=>{if(event.target===overlay)close();};download.onclick=()=>{const link=document.createElement('a');link.href=image;link.download='教會祝福卡.jpg';document.body.append(link);link.click();link.remove();};document.body.append(overlay);
 }
 async function composeCard(item){
   const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;

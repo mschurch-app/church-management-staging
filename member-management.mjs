@@ -36,6 +36,7 @@ export async function listMembers(db,church,search='',page=0,newcomersOnly=false
  if(data.some(row=>row.church_id!==church))throw new Error('資料範圍不正確。');
  // Read LINE status from the private binding table through an authorized RPC.
  const pageRows=data.slice(0,25);
+ if(pageRows.length===0)return {rows:[],hasNext:false};
  const {data:bindingStates,error:bindingError}=await db.rpc('list_member_binding_statuses',{p_church:church,p_member_ids:pageRows.map(row=>row.id)});
  if(bindingError||!Array.isArray(bindingStates))throw new Error('無法確認 LINE 綁定狀態，請重新載入。');
  const bindingByMember=new Map(bindingStates.map(item=>[String(item.member_id),item.line_bound===true]));

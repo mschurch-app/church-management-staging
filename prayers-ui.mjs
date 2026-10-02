@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20260924-custom2';
+import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261003-access-guard1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);

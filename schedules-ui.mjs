@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule,listRolePreferences,saveRolePreferences} from './schedule-management.mjs?v=20261002-custom-roles1';
+import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule,listRolePreferences,saveRolePreferences} from './schedule-management.mjs?v=20261003-access-guard1';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),editor=$('#editor'),records=$('#records'),roleSettings=$('#roleSettings');

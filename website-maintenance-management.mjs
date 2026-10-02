@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs?v=20261002-granular1';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261003-access-guard1';
 
 const BUCKET='church-website-public-media';
 const TYPES=['image/jpeg','image/png','image/webp'];

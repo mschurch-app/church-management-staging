@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {listMemberAudit} from './member-management.mjs?v=20260922-members3';
+import {listMemberAudit} from './member-management.mjs?v=20261003-access-guard1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#audit-list');let limit=50,busy=false;
 const labels={insert:'新增',update:'修改',archive:'封存',restore:'恢復'};

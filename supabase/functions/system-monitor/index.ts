@@ -3,11 +3,11 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 const cors={'access-control-allow-origin':'https://mscos.mchurch.online','access-control-allow-headers':'authorization,apikey,content-type,x-client-info','access-control-allow-methods':'POST,OPTIONS'};
 const headers={...cors,'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
 const targets=[
-  {key:'church_os',name:'教會 OS',url:'https://mscos.mchurch.online/',marker:'教會管理系統'},
-  {key:'school',name:'課輔管理系統',url:'https://school.mchurch.online/',marker:'課輔行政系統'},
-  {key:'basketball',name:'籃球隊管理系統',url:'https://mschurch-app.github.io/m-plus-basketball/',marker:'藍球隊球員系統'},
-  {key:'church_site',name:'M+ 教會網站',url:'https://mchurch.online/',marker:'M+大雅教會'},
-  {key:'association_site',name:'夢想加油站網站',url:'https://www.tcsc.org.tw/',marker:'夢想加油站'},
+  {key:'church_os',name:'教會 OS',url:'https://mscos.mchurch.online/'},
+  {key:'school',name:'課輔管理系統',url:'https://school.mchurch.online/'},
+  {key:'basketball',name:'籃球隊管理系統',url:'https://mschurch-app.github.io/m-plus-basketball/'},
+  {key:'church_site',name:'M+ 教會網站',url:'https://mchurch.online/'},
+  {key:'association_site',name:'夢想加油站網站',url:'https://www.tcsc.org.tw/'},
 ];
 function json(status:number,body:unknown){return new Response(JSON.stringify(body),{status,headers});}
 function admin(){const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SECRET_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';if(!url||!key)throw new Error('config');return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});}
@@ -15,8 +15,7 @@ async function health(target:typeof targets[number]){
   const started=performance.now();
   try{
     const response=await fetch(target.url,{redirect:'follow',signal:AbortSignal.timeout(9000),headers:{'user-agent':'MChurch-System-Monitor/1.0'}});
-    const text=(await response.text()).slice(0,250000);
-    return {key:target.key,name:target.name,url:target.url,online:response.ok&&text.includes(target.marker),status:response.status,latency_ms:Math.round(performance.now()-started),checked_at:new Date().toISOString()};
+    return {key:target.key,name:target.name,url:target.url,online:response.ok,status:response.status,latency_ms:Math.round(performance.now()-started),checked_at:new Date().toISOString()};
   }catch{return {key:target.key,name:target.name,url:target.url,online:false,status:0,latency_ms:Math.round(performance.now()-started),checked_at:new Date().toISOString()};}
 }
 Deno.serve(async request=>{

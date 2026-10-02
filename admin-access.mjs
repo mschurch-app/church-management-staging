@@ -54,7 +54,8 @@ export async function readAccess(db, { user: signedInUser = null, retry = true }
   const grantedChurches = [...new Set(grants.map(row => row.church_id))];
   const featureResults = await Promise.all(grantedChurches.map(async church_id => {
     const response = await db.rpc('get_my_feature_permissions', { p_church: church_id });
-    return response.error || !Array.isArray(response.data) ? [] : response.data.map(item => ({ church_id, ...item }));
+    if (response.error || !Array.isArray(response.data)) throw new Error('無法確認頁面權限，為保護資料請重新整理或重新登入。');
+    return response.data.map(item => ({ church_id, ...item }));
   }));
   const fallback = profileFromUser(user);
   return {

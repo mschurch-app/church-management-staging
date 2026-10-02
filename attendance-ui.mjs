@@ -1,6 +1,6 @@
 import {db} from './admin-db.mjs';
-import {listGroups} from './group-management.mjs?v=20260924-custom2';
-import {listAttendance,listAttendanceMembers,saveAttendance} from './attendance-management.mjs?v=20260924-custom2';
+import {listGroups} from './group-management.mjs?v=20261003-access-guard1';
+import {listAttendance,listAttendanceMembers,saveAttendance} from './attendance-management.mjs?v=20261003-access-guard1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),editor=$('#editor'),records=$('#records'),term=church==='SHiNE'?'小家':'小組';let groups=[],members=[],meetingTypes=[],busy=false;

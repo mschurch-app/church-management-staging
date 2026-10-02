@@ -1,4 +1,4 @@
-const CACHE='church-os-shell-20261002-6';
+const CACHE='church-os-shell-20261002-7';
 const SHELL=['/admin-login.html','/admin-dashboard.html','/app.webmanifest','/assets/app/church-os-icon.svg','/assets/app/church-os-icon-192.png','/assets/app/church-os-icon-512.png','/auth.css','/apple-ui.css','/church-brand.css','/theme-vitality.css'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));

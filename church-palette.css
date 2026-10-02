@@ -378,3 +378,19 @@ body:not(.tree-reading-body):not(.prayer-wall-body),body.collab-app{background:l
 .member-page:before{background:linear-gradient(90deg,#c94b35,#ffd35a)!important}
 .settings-link-card:nth-child(even) .settings-link-icon{color:#75520c!important;background:#fff4cd!important}
 .status-badge.warning,.metric-card.warning,.todo-card.overdue{background:#fff4cd!important;color:#75520c!important}
+
+/* A stronger coral header separates the app identity from white content cards. */
+.member-page>.page-header,.library-page>.library-hero,
+html[data-church="SHiNE"] .member-page>.page-header,
+html[data-church="SHiNE"] .library-page>.library-hero{
+  color:#fff!important;
+  background:linear-gradient(135deg,#ad3c2a,#c94b35)!important;
+  border-color:#ad3c2a!important;
+  box-shadow:0 16px 40px rgba(173,60,42,.18)!important;
+}
+.member-page>.page-header :is(h1,h2,h3,p,.muted,.eyebrow),
+.library-page>.library-hero :is(h1,h2,h3,p,.muted,.eyebrow),
+.member-page>.page-header .eyebrow,.library-page>.library-hero .eyebrow{color:#fff!important}
+.member-page>.page-header .church-brand{background:rgba(83,25,16,.3)!important;border-color:rgba(255,255,255,.25)}
+.member-page>.page-header .church-brand img{opacity:1}
+.member-page>.page-header button.secondary{background:#fff!important;color:#ad3c2a!important;border-color:#fff!important;box-shadow:none!important}

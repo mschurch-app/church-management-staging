@@ -1,11 +1,11 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
 const ROLE_PERMISSIONS:Record<string,string[]>={
-  pastor:['attendance','groups','members','pastoral_chats','private_prayers','schedules','spaces'],
-  pastor_spouse:['attendance','groups','members','pastoral_chats','private_prayers','schedules','spaces'],
-  administrator:['attendance','groups','members','schedules','spaces'],
+  pastor:['attendance','groups','members','pastoral_chats','private_prayers','schedules','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources'],
+  pastor_spouse:['attendance','groups','members','pastoral_chats','private_prayers','schedules','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources'],
+  administrator:['attendance','groups','members','schedules','spaces','newcomer_care','binding_review','notification_settings'],
   group_leader:['attendance','groups','members'],
-  care:['members','pastoral_chats','private_prayers'],
+  care:['members','pastoral_chats','private_prayers','newcomer_care'],
   facilities:['spaces']
 };
 const allowedOrigins=new Set((Deno.env.get('ADMIN_ALLOWED_ORIGINS')||'https://mschurch-app.github.io,https://mscos.mchurch.online,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));

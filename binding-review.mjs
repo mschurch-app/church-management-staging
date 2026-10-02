@@ -1,6 +1,6 @@
-import {readAccess,canOpen} from './admin-access.mjs?v=20260923-profile1';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261002-granular1';
 async function authorize(db,church){
-  if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'members'))throw new Error('沒有這間教會的會員管理權限。');
+  if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'binding_review'))throw new Error('沒有這間教會的會員管理權限。');
 }
 export async function loadRequests(db,church){
   await authorize(db,church);

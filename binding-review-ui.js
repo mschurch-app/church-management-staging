@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {loadRequests,findCandidates,reviewRequest} from './binding-review.mjs?v=20261002-partial-name1';
+import {loadRequests,findCandidates,reviewRequest} from './binding-review.mjs?v=20261002-granular1';
 const church=new URLSearchParams(location.search).get('church');
 const list=document.querySelector('#requests'),status=document.querySelector('#status');
 let generation=0,busy=false;

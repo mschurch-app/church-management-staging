@@ -1,9 +1,12 @@
 export const TAB_PERMISSIONS = Object.freeze({
   members: ['members'], attendance: ['attendance'], schedules: ['schedules'], services: ['schedules'],
-  groups: ['groups', 'members'], prayers: ['private_prayers'], spaces: ['spaces'], pastoral: ['pastoral_chats']
+  groups: ['groups', 'members'], prayers: ['private_prayers'], spaces: ['spaces'], pastoral: ['pastoral_chats'],
+  newcomer_care: ['members','newcomer_care'], tree_reading_admin: ['members','tree_reading_admin'],
+  binding_review: ['members','binding_review'], notification_settings: ['members','notification_settings'],
+  website_weekly: ['pastoral_chats','website_weekly'], website_group_resources: ['pastoral_chats','website_group_resources']
 });
 const churches = new Set(['M+', 'SHiNE']);
-const permissions = new Set(['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces']);
+const permissions = new Set(['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources']);
 
 const cleanLabel = value => String(value || '').trim().replace(/\s+/g, ' ').slice(0, 60);
 export function profileFromUser(user) {

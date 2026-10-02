@@ -6,20 +6,36 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>教會同工｜常用工具</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-friendly1">
-  <link rel="stylesheet" href="coworker-tools.css?v=20260930-1">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-department1">
+  <link rel="stylesheet" href="coworker-tools.css?v=20261003-department1">
 </head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="workspace.html"><span class="brand-mark">M+</span><span>教會同工<small>常用工具</small></span></a>
-    <button id="sign-out" class="button secondary" type="button">返回教會 OS</button>
-  </header>
-  <main>
+<body class="collab-app">
+  <div class="collab-shell">
+    <aside class="collab-sidebar" aria-label="同工協作平台導覽">
+      <a class="collab-brand" href="workspace.html"><span class="brand-mark">M+</span><span><strong>同工協作平台</strong><small>CHURCH TEAMWORK</small></span></a>
+      <nav class="collab-nav">
+        <p>工作空間</p>
+        <a href="workspace.html"><span>⌂</span>工作總覽</a>
+        <a href="workspace.html?tab=tasks"><span>✓</span>任務協作</a>
+        <a href="workspace.html?tab=calendar"><span>▦</span>團隊行事曆</a>
+        <a href="../newcomer-care.html"><span>♧</span>新朋友關懷</a>
+        <p>團隊工具</p>
+        <a data-tool-nav="memo" href="coworker-tools.html?tab=memo"><span>▤</span>共用備忘</a>
+        <a data-tool-nav="attendance" href="coworker-tools.html?tab=attendance"><span>◷</span>出勤與請假</a>
+        <a data-tool-nav="photos" href="coworker-tools.html?tab=photos"><span>▧</span>照片資料庫</a>
+      </nav>
+      <button id="sign-out" class="collab-os-link" type="button">返回教會 OS <span>↗</span></button>
+    </aside>
+    <div class="collab-page">
+      <header class="collab-topbar">
+        <div><p>團隊工具</p><strong id="tools-page-title">共用備忘</strong></div>
+        <label class="entity-field compact">使用單位<select id="entity"></select></label>
+      </header>
+      <main class="collab-main">
     <p id="auth-status" class="notice" role="status">正在確認教會 OS 帳號與同工權限…</p>
     <section id="tools" hidden>
       <div class="tools-heading">
-        <div><p class="eyebrow">COWORKER TOOLS</p><h1>常用工具<span>把事情記下來，也照顧好彼此。</span></h1></div>
-        <label class="entity-field">使用單位<select id="entity"></select></label>
+        <div><p class="eyebrow">TEAM OPERATIONS</p><h1>團隊工具<span>備忘、出勤、請假與照片資料都集中管理。</span></h1></div>
       </div>
       <nav class="tabs" aria-label="同工常用工具" role="tablist">
         <button id="tab-memo" role="tab" aria-selected="true" aria-controls="panel-memo" data-tab="memo">備忘錄</button>
@@ -91,7 +107,15 @@
         </article>
       </section>
     </section>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="coworker-tools.mjs?v=20261003-googlefix2"></script>
+      </main>
+      <nav class="collab-mobile-nav" aria-label="手機主要導覽">
+        <a href="workspace.html"><span>⌂</span>總覽</a>
+        <a href="workspace.html?tab=tasks"><span>✓</span>任務</a>
+        <a href="workspace.html?tab=calendar"><span>▦</span>行事曆</a>
+        <a class="is-active" href="coworker-tools.html?tab=memo"><span>▤</span>工具</a>
+      </nav>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="coworker-tools.mjs?v=20261003-department1"></script>
 </body>
 </html>

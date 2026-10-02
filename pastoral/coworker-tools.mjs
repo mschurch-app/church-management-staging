@@ -85,6 +85,9 @@ function activateTab(name) {
     const panel = $(`#panel-${button.dataset.tab}`);
     if (panel) panel.hidden = !active;
   });
+  const titles={memo:'共用備忘',attendance:'出勤與請假',photos:'照片資料庫'};
+  if($('#tools-page-title'))$('#tools-page-title').textContent=titles[name]||'團隊工具';
+  document.querySelectorAll('[data-tool-nav]').forEach(link=>link.classList.toggle('is-active',link.dataset.toolNav===name));
   const url = new URL(location.href); url.searchParams.set('tab', name); history.replaceState(null, '', url);
   if (name === 'memo') loadMemos();
   if (name === 'attendance') { loadAttendance(); loadLeave(); if (['pastor', 'admin'].includes(staff?.role)) loadAttendanceAdmin(); }

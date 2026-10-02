@@ -43,6 +43,8 @@ function setCalendarStatus(connected, email, reconnectRequired=false) {
   $('#connect-calendar').hidden = previewMode || connected || !['pastor', 'admin'].includes(staffRole);
   $('#check-freebusy').hidden = previewMode || !connected;
   $('#find-slots').hidden = previewMode || !connected;
+  const overview=$('#overview-calendar-status');
+  if(overview)overview.textContent=connected?'已連線':reconnectRequired?'需要重新連線':'尚未連線';
 }
 
 function activateTab(tab) {
@@ -52,6 +54,9 @@ function activateTab(tab) {
     button.tabIndex = active ? 0 : -1;
     $(`#panel-${button.dataset.tab}`).hidden = !active;
   });
+  const titles={tasks:'任務協作',calendar:'團隊行事曆',schedule:'工作時間設定'};
+  if($('#page-title'))$('#page-title').textContent=titles[tab]||'工作總覽';
+  document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(link=>link.classList.toggle('is-active',link.dataset.openTab===tab));
   const url=new URL(location.href);url.searchParams.set('tab',tab);history.replaceState(null,'',url);
 }
 const tabs = [...document.querySelectorAll('[data-tab]')];
@@ -72,6 +77,10 @@ document.querySelectorAll('[data-open-tab]').forEach(link=>link.addEventListener
   if(!button||!panel)return;
   button.click();
   requestAnimationFrame(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}));
+}));
+document.querySelectorAll('[data-overview-link]').forEach(link=>link.addEventListener('click',()=>{
+  document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(item=>item.classList.toggle('is-active',item.hasAttribute('data-overview-link')));
+  if($('#page-title'))$('#page-title').textContent='工作總覽';
 }));
 
 function calendarParticipantIds(){
@@ -180,7 +189,9 @@ async function load() {
     $('#tab-schedule').hidden = preview;
     church = assistantChurch(staff, params.get('church'));
     $('#newcomer-care-link').href=`../newcomer-care.html?church=${encodeURIComponent(church)}`;
+    if($('#newcomer-care-nav'))$('#newcomer-care-nav').href=`../newcomer-care.html?church=${encodeURIComponent(church)}`;
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / COWORKER COLLABORATION';
+    if($('#overview-church'))$('#overview-church').textContent=church==='M+'?'M＋大雅教會':'火樂教會';
     $('#identity').textContent = `${staff.name}｜${{pastor:'牧師',secretary:'同工',admin:'管理者'}[staff.role]}`;
     $('#back').hidden = false;
     $('#back').addEventListener('click', event => { event.preventDefault(); signOut(); });
@@ -193,7 +204,12 @@ async function load() {
     const requestedTab=params.get('tab');
     if(requestedTab==='calendar')activateTab('calendar');
     else if(requestedTab==='schedule')activateTab('schedule');
-    else {activateTab('tasks');await loadTasks();}
+    else {
+      activateTab('tasks');
+      document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(link=>link.classList.toggle('is-active',link.hasAttribute('data-overview-link')));
+      if($('#page-title'))$('#page-title').textContent='工作總覽';
+      await loadTasks();
+    }
   } catch (error) {
     $('#workspace').hidden = true;
     $('#auth-status').textContent = error.message || '無法載入工作台。';
@@ -452,8 +468,9 @@ async function loadTasks(){
     select.replaceChildren(...people.staff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
     select.value=people.staff.some(person=>person.id===previous)?previous:(people.staff.some(person=>person.id===currentStaffId)?currentStaffId:(people.staff[0]?.id||''));
     renderTasks(result.tasks||[]);
+    if($('#overview-task-count'))$('#overview-task-count').textContent=`${(result.tasks||[]).filter(task=>!['completed','cancelled'].includes(task.status)).length} 項進行中`;
     status.textContent=`已更新工作清單，共 ${(result.tasks||[]).length} 項。`;
-  }catch(error){status.textContent=error.message||'無法載入同工工作。';}
+  }catch(error){status.textContent=error.message||'無法載入同工工作。';if($('#overview-task-count'))$('#overview-task-count').textContent='暫時無法讀取';}
   finally{$('#refresh-tasks').disabled=false;}
 }
 $('#tab-tasks').addEventListener('click',()=>loadTasks());
@@ -514,4 +531,5 @@ $('#task-list').addEventListener('click',async event=>{
   }catch(error){$('#task-status').textContent=error.message||'無法更新工作或附件。';button.disabled=false;}
 });
 
+if($('#collab-date'))$('#collab-date').textContent=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',month:'long',day:'numeric',weekday:'long'}).format(new Date());
 load();

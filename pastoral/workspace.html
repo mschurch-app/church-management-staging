@@ -6,30 +6,53 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工協作空間｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-friendly1">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-department1">
 </head>
-<body>
-  <header class="topbar">
-    <a class="brand" id="home" href="./"><span class="brand-mark">M+</span><span>教會同工<small>MPLUS PASTORAL AI</small></span></a>
-    <a id="back" class="back" role="button" hidden href="../admin-dashboard.html">返回教會 OS</a>
-  </header>
-  <main>
+<body class="collab-app">
+  <div class="collab-shell">
+    <aside class="collab-sidebar" aria-label="同工協作平台導覽">
+      <a class="collab-brand" id="home" href="workspace.html"><span class="brand-mark">M+</span><span><strong>同工協作平台</strong><small>CHURCH TEAMWORK</small></span></a>
+      <nav class="collab-nav">
+        <p>工作空間</p>
+        <a class="is-active" href="#workspace-start" data-overview-link><span>⌂</span>工作總覽</a>
+        <a href="#panel-tasks" data-open-tab="tasks"><span>✓</span>任務協作</a>
+        <a href="#panel-calendar" data-open-tab="calendar"><span>▦</span>團隊行事曆</a>
+        <a id="newcomer-care-nav" href="../newcomer-care.html"><span>♧</span>新朋友關懷</a>
+        <p>團隊工具</p>
+        <a href="coworker-tools.html?tab=memo"><span>▤</span>共用備忘</a>
+        <a href="coworker-tools.html?tab=attendance"><span>◷</span>出勤與請假</a>
+        <a href="coworker-tools.html?tab=photos"><span>▧</span>照片資料庫</a>
+      </nav>
+      <a id="back" class="collab-os-link" hidden href="../admin-dashboard.html">返回教會 OS <span>↗</span></a>
+    </aside>
+    <div class="collab-page">
+      <header class="collab-topbar">
+        <div><p>團隊工作空間</p><strong id="page-title">工作總覽</strong></div>
+        <div class="identity"><span class="avatar" aria-hidden="true">同</span><div id="identity">教會同工</div></div>
+      </header>
+      <main class="collab-main">
     <p id="auth-status" class="notice" role="status">正在確認教會 OS 帳號與同工權限…</p>
     <a id="login" class="button" href="../admin-login.html" hidden>前往教會 OS 登入</a>
     <div id="workspace" hidden>
-      <section class="intro">
-        <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>同工協作空間<span>今天要處理的事，都從這裡開始。</span></h1><p class="intro-copy">選擇一項工作，系統會直接帶你到可以操作的位置。</p></div>
-        <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">教會同工</div></div>
+      <section class="intro collab-hero">
+        <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>一起把服事做好<span>工作、行程、關懷與資料，都在同一個地方。</span></h1><p class="intro-copy">從總覽掌握目前狀況，再進入需要處理的項目。</p></div>
+        <span class="collab-date" id="collab-date">今天</span>
       </section>
-      <section class="workspace-start" aria-labelledby="workspace-start-title">
-        <div class="workspace-start-heading"><p class="eyebrow">快速開始</p><h2 id="workspace-start-title">今天要做什麼？</h2></div>
+      <section class="operations-overview" aria-label="團隊工作摘要">
+        <article><span class="overview-icon task">✓</span><div><small>目前工作</small><strong id="overview-task-count">讀取中</strong></div></article>
+        <article><span class="overview-icon calendar">▦</span><div><small>團隊行事曆</small><strong id="overview-calendar-status">確認中</strong></div></article>
+        <article><span class="overview-icon team">◎</span><div><small>目前單位</small><strong id="overview-church">載入中</strong></div></article>
+        <article><span class="overview-icon notify">◉</span><div><small>團隊通知</small><strong>App＋LINE 雙軌</strong></div></article>
+      </section>
+      <section id="workspace-start" class="workspace-start" aria-labelledby="workspace-start-title">
+        <div class="workspace-start-heading"><div><p class="eyebrow">工作模組</p><h2 id="workspace-start-title">常用功能</h2></div><span>依工作內容選擇</span></div>
         <div class="workspace-actions">
-          <a href="#panel-tasks" data-open-tab="tasks"><span class="action-icon">🤝</span><span><strong>處理同工工作</strong><small>建立工作、接受指派、回報進度</small></span><b>開啟</b></a>
-          <a id="newcomer-care-link" href="../newcomer-care.html"><span class="action-icon">🌱</span><span><strong>關懷新朋友</strong><small>查看待聯絡、追蹤與逾期名單</small></span><b>開啟</b></a>
-          <a href="#panel-calendar" data-open-tab="calendar"><span class="action-icon">📅</span><span><strong>安排共同行程</strong><small>找空檔、建立行程並通知同工</small></span><b>開啟</b></a>
-          <a href="coworker-tools.html?tab=attendance"><span class="action-icon">🕘</span><span><strong>打卡或請假</strong><small>記錄出勤與送出請假申請</small></span><b>開啟</b></a>
-          <a href="coworker-tools.html?tab=memo"><span class="action-icon">📝</span><span><strong>新增備忘</strong><small>記下自己或同工要記得的事</small></span><b>開啟</b></a>
-          <a href="coworker-tools.html?tab=photos"><span class="action-icon">📷</span><span><strong>上傳照片</strong><small>將照片存入教會共用資料夾</small></span><b>開啟</b></a>
+          <a href="#panel-tasks" data-open-tab="tasks"><span class="action-icon">✓</span><span><strong>任務協作</strong><small>建立工作、接受指派、回報進度</small></span><b>進入</b></a>
+          <a id="newcomer-care-link" href="../newcomer-care.html"><span class="action-icon">♧</span><span><strong>新朋友關懷</strong><small>查看待聯絡、追蹤與逾期名單</small></span><b>進入</b></a>
+          <a href="#panel-calendar" data-open-tab="calendar"><span class="action-icon">▦</span><span><strong>團隊行事曆</strong><small>找共同空檔、建立行程並通知同工</small></span><b>進入</b></a>
+          <a href="coworker-tools.html?tab=attendance"><span class="action-icon">◷</span><span><strong>出勤與請假</strong><small>記錄出勤、提出申請與進行核准</small></span><b>進入</b></a>
+          <a href="coworker-tools.html?tab=memo"><span class="action-icon">▤</span><span><strong>共用備忘</strong><small>整理個人提醒與團隊待辦資訊</small></span><b>進入</b></a>
+          <a href="coworker-tools.html?tab=photos"><span class="action-icon">▧</span><span><strong>照片資料庫</strong><small>將活動照片存入教會共用資料夾</small></span><b>進入</b></a>
         </div>
       </section>
       <nav class="tabs" aria-label="工作區" role="tablist">
@@ -125,10 +148,18 @@
           </form>
         </article>
       </section>
-      <footer>AI 協助預備，同工彼此支援，一起把服事安排好。<span>MPLUS · COWORKER WORKSPACE</span></footer>
+      <footer>同工彼此支援，一起把服事安排好。<span>MPLUS · COWORKER WORKSPACE</span></footer>
     </div>
-  </main>
+      </main>
+      <nav class="collab-mobile-nav" aria-label="手機主要導覽">
+        <a class="is-active" href="#workspace-start" data-overview-link><span>⌂</span>總覽</a>
+        <a href="#panel-tasks" data-open-tab="tasks"><span>✓</span>任務</a>
+        <a href="#panel-calendar" data-open-tab="calendar"><span>▦</span>行事曆</a>
+        <a href="coworker-tools.html?tab=memo"><span>▤</span>工具</a>
+      </nav>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20261003-calendarfix2"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20261003-department1"></script>
 </body>
 </html>

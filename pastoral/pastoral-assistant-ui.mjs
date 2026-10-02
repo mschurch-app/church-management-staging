@@ -181,8 +181,9 @@ async function load() {
     } else setCalendarStatus(false, null);
     if (!preview) { try { await loadScheduleSettings(); } catch { $('#schedule-status').textContent='目前無法載入休息日設定，請稍後重試。'; } }
     const requestedTab=params.get('tab');
-    if(requestedTab==='tasks'){activateTab('tasks');await loadTasks();}
-    else if(requestedTab==='progress')activateTab('progress');
+    if(requestedTab==='calendar')activateTab('calendar');
+    else if(requestedTab==='schedule')activateTab('schedule');
+    else {activateTab('tasks');await loadTasks();}
   } catch (error) {
     $('#workspace').hidden = true;
     $('#auth-status').textContent = error.message || '無法載入工作台。';

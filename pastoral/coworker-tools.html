@@ -12,10 +12,10 @@
 <body>
   <header class="topbar">
     <a class="brand" href="workspace.html"><span class="brand-mark">M+</span><span>教會同工<small>常用工具</small></span></a>
-    <button id="sign-out" class="button secondary" type="button">登出</button>
+    <button id="sign-out" class="button secondary" type="button">返回教會 OS</button>
   </header>
   <main>
-    <p id="auth-status" class="notice" role="status">正在確認 LINE 身分與同工權限…</p>
+    <p id="auth-status" class="notice" role="status">正在確認教會 OS 帳號與同工權限…</p>
     <section id="tools" hidden>
       <div class="tools-heading">
         <div><p class="eyebrow">COWORKER TOOLS</p><h1>常用工具<span>把事情記下來，也照顧好彼此。</span></h1></div>
@@ -92,6 +92,6 @@
       </section>
     </section>
   </main>
-  <script type="module" src="coworker-tools.mjs?v=20260930-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="coworker-tools.mjs?v=20261002-appauth1"></script>
 </body>
 </html>

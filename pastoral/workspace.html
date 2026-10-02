@@ -21,14 +21,18 @@
         <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>教會同工協作空間<span>一起服事，彼此成全。</span></h1><p class="intro-copy">整理工作、約定時間、分享進度；需要時，彼此搭把手。</p></div>
         <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">教會同工</div></div>
       </section>
+      <section class="workspace-actions" aria-label="同工功能分類">
+        <div><p class="eyebrow">牧養與協作</p><a href="workspace.html?tab=tasks"><strong>工作協作</strong><span>指派、承接、进度与完成回报</span></a><a href="../newcomer-care.html"><strong>新朋友关怀</strong><span>第一次联络、后续追踪与逾期处理</span></a></div>
+        <div><p class="eyebrow">行程与人员</p><a href="workspace.html?tab=calendar"><strong>行程安排</strong><span>共同行程、空档与休息日检查</span></a><a href="coworker-tools.html?tab=attendance"><strong>出勤请假</strong><span>打卡、请假与同工出勤纪录</span></a></div>
+        <div><p class="eyebrow">资料工具</p><a href="coworker-tools.html?tab=memo"><strong>备忘录</strong><span>个人与团队共用备忘</span></a><a href="coworker-tools.html?tab=photos"><strong>照片归档</strong><span>上传至教会共用云端硬碟</span></a></div>
+      </section>
       <div class="connection" id="calendar-connection"><span class="dot" id="calendar-dot"></span><div><strong id="calendar-connection-title">Google 行事曆尚未連接</strong><p id="calendar-connection-copy">授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。</p></div><button id="connect-calendar" class="button secondary" type="button" hidden>連接共用行事曆</button><span class="phase" id="calendar-connection-label">等待授權</span></div>
       <nav class="tabs" aria-label="工作區" role="tablist">
-        <button id="tab-calendar" role="tab" aria-selected="true" aria-controls="panel-calendar" data-tab="calendar">行程安排</button>
-        <button id="tab-tasks" role="tab" aria-selected="false" aria-controls="panel-tasks" tabindex="-1" data-tab="tasks">工作協作</button>
+        <button id="tab-tasks" role="tab" aria-selected="true" aria-controls="panel-tasks" data-tab="tasks">工作协作</button>
+        <button id="tab-calendar" role="tab" aria-selected="false" aria-controls="panel-calendar" tabindex="-1" data-tab="calendar">行程安排</button>
         <button id="tab-schedule" hidden role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">休息日設定</button>
-        <button id="tab-progress" role="tab" aria-selected="false" aria-controls="panel-progress" tabindex="-1" data-tab="progress">準備進度</button>
       </nav>
-      <section id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar">
+      <section id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
         <div class="columns">
           <article class="card">
             <div class="card-heading"><div><p class="eyebrow">CALENDAR & SCHEDULE</p><h2>一起安排下一個約定</h2></div><span class="tag">行程草稿</span></div>
@@ -69,7 +73,7 @@
           <div class="dialog-actions"><button id="cancel-create-event" class="button secondary" type="button">返回修改</button><button id="confirm-create-event" class="button" type="button">確認建立</button></div>
         </article>
       </dialog>
-      <section id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden>
+      <section id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks">
         <div class="columns task-layout">
           <article class="card">
             <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>邀請彼此，一起完成</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
@@ -113,9 +117,6 @@
             <p id="schedule-status" role="status" class="hint"></p>
           </form>
         </article>
-      </section>
-      <section id="panel-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
-        <article class="card"><p class="eyebrow">GETTING READY</p><h2>從一條可靠的工作流程開始</h2><ul class="progress-list"><li><span>獨立工作台與 LINE 登入驗證</span><strong>本機版本已建立</strong></li><li><span>行事曆防撞與空檔計算</span><strong>服務測試已通過</strong></li><li><span>Google 帳號授權與實際行程驗證</span><strong>已連接共用行事曆</strong></li><li><span>同工工作邀請、進度回報與完成</span><strong>工作流程已建立</strong></li><li><span>講章、營會、關懷、公文與記憶庫</span><em>後續擴充</em></li></ul><p class="hint">工作台與教會管理系統共用專案，使用獨立的 LINE 教會同工授權；各項功能會分階段接通。</p></article>
       </section>
       <footer>AI 協助預備，同工彼此支援，一起把服事安排好。<span>MPLUS · COWORKER WORKSPACE</span></footer>
     </div>

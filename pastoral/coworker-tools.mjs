@@ -1,4 +1,4 @@
-import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20260930-1';
+import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261002-appauth1';
 import { PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TOOLS_ENDPOINT } from './config.mjs?v=20260930-1';
 
 const $ = selector => document.querySelector(selector);
@@ -10,8 +10,8 @@ let entityKeys = [];
 const entityNames = { mplus: 'M+大雅教會', shine: '火樂教會', tcsc: '台灣基督教社會關懷協會' };
 const churchKeys = { 'M+': 'mplus', 'SHiNE': 'shine', '台灣基督教社會關懷協會': 'tcsc' };
 const errorText = {
-  login_required: 'LINE 登入已失效，請重新登入。',
-  staff_forbidden: '此 LINE 帳號尚未獲授權使用同工工具。',
+  login_required: '教會 OS 登入已失效，請重新登入。',
+  staff_forbidden: '此教會 OS 帳號尚未獲授權使用同工工具。',
   entity_forbidden: '你沒有這個單位的使用權限。',
   invalid_memo: '請填寫備忘標題，並確認提醒日期。',
   memo_not_found: '找不到這則備忘，可能已封存。',

@@ -7,6 +7,16 @@ function renderCounts(counts){const area=$('#summary');area.replaceChildren();fo
 function renderTodos(items){const section=$('#todo-section'),area=$('#todos');area.replaceChildren();for(const item of items){const a=document.createElement('a');a.className='todo-card '+item.tone;a.href=item.file+(item.file.includes('?')?'&':'?')+'church='+encodeURIComponent(church);a.append(el('span',item.icon,'todo-icon'));const copy=el('span','','todo-copy');copy.append(el('strong',item.title),el('small',item.detail));a.append(copy,el('b',String(item.count),'todo-count'));area.append(a);}section.hidden=!items.length;$('#todo-total').textContent=items.reduce((sum,item)=>sum+Number(item.count||0),0)+' 項';}
 async function load(){try{({access,church}=await dashboardAccess(db,preferred));const settings=await loadChurchCustomizations(db,church);$('#title').textContent=(church==='M+'?'M＋大雅教會':'火樂教會')+' · 管理首頁';$('#welcome').textContent=access.user.name+'｜'+access.user.title;renderChurches();renderModules(settings);const [counts,todos]=await Promise.all([dashboardCounts(db,church,access.grants),dashboardTodos(db,church,access.grants)]);renderCounts(counts);renderTodos(todos);$('#status').textContent='已依堂會設定與您的權限顯示可使用功能。';}catch(error){$('#status').textContent=error.message;$('#logout').textContent='回登入頁';$('#logout').onclick=()=>location.replace('admin-login.html');}}
 $('#logout').onclick=async()=>{await db.auth.signOut();location.replace('admin-login.html');};load();
+const schoolLink=$('#school-app-link');
+if(schoolLink)schoolLink.addEventListener('click',async event=>{
+ event.preventDefault();const destination=schoolLink.href;$('#status').textContent='正在使用教會 OS 帳號開啟課輔系統…';
+ try{
+  const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token)throw new Error('missing_session');
+  const response=await fetch('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/mschool-api/church-login',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'}});
+  const result=await response.json();if(!response.ok||!result.session)throw new Error(result.error||'login_failed');
+  location.assign(`${destination}#church_session=${encodeURIComponent(result.session)}`);
+ }catch{location.assign(destination);}
+});
 
 wireInstallButton($('#install-app'),$('#install-help'));
 wireNotificationButtons($('#enable-notifications'),$('#test-notification'),$('#install-help'));

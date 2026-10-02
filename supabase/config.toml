@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.pastoral-coworker-tools]
 verify_jwt = false
+
+[functions.app-push]
+verify_jwt = true

@@ -192,3 +192,93 @@ input:focus,select:focus,textarea:focus{
 @media(max-width:620px){
   body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){background:var(--church-green-050);background-attachment:scroll}
 }
+
+/* Unified typography and component geometry */
+html{
+  max-width:100%;
+  overflow-x:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body,button,input,select,textarea{font-family:inherit!important}
+body{max-width:100%;overflow-x:hidden}
+button,.button,.header-action,.navcta{
+  display:inline-flex;
+  max-width:100%;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:10px 16px;
+  border-radius:13px;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.25;
+  text-align:center;
+  overflow-wrap:anywhere;
+}
+button:disabled,.button[aria-disabled="true"]{cursor:not-allowed;opacity:.52;box-shadow:none!important}
+.home-icon-remove{width:27px!important;min-width:27px!important;height:27px!important;min-height:27px!important;padding:0!important;border-radius:50%!important}
+
+input:not([type="checkbox"]):not([type="radio"]),select,textarea{
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:46px;
+  margin-top:7px;
+  padding:11px 13px;
+  border-radius:12px;
+  font-size:16px;
+  line-height:1.45;
+}
+textarea{min-height:112px;resize:vertical;overflow:auto}
+label,fieldset,.edit-grid>*,.toolbar>*,.form-row>*,.row>*,.grid>*,.card-head>*,.section-heading>*{min-width:0}
+fieldset{max-width:100%;overflow:hidden}
+.edit-grid,.form-row,.row,.toolbar,.toolbar-actions,.editor-actions,.admin-card-actions{max-width:100%}
+.table-wrap,.table-scroll,.audit-list{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{max-width:100%}
+
+/* Tabs and function bars remain inside the viewport and scroll when necessary. */
+.page-nav,.module-bar,.content-tabs,.custom-tabs,.tabs,.line-bar,.preview-bar{
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  overscroll-behavior-inline:contain;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.page-nav::-webkit-scrollbar,.module-bar::-webkit-scrollbar,.content-tabs::-webkit-scrollbar,
+.custom-tabs::-webkit-scrollbar,.tabs::-webkit-scrollbar,.line-bar::-webkit-scrollbar,.preview-bar::-webkit-scrollbar{display:none}
+.page-nav a,.module-bar a,.content-tabs button,.custom-tabs button,.tabs button{
+  flex:0 0 auto;
+  min-height:42px;
+  white-space:nowrap;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.2;
+}
+.module-bar{width:auto;max-width:calc(100vw - 32px)!important}
+.collab-main .tabs{width:100%;max-width:100%}
+.collab-main .tabs button{min-width:max-content}
+.collab-topbar,.collab-main,.collab-page,.member-page,.ministry-app,.flow-app{min-width:0;max-width:100%}
+
+@media(max-width:760px){
+  button,.button,.header-action,.navcta{min-height:46px;padding:10px 14px;font-size:14px}
+  .page-nav{flex-wrap:nowrap!important;width:100%;padding:7px!important}
+  .page-nav a{padding:9px 12px!important}
+  .module-bar{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px)!important;margin-inline:8px!important}
+  .content-tabs,.custom-tabs,.tabs{width:100%;justify-content:flex-start!important}
+  .toolbar{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important;gap:12px!important}
+  .toolbar-actions,.editor-actions,.admin-card-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:9px}
+  .toolbar-actions>* ,.editor-actions>* ,.admin-card-actions>*{width:100%;min-width:0;margin:0!important}
+  .edit-grid,.form-row,.row{grid-template-columns:minmax(0,1fr)!important}
+  .full-width{grid-column:auto!important}
+  .collab-main .tabs{position:sticky;left:0;right:0}
+}
+
+@media(max-width:420px){
+  .toolbar-actions,.editor-actions,.admin-card-actions{grid-template-columns:minmax(0,1fr)}
+}

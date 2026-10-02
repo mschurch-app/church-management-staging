@@ -278,7 +278,7 @@ $('#create-event').addEventListener('click', () => {
 $('#cancel-create-event').addEventListener('click', () => $('#event-confirm-dialog').close());
 $('#retry-event-notifications').addEventListener('click',()=>{
   $('#event-confirm-title').textContent='重新通知參與同工';
-  $('#event-confirm-details').textContent='行程已建立。系統只會重試尚未成功的 LINE 通知，不會重複建立活動。';
+  $('#event-confirm-details').textContent='行程已建立。系統只會重試尚未成功的 App 或 LINE 通知，不會重複建立活動。';
   $('#confirm-create-event').textContent='重新通知';
   $('#event-confirm-dialog').showModal();
 });
@@ -301,7 +301,7 @@ $('#confirm-create-event').addEventListener('click', async () => {
     $('#confirm-create-event').textContent='確認建立';
     $('#create-event').hidden=true;
     const notify=result.notifications||{status:'not_configured',sent:0,total:calendarParticipantIds().length};
-    status.textContent=`${result.created?'行程已建立。':'這項行程已存在，沒有重複建立。'}LINE 通知：${notify.sent}/${notify.total} 位同工已送出。${notify.status==='not_configured'?'尚未設定 LINE Messaging API 權杖，可稍後重試。':notify.status==='partial'?'部分同工通知失敗，可稍後重試。':notify.status==='failed'?'通知未送出，可稍後重試。':''}`;
+    status.textContent=`${result.created?'行程已建立。':'這項行程已存在，沒有重複建立。'}通知：${notify.sent}/${notify.total} 位同工已送出。${notify.status==='not_configured'?'App 與 LINE 通知目前都無法送出，可稍後重試。':notify.status==='partial'?'部分同工通知失敗，可稍後重試。':notify.status==='failed'?'通知未送出，可稍後重試。':''}`;
     $('#retry-event-notifications').hidden=notify.status==='sent';
     pendingCalendarRequestId=notify.status==='sent'?null:pendingCalendarRequestId;
   }catch(error){
@@ -484,7 +484,7 @@ $('#task-list').addEventListener('click',async event=>{
     if(action==='list-attachments'){await showTaskAttachments(taskId,article.querySelector('.task-attachments'));button.disabled=false;return;}
     if(action==='retry-notification'){
       const result=await tasksApi(action,{taskId});await loadTasks();
-      $('#task-status').textContent=result.notification?.status==='sent'?'工作邀請已送出，已通知負責同工。':result.notification?.status==='not_configured'?'尚未設定 LINE Messaging API 權杖，請稍後再試。':'LINE 通知沒有送出，請稍後重試或確認對方的 LINE 登入狀態。';return;
+      $('#task-status').textContent=result.notification?.status==='sent'?'工作邀請已送出，已通知負責同工。':result.notification?.status==='not_configured'?'App 與 LINE 通知目前都無法送出，請稍後再試。':'通知沒有送出，請稍後重試或確認對方是否已開啟 App 通知或綁定 LINE。';return;
     }
     if(action==='report-progress'){
       const report=article.querySelector('.task-progress-input')?.value||'';
@@ -509,7 +509,7 @@ $('#task-list').addEventListener('click',async event=>{
     if(result.notification){
       $('#task-status').textContent=result.notification.status==='sent'
         ?(action==='submit'?'工作邀請已送出，已通知負責同工。':'同工已接受這項工作，邀請人也收到通知。')
-        :result.notification.status==='not_configured'?'工作狀態已更新；尚未設定 LINE Messaging API 權杖，請設定後重新通知。':'工作狀態已更新；LINE 通知未送出，請稍後重試。';
+        :result.notification.status==='not_configured'?'工作狀態已更新；App 與 LINE 通知目前都無法送出，請稍後重新通知。':'工作狀態已更新；通知未送出，請稍後重試。';
     }
   }catch(error){$('#task-status').textContent=error.message||'無法更新工作或附件。';button.disabled=false;}
 });

@@ -306,7 +306,7 @@ async function start() {
     const initial = ['memo', 'attendance', 'photos'].includes(params.get('tab')) ? params.get('tab') : 'memo';
     activateTab(initial);
   } catch (error) {
-    $('#auth-status').textContent = error.message || '無法確認同工權限，請由同工 LINE 入口登入。';
+    $('#auth-status').textContent = error.message || '無法確認同工權限，請先登入教會 OS；原有 LINE 入口仍可使用。';
   }
 }
 start();

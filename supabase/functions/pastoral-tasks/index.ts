@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {MAX_ATTACHMENTS_PER_TASK, validAttachmentInput, validCompletionReport, validTaskInput, validTaskReport, validTaskTransition} from './task-policy.ts';
-import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
+import {notifyStaffDual} from '../_shared/dual-notification.mjs';
 
 
 const CHANNEL_ID='2011645391';
@@ -121,17 +121,18 @@ async function listAttachments(db:ReturnType<typeof adminClient>,staff:Staff,ent
 }
 
 const TASK_APP_URL='/pastoral/workspace.html?tab=tasks';
+const TASK_LIFF_URL='https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=tasks';
 async function sendCoworkerPush(db:ReturnType<typeof adminClient>,entityKey:string,recipientId:string,
   notificationType:string,taskId:string,message:string){
   const key=`${notificationType}:${taskId}:${recipientId}`;
   const title=notificationType==='task_accepted'?'同工已接受工作':'你有新的协作工作';
   const clean=message.split('\n開啟同工工作台：')[0];
-  const pushed=await notifyStaffApp({db,staffId:recipientId,churchId:entityKey==='shine'?'SHiNE':'M+',eventKey:notificationType,sourceKey:key,title,body:clean,url:TASK_APP_URL});
-  const status=pushed.status==='sent'||pushed.status==='stored'?'sent':'failed',errorCode=status==='sent'?null:pushed.status;
+  const delivered=await notifyStaffDual({db,staffId:recipientId,churchId:entityKey==='shine'?'SHiNE':'M+',eventKey:notificationType,sourceKey:key,title,body:clean,url:TASK_APP_URL,lineMessage:`${clean}\n開啟同工工作台：${TASK_LIFF_URL}`,idempotencyKey:key});
+  const status=delivered.status,errorCode=status==='sent'?null:`app:${delivered.appStatus};line:${delivered.lineStatus}`;
   const saved=await db.from('pastoral_notification_deliveries').upsert({
     entity_key:entityKey,notification_type:notificationType,recipient_staff_id:recipientId,related_id:taskId,
     idempotency_key:key,status,error_code:errorCode,sent_at:status==='sent'?new Date().toISOString():null,
-    updated_at:new Date().toISOString(),
+    app_status:delivered.appStatus,line_status:delivered.lineStatus,updated_at:new Date().toISOString(),
   },{onConflict:'idempotency_key'});
   if(saved.error)throw new Error('db');
   return status;

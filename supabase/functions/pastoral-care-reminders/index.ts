@@ -1,6 +1,7 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
+import {notifyStaffDual,notifyLineGroup} from '../_shared/dual-notification.mjs';
 
+const TASK_LIFF_URL='https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=tasks';
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
 function json(status:number,body:unknown){return new Response(JSON.stringify(body),{status,headers});}
 function adminClient(){
@@ -15,11 +16,11 @@ async function deliver(db:ReturnType<typeof adminClient>,row:{id:string;entity_k
   const due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at));
   const title=late?'新朋友关怀已逾期':'新朋友关怀提醒';
   const body=late?`${row.member.name} 的第一次联络已超过期限。期限：${due}`:`${row.member.name} 登记已满 24 小时，请安排第一次联络。期限：${due}`;
-  const pushed=await notifyStaffApp({db,staffId:recipientId,churchId:row.entity_key==='shine'?'SHiNE':'M+',eventKey:type,sourceKey:key,title,body,url:'/newcomer-care.html'});
-  const status=pushed.status==='sent'||pushed.status==='stored'?'sent':'failed',errorCode=status==='sent'?null:pushed.status;
+  const delivered=await notifyStaffDual({db,staffId:recipientId,churchId:row.entity_key==='shine'?'SHiNE':'M+',eventKey:type,routeKey:'newcomer_care_reminders',sourceKey:key,title,body,url:'/newcomer-care.html',lineMessage:`${title}：${body}\n開啟同工工作台：${TASK_LIFF_URL}`,idempotencyKey:key});
+  const status=delivered.status,errorCode=status==='sent'?null:`app:${delivered.appStatus};line:${delivered.lineStatus}`;
   const saved=await db.from('pastoral_notification_deliveries').upsert({entity_key:row.entity_key,notification_type:type,
     recipient_staff_id:recipientId,related_id:row.shared_task_id,idempotency_key:key,status,error_code:errorCode,
-    sent_at:status==='sent'?new Date().toISOString():null,updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
+    sent_at:status==='sent'?new Date().toISOString():null,app_status:delivered.appStatus,line_status:delivered.lineStatus,updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
   if(saved.error)throw new Error('db');
   return status;
 }
@@ -55,6 +56,7 @@ Deno.serve(async request=>{
         const result=await deliver(db,row as never,recipient,type);
         if(result==='sent'){sent++;anySent=true;}else failed++;
       }
+      if(delivery?.group_id){const late=type==='newcomer_care_overdue_48h',due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at)),message=late?`關懷提醒：${row.member.name} 的第一次聯絡已超過期限。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`:`關懷提醒：${row.member.name} 登記已滿 24 小時。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`;const groupStatus=await notifyLineGroup({db,churchId:row.entity_key==='shine'?'SHiNE':'M+',eventKey:'newcomer_care_reminders',groupId:delivery.group_id,message});if(groupStatus==='sent'){sent++;anySent=true;}else if(groupStatus!=='disabled')failed++;}
       if(anySent){
         const history=await db.from('pastoral_newcomer_care_history').upsert({case_id:row.id,member_id:row.member_id,event_type:'reminder_sent',
           summary:type==='newcomer_care_overdue_48h'?'已送出逾期 48 小時關懷提醒。':'已送出 24 小時關懷提醒。',

@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
+import {notifyStaffDual} from '../_shared/dual-notification.mjs';
 import {BUFFER_MS, DEFAULT_WORK_DAYS, DEFAULT_WORK_END, DEFAULT_WORK_START, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
 
 const CHANNEL_ID='2011645391';
@@ -302,12 +302,12 @@ async function resolveMeetingParticipants(db:ReturnType<typeof adminClient>,prim
 async function sendCoworkerPush(db:ReturnType<typeof adminClient>,recipient:{id:string;display_name:string;line_subject:string|null},
   notificationType:string,relatedId:string,message:string){
   const key=`${notificationType}:${relatedId}:${recipient.id}`;
-  const pushed=await notifyStaffApp({db,staffId:recipient.id,eventKey:notificationType,sourceKey:key,title:'M+ 同工行程通知',body:message,url:'/pastoral/workspace.html?tab=calendar'});
-  const status=pushed.status==='sent'||pushed.status==='stored'?'sent':'failed',errorCode=status==='sent'?null:pushed.status;
+  const delivered=await notifyStaffDual({db,staffId:recipient.id,eventKey:notificationType,sourceKey:key,title:'M+ 同工行程通知',body:message,url:'/pastoral/workspace.html?tab=calendar',lineMessage:`M+ 同工行程通知：${message}\n開啟同工工作台：https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=calendar`,idempotencyKey:key});
+  const status=delivered.status,errorCode=status==='sent'?null:`app:${delivered.appStatus};line:${delivered.lineStatus}`;
   const save=await db.from('pastoral_notification_deliveries').upsert({
     entity_key:'mplus',notification_type:notificationType,recipient_staff_id:recipient.id,related_id:relatedId,
     idempotency_key:key,status,error_code:errorCode,sent_at:status==='sent'?new Date().toISOString():null,
-    updated_at:new Date().toISOString(),
+    app_status:delivered.appStatus,line_status:delivered.lineStatus,updated_at:new Date().toISOString(),
   },{onConflict:'idempotency_key'});
   if(save.error)throw new Error('db');
   return status;

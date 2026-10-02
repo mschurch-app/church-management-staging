@@ -1,3 +1,4 @@
+import {notificationRoute} from './dual-notification.mjs';
 const MAX_LINE_TEXT = 4500;
 
 const labels = [
@@ -33,15 +34,18 @@ function messagesFor(member) {
 }
 
 export async function notifyMplusNewcomer({ db, memberId, fetcher = fetch, token = Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN') || Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN') || '', groupId = '' }) {
+  const route=await notificationRoute(db,'M+','newcomer_created');
+  if(!route.line)return {status:'disabled'};
   const key = `mplus_newcomer_group:${memberId}`;
   const record = async (status, errorCode = null) => db.from('pastoral_notification_deliveries').upsert({
     entity_key: 'mplus', notification_type: 'newcomer_group_created', recipient_staff_id: null,
     related_id: String(memberId), idempotency_key: key, status, error_code: errorCode,
+    line_status: status,
     sent_at: status === 'sent' ? new Date().toISOString() : null, updated_at: new Date().toISOString(),
   }, { onConflict: 'idempotency_key' });
 
-  const previous = await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key', key).maybeSingle();
-  if (!previous.error && previous.data?.status === 'sent') return { status: 'sent', duplicate: true };
+  const previous = await db.from('pastoral_notification_deliveries').select('line_status').eq('idempotency_key', key).maybeSingle();
+  if (!previous.error && previous.data?.line_status === 'sent') return { status: 'sent', duplicate: true };
   let targetGroupId = groupId || Deno.env.get('LINE_MPLUS_YOUTH_GROUP_ID') || '';
   if (!targetGroupId) {
     const configured = await db.rpc('get_weekly_service_line_group_id');

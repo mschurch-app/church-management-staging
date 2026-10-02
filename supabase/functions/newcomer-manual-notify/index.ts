@@ -1,5 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.102.0';
 import { notifyNewcomerApp } from '../_shared/app-push-notification.mjs';
+import { notifyMplusNewcomer } from '../_shared/newcomer-line-notification.mjs';
+import { notificationRoute } from '../_shared/dual-notification.mjs';
 
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
@@ -31,8 +33,9 @@ Deno.serve(async request => {
   try {
     const care = await db.rpc('ensure_newcomer_care_case', { p_member_id: Number(body.memberId) });
     if (care.error) return json({ error: 'care_case_failed' }, 503);
-    const result = await notifyNewcomerApp({ db, memberId: Number(body.memberId) });
-    return json({ sent: result.status === 'sent' || result.status === 'stored', careCreated: true, channel: 'app' });
+    const route=await notificationRoute(db,'M+','newcomer_created');
+    const [app,line] = await Promise.all([route.app?notifyNewcomerApp({ db, memberId: Number(body.memberId) }):Promise.resolve({status:'disabled'}),notifyMplusNewcomer({ db, memberId: Number(body.memberId) })]);
+    return json({ sent: ['sent','stored'].includes(app.status)||line.status==='sent', careCreated: true, channels:{app:app.status,line:line.status} });
   } catch {
     return json({ error: 'notification_failed' }, 503);
   }

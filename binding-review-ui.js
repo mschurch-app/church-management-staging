@@ -47,7 +47,10 @@ async function load(){
       }
       card.append(result);list.append(card);
     }
-    status.textContent=rows.length?'已載入最近 100 筆申請。':'目前沒有綁定申請。';
+    if(rows.length){
+      const pendingCount=rows.filter(row=>row.status==='pending').length;
+      status.textContent=`共 ${rows.length} 筆申請，待處理 ${pendingCount} 筆。`;
+    }else status.textContent='目前沒有綁定申請。';
   }catch(error){if(current===generation){clear();status.textContent=error.message;}}
 }
 async function save(id,action,member=null){

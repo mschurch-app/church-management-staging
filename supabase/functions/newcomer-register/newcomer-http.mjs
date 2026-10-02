@@ -1,10 +1,13 @@
 import {normalizeSubmission} from './intake-handler.mjs';
 export function makeNewcomerHandler({submit,enabled=false,preparePhoto,origin='https://mschurch-app.github.io'}){
  return async request=>{
-  const headers={'Access-Control-Allow-Origin':origin,'Vary':'Origin','Content-Type':'application/json','Cache-Control':'no-store'};
+  const requestOrigin=request.headers.get('origin')||'';
+  const allowedOrigins=new Set([origin,'https://mchurch.online','https://mscos.mchurch.online']);
+  const originAllowed=allowedOrigins.has(requestOrigin);
+  const headers={'Access-Control-Allow-Origin':originAllowed?requestOrigin:'null','Vary':'Origin','Content-Type':'application/json','Cache-Control':'no-store'};
   const result=(status,body)=>new Response(JSON.stringify(body),{status,headers});
   if(!enabled)return result(503,{error:'unavailable'});
-  if(request.headers.get('origin')!==origin)return result(403,{error:'origin_rejected'});
+  if(!originAllowed)return result(403,{error:'origin_rejected'});
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...headers,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'content-type'}});
   if(request.method!=='POST')return result(405,{error:'method_not_allowed'});
   if(!request.headers.get('content-type')?.startsWith('application/json'))return result(415,{error:'json_required'});

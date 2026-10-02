@@ -53,7 +53,9 @@ Deno.serve(makeNewcomerHandler({enabled,preparePhoto,submit:async input=>{
  await notifyNewcomerCare(input.request_id);
  if(input.church==='M+'){
   const receipt=await db.from('pastoral_newcomer_care_cases').select('member_id').eq('registration_request_id',input.request_id).eq('entity_key','mplus').maybeSingle();
-  if(!receipt.error&&receipt.data?.member_id)await notifyMplusNewcomer({db,memberId:Number(receipt.data.member_id)});
+  if(receipt.error||!receipt.data?.member_id)throw Error('unavailable');
+  const notification=await notifyMplusNewcomer({db,memberId:Number(receipt.data.member_id)});
+  if(notification.status!=='sent')throw Error('unavailable');
  }
  return 'accepted';
 }}));

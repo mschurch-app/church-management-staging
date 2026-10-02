@@ -125,7 +125,7 @@ const TASK_LIFF_URL='https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab
 async function sendCoworkerPush(db:ReturnType<typeof adminClient>,entityKey:string,recipientId:string,
   notificationType:string,taskId:string,message:string){
   const key=`${notificationType}:${taskId}:${recipientId}`;
-  const title=notificationType==='task_accepted'?'同工已接受工作':'你有新的协作工作';
+  const title=notificationType==='task_accepted'?'同工已接受工作':'你有新的協作工作';
   const clean=message.split('\n開啟同工工作台：')[0];
   const delivered=await notifyStaffDual({db,staffId:recipientId,churchId:entityKey==='shine'?'SHiNE':'M+',eventKey:notificationType,sourceKey:key,title,body:clean,url:TASK_APP_URL,lineMessage:`${clean}\n開啟同工工作台：${TASK_LIFF_URL}`,idempotencyKey:key});
   const status=delivered.status,errorCode=status==='sent'?null:`app:${delivered.appStatus};line:${delivered.lineStatus}`;

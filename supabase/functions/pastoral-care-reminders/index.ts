@@ -14,8 +14,8 @@ async function deliver(db:ReturnType<typeof adminClient>,row:{id:string;entity_k
   const key=`${type}:${row.id}:${recipientId}`;
   const late=type==='newcomer_care_overdue_48h';
   const due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at));
-  const title=late?'新朋友关怀已逾期':'新朋友关怀提醒';
-  const body=late?`${row.member.name} 的第一次联络已超过期限。期限：${due}`:`${row.member.name} 登记已满 24 小时，请安排第一次联络。期限：${due}`;
+  const title=late?'新朋友關懷已逾期':'新朋友關懷提醒';
+  const body=late?`${row.member.name} 的第一次聯絡已超過期限。期限：${due}`:`${row.member.name} 登記已滿 24 小時，請安排第一次聯絡。期限：${due}`;
   const delivered=await notifyStaffDual({db,staffId:recipientId,churchId:row.entity_key==='shine'?'SHiNE':'M+',eventKey:type,routeKey:'newcomer_care_reminders',sourceKey:key,title,body,url:'/newcomer-care.html',lineMessage:`${title}：${body}\n開啟同工工作台：${TASK_LIFF_URL}`,idempotencyKey:key});
   const status=delivered.status,errorCode=status==='sent'?null:`app:${delivered.appStatus};line:${delivered.lineStatus}`;
   const saved=await db.from('pastoral_notification_deliveries').upsert({entity_key:row.entity_key,notification_type:type,

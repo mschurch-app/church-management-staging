@@ -311,3 +311,46 @@ html[data-church="SHiNE"] .ministry-hero{background:linear-gradient(138deg,#087f
 .login-badge{color:var(--church-coral-deep)!important;background:var(--church-apricot)!important}
 .public-church-brand{background:linear-gradient(135deg,var(--church-coral-deep),#ee8a5d)!important;box-shadow:0 12px 29px rgba(216,93,56,.26)!important}
 .collab-app{--accent:var(--church-coral);--accent-soft:var(--church-apricot)}
+
+/* Mist blue + butter theme — selected 2026-10-03 */
+:root{
+  --church-green-950:#25324a;--church-green-900:#2e3f5f;--church-green-800:#3a5483;
+  --church-green-700:#4667a8;--church-green-600:#5d7dbc;--church-green-300:#b7c9e7;
+  --church-green-100:#e9f1fb;--church-green-050:#f7f8fc;--church-canvas:#f1f4fa;
+  --church-surface:#fff;--church-ink:#25324a;--church-muted:#68748a;--church-line:#dce4f1;
+  --church-shadow:0 18px 48px rgba(37,50,74,.10);--church-yellow:#f5d785;
+  --church-yellow-deep:#805a14;--church-yellow-soft:#fff7d6;
+  --church-coral:#4667a8;--church-coral-deep:#38578f;--church-apricot:#e9f1fb;
+  --accent:#4667a8;--accent-deep:#38578f;--accent-soft:#e9f1fb;
+  --teal:#4667a8;--teal-deep:#38578f;--surface-soft:#f7f8fc;
+  accent-color:#4667a8;
+}
+body:not(.tree-reading-body):not(.prayer-wall-body),body.collab-app{
+  color:#25324a;background:radial-gradient(circle at 8% 2%,rgba(183,201,231,.34),transparent 27%),radial-gradient(circle at 96% 6%,rgba(245,215,133,.25),transparent 25%),linear-gradient(155deg,#fbfcff 0%,#f1f4fa 100%)!important;
+}
+h1,h2,h3,h4,h5,h6{color:#25324a}a,.eyebrow{color:#4667a8}:focus-visible{outline-color:#7f9aca!important}
+.member-page:before{background:linear-gradient(90deg,#25324a,#4667a8,#f5d785)!important}
+.member-page>.page-header,.library-page>.library-hero,html[data-church="SHiNE"] .member-page>.page-header,html[data-church="SHiNE"] .library-page>.library-hero{
+  color:#fff!important;background:linear-gradient(128deg,#25324a 0%,#3a5483 58%,#5d7dbc 100%)!important;box-shadow:0 22px 52px rgba(37,50,74,.20)!important;
+}
+.member-page>.page-header :is(h1,h2,h3,p,.muted,.eyebrow),.library-page>.library-hero :is(h1,h2,h3,p,.muted,.eyebrow){color:#fff!important}
+.page-nav,.member-page>.page-nav,.module-bar{border-color:#dce4f1!important;background:rgba(255,255,255,.95)!important;box-shadow:0 13px 32px rgba(37,50,74,.08)!important}
+.page-nav a,.module-bar a,.module-bar button{color:#3a5483!important}.page-nav a.active,.module-bar a.active,.module-bar button.active{color:#fff!important;background:#4667a8!important}
+button:not(.secondary):not(.danger),.button.primary,.primary-button,input[type="submit"]{color:#fff!important;background:linear-gradient(135deg,#5577b9,#3f609f)!important;border-color:#4667a8!important;box-shadow:0 9px 22px rgba(70,103,168,.20)!important}
+button:not(.secondary):not(.danger):hover,.button.primary:hover,.primary-button:hover{background:linear-gradient(135deg,#4667a8,#304d83)!important}
+button.secondary,.button.secondary,a.secondary{color:#38578f!important;background:#fff!important;border-color:#b7c9e7!important}
+.member-card,.dashboard-card,.app-hub-card,.todo-card,.editor-panel,.home-drawer,.notification-center,.metric-card,.monitor-card,.panel,.card{color:#25324a!important;border-color:#dce4f1!important;background:#fff!important;box-shadow:0 12px 32px rgba(37,50,74,.07)!important}
+.member-card :is(h1,h2,h3,h4,strong,p,span),.dashboard-card :is(h1,h2,h3,h4,strong,p,span),.app-hub-card :is(h1,h2,h3,h4,strong,p,span),.todo-card :is(h1,h2,h3,h4,strong,p,span),.home-drawer :is(h1,h2,h3,h4,strong,p,span){color:inherit}
+.status-badge,.chip,.tag,.pill,.notice-badge{color:#38578f!important;background:#e9f1fb!important;border-color:#b7c9e7!important}
+.status-badge.warning,.chip.warning,.tag.warning,.pill.warning,.todo-card.overdue,.metric-card.warning{color:#735116!important;background:#fff7d6!important;border-color:#ead58d!important}
+.dashboard-page .dashboard-grid>*:nth-child(4n+1) .dashboard-icon,.app-hub-grid>*:nth-child(4n+1)>span:first-child{color:#38578f!important;background:#e9f1fb!important}
+.dashboard-page .dashboard-grid>*:nth-child(4n+2) .dashboard-icon,.app-hub-grid>*:nth-child(4n+2)>span:first-child{color:#805a14!important;background:#fff7d6!important}
+.dashboard-page .dashboard-grid>*:nth-child(4n+3) .dashboard-icon,.app-hub-grid>*:nth-child(4n+3)>span:first-child{color:#625794!important;background:#eeebfa!important}
+.dashboard-page .dashboard-grid>*:nth-child(4n) .dashboard-icon,.app-hub-grid>*:nth-child(4n)>span:first-child{color:#334c76!important;background:#e7edf8!important}
+.collab-app .app-header,.flow-page .flow-hero,.ministry-page .ministry-hero{color:#fff!important;background:linear-gradient(130deg,#25324a,#4667a8)!important}
+.collab-app .app-header :is(h1,h2,h3,p,span,.muted,.eyebrow),.flow-page .flow-hero :is(h1,h2,h3,p,span,.muted,.eyebrow),.ministry-page .ministry-hero :is(h1,h2,h3,p,span,.muted,.eyebrow){color:#fff!important}
+input:not([type="checkbox"]):not([type="radio"]),select,textarea{color:#25324a!important;background:#fff!important;border-color:#cbd7ea!important}
+input::placeholder,textarea::placeholder{color:#7a869b!important;opacity:1}
+.privacy-notice,.info-notice,.highlight-panel{color:#25324a!important;background:#fff7d6!important;border-color:#ead58d!important}
+table{color:#25324a}thead th{color:#2e3f5f!important;background:#e9f1fb!important}tbody td{color:#25324a!important}
+@media(max-width:720px){.page-nav,.module-bar{border-color:#dce4f1!important}.mobile-bar{background:rgba(255,255,255,.95)!important;border-color:#dce4f1!important;box-shadow:0 12px 36px rgba(37,50,74,.16)!important}}

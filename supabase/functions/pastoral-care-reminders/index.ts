@@ -47,25 +47,34 @@ Deno.serve(async request=>{
   const allowed=await db.rpc('pastoral_validate_care_cron_secret',{p_secret:secret});
   if(allowed.error||allowed.data!==true)return json(401,{ok:false});
   try{
-    const [cases,settings]=await Promise.all([
+    const [cases,settings,notifications]=await Promise.all([
       db.from('pastoral_newcomer_care_cases').select('id,member_id,entity_key,shared_task_id,assigned_staff_ids,first_contact_due_at,first_visit_at,member:members!pastoral_newcomer_care_cases_member_id_fkey(name,know_us_from)')
         .eq('status','open').is('first_contacted_at',null).not('shared_task_id','is',null).limit(500),
       db.from('pastoral_newcomer_care_settings').select('entity_key,reminder_24h_enabled,overdue_48h_enabled'),
+      db.from('line_notification_settings').select('church_id,enabled,recipient_staff_ids,group_id').eq('event_key','newcomer_care_reminders'),
     ]);
-    if(cases.error||settings.error)throw new Error('db');
+    if(cases.error||settings.error||notifications.error)throw new Error('db');
     const config=new Map((settings.data||[]).map((r:{entity_key:string;reminder_24h_enabled:boolean;overdue_48h_enabled:boolean})=>[r.entity_key,r]));
+    const deliveryConfig=new Map((notifications.data||[]).map((r:{church_id:string;enabled:boolean;recipient_staff_ids:string[];group_id:string})=>[r.church_id==='M+'?'mplus':'shine',r]));
     let sent=0,failed=0;
     for(const row of cases.data||[]){
       const setting=config.get(row.entity_key);
-      if(!setting)continue;
+      const delivery=deliveryConfig.get(row.entity_key);
+      if(!setting||delivery?.enabled===false)continue;
       const age=Date.now()-Date.parse(row.first_visit_at);
       const type=age>=48*3600000&&setting.overdue_48h_enabled?'newcomer_care_overdue_48h'
         :age>=24*3600000&&age<48*3600000&&setting.reminder_24h_enabled?'newcomer_care_reminder_24h':null;
       if(!type)continue;
       let anySent=false;
-      for(const recipient of row.assigned_staff_ids||[]){
+      for(const recipient of delivery?.recipient_staff_ids?.length?delivery.recipient_staff_ids:(row.assigned_staff_ids||[])){
         const result=await deliver(db,row as never,recipient,type);
         if(result==='sent'){sent++;anySent=true;}else failed++;
+      }
+      if(/^C[0-9a-f]{32}$/i.test(delivery?.group_id||'')){
+        const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
+        const late=type==='newcomer_care_overdue_48h',due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at));
+        const message=late?`關懷提醒：${row.member.name} 的第一次聯絡已超過期限。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`:`關懷提醒：${row.member.name} 登記已滿 24 小時。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`;
+        try{const pushed=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',signal:AbortSignal.timeout(8000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:delivery.group_id,messages:[{type:'text',text:message}]})});if(pushed.ok){sent++;anySent=true;}else failed++;}catch{failed++;}
       }
       if(anySent){
         const history=await db.from('pastoral_newcomer_care_history').upsert({case_id:row.id,member_id:row.member_id,event_type:'reminder_sent',

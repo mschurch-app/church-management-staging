@@ -4,6 +4,7 @@ export const MODULES=Object.freeze([
  {key:'newcomer_care',permission:'members',title:'新朋友關懷',description:'分派關懷、聯絡紀錄、下一步與逾期追蹤',file:'newcomer-care.html',icon:'🌱'},
  {key:'tree_reading_admin',permission:'members',title:'讀經生命樹',description:'查看參與同工、讀經進度與生命樹活動',file:'tree-reading-admin.html',icon:'🌳'},
  {key:'binding_review',permission:'members',title:'LINE 綁定審核',description:'確認既有會友、補登手機並綁定 LINE',file:'binding-review.html',icon:'🔗'},
+ {key:'notification_settings',permission:'members',title:'LINE 通知設定',description:'設定自動通知的同工與群組',file:'notification-settings.html',icon:'🔔'},
  {key:'groups',permission:'groups',title:'小組／小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🫶'},
  {key:'attendance',permission:'attendance',title:'聚會點名',description:'出席登記、修改與統計',file:'attendance.html',icon:'✅'},
  {key:'schedules',permission:'schedules',title:'服事排班',description:'主日與聚會服事安排',file:'schedules.html',icon:'📅'},

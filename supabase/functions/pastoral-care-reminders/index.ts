@@ -44,7 +44,7 @@ Deno.serve(async request=>{
   if(!secret)return json(401,{ok:false});
   let db:ReturnType<typeof adminClient>;
   try{db=adminClient();}catch{return json(503,{ok:false});}
-  const allowed=await db.rpc('pastoral_validate_care_cron_secret',{p_secret:secret}).catch(()=>({data:false,error:true}));
+  const allowed=await db.rpc('pastoral_validate_care_cron_secret',{p_secret:secret});
   if(allowed.error||allowed.data!==true)return json(401,{ok:false});
   try{
     const [cases,settings]=await Promise.all([

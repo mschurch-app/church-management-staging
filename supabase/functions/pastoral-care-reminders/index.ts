@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
 
-const TASK_LIFF_URL='https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=tasks';
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
 function json(status:number,body:unknown){return new Response(JSON.stringify(body),{status,headers});}
 function adminClient(){
@@ -11,27 +11,12 @@ function adminClient(){
 }
 async function deliver(db:ReturnType<typeof adminClient>,row:{id:string;entity_key:string;shared_task_id:string;assigned_staff_ids:string[];first_contact_due_at:string;member:{name:string;know_us_from:string|null}},recipientId:string,type:'newcomer_care_reminder_24h'|'newcomer_care_overdue_48h'){
   const key=`${type}:${row.id}:${recipientId}`;
-  const previous=await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key',key).maybeSingle();
-  if(previous.error)throw new Error('db');
-  if(previous.data?.status==='sent')return 'sent';
-  const person=await db.from('pastoral_staff').select('display_name,line_subject,is_active').eq('id',recipientId).eq('is_active',true).maybeSingle();
-  if(person.error)throw new Error('db');
-  let status='failed',errorCode:string|null=null;
-  const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
-  if(!token){status='not_configured';errorCode='channel_token_missing';}
-  else if(!person.data||!/^U[0-9a-f]{32}$/i.test(person.data.line_subject||'')){errorCode='line_identity_missing';}
-  else{
-    const late=type==='newcomer_care_overdue_48h';
-    const due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at));
-    const message=late
-      ?`關懷提醒：${row.member.name} 的第一次聯絡已超過期限，請牧師或師母其中一位查看並完成回報。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`
-      :`關懷提醒：${row.member.name} 登記已滿 24 小時，請安排第一次聯絡；共同任務由其中一位完成即可。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`;
-    try{
-      const response=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),
-        headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:person.data.line_subject,messages:[{type:'text',text:message}]})});
-      if(response.ok)status='sent';else errorCode=`line_http_${response.status}`;
-    }catch{errorCode='line_unavailable';}
-  }
+  const late=type==='newcomer_care_overdue_48h';
+  const due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at));
+  const title=late?'新朋友关怀已逾期':'新朋友关怀提醒';
+  const body=late?`${row.member.name} 的第一次联络已超过期限。期限：${due}`:`${row.member.name} 登记已满 24 小时，请安排第一次联络。期限：${due}`;
+  const pushed=await notifyStaffApp({db,staffId:recipientId,churchId:row.entity_key==='shine'?'SHiNE':'M+',eventKey:type,sourceKey:key,title,body,url:'/newcomer-care.html'});
+  const status=pushed.status==='sent'||pushed.status==='stored'?'sent':'failed',errorCode=status==='sent'?null:pushed.status;
   const saved=await db.from('pastoral_notification_deliveries').upsert({entity_key:row.entity_key,notification_type:type,
     recipient_staff_id:recipientId,related_id:row.shared_task_id,idempotency_key:key,status,error_code:errorCode,
     sent_at:status==='sent'?new Date().toISOString():null,updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
@@ -69,12 +54,6 @@ Deno.serve(async request=>{
       for(const recipient of delivery?.recipient_staff_ids?.length?delivery.recipient_staff_ids:(row.assigned_staff_ids||[])){
         const result=await deliver(db,row as never,recipient,type);
         if(result==='sent'){sent++;anySent=true;}else failed++;
-      }
-      if(/^C[0-9a-f]{32}$/i.test(delivery?.group_id||'')){
-        const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
-        const late=type==='newcomer_care_overdue_48h',due=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(row.first_contact_due_at));
-        const message=late?`關懷提醒：${row.member.name} 的第一次聯絡已超過期限。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`:`關懷提醒：${row.member.name} 登記已滿 24 小時。期限：${due}\n開啟同工工作台：${TASK_LIFF_URL}`;
-        try{const pushed=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',signal:AbortSignal.timeout(8000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:delivery.group_id,messages:[{type:'text',text:message}]})});if(pushed.ok){sent++;anySent=true;}else failed++;}catch{failed++;}
       }
       if(anySent){
         const history=await db.from('pastoral_newcomer_care_history').upsert({case_id:row.id,member_id:row.member_id,event_type:'reminder_sent',

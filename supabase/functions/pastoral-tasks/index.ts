@@ -1,5 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {MAX_ATTACHMENTS_PER_TASK, validAttachmentInput, validCompletionReport, validTaskInput, validTaskReport, validTaskTransition} from './task-policy.ts';
+import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
 
 
 const CHANNEL_ID='2011645391';
@@ -114,28 +115,14 @@ async function listAttachments(db:ReturnType<typeof adminClient>,staff:Staff,ent
   return json(APP_ORIGIN,{ok:true,attachments});
 }
 
-const TASK_LIFF_URL='https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=tasks';
+const TASK_APP_URL='/pastoral/workspace.html?tab=tasks';
 async function sendCoworkerPush(db:ReturnType<typeof adminClient>,entityKey:string,recipientId:string,
   notificationType:string,taskId:string,message:string){
-  const lookup=await db.from('pastoral_staff').select('display_name,line_subject,is_active').eq('id',recipientId).eq('is_active',true).maybeSingle();
-  if(lookup.error)throw new Error('db');
-  if(!lookup.data)return 'failed';
   const key=`${notificationType}:${taskId}:${recipientId}`;
-  const previous=await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key',key).maybeSingle();
-  if(previous.error)throw new Error('db');
-  if(previous.data?.status==='sent')return 'sent';
-  let status='failed',errorCode:string|null=null;
-  const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
-  if(!token){status='not_configured';errorCode='channel_token_missing';}
-  else if(!/^U[0-9a-f]{32}$/i.test(lookup.data.line_subject||'')){errorCode='line_identity_missing';}
-  else{
-    try{
-      const response=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),
-        headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
-        body:JSON.stringify({to:lookup.data.line_subject,messages:[{type:'text',text:message}]})});
-      if(response.ok)status='sent';else errorCode=`line_http_${response.status}`;
-    }catch{errorCode='line_unavailable';}
-  }
+  const title=notificationType==='task_accepted'?'同工已接受工作':'你有新的协作工作';
+  const clean=message.split('\n開啟同工工作台：')[0];
+  const pushed=await notifyStaffApp({db,staffId:recipientId,churchId:entityKey==='shine'?'SHiNE':'M+',eventKey:notificationType,sourceKey:key,title,body:clean,url:TASK_APP_URL});
+  const status=pushed.status==='sent'||pushed.status==='stored'?'sent':'failed',errorCode=status==='sent'?null:pushed.status;
   const saved=await db.from('pastoral_notification_deliveries').upsert({
     entity_key:entityKey,notification_type:notificationType,recipient_staff_id:recipientId,related_id:taskId,
     idempotency_key:key,status,error_code:errorCode,sent_at:status==='sent'?new Date().toISOString():null,
@@ -147,7 +134,7 @@ async function sendCoworkerPush(db:ReturnType<typeof adminClient>,entityKey:stri
 async function notifyTaskAssigned(db:ReturnType<typeof adminClient>,entityKey:string,taskId:string,assigneeId:string,title:string,dueAt:string|null){
   const due=dueAt?`\n期限：${new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(dueAt))}`:'';
   const status=await sendCoworkerPush(db,entityKey,assigneeId,'task_assigned',taskId,
-    `有同工邀請你一起處理這項工作：${title}${due}\n接受後就可以開始，進度也能在工作台更新。\n開啟同工工作台：${TASK_LIFF_URL}`);
+    `有同工邀請你一起處理這項工作：${title}${due}\n接受後就可以開始，進度也能在工作台更新。`);
   return {status};
 }
 
@@ -287,7 +274,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       notification=await notifyTaskAssigned(db,entityKey,body.taskId,current.data.assigned_to,current.data.title,current.data.due_at);
     }else if(body.action==='approve'&&current.data?.assigned_to===staff.id&&current.data?.created_by&&current.data.created_by!==staff.id){
       notification={status:await sendCoworkerPush(db,entityKey,current.data.created_by,'task_accepted',body.taskId,
-        `同工已接受「${current.data.title}」，並開始處理。你可以在工作台查看進度，也可以補充需要的資訊。\n開啟同工工作台：${TASK_LIFF_URL}`)};
+        `同工已接受「${current.data.title}」，並開始處理。你可以在工作台查看進度，也可以補充需要的資訊。`)};
     }
     return json(APP_ORIGIN,{ok:true,status:nextStatus,notification});
   }

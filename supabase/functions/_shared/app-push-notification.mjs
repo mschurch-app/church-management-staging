@@ -7,6 +7,20 @@ async function vapid(db){
  return true;
 }
 
+export async function notifyStaffApp({db,staffId,churchId='M+',eventKey,sourceKey,title,body,url}){
+ const mapped=await db.rpc('get_app_push_user_for_staff',{p_staff_id:staffId});
+ if(mapped.error||!mapped.data)return {status:'no_app_account',sent:0};
+ const userId=mapped.data;
+ const previous=await db.from('app_notifications').select('id').eq('user_id',userId).eq('event_key',eventKey).eq('source_key',sourceKey).maybeSingle();
+ if(!previous.data)await db.from('app_notifications').insert({user_id:userId,church_id:churchId,event_key:eventKey,source_key:sourceKey,title,body,target_url:url});
+ const ready=await vapid(db);if(!ready)return {status:'stored',sent:0};
+ const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',userId).eq('is_active',true);
+ let sent=0;
+ for(const item of subscriptions.data||[])try{await webpush.sendNotification({endpoint:item.endpoint,keys:{p256dh:item.p256dh,auth:item.auth_key}},JSON.stringify({title,body,url,tag:sourceKey}));sent++;}
+ catch(error){const status=Number(error?.statusCode||0);if(status===404||status===410)await db.from('app_push_subscriptions').update({is_active:false,updated_at:new Date().toISOString()}).eq('id',item.id);}
+ return {status:sent?'sent':'stored',sent};
+}
+
 export async function notifyNewcomerApp({db,memberId}){
  const member=await db.from('members').select('id,name,church_id,faith_status,archived_at').eq('id',memberId).eq('church_id','M+').maybeSingle();
  if(member.error||!member.data||member.data.archived_at||member.data.faith_status!=='新朋友（初次聚會）')return {status:'skipped'};
@@ -29,4 +43,3 @@ export async function notifyNewcomerApp({db,memberId}){
  }
  return {status:sent?'sent':'stored',sent};
 }
-

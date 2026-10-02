@@ -1,5 +1,4 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.102.0';
-import { notifyMplusNewcomer } from '../_shared/newcomer-line-notification.mjs';
 import { notifyNewcomerApp } from '../_shared/app-push-notification.mjs';
 
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), {
@@ -32,10 +31,8 @@ Deno.serve(async request => {
   try {
     const care = await db.rpc('ensure_newcomer_care_case', { p_member_id: Number(body.memberId) });
     if (care.error) return json({ error: 'care_case_failed' }, 503);
-    const result = await notifyMplusNewcomer({ db, memberId: Number(body.memberId) });
-    await notifyNewcomerApp({ db, memberId: Number(body.memberId) });
-    if (result.status === 'sent') return json({ sent: true, careCreated: true });
-    return json({ sent: false, careCreated: true, error: result.status }, 503);
+    const result = await notifyNewcomerApp({ db, memberId: Number(body.memberId) });
+    return json({ sent: result.status === 'sent' || result.status === 'stored', careCreated: true, channel: 'app' });
   } catch {
     return json({ error: 'notification_failed' }, 503);
   }

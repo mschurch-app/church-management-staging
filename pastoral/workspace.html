@@ -35,7 +35,7 @@
             <p class="muted">填上時間和地點，邀請相關同工一起確認安排。</p>
             <form id="draft-form">
               <label id="appointment-staff-field" hidden>主要聯絡同工<select id="appointment-staff"></select></label>
-              <label>一起參與的同工<select id="appointment-participants" multiple size="4" aria-describedby="participants-hint"></select></label><p id="participants-hint" class="hint">可複選一起參與的同工；活動建立後，大家都會收到 LINE 通知。</p>
+              <label>一起參與的同工<select id="appointment-participants" multiple size="4" aria-describedby="participants-hint"></select></label><p id="participants-hint" class="hint">可複選一起參與的同工；活動建立後，大家都會收到教會 OS App 通知。</p>
               <label>行程名稱<input id="summary" required maxlength="200" placeholder="例如：與張弟兄會面"></label>
               <div class="form-row"><label>日期<input id="date" type="date" required></label><label>開始時間<input id="time" type="time" required value="14:00"></label><label>時長<select id="duration"><option value="30">30 分鐘</option><option value="60" selected>60 分鐘</option><option value="90">90 分鐘</option><option value="120">120 分鐘</option></select></label></div>
               <label>地點<input id="location" maxlength="500" placeholder="例如：教會辦公室"></label>
@@ -65,7 +65,7 @@
       <dialog id="event-confirm-dialog" aria-labelledby="event-confirm-title">
         <article class="card"><h2 id="event-confirm-title">確認建立行事曆活動</h2>
           <p id="event-confirm-details" class="muted"></p>
-          <p class="hint">活動將寫入 M+ 共用行事曆，並以 LINE 通知列出的同工。</p><p id="event-confirm-status" class="hint" role="status"></p>
+          <p class="hint">活動將寫入 M+ 共用行事曆，並以教會 OS App 通知列出的同工。</p><p id="event-confirm-status" class="hint" role="status"></p>
           <div class="dialog-actions"><button id="cancel-create-event" class="button secondary" type="button">返回修改</button><button id="confirm-create-event" class="button" type="button">確認建立</button></div>
         </article>
       </dialog>
@@ -73,7 +73,7 @@
         <div class="columns task-layout">
           <article class="card">
             <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>邀請彼此，一起完成</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
-            <p class="muted">把事情和需要說清楚，再邀請一位同工承接。對方收到 LINE 通知後可以接受並開始處理，過程中更新進度、附上檔案；完成時留下回報，讓彼此知道進展。附件可在電腦上傳或下載。</p>
+            <p class="muted">把事情和需要說清楚，再邀請一位同工承接。對方收到教會 OS App 通知後可以接受並開始處理，過程中更新進度、附上檔案；完成時留下回報，讓彼此知道進展。附件可在電腦上傳或下載。</p>
             <form id="task-form">
               <label>要一起完成的事<input id="task-title" required maxlength="200" placeholder="例如：整理主日講道投影片"></label>
               <label>背景與需要<textarea id="task-description" rows="3" maxlength="5000" placeholder="補充背景、希望完成的內容，或需要彼此留意的事"></textarea></label>

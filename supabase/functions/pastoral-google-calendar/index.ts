@@ -1,4 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
 import {BUFFER_MS, DEFAULT_WORK_DAYS, DEFAULT_WORK_END, DEFAULT_WORK_START, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
 
 const CHANNEL_ID='2011645391';
@@ -296,21 +297,8 @@ async function resolveMeetingParticipants(db:ReturnType<typeof adminClient>,prim
 async function sendCoworkerPush(db:ReturnType<typeof adminClient>,recipient:{id:string;display_name:string;line_subject:string|null},
   notificationType:string,relatedId:string,message:string){
   const key=`${notificationType}:${relatedId}:${recipient.id}`;
-  const previous=await db.from('pastoral_notification_deliveries').select('status').eq('idempotency_key',key).maybeSingle();
-  if(previous.error)throw new Error('db');
-  if(previous.data?.status==='sent')return 'sent';
-  let status='failed',errorCode:string|null=null;
-  const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
-  if(!token){status='not_configured';errorCode='channel_token_missing';}
-  else if(!/^U[0-9a-f]{32}$/i.test(recipient.line_subject||'')){status='failed';errorCode='line_identity_missing';}
-  else{
-    try{
-      const response=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),
-        headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
-        body:JSON.stringify({to:recipient.line_subject,messages:[{type:'text',text:message}]})});
-      if(response.ok)status='sent';else errorCode=`line_http_${response.status}`;
-    }catch{errorCode='line_unavailable';}
-  }
+  const pushed=await notifyStaffApp({db,staffId:recipient.id,eventKey:notificationType,sourceKey:key,title:'M+ 同工行程通知',body:message,url:'/pastoral/workspace.html?tab=calendar'});
+  const status=pushed.status==='sent'||pushed.status==='stored'?'sent':'failed',errorCode=status==='sent'?null:pushed.status;
   const save=await db.from('pastoral_notification_deliveries').upsert({
     entity_key:'mplus',notification_type:notificationType,recipient_staff_id:recipient.id,related_id:relatedId,
     idempotency_key:key,status,error_code:errorCode,sent_at:status==='sent'?new Date().toISOString():null,
@@ -322,9 +310,8 @@ async function sendCoworkerPush(db:ReturnType<typeof adminClient>,recipient:{id:
 async function notifyMeetingParticipants(db:ReturnType<typeof adminClient>,people:Array<{id:string;display_name:string;line_subject:string|null}>,
   requestId:string,appointment:{summary:string;location:string;start:number;end:number}){
   const date=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(appointment.start));
-  const link='https://liff.line.me/2011645391-VgkQRZ9d/workspace.html?tab=calendar';
   const results=await Promise.all(people.map(person=>sendCoworkerPush(db,person,'calendar_participant',requestId,
-    `M+ 同工行程通知：${appointment.summary}\n時間：${date}\n地點：${appointment.location||'未指定'}\n共同參與：${people.map(item=>item.display_name).join('、')}\n開啟同工工作台：${link}`)));
+    `${appointment.summary}\n時間：${date}\n地點：${appointment.location||'未指定'}\n共同參與：${people.map(item=>item.display_name).join('、')}`)));
   return {sent:results.filter(status=>status==='sent').length,total:people.length,
     status:results.every(status=>status==='sent')?'sent':results.some(status=>status==='sent')?'partial':results.includes('not_configured')?'not_configured':'failed'};
 }

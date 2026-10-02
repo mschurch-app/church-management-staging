@@ -17,7 +17,9 @@ Deno.serve(async request=>{
     if(body.action==='subscribe'){
       const subscription=body.subscription;
       if(!subscription?.endpoint||!subscription?.keys?.p256dh||!subscription?.keys?.auth)return json(400,{ok:false,error:'invalid_subscription'});
-      const saved=await db.from('app_push_subscriptions').upsert({user_id:user.id,endpoint:subscription.endpoint,p256dh:subscription.keys.p256dh,auth_key:subscription.keys.auth,user_agent:String(body.user_agent||'').slice(0,500),is_active:true,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'endpoint'});
+      const userAgent=String(body.user_agent||'').slice(0,500);
+      if(userAgent)await db.from('app_push_subscriptions').update({is_active:false,updated_at:new Date().toISOString()}).eq('user_id',user.id).eq('user_agent',userAgent).neq('endpoint',subscription.endpoint);
+      const saved=await db.from('app_push_subscriptions').upsert({user_id:user.id,endpoint:subscription.endpoint,p256dh:subscription.keys.p256dh,auth_key:subscription.keys.auth,user_agent:userAgent,is_active:true,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'endpoint'});
       if(saved.error)return json(503,{ok:false,error:'save_failed'});
       return json(200,{ok:true});
     }

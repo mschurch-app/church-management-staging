@@ -27,6 +27,13 @@ Deno.serve(async request=>{
     if(!token)return json(401,{ok:false,error:'unauthorized'});
     const db=admin(),verified=await db.auth.getUser(token);
     if(verified.error||!verified.data.user)return json(401,{ok:false,error:'unauthorized'});
+    const body=await request.json().catch(()=>({}));
+    if(body.action==='set_cron'){
+      if(typeof body.job!=='string'||typeof body.active!=='boolean')return json(400,{ok:false,error:'invalid_input'});
+      const changed=await db.rpc('set_system_monitor_cron_active',{p_user_id:verified.data.user.id,p_job_name:body.job,p_active:body.active});
+      if(changed.error||changed.data!==true)return json(String(changed.error?.message).includes('forbidden')?403:400,{ok:false,error:'update_failed'});
+      return json(200,{ok:true});
+    }
     const [snapshot,systems]=await Promise.all([
       db.rpc('get_system_monitor_snapshot',{p_user_id:verified.data.user.id}),
       Promise.all(targets.map(health)),

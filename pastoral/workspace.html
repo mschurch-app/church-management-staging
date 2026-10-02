@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工協作空間｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20260925-collab-1">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-friendly1">
 </head>
 <body>
   <header class="topbar">
@@ -18,21 +18,27 @@
     <a id="login" class="button" href="./" hidden>前往 LINE 登入</a>
     <div id="workspace" hidden>
       <section class="intro">
-        <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>教會同工協作空間<span>一起服事，彼此成全。</span></h1><p class="intro-copy">整理工作、約定時間、分享進度；需要時，彼此搭把手。</p></div>
+        <div><p class="eyebrow" id="church-name">MPLUS COWORKER WORKSPACE</p><h1>同工協作空間<span>今天要處理的事，都從這裡開始。</span></h1><p class="intro-copy">選擇一項工作，系統會直接帶你到可以操作的位置。</p></div>
         <div class="identity"><span class="avatar" aria-hidden="true">牧</span><div id="identity">教會同工</div></div>
       </section>
-      <section class="workspace-actions" aria-label="同工功能分類">
-        <div><p class="eyebrow">牧養與協作</p><a href="workspace.html?tab=tasks"><strong>工作協作</strong><span>指派、承接、進度與完成回報</span></a><a href="../newcomer-care.html"><strong>新朋友關懷</strong><span>第一次聯絡、後續追蹤與逾期處理</span></a></div>
-        <div><p class="eyebrow">行程與人員</p><a href="workspace.html?tab=calendar"><strong>行程安排</strong><span>共同行程、空檔與休息日檢查</span></a><a href="coworker-tools.html?tab=attendance"><strong>出勤請假</strong><span>打卡、請假與同工出勤紀錄</span></a></div>
-        <div><p class="eyebrow">資料工具</p><a href="coworker-tools.html?tab=memo"><strong>備忘錄</strong><span>個人與團隊共用備忘</span></a><a href="coworker-tools.html?tab=photos"><strong>照片歸檔</strong><span>上傳至教會共用雲端硬碟</span></a></div>
+      <section class="workspace-start" aria-labelledby="workspace-start-title">
+        <div class="workspace-start-heading"><p class="eyebrow">快速開始</p><h2 id="workspace-start-title">今天要做什麼？</h2></div>
+        <div class="workspace-actions">
+          <a href="#panel-tasks" data-open-tab="tasks"><span class="action-icon">🤝</span><span><strong>處理同工工作</strong><small>建立工作、接受指派、回報進度</small></span><b>開啟</b></a>
+          <a id="newcomer-care-link" href="../newcomer-care.html"><span class="action-icon">🌱</span><span><strong>關懷新朋友</strong><small>查看待聯絡、追蹤與逾期名單</small></span><b>開啟</b></a>
+          <a href="#panel-calendar" data-open-tab="calendar"><span class="action-icon">📅</span><span><strong>安排共同行程</strong><small>找空檔、建立行程並通知同工</small></span><b>開啟</b></a>
+          <a href="coworker-tools.html?tab=attendance"><span class="action-icon">🕘</span><span><strong>打卡或請假</strong><small>記錄出勤與送出請假申請</small></span><b>開啟</b></a>
+          <a href="coworker-tools.html?tab=memo"><span class="action-icon">📝</span><span><strong>新增備忘</strong><small>記下自己或同工要記得的事</small></span><b>開啟</b></a>
+          <a href="coworker-tools.html?tab=photos"><span class="action-icon">📷</span><span><strong>上傳照片</strong><small>將照片存入教會共用資料夾</small></span><b>開啟</b></a>
+        </div>
       </section>
-      <div class="connection" id="calendar-connection"><span class="dot" id="calendar-dot"></span><div><strong id="calendar-connection-title">Google 行事曆尚未連接</strong><p id="calendar-connection-copy">授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。</p></div><button id="connect-calendar" class="button secondary" type="button" hidden>連接共用行事曆</button><span class="phase" id="calendar-connection-label">等待授權</span></div>
       <nav class="tabs" aria-label="工作區" role="tablist">
-        <button id="tab-tasks" role="tab" aria-selected="true" aria-controls="panel-tasks" data-tab="tasks">工作協作</button>
-        <button id="tab-calendar" role="tab" aria-selected="false" aria-controls="panel-calendar" tabindex="-1" data-tab="calendar">行程安排</button>
-        <button id="tab-schedule" hidden role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">休息日設定</button>
+        <button id="tab-tasks" role="tab" aria-selected="true" aria-controls="panel-tasks" data-tab="tasks">工作清單</button>
+        <button id="tab-calendar" role="tab" aria-selected="false" aria-controls="panel-calendar" tabindex="-1" data-tab="calendar">行程與約定</button>
+        <button id="tab-schedule" hidden role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">我的工作時間</button>
       </nav>
       <section id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
+        <div class="connection" id="calendar-connection"><span class="dot" id="calendar-dot"></span><div><strong id="calendar-connection-title">Google 行事曆尚未連接</strong><p id="calendar-connection-copy">授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。</p></div><button id="connect-calendar" class="button secondary" type="button" hidden>連接共用行事曆</button><span class="phase" id="calendar-connection-label">等待授權</span></div>
         <div class="columns">
           <article class="card">
             <div class="card-heading"><div><p class="eyebrow">CALENDAR & SCHEDULE</p><h2>一起安排下一個約定</h2></div><span class="tag">行程草稿</span></div>
@@ -45,13 +51,13 @@
               <label>地點<input id="location" maxlength="500" placeholder="例如：教會辦公室"></label>
               <label class="check-line"><input id="emergency" type="checkbox"> 緊急行程（依同工個人設定決定是否可例外）</label>
               <p class="hint">日期與時間以台灣時間為準。個人休息日與可安排時段依同工設定檢查。</p>
-              <div class="slot-search">
-                <h3>搜尋一段日期內的可約時段</h3>
+              <details class="slot-search">
+                <summary>不知道約什麼時間？尋找大家都有空的時段</summary>
                 <div class="form-row slot-range"><label>從<input id="slot-date-from" type="date" required></label><label>到<input id="slot-date-through" type="date" required></label></div>
                 <button id="find-slots" class="button secondary" type="button" hidden>搜尋可約時段</button>
                 <p id="slot-search-status" class="hint" role="status"></p>
                 <div id="slot-search-results" class="slot-results" aria-live="polite"></div>
-              </div>
+              </details>
               <button class="button" type="submit">整理行程草稿 <span aria-hidden="true">→</span></button>
             </form>
             <div id="draft-result" class="draft-result" hidden>
@@ -75,9 +81,15 @@
       </dialog>
       <section id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks">
         <div class="columns task-layout">
+          <article class="card task-list-card">
+            <div class="card-heading"><div><p class="eyebrow">需要處理</p><h2>工作清單</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
+            <p class="muted">先查看需要接受、進行中或等待回報的工作。</p>
+            <p id="task-status" class="hint" role="status">正在載入工作清單…</p>
+            <div id="task-list" class="task-list" aria-live="polite"></div>
+          </article>
           <article class="card">
-            <div class="card-heading"><div><p class="eyebrow">COWORKER TASKS</p><h2>邀請彼此，一起完成</h2></div><button id="refresh-tasks" class="button secondary" type="button">重新整理</button></div>
-            <p class="muted">把事情和需要說清楚，再邀請一位同工承接。對方收到教會 OS App 通知後可以接受並開始處理，過程中更新進度、附上檔案；完成時留下回報，讓彼此知道進展。附件可在電腦上傳或下載。</p>
+            <div class="card-heading"><div><p class="eyebrow">建立新工作</p><h2>邀請一位同工協助</h2></div></div>
+            <p class="muted">填寫要做的事、選擇同工與期限。送出後，對方會收到教會 OS App 通知。</p>
             <form id="task-form">
               <label>要一起完成的事<input id="task-title" required maxlength="200" placeholder="例如：整理主日講道投影片"></label>
               <label>背景與需要<textarea id="task-description" rows="3" maxlength="5000" placeholder="補充背景、希望完成的內容，或需要彼此留意的事"></textarea></label>
@@ -91,11 +103,6 @@
               <button id="save-task" class="button" type="submit">先存下來</button>
               <p id="task-form-status" class="hint" role="status"></p>
             </form>
-          </article>
-          <article class="card task-list-card">
-            <div class="card-heading"><div><p class="eyebrow">TASK BOARD</p><h2>工作清單</h2></div></div>
-            <p id="task-status" class="hint" role="status">尚未載入。</p>
-            <div id="task-list" class="task-list" aria-live="polite"></div>
           </article>
         </div>
       </section>
@@ -122,6 +129,6 @@
     </div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20261002-appauth1"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20261003-friendly2"></script>
 </body>
 </html>

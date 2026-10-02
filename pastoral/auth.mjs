@@ -25,6 +25,7 @@ export async function authenticateStaff({interactive=false,enrollmentCode='',ret
   if(session.data.session){
     const profile=await db.rpc('get_my_pastoral_staff');
     if(!profile.error&&profile.data)return {id:profile.data.id,name:profile.data.name,role:profile.data.role,churches:(profile.data.entityKeys||[]).map(key=>key==='mplus'?'M+':key==='shine'?'SHiNE':'台灣基督教社會關懷協會')};
+    throw new Error('這個教會 OS 帳號尚未設定同工身分，請由管理員在帳號權限中完成設定。');
   }
   await initialize();
   if(!window.liff.isLoggedIn()){

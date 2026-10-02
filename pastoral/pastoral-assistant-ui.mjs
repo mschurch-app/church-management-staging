@@ -1,5 +1,5 @@
 import {assistantChurch, buildAppointmentDraft} from './pastoral-assistant-management.mjs?v=20260924-2';
-import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261002-appauth1';
+import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261003-friendly1';
 import {PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TASKS_ENDPOINT} from './config.mjs?v=20260925-2';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
@@ -23,7 +23,7 @@ async function calendarApi(action, payload = {}) {
   if (!response.ok) {
     const message = {calendar_not_configured:'Google 行事曆授權尚未設定。', calendar_not_connected:'尚未連接 M+ 共用行事曆。',
       pastor_required:'只有牧師或管理者可以連接共用行事曆。', mplus_access_required:'此帳號沒有 M+ 行事曆權限。',
-      calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'LINE 登入已失效，請重新登入。',
+      calendar_unavailable:'目前無法查詢行事曆，請稍後重試。', login_required:'教會 OS 登入已失效，請重新登入。',
       rest_day:'所選同工中有人當天休息，請改選時段。', outside_schedule:'所選同工中有人在這段時間不安排工作。',
       emergency_not_allowed:'所選同工中有人未開放緊急行程例外。', calendar_conflict:'行事曆時段已被占用，請重新查詢其他時間。', invalid_staff:'請選擇有效的 M+ 同工，最多 10 位。', invalid_window:'搜尋日期範圍請限 31 天內。', confirmation_required:'請先在確認視窗按下建立。'}[result.error];
     throw new Error(message || '行事曆服務暫時無法使用。');
@@ -51,6 +51,7 @@ function activateTab(tab) {
     button.tabIndex = active ? 0 : -1;
     $(`#panel-${button.dataset.tab}`).hidden = !active;
   });
+  const url=new URL(location.href);url.searchParams.set('tab',tab);history.replaceState(null,'',url);
 }
 const tabs = [...document.querySelectorAll('[data-tab]')];
 tabs.forEach((button, index) => {
@@ -64,6 +65,13 @@ tabs.forEach((button, index) => {
     if (target) { event.preventDefault(); activateTab(target.dataset.tab); target.focus(); }
   });
 });
+document.querySelectorAll('[data-open-tab]').forEach(link=>link.addEventListener('click',event=>{
+  event.preventDefault();
+  const tab=link.dataset.openTab,button=$(`#tab-${tab}`),panel=$(`#panel-${tab}`);
+  if(!button||!panel)return;
+  button.click();
+  requestAnimationFrame(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}));
+}));
 
 function calendarParticipantIds(){
   const primary=$('#appointment-staff').value||currentStaffId;
@@ -163,13 +171,14 @@ async function load() {
       $('#auth-status').textContent = '本機介面預覽：示範身分，不連接 LINE、會友資料或 Google 行事曆。';
     } else {
       staff = await authenticateStaff();
-      $('#auth-status').textContent = '已沿用教會 OS 帳號與同工授權。';
+      $('#auth-status').textContent = '教會 OS 帳號已連線。請從「今天要做什麼」選擇功能。';
     }
     staffRole = staff.role;
     currentStaffId = staff.id || '';
     $('#task-form').hidden = preview;
     $('#tab-schedule').hidden = preview;
     church = assistantChurch(staff, params.get('church'));
+    $('#newcomer-care-link').href=`../newcomer-care.html?church=${encodeURIComponent(church)}`;
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / COWORKER COLLABORATION';
     $('#identity').textContent = `${staff.name}｜${{pastor:'牧師',secretary:'同工',admin:'管理者'}[staff.role]}`;
     $('#back').hidden = false;
@@ -327,7 +336,7 @@ async function tasksApi(action,payload={}){
   });
   const result=await response.json().catch(()=>({}));
   if(!response.ok){
-    const message={login_required:'LINE 登入已失效，請重新登入。',entity_forbidden:'沒有此堂會的同工工作權限。',
+    const message={login_required:'教會 OS 登入已失效，請重新登入。',entity_forbidden:'沒有此堂會的同工工作權限。',
       pastor_required:'目前只有牧師或管理者可以執行這項管理操作。',invalid_assignee:'請選擇此堂會已啟用的同工。',
       invalid_task:'請檢查工作內容、期限及負責同工。',task_not_found:'找不到這項工作，請重新整理。',
       invalid_transition:'這項工作目前無法進行所選操作。',completion_report_required:'請填寫執行回報後再完成工作。',care_report_required:'請選擇聯絡方式，填寫關懷摘要和下一步後再完成。',
@@ -416,7 +425,7 @@ async function uploadTaskAttachment(taskId,file){
   const result=await response.json().catch(()=>({}));
   if(!response.ok){
     const message={invalid_attachment:'附件格式不支援或檔案超過 5 MB。',attachment_limit:'每項工作最多附加 5 個檔案。',
-      attachment_forbidden:'參考附件只能在邀請送出前，由建立者或管理者加入。',login_required:'LINE 登入已失效，請重新登入。'}[result.error];
+      attachment_forbidden:'參考附件只能在邀請送出前，由建立者或管理者加入。',login_required:'教會 OS 登入已失效，請重新登入。'}[result.error];
     throw new Error(message||'附件上傳失敗。');
   }
   return result;

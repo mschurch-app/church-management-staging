@@ -1,0 +1,194 @@
+/* Church OS unified palette
+   Shared by Church OS, coworker workspace, student support entry points and public church pages.
+   Basketball is an external system and intentionally remains untouched. */
+:root{
+  --church-green-950:#123630;
+  --church-green-900:#173f39;
+  --church-green-800:#24554d;
+  --church-green-700:#286659;
+  --church-green-600:#2f7668;
+  --church-green-300:#9fc4ba;
+  --church-green-100:#e7f2ee;
+  --church-green-050:#f3f8f6;
+  --church-canvas:#eef3f1;
+  --church-surface:#fff;
+  --church-ink:#203b39;
+  --church-muted:#6f817d;
+  --church-line:#d9e6e1;
+  --church-shadow:0 18px 48px rgba(23,63,57,.10);
+  --accent:var(--church-green-600);
+  --accent-deep:var(--church-green-800);
+  --accent-soft:var(--church-green-100);
+  --teal:var(--church-green-600);
+  --teal-deep:var(--church-green-800);
+  --ink:var(--church-ink);
+  --surface:var(--church-surface);
+  --surface-soft:var(--church-green-050);
+  --border:var(--church-line);
+  --muted:var(--church-muted);
+  --shadow:var(--church-shadow);
+  accent-color:var(--church-green-600);
+}
+
+body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){
+  color:var(--church-ink);
+  background:
+    radial-gradient(circle at 8% 2%,rgba(159,196,186,.24),transparent 27%),
+    radial-gradient(circle at 96% 6%,rgba(226,238,233,.78),transparent 29%),
+    linear-gradient(155deg,#f9fbfa 0%,var(--church-canvas) 100%);
+  background-attachment:fixed;
+}
+
+h1,h2,h3,h4,h5,h6{color:var(--church-ink)}
+a,.eyebrow{color:var(--church-green-700)}
+:focus-visible{outline-color:var(--church-green-300)!important}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--church-green-600)}
+
+/* Main app shell and navigation */
+.member-page:before{
+  background:linear-gradient(90deg,var(--church-green-900),var(--church-green-600),var(--church-green-300))!important;
+}
+.member-page>.page-header,
+.library-page>.library-hero,
+html[data-church="SHiNE"] .member-page>.page-header,
+html[data-church="SHiNE"] .library-page>.library-hero{
+  background:linear-gradient(128deg,var(--church-green-900) 0%,var(--church-green-800) 57%,var(--church-green-600) 100%)!important;
+  box-shadow:0 22px 52px rgba(23,63,57,.20)!important;
+}
+.member-page>.page-header h1,.library-page>.library-hero h1{color:#fff}
+.member-page>.page-header .eyebrow,.library-page>.library-hero .eyebrow,.hero-kicker{color:#dff1eb!important}
+.member-page>.page-header .muted,.library-page>.library-hero .muted{color:rgba(255,255,255,.82)!important}
+.page-nav,.member-page>.page-nav,.module-bar{
+  border-color:var(--church-line)!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:0 13px 32px rgba(23,63,57,.08)!important;
+}
+.page-nav a,.module-bar a{color:#5e7470!important}
+.page-nav a:hover,.page-nav a.current,.module-bar a:hover{
+  color:var(--church-green-700)!important;
+  background:var(--church-green-100)!important;
+}
+.module-bar a.current{
+  color:#fff!important;
+  background:linear-gradient(135deg,var(--church-green-700),var(--church-green-600))!important;
+  box-shadow:0 8px 20px rgba(40,102,89,.22)!important;
+}
+.module-bar a.current .module-bar-icon{background:rgba(255,255,255,.18)!important}
+
+/* Buttons and form controls */
+body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove),
+body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light),
+.content-tabs button.active,
+.app-save,
+.newcomer-body .pill-btn.active,
+.newcomer-body .btn-submit,
+.newcomer-body #headerIconWrapper,
+.newcomer-body #successSection>div:first-child{
+  color:#fff!important;
+  border-color:transparent!important;
+  background:linear-gradient(135deg,var(--church-green-700),var(--church-green-600))!important;
+  box-shadow:0 9px 22px rgba(40,102,89,.21)!important;
+}
+body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):hover,
+body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light):hover{
+  background:linear-gradient(135deg,var(--church-green-800),var(--church-green-700))!important;
+  box-shadow:0 12px 28px rgba(23,63,57,.24)!important;
+}
+.secondary,button.secondary,.button.secondary{
+  color:var(--church-green-700)!important;
+  border-color:#b9d4cd!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.secondary:hover,button.secondary:hover,.button.secondary:hover{
+  color:var(--church-green-900)!important;
+  border-color:var(--church-green-300)!important;
+  background:var(--church-green-050)!important;
+}
+.ghost-button{color:var(--church-green-700)!important;background:transparent!important;box-shadow:none!important}
+input:not([type="checkbox"]):not([type="radio"]),select,textarea{
+  color:var(--church-ink)!important;
+  border-color:#cfdfda!important;
+  background:#fbfdfc!important;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--church-green-600)!important;
+  box-shadow:0 0 0 4px rgba(47,118,104,.13)!important;
+}
+
+/* Cards, status chips and management surfaces */
+.toolbar,.member-card,.audit-card,.amenity-card,.summary-card,.admin-account-card,
+.dashboard-card,.settings-link-card,.library-card,.home-drawer,.app-hub-card,
+.line-settings-card,.editor-panel,.settings-hub,.privacy-notice{
+  border-color:var(--church-line)!important;
+  box-shadow:0 10px 28px rgba(23,63,57,.055)!important;
+}
+.dashboard-card,.dashboard-card:nth-child(3n+2),.dashboard-card:nth-child(3n),
+.settings-hub,.line-settings-card{
+  background:linear-gradient(145deg,#fff,var(--church-green-050))!important;
+}
+.member-card:hover,.dashboard-card:hover,.library-card:hover,.settings-link-card:hover{
+  border-color:var(--church-green-300)!important;
+  box-shadow:0 18px 38px rgba(23,63,57,.11)!important;
+}
+.avatar,.dashboard-icon,.settings-link-icon,.option-number,.admin-profile-avatar{
+  color:var(--church-green-700)!important;
+  background:linear-gradient(145deg,#edf6f2,#dcece6)!important;
+}
+.status-badge,.todo-count{
+  color:var(--church-green-700)!important;
+  border-color:#c9e0d9!important;
+  background:var(--church-green-100)!important;
+}
+.check-panel,.batch-actions,.choice:has(input:checked),.order-hint,.app-add{
+  color:var(--church-green-700)!important;
+  border-color:#b9d8d0!important;
+  background:var(--church-green-100)!important;
+}
+.system-links,.quick-entry,.app-install-row,.admin-role-line,.content-tabs{
+  border-color:var(--church-line)!important;
+  background:var(--church-green-100)!important;
+}
+.settings-link-arrow,.library-insight strong,.section-kicker{color:var(--church-green-600)!important}
+
+/* Login, ministry and newcomer entry pages */
+.auth-entry-body,.ministry-body{
+  background:
+    radial-gradient(circle at 12% 10%,rgba(159,196,186,.26),transparent 31%),
+    linear-gradient(145deg,#f9fbfa,var(--church-canvas))!important;
+}
+.login-visual,.flow-hero,.ministry-hero,html[data-church="SHiNE"] .ministry-hero{
+  background:linear-gradient(138deg,var(--church-green-950),var(--church-green-800) 58%,var(--church-green-600))!important;
+}
+.login-badge{color:var(--church-green-700)!important;background:var(--church-green-100)!important}
+.public-church-brand{
+  background:linear-gradient(135deg,var(--church-green-900),var(--church-green-600))!important;
+  box-shadow:0 12px 29px rgba(23,63,57,.24)!important;
+}
+.newcomer-body .card-glass{border-color:var(--church-line)!important;box-shadow:0 17px 38px -6px rgba(23,63,57,.12)!important}
+.newcomer-body .pill-btn{border-color:var(--church-line)!important;color:#58716c!important;background:#fff!important}
+
+/* Coworker workspace uses the same palette tokens while retaining its app layout. */
+.collab-app{
+  --sidebar:var(--church-green-900);
+  --sidebar-soft:var(--church-green-800);
+  --accent:var(--church-green-600);
+  --accent-soft:var(--church-green-100);
+  --bg:var(--church-canvas);
+  --green:var(--church-green-700);
+  --ink:var(--church-ink);
+  --muted:var(--church-muted);
+  --line:var(--church-line);
+  background:var(--church-canvas)!important;
+}
+.collab-sidebar{background:linear-gradient(180deg,var(--church-green-900),var(--church-green-950))!important}
+
+/* Semantic states keep their meaning. */
+.danger,button.danger{color:#9b3d35!important;border-color:#e4b8b1!important;background:#fff!important;box-shadow:none!important}
+.danger:hover,button.danger:hover{color:#7f2923!important;border-color:#d89990!important;background:#fff3f1!important;box-shadow:none!important}
+.todo-card.urgent .todo-count{color:#b53a35!important;background:#fee3e1!important}
+.todo-card.warning .todo-count{color:#8b6422!important;background:#f8edcf!important}
+
+@media(max-width:620px){
+  body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){background:var(--church-green-050);background-attachment:scroll}
+}

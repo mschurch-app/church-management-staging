@@ -3,7 +3,7 @@ import {loadChurchCustomizations} from './church-customizations.mjs?v=20260924-c
 import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261002-shine1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
-const $=id=>document.getElementById(id),status=$('formStatus');
+const $=id=>document.getElementById(id),status=$('formStatus'),submitFeedback=$('submitFeedback');
 if(church==='SHiNE'){
  document.title='火樂教會 · 遇見你真好';
  $('pageMainTitle').textContent='火樂教會 · 歡迎回家';
@@ -59,8 +59,8 @@ $('galleryButton').onclick=()=>$('galleryInput').click();
 $('cameraInput').onchange=selectPhoto;$('galleryInput').onchange=selectPhoto;
 $('btnClosePage').onclick=()=>{$('closeTipText').classList.remove('hidden');window.close();};
 $('btnSubmit').onclick=async()=>{
- if(busy||!options)return;
- if(!pending){
+ if(busy)return;if(!options){const message='表單設定尚未載入，請重新整理後再試。';status.textContent=message;submitFeedback.textContent=message;return;}
+ const retrying=Boolean(pending);if(!pending){
   const name=$('guestName').value.trim(),phone=$('guestPhone').value.trim();
   const missing=requiredMissing();if(missing){status.textContent='請完成必填項目：「'+missing.label+'」。';layoutNodes()[missing.key]?.scrollIntoView({behavior:'smooth',block:'center'});return;}
   let source=selection.source[0]||'',faith=selection.faith[0]||'';
@@ -70,14 +70,14 @@ $('btnSubmit').onclick=async()=>{
   const note='【新朋友初次見面】來源：'+source+'。期待：'+selection.feelings.join('、')+'。興趣：'+selection.interests.join('、')+(faith?'。信仰背景：'+faith:'');
   pending={kind:'newcomer',church,request_id:crypto.randomUUID(),name,phone,birthday:$('guestBirthday').value.trim(),gender:selection.gender[0]||'',age_group:selection.age[0]||'',district:selection.district[0]||'',source,feelings:selection.feelings,interests:selection.interests,note,...(photo?{photo}:{})};
  }
- busy=true;lock(true);status.textContent='正在送出，請稍候…';
+ const button=$('btnSubmit'),buttonText=$('btnSubmitText'),waitMessage=retrying?'正在重送同一筆登記，請稍候…':'正在送出登記，請稍候…';busy=true;lock(true);button.setAttribute('aria-busy','true');buttonText.textContent=retrying?'正在重試…':'正在送出…';status.textContent=waitMessage;submitFeedback.textContent=waitMessage;
  try{
   const response=await fetch('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/newcomer-register',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'omit',cache:'no-store',body:JSON.stringify(pending),signal:AbortSignal.timeout(45000)});
   if(response.status===400||response.status===413){pending=null;lock(false);throw Error('資料或照片格式不正確，請檢查後再送出。');}
   if(response.status===429)throw Error('目前登記較多，請稍後按重試。');
   if(!response.ok||(await response.json()).accepted!==true)throw Error('尚未確認完整送出，請按重試同一筆登記。');
-  $('successName').textContent=pending.name;$('formSection').classList.add('hidden');$('successSection').classList.remove('hidden');status.textContent='';photo=null;pending=null;
- }catch(e){status.textContent=e.name==='TimeoutError'?'連線逾時，請按重試同一筆登記。':e.message;$('btnSubmitText').textContent=pending?'重試同一筆登記':'✨ 很高興認識你 · 留下今日印記';$('btnSubmit').disabled=false;}
+  button.setAttribute('aria-busy','false');$('successName').textContent=pending.name;$('formSection').classList.add('hidden');$('successSection').classList.remove('hidden');status.textContent='';submitFeedback.textContent='';photo=null;pending=null;
+ }catch(e){const message=e.name==='TimeoutError'?'連線逾時，請按重試同一筆登記。':e.message;status.textContent=message;submitFeedback.textContent=message;buttonText.textContent=pending?'重試同一筆登記':'✨ 很高興認識你 · 留下今日印記';button.setAttribute('aria-busy','false');button.disabled=false;}
  finally{busy=false;}
 };
 for(const [id,max] of [['guestName',80],['guestPhone',40],['guestBirthday',40],['inviterName',100]])$(id).maxLength=max;

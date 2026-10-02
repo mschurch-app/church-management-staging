@@ -1,4 +1,4 @@
-export const FEATURE_FILES={members:'members.html',groups:'groups.html',attendance:'attendance.html',schedules:'schedules.html',prayers:'prayers.html',spaces:'spaces.html',pastoral_inbox:'pastoral-inbox.html',pastoral_content:'pastoral-content.html',website_weekly:'website-maintenance.html',website_group_resources:'group-resources-management.html'};
+export const FEATURE_FILES={members:'members.html',newcomer_care:'newcomer-care.html',tree_reading_admin:'tree-reading-admin.html',binding_review:'binding-review.html',notification_settings:'notification-settings.html',groups:'groups.html',attendance:'attendance.html',schedules:'schedules.html',prayers:'prayers.html',spaces:'spaces.html',pastoral_inbox:'pastoral-inbox.html',pastoral_content:'pastoral-content.html',website_weekly:'website-maintenance.html',website_group_resources:'group-resources-management.html'};
 
 const cleanText=(value,max=100)=>String(value??'').trim().slice(0,max);
 const uniqueStrings=(values,max=50)=>[...new Set((Array.isArray(values)?values:[]).map(value=>cleanText(value,80)).filter(Boolean))].slice(0,max);

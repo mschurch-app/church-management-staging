@@ -7,7 +7,11 @@ const brands={
 };
 const modules=[
   {key:'dashboard',file:'admin-dashboard.html',label:'管理首頁',icon:'🏠'},
-  {key:'members',file:'members.html',label:'會友名冊',icon:'👥',permission:'members',also:['member-audit.html','binding-review.html']},
+  {key:'members',file:'members.html',label:'會友名冊',icon:'👥',permission:'members',also:['member-audit.html']},
+  {key:'newcomer_care',file:'newcomer-care.html',label:'新朋友關懷',icon:'🌱',permission:'members'},
+  {key:'tree_reading_admin',file:'tree-reading-admin.html',label:'讀經生命樹',icon:'🌳',permission:'members'},
+  {key:'binding_review',file:'binding-review.html',label:'LINE 綁定審核',icon:'🔗',permission:'members'},
+  {key:'notification_settings',file:'notification-settings.html',label:'LINE 通知設定',icon:'🔔',permission:'members'},
   {key:'groups',file:'groups.html',label:'小組／小家',icon:'🫶',permission:'groups',also:['group-members.html']},
   {key:'attendance',file:'attendance.html',label:'聚會點名',icon:'✅',permission:'attendance'},
   {key:'schedules',file:'schedules.html',label:'服事排班',icon:'📅',permission:'schedules'},

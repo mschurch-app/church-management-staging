@@ -1,0 +1,83 @@
+/* Dashboard home: compact, app-like utility drawers. */
+.dashboard-page .home-drawer{
+  margin:10px 0;
+  border:1px solid #efdfd3!important;
+  border-radius:20px;
+  background:#fff!important;
+  box-shadow:0 8px 24px rgba(53,40,35,.055)!important;
+}
+.dashboard-page .home-drawer>summary{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:10px;
+  min-height:64px;
+  padding:15px 17px;
+  color:#352823!important;
+}
+.dashboard-page .drawer-title{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:10px;
+  font-size:16px;
+  font-weight:850;
+  line-height:1.3;
+}
+.dashboard-page .drawer-icon{
+  display:grid;
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  place-items:center;
+  border-radius:11px;
+  background:#fff0e6;
+  font-size:17px;
+}
+.dashboard-page .drawer-note{
+  color:#7b6961!important;
+  font-size:12px;
+  font-weight:650;
+  white-space:nowrap;
+}
+.dashboard-page .home-drawer>summary:after{color:#ad3c2a!important}
+.dashboard-page .home-drawer>.app-hub-grid,
+.dashboard-page .home-drawer>.system-links,
+.dashboard-page .home-drawer>.app-install-row{border-top:1px solid #f2e5dc;padding-top:14px}
+.dashboard-page .app-hub-grid.compact .app-hub-card{
+  min-height:82px;
+  justify-content:center;
+  padding:14px;
+  border-radius:16px;
+  box-shadow:none!important;
+}
+.dashboard-page .app-hub-grid.compact .app-hub-card span{font-size:23px}
+.dashboard-page .system-links{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.dashboard-page .system-links a{
+  display:flex;
+  min-height:48px;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+  border:1px solid #efdfd3;
+  border-radius:14px;
+  background:#fffaf6;
+  color:#63382b;
+  font-size:13px;
+  font-weight:800;
+  text-align:center;
+  text-decoration:none;
+}
+.dashboard-page .app-setup .app-install-row{background:#fffaf6!important}
+.dashboard-page>.footnote{margin:18px 0 4px;color:#837068;font-size:11px;text-align:center}
+@media(max-width:760px){
+  .dashboard-page .home-drawer>summary{grid-template-columns:minmax(0,1fr) auto;min-height:60px;padding:13px 15px}
+  .dashboard-page .drawer-note{display:none}
+  .dashboard-page .home-drawer>.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dashboard-page .system-links{grid-template-columns:1fr}
+  .dashboard-page .app-install-row{gap:9px}
+}

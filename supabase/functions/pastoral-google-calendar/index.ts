@@ -27,9 +27,11 @@ function headers(origin:string, html=false){return {
   'referrer-policy':'no-referrer',
 };}
 function json(origin:string,value:unknown,status=200){return new Response(JSON.stringify(value),{status,headers:headers(origin)});}
-function safePage(ok:boolean){
-  const message=ok?'M+ 共用行事曆已連接。可以關閉此頁並返回「教會同工」工作台。':'Google 行事曆授權未完成。請返回工作台，稍後重試或聯絡管理者。';
-  return new Response(`<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="referrer" content="no-referrer"><title>教會同工行事曆</title><body><main><h1>${ok?'連接完成':'無法完成連接'}</h1><p>${message}</p><a href="${APP_ORIGIN}/pastoral/workspace.html">返回工作台</a></main></body></html>`,{status:ok?200:400,headers:headers('',true)});
+function safePage(ok:boolean,reason='unknown',flow:'calendar'|'drive'='calendar'){
+  const failures:Record<string,string>={denied:'Google 授權已取消，尚未連接行事曆。',config:'Google 授權設定尚未完成，請聯絡系統管理者。',account:'請使用 mbot@tcsc.org.tw 完成授權。',token:'Google 沒有提供可長期使用的授權，請重新連接並允許存取。',state:'授權連結已過期，請回到工作台重新開始。',store:'授權資料無法儲存，請聯絡系統管理者。'};
+  const message=ok?'M+ 共用行事曆已連接，可以返回同工協作空間。':(failures[reason]||'Google 行事曆授權未完成，請回到工作台重新嘗試。');
+  const target=flow==='drive'?`${APP_ORIGIN}/pastoral/coworker-tools.html?tab=photos&google=${ok?'connected':'error'}`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=${ok?'connected':'error'}`;
+  return new Response(`<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>教會同工行事曆</title><body style="font-family:-apple-system,BlinkMacSystemFont,'PingFang TC',sans-serif;background:#f4f6f1;color:#203b39;margin:0;padding:24px"><main style="max-width:520px;margin:12vh auto;background:#fff;border:1px solid #dfe7e1;border-radius:24px;padding:28px"><h1>${ok?'連接完成':'無法完成連接'}</h1><p style="line-height:1.8">${message}</p><a style="display:inline-block;margin-top:12px;padding:12px 18px;border-radius:12px;background:#286659;color:#fff;text-decoration:none" href="${target}">返回同工協作空間</a></main></body></html>`,{status:ok?200:400,headers:headers('',true)});
 }
 function adminClient(){
   const url=Deno.env.get('SUPABASE_URL')||'';
@@ -72,8 +74,8 @@ function fromBase64url(value:string){
   return Uint8Array.from(binary,c=>c.charCodeAt(0));
 }
 async function stateKey(clientSecret:string){return crypto.subtle.importKey('raw',encoder.encode(clientSecret),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);}
-async function makeState(staffId:string,clientSecret:string){
-  const payload=base64url(encoder.encode(JSON.stringify({staffId,exp:Math.floor(Date.now()/1000)+600,nonce:base64url(crypto.getRandomValues(new Uint8Array(24)))})));
+async function makeState(staffId:string,clientSecret:string,flow:'calendar'|'drive'){
+  const payload=base64url(encoder.encode(JSON.stringify({staffId,flow,exp:Math.floor(Date.now()/1000)+600,nonce:base64url(crypto.getRandomValues(new Uint8Array(24)))})));
   const signature=await crypto.subtle.sign('HMAC',await stateKey(clientSecret),encoder.encode(payload));
   return `${payload}.${base64url(new Uint8Array(signature))}`;
 }
@@ -84,8 +86,8 @@ async function readState(value:string,clientSecret:string){
   if(!valid)throw new Error('state');
   const data=JSON.parse(new TextDecoder().decode(fromBase64url(payload)));
   const now=Math.floor(Date.now()/1000);
-  if(typeof data.staffId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.staffId)||!Number.isSafeInteger(data.exp)||data.exp<=now||data.exp>now+610||typeof data.nonce!=='string'||fromBase64url(data.nonce).length!==24)throw new Error('state');
-  return data as {staffId:string;exp:number;nonce:string};
+  if(typeof data.staffId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.staffId)||!['calendar','drive'].includes(data.flow)||!Number.isSafeInteger(data.exp)||data.exp<=now||data.exp>now+610||typeof data.nonce!=='string'||fromBase64url(data.nonce).length!==24)throw new Error('state');
+  return data as {staffId:string;flow:'calendar'|'drive';exp:number;nonce:string};
 }
 function redirectUri(){
   const base=Deno.env.get('SUPABASE_URL');
@@ -107,7 +109,7 @@ async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>,scopes
   authUrl.searchParams.set('prompt','consent');
   authUrl.searchParams.set('include_granted_scopes','true');
   authUrl.searchParams.set('login_hint',CALENDAR_EMAIL);
-  authUrl.searchParams.set('state',await makeState(staff.id,clientSecret));
+  authUrl.searchParams.set('state',await makeState(staff.id,clientSecret,scopes.includes('https://www.googleapis.com/auth/drive.file')?'drive':'calendar'));
   return json(APP_ORIGIN,{ok:true,authorizationUrl:authUrl.toString()});
 }
 async function storeRefreshToken(db:ReturnType<typeof adminClient>,token:string){
@@ -122,33 +124,33 @@ async function getRefreshToken(db:ReturnType<typeof adminClient>){
 async function callback(request:Request,db:ReturnType<typeof adminClient>){
   const query=new URL(request.url).searchParams;
   const code=query.get('code')||'',state=query.get('state')||'';
-  if(query.has('error')||!code||!state)return safePage(false);
+  if(query.has('error')||!code||!state)return safePage(false,'denied');
   const clientId=Deno.env.get('GOOGLE_CLIENT_ID')||'';
   const clientSecret=Deno.env.get('GOOGLE_CLIENT_SECRET')||'';
-  if(!clientId||!clientSecret)return safePage(false);
-  let stateData:{staffId:string;exp:number;nonce:string};
-  try{stateData=await readState(state,clientSecret);}catch{return safePage(false);}
+  if(!clientId||!clientSecret)return safePage(false,'config');
+  let stateData:{staffId:string;flow:'calendar'|'drive';exp:number;nonce:string};
+  try{stateData=await readState(state,clientSecret);}catch{return safePage(false,'state');}
   const lookup=await db.from('pastoral_staff').select('id,role,is_active').eq('id',stateData.staffId).maybeSingle();
-  if(lookup.error||!lookup.data?.is_active||(lookup.data.role!=='pastor'&&lookup.data.role!=='admin'))return safePage(false);
+  if(lookup.error||!lookup.data?.is_active||(lookup.data.role!=='pastor'&&lookup.data.role!=='admin'))return safePage(false,'state',stateData.flow);
   const access=await db.from('pastoral_staff_access').select('entity_key').eq('staff_id',stateData.staffId).eq('entity_key','mplus').maybeSingle();
-  if(access.error||!access.data)return safePage(false);
+  if(access.error||!access.data)return safePage(false,'state',stateData.flow);
   let tokenResponse:Response;
   try{
     tokenResponse=await fetch('https://oauth2.googleapis.com/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({code,client_id:clientId,client_secret:clientSecret,redirect_uri:redirectUri(),grant_type:'authorization_code'})});
-  }catch{return safePage(false);}
-  if(!tokenResponse.ok)return safePage(false);
+  }catch{return safePage(false,'token',stateData.flow);}
+  if(!tokenResponse.ok)return safePage(false,'token',stateData.flow);
   const tokens=await tokenResponse.json();
-  if(typeof tokens.refresh_token!=='string'||tokens.refresh_token.length>8192||typeof tokens.access_token!=='string')return safePage(false);
+  if(typeof tokens.refresh_token!=='string'||tokens.refresh_token.length>8192||typeof tokens.access_token!=='string')return safePage(false,'token',stateData.flow);
   const granted=new Set(String(tokens.scope||'').split(' '));
   const requiredCalendarScopes=CALENDAR_SCOPES.filter(scope=>scope.startsWith('https://www.googleapis.com/auth/calendar.'));
-  if(typeof tokens.scope==='string'&&!requiredCalendarScopes.every(scope=>granted.has(scope)))return safePage(false);
+  if(typeof tokens.scope==='string'&&!requiredCalendarScopes.every(scope=>granted.has(scope)))return safePage(false,'token',stateData.flow);
   let profileResponse:Response;
-  try{profileResponse=await fetch('https://openidconnect.googleapis.com/v1/userinfo',{headers:{authorization:`Bearer ${tokens.access_token}`},redirect:'error',signal:AbortSignal.timeout(8000)});}catch{return safePage(false);}
-  if(!profileResponse.ok)return safePage(false);
+  try{profileResponse=await fetch('https://openidconnect.googleapis.com/v1/userinfo',{headers:{authorization:`Bearer ${tokens.access_token}`},redirect:'error',signal:AbortSignal.timeout(8000)});}catch{return safePage(false,'account',stateData.flow);}
+  if(!profileResponse.ok)return safePage(false,'account',stateData.flow);
   const profile=await profileResponse.json();
-  if(profile.email!==CALENDAR_EMAIL||profile.email_verified!==true)return safePage(false);
-  try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false);}
-  return Response.redirect(`${APP_ORIGIN}/pastoral/workspace.html?calendar=connected`,303);
+  if(profile.email!==CALENDAR_EMAIL||profile.email_verified!==true)return safePage(false,'account',stateData.flow);
+  try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false,'store',stateData.flow);}
+  return Response.redirect(stateData.flow==='drive'?`${APP_ORIGIN}/pastoral/coworker-tools.html?tab=photos&google=connected`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=connected`,303);
 }
 async function scheduleTarget(db:ReturnType<typeof adminClient>,actor:Staff,requested:unknown){
   const staffId=typeof requested==='string'?requested:actor.id;
@@ -409,8 +411,9 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     }});
   }
   if(body.action==='status'){
-    const token=await getRefreshToken(db).catch(()=>null);
-    return json(APP_ORIGIN,{ok:true,connected:!!token,calendarId:CALENDAR_ID,accountEmail:token?CALENDAR_EMAIL:null});
+    const stored=await getRefreshToken(db).catch(()=>null);
+    const token=stored?await accessToken(db):null;
+    return json(APP_ORIGIN,{ok:true,connected:!!token,reconnectRequired:!!stored&&!token,calendarId:CALENDAR_ID,accountEmail:token?CALENDAR_EMAIL:null});
   }
   if(body.action==='find-available-slots')return await findAvailableSlots(db,staff,body);
   if(body.action==='freebusy'){
@@ -470,7 +473,7 @@ Deno.serve(async request=>{
   const origin=request.headers.get('origin')||'';
   if(request.method==='OPTIONS')return origin===APP_ORIGIN?new Response('ok',{headers:headers(origin)}):json(origin,{ok:false,error:'forbidden'},403);
   if(request.method==='GET'){
-    try{return await callback(request,adminClient());}catch{return safePage(false);}
+    try{return await callback(request,adminClient());}catch{return safePage(false,'unknown');}
   }
   if(request.method!=='POST'||origin!==APP_ORIGIN)return json(origin,{ok:false,error:'forbidden'},403);
   let db:ReturnType<typeof adminClient>;

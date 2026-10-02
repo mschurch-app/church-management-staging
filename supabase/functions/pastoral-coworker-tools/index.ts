@@ -117,6 +117,13 @@ async function googleAccessToken() {
 async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body: Body) {
   const action = cleanText(body.action, 40);
   const entityKey = requireEntity(staff, body.entityKey);
+  if (action === 'tools-status') {
+    const folder = await db.from('pastoral_drive_folder_settings').select('folder_id').eq('entity_key', entityKey).maybeSingle();
+    if (folder.error) throw new ApiError('unavailable', 503);
+    let driveConnected = false;
+    try { driveConnected = Boolean(await googleAccessToken()); } catch { driveConnected = false; }
+    return { ok: true, driveConnected, folderConfigured: Boolean(folder.data?.folder_id), canManage: canManage(staff) };
+  }
   if (action === 'list-memos') return { ok: true, items: await listMemos(db, staff, entityKey) };
   if (action === 'create-memo') {
     const title = cleanText(body.title, 160), content = cleanText(body.content, 8000);

@@ -45,6 +45,19 @@ async function api(action, payload = {}) {
   if (!response.ok) throw new Error(errorText[result.error] || '服務暫時無法使用，請稍後再試。');
   return result;
 }
+function setPhotoFormEnabled(enabled) {
+  $('#photo-form').querySelectorAll('input,button').forEach(control=>{control.disabled=!enabled;});
+}
+async function loadToolsStatus() {
+  const status=$('#drive-setup-status'),formStatus=$('#photo-status');
+  try {
+    const state=await api('tools-status'),ready=state.driveConnected&&state.folderConfigured;
+    setPhotoFormEnabled(ready);
+    if(!state.driveConnected){status.textContent='尚未授權 Google 雲端硬碟。請先按「授權 Google 雲端硬碟」。';formStatus.textContent='完成 Google 授權後才能上傳照片。';}
+    else if(!state.folderConfigured){status.textContent='Google 已授權，尚未選擇教會共用資料夾。';formStatus.textContent='請先按「選擇共用資料夾」。';}
+    else {status.textContent='Google 雲端硬碟與共用資料夾已設定完成。';formStatus.textContent='可以選擇照片上傳。';}
+  } catch(error) {setPhotoFormEnabled(false);status.textContent=error.message;formStatus.textContent='目前無法確認照片歸檔設定。';}
+}
 function showItems(container, items, emptyText) {
   container.replaceChildren();
   if (!items.length) {
@@ -75,7 +88,7 @@ function activateTab(name) {
   const url = new URL(location.href); url.searchParams.set('tab', name); history.replaceState(null, '', url);
   if (name === 'memo') loadMemos();
   if (name === 'attendance') { loadAttendance(); loadLeave(); if (['pastor', 'admin'].includes(staff?.role)) loadAttendanceAdmin(); }
-  if (name === 'photos') loadPhotos();
+  if (name === 'photos') { loadToolsStatus(); loadPhotos(); }
 }
 const tabs = [...document.querySelectorAll('[data-tab]')];
 tabs.forEach((button, index) => {
@@ -272,7 +285,7 @@ $('#choose-folder').addEventListener('click', async () => {
         if (data.action !== google.picker.Action.PICKED) return;
         const folderId = data.docs?.[0]?.id; if (!folderId) return;
         status.textContent = '正在確認資料夾寫入權限…';
-        try { const saved = await api('set-drive-folder', { folderId }); status.textContent = `已設定「${saved.folderName}」。`; }
+        try { const saved = await api('set-drive-folder', { folderId }); status.textContent = `已設定「${saved.folderName}」。`; await loadToolsStatus(); }
         catch (error) { status.textContent = error.message; }
       }).build();
     picker.setVisible(true); status.textContent = '請選擇同工有編輯權的 Google 共用資料夾。';

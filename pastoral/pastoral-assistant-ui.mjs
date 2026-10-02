@@ -31,14 +31,15 @@ async function calendarApi(action, payload = {}) {
   return result;
 }
 
-function setCalendarStatus(connected, email) {
+function setCalendarStatus(connected, email, reconnectRequired=false) {
   calendarConnected = connected;
   $('#calendar-dot').style.background = connected ? '#64876b' : '#ba8b48';
-  $('#calendar-connection-title').textContent = connected ? 'M+ 共用行事曆已連接' : 'Google 行事曆尚未連接';
+  $('#calendar-connection-title').textContent = connected ? 'M+ 共用行事曆已連接' : reconnectRequired ? 'Google 授權已失效' : 'Google 行事曆尚未連接';
   $('#calendar-connection-copy').textContent = connected
     ? `已連接 ${email || 'mbot@tcsc.org.tw'}。查詢僅回傳忙碌時段；不讀取行程標題。`
-    : '授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。';
-  $('#calendar-connection-label').textContent = connected ? '已連線' : '等待授權';
+    : reconnectRequired ? '原有授權已無法使用，請按「重新連接行事曆」。' : '授權後可查詢 M+ 共用行事曆空檔；連線只供已授權的教會同工使用。';
+  $('#calendar-connection-label').textContent = connected ? '已連線' : reconnectRequired ? '需要重新連線' : '尚未連線';
+  $('#connect-calendar').textContent=reconnectRequired?'重新連接行事曆':'連接共用行事曆';
   $('#connect-calendar').hidden = previewMode || connected || !['pastor', 'admin'].includes(staffRole);
   $('#check-freebusy').hidden = previewMode || !connected;
   $('#find-slots').hidden = previewMode || !connected;
@@ -185,7 +186,7 @@ async function load() {
     $('#back').addEventListener('click', event => { event.preventDefault(); signOut(); });
     $('#workspace').hidden = false;
     if (!preview) {
-      try { const status = await calendarApi('status'); setCalendarStatus(status.connected, status.accountEmail); }
+      try { const status = await calendarApi('status'); setCalendarStatus(status.connected, status.accountEmail, status.reconnectRequired); }
       catch { setCalendarStatus(false, null); $('#calendar-connection-copy').textContent = '目前無法確認行事曆連線狀態，請稍後重新整理。'; }
     } else setCalendarStatus(false, null);
     if (!preview) { try { await loadScheduleSettings(); } catch { $('#schedule-status').textContent='目前無法載入休息日設定，請稍後重試。'; } }

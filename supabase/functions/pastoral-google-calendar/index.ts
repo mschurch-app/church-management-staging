@@ -51,6 +51,11 @@ type Staff={id:string;role:string;entityKeys:string[]};
 async function staffFromRequest(request:Request,db:ReturnType<typeof adminClient>):Promise<Staff|null>{
   const match=(request.headers.get('authorization')||'').match(/^Bearer ([^\s]+)$/i);
   if(!match)return null;
+  const appUser=await db.auth.getUser(match[1]);
+  if(!appUser.error&&appUser.data.user){
+    const mapped=await db.rpc('get_pastoral_staff_for_app_user',{p_user:appUser.data.user.id});
+    if(!mapped.error&&mapped.data)return {id:mapped.data.id,role:mapped.data.role,entityKeys:mapped.data.entityKeys||[]};
+  }
   const subject=await verifyLineIdToken(match[1]);
   if(!subject)return null;
   const lookup=await db.from('pastoral_staff').select('id,role,is_active').eq('line_subject',subject).maybeSingle();

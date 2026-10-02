@@ -1,4 +1,5 @@
 import {LINE_LOGIN_CHANNEL_ID, PASTORAL_LIFF_ID, PASTORAL_AUTH_ENDPOINT} from './config.mjs?v=20260924-4';
+import {db} from '../admin-db.mjs';
 
 let initialization;
 export function loginConfigured(){
@@ -20,6 +21,11 @@ async function initialize(){
   try{await initialization;}catch(error){initialization=undefined;throw error;}
 }
 export async function authenticateStaff({interactive=false,enrollmentCode='',returnUrl=''}={}){
+  const session=await db.auth.getSession();
+  if(session.data.session){
+    const profile=await db.rpc('get_my_pastoral_staff');
+    if(!profile.error&&profile.data)return {id:profile.data.id,name:profile.data.name,role:profile.data.role,churches:(profile.data.entityKeys||[]).map(key=>key==='mplus'?'M+':key==='shine'?'SHiNE':'台灣基督教社會關懷協會')};
+  }
   await initialize();
   if(!window.liff.isLoggedIn()){
     if(interactive)window.liff.login({redirectUri:returnUrl||new URL('./',location.href).href});
@@ -64,11 +70,12 @@ export async function authenticateStaff({interactive=false,enrollmentCode='',ret
   return staff;
 }
 export function signOut(){
-  if(window.liff?.isLoggedIn())window.liff.logout();
-  location.replace(new URL('./',location.href).href);
+  location.replace('../admin-dashboard.html');
 }
 
 export async function staffLineIdToken(){
+  const session=await db.auth.getSession();
+  if(session.data.session?.access_token)return session.data.session.access_token;
   await initialize();
   if(!window.liff.isLoggedIn())throw new Error('請先使用已獲授權的 LINE 帳號登入。');
   const token=window.liff.getIDToken();

@@ -1,5 +1,5 @@
 import {assistantChurch, buildAppointmentDraft} from './pastoral-assistant-management.mjs?v=20260924-2';
-import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20260925-1';
+import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261002-appauth1';
 import {PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TASKS_ENDPOINT} from './config.mjs?v=20260925-2';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
@@ -163,7 +163,7 @@ async function load() {
       $('#auth-status').textContent = '本機介面預覽：示範身分，不連接 LINE、會友資料或 Google 行事曆。';
     } else {
       staff = await authenticateStaff();
-      $('#auth-status').textContent = '已驗證 LINE 身分與教會同工授權。';
+      $('#auth-status').textContent = '已沿用教會 OS 帳號與同工授權。';
     }
     staffRole = staff.role;
     currentStaffId = staff.id || '';

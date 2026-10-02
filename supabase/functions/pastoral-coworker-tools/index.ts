@@ -52,6 +52,11 @@ async function verifyLineIdToken(token: string) {
   } catch { return null; }
 }
 async function staffFromToken(db: ReturnType<typeof adminClient>, token: string): Promise<Staff> {
+  const appUser=await db.auth.getUser(token);
+  if(!appUser.error&&appUser.data.user){
+    const mapped=await db.rpc('get_pastoral_staff_for_app_user',{p_user:appUser.data.user.id});
+    if(!mapped.error&&mapped.data)return {id:mapped.data.id,role:mapped.data.role,entityKeys:mapped.data.entityKeys||[]};
+  }
   const subject = await verifyLineIdToken(token);
   if (!subject) throw new ApiError('login_required', 401);
   const { data, error } = await db.from('pastoral_staff').select('id,role,is_active').eq('line_subject', subject).maybeSingle();

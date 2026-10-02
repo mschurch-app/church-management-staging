@@ -3,6 +3,9 @@ export const MEMBER_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions
 export function mountMemberPanel(){
   const form=document.querySelector('#formSection'),host=form?.parentElement;
   if(!form||!host)return;
+  const selectedChurch=new URLSearchParams(location.search).get('church');
+  const churchName=selectedChurch==='SHiNE'?'火樂':'M＋';
+  const groupName=selectedChurch==='SHiNE'?'小家':'小組';
   const panel=document.createElement('section');
   panel.className='card-glass p-6 sm:p-8 mb-4 space-y-5';
   panel.id='memberIdentityPanel';
@@ -17,7 +20,7 @@ export function mountMemberPanel(){
     const avatar=text('span',String(member.name||'家').trim().slice(0,1)||'家');avatar.className='grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 text-xl font-black ring-1 ring-white/20';
     const identity=document.createElement('div');identity.className='min-w-0';
     const name=text('h3',member.name||'教會家人');name.className='truncate text-lg font-black';
-    const group=text('p',member.group_name?`所屬小組｜${member.group_name}`:'目前尚未編組');group.className='mt-0.5 text-xs font-bold text-teal-50/80';
+    const group=text('p',member.group_name?`所屬${groupName}｜${member.group_name}`:'目前尚未編組');group.className='mt-0.5 text-xs font-bold text-teal-50/80';
     identity.append(name,group);head.append(avatar,identity);card.append(head);
     const details=[['年齡層',member.age_group],['信仰近況',member.faith_status],['受洗日期',member.baptism_date],['聚會近況',member.growth_progress]].filter(([,value])=>String(value||'').trim());
     if(details.length){const grid=document.createElement('dl');grid.className='mt-4 grid grid-cols-2 gap-2';for(const [label,value] of details){const item=document.createElement('div');item.className='rounded-2xl bg-white/10 px-3 py-2.5';const term=text('dt',label);term.className='text-[10px] font-bold tracking-wide text-teal-50/65';const description=text('dd',value);description.className='mt-0.5 text-xs font-black leading-relaxed';item.append(term,description);grid.append(item);}card.append(grid);}
@@ -30,7 +33,7 @@ export function mountMemberPanel(){
     const eyebrow=text('p','LINE MEMBER · 既有家人辨識');eyebrow.className='text-[11px] font-black tracking-[.16em] text-teal-700';
     const title=text('h2','歡迎回家');title.className='text-xl font-black text-stone-800';
     const message=text('p','');message.className='text-xs leading-relaxed text-stone-600';message.setAttribute('role','status');panel.append(eyebrow,title,message);
-    const messages={signed_out:'請先登入 LINE，系統會確認是否已綁定會友資料。',loading:'正在確認你的 LINE 綁定狀態…',unbound:'如果你已經是 M＋家人，請留下姓名與手機，由同工確認後完成綁定。',pending:'申請已收到，正在等待同工核准；核准後會自動帶入你的資料。',approved:'已確認為教會家人。請核對下列資料，需要時可以直接修正。',rejected:'這次申請尚未通過，請確認姓名與手機後重新提出。',revoked:'原有綁定已撤銷，如需恢復請重新提出申請。',error:'目前無法確認身份，請稍後重新查詢。'};
+    const messages={signed_out:'請先登入 LINE，系統會確認是否已綁定會友資料。',loading:'正在確認你的 LINE 綁定狀態…',unbound:`如果你已經是${churchName}家人，請留下姓名與手機，由同工確認後完成綁定。`,pending:'申請已收到，正在等待同工核准；核准後會自動帶入你的資料。',approved:'已確認為教會家人。請核對下列資料，需要時可以直接修正。',rejected:'這次申請尚未通過，請確認姓名與手機後重新提出。',revoked:'原有綁定已撤銷，如需恢復請重新提出申請。',error:'目前無法確認身份，請稍後重新查詢。'};
     message.textContent=messages[result.state]||'無法確認身份。';
     if(newcomerMode){panel.hidden=true;showForm(true);return;}
     panel.hidden=false;showForm(false);

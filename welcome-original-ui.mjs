@@ -1,9 +1,13 @@
 import {getOptions} from './welcome-options.mjs';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20260924-custom1';
-import {mountMemberPanel} from './member-welcome-ui.mjs?v=20260928-profile-card2';
+import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261002-shine1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus');
+if(church==='SHiNE'){
+ document.title='火樂教會 · 遇見你真好';
+ $('pageMainTitle').textContent='火樂教會 · 歡迎回家';
+}else if(church==='M+')document.title='M＋大雅教會 · 遇見你真好';
 let options,layout=[],selection={},photo,pending,busy=false;
 const groups={gender:'groupGender',age:'groupAge',district:'groupDistrict',source:'groupKnow',faith:'groupFaithStatus',feelings:'groupFeelings',interests:'groupInterests'};
 const multi=key=>['feelings','interests'].includes(key);

@@ -20,7 +20,7 @@ async function memberPhotoUrl(row){
 }
 function loadMemberAvatar(row,avatar){
  if(!row.photo_url)return;
- memberPhotoUrl(row).then(url=>{if(!url||!avatar.isConnected)return;const image=document.createElement('img');image.alt=(row.name||'會友')+'的照片';image.loading='lazy';image.referrerPolicy='no-referrer';image.src=url;image.addEventListener('error',()=>image.remove(),{once:true});avatar.append(image);avatar.classList.add('has-photo');});
+ memberPhotoUrl(row).then(url=>{if(!url||!avatar.isConnected)return;const image=document.createElement('img');image.alt=(row.name||'會友')+'的照片';image.decoding='async';image.referrerPolicy='no-referrer';image.onload=()=>{if(!avatar.isConnected)return;avatar.replaceChildren(image);avatar.classList.add('has-photo');};image.src=url;});
 }
 function clear(){generation++;list.replaceChildren();editor.replaceChildren();editor.hidden=true;$('#new').disabled=true;$('#newcomer').disabled=true;$('#prev').disabled=true;$('#next').disabled=true;updateBatchBar();}
 function updateBatchBar(){const bar=$('#batch-actions');if(bar)bar.hidden=selected.size===0;const count=$('#selected-count');if(count)count.textContent=String(selected.size);}

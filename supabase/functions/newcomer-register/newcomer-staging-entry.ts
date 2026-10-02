@@ -3,6 +3,7 @@ import jpeg from 'npm:jpeg-js@0.4.4';
 import {storePhoto} from './newcomer-photo-store.mjs';
 import {makeNewcomerHandler} from './newcomer-http.mjs';
 import {notifyMplusNewcomer} from '../_shared/newcomer-line-notification.mjs';
+import {notifyNewcomerApp} from '../_shared/app-push-notification.mjs';
 const url=Deno.env.get('SUPABASE_URL'),key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 const enabled=url==='https://aqanuwilmvdtlzuqlrau.supabase.co'&&!!key&&Deno.env.get('NEWCOMER_ENABLED')!=='false';
 const db=enabled?createClient(url!,key!,{auth:{persistSession:false,autoRefreshToken:false}}):null;
@@ -55,6 +56,7 @@ Deno.serve(makeNewcomerHandler({enabled,preparePhoto,submit:async input=>{
   const receipt=await db.from('pastoral_newcomer_care_cases').select('member_id').eq('registration_request_id',input.request_id).eq('entity_key','mplus').maybeSingle();
   if(receipt.error||!receipt.data?.member_id)throw Error('unavailable');
   const notification=await notifyMplusNewcomer({db,memberId:Number(receipt.data.member_id)});
+  await notifyNewcomerApp({db,memberId:Number(receipt.data.member_id)});
   if(notification.status!=='sent')throw Error('unavailable');
  }
  return 'accepted';

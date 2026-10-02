@@ -17,3 +17,25 @@ input,select,textarea{border-color:#d4e4e7;background:#f9fcfc;color:var(--ink)}i
 /* Shared typography and alignment */
 html{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang TC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body,button,input,select,textarea{font-family:inherit}*{box-sizing:border-box}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}.member-page{width:min(1180px,calc(100% - 32px));margin-inline:auto}.member-grid,.dashboard-grid,.settings-link-grid,.admin-account-list{align-items:stretch}.member-card,.dashboard-card,.settings-link-card,.admin-account-card{height:100%}.toolbar,.section-heading,.editor-actions,.admin-card-actions{gap:12px}.toolbar{align-items:end}.section-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap}.edit-grid>label,.toolbar>label{display:flex;min-width:0;flex-direction:column;gap:7px}.editor-actions,.admin-card-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap}.settings-link-card{min-height:108px;align-items:center}.status-message{line-height:1.6}.member-card h3,.dashboard-card h3,.settings-link-copy strong{line-height:1.35}
 @media(max-width:620px){.member-page{width:100%;padding-inline:12px}.member-page>.page-header{margin-inline:-2px;border-radius:0 0 28px 28px}.toolbar,.editor-panel,.settings-hub,.privacy-notice{border-radius:22px}.toolbar{display:grid!important;grid-template-columns:1fr!important;align-items:stretch}.section-heading{padding-inline:4px}.editor-actions,.admin-card-actions{display:grid;grid-template-columns:1fr 1fr}.editor-actions button,.admin-card-actions button{min-height:48px}.member-grid,.dashboard-grid,.settings-link-grid,.admin-account-list{grid-template-columns:1fr!important;gap:12px!important}.member-card,.dashboard-card,.settings-link-card,.admin-account-card,.audit-card{border-radius:22px!important}.settings-link-card{min-height:96px;padding:16px!important}input,select,textarea,button{min-height:46px}button{border-radius:14px}.status-message{border-radius:16px}}
+
+/* M+ balanced accent palette — 2026-10-03 */
+:root{
+  --accent:#ec784f;
+  --accent-deep:#d85d38;
+  --accent-soft:#fff0e7;
+}
+button,.content-tabs button.active{background:linear-gradient(135deg,#ec784f,#d85d38);box-shadow:0 9px 22px rgba(216,93,56,.23)}
+button:hover{background:linear-gradient(135deg,#f08b66,#c95131);box-shadow:0 13px 28px rgba(216,93,56,.28)}
+.member-page:before{background:linear-gradient(90deg,#ec784f,#f4b650,#22b8aa,#5f8de0)}
+.member-page>.page-header,.library-page>.library-hero{background:linear-gradient(125deg,#173f39 0%,#2f7668 62%,#c87653 100%);box-shadow:0 22px 52px rgba(23,63,57,.21)}
+html[data-church="SHiNE"] .member-page>.page-header,html[data-church="SHiNE"] .library-page>.library-hero{background:linear-gradient(125deg,#067e80 0%,#16a69d 52%,#55a6d9 100%)}
+.dashboard-card:nth-child(4n+1) .dashboard-icon,.settings-link-card:nth-child(4n+1) .settings-link-icon{color:#d85d38;background:linear-gradient(145deg,#fff0e7,#ffdcd0)}
+.dashboard-card:nth-child(4n+2) .dashboard-icon,.settings-link-card:nth-child(4n+2) .settings-link-icon{color:#087f7b;background:linear-gradient(145deg,#e3f7f3,#ccece6)}
+.dashboard-card:nth-child(4n+3) .dashboard-icon,.settings-link-card:nth-child(4n+3) .settings-link-icon{color:#3975cb;background:linear-gradient(145deg,#e9f1ff,#d9e6fb)}
+.dashboard-card:nth-child(4n) .dashboard-icon,.settings-link-card:nth-child(4n) .settings-link-icon{color:#a86b08;background:linear-gradient(145deg,#fff7d9,#fae7a8)}
+.dashboard-card:nth-child(4n+2){background:linear-gradient(145deg,#fff,#f1fbf8)}
+.dashboard-card:nth-child(4n+3){background:linear-gradient(145deg,#fff,#f4f7ff)}
+.dashboard-card:nth-child(4n){background:linear-gradient(145deg,#fff,#fffaf0)}
+.module-bar a.current,.app-save,.flow-app nav a{background:linear-gradient(135deg,#ec784f,#df8658);box-shadow:0 8px 20px rgba(216,93,56,.24)}
+.settings-link-arrow,.library-insight strong,.section-kicker{color:#d85d38}
+.public-church-brand{background:linear-gradient(135deg,#d85d38,#ee8a5d)!important;box-shadow:0 12px 29px rgba(216,93,56,.26)!important}

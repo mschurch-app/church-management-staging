@@ -282,3 +282,32 @@ table{max-width:100%}
 @media(max-width:420px){
   .toolbar-actions,.editor-actions,.admin-card-actions{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Warm accent layer — 2026-10-03 */
+:root{
+  --church-coral:#ec784f;
+  --church-coral-deep:#d85d38;
+  --church-apricot:#fff0e7;
+  --accent:var(--church-coral);
+  --accent-deep:var(--church-coral-deep);
+  --accent-soft:var(--church-apricot);
+  accent-color:var(--church-coral);
+}
+body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){background:radial-gradient(circle at 8% 2%,rgba(255,190,153,.25),transparent 27%),radial-gradient(circle at 96% 6%,rgba(159,196,186,.28),transparent 29%),linear-gradient(155deg,#fffaf6 0%,var(--church-canvas) 100%)}
+.member-page:before{background:linear-gradient(90deg,var(--church-coral),#f4b650,#22a89d,#5f8de0)!important}
+.member-page>.page-header,.library-page>.library-hero{background:linear-gradient(128deg,var(--church-green-900) 0%,var(--church-green-700) 64%,#c87653 100%)!important}
+html[data-church="SHiNE"] .member-page>.page-header,html[data-church="SHiNE"] .library-page>.library-hero{background:linear-gradient(128deg,#087f80 0%,#16a69d 58%,#55a6d9 100%)!important}
+.module-bar a.current{background:linear-gradient(135deg,var(--church-coral),var(--church-coral-deep))!important;box-shadow:0 8px 20px rgba(216,93,56,.24)!important}
+body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove),body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light),.content-tabs button.active,.app-save,.newcomer-body .pill-btn.active,.newcomer-body .btn-submit,.newcomer-body #headerIconWrapper,.newcomer-body #successSection>div:first-child{background:linear-gradient(135deg,var(--church-coral),var(--church-coral-deep))!important;box-shadow:0 9px 22px rgba(216,93,56,.22)!important}
+body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):hover,body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light):hover{background:linear-gradient(135deg,#f08b66,#c95131)!important;box-shadow:0 12px 28px rgba(216,93,56,.27)!important}
+.dashboard-card:nth-child(4n+1) .dashboard-icon,.settings-link-card:nth-child(4n+1) .settings-link-icon{color:var(--church-coral-deep)!important;background:linear-gradient(145deg,#fff0e7,#ffdcd0)!important}
+.dashboard-card:nth-child(4n+2) .dashboard-icon,.settings-link-card:nth-child(4n+2) .settings-link-icon{color:#087f7b!important;background:linear-gradient(145deg,#e3f7f3,#ccece6)!important}
+.dashboard-card:nth-child(4n+3) .dashboard-icon,.settings-link-card:nth-child(4n+3) .settings-link-icon{color:#3975cb!important;background:linear-gradient(145deg,#e9f1ff,#d9e6fb)!important}
+.dashboard-card:nth-child(4n) .dashboard-icon,.settings-link-card:nth-child(4n) .settings-link-icon{color:#a86b08!important;background:linear-gradient(145deg,#fff7d9,#fae7a8)!important}
+.dashboard-card:nth-child(4n+2){background:linear-gradient(145deg,#fff,#f1fbf8)!important}.dashboard-card:nth-child(4n+3){background:linear-gradient(145deg,#fff,#f4f7ff)!important}.dashboard-card:nth-child(4n){background:linear-gradient(145deg,#fff,#fffaf0)!important}
+.settings-link-arrow,.library-insight strong,.section-kicker{color:var(--church-coral-deep)!important}
+.login-visual,.flow-hero,.ministry-hero{background:linear-gradient(138deg,var(--church-green-950),var(--church-green-700) 60%,#c87653)!important}
+html[data-church="SHiNE"] .ministry-hero{background:linear-gradient(138deg,#087f80,#16a69d 60%,#55a6d9)!important}
+.login-badge{color:var(--church-coral-deep)!important;background:var(--church-apricot)!important}
+.public-church-brand{background:linear-gradient(135deg,var(--church-coral-deep),#ee8a5d)!important;box-shadow:0 12px 29px rgba(216,93,56,.26)!important}
+.collab-app{--accent:var(--church-coral);--accent-soft:var(--church-apricot)}

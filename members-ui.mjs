@@ -12,6 +12,16 @@ let memberGroups=[];
 let faithOptions=[...FAITH_OPTIONS],attendanceOptions=[...ATTENDANCE_OPTIONS],newcomerStages=['新朋友','已聯絡','持續關懷','加入小組／小家','穩定聚會'];
 let compactView=false;
 const text=(tag,value,cls='')=>{const el=document.createElement(tag);el.textContent=value;el.className=cls;return el;};
+async function memberPhotoUrl(row){
+ const value=String(row?.photo_url||'');
+ if(value.startsWith(church+'/')){const {data,error}=await db.storage.from('newcomer-photos').createSignedUrl(value,600);return error?'':data?.signedUrl||'';}
+ if(/^https:\/\/aqanuwilmvdtlzuqlrau\.supabase\.co\/storage\/v1\/object\/public\/church-media\/members\//.test(value))return value;
+ return '';
+}
+function loadMemberAvatar(row,avatar){
+ if(!row.photo_url)return;
+ memberPhotoUrl(row).then(url=>{if(!url||!avatar.isConnected)return;const image=document.createElement('img');image.alt=(row.name||'會友')+'的照片';image.loading='lazy';image.referrerPolicy='no-referrer';image.src=url;image.addEventListener('error',()=>image.remove(),{once:true});avatar.append(image);avatar.classList.add('has-photo');});
+}
 function clear(){generation++;list.replaceChildren();editor.replaceChildren();editor.hidden=true;$('#new').disabled=true;$('#newcomer').disabled=true;$('#prev').disabled=true;$('#next').disabled=true;updateBatchBar();}
 function updateBatchBar(){const bar=$('#batch-actions');if(bar)bar.hidden=selected.size===0;const count=$('#selected-count');if(count)count.textContent=String(selected.size);}
 function updateBatchValues(){
@@ -79,11 +89,11 @@ async function edit(row=null,isNewcomer=false){
   if(row){
    const details=document.createElement('details');details.className='registration-details';details.append(text('summary','查看迎新填答與照片'));
    details.append(text('p','期待感受：'+(row.desired_feelings||[]).join('、')),text('p','生活興趣：'+(row.interest_tags||[]).join('、')));
-   if(row.photo_url?.startsWith(church+'/')){
+   if(row.photo_url){
     const photoStatus=text('p','照片載入中…');details.append(photoStatus);
-    db.storage.from('newcomer-photos').createSignedUrl(row.photo_url,60).then(({data,error})=>{
-     if(!form.isConnected)return;if(error){photoStatus.textContent='照片尚未完成上傳或無權查看。';return;}
-     const img=document.createElement('img');img.alt='新朋友照片';img.className='member-photo';img.src=data.signedUrl;photoStatus.replaceWith(img);
+    memberPhotoUrl(row).then(url=>{
+     if(!form.isConnected)return;if(!url){photoStatus.textContent='照片尚未完成上傳或無權查看。';return;}
+     const img=document.createElement('img');img.alt='新朋友照片';img.className='member-photo';img.referrerPolicy='no-referrer';img.src=url;photoStatus.replaceWith(img);
     });
    }
    form.append(details);
@@ -102,6 +112,7 @@ async function edit(row=null,isNewcomer=false){
 }
 function memberCard(row){
  const card=text('article','','member-card'),head=text('div','','card-head'),avatar=text('span',(row.name||'？').slice(0,1),'avatar');
+ loadMemberAvatar(row,avatar);
  const nameBox=text('div');nameBox.append(text('h3',row.name),text('p',(row.gender||'未填性別')+' · '+(row.group_name||'未編組'),'muted'));
  const statusRow=text('div','','member-status-row');statusRow.append(text('span',row.faith_status||'未填信仰階段','status-badge'),text('span',row.growth_progress||'未填聚會近況','status-badge attendance-badge'),text('span',row.line_bound?'已綁定 LINE':'尚未綁定 LINE','status-badge '+(row.line_bound?'line-bound-badge':'line-unbound-badge')));
  head.append(avatar,nameBox);card.append(head,statusRow);

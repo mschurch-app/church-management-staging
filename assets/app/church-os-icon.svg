@@ -12,7 +12,7 @@
  <circle cx="150" cy="872" r="260" fill="#79d7c8" opacity=".16" filter="url(#soft)"/>
  <rect x="122" y="122" width="780" height="780" rx="208" fill="url(#glass)" stroke="url(#edge)" stroke-width="8" filter="url(#shadow)"/>
  <path d="M143 339c58-130 165-194 321-194h226c-89 41-172 102-246 183-83 91-184 140-301 148z" fill="url(#glow)" opacity=".9"/>
- <path d="M204 744 267 270h124l121 294 121-294h124l63 474H683l-31-286-107 255h-66L372 458l-31 286z" fill="#fffaf0"/>
+ <text x="500" y="750" text-anchor="middle" fill="#fffaf0" font-family="Georgia, 'Times New Roman', serif" font-size="650" font-weight="700" letter-spacing="-34">M</text>
  <path d="M704 188v172M618 274h172" fill="none" stroke="#ff806c" stroke-width="54" stroke-linecap="round"/>
  <path d="M175 302c49-83 118-128 208-139" fill="none" stroke="#fff" stroke-opacity=".52" stroke-width="18" stroke-linecap="round"/>
 </svg>

@@ -22,7 +22,8 @@ Deno.serve(async request=>{
       return json(200,{ok:true});
     }
     if(body.action==='test'){
-      const publicKey=Deno.env.get('VAPID_PUBLIC_KEY')||'',privateKey=Deno.env.get('VAPID_PRIVATE_KEY')||'',subject=Deno.env.get('VAPID_SUBJECT')||'mailto:james@tcsc.org.tw';
+      let publicKey=Deno.env.get('VAPID_PUBLIC_KEY')||'',privateKey=Deno.env.get('VAPID_PRIVATE_KEY')||'',subject=Deno.env.get('VAPID_SUBJECT')||'mailto:james@tcsc.org.tw';
+      if(!publicKey||!privateKey){const stored=await db.rpc('get_app_push_vapid_config');if(!stored.error){publicKey=stored.data?.public_key||'';privateKey=stored.data?.private_key||'';subject=stored.data?.subject||subject;}}
       if(!publicKey||!privateKey)return json(503,{ok:false,error:'push_not_configured'});
       webpush.setVapidDetails(subject,publicKey,privateKey);
       const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',user.id).eq('is_active',true);

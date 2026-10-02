@@ -51,18 +51,26 @@ export async function readAccess(db, { user: signedInUser = null, retry = true }
   if (result?.error || !Array.isArray(result?.data)) throw new Error('密碼已驗證，但暫時無法讀取管理權限，請再登入一次。');
   const grants = result.data.filter(row => churches.has(row.church_id) && permissions.has(row.permission));
   if (!grants.length) throw new Error('帳號尚未獲授權，或已停用。');
+  const grantedChurches = [...new Set(grants.map(row => row.church_id))];
+  const featureResults = await Promise.all(grantedChurches.map(async church_id => {
+    const response = await db.rpc('get_my_feature_permissions', { p_church: church_id });
+    return response.error || !Array.isArray(response.data) ? [] : response.data.map(item => ({ church_id, ...item }));
+  }));
   const fallback = profileFromUser(user);
   return {
     user: { id: user.id, ...serverProfile(profileResult?.error ? null : profileResult?.data, fallback) },
     grants,
-    churches: [...new Set(grants.map(row => row.church_id))]
+    churches: grantedChurches,
+    featurePermissions: featureResults.flat()
   };
 }
 export function canOpen(access, church, tab) {
   const required = TAB_PERMISSIONS[tab];
   return Boolean(required && required.every(permission =>
-    access.grants.some(row => row.church_id === church && row.permission === permission)));
+    access.grants.some(row => row.church_id === church && row.permission === permission)
+    && access.featurePermissions?.find(row => row.church_id === church && row.feature_key === permission)?.view !== false));
 }
+export function canAction(access,church,feature,action){const granted=access.grants.some(row=>row.church_id===church&&row.permission===feature);if(!granted)return false;const row=access.featurePermissions?.find(item=>item.church_id===church&&item.feature_key===feature);return row?row[action]!==false:true;}
 export function chooseChurch(access, preference) {
   return access.churches.includes(preference) ? preference : access.churches[0];
 }

@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs';
-import {loadRequests,findCandidates,reviewRequest} from './binding-review.mjs';
+import {loadRequests,findCandidates,reviewRequest} from './binding-review.mjs?v=20261002-partial-name1';
 const church=new URLSearchParams(location.search).get('church');
 const list=document.querySelector('#requests'),status=document.querySelector('#status');
 let generation=0,busy=false;
@@ -15,8 +15,8 @@ async function load(){
       card.append(text('h2',row.applicant_name),text('p',`申請手機：${row.applicant_phone}`),text('p',names[row.status]||'未知狀態'));
       const result=text('p','');result.setAttribute('role','status');
       if(row.status==='pending'){
-        const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢完整會員姓名');
-        const searchLabel=text('label','要綁定的會員姓名（完整名稱）');searchLabel.append(input);
+        const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢會員姓名');
+        const searchLabel=text('label','要綁定的會員姓名（可輸入部分姓名）');searchLabel.append(input);
         const hint=text('p','請確認姓名與本人身份。核准後，申請手機會寫入所選會友資料，並永久綁定這個 LINE 帳號。');
         const search=text('button','查詢會員'),select=document.createElement('select');select.setAttribute('aria-label','選擇核對過的會員');
         select.append(new Option('請先查詢並選擇會員',''));
@@ -26,7 +26,7 @@ async function load(){
           search.disabled=true;select.replaceChildren(new Option('請選擇會員',''));verified.checked=false;
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation)return;
             for(const member of candidates)select.append(new Option(`${member.name} · 電話 ${member.phone||'未填'} · 編號 ${member.id}`,String(member.id)));
-            result.textContent=candidates.length?'最多顯示 30 筆；請仔細核對，系統不會自動選擇。':'查無完整同名會員。請確認姓名，或先到會友名冊建立資料。';
+            result.textContent=candidates.length?'最多顯示 30 筆；請核對姓名、電話與會員編號，系統不會自動選擇。':'查無相符會員。請確認姓名，或先到會友名冊建立資料。';
           }catch(error){if(current===generation){clear();status.textContent=error.message;}}
           finally{search.disabled=false;}
         });

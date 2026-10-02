@@ -11,8 +11,9 @@ export async function loadRequests(db,church){
 }
 export async function findCandidates(db,church,name){
   await authorize(db,church);
-  if(typeof name!=='string'||!name.trim()||name.length>80)throw new Error('請輸入完整會員姓名。');
-  const {data,error}=await db.from('members').select('id,name,phone,church_id').eq('church_id',church).eq('name',name.trim()).limit(30);
+  if(typeof name!=='string'||!name.trim()||name.length>80)throw new Error('請輸入會員姓名。');
+  const term=name.trim().replace(/[\\%_]/g,'\\$&');
+  const {data,error}=await db.from('members').select('id,name,phone,church_id').eq('church_id',church).is('archived_at',null).ilike('name','%'+term+'%').order('name').limit(30);
   if(error||!Array.isArray(data))throw new Error('無法查詢會員。');
   await authorize(db,church);
   return data.filter(row=>row.church_id===church);

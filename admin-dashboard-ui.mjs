@@ -1,4 +1,4 @@
-import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261002-speed1';import {db} from './admin-db.mjs';import {MODULES,dashboardAccess,dashboardCounts,dashboardTodos} from './dashboard-management.mjs?v=20261002-granular1';import {loadChurchCustomizations,featureSettings} from './church-customizations.mjs?v=20261002-feature-assign1';
+import {loadNotificationCenter,createTestNotification} from './app-notifications.mjs?v=20261002-1';import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261002-speed1';import {db} from './admin-db.mjs';import {MODULES,dashboardAccess,dashboardCounts,dashboardTodos} from './dashboard-management.mjs?v=20261002-granular1';import {loadChurchCustomizations,featureSettings} from './church-customizations.mjs?v=20261002-feature-assign1';
 const preferred=new URLSearchParams(location.search).get('church'),$=s=>document.querySelector(s);let access,church;const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 function href(file){return file+'?church='+encodeURIComponent(church);}
 function renderChurches(){const nav=$('#churches');nav.replaceChildren();for(const value of access.churches){const a=el('a',value==='M+'?'M＋大雅教會':'火樂教會');a.href='admin-dashboard.html?church='+encodeURIComponent(value);if(value===church)a.className='current';nav.append(a);}}
@@ -10,3 +10,5 @@ $('#logout').onclick=async()=>{await db.auth.signOut();location.replace('admin-l
 
 wireInstallButton($('#install-app'),$('#install-help'));
 wireNotificationButtons($('#enable-notifications'),$('#test-notification'),$('#install-help'));
+loadNotificationCenter($('#notification-list'),$('#notification-count'));
+$('#test-notification').addEventListener('click',async()=>{try{await createTestNotification(church);await loadNotificationCenter($('#notification-list'),$('#notification-count'));}catch(error){$('#install-help').textContent=error.message;}});

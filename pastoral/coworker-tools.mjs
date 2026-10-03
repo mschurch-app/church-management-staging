@@ -134,11 +134,11 @@ async function loadMemos() {
 }
 $('#memo-form').addEventListener('submit', async event => {
   event.preventDefault();
-  const button = event.currentTarget.querySelector('button[type="submit"]'); button.disabled = true;
+  const form = event.currentTarget, button = form.querySelector('button[type="submit"]'); button.disabled = true;
   $('#memo-status').textContent = '正在儲存備忘…';
   try {
     await api('create-memo', { title: $('#memo-title').value, content: $('#memo-content').value, dueOn: $('#memo-due').value, visibility: $('#memo-visibility').value });
-    event.currentTarget.reset(); $('#memo-status').textContent = '備忘已儲存。'; await loadMemos();
+    form.reset(); $('#memo-status').textContent = '備忘已儲存。'; await loadMemos();
   } catch (error) { $('#memo-status').textContent = error.message; }
   finally { button.disabled = false; }
 });
@@ -167,11 +167,11 @@ $('#clock-out').addEventListener('click', async () => {
 });
 $('#leave-form').addEventListener('submit', async event => {
   event.preventDefault();
-  const button = event.currentTarget.querySelector('button[type="submit"]'); button.disabled = true;
+  const form = event.currentTarget, button = form.querySelector('button[type="submit"]'); button.disabled = true;
   $('#leave-status').textContent = '正在送出請假申請…';
   try {
     await api('create-leave', { startDate: $('#leave-start').value, endDate: $('#leave-end').value, period: $('#leave-period').value, leaveType: $('#leave-type').value, reason: $('#leave-reason').value });
-    event.currentTarget.reset(); $('#leave-status').textContent = '申請已送出，原因只有你和核准同工可看。'; await loadLeave();
+    form.reset(); $('#leave-status').textContent = '申請已送出，原因只有你和核准同工可看。'; await loadLeave();
   } catch (error) { $('#leave-status').textContent = error.message; }
   finally { button.disabled = false; }
 });

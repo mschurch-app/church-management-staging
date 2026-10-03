@@ -133,6 +133,7 @@ Deno.serve(async request => {
 
   const payload = await request.json().catch(() => ({}));
   const manualTest = payload?.source === 'manual-test';
+  const personalStaffId = manualTest && /^[0-9a-f-]{36}$/i.test(String(payload?.recipientStaffId||'')) ? String(payload.recipientStaffId) : '';
   const diagnostic = payload?.source === 'diagnostic';
   const scheduled = payload?.source === 'supabase-cron';
   const local = taipeiParts();
@@ -146,6 +147,13 @@ Deno.serve(async request => {
     const botDetails = await botResponse.json().catch(() => ({}));
     const groupResponse = await fetch(`https://api.line.me/v2/bot/group/${encodeURIComponent(groupId)}/summary`,{headers:{authorization:`Bearer ${lineToken}`},signal:AbortSignal.timeout(10000)});
     return json({ok:botResponse.ok && groupResponse.ok,botStatus:botResponse.status,bot:botResponse.ok?{displayName:botDetails.displayName,userId:botDetails.userId}:null,groupStatus:groupResponse.status});
+  }
+
+  let lineTarget=String(groupId||'');
+  if(personalStaffId){
+    const person=await db.from('pastoral_staff').select('line_subject,is_active').eq('id',personalStaffId).eq('is_active',true).maybeSingle();
+    if(person.error||!person.data?.line_subject)return json({ok:false,error:'personal_line_recipient_unavailable'},409);
+    lineTarget=person.data.line_subject;
   }
 
   const sunday = nextSundayTaipei();
@@ -164,7 +172,7 @@ Deno.serve(async request => {
   if(!route.line){
     const succeeded=['sent','stored'].includes(app.status);
     await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded,delivery_details:`App ${app.status}; LINE disabled`});
-    return json({ok:succeeded,sunday,cardCount:messages.length,channels:{app:app.status,line:'disabled'}},succeeded?200:503);
+    return json({ok:succeeded,sunday,cardCount:0,channels:{app:app.status,line:'disabled'}},succeeded?200:503);
   }
 
   try {
@@ -177,16 +185,18 @@ Deno.serve(async request => {
       await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:`LINE bot info ${botInfo.status}: ${details.slice(0,250)}`});
       return json({ok:false,error:'line_bot_auth_failed',status:botInfo.status},502);
     }
-    const groupInfo = await fetch(`https://api.line.me/v2/bot/group/${encodeURIComponent(groupId)}/summary`,{headers:{authorization:`Bearer ${lineToken}`},signal:AbortSignal.timeout(10000)});
-    if (!groupInfo.ok) {
-      const details = await groupInfo.text();
-      await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:`LINE group summary ${groupInfo.status}: ${details.slice(0,250)}`});
-      return json({ok:false,error:'line_group_not_available',status:groupInfo.status},502);
+    if(lineTarget.startsWith('C')){
+      const groupInfo = await fetch(`https://api.line.me/v2/bot/group/${encodeURIComponent(lineTarget)}/summary`,{headers:{authorization:`Bearer ${lineToken}`},signal:AbortSignal.timeout(10000)});
+      if (!groupInfo.ok) {
+        const details = await groupInfo.text();
+        await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:`LINE group summary ${groupInfo.status}: ${details.slice(0,250)}`});
+        return json({ok:false,error:'line_group_not_available',status:groupInfo.status},502);
+      }
     }
     const validation = await fetch('https://api.line.me/v2/bot/message/validate/push',{
       method:'POST',signal:AbortSignal.timeout(10000),
       headers:{authorization:`Bearer ${lineToken}`,'content-type':'application/json'},
-      body:JSON.stringify({to:groupId,messages}),
+      body:JSON.stringify({to:lineTarget,messages}),
     });
     if (!validation.ok) {
       const details = await validation.text();
@@ -196,7 +206,7 @@ Deno.serve(async request => {
     const response = await fetch('https://api.line.me/v2/bot/message/push',{
       method:'POST', signal:AbortSignal.timeout(10000),
       headers:{authorization:`Bearer ${lineToken}`,'content-type':'application/json'},
-      body:JSON.stringify({to:groupId,messages}),
+      body:JSON.stringify({to:lineTarget,messages}),
     });
     const details = await response.text();
     if (!response.ok) {
@@ -204,8 +214,9 @@ Deno.serve(async request => {
       console.error('LINE schedule push failed',response.status);
       return json({ok:false,error:'line_delivery_failed'},502);
     }
-    await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded:true,delivery_details:`App ${app.status}; sent LINE PNG service schedule image`});
-    return json({ok:true,sunday,cardCount:messages.length,channels:{app:app.status,line:'sent'}});
+    const lineDestination=personalStaffId?'personal':'group';
+    await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded:true,delivery_details:`App ${app.status}; sent LINE PNG service schedule image to ${lineDestination}`});
+    return json({ok:true,sunday,cardCount:messages.length,channels:{app:app.status,line:'sent'},lineDestination});
   } catch (error) {
     await db.rpc('finish_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:'LINE request failed'});
     console.error('LINE schedule push failed',error instanceof Error ? error.message : 'unknown');

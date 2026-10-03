@@ -165,7 +165,7 @@ Deno.serve(async request => {
   }
 
   try {
-    const png=await createServiceSchedulePng({churchName:'火樂教會 SHiNE Church',mark:'SHiNE',dateText:service.date,eventText:service.eventText,entries:service.entries,accent:'#F07371'});
+    const png=await createServiceSchedulePng({churchName:'火樂教會',mark:'SHiNE',dateText:service.date,eventText:service.eventText,entries:service.entries,accent:'#D85E62'});
     const imageUrl=await uploadServiceSchedulePng(db,`service-schedules/shine/${sunday}.png`,png);
     const messages=[{type:'image',originalContentUrl:imageUrl,previewImageUrl:imageUrl},{type:'text',text:`火樂主日服事表｜${service.date}\n可長按圖片儲存或直接轉傳。`}];
     const botInfo = await fetch('https://api.line.me/v2/bot/info',{headers:{authorization:`Bearer ${lineToken}`},signal:AbortSignal.timeout(10000)});

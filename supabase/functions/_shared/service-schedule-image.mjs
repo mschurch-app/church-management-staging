@@ -28,17 +28,17 @@ async function ready() {
 
 export async function createServiceSchedulePng({churchName, mark, dateText, eventText, entries, accent = '#E86545'}) {
   const rows = Math.ceil(entries.length / 2);
-  const height = 330 + rows * 128 + 110;
+  const height = 310 + rows * 126 + 104;
   const cards = entries.map(([label, value], index) => {
     const column = index % 2;
     const row = Math.floor(index / 2);
     const x = 54 + column * 506;
-    const y = 330 + row * 128;
+    const y = 310 + row * 126;
     const valueLines = lines(value);
-    const valueSvg = valueLines.map((line, lineIndex) => `<tspan x="${x + 28}" dy="${lineIndex ? 37 : 0}">${escapeXml(line)}</tspan>`).join('');
-    return `<g><rect x="${x}" y="${y}" width="478" height="108" rx="24" fill="#FFF9F4" stroke="#F3D8CC" stroke-width="2"/><text x="${x + 28}" y="${y + 35}" font-size="23" font-weight="650" fill="#B66550">${escapeXml(label)}</text><text x="${x + 28}" y="${y + 75}" font-size="30" font-weight="720" fill="#352824">${valueSvg}</text></g>`;
+    const valueSvg = valueLines.map((line, lineIndex) => `<tspan x="${x + 28}" dy="${lineIndex ? 28 : 0}">${escapeXml(line)}</tspan>`).join('');
+    return `<g filter="url(#cardShadow)"><rect x="${x}" y="${y}" width="478" height="106" rx="18" fill="#FFFFFF" stroke="#E8DAD1" stroke-width="2"/><rect x="${x}" y="${y + 18}" width="5" height="70" rx="3" fill="${accent}"/><text x="${x + 28}" y="${y + 33}" font-size="22" font-weight="700" fill="#B24634" style="font-variation-settings:'wght' 700">${escapeXml(label)}</text><text x="${x + 28}" y="${y + 70}" font-size="29" font-weight="780" fill="#292321" style="font-variation-settings:'wght' 780">${valueSvg}</text></g>`;
   }).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="${height}" viewBox="0 0 1080 ${height}"><rect width="1080" height="${height}" fill="#FFFDF9"/><rect width="1080" height="278" fill="${accent}"/><circle cx="980" cy="22" r="190" fill="#FFFFFF" opacity=".09"/><circle cx="875" cy="250" r="110" fill="#FFFFFF" opacity=".07"/><text x="58" y="72" font-size="32" font-weight="700" fill="#FFF7F0">${escapeXml(mark)}　${escapeXml(churchName)}</text><text x="58" y="150" font-size="58" font-weight="820" fill="#FFFFFF">主日服事表</text><rect x="58" y="188" width="964" height="58" rx="18" fill="#FFFFFF" opacity=".18"/><text x="82" y="228" font-size="29" font-weight="700" fill="#FFFFFF">${escapeXml(dateText)}</text><text x="998" y="228" text-anchor="end" font-size="27" font-weight="650" fill="#FFF7F0">${escapeXml(eventText || '主日崇拜')}</text>${cards}<line x1="54" y1="${height - 78}" x2="1026" y2="${height - 78}" stroke="#F0DED6" stroke-width="2"/><text x="54" y="${height - 36}" font-size="23" font-weight="650" fill="#9B7468">每一份服事，都是愛的同行</text><text x="1026" y="${height - 36}" text-anchor="end" font-size="21" fill="#B78E82">M+ Church OS</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="${height}" viewBox="0 0 1080 ${height}"><defs><filter id="cardShadow" x="-10%" y="-20%" width="120%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#5C3529" flood-opacity=".08"/></filter></defs><rect width="1080" height="${height}" fill="#FAF6F0"/><rect width="1080" height="262" fill="${accent}"/><rect x="54" y="42" width="76" height="48" rx="14" fill="#FFFFFF"/><text x="92" y="76" text-anchor="middle" font-size="25" font-weight="850" fill="${accent}" style="font-variation-settings:'wght' 850">${escapeXml(mark)}</text><text x="150" y="76" font-size="28" font-weight="720" fill="#FFFFFF" style="font-variation-settings:'wght' 720">${escapeXml(churchName)}</text><text x="54" y="158" font-size="60" font-weight="900" fill="#FFFFFF" style="font-variation-settings:'wght' 900">主日服事表</text><line x1="54" y1="184" x2="1026" y2="184" stroke="#FFFFFF" stroke-opacity=".35" stroke-width="2"/><text x="54" y="226" font-size="28" font-weight="720" fill="#FFFFFF" style="font-variation-settings:'wght' 720">${escapeXml(dateText)}</text><text x="1026" y="226" text-anchor="end" font-size="26" font-weight="700" fill="#FFFFFF" style="font-variation-settings:'wght' 700">${escapeXml(eventText || '主日崇拜')}</text>${cards}<line x1="54" y1="${height - 73}" x2="1026" y2="${height - 73}" stroke="#DCCBC1" stroke-width="2"/><text x="54" y="${height - 34}" font-size="22" font-weight="700" fill="#6F5A51" style="font-variation-settings:'wght' 700">每一份服事，都是愛的同行</text><text x="1026" y="${height - 34}" text-anchor="end" font-size="20" font-weight="650" fill="#8F786D">M+ Church OS</text></svg>`;
   const font = await ready();
   const renderer = new Resvg(svg, {fitTo:{mode:'width',value:1080},font:{fontBuffers:[font],defaultFontFamily:'Noto Sans TC'}});
   const image = renderer.render();
@@ -61,4 +61,3 @@ export async function uploadServiceSchedulePng(db, path, png) {
   if(signedError||!data?.signedUrl)throw new Error(`image_signed_url_failed: ${signedError?.message||'missing URL'}`);
   return data.signedUrl;
 }
-

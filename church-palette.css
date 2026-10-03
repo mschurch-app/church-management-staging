@@ -400,3 +400,25 @@ form,fieldset,label,.edit-grid,.form-row,.row,.grid,.panel,.cms{min-width:0;max-
 input,select,textarea{min-width:0;max-width:100%;box-sizing:border-box}
 input[type="date"],input[type="time"],input[type="datetime-local"],input[type="month"]{display:block;width:100%;min-width:0;max-width:100%}
 @media(max-width:760px){.edit-grid,.form-row,.row,.grid{min-width:0}.edit-grid>*,.form-row>*,.row>*,.grid>*{min-width:0;max-width:100%}}
+
+/* Contrast audit: preserve readable text inside selectable cards. */
+.scope-card{
+  color:#352823!important;
+  background:#fff!important;
+  border-color:#efdfd3!important;
+  box-shadow:0 7px 20px rgba(53,40,35,.05)!important;
+}
+.scope-card strong{color:#352823!important}
+.scope-card small{color:#6b5850!important}
+.scope-card .scope-icon{color:#ad3c2a!important;background:#fff0e6!important}
+.scope-card[aria-pressed="true"]{
+  color:#fff!important;
+  background:linear-gradient(135deg,#ad3c2a,#c94b35)!important;
+  border-color:#ad3c2a!important;
+  box-shadow:0 10px 25px rgba(173,60,42,.18)!important;
+}
+.scope-card[aria-pressed="true"] strong{color:#fff!important}
+.scope-card[aria-pressed="true"] small{color:#fff3ed!important}
+.scope-card[aria-pressed="true"] .scope-icon{color:#ad3c2a!important;background:#fff!important}
+.scope-card[aria-pressed="true"] .scope-status{color:#176849!important;background:#eaf7ef!important}
+.scope-card[aria-pressed="true"] .scope-status.preview{color:#75520c!important;background:#fff4cd!important}

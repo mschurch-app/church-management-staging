@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.app-push]
 verify_jwt = true
+
+[functions.weekly-bulletin-review]
+verify_jwt = true

@@ -220,7 +220,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;payload:Record<string,unknown>|null;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null})=>({
       id:row.id,title:row.title,description:row.description,taskType:row.task_type,status:row.status,assigneeName:row.assigned_to?names.get(row.assigned_to)||'已停用同工':'未指派',dueAt:row.due_at,
       canSubmit:row.status==='draft'&&row.created_by===staff.id,
-      canApprove:row.status==='pending'&&(row.assigned_to===staff.id||canManage(staff)),
+      canApprove:row.payload?.workflow!=='weekly_bulletin_review'&&row.status==='pending'&&(row.assigned_to===staff.id||canManage(staff)),
       canNotify:row.status==='pending'&&(row.created_by===staff.id||canManage(staff)),
       canComplete:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
       canAttach:(row.status==='draft'&&(row.created_by===staff.id||canManage(staff)))||
@@ -229,6 +229,8 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       workReports:reportsByTask.get(row.id)||[],
       completionReport:typeof row.payload?.completion_report==='string'?row.payload.completion_report:null,
       isNewcomerCare:row.payload?.workflow==='newcomer_care',
+      workflow:typeof row.payload?.workflow==='string'?row.payload.workflow:null,
+      actionUrl:typeof row.payload?.action_url==='string'&&row.payload.action_url.startsWith('/')?row.payload.action_url:null,
     }))});
   }
   if(['submit','approve','complete'].includes(body.action)){

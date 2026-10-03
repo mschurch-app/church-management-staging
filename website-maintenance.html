@@ -33,7 +33,7 @@
       <h2 id="editor-title">週報內容</h2>
       <div class="website-form-grid">
         <label>週報日期<input id="service-date" type="date" required></label>
-        <label>狀態<select id="status-choice"><option value="draft">草稿 · 不公開</option><option value="published">已發佈 · 對外公開</option></select></label>
+        <label>審核狀態<span id="status-choice" class="scope-status preview">草稿 · 尚未送審</span></label>
         <label class="full">週報標題<input id="bulletin-title" maxlength="100" required placeholder="例如：本週週報"></label>
         <label class="full">開場文字／副標<textarea id="bulletin-subtitle" maxlength="500" placeholder="本週給家人的說明文字"></textarea></label>
         <label class="full">主日時間<input id="service-time" maxlength="200" placeholder="主日崇拜 · 每週日上午 10:00"></label>
@@ -42,7 +42,7 @@
       <section id="schedule-preview" class="schedule-preview" aria-live="polite"></section>
       <h2>週報欄位</h2><p class="website-hint">下方每個標題、說明、項目名稱與內文都可以編輯；需要更多欄位可按「新增一項」。奉獻徵信公開前請遮蔽個人姓名或改用代碼。主日服事表會依日期自動讀取本週及下週排班資料。</p>
       <div id="sections"></div>
-      <div class="website-form-actions"><button id="save-bulletin" type="submit">儲存週報</button><button id="reload-bulletins" type="button" class="secondary">重新載入</button><span id="save-hint" class="website-hint"></span></div>
+      <div class="website-form-actions"><button id="save-bulletin" type="submit">儲存週報</button><button id="submit-review" type="button">送交牧師、師母審核</button><button id="reload-bulletins" type="button" class="secondary">重新載入</button><span id="save-hint" class="website-hint"></span></div>
     </form></section>
   </div>
-</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20261003-access-guard1"></script></body></html>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20261003-review1"></script></body></html>

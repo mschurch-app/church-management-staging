@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {notifyChurchApp} from '../_shared/app-push-notification.mjs';
 import {notificationRoute} from '../_shared/dual-notification.mjs';
+import {createServiceSchedulePng,uploadServiceSchedulePng} from '../_shared/service-schedule-image.mjs';
 
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
@@ -95,7 +96,7 @@ function flexCard(title: string, dateText: string, eventText: string, entries: A
   };
 }
 
-function serviceMessages(row: Record<string,unknown>, sunday: string) {
+function serviceDetails(row: Record<string,unknown>, sunday: string) {
   const date = new Date(sunday + 'T00:00:00Z').toLocaleDateString('zh-TW', {
     timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
   });
@@ -111,8 +112,7 @@ function serviceMessages(row: Record<string,unknown>, sunday: string) {
     const value = String(row[key] ?? '').trim();
     return value && value !== '－' && value !== '-' ? [[label,value] as [string,string]] : [];
   });
-  if (!entries.length) return [];
-  return [flexCard('服事安排', date, String(row.event || '主日崇拜'), entries, '1', '1')];
+  return {date,entries,eventText:String(row.event || '主日崇拜')};
 }
 
 Deno.serve(async request => {
@@ -152,8 +152,8 @@ Deno.serve(async request => {
   const row = (rows || []).find(item => normalizedDate(item.service_date) === sunday);
   if (!row) return json({ok:false,error:'no_schedule_for_upcoming_sunday',sunday},404);
 
-  const messages = serviceMessages(row,sunday);
-  if (!messages.length) return json({ok:false,error:'schedule_has_no_assignments',sunday},422);
+  const service = serviceDetails(row,sunday);
+  if (!service.entries.length) return json({ok:false,error:'schedule_has_no_assignments',sunday},422);
   const {data:claimed,error:claimError} = await db.rpc('claim_shine_weekly_service_line_delivery',{target_sunday:sunday});
   if (claimError || claimed !== true) return json({ok:true,skipped:'already_sent_or_processing',sunday});
 
@@ -165,6 +165,9 @@ Deno.serve(async request => {
   }
 
   try {
+    const png=await createServiceSchedulePng({churchName:'火樂教會 SHiNE Church',mark:'SHiNE',dateText:service.date,eventText:service.eventText,entries:service.entries,accent:'#F07371'});
+    const imageUrl=await uploadServiceSchedulePng(db,`service-schedules/shine/${sunday}.png`,png);
+    const messages=[{type:'image',originalContentUrl:imageUrl,previewImageUrl:imageUrl},{type:'text',text:`火樂主日服事表｜${service.date}\n可長按圖片儲存或直接轉傳。`}];
     const botInfo = await fetch('https://api.line.me/v2/bot/info',{headers:{authorization:`Bearer ${lineToken}`},signal:AbortSignal.timeout(10000)});
     if (!botInfo.ok) {
       const details = await botInfo.text();
@@ -184,7 +187,7 @@ Deno.serve(async request => {
     });
     if (!validation.ok) {
       const details = await validation.text();
-      await db.rpc('finish_shine_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:`LINE Flex validation ${validation.status}: ${details.slice(0,250)}`});
+      await db.rpc('finish_shine_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:`LINE image validation ${validation.status}: ${details.slice(0,250)}`});
       return json({ok:false,error:'line_card_invalid',status:validation.status},502);
     }
     const response = await fetch('https://api.line.me/v2/bot/message/push',{
@@ -198,7 +201,7 @@ Deno.serve(async request => {
       console.error('LINE schedule push failed',response.status);
       return json({ok:false,error:'line_delivery_failed'},502);
     }
-    await db.rpc('finish_shine_weekly_service_line_delivery',{target_sunday:sunday,succeeded:true,delivery_details:`App ${app.status}; sent LINE Flex service schedule card`});
+    await db.rpc('finish_shine_weekly_service_line_delivery',{target_sunday:sunday,succeeded:true,delivery_details:`App ${app.status}; sent LINE PNG service schedule image`});
     return json({ok:true,sunday,cardCount:messages.length,channels:{app:app.status,line:'sent'}});
   } catch (error) {
     await db.rpc('finish_shine_weekly_service_line_delivery',{target_sunday:sunday,succeeded:false,delivery_details:'LINE request failed'});

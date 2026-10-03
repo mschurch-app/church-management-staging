@@ -216,7 +216,7 @@
       *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
     }
   </style>
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261003-coralheader1"></head>
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261003-formfit1"></head>
 <body class="font-sans antialiased">
   <div id="particles" aria-hidden="true"></div>
 
@@ -512,6 +512,25 @@
       }, 1800);
     }
 
+    function chineseNumber(value) {
+      const digits = ['零','一','二','三','四','五','六','七','八','九'];
+      const number = Number(value);
+      if (!Number.isFinite(number) || number < 0 || number > 999) return String(value);
+      if (number < 10) return digits[number];
+      if (number < 20) return `十${number % 10 ? digits[number % 10] : ''}`;
+      if (number < 100) return `${digits[Math.floor(number / 10)]}十${number % 10 ? digits[number % 10] : ''}`;
+      const rest = number % 100;
+      return `${digits[Math.floor(number / 100)]}百${rest ? (rest < 10 ? '零' : '') + chineseNumber(rest) : ''}`;
+    }
+
+    function speechFriendlyReference(reference) {
+      return String(reference || '')
+        .replace(/(\d+)\s*[:：]\s*(\d+)(?:\s*[-–—~～]\s*(\d+))?/g, (_, chapter, verse, through) =>
+          `${chineseNumber(chapter)}章${chineseNumber(verse)}節${through ? `到${chineseNumber(through)}節` : ''}`
+        )
+        .replace(/(\d+)\s*章/g, (_, chapter) => `${chineseNumber(chapter)}章`);
+    }
+
     function speakGrace() {
       if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
         showToast('此瀏覽器暫不支援語音朗讀');
@@ -525,7 +544,7 @@
       window.speechSynthesis.cancel();
       speechParts = [
         `今日應許。${liveVerse}`,
-        liveVerseReference,
+        speechFriendlyReference(liveVerseReference),
         `祝福你。${livePrayer}`
       ].filter(Boolean);
       speechPartIndex = 0;

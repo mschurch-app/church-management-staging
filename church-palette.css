@@ -394,3 +394,9 @@ html[data-church="SHiNE"] .library-page>.library-hero{
 .member-page>.page-header .church-brand{background:rgba(83,25,16,.3)!important;border-color:rgba(255,255,255,.25)}
 .member-page>.page-header .church-brand img{opacity:1}
 .member-page>.page-header button.secondary{background:#fff!important;color:#ad3c2a!important;border-color:#fff!important;box-shadow:none!important}
+
+/* Mobile form controls must stay inside their cards, including iOS date fields. */
+form,fieldset,label,.edit-grid,.form-row,.row,.grid,.panel,.cms{min-width:0;max-width:100%}
+input,select,textarea{min-width:0;max-width:100%;box-sizing:border-box}
+input[type="date"],input[type="time"],input[type="datetime-local"],input[type="month"]{display:block;width:100%;min-width:0;max-width:100%}
+@media(max-width:760px){.edit-grid,.form-row,.row,.grid{min-width:0}.edit-grid>*,.form-row>*,.row>*,.grid>*{min-width:0;max-width:100%}}

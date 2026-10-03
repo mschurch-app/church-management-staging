@@ -62,9 +62,12 @@ async function activeEntityStaff(db:ReturnType<typeof adminClient>,entityKey:str
   return result.data||[];
 }
 
-function canViewTask(staff:Staff,row:{created_by:string|null;assigned_to:string|null;status:string}){
+function sharedWith(staff:Staff,row:{payload?:Record<string,unknown>|null}){
+  return Array.isArray(row.payload?.shared_assignee_ids)&&row.payload.shared_assignee_ids.includes(staff.id);
+}
+function canViewTask(staff:Staff,row:{created_by:string|null;assigned_to:string|null;status:string;payload?:Record<string,unknown>|null}){
   if(canManage(staff)||row.created_by===staff.id)return true;
-  return row.status!=='draft'&&row.assigned_to===staff.id;
+  return row.status!=='draft'&&(row.assigned_to===staff.id||sharedWith(staff,row));
 }
 async function uploadAttachment(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
   let form:FormData;
@@ -73,12 +76,12 @@ async function uploadAttachment(request:Request,db:ReturnType<typeof adminClient
   if(!allowedEntity(entityKey)||!staff.entityKeys.includes(entityKey))return json(APP_ORIGIN,{ok:false,error:'entity_forbidden'},403);
   if(typeof taskId!=='string'||!UUID.test(taskId)||!(file instanceof File))return json(APP_ORIGIN,{ok:false,error:'invalid_attachment'},400);
   if(!validAttachmentInput(file.name,file.type,file.size))return json(APP_ORIGIN,{ok:false,error:'invalid_attachment'},400);
-  const task=await db.from('pastoral_tasks').select('id,entity_key,status,created_by,assigned_to')
+  const task=await db.from('pastoral_tasks').select('id,entity_key,status,created_by,assigned_to,payload')
     .eq('id',taskId).eq('entity_key',entityKey).maybeSingle();
   if(task.error)throw new Error('db');
   if(!task.data)return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
   const draftAccess=task.data.status==='draft'&&(canManage(staff)||task.data.created_by===staff.id);
-  const executionAccess=task.data.status==='approved'&&(canManage(staff)||task.data.assigned_to===staff.id);
+  const executionAccess=task.data.status==='approved'&&(canManage(staff)||task.data.assigned_to===staff.id||sharedWith(staff,task.data));
   if(!draftAccess&&!executionAccess)return json(APP_ORIGIN,{ok:false,error:'attachment_forbidden'},403);
   const count=await db.from('pastoral_task_attachments').select('id',{count:'exact',head:true}).eq('task_id',taskId);
   if(count.error)throw new Error('db');
@@ -99,7 +102,7 @@ async function uploadAttachment(request:Request,db:ReturnType<typeof adminClient
 }
 async function listAttachments(db:ReturnType<typeof adminClient>,staff:Staff,entityKey:string,taskId:unknown){
   if(typeof taskId!=='string'||!UUID.test(taskId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
-  const task=await db.from('pastoral_tasks').select('id,status,created_by,assigned_to')
+  const task=await db.from('pastoral_tasks').select('id,status,created_by,assigned_to,payload')
     .eq('id',taskId).eq('entity_key',entityKey).maybeSingle();
   if(task.error)throw new Error('db');
   if(!task.data||!canViewTask(staff,task.data))return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
@@ -187,9 +190,9 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
   if(body.action==='report-progress'){
     if(typeof body.taskId!=='string'||!UUID.test(body.taskId)||!validTaskReport(body.report))
       return json(APP_ORIGIN,{ok:false,error:'invalid_report'},400);
-    const task=await db.from('pastoral_tasks').select('status,assigned_to').eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
+    const task=await db.from('pastoral_tasks').select('status,assigned_to,payload').eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
     if(task.error)throw new Error('db');
-    if(!task.data||task.data.status!=='approved'||(!canManage(staff)&&task.data.assigned_to!==staff.id))
+    if(!task.data||task.data.status!=='approved'||(!canManage(staff)&&task.data.assigned_to!==staff.id&&!sharedWith(staff,task.data)))
       return json(APP_ORIGIN,{ok:false,error:'report_forbidden'},403);
     const saved=await db.from('pastoral_task_reports').insert({
       task_id:body.taskId,entity_key:entityKey,created_by:staff.id,report_text:(body.report as string).trim(),
@@ -199,12 +202,12 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
   }
   if(body.action==='list-attachments')return await listAttachments(db,staff,entityKey,body.taskId);
   if(body.action==='list'){
-    let query=db.from('pastoral_tasks').select('id,title,description,task_type,status,payload,assigned_to,created_by,approved_by,due_at,created_at')
+    const query=db.from('pastoral_tasks').select('id,title,description,task_type,status,payload,assigned_to,created_by,approved_by,due_at,created_at')
       .eq('entity_key',entityKey).order('created_at',{ascending:false}).limit(100);
-    if(!canManage(staff))query=query.or(`assigned_to.eq.${staff.id},created_by.eq.${staff.id}`);
     const result=await query;
     if(result.error)throw new Error('db');
-    const rows=result.data||[];
+    const rows=(result.data||[]).filter((row)=>canManage(staff)||row.assigned_to===staff.id||row.created_by===staff.id||
+      (Array.isArray(row.payload?.shared_assignee_ids)&&row.payload.shared_assignee_ids.includes(staff.id)));
     const people=await activeEntityStaff(db,entityKey);
     const names=new Map(people.map((p:{id:string;display_name:string})=>[p.id,p.display_name]));
     const reports=rows.length?await db.from('pastoral_task_reports')
@@ -217,20 +220,24 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       bucket.push({id:report.id,authorName:names.get(report.created_by)||'同工',text:report.report_text,createdAt:report.created_at});
       reportsByTask.set(report.task_id,bucket);
     }
-    return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;payload:Record<string,unknown>|null;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null})=>({
-      id:row.id,title:row.title,description:row.description,taskType:row.task_type,status:row.status,assigneeName:row.assigned_to?names.get(row.assigned_to)||'已停用同工':'未指派',dueAt:row.due_at,
+    return json(APP_ORIGIN,{ok:true,tasks:rows.map((row:{id:string;title:string;description:string;task_type:string;status:string;payload:Record<string,unknown>|null;assigned_to:string|null;created_by:string|null;approved_by:string|null;due_at:string|null;created_at:string})=>({
+      id:row.id,title:row.title,description:row.description,taskType:row.task_type,status:row.status,assigneeName:row.assigned_to?names.get(row.assigned_to)||'已停用同工':'未指派',dueAt:row.due_at,createdAt:row.created_at,
+      createdByMe:row.created_by===staff.id,assignedToMe:row.assigned_to===staff.id,
+      sharedWithMe:Array.isArray(row.payload?.shared_assignee_ids)&&row.payload.shared_assignee_ids.includes(staff.id),
       canSubmit:row.status==='draft'&&row.created_by===staff.id,
       canApprove:row.payload?.workflow!=='weekly_bulletin_review'&&row.status==='pending'&&(row.assigned_to===staff.id||canManage(staff)),
       canNotify:row.status==='pending'&&(row.created_by===staff.id||canManage(staff)),
-      canComplete:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
+      canComplete:row.status==='approved'&&(row.assigned_to===staff.id||sharedWith(staff,row)||canManage(staff)),
       canAttach:(row.status==='draft'&&(row.created_by===staff.id||canManage(staff)))||
-        (row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff))),
-      canReportProgress:row.status==='approved'&&(row.assigned_to===staff.id||canManage(staff)),
+        (row.status==='approved'&&(row.assigned_to===staff.id||sharedWith(staff,row)||canManage(staff))),
+      canReportProgress:row.status==='approved'&&(row.assigned_to===staff.id||sharedWith(staff,row)||canManage(staff)),
       workReports:reportsByTask.get(row.id)||[],
       completionReport:typeof row.payload?.completion_report==='string'?row.payload.completion_report:null,
       isNewcomerCare:row.payload?.workflow==='newcomer_care',
       workflow:typeof row.payload?.workflow==='string'?row.payload.workflow:null,
-      actionUrl:typeof row.payload?.action_url==='string'&&row.payload.action_url.startsWith('/')?row.payload.action_url:null,
+      actionUrl:typeof row.payload?.action_url==='string'&&row.payload.action_url.startsWith('/')?row.payload.action_url:
+        row.payload?.workflow==='newcomer_care'&&typeof row.payload?.newcomer_care_case_id==='string'
+          ?`/newcomer-care.html?church=${entityKey==='mplus'?'M%2B':'SHINE'}&case=${encodeURIComponent(row.payload.newcomer_care_case_id)}`:null,
     }))});
   }
   if(['submit','approve','complete'].includes(body.action)){
@@ -254,7 +261,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       const current=await db.from('pastoral_tasks').select('assigned_to,status,payload')
         .eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
       if(current.error)throw new Error('db');
-      if(!current.data||current.data.status!=='approved'||(!canManage(staff)&&current.data.assigned_to!==staff.id))
+      if(!current.data||current.data.status!=='approved'||(!canManage(staff)&&current.data.assigned_to!==staff.id&&!sharedWith(staff,current.data)))
         return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
       const payload=current.data.payload&&typeof current.data.payload==='object'&&!Array.isArray(current.data.payload)?current.data.payload:{};
       const newcomerCare=payload.workflow==='newcomer_care';
@@ -270,7 +277,6 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       .eq('status',body.action==='submit'?'draft':body.action==='approve'?'pending':'approved');
     if(body.action==='submit')update=update.eq('created_by',staff.id);
     if(body.action==='approve'&&!canManage(staff))update=update.eq('assigned_to',staff.id);
-    if(body.action==='complete'&&!canManage(staff))update=update.eq('assigned_to',staff.id);
     const saved=await update.select('id').maybeSingle();
     if(saved.error)throw new Error('db');
     if(!saved.data)return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);

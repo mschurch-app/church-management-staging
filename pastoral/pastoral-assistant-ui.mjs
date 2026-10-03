@@ -366,21 +366,42 @@ async function tasksApi(action,payload={}){
 }
 const taskStatusText={draft:'草稿',pending:'等候同工回覆',approved:'進行中',completed:'已完成',cancelled:'已取消'};
 const taskTypeText={general:'一般',sermon:'講道',event:'活動',care:'關懷',document:'公文'};
+const taskGroupText={todo:'待我處理',progress:'進行中',waiting:'等候他人',completed:'已完成'};
+let currentTaskGroup='todo',loadedTasks=[];
+function taskGroup(task){
+  if(['completed','cancelled'].includes(task.status))return 'completed';
+  if(task.status==='pending'&&(task.assignedToMe||task.sharedWithMe||task.canApprove))return 'todo';
+  if(task.status==='approved')return 'progress';
+  return 'waiting';
+}
 function taskButton(label,id,action,secondary=false){
   const button=document.createElement('button');button.type='button';button.className='button'+(secondary?' secondary':'');
   button.textContent=label;button.dataset.taskId=id;button.dataset.taskAction=action;return button;
 }
 function renderTasks(tasks){
+  loadedTasks=tasks;
   const list=$('#task-list');list.replaceChildren();
-  if(!tasks.length){const p=document.createElement('p');p.className='muted';p.textContent='目前沒有待處理的工作；新的邀請和進度更新會顯示在這裡。';list.append(p);return;}
-  for(const task of tasks){
+  const counts=Object.fromEntries(Object.keys(taskGroupText).map(key=>[key,tasks.filter(task=>taskGroup(task)===key).length]));
+  const groups=document.createElement('div');groups.className='task-groups';groups.setAttribute('aria-label','工作分類');
+  for(const [key,label] of Object.entries(taskGroupText)){
+    const button=document.createElement('button');button.type='button';button.className='task-group'+(key===currentTaskGroup?' is-active':'');
+    button.dataset.taskGroup=key;button.setAttribute('aria-pressed',String(key===currentTaskGroup));
+    const name=document.createElement('span');name.textContent=label;const count=document.createElement('strong');count.textContent=String(counts[key]);button.append(name,count);groups.append(button);
+  }
+  list.append(groups);
+  const visible=tasks.filter(task=>taskGroup(task)===currentTaskGroup);
+  if(!visible.length){const p=document.createElement('p');p.className='task-empty';p.textContent=`目前沒有「${taskGroupText[currentTaskGroup]}」的工作。`;list.append(p);return;}
+  const heading=document.createElement('div');heading.className='task-section-heading';heading.innerHTML=`<strong>${taskGroupText[currentTaskGroup]}</strong><span>${visible.length} 項</span>`;list.append(heading);
+  for(const task of visible){
     const article=document.createElement('article');article.className='task-item';article.dataset.taskId=task.id;
     const top=document.createElement('div');top.className='task-item-top';
     const title=document.createElement('h3');title.textContent=task.title;top.append(title);
     const badge=document.createElement('span');badge.className='task-badge task-'+task.status;badge.textContent=taskStatusText[task.status]||task.status;top.append(badge);
     article.append(top);
     const meta=document.createElement('p');meta.className='task-meta';
-    meta.textContent=`${taskTypeText[task.taskType]||'一般'}｜承接同工：${task.assigneeName||'尚未有人承接'}${task.dueAt?'｜期限：'+new Date(task.dueAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):''}`;
+    const overdue=task.dueAt&&!['completed','cancelled'].includes(task.status)&&new Date(task.dueAt)<new Date();
+    meta.textContent=`${taskTypeText[task.taskType]||'一般'}｜承接同工：${task.assigneeName||'尚未有人承接'}${task.dueAt?'｜'+(overdue?'已逾期：':'期限：')+new Date(task.dueAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):''}`;
+    if(overdue)meta.classList.add('is-overdue');
     article.append(meta);
     if(task.description){const description=document.createElement('p');description.className='task-description';description.textContent=task.description;article.append(description);}
     if(task.workReports?.length){
@@ -395,6 +416,7 @@ function renderTasks(tasks){
     if(task.completionReport){const report=document.createElement('div');report.className='completion-report';const label=document.createElement('strong');label.textContent='完成紀錄';const text=document.createElement('p');text.textContent=task.completionReport;report.append(label,text);article.append(report);}
     const actions=document.createElement('div');actions.className='task-actions';
     if(task.workflow==='weekly_bulletin_review'&&task.actionUrl){const review=document.createElement('a');review.className='button';review.href='..'+task.actionUrl;review.textContent='開啟週報審核';actions.append(review);}
+    if(task.workflow==='newcomer_care'&&task.actionUrl){const care=document.createElement('a');care.className='button';care.href='..'+task.actionUrl;care.textContent='開啟關懷紀錄';actions.append(care);}
     actions.append(taskButton('檢視／下載附件',task.id,'list-attachments',true));
     if(task.canSubmit)actions.append(taskButton('送出工作邀請並通知',task.id,'submit'));
     if(task.canApprove)actions.append(taskButton('接受並開始處理',task.id,'approve'));
@@ -469,7 +491,7 @@ async function loadTasks(){
     select.replaceChildren(...people.staff.map(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=person.name;return option;}));
     select.value=people.staff.some(person=>person.id===previous)?previous:(people.staff.some(person=>person.id===currentStaffId)?currentStaffId:(people.staff[0]?.id||''));
     renderTasks(result.tasks||[]);
-    if($('#overview-task-count'))$('#overview-task-count').textContent=`${(result.tasks||[]).filter(task=>!['completed','cancelled'].includes(task.status)).length} 項進行中`;
+    if($('#overview-task-count'))$('#overview-task-count').textContent=`${(result.tasks||[]).filter(task=>taskGroup(task)==='todo').length} 項待處理`;
     status.textContent=`已更新工作清單，共 ${(result.tasks||[]).length} 項。`;
   }catch(error){status.textContent=error.message||'無法載入同工工作。';if($('#overview-task-count'))$('#overview-task-count').textContent='暫時無法讀取';}
   finally{$('#refresh-tasks').disabled=false;}
@@ -495,6 +517,8 @@ $('#task-form').addEventListener('submit',async event=>{
   finally{button.disabled=false;}
 });
 $('#task-list').addEventListener('click',async event=>{
+  const groupButton=event.target.closest('button[data-task-group]');
+  if(groupButton){currentTaskGroup=groupButton.dataset.taskGroup;renderTasks(loadedTasks);return;}
   const button=event.target.closest('button[data-task-action]');if(!button)return;
   const article=button.closest('.task-item'),taskId=button.dataset.taskId,action=button.dataset.taskAction;
   button.disabled=true;

@@ -27,6 +27,9 @@ export async function authenticateStaff({interactive=false,enrollmentCode='',ret
     if(!profile.error&&profile.data)return {id:profile.data.id,name:profile.data.name,role:profile.data.role,churches:(profile.data.entityKeys||[]).map(key=>key==='mplus'?'M+':key==='shine'?'SHiNE':'台灣基督教社會關懷協會')};
     throw new Error('這個教會 OS 帳號尚未設定同工身分，請由管理員在帳號權限中完成設定。');
   }
+  const query=new URLSearchParams(location.search);
+  const openedFromLine=query.has('liff.state')||query.has('liffClientId')||document.referrer.startsWith('https://liff.line.me/');
+  if(!openedFromLine)throw new Error('請先使用教會 OS 帳號登入，即可進入同工協作平台。');
   await initialize();
   if(!window.liff.isLoggedIn()){
     if(interactive)window.liff.login({redirectUri:returnUrl||new URL('./',location.href).href});

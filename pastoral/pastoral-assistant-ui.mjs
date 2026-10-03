@@ -1,5 +1,5 @@
 import {assistantChurch, buildAppointmentDraft} from './pastoral-assistant-management.mjs?v=20260924-2';
-import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261003-friendly1';
+import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261003-unified1';
 import {PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TASKS_ENDPOINT} from './config.mjs?v=20260925-2';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
@@ -48,6 +48,7 @@ function setCalendarStatus(connected, email, reconnectRequired=false) {
 }
 
 function activateTab(tab) {
+  setWorkspaceMode(tab);
   document.querySelectorAll('[data-tab]').forEach(button => {
     const active = button.dataset.tab === tab;
     button.setAttribute('aria-selected', String(active));
@@ -58,6 +59,18 @@ function activateTab(tab) {
   if($('#page-title'))$('#page-title').textContent=titles[tab]||'工作總覽';
   document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(link=>link.classList.toggle('is-active',link.dataset.openTab===tab));
   const url=new URL(location.href);url.searchParams.set('tab',tab);history.replaceState(null,'',url);
+}
+function setWorkspaceMode(mode='overview'){
+  const overview=mode==='overview';
+  document.querySelectorAll('.collab-hero,.operations-overview,.workspace-start').forEach(section=>{section.hidden=!overview;});
+  $('#workspace-tabs').hidden=overview;
+  $('#overview-button').hidden=overview;
+  if(overview){
+    document.querySelectorAll('[role="tabpanel"]').forEach(panel=>{panel.hidden=true;});
+    document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(link=>link.classList.toggle('is-active',link.hasAttribute('data-overview-link')));
+    $('#page-title').textContent='工作總覽';
+    const url=new URL(location.href);url.searchParams.delete('tab');history.replaceState(null,'',url);
+  }
 }
 const tabs = [...document.querySelectorAll('[data-tab]')];
 tabs.forEach((button, index) => {
@@ -78,10 +91,8 @@ document.querySelectorAll('[data-open-tab]').forEach(link=>link.addEventListener
   button.click();
   requestAnimationFrame(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}));
 }));
-document.querySelectorAll('[data-overview-link]').forEach(link=>link.addEventListener('click',()=>{
-  document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(item=>item.classList.toggle('is-active',item.hasAttribute('data-overview-link')));
-  if($('#page-title'))$('#page-title').textContent='工作總覽';
-}));
+document.querySelectorAll('[data-overview-link]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();setWorkspaceMode('overview');window.scrollTo({top:0,behavior:'smooth'});}));
+$('#overview-button').addEventListener('click',()=>{setWorkspaceMode('overview');window.scrollTo({top:0,behavior:'smooth'});});
 
 function calendarParticipantIds(){
   const primary=$('#appointment-staff').value||currentStaffId;
@@ -202,14 +213,11 @@ async function load() {
     } else setCalendarStatus(false, null);
     if (!preview) { try { await loadScheduleSettings(); } catch { $('#schedule-status').textContent='目前無法載入休息日設定，請稍後重試。'; } }
     const requestedTab=params.get('tab');
+    await loadTasks();
     if(requestedTab==='calendar')activateTab('calendar');
     else if(requestedTab==='schedule')activateTab('schedule');
-    else {
-      activateTab('tasks');
-      document.querySelectorAll('.collab-nav a,.collab-mobile-nav a').forEach(link=>link.classList.toggle('is-active',link.hasAttribute('data-overview-link')));
-      if($('#page-title'))$('#page-title').textContent='工作總覽';
-      await loadTasks();
-    }
+    else if(requestedTab==='tasks')activateTab('tasks');
+    else setWorkspaceMode('overview');
   } catch (error) {
     $('#workspace').hidden = true;
     $('#auth-status').textContent = error.message || '無法載入工作台。';

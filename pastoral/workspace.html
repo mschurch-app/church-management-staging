@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M+ 教會同工協作空間｜CHURCH MANAGEMENT</title>
-  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-workcenter1">
+  <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-focus1">
 <link rel="stylesheet" href="../church-palette.css?v=20261003-contrast1"></head>
 <body class="collab-app">
   <div class="collab-shell">
@@ -27,7 +27,7 @@
     </aside>
     <div class="collab-page">
       <header class="collab-topbar">
-        <div><p>團隊工作空間</p><strong id="page-title">工作總覽</strong></div>
+        <div class="topbar-title"><button id="overview-button" class="topbar-back" type="button" aria-label="返回工作總覽" hidden>←</button><span><p>團隊工作空間</p><strong id="page-title">工作總覽</strong></span></div>
         <div class="identity"><span class="avatar" aria-hidden="true">同</span><div id="identity">教會同工</div></div>
       </header>
       <main class="collab-main">
@@ -55,7 +55,7 @@
           <a href="coworker-tools.html?tab=photos"><span class="action-icon">▧</span><span><strong>照片資料庫</strong><small>將活動照片存入教會共用資料夾</small></span><b>進入</b></a>
         </div>
       </section>
-      <nav class="tabs" aria-label="工作區" role="tablist">
+      <nav class="tabs" id="workspace-tabs" aria-label="工作區" role="tablist" hidden>
         <button id="tab-tasks" role="tab" aria-selected="true" aria-controls="panel-tasks" data-tab="tasks">工作清單</button>
         <button id="tab-calendar" role="tab" aria-selected="false" aria-controls="panel-calendar" tabindex="-1" data-tab="calendar">行程與約定</button>
         <button id="tab-schedule" hidden role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">我的工作時間</button>
@@ -160,6 +160,6 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-  <script type="module" src="pastoral-assistant-ui.mjs?v=20261003-workcenter1"></script>
+  <script type="module" src="pastoral-assistant-ui.mjs?v=20261003-focus1"></script>
 </body>
 </html>

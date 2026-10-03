@@ -134,6 +134,7 @@ Deno.serve(async request => {
   const payload = await request.json().catch(() => ({}));
   const manualTest = payload?.source === 'manual-test';
   const diagnostic = payload?.source === 'diagnostic';
+  const scheduled = payload?.source === 'supabase-cron';
   const local = taipeiParts();
   if (!manualTest && !diagnostic && (local.weekday !== 'Fri' || Number(local.hour) !== 9 || Number(local.minute) > 10)) {
     return json({ok:false,error:'outside_scheduled_window'},403);
@@ -155,6 +156,7 @@ Deno.serve(async request => {
 
   const messages = serviceMessages(row,sunday);
   if (!messages.length) return json({ok:false,error:'schedule_has_no_assignments',sunday},422);
+  if(scheduled)await db.rpc('prepare_weekly_service_line_scheduled_delivery',{target_sunday:sunday});
   const {data:claimed,error:claimError} = await db.rpc('claim_weekly_service_line_delivery',{target_sunday:sunday});
   if (claimError || claimed !== true) return json({ok:true,skipped:'already_sent_or_processing',sunday});
 

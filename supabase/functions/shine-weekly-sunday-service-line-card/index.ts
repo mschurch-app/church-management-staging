@@ -100,7 +100,7 @@ function serviceMessages(row: Record<string,unknown>, sunday: string) {
     timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
   });
   const roles: Array<[string,string]> = [
-    ['講員', 'speaker'], ['敬拜帶領', 'worship_leader'], ['主領', 'presider'], ['禱告', 'prayer'],
+    ['講員', 'speaker'], ['敬拜帶領', 'worship_leader'], ['司會', 'presider'], ['禱告', 'prayer'],
     ['歌手', 'singers'], ['鍵盤', 'keyboard'], ['吉他', 'guitar'], ['貝斯', 'bass'], ['鼓手', 'drums'],
     ['音控', 'tech_sound'], ['投影', 'tech_video'], ['招待一', 'usher1'], ['招待二', 'usher2'],
     ['兒童主日學', 'sunday_school'], ['兒主助教', 'sunday_school_ta'], ['交通', 'transport'],

@@ -113,9 +113,9 @@ Deno.serve(async request=>{
       if(result.error)throw result.error;return json(origin,{ok:true,connection:null});
     }
     if(body.action==='save_reel'){
-      const bulletinId=String(body.bulletinId||''),videoPath=String(body.reelVideoPath||''),audioPath=body.reelAudioPath?String(body.reelAudioPath):null,caption=String(body.reelCaption||'').trim().slice(0,2200);
+      const bulletinId=String(body.bulletinId||''),videoPath=String(body.reelVideoPath||''),audioPath=body.reelAudioPath?String(body.reelAudioPath):null,caption=String(body.reelCaption||'').trim().slice(0,2200),audioStart=Math.max(0,Math.min(86400,Number(body.reelAudioStart)||0));
       if(!/^[0-9a-f-]{36}$/i.test(bulletinId)||!videoPath.startsWith(`${church}/weekly/${bulletinId}/`)||!videoPath.endsWith('.mp4')||(audioPath&&!audioPath.startsWith(`${church}/reel-music/`)))return json(origin,{ok:false,error:'invalid_request'},400);
-      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_caption:caption,updated_by:user.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path').maybeSingle();
+      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,updated_by:user.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
       if(saved.error||!saved.data)return json(origin,{ok:false,error:'not_found'},404);
       return json(origin,{ok:true,bulletin:saved.data});
     }

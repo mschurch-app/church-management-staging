@@ -112,6 +112,13 @@ Deno.serve(async request=>{
       const result=await client.db.from('instagram_publishing_connections').delete().eq('church_id',church);
       if(result.error)throw result.error;return json(origin,{ok:true,connection:null});
     }
+    if(body.action==='save_reel'){
+      const bulletinId=String(body.bulletinId||''),videoPath=String(body.reelVideoPath||''),audioPath=body.reelAudioPath?String(body.reelAudioPath):null,caption=String(body.reelCaption||'').trim().slice(0,2200);
+      if(!/^[0-9a-f-]{36}$/i.test(bulletinId)||!videoPath.startsWith(`${church}/weekly/${bulletinId}/`)||!videoPath.endsWith('.mp4')||(audioPath&&!audioPath.startsWith(`${church}/reel-music/`)))return json(origin,{ok:false,error:'invalid_request'},400);
+      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_caption:caption,updated_by:user.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path').maybeSingle();
+      if(saved.error||!saved.data)return json(origin,{ok:false,error:'not_found'},404);
+      return json(origin,{ok:true,bulletin:saved.data});
+    }
     if(body.action==='publication_status'){
       const result=await client.db.from('instagram_publication_jobs').select('status,instagram_media_id,error_code,requested_at,published_at,updated_at').eq('church_id',church).eq('bulletin_id',String(body.bulletinId||'')).order('requested_at',{ascending:false}).limit(1).maybeSingle();
       if(result.error)throw result.error;return json(origin,{ok:true,publication:result.data||null});

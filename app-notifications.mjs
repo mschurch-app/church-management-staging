@@ -36,7 +36,10 @@ export async function loadNotificationCenter(area,badge){
  for(const item of data){
   const a=el('a','',`app-notification${item.read_at?'':' unread'}`);a.href=item.target_url;
   const copy=el('div','','app-notification-copy'),report=item.event_key==='line_group_summary'?renderDailyReport(item.body):null;
-  copy.append(el('strong',item.title));
+  const heading=el('div','','app-notification-heading');
+  heading.append(el('strong',item.title));
+  if(!item.read_at)heading.append(el('span','未讀','app-notification-unread-badge'));
+  copy.append(heading);
   copy.append(report||el('p',item.body,'app-notification-body'));
   copy.append(el('time',time(item.created_at)));
   a.append(copy);a.onclick=()=>db.rpc('mark_app_notification_read',{p_id:item.id});area.append(a);

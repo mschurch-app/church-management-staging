@@ -2,7 +2,8 @@ import {db} from './admin-db.mjs';
 import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261003-access-guard1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 
-const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);
+const params=new URLSearchParams(location.search),values=params.getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);
+const requestedState=params.get('state'),currentScope=params.get('scope')==='current',DAY_MS=24*60*60*1000;
 let labels={pending:'待關懷',praying:'守望中',answered:'蒙應允',closed:'已結案'},categoryOptions=[];
 let rows=[],busy=false,generation=0;
 const el=(tag,value='',className='')=>{const node=document.createElement(tag);node.textContent=value;node.className=className;return node;};
@@ -23,13 +24,19 @@ function editCare(row){
   area.append(form);area.scrollIntoView({behavior:'smooth',block:'start'});state.focus();
 }
 
+function scopedRows(){
+  if(!currentScope)return rows;
+  const now=Date.now(),wallCutoff=now-6*DAY_MS;
+  return rows.filter(row=>row.is_private===true||(row.is_private===false&&Date.parse(row.expires_at)>now&&Date.parse(row.created_at)>wallCutoff));
+}
+
 function filteredRows(){
   const term=$('#search').value.trim().toLocaleLowerCase('zh-TW'),privacy=$('#privacy').value,state=$('#state').value;
-  return rows.filter(row=>(privacy==='all'||(privacy==='private')===Boolean(row.is_private))&&(state==='all'||(row.status||'pending')===state)&&(!term||[row.author_name,row.group_name,row.title,row.content,row.category,row.pastoral_notes].some(value=>String(value||'').toLocaleLowerCase('zh-TW').includes(term))));
+  return scopedRows().filter(row=>(privacy==='all'||(privacy==='private')===Boolean(row.is_private))&&(state==='all'||(row.status||'pending')===state)&&(!term||[row.author_name,row.group_name,row.title,row.content,row.category,row.pastoral_notes].some(value=>String(value||'').toLocaleLowerCase('zh-TW').includes(term))));
 }
 
 function renderSummary(){
-  const area=$('#summary');area.replaceChildren();for(const [key,label] of [['all','全部'],...Object.entries(labels)]){const count=key==='all'?rows.length:rows.filter(row=>(row.status||'pending')===key).length;const card=el('article','','summary-card');card.append(el('strong',String(count)),el('span',label));area.append(card);}
+  const area=$('#summary'),source=scopedRows();area.replaceChildren();for(const [key,label] of [['all','全部'],...Object.entries(labels)]){const count=key==='all'?source.length:source.filter(row=>(row.status||'pending')===key).length;const card=el('article','','summary-card');card.append(el('strong',String(count)),el('span',label));area.append(card);}
 }
 
 function render(){
@@ -42,7 +49,7 @@ function render(){
     if(row.pastoral_notes){const note=el('div','','pastoral-note');note.append(el('strong','教牧關懷備註'),el('p',row.pastoral_notes));card.append(note);}
     const meta=el('p','同心禱告 '+Number(row.hands_count||0)+' 次','muted'),button=el('button',row.pastoral_notes?'更新關懷紀錄':'新增關懷紀錄','secondary');button.onclick=()=>{if(!busy)editCare(row);};card.append(meta,button);area.append(card);
   }
-  $('#status').textContent=visible.length?'顯示 '+visible.length+' 筆；私密內容僅限獲授權同工。':'目前沒有符合條件的代禱事項。';
+  $('#status').textContent=visible.length?'顯示 '+visible.length+' 筆'+(currentScope?'目前代禱；公開項目與代禱牆同步，另含教牧私密代禱。':'；私密內容僅限獲授權同工。'):'目前沒有符合條件的代禱事項。';
 }
 
 async function load(){
@@ -51,5 +58,6 @@ async function load(){
 }
 
 $('#title').textContent=(church==='M+'?'M＋大雅教會':church==='SHiNE'?'火樂教會':'')+' · 代禱與牧養關懷';$('#members').href='members.html?church='+encodeURIComponent(church||'');
+if(['pending','praying','answered','closed'].includes(requestedState))$('#state').value=requestedState;
 for(const id of ['search','privacy','state'])$('#'+id).addEventListener(id==='search'?'input':'change',render);$('#reload').onclick=load;
 document.addEventListener('visibilitychange',()=>{if(document.hidden){generation++;rows=[];$('#items').replaceChildren();}else load();});db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){generation++;rows=[];$('#items').replaceChildren();$('#status').textContent='已登出，請重新登入。';}});load();

@@ -1,6 +1,8 @@
 import {db} from './admin-db.mjs';
 import {readAccess,chooseChurch} from './admin-access.mjs?v=20261003-access-guard1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
+const requestedNext=new URLSearchParams(location.search).get('next');
+function safeNext(){if(!requestedNext)return '';try{const target=new URL(requestedNext,location.origin);if(target.origin!==location.origin||target.pathname.includes('..')||!target.pathname.endsWith('.html'))return '';return target.pathname.replace(/^\//,'')+target.search+target.hash;}catch{return '';}}
 form.addEventListener('submit',async event=>{
  event.preventDefault();button.disabled=true;status.textContent='正在確認登入…';
  let signedIn=false;
@@ -10,7 +12,7 @@ form.addEventListener('submit',async event=>{
   if(!data?.session||!data?.user)throw new Error('登入狀態尚未建立，請再試一次。');
   signedIn=true;status.textContent='密碼已驗證，正在載入管理權限…';
   const access=await readAccess(db,{user:data.user,retry:true}),church=chooseChurch(access);
-  location.replace('admin-dashboard.html?church='+encodeURIComponent(church));
+  location.replace(safeNext()||'admin-dashboard.html?church='+encodeURIComponent(church));
  }catch(error){if(!signedIn)await db.auth.signOut({scope:'local'});status.textContent=error.message||'暫時無法登入，請稍後再試。';}
  finally{document.querySelector('#password').value='';button.disabled=false;}
 });

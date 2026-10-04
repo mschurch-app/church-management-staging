@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs';
+import {db} from './admin-db.mjs?v=20261004-pull1';
 import {readAccess,chooseChurch} from './admin-access.mjs?v=20261003-access-guard1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 const requestedNext=new URLSearchParams(location.search).get('next');

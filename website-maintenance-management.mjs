@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261004-persistent1';
+import {db} from './admin-db.mjs?v=20261004-pull1';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261003-access-guard1';
 
 const BUCKET='church-website-public-media';

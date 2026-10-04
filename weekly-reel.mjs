@@ -1,17 +1,17 @@
 import {AudioBufferSource,AudioBufferSource,BufferTarget,CanvasSource,Mp4OutputFormat,Output,Quality,canEncodeVideo} from 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/+esm';
 
 const WIDTH=720,HEIGHT=1280,FPS=24,DURATION=5;
-function cover(ctx,image,progress){const zoom=1.02+progress*.05,scale=Math.max(WIDTH/image.width,HEIGHT/image.height)*zoom,w=image.width*scale,h=image.height*scale;ctx.drawImage(image,(WIDTH-w)/2,(HEIGHT-h)/2,w,h);}
+function hero(ctx,image,progress){const scale=Math.min(612/image.width,344/image.height)*(1+progress*.015),w=image.width*scale,h=image.height*scale,x=(WIDTH-w)/2,y=190+(344-h)/2;ctx.save();ctx.beginPath();ctx.roundRect(54,190,612,344,24);ctx.clip();ctx.drawImage(image,x,y,w,h);ctx.restore();}
 function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
 function wrap(ctx,text,maxWidth,maxLines=3){const chars=[...String(text||'')],lines=[];let line='';for(const char of chars){const next=line+char;if(ctx.measureText(next).width>maxWidth&&line){lines.push(line);line=char;if(lines.length===maxLines-1)break;}else line=next;}if(line&&lines.length<maxLines)lines.push(line);const used=lines.join('').length;if(used<chars.length)lines[lines.length-1]=lines[lines.length-1].replace(/[，。！？、,.!?…]*$/,'')+'…';return lines;}
 function drawFrame(ctx,image,data,progress){
-  ctx.save();cover(ctx,image,progress);ctx.fillStyle='rgba(20,28,25,.30)';ctx.fillRect(0,0,WIDTH,HEIGHT);const gradient=ctx.createLinearGradient(0,280,0,1280);gradient.addColorStop(0,'rgba(20,35,31,.04)');gradient.addColorStop(.55,'rgba(17,45,39,.64)');gradient.addColorStop(1,'rgba(16,50,43,.94)');ctx.fillStyle=gradient;ctx.fillRect(0,0,WIDTH,HEIGHT);
-  const rise=Math.max(0,(.16-progress)*110),fade=Math.min(1,progress/.18,(1-progress)/.12);ctx.globalAlpha=Math.max(.15,fade);ctx.translate(0,rise);
-  ctx.fillStyle='rgba(255,255,255,.94)';roundedRect(ctx,54,70,198,54,27);ctx.fillStyle='#153f37';ctx.font='800 23px system-ui,"Noto Sans TC",sans-serif';ctx.fillText('M+ 大雅教會',78,106);
-  ctx.fillStyle='#ffd893';ctx.font='800 24px system-ui,"Noto Sans TC",sans-serif';ctx.fillText('THIS SUNDAY · 主日信息',58,750);
-  ctx.fillStyle='#fff';ctx.font='800 58px system-ui,"Noto Sans TC",sans-serif';let y=828;for(const line of wrap(ctx,data.title,606,3)){ctx.fillText(line,58,y);y+=76;}
-  ctx.fillStyle='rgba(255,255,255,.84)';ctx.font='500 28px system-ui,"Noto Sans TC",sans-serif';for(const line of wrap(ctx,data.subtitle,600,2)){ctx.fillText(line,58,y+12);y+=43;}
-  ctx.fillStyle='rgba(255,255,255,.16)';roundedRect(ctx,54,1110,612,92,24);ctx.fillStyle='#fff';ctx.font='750 28px system-ui,"Noto Sans TC",sans-serif';ctx.fillText(data.dateLabel,82,1166);ctx.font='650 22px system-ui,"Noto Sans TC",sans-serif';ctx.textAlign='right';ctx.fillText('歡迎回家',636,1166);ctx.textAlign='left';ctx.restore();
+  ctx.save();ctx.fillStyle='#0b211c';ctx.fillRect(0,0,WIDTH,HEIGHT);const gradient=ctx.createLinearGradient(0,0,0,1280);gradient.addColorStop(0,'#071713');gradient.addColorStop(1,'#123d35');ctx.fillStyle=gradient;ctx.fillRect(0,0,WIDTH,HEIGHT);hero(ctx,image,progress);
+  const rise=Math.max(0,(.16-progress)*85),fade=Math.min(1,progress/.18,(1-progress)/.12);ctx.globalAlpha=Math.max(.15,fade);ctx.translate(0,rise);
+  ctx.fillStyle='rgba(255,255,255,.95)';roundedRect(ctx,54,70,220,54,27);ctx.fillStyle='#153f37';ctx.font='800 23px system-ui,"Noto Sans TC",sans-serif';ctx.fillText('M+ 大雅教會',78,106);
+  ctx.fillStyle='#ffd060';ctx.font='800 24px system-ui,"Noto Sans TC",sans-serif';ctx.fillText('THIS SUNDAY',58,606);
+  ctx.fillStyle='#fff';ctx.font='800 53px system-ui,"Noto Sans TC",sans-serif';let y=686;for(const line of wrap(ctx,data.title,606,3)){ctx.fillText(line,58,y);y+=68;}
+  ctx.fillStyle='rgba(255,255,255,.82)';ctx.font='500 27px system-ui,"Noto Sans TC",sans-serif';for(const line of wrap(ctx,data.subtitle,600,2)){ctx.fillText(line,58,y+8);y+=40;}
+  ctx.fillStyle='rgba(255,255,255,.16)';roundedRect(ctx,54,1080,612,96,24);ctx.fillStyle='#fff';ctx.font='750 29px system-ui,"Noto Sans TC",sans-serif';ctx.textAlign='center';ctx.fillText('歡迎回家！',360,1139);ctx.textAlign='left';ctx.font='600 22px system-ui,"Noto Sans TC",sans-serif';ctx.fillStyle='rgba(255,255,255,.68)';ctx.fillText(data.dateLabel,58,1020);ctx.restore();
 }
 async function loadImage(url){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('reel_image');return createImageBitmap(await response.blob());}
 export function reelSupported(){return typeof VideoEncoder!=='undefined'&&typeof VideoFrame!=='undefined';}

@@ -23,3 +23,6 @@ verify_jwt = true
 
 [functions.weekly-bulletin-review]
 verify_jwt = true
+
+[functions.instagram-publishing]
+verify_jwt = true

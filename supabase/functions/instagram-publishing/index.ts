@@ -92,8 +92,8 @@ async function publishSermon(db:ReturnType<typeof createClient>,serviceKey:strin
   if(!draft.social_image_url?.startsWith('https://mscos.mchurch.online/'))throw new Error('sermon_image_missing');
   const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
   if(connectionResult.error||!connection)throw new Error('not_connected');
-  const previous=await db.from('sermon_social_publication_jobs').select('status,instagram_media_id').eq('draft_id',draft.id).maybeSingle();
-  if(previous.data?.status==='published'&&previous.data.instagram_media_id)return {status:'published',mediaId:previous.data.instagram_media_id};
+  const previous=await db.from('sermon_social_publication_jobs').select('status,instagram_media_id,image_url').eq('draft_id',draft.id).maybeSingle();
+  if(previous.data?.status==='published'&&previous.data.instagram_media_id&&previous.data.image_url===draft.social_image_url)return {status:'published',mediaId:previous.data.instagram_media_id};
   const caption=String(draft.caption||`${draft.sermon_title}\n${draft.speaker||''}\n${draft.service_date}\n\n#Mplus大雅教會 #主日講道 #台中教會`).slice(0,2200),now=new Date().toISOString();
   const queued=await db.from('sermon_social_publication_jobs').upsert({draft_id:draft.id,church_id:church,image_url:draft.social_image_url,caption,status:'processing',attempt_count:1,requested_by:userId,requested_at:now,started_at:now,error_code:null,updated_at:now},{onConflict:'draft_id'}).select('id').single();
   if(queued.error||!queued.data)throw new Error('job_store');

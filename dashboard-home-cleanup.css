@@ -74,10 +74,39 @@
 }
 .dashboard-page .app-setup .app-install-row{background:#fffaf6!important}
 .dashboard-page>.footnote{margin:18px 0 4px;color:#837068;font-size:11px;text-align:center}
+.mobile-app-nav{display:none}
 @media(max-width:760px){
+  html{scroll-behavior:smooth;scroll-padding-top:14px}
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .dashboard-page{width:100%!important;max-width:none!important;padding:10px 14px 24px!important;overflow-x:hidden}
+  .dashboard-page>.page-header{min-height:0!important;margin:0 0 12px!important;padding:20px 18px 22px!important;border-radius:0 0 24px 24px!important}
+  .dashboard-page>.page-header .church-brand{margin-bottom:8px}
+  .dashboard-page>.page-header .eyebrow{font-size:10px!important;letter-spacing:.1em}
+  .dashboard-page>.page-header h1{font-size:25px!important;line-height:1.15}
+  .dashboard-page>.page-header #welcome{margin-top:7px!important;font-size:13px!important}
+  .dashboard-page>.page-header #logout{min-height:38px!important;padding:8px 12px!important;font-size:12px!important}
+  .dashboard-page>#status{margin:8px 0 14px!important;padding:10px 12px!important;font-size:12px!important}
+  .dashboard-page .dashboard-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .dashboard-page .summary-card{min-width:0!important;padding:12px!important;border-radius:15px!important}
+  .dashboard-page .summary-card strong{font-size:22px!important}
+  .dashboard-page .section-heading{align-items:flex-end!important;margin:18px 2px 10px!important}
+  .dashboard-page .section-heading h2{font-size:20px!important}
+  .dashboard-page .section-heading .eyebrow{font-size:9px!important}
+  .dashboard-page .todo-grid{grid-template-columns:1fr!important;gap:8px!important}
+  .dashboard-page .todo-card{min-width:0!important;padding:13px!important;border-radius:16px!important}
+  .dashboard-page .primary-hub{margin:16px 0!important}
+  .dashboard-page .primary-hub .app-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .dashboard-page .primary-hub .app-hub-card{min-width:0!important;min-height:96px!important;padding:13px!important;border-radius:17px!important;overflow:hidden}
+  .dashboard-page .primary-hub .app-hub-card span{font-size:24px!important}
+  .dashboard-page .primary-hub .app-hub-card strong{font-size:14px!important;line-height:1.25}
+  .dashboard-page .primary-hub .app-hub-card small{display:-webkit-box;overflow:hidden;font-size:11px!important;line-height:1.35;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .dashboard-page .home-drawer>summary{grid-template-columns:minmax(0,1fr) auto;min-height:60px;padding:13px 15px}
   .dashboard-page .drawer-note{display:none}
   .dashboard-page .home-drawer>.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .dashboard-page .system-links{grid-template-columns:1fr}
   .dashboard-page .app-install-row{gap:9px}
+  .mobile-app-nav{position:fixed;z-index:100;right:10px;bottom:max(8px,env(safe-area-inset-bottom));left:10px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid rgba(221,207,197,.92);border-radius:22px;background:rgba(255,252,249,.94);box-shadow:0 12px 34px rgba(63,41,31,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .mobile-app-nav a{display:flex;min-width:0;min-height:50px;align-items:center;justify-content:center;flex-direction:column;gap:2px;border-radius:16px;color:#715c52;font-size:10px;font-weight:800;text-decoration:none}
+  .mobile-app-nav a span{font-size:19px;line-height:1}
+  .mobile-app-nav a:active,.mobile-app-nav a:focus-visible{background:#f9e6dc;color:#a43b2a;outline:none}
 }

@@ -23,3 +23,4 @@ wireInstallButton($('#install-app'),$('#install-help'));
 wireNotificationButtons($('#enable-notifications'),$('#test-notification'),$('#install-help'));
 loadNotificationCenter($('#notification-list'),$('#notification-count'));
 $('#test-notification').addEventListener('click',async()=>{try{await createTestNotification(church);await loadNotificationCenter($('#notification-list'),$('#notification-count'));}catch(error){$('#install-help').textContent=error.message;}});
+document.querySelector('[data-open-details]')?.addEventListener('click',event=>{const target=document.querySelector('#mobile-more');if(!target)return;event.preventDefault();target.open=true;target.scrollIntoView({behavior:'smooth',block:'start'});});

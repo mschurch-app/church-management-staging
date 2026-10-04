@@ -82,7 +82,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
   }
   if(body.action==='get'){
     if(!profile.reviewer||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
-    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,submitted_at,review_comment').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
+    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(result.error||!result.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
     return json(APP_ORIGIN,{ok:true,bulletin:result.data});
   }
@@ -99,7 +99,8 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
     await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:found.data.id,church_id:church,bulletin_version:found.data.version,action:approved?'approved':'changes_requested',actor_user_id:user.id,comment:comment||null});
     await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now,payload:{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version,review_result:nextStatus,review_comment:comment||null}}).eq('entity_key',churchEntity(church)).eq('status','pending').contains('payload',{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version});
     await notifyEditor(db,church,found.data,approved,comment);
-    return json(APP_ORIGIN,{ok:true,status:nextStatus});
+    let instagramQueued=false;if(approved&&church==='M+'){instagramQueued=true;const token=request.headers.get('authorization')||'';EdgeRuntime.waitUntil(fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/instagram-publishing`,{method:'POST',headers:{authorization:token,'content-type':'application/json',origin:APP_ORIGIN},body:JSON.stringify({action:'publish',church,bulletinId:found.data.id})}).catch(()=>undefined));}
+    return json(APP_ORIGIN,{ok:true,status:nextStatus,instagramQueued});
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);
 }

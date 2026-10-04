@@ -10,6 +10,7 @@ const headers=(origin:string)=>({
 });
 const json=(origin:string,data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:headers(origin)});
 const bytesToBase64=(bytes:Uint8Array)=>{let value='';for(const byte of bytes)value+=String.fromCharCode(byte);return btoa(value);};
+const base64ToBytes=(value:string)=>Uint8Array.from(atob(value),character=>character.charCodeAt(0));
 
 function adminClient(){
   const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||Deno.env.get('SUPABASE_SECRET_KEY')||'';
@@ -33,6 +34,12 @@ async function encryptToken(token:string,serviceKey:string){
   const encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(token));
   return {ciphertext:bytesToBase64(new Uint8Array(encrypted)),iv:bytesToBase64(iv)};
 }
+async function decryptToken(ciphertext:string,iv:string,serviceKey:string){
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${serviceKey}:instagram-publishing:v1`));
+  const key=await crypto.subtle.importKey('raw',digest,{name:'AES-GCM'},false,['decrypt']);
+  const value=await crypto.subtle.decrypt({name:'AES-GCM',iv:base64ToBytes(iv)},key,base64ToBytes(ciphertext));
+  return new TextDecoder().decode(value);
+}
 async function instagramProfile(token:string){
   const url=new URL('https://graph.instagram.com/me');
   url.searchParams.set('fields','user_id,username,name,account_type');
@@ -40,6 +47,42 @@ async function instagramProfile(token:string){
   const data=await response.json().catch(()=>({}));
   if(!response.ok||!data?.username||!(data.user_id||data.id))throw new Error('invalid_token');
   return {id:String(data.user_id||data.id),username:String(data.username),accountType:String(data.account_type||'PROFESSIONAL')};
+}
+const wait=(milliseconds:number)=>new Promise(resolve=>setTimeout(resolve,milliseconds));
+async function graph(path:string,token:string,method='GET',parameters:Record<string,string>={}){
+  const url=new URL(`https://graph.instagram.com/v24.0/${path}`),options:RequestInit={method,headers:{authorization:`Bearer ${token}`,'user-agent':'MPlusChurchOS/1.0'},signal:AbortSignal.timeout(15000),redirect:'error'};
+  if(method==='GET')for(const [key,value] of Object.entries(parameters))url.searchParams.set(key,value);
+  else{options.headers={...options.headers,'content-type':'application/x-www-form-urlencoded'};options.body=new URLSearchParams(parameters);}
+  const response=await fetch(url,options),data=await response.json().catch(()=>({}));
+  if(!response.ok||data?.error){const error=new Error('instagram_api');(error as Error&{details?:unknown}).details=data?.error||data;throw error;}
+  return data;
+}
+function apiErrorCode(error:unknown){const details=(error as Error&{details?:{code?:number;error_subcode?:number}})?.details;if(details?.code===10||details?.code===200)return 'permission_missing';if(details?.code===190)return 'token_expired';return 'instagram_api';}
+async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,church:string,bulletinId:string,userId:string){
+  const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle(),bulletin=bulletinResult.data;
+  if(bulletinResult.error||!bulletin)throw new Error('bulletin_not_found');
+  if(bulletin.status!=='published')throw new Error('bulletin_not_published');
+  if(!bulletin.reel_enabled||!bulletin.reel_video_path)return {status:'skipped'};
+  const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
+  if(connectionResult.error||!connection)throw new Error('not_connected');
+  const caption=String(bulletin.reel_caption||`${bulletin.title}\n${bulletin.service_date}\n\n#Mplus大雅教會 #主日週報 #台中教會`).slice(0,2200),now=new Date().toISOString();
+  const previous=await db.from('instagram_publication_jobs').select('status,instagram_media_id').eq('bulletin_id',bulletin.id).eq('bulletin_version',bulletin.version).maybeSingle();
+  if(previous.data?.status==='published'&&previous.data.instagram_media_id)return {status:'published',mediaId:previous.data.instagram_media_id};
+  const queued=await db.from('instagram_publication_jobs').upsert({church_id:church,bulletin_id:bulletin.id,bulletin_version:bulletin.version,media_path:bulletin.reel_video_path,caption,status:'processing',requested_by:userId,requested_at:now,started_at:now,updated_at:now},{onConflict:'bulletin_id,bulletin_version'}).select('id,status,instagram_media_id').single();
+  if(queued.error||!queued.data)throw new Error('job_store');
+  try{
+    const token=await decryptToken(connection.access_token_ciphertext,connection.access_token_iv,serviceKey),videoUrl=db.storage.from('church-website-public-media').getPublicUrl(bulletin.reel_video_path).data.publicUrl;
+    const created=await graph(`${connection.instagram_user_id}/media`,token,'POST',{media_type:'REELS',video_url:videoUrl,caption,share_to_feed:'true'}),containerId=String(created.id||'');
+    if(!containerId)throw new Error('instagram_api');
+    await db.from('instagram_publication_jobs').update({container_id:containerId,attempt_count:1,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
+    let ready=false;
+    for(let attempt=0;attempt<20;attempt++){await wait(2000);const state=await graph(containerId,token,'GET',{fields:'status_code,status'});if(state.status_code==='FINISHED'){ready=true;break;}if(['ERROR','EXPIRED'].includes(state.status_code))throw new Error('instagram_processing');}
+    if(!ready)throw new Error('instagram_timeout');
+    const published=await graph(`${connection.instagram_user_id}/media_publish`,token,'POST',{creation_id:containerId}),mediaId=String(published.id||'');
+    if(!mediaId)throw new Error('instagram_api');
+    await db.from('instagram_publication_jobs').update({status:'published',instagram_media_id:mediaId,published_at:new Date().toISOString(),error_code:null,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
+    return {status:'published',mediaId};
+  }catch(error){const code=apiErrorCode(error);await db.from('instagram_publication_jobs').update({status:'failed',error_code:code,updated_at:new Date().toISOString()}).eq('id',queued.data.id);if(code==='token_expired')await db.from('instagram_publishing_connections').update({status:'expired',last_error:code,updated_at:new Date().toISOString()}).eq('church_id',church);throw new Error(code);}
 }
 
 Deno.serve(async request=>{
@@ -68,6 +111,14 @@ Deno.serve(async request=>{
     if(body.action==='disconnect'){
       const result=await client.db.from('instagram_publishing_connections').delete().eq('church_id',church);
       if(result.error)throw result.error;return json(origin,{ok:true,connection:null});
+    }
+    if(body.action==='publication_status'){
+      const result=await client.db.from('instagram_publication_jobs').select('status,instagram_media_id,error_code,requested_at,published_at,updated_at').eq('church_id',church).eq('bulletin_id',String(body.bulletinId||'')).order('requested_at',{ascending:false}).limit(1).maybeSingle();
+      if(result.error)throw result.error;return json(origin,{ok:true,publication:result.data||null});
+    }
+    if(body.action==='publish'){
+      const bulletinId=String(body.bulletinId||'');if(!/^[0-9a-f-]{36}$/i.test(bulletinId))return json(origin,{ok:false,error:'invalid_request'},400);
+      const result=await publishReel(client.db,client.serviceKey,church,bulletinId,user.id);return json(origin,{ok:true,...result});
     }
     return json(origin,{ok:false,error:'invalid_action'},400);
   }catch(error){

@@ -17,6 +17,7 @@
 
     .website-editor-layout,.website-scope,.scope-panel,.site-preview-card,.bulletin-editor,.bulletin-list,.scope-card,.reel-panel{box-sizing:border-box;min-width:0}.scope-card>span:nth-child(2){min-width:0}.scope-card small{overflow-wrap:anywhere}.member-page{overflow-x:hidden}
     @media(max-width:560px){.member-page{width:100%;max-width:100%;padding-left:14px!important;padding-right:14px!important;box-sizing:border-box}.website-scope{display:block;margin:14px 0 18px}.scope-panel,.site-preview-card,.scope-note{width:100%;max-width:100%;padding:15px;border-radius:18px}.scope-panel>p{font-size:.9rem;line-height:1.55}.scope-cards{gap:9px;margin-top:12px}.scope-card{width:100%;max-width:100%;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;padding:11px 12px;border-radius:15px;overflow:hidden}.scope-icon{width:40px;height:40px}.scope-card strong{font-size:1rem}.scope-card small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:.82rem;line-height:1.35}.scope-status{grid-column:3;grid-row:1/span 2;align-self:center;justify-self:end;padding:5px 8px}.site-preview-card{margin-top:14px}.site-preview-frame{height:210px}.scope-note{margin:12px 0 18px}.website-editor-layout{gap:14px}.bulletin-list,.bulletin-editor{width:100%;max-width:100%;padding:14px}.reel-panel{padding:14px}.music-list{grid-template-columns:1fr 1fr}.music-list .music-row{padding:7px 8px}.music-list .music-row label{font-size:.88rem}.music-list .music-row button{font-size:.75rem}.music-trim-meta{align-items:flex-start;flex-direction:column}}
+.website-form-actions button:disabled{background:#ece9e6!important;border-color:#ded9d5!important;color:#938b85!important;box-shadow:none!important;cursor:not-allowed!important}.locked-actions-note{width:100%;padding:10px 12px;border-radius:12px;background:#f5f1ed;color:#765f57;font-weight:700}
   </style>
 <link rel="stylesheet" href="church-palette.css?v=20261003-contrast1"></head>
 <body><main class="member-page">
@@ -50,7 +51,7 @@
       <section id="schedule-preview" class="schedule-preview" aria-live="polite"></section>
       <h2>週報欄位</h2><p class="website-hint">下方每個標題、說明、項目名稱與內文都可以編輯；需要更多欄位可按「新增一項」。奉獻徵信公開前請遮蔽個人姓名或改用代碼。主日服事表會依日期自動讀取本週及下週排班資料。</p>
       <div id="sections"></div>
-      <div class="website-form-actions"><button id="save-bulletin" type="submit">儲存週報</button><button id="submit-review" type="button">送交牧師、師母審核</button><button id="reload-bulletins" type="button" class="secondary">重新載入</button><span id="save-hint" class="website-hint"></span></div>
+      <div class="website-form-actions"><button id="save-bulletin" type="submit">儲存週報</button><button id="submit-review" type="button">送交牧師、師母審核</button><button id="create-next-bulletin" type="button" hidden>＋ 建立下週週報</button><button id="reload-bulletins" type="button" class="secondary">重新載入</button><span id="save-hint" class="website-hint"></span></div>
     </form></section>
   </div>
-</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20261004-pull1"></script></body></html>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="website-maintenance-management.mjs?v=20261004-actions1"></script></body></html>

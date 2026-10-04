@@ -54,7 +54,7 @@
 .dashboard-page .app-hub-grid.compact .app-hub-card span{font-size:23px}
 .dashboard-page .system-links{
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:10px;
 }
 .dashboard-page .system-links a{
@@ -74,6 +74,16 @@
 }
 .dashboard-page .app-setup .app-install-row{background:#fffaf6!important}
 .dashboard-page>.footnote{margin:18px 0 4px;color:#837068;font-size:11px;text-align:center}
+.dashboard-page .module-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:4px 16px 18px}
+.dashboard-page .module-group{min-width:0;padding:16px;border:1px solid #f0e2d8;border-radius:18px;background:#fffaf7}
+.dashboard-page .module-group--people{grid-row:span 2}
+.dashboard-page .module-group-heading{margin-bottom:13px}
+.dashboard-page .module-group-heading h3{margin:0;color:#4b3128;font-size:17px}
+.dashboard-page .module-group-heading p{margin:4px 0 0;font-size:12px}
+.dashboard-page .module-group .dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.dashboard-page .module-group .dashboard-card{min-height:118px;padding:15px;border-radius:16px;box-shadow:none}
+.dashboard-page .module-group .dashboard-card h3{font-size:15px}
+.dashboard-page .module-group .dashboard-card p{font-size:12px;line-height:1.45}
 .mobile-app-nav{display:none}
 @media(max-width:760px){
   html{scroll-behavior:smooth;scroll-padding-top:14px}
@@ -102,7 +112,11 @@
   .dashboard-page .primary-hub .app-hub-card small{display:-webkit-box;overflow:hidden;font-size:11px!important;line-height:1.35;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .dashboard-page .home-drawer>summary{grid-template-columns:minmax(0,1fr) auto;min-height:60px;padding:13px 15px}
   .dashboard-page .drawer-note{display:none}
-  .dashboard-page .home-drawer>.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dashboard-page .module-groups{grid-template-columns:1fr;padding:4px 12px 14px}
+  .dashboard-page .module-group{padding:13px}
+  .dashboard-page .module-group--people{grid-row:auto}
+  .dashboard-page .module-group .dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  .dashboard-page .module-group .dashboard-card{min-height:100px!important;padding:7px 3px!important}
   .dashboard-page .system-links{grid-template-columns:1fr}
   .dashboard-page .app-install-row{gap:9px}
   .mobile-app-nav{position:fixed;z-index:100;right:10px;bottom:max(8px,env(safe-area-inset-bottom));left:10px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid rgba(221,207,197,.92);border-radius:22px;background:rgba(255,252,249,.94);box-shadow:0 12px 34px rgba(63,41,31,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}

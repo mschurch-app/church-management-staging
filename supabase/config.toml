@@ -26,3 +26,6 @@ verify_jwt = true
 
 [functions.instagram-publishing]
 verify_jwt = true
+
+[functions.media-publishing-settings]
+verify_jwt = true

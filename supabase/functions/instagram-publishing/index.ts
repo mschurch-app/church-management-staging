@@ -58,7 +58,13 @@ async function graph(path:string,token:string,method='GET',parameters:Record<str
   return data;
 }
 function apiErrorCode(error:unknown){const details=(error as Error&{details?:{code?:number;error_subcode?:number}})?.details;if(details?.code===10||details?.code===200)return 'permission_missing';if(details?.code===190)return 'token_expired';return 'instagram_api';}
+async function publishingEnabled(db:ReturnType<typeof createClient>,church:string,field:'instagram_sermon_enabled'|'instagram_weekly_reel_enabled'){
+  const result=await db.from('media_publishing_settings').select(field).eq('church_id',church).maybeSingle();
+  if(result.error)throw new Error('publishing_settings_unavailable');
+  return result.data?.[field]===true;
+}
 async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,church:string,bulletinId:string,userId:string){
+  if(!await publishingEnabled(db,church,'instagram_weekly_reel_enabled'))throw new Error('publishing_disabled');
   const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle(),bulletin=bulletinResult.data;
   if(bulletinResult.error||!bulletin)throw new Error('bulletin_not_found');
   if(bulletin.status!=='published')throw new Error('bulletin_not_published');
@@ -86,6 +92,7 @@ async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,
 }
 
 async function publishSermon(db:ReturnType<typeof createClient>,serviceKey:string,church:string,draftId:string,userId:string|null){
+  if(!await publishingEnabled(db,church,'instagram_sermon_enabled'))throw new Error('publishing_disabled');
   const draftResult=await db.from('sermon_social_drafts').select('id,church_id,service_date,sermon_title,speaker,caption,status,social_image_url').eq('id',draftId).eq('church_id',church).maybeSingle(),draft=draftResult.data;
   if(draftResult.error||!draft)throw new Error('sermon_not_found');
   if(draft.status!=='approved')throw new Error('sermon_not_approved');
@@ -162,7 +169,8 @@ Deno.serve(async request=>{
     }
     return json(origin,{ok:false,error:'invalid_action'},400);
   }catch(error){
-    const code=error instanceof Error&&error.message==='invalid_token'?'invalid_token':'unavailable';
-    return json(origin,{ok:false,error:code},code==='invalid_token'?400:503);
+    const message=error instanceof Error?error.message:'';
+    const code=message==='invalid_token'?'invalid_token':message==='publishing_disabled'?'publishing_disabled':'unavailable';
+    return json(origin,{ok:false,error:code},code==='invalid_token'?400:code==='publishing_disabled'?409:503);
   }
 });

@@ -57,6 +57,9 @@ Deno.serve(async req=>{
  const secret=req.headers.get('x-cron-secret')||'';if(!url||!key||!secret)return json(401,{ok:false,error:'unauthorized'});
  const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
  const valid=await db.rpc('pastoral_validate_care_cron_secret',{p_secret:secret});if(valid.error||valid.data!==true)return json(401,{ok:false,error:'unauthorized'});
+ const automation=await db.from('media_publishing_settings').select('sermon_analysis_enabled').eq('church_id','M+').maybeSingle();
+ if(automation.error)return json(503,{ok:false,error:'publishing_settings_unavailable'});
+ if(automation.data?.sermon_analysis_enabled!==true)return json(200,{ok:true,status:'skipped',reason:'sermon_analysis_disabled'});
  let video:any;
  try{
   const body=await req.json().catch(()=>({}));video=body.video_id?{id:String(body.video_id),title:String(body.title||''),published:String(body.service_date||dateTW()),url:'https://www.youtube.com/watch?v='+String(body.video_id)}:await latestVideo();

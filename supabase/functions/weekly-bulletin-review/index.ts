@@ -99,7 +99,11 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
     await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:found.data.id,church_id:church,bulletin_version:found.data.version,action:approved?'approved':'changes_requested',actor_user_id:user.id,comment:comment||null});
     await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now,payload:{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version,review_result:nextStatus,review_comment:comment||null}}).eq('entity_key',churchEntity(church)).eq('status','pending').contains('payload',{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version});
     await notifyEditor(db,church,found.data,approved,comment);
-    let instagramQueued=false;if(approved&&church==='M+'){instagramQueued=true;const token=request.headers.get('authorization')||'';EdgeRuntime.waitUntil(fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/instagram-publishing`,{method:'POST',headers:{authorization:token,'content-type':'application/json',origin:APP_ORIGIN},body:JSON.stringify({action:'publish',church,bulletinId:found.data.id})}).catch(()=>undefined));}
+    let instagramQueued=false;
+    if(approved&&church==='M+'){
+      const setting=await db.from('media_publishing_settings').select('instagram_weekly_reel_enabled').eq('church_id',church).maybeSingle();
+      if(!setting.error&&setting.data?.instagram_weekly_reel_enabled===true){instagramQueued=true;const token=request.headers.get('authorization')||'';EdgeRuntime.waitUntil(fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/instagram-publishing`,{method:'POST',headers:{authorization:token,'content-type':'application/json',origin:APP_ORIGIN},body:JSON.stringify({action:'publish',church,bulletinId:found.data.id})}).catch(()=>undefined));}
+    }
     return json(APP_ORIGIN,{ok:true,status:nextStatus,instagramQueued});
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);

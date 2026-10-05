@@ -36,11 +36,12 @@ async function synthesize(video:{id:string;title:string;published:string;url:str
  const key=Deno.env.get('GEMINI_API_KEY')||'';if(!key)throw new Error('gemini_key_missing');
  const model='gemini-3.1-flash-lite',usable=segments.map(x=>{const analysis=x.analysis||{},copy={...analysis};delete copy.subtitle_cues;return copy}).filter(x=>x?.contains_sermon);
  if(!usable.length)throw new Error('sermon_segment_not_found');
- const prompt=`以下是同一場主日直播分段分析後，只包含正式講道的候選內容。請合併、去除重複，且不得加入原文沒有的資訊。敬拜、報告、奉獻與主持內容一律排除。
+ const prompt=`以下是同一場主日直播分段分析後，只包含正式講道的主稿資料。請合併並去除重複。所有內容必須以主稿為唯一依據，嚴禁無中生有；不得補寫講員沒有說過的故事、例證、經文解釋、神學主張、結論或應用。敬拜、報告、奉獻與主持內容一律排除。
 影片標題：${video.title}
 日期：${video.published}
 分段資料：${JSON.stringify(usable)}
-請輸出 JSON：sermon_title、speaker、scripture、sermon_start_seconds、sermon_end_seconds、confidence（high/medium/low）、outline（4至7項，每項包含標題與精簡說明）、key_points（3至6項，每項為可直接閱讀的重點內容）、applications（2至4項）、caption（IG貼文，含講題、經文、重點與邀請，不超過1800字）。不得輸出逐字稿。欄位為 sermon_title、speaker、scripture、sermon_start_seconds、sermon_end_seconds、confidence、outline、key_points、applications、caption。`;
+可以為原有內容下精簡標題、彙整重點、整理講員已表達的結論，以及把講員提出的行動方向整理為應用回應，但不得擴張或改變原意。若資料不足，寧可少寫或留空，不可推測。IG 貼文依序呈現講題與經文、講道重點、結論、應用回應及聚會邀請；聚會邀請只使用教會既有固定資訊，不假裝是講員原話。不得輸出逐字稿或星號字元。
+請輸出 JSON：sermon_title、speaker、scripture、sermon_start_seconds、sermon_end_seconds、confidence（high/medium/low）、outline（4至7項，每項包含標題與精簡說明）、key_points（3至6項，每項為可直接閱讀的重點內容）、applications（2至4項）、caption（不超過1800字）。欄位為 sermon_title、speaker、scripture、sermon_start_seconds、sermon_end_seconds、confidence、outline、key_points、applications、caption。`;
  return {model,result:await gemini(key,model,[{text:prompt}],12000)};
 }
 async function notifyInitialReviewer(db:any,draft:any){

@@ -91,7 +91,7 @@ Deno.serve(async req=>{
   const output=await synthesize(video,completed),r=output.result;
   const saved=await db.from('sermon_social_drafts').update({sermon_title:String(r.sermon_title||video.title),speaker:String(r.speaker||''),scripture:String(r.scripture||''),sermon_start_seconds:Number(r.sermon_start_seconds)||null,sermon_end_seconds:Number(r.sermon_end_seconds)||null,transcript:null,outline:Array.isArray(r.outline)?r.outline:[],key_points:Array.isArray(r.key_points)?r.key_points:[],applications:Array.isArray(r.applications)?r.applications:[],caption:String(r.caption||'').replace(/\*/g,''),status:'pending_review',review_stage:'initial_review',initial_reviewer_id:'d066ac92-9801-46cc-9293-2932399b4e11',model:output.model,error_code:null,updated_at:new Date().toISOString()}).eq('id',started.data.id).select('*').single();
   if(saved.error)throw new Error('draft_update');
-  const recipients=await notifyInitialReviewer(db,saved.data);return json(200,{ok:true,draft_id:saved.data.id,status:'pending_review',recipients,video});
+  const recipients=0;return json(200,{ok:true,draft_id:saved.data.id,status:'pending_review',recipients,notification_deferred_until_subtitle_review:true,video});
  }catch(error){
   const message=error instanceof Error?error.message:'unknown';
   if(video?.id)await db.from('sermon_social_drafts').update({status:'failed',error_code:message.slice(0,500),updated_at:new Date().toISOString()}).eq('church_id','M+').eq('youtube_video_id',video.id);

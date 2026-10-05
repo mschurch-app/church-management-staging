@@ -27,14 +27,14 @@ async function gemini(key:string,model:string,parts:any[],maxOutputTokens=8000){
 }
 async function analyzeSegment(video:{id:string;title:string;published:string;url:string},start:number,end:number){
  const key=Deno.env.get('GEMINI_API_KEY')||'';if(!key)throw new Error('gemini_key_missing');
- const model=Deno.env.get('GEMINI_SERMON_MODEL')||'gemini-2.5-flash';
- const prompt=`分析這段主日直播（全片第 ${start} 到 ${end} 秒）。辨識內容類型，排除敬拜詩歌、樂器演奏、主持、奉獻、報告、活動宣傳與片尾。若包含正式講道，整理該段講道的大綱候選與重點，不輸出逐字稿。輸出 JSON：segment_start、segment_end、content_types（陣列）、contains_sermon（布林）、sermon_start_seconds、sermon_end_seconds、speaker、scripture、summary、outline_candidates（陣列）、key_points（陣列）。時間必須使用全片秒數。`;
+ const model='gemini-3.1-flash-lite';
+ const prompt=`分析這段主日直播（全片第 ${start} 到 ${end} 秒），一次建立後續所有發布內容共用的講道主稿。辨識內容類型，排除敬拜詩歌、樂器演奏、主持、奉獻、報告、活動宣傳與片尾。若包含正式講道，整理該段講道的大綱候選與重點，並只針對講道產生繁體中文字幕。字幕須忠於講員原意、修正常見同音錯字與標點，每則約 5 至 12 秒、自然斷句、最多兩行；時間使用全片秒數。輸出 JSON：segment_start、segment_end、content_types（陣列）、contains_sermon（布林）、sermon_start_seconds、sermon_end_seconds、speaker、scripture、summary、outline_candidates（陣列）、key_points（陣列）、subtitle_cues（陣列，每項包含 start_seconds、end_seconds、text）。`;
  const result=await gemini(key,model,[{fileData:{fileUri:video.url,mimeType:'video/mp4'},videoMetadata:{startOffset:start+'s',endOffset:end+'s',fps:0.1}},{text:prompt}],8000);
  return {model,result};
 }
 async function synthesize(video:{id:string;title:string;published:string;url:string},segments:any[]){
  const key=Deno.env.get('GEMINI_API_KEY')||'';if(!key)throw new Error('gemini_key_missing');
- const model=Deno.env.get('GEMINI_SERMON_MODEL')||'gemini-2.5-flash',usable=segments.map(x=>x.analysis).filter(x=>x?.contains_sermon);
+ const model='gemini-3.1-flash-lite',usable=segments.map(x=>{const analysis=x.analysis||{},copy={...analysis};delete copy.subtitle_cues;return copy}).filter(x=>x?.contains_sermon);
  if(!usable.length)throw new Error('sermon_segment_not_found');
  const prompt=`以下是同一場主日直播分段分析後，只包含正式講道的候選內容。請合併、去除重複，且不得加入原文沒有的資訊。敬拜、報告、奉獻與主持內容一律排除。
 影片標題：${video.title}
@@ -76,9 +76,10 @@ Deno.serve(async req=>{
    const durationSeconds=Number(body.duration_seconds);
    if(Number.isFinite(durationSeconds)&&durationSeconds>0&&segmentStart>=durationSeconds){
     await db.from('sermon_social_segments').update({status:'completed',analysis:{content_types:['out_of_range'],contains_sermon:false,segment_start:segmentStart,segment_end:segmentEnd,summary:'超出影片片長，略過。',outline_candidates:[],key_points:[]},error_code:null,updated_at:new Date().toISOString()}).eq('draft_id',started.data.id).eq('segment_index',segmentIndex);
+    await db.from('sermon_subtitle_segments').upsert({draft_id:started.data.id,segment_index:segmentIndex,start_seconds:segmentStart,end_seconds:segmentEnd,cues:[],status:'completed',error_code:null,model:'gemini-3.1-flash-lite',reviewed_cues:[],review_status:'completed',review_error:null,reviewed_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'draft_id,segment_index'});
     return json(200,{ok:true,status:'segment_skipped',draft_id:started.data.id,segment_index:segmentIndex});
    }
-   try{const segment=await analyzeSegment(video,segmentStart,segmentEnd);await db.from('sermon_social_segments').update({status:'completed',analysis:segment.result,error_code:null,updated_at:new Date().toISOString()}).eq('draft_id',started.data.id).eq('segment_index',segmentIndex);return json(200,{ok:true,status:'segment_completed',draft_id:started.data.id,segment_index:segmentIndex});}
+   try{const segment=await analyzeSegment(video,segmentStart,segmentEnd),rawCues=Array.isArray(segment.result?.subtitle_cues)?segment.result.subtitle_cues:[],cues=rawCues.map((cue:any)=>({start_seconds:Number(cue?.start_seconds),end_seconds:Number(cue?.end_seconds),text:String(cue?.text||'').trim().slice(0,160)})).filter((cue:any)=>Number.isFinite(cue.start_seconds)&&Number.isFinite(cue.end_seconds)&&cue.start_seconds>=segmentStart&&cue.end_seconds>cue.start_seconds&&cue.end_seconds<=segmentEnd&&cue.text);await db.from('sermon_social_segments').update({status:'completed',analysis:segment.result,error_code:null,updated_at:new Date().toISOString()}).eq('draft_id',started.data.id).eq('segment_index',segmentIndex);const subtitle=await db.from('sermon_subtitle_segments').upsert({draft_id:started.data.id,segment_index:segmentIndex,start_seconds:segmentStart,end_seconds:segmentEnd,cues,status:'completed',error_code:null,model:segment.model,reviewed_cues:[],review_status:cues.length?'pending':'completed',review_error:null,reviewed_at:cues.length?null:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'draft_id,segment_index'});if(subtitle.error)throw new Error('subtitle_store');return json(200,{ok:true,status:'segment_completed',draft_id:started.data.id,segment_index:segmentIndex,subtitle_cues:cues.length});}
    catch(error){const message=error instanceof Error?error.message:'segment_error';await db.from('sermon_social_segments').update({status:'failed',error_code:message.slice(0,500),updated_at:new Date().toISOString()}).eq('draft_id',started.data.id).eq('segment_index',segmentIndex);return json(503,{ok:false,error:message,segment_index:segmentIndex});}
   }
   const segments=await db.from('sermon_social_segments').select('segment_index,status,analysis,error_code').eq('draft_id',started.data.id).order('segment_index');

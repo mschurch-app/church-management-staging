@@ -8,7 +8,7 @@ const hex=(b:ArrayBuffer|Uint8Array)=>[...new Uint8Array(b)].map(v=>v.toString(1
 const unhex=(v:string)=>new Uint8Array(v.match(/.{1,2}/g)?.map(x=>parseInt(x,16))||[]);
 const key=(v:string,u:KeyUsage[])=>crypto.subtle.importKey('raw',enc.encode(v),{name:'AES-CBC'},false,u);
 const encrypt=async(v:string,k:string,i:string)=>hex(await crypto.subtle.encrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['encrypt']),enc.encode(v)));
-const decrypt=async(v:string,k:string,i:string)=>dec.decode(await crypto.subtle.decrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['decrypt']),unhex(v)));
+const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}return dec.decode(await crypto.subtle.decrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['decrypt']),bytes)).replace(/\0+$/,'');};
 const sha=async(v:string)=>hex(await crypto.subtle.digest('SHA-256',enc.encode(v))).toUpperCase();
 const safe=(v:unknown,m=500)=>String(v??'').trim().slice(0,m);
 const orderNo=()=>('HB27'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();

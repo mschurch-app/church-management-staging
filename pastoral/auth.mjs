@@ -1,5 +1,5 @@
 import {LINE_LOGIN_CHANNEL_ID, PASTORAL_LIFF_ID, PASTORAL_AUTH_ENDPOINT} from './config.mjs?v=20260924-4';
-import {db} from '../admin-db.mjs?v=20261006-feedback2';
+import {db} from '../admin-db.mjs?v=20261006-mobile-stability1';
 
 let initialization;
 export function loginConfigured(){

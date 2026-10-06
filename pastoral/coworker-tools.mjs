@@ -1,4 +1,4 @@
-import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261003-friendly1';
+import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261006-mobile-stability1';
 import { PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TOOLS_ENDPOINT } from './config.mjs?v=20260930-1';
 
 const $ = selector => document.querySelector(selector);

@@ -1,3 +1,4 @@
+import './action-feedback.mjs?v=20261006-1';
 const validChurches=new Set(['M+','SHiNE']);
 const requested=new URLSearchParams(location.search).get('church');
 const church=validChurches.has(requested)?requested:null;
@@ -103,7 +104,7 @@ async function mountManagement(){
   const managementRoot=document.querySelector('.member-page,.ministry-app');if(!managementRoot)return;
   try{
     const localPreview=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('preview')==='1';
-    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs?v=20261006-inventory1'),import('./church-customizations.mjs?v=20260924-custom1')]);
+    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261006-feedback1'),import('./admin-access.mjs?v=20261006-inventory1'),import('./church-customizations.mjs?v=20260924-custom1')]);
     const allPermissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces'];
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;updateManagementBrand(managementRoot,selected);

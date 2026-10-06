@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs';
+import {db} from './admin-db.mjs?v=20261006-feedback1';
 import {listTodaysMessages,listLoveShareCards,listLoveShareScenarios,saveSpiritualCard,saveGreeting,saveLoveShareScenario,setLoveShareScenarioActive,setContentActive,uploadGreetingImage,greetingPreview} from './pastoral-content-management.mjs';
 
 const $=selector=>document.querySelector(selector);

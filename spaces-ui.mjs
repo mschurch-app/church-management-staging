@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs';
+import {db} from './admin-db.mjs?v=20261006-feedback1';
 import {
   listRooms, saveRoom, listBookings, createBooking, updateBooking,
   setBookingStatus, setRoomActive

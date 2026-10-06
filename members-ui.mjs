@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs';
+import {db} from './admin-db.mjs?v=20261006-feedback1';
 import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20261003-access-guard1';
 import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260924-custom2';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';

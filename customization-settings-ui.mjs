@@ -5,7 +5,7 @@ import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20
 
 const church=new URLSearchParams(location.search).get('church'),$=selector=>document.querySelector(selector);
 const catalogTitles={growth_progress:'會友聚會狀況',faith_status:'信仰階段',group_types:'小組／小家類型',meeting_types:'聚會類型',prayer_categories:'代禱分類',prayer_statuses:'關懷狀態',newcomer_stages:'新朋友跟進階段',notification_rules:'通知項目'};
-const FEATURE_ORDER=['members','newcomer_care','tree_reading_admin','binding_review','notification_settings','groups','attendance','schedules','prayers','spaces','pastoral_inbox','pastoral_content','website_weekly','website_group_resources'];
+const FEATURE_ORDER=['members','newcomer_care','tree_reading_admin','binding_review','notification_settings','groups','attendance','schedules','prayers','pastoral_inbox','pastoral_content','website_weekly','website_group_resources'];
 let current,draft,welcomeOptions,welcomeVersion,ministries=[],ministryAvailable=false,busy=false;
 const featureStates=new Map();
 const dirty=new Set();
@@ -19,7 +19,7 @@ function reorder(list,keys,section='custom'){const map=new Map(list.map(item=>[i
 function featureItem(churchId,key){return featureStates.get(churchId)?.draft.feature_modules.find(item=>item.key===key);}
 function renderFeatures(){
  const area=$('#feature-list');area.replaceChildren();
- const order=[...new Set([...featureStates.values()].flatMap(state=>state.draft.feature_modules.map(item=>item.key)))];
+ const order=[...new Set([...featureStates.values()].flatMap(state=>state.draft.feature_modules.map(item=>item.key)))].filter(key=>key!=='spaces');
  for(const key of order){
   const base=featureItem('M+',key)||featureItem('SHiNE',key);if(!base)continue;
   const row=el('article','','custom-row feature-assignment-row');row.dataset.sortRow='';row.dataset.sortKey=key;

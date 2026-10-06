@@ -124,8 +124,8 @@
   .dashboard-page .module-groups{grid-template-columns:1fr;padding:4px 12px 14px}
   .dashboard-page .module-group{padding:13px}
   .dashboard-page .module-group--people{grid-row:auto}
-  .dashboard-page .module-group .dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
-  .dashboard-page .module-group .dashboard-card{min-height:100px!important;padding:7px 3px!important}
+  .dashboard-page .module-group .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .dashboard-page .module-group .dashboard-card{min-height:108px!important;padding:12px 9px!important}
   .dashboard-page .system-links{grid-template-columns:1fr}
   .dashboard-page .app-install-row{gap:9px}
   .mobile-app-nav{position:fixed;z-index:100;right:10px;bottom:max(8px,env(safe-area-inset-bottom));left:10px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid rgba(221,207,197,.92);border-radius:22px;background:rgba(255,252,249,.94);box-shadow:0 12px 34px rgba(63,41,31,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}

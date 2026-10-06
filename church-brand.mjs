@@ -16,7 +16,6 @@ const modules=[
   {key:'attendance',file:'attendance.html',label:'聚會點名',icon:'✅',permission:'attendance'},
   {key:'schedules',file:'schedules.html',label:'服事排班',icon:'📅',permission:'schedules'},
   {key:'prayers',file:'prayers.html',label:'代禱關懷',icon:'🙏',permission:'private_prayers'},
-  {key:'spaces',file:'spaces.html',label:'場地預約',icon:'📍',permission:'spaces',also:['amenities.html']},
   {key:'pastoral_inbox',file:'pastoral-inbox.html',label:'牧養訊息',icon:'💬',permission:'pastoral_chats'},
   {key:'pastoral_content',file:'pastoral-content.html',label:'教牧內容',icon:'✨',permission:'pastoral_chats'},
   {key:'settings',file:'church-settings.html',label:'系統設定',icon:'⚙️',also:['customization-settings.html','welcome-settings.html','ministry-settings.html','admin-accounts.html','todays-message-settings.html','love-share-settings.html']}
@@ -29,9 +28,8 @@ const contextualModules={
   notification_settings:['notification_settings','settings'],
   groups:['groups','members','attendance'],
   attendance:['attendance','groups'],
-  schedules:['schedules','spaces'],
+  schedules:['schedules'],
   prayers:['prayers','newcomer_care','pastoral_inbox'],
-  spaces:['spaces','schedules'],
   pastoral_inbox:['pastoral_inbox','pastoral_content','prayers'],
   pastoral_content:['pastoral_content','pastoral_inbox','prayers'],
   settings:['settings','notification_settings']

@@ -12,13 +12,13 @@
     <form id="form" class="login-form">
       <label for="email">電子郵件<input id="email" type="email" autocomplete="username" placeholder="name@example.com" required></label>
       <label for="password">密碼<input id="password" type="password" autocomplete="current-password" placeholder="請輸入密碼" required></label>
-      <button id="submit">登入管理首頁 <span aria-hidden="true">→</span></button>
+      <p id="status" role="status" aria-live="polite" class="app-status"></p>
+      <button id="submit" type="submit">登入管理首頁 <span aria-hidden="true">→</span></button>
     </form>
     <a class="forgot-password" href="admin-password-reset.html">忘記密碼？寄送重設信</a>
-    <p id="status" role="status" class="app-status"></p>
     <p class="login-note">帳號與權限由系統安全管理</p>
   </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs?v=20261004-return1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs?v=20261006-mobile-timeout1"></script>
 <script type="module" src="church-brand.mjs?v=20261006-feedback2"></script>
 <script type="module" src="app-pwa.mjs?v=20261004-pull1"></script></body></html>

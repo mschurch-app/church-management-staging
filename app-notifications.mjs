@@ -31,14 +31,14 @@ function renderDailyReport(value){
 }
 export async function loadNotificationCenter(area,badge){
  const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(error||!Array.isArray(data)){area.replaceChildren(el('p','通知中心暫時無法載入。','muted'));return;}
- const unread=data.filter(item=>!item.read_at).length;badge.textContent=unread?unread+' 則未讀':'全部已讀';const drawer=area.closest('details');if(drawer&&unread)drawer.open=true;area.replaceChildren();
- if(!data.length){area.append(el('p','目前還沒有系統通知。','muted'));return;}
- for(const item of data){
-  const a=el('a','',`app-notification${item.read_at?'':' unread'}`);a.href=item.target_url;
+ const unreadItems=data.filter(item=>!item.read_at),unread=unreadItems.length;badge.textContent=unread?unread+' 則未讀':'沒有未讀';const drawer=area.closest('details');if(drawer)drawer.open=Boolean(unread);area.replaceChildren();
+ if(!unread){area.append(el('p','目前沒有未讀通知。','muted'));return;}
+ for(const item of unreadItems){
+  const a=el('a','','app-notification unread');a.href=item.target_url;
   const copy=el('div','','app-notification-copy'),report=item.event_key==='line_group_summary'?renderDailyReport(item.body):null;
   const heading=el('div','','app-notification-heading');
   heading.append(el('strong',item.title));
-  if(!item.read_at)heading.append(el('span','未讀','app-notification-unread-badge'));
+  heading.append(el('span','未讀','app-notification-unread-badge'));
   copy.append(heading);
   copy.append(report||el('p',item.body,'app-notification-body'));
   copy.append(el('time',time(item.created_at)));

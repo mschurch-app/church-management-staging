@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs?v=20261006-inventory1';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261006-mobile-stability1';
 async function authorize(db,church){const access=await readAccess(db);if(!canOpen(access,church,'newcomer_care'))throw new Error('沒有此堂會的新朋友管理權限。');return access;}
 export async function loadCareCases(db,church){await authorize(db,church);const {data,error}=await db.rpc('list_newcomer_care_cases',{p_church:church});if(error||!Array.isArray(data))throw new Error('無法載入新朋友關懷資料。');return data;}
 export async function saveCareUpdate(db,church,input){await authorize(db,church);const {data,error}=await db.rpc('update_newcomer_care_case',{p_church:church,p_case_id:input.caseId,p_stage:input.stage,p_contact_method:input.contactMethod||null,p_summary:input.summary,p_next_step:input.nextStep,p_next_follow_up_at:input.nextFollowUpAt||null,p_close:input.close===true});if(error||data!==true)throw new Error('關懷紀錄未儲存，請重新整理後再試。');return true;}

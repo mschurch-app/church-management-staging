@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261006-feedback2';
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261006-inventory1';
+import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261006-mobile-stability1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 const requestedNext=new URLSearchParams(location.search).get('next');
 const defaultButton=button.innerHTML;

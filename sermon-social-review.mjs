@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-feedback2';
+import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
 const $=s=>document.querySelector(s),draft=new URLSearchParams(location.search).get('draft'),endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-social-review';let item,youtubeWorkflow,isFinalReviewer=false,busy=false;
 function setStatus(text,tone=''){const n=$('#status');n.textContent=text;n.dataset.tone=tone;}
 async function api(action,payload={}){const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token){location.replace('admin-login.html?next='+encodeURIComponent(location.pathname+location.search));throw new Error('請重新登入。');}const response=await fetch(endpoint,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify({action,draftId:draft,...payload})}),data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(data.error||'操作失敗。');return data;}

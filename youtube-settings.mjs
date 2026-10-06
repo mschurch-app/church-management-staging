@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261006-feedback2';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261006-inventory1';
+import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261006-mobile-stability1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/youtube-oauth',q=new URLSearchParams(location.search),church=q.get('church')||'M+',$=selector=>document.querySelector(selector);
 function status(text,tone=''){const node=$('#status');node.textContent=text;node.dataset.tone=tone;}
 async function api(action){const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token)throw new Error('登入已失效，請重新登入教會 OS。');const response=await fetch(ENDPOINT,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({action,church}),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(18000)}),result=await response.json().catch(()=>({}));if(!response.ok){const messages={forbidden:'只有牧師、師母或週報核准人員可以管理此連線。',login_required:'登入已失效，請重新登入教會 OS。'};throw new Error(messages[result.error]||'YouTube 連線暫時無法處理。');}return result;}

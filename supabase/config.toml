@@ -3,6 +3,9 @@ project_id = "church-management-staging"
 [functions.prayer-wall]
 verify_jwt = false
 
+[functions.heat-camp-registration]
+verify_jwt = false
+
 [functions.pastoral-auth-line]
 verify_jwt = false
 

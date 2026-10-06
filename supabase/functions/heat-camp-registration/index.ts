@@ -1,34 +1,20 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-
-const allowedOrigins=new Set(['https://mchurch.online','https://www.mchurch.online','http://127.0.0.1:4180','http://localhost:4180']);
-const headers=(origin:string)=>({
-  'access-control-allow-origin':allowedOrigins.has(origin)?origin:'https://mchurch.online',
-  'access-control-allow-headers':'content-type, apikey, authorization',
-  'access-control-allow-methods':'POST, OPTIONS',
-  'content-type':'application/json; charset=utf-8',
-  'cache-control':'no-store',
-  'vary':'Origin'
-});
-const json=(origin:string,status:number,data:unknown)=>new Response(JSON.stringify(data),{status,headers:headers(origin)});
-
-Deno.serve(async request=>{
-  const origin=request.headers.get('origin')||'';
-  if(request.method==='OPTIONS')return allowedOrigins.has(origin)?new Response('ok',{headers:headers(origin)}):json(origin,403,{ok:false,error:'forbidden'});
-  if(request.method!=='POST'||!allowedOrigins.has(origin))return json(origin,403,{ok:false,error:'forbidden'});
-  const body=await request.json().catch(()=>null);
-  if(!body||!['configuration_status','jersey_availability'].includes(body.action))return json(origin,400,{ok:false,error:'invalid_request'});
-  if(body.action==='configuration_status'){
-    const merchantId=Deno.env.get('NEWEBPAY_MERCHANT_ID')||'';
-    const hashKey=Deno.env.get('NEWEBPAY_HASH_KEY')||'';
-    const hashIv=Deno.env.get('NEWEBPAY_HASH_IV')||'';
-    const environment=Deno.env.get('NEWEBPAY_ENV')||'';
-    return json(origin,200,{ok:true,configured:Boolean(merchantId&&hashKey&&hashIv),environment:environment||'unset',merchant_suffix:merchantId.slice(-4)});
-  }
-  const url=Deno.env.get('SUPABASE_URL')||'';
-  const key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||Deno.env.get('SUPABASE_SECRET_KEY')||'';
-  if(!url||!key)return json(origin,503,{ok:false,error:'unavailable'});
-  const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-  const result=await db.rpc('heat_camp_2027_available_jersey_numbers');
-  if(result.error)return json(origin,503,{ok:false,error:'unavailable'});
-  return json(origin,200,{ok:true,numbers:(result.data||[]).map((row:{jersey_number:number})=>row.jersey_number)});
-});
+const APP='https://mchurch.online/heat-camp-2027.html',FN='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/heat-camp-registration';
+const origins=new Set(['https://mchurch.online','https://www.mchurch.online','http://127.0.0.1:4180','http://localhost:4180']),enc=new TextEncoder(),dec=new TextDecoder();
+const cors=(o:string)=>({'access-control-allow-origin':origins.has(o)?o:'https://mchurch.online','access-control-allow-headers':'content-type, apikey, authorization','access-control-allow-methods':'POST, OPTIONS','cache-control':'no-store','vary':'Origin'});
+const json=(o:string,s:number,d:unknown)=>new Response(JSON.stringify(d),{status:s,headers:{...cors(o),'content-type':'application/json; charset=utf-8'}});
+const db=()=>createClient(Deno.env.get('SUPABASE_URL')||'',Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||Deno.env.get('SUPABASE_SECRET_KEY')||'',{auth:{persistSession:false,autoRefreshToken:false}});
+const hex=(b:ArrayBuffer|Uint8Array)=>[...new Uint8Array(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+const unhex=(v:string)=>new Uint8Array(v.match(/.{1,2}/g)?.map(x=>parseInt(x,16))||[]);
+const key=(v:string,u:KeyUsage[])=>crypto.subtle.importKey('raw',enc.encode(v),{name:'AES-CBC'},false,u);
+const encrypt=async(v:string,k:string,i:string)=>hex(await crypto.subtle.encrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['encrypt']),enc.encode(v)));
+const decrypt=async(v:string,k:string,i:string)=>dec.decode(await crypto.subtle.decrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['decrypt']),unhex(v)));
+const sha=async(v:string)=>hex(await crypto.subtle.digest('SHA-256',enc.encode(v))).toUpperCase();
+const safe=(v:unknown,m=500)=>String(v??'').trim().slice(0,m);
+const orderNo=()=>('HB27'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();
+const expiry=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.now()+259200000)).replaceAll('-','');
+function config(){const merchantId=Deno.env.get('NEWEBPAY_MERCHANT_ID')||'',hashKey=Deno.env.get('NEWEBPAY_HASH_KEY')||'',hashIv=Deno.env.get('NEWEBPAY_HASH_IV')||'',environment=Deno.env.get('NEWEBPAY_ENV')||'';if(!merchantId||hashKey.length!==32||hashIv.length!==16)throw Error('payment_config_invalid');return{merchantId,hashKey,hashIv,environment,gateway:environment==='production'?'https://core.newebpay.com/MPG/mpg_gateway':'https://ccore.newebpay.com/MPG/mpg_gateway'};}
+function clean(input:any){const r:Record<string,unknown>={},fields=['player_name','guardian_name','guardian_phone','email','line_id','national_id','postal_code','receipt_address','birthday','school_stage','school_name','height_cm','weight_kg','basketball_years','primary_position','dominant_hand','current_team','competition_level','jersey_size','jersey_number','jersey_name','emergency_name','emergency_phone','dietary_need','special_identity','medical_notes','care_notes','donor_name','receipt_title','receipt_id','exception_reason','pricing_mode'];for(const f of fields)r[f]=safe(input[f],f.includes('notes')?1000:f.includes('address')?220:160);r.training_goals=Array.isArray(input.training_goals)?input.training_goals.map((v:unknown)=>safe(v,30)).slice(0,10):[];for(const f of ['eligibility_exception','tax_upload_consent','public_credit','insurance_consent','privacy_consent','receipt_consent','truth_consent'])r[f]=input[f]===true;if(!r.insurance_consent||!r.privacy_consent||!r.receipt_consent||!r.truth_consent)throw Error('consent_required');return r;}
+async function checkout(origin:string,input:any){try{const c=config(),requestId=safe(input.request_id,36);if(!/^[0-9a-f-]{36}$/i.test(requestId))return json(origin,400,{ok:false,error:'invalid_request_id'});const created=await db().rpc('heat_camp_2027_create_registration',{p_request_id:requestId,p_payload:clean(input.registration||{}),p_merchant_order_no:orderNo()});if(created.error){const e=created.error.message?.match(/(registration_closed|pricing_mode_not_ready|price_unavailable|invalid_[a-z_]+|camp_full|jersey_or_order_unavailable|encryption_unavailable)/)?.[1]||'registration_failed';return json(origin,409,{ok:false,error:e});}const row=created.data;if(row.status==='exception_review')return json(origin,200,{ok:true,status:row.status,registration_no:row.registration_no});const p=new URLSearchParams({MerchantID:c.merchantId,RespondType:'JSON',TimeStamp:String(Math.floor(Date.now()/1000)),Version:'2.0',LangType:'zh-tw',MerchantOrderNo:row.merchant_order_no,Amt:String(row.amount),ItemDesc:'2027熱火籃球營報名費',Email:safe(row.email,160),LoginType:'0',CREDIT:'1',VACC:'1',ExpireDate:expiry(),ReturnURL:FN+'?mode=return',NotifyURL:FN+'?mode=notify',CustomerURL:FN+'?mode=return'}),tradeInfo=await encrypt(p.toString(),c.hashKey,c.hashIv),tradeSha=await sha(`HashKey=${c.hashKey}&TradeInfo=${tradeInfo}&HashIV=${c.hashIv}`);return json(origin,200,{ok:true,status:'checkout',registration_no:row.registration_no,gateway:c.gateway,fields:{MerchantID:c.merchantId,TradeInfo:tradeInfo,TradeSha:tradeSha,Version:'2.0'}});}catch(e){return json(origin,400,{ok:false,error:e instanceof Error?e.message:'registration_failed'});}}
+async function callback(req:Request,mode:string){try{const form=await req.formData(),ti=safe(form.get('TradeInfo'),20000),ts=safe(form.get('TradeSha'),128),c=config();if(!ti||await sha(`HashKey=${c.hashKey}&TradeInfo=${ti}&HashIV=${c.hashIv}`)!==ts.toUpperCase())throw Error('signature_invalid');const data=JSON.parse(await decrypt(ti,c.hashKey,c.hashIv)),result=typeof data.Result==='string'?JSON.parse(data.Result):data.Result||{};if(result.MerchantID&&result.MerchantID!==c.merchantId)throw Error('merchant_mismatch');const success=data.Status==='SUCCESS',type=safe(result.PaymentType,40),paid=success&&(type.startsWith('CREDIT')||Boolean(result.PayTime)),saved=await db().rpc('heat_camp_2027_record_payment',{p_merchant_order_no:safe(result.MerchantOrderNo,40),p_trade_no:safe(result.TradeNo,40),p_paid:paid,p_result:result});if(saved.error)throw Error(saved.error.message||'record_failed');if(mode==='notify')return new Response('1|OK',{headers:{'content-type':'text/plain; charset=utf-8'}});const state=paid?'paid':success?'account-issued':'failed',target=`${APP}?payment=${state}&registration=${encodeURIComponent(saved.data.registration_no||'')}`;return new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><script>location.replace(${JSON.stringify(target)})<\/script><a href="${target}">返回報名頁</a>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store'}});}catch{if(mode==='notify')return new Response('0|ERROR',{status:400});return Response.redirect(APP+'?payment=failed',303);}}
+Deno.serve(async req=>{const origin=req.headers.get('origin')||'',mode=new URL(req.url).searchParams.get('mode')||'';if(mode==='notify'||mode==='return')return req.method==='POST'?callback(req,mode):new Response('method_not_allowed',{status:405});if(req.method==='OPTIONS')return origins.has(origin)?new Response('ok',{headers:cors(origin)}):json(origin,403,{ok:false,error:'forbidden'});if(req.method!=='POST'||!origins.has(origin))return json(origin,403,{ok:false,error:'forbidden'});const body=await req.json().catch(()=>null);if(!body)return json(origin,400,{ok:false,error:'invalid_request'});if(body.action==='configuration_status'){const c=config();return json(origin,200,{ok:true,configured:true,environment:c.environment,merchant_suffix:c.merchantId.slice(-4)});}if(body.action==='jersey_availability'){const r=await db().rpc('heat_camp_2027_available_jersey_numbers');return r.error?json(origin,503,{ok:false,error:'unavailable'}):json(origin,200,{ok:true,numbers:(r.data||[]).map((x:{jersey_number:number})=>x.jersey_number)});}if(body.action==='create_checkout')return checkout(origin,body);return json(origin,400,{ok:false,error:'invalid_request'});});

@@ -1,4 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {createDecipheriv} from 'node:crypto';
 const APP='https://mchurch.online/heat-camp-2027.html',TEST_APP='https://mchurch.online/heat-camp-2027-test.html',FN='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/heat-camp-registration',MPG_VERSION='2.3';
 const origins=new Set(['https://mchurch.online','https://www.mchurch.online','http://127.0.0.1:4180','http://localhost:4180']),enc=new TextEncoder(),dec=new TextDecoder();
 const cors=(o:string)=>({'access-control-allow-origin':origins.has(o)?o:'https://mchurch.online','access-control-allow-headers':'content-type, apikey, authorization','access-control-allow-methods':'POST, OPTIONS','cache-control':'no-store','vary':'Origin'});
@@ -8,7 +9,7 @@ const hex=(b:ArrayBuffer|Uint8Array)=>[...new Uint8Array(b)].map(v=>v.toString(1
 const unhex=(v:string)=>new Uint8Array(v.match(/.{1,2}/g)?.map(x=>parseInt(x,16))||[]);
 const key=(v:string,u:KeyUsage[])=>crypto.subtle.importKey('raw',enc.encode(v),{name:'AES-CBC'},false,u);
 const encrypt=async(v:string,k:string,i:string)=>hex(await crypto.subtle.encrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['encrypt']),enc.encode(v)));
-const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}return dec.decode(await crypto.subtle.decrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['decrypt']),bytes)).replace(/\0+$/,'');};
+const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replaceAll('-','+').replaceAll('_','/').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}const cipher=createDecipheriv('aes-256-cbc',enc.encode(k),enc.encode(i));cipher.setAutoPadding(false);const a=cipher.update(bytes),b=cipher.final(),plain=new Uint8Array(a.length+b.length);plain.set(a);plain.set(b,a.length);let end=plain.length,pad=plain[end-1];if(pad>0&&pad<=16&&plain.slice(end-pad).every(value=>value===pad))end-=pad;return dec.decode(plain.slice(0,end)).replace(/\0+$/,'');};
 const sha=async(v:string)=>hex(await crypto.subtle.digest('SHA-256',enc.encode(v))).toUpperCase();
 const safe=(v:unknown,m=500)=>String(v??'').trim().slice(0,m);
 const orderNo=()=>('HB27'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();

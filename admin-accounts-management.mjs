@@ -1,4 +1,4 @@
-import {readAccess} from './admin-access.mjs?v=20261006-inventory1';
+import {readAccess} from './admin-access.mjs?v=20261006-mobile-stability1';
 export const PERMISSIONS=Object.freeze({members:'會友名冊',attendance:'聚會點名',groups:'小組／小家',schedules:'服事排班',private_prayers:'代禱關懷',pastoral_chats:'牧養與內容',spaces:'場地預約',newcomer_care:'新朋友關懷',tree_reading_admin:'讀經生命樹',binding_review:'LINE 綁定審核',notification_settings:'LINE 通知設定',website_weekly:'教會網站維護',website_group_resources:'小組聚會資源',inventory:'物品清冊'});
 export const ROLE_TEMPLATES=Object.freeze({
   pastor:{label:'牧者',permissions:Object.keys(PERMISSIONS)},

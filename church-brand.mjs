@@ -39,14 +39,17 @@ document.documentElement.dataset.church=church||'';
 
 function logo(key){const image=document.createElement('img');image.src=brands[key].src;image.alt=brands[key].name;image.decoding='async';return image;}
 function lockup(key=church){const wrap=document.createElement('div');wrap.className='church-brand'+(key?'':' church-brand--pair');if(key){wrap.append(logo(key));return wrap;}wrap.append(logo('M+'));const divider=document.createElement('span');divider.className='church-brand-divider';divider.setAttribute('aria-hidden','true');wrap.append(divider,logo('SHiNE'));wrap.setAttribute('aria-label','M＋大雅教會與火樂教會');return wrap;}
+function singleBrand(key){return key==='SHiNE'?'SHiNE':'M+';}
+function updateManagementBrand(root,key){const brand=root?.querySelector('.church-brand');if(!brand)return;const selected=singleBrand(key);brand.classList.remove('church-brand--pair');brand.replaceChildren(logo(selected));brand.setAttribute('aria-label',brands[selected].name);}
 
 function mountBrand(){
   const newcomer=document.querySelector('#headerIconWrapper');
   if(newcomer&&church){newcomer.replaceChildren(logo(church));newcomer.className='public-church-brand';newcomer.removeAttribute('style');return;}
   const login=document.querySelector('.login-visual');if(login){login.prepend(lockup());return;}
-  const flow=document.querySelector('.flow-hero');if(flow){const badge=flow.querySelector('.badge');(badge||flow.firstChild)?.after(lockup());return;}
-  const ministry=document.querySelector('.ministry-hero .hero-content');if(ministry){ministry.prepend(lockup());return;}
-  const header=document.querySelector('.member-page>.page-header');if(header){const content=header.querySelector(':scope>div')||header;content.prepend(lockup());}
+  const selected=singleBrand(church);
+  const flow=document.querySelector('.flow-hero');if(flow){const badge=flow.querySelector('.badge');(badge||flow.firstChild)?.after(lockup(selected));return;}
+  const ministry=document.querySelector('.ministry-hero .hero-content');if(ministry){ministry.prepend(lockup(selected));return;}
+  const header=document.querySelector('.member-page>.page-header');if(header){const content=header.querySelector(':scope>div')||header;content.prepend(lockup(selected));}
 }
 mountBrand();
 
@@ -101,7 +104,7 @@ async function mountManagement(){
     const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs?v=20261003-access-guard1'),import('./church-customizations.mjs?v=20260924-custom1')]);
     const allPermissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces'];
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
-    const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;
+    const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;updateManagementBrand(managementRoot,selected);
     cleanLegacyNavigation();mountModuleBar(access,selected,settings);mountHeaderTools(access,selected);
     const header=document.querySelector('.member-page>.page-header'),content=header?.querySelector(':scope>div:not(.header-tools)');
     if(content){const existing=content.querySelector('#welcome');if(existing){existing.className='admin-identity';existing.textContent=access.user.name+'｜'+access.user.title;}else if(!content.querySelector('.admin-identity')){const chip=document.createElement('p'),name=document.createElement('strong'),title=document.createElement('span');chip.className='admin-identity';name.textContent=access.user.name;title.textContent=access.user.title;chip.append(name,document.createTextNode('｜'),title);content.append(chip);}}

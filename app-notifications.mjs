@@ -42,7 +42,7 @@ export async function loadNotificationCenter(area,badge){
   copy.append(heading);
   copy.append(report||el('p',item.body,'app-notification-body'));
   copy.append(el('time',time(item.created_at)));
-  a.append(copy);a.onclick=()=>db.rpc('mark_app_notification_read',{p_id:item.id});area.append(a);
+  a.append(copy);a.onclick=async event=>{event.preventDefault();await db.rpc('mark_app_notification_read',{p_id:item.id});location.assign(a.href);};area.append(a);
  }
 }
 export async function createTestNotification(church){const result=await db.rpc('create_my_test_notification',{p_church:church});if(result.error)throw new Error('測試通知未建立。');return result.data;}

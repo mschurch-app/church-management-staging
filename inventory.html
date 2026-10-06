@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#173f39">
+  <title>物品清冊｜教會 OS</title>
+  <link rel="icon" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+  <link rel="stylesheet" href="auth.css?v=20260923-aurora1"><link rel="stylesheet" href="church-brand.css?v=20261006-single-logo1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1"><link rel="stylesheet" href="apple-ui.css?v=20261005-unread-label1"><link rel="stylesheet" href="church-palette.css?v=20261003-contrast1"><link rel="stylesheet" href="inventory.css?v=20261006-1">
+</head>
+<body>
+<main class="member-page inventory-page">
+  <header class="page-header"><div><p class="eyebrow">INVENTORY · 總務管理</p><h1>物品清冊</h1><p id="identity" class="muted">正在確認登入與權限…</p></div><a class="secondary" href="admin-dashboard.html?church=M%2B">管理首頁</a></header>
+  <nav id="scope-switcher" class="inventory-scope" aria-label="物品清冊單位"></nav>
+  <p id="status" class="status-message" role="status">正在載入清冊…</p>
+
+  <section id="guide" class="setup-guide" hidden>
+    <div><p class="eyebrow">第一次建立</p><h2>從一個存放位置開始</h2><p>先建立房間、櫃子或層架，再把現場看到的物品逐一加入。照片都可以稍後再補。</p></div>
+    <ol><li><span>1</span>建立存放位置</li><li><span>2</span>登記物品與數量</li><li><span>3</span>繼續下一個位置</li></ol>
+    <button id="guide-location" type="button">建立第一個位置</button>
+  </section>
+
+  <section id="workspace" hidden>
+    <section id="metrics" class="inventory-metrics"></section>
+    <div class="inventory-actions">
+      <button id="add-item" type="button">＋ 登記物品</button><button id="add-location" class="secondary" type="button">＋ 建立位置</button><button id="print" class="secondary" type="button">列印清冊</button>
+    </div>
+    <section class="inventory-panel filter-panel">
+      <label class="search-field">搜尋物品<input id="search" type="search" placeholder="物品名稱、品牌、型號、規格或備註"></label>
+      <label>分類<select id="category-filter"><option value="">全部分類</option></select></label>
+      <label>存放位置<select id="location-filter"><option value="">全部位置</option></select></label>
+      <label>照片<select id="photo-filter"><option value="">全部</option><option value="with">有照片</option><option value="without">無照片</option></select></label>
+    </section>
+    <div class="inventory-layout">
+      <section class="inventory-panel items-panel"><div class="section-heading"><div><p class="eyebrow">ITEMS</p><h2>物品</h2></div><span id="item-count" class="status-badge"></span></div><div id="items" class="inventory-grid"></div></section>
+      <aside class="inventory-panel locations-panel"><div class="section-heading"><div><p class="eyebrow">LOCATIONS</p><h2>空間與櫃位</h2></div></div><div id="locations" class="location-list"></div></aside>
+    </div>
+  </section>
+</main>
+
+<dialog id="editor-dialog" class="inventory-dialog"><form id="editor-form"><button class="dialog-x" type="button" data-close aria-label="關閉">×</button><p id="editor-kicker" class="eyebrow"></p><h2 id="editor-title"></h2><div id="editor-fields" class="edit-grid"></div><p id="editor-message" class="status-message" hidden></p><div class="dialog-actions"><button type="button" class="secondary" data-close>取消</button><button id="editor-save" type="submit">儲存</button></div></form></dialog>
+<dialog id="detail-dialog" class="inventory-dialog detail-dialog"><button class="dialog-x" type="button" data-close aria-label="關閉">×</button><div id="detail-content"></div></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
+<script type="module" src="inventory.mjs?v=20261006-1"></script><script type="module" src="church-brand.mjs?v=20261006-inventory1"></script>
+</body></html>

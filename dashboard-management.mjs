@@ -1,4 +1,4 @@
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261003-access-guard1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261006-inventory1';
 export const MODULES=Object.freeze([
  {key:'members',permission:'members',title:'會友名冊',description:'會員、新朋友、封存與操作紀錄',file:'members.html',icon:'👥'},
  {key:'newcomer_care',permission:'newcomer_care',title:'新朋友關懷',description:'分派關懷、聯絡紀錄、下一步與逾期追蹤',file:'newcomer-care.html',icon:'🌱'},
@@ -9,6 +9,7 @@ export const MODULES=Object.freeze([
  {key:'attendance',permission:'attendance',title:'聚會點名',description:'出席登記、修改與統計',file:'attendance.html',icon:'✅'},
  {key:'schedules',permission:'schedules',title:'服事排班',description:'主日與聚會服事安排',file:'schedules.html',icon:'📅'},
  {key:'spaces',permission:'spaces',title:'場地預約',description:'空間、設備與借用審核',file:'spaces.html',icon:'📍'},
+ {key:'inventory',permission:'inventory',title:'物品清冊',description:'位置、數量、借出歸還、盤點與列印',file:'inventory.html',icon:'📦'},
  {key:'prayers',permission:'private_prayers',title:'代禱關懷',description:'公開與私密代禱追蹤',file:'prayers.html',icon:'🙏'},
  {key:'pastoral_inbox',permission:'pastoral_chats',title:'牧養訊息',description:'一對一訊息與跟進紀錄',file:'pastoral-inbox.html',icon:'💬'},
  {key:'pastoral_content',permission:'pastoral_chats',title:'教牧內容',description:'祝禱、小卡、旅程與圖卡',file:'pastoral-content.html',icon:'✨'},

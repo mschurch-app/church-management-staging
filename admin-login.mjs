@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261004-pull1';
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261003-access-guard1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261006-inventory1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 const requestedNext=new URLSearchParams(location.search).get('next');
 function safeNext(){if(!requestedNext)return '';try{const target=new URL(requestedNext,location.origin);if(target.origin!==location.origin||target.pathname.includes('..')||!target.pathname.endsWith('.html'))return '';return target.pathname.replace(/^\//,'')+target.search+target.hash;}catch{return '';}}

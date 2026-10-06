@@ -15,6 +15,7 @@ const modules=[
   {key:'groups',file:'groups.html',label:'小組／小家',icon:'🫶',permission:'groups',also:['group-members.html']},
   {key:'attendance',file:'attendance.html',label:'聚會點名',icon:'✅',permission:'attendance'},
   {key:'schedules',file:'schedules.html',label:'服事排班',icon:'📅',permission:'schedules'},
+  {key:'inventory',file:'inventory.html',label:'物品清冊',icon:'📦',permission:'inventory'},
   {key:'prayers',file:'prayers.html',label:'代禱關懷',icon:'🙏',permission:'private_prayers'},
   {key:'pastoral_inbox',file:'pastoral-inbox.html',label:'牧養訊息',icon:'💬',permission:'pastoral_chats'},
   {key:'pastoral_content',file:'pastoral-content.html',label:'教牧內容',icon:'✨',permission:'pastoral_chats'},
@@ -29,6 +30,7 @@ const contextualModules={
   groups:['groups','members','attendance'],
   attendance:['attendance','groups'],
   schedules:['schedules'],
+  inventory:['inventory'],
   prayers:['prayers','newcomer_care','pastoral_inbox'],
   pastoral_inbox:['pastoral_inbox','pastoral_content','prayers'],
   pastoral_content:['pastoral_content','pastoral_inbox','prayers'],
@@ -101,7 +103,7 @@ async function mountManagement(){
   const managementRoot=document.querySelector('.member-page,.ministry-app');if(!managementRoot)return;
   try{
     const localPreview=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('preview')==='1';
-    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs?v=20261003-access-guard1'),import('./church-customizations.mjs?v=20260924-custom1')]);
+    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs'),import('./admin-access.mjs?v=20261006-inventory1'),import('./church-customizations.mjs?v=20260924-custom1')]);
     const allPermissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces'];
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;updateManagementBrand(managementRoot,selected);

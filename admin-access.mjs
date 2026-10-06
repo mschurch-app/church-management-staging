@@ -27,8 +27,9 @@ function serverProfile(value, fallback) {
 }
 
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+let accessCache=null,accessCachedAt=0,accessRequest=null;
 
-export async function readAccess(db, { user: signedInUser = null, retry = true } = {}) {
+async function fetchAccess(db, { user: signedInUser = null, retry = true } = {}) {
   let user = signedInUser;
   if (!user) {
     const verified = await db.auth.getUser();
@@ -64,6 +65,20 @@ export async function readAccess(db, { user: signedInUser = null, retry = true }
     churches: grantedChurches,
     featurePermissions: featureResults.flat()
   };
+}
+export async function readAccess(db, options = {}) {
+  const fresh=options.fresh===true;
+  if(!fresh&&accessCache&&Date.now()-accessCachedAt<30000)return accessCache;
+  if(!fresh&&accessRequest)return accessRequest;
+  const request=fetchAccess(db,options);
+  accessRequest=request;
+  try{
+    const value=await request;
+    accessCache=value;accessCachedAt=Date.now();
+    return value;
+  }finally{
+    if(accessRequest===request)accessRequest=null;
+  }
 }
 export function canOpen(access, church, tab) {
   const required = TAB_PERMISSIONS[tab];

@@ -1,4 +1,4 @@
-import './action-feedback.mjs?v=20261006-2';
+import './action-feedback.mjs?v=20261006-mobile-stability1';
 const validChurches=new Set(['M+','SHiNE']);
 const requested=new URLSearchParams(location.search).get('church');
 const church=validChurches.has(requested)?requested:null;

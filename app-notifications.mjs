@@ -40,9 +40,9 @@ export async function loadNotificationCenter(area,badge){
   heading.append(el('strong',item.title));
   heading.append(el('span','未讀','app-notification-unread-badge'));
   copy.append(heading);
-  copy.append(report||el('p',item.body,'app-notification-body'));
+  const content=el('div','','app-notification-content is-collapsed');content.append(report||el('p',item.body,'app-notification-body'));copy.append(content);
   copy.append(el('time',time(item.created_at)));
-  const actions=el('div','','app-notification-actions'),open=el('a','開啟內容','app-notification-open'),mark=el('button','讀完，標示已讀','secondary app-notification-mark-read');open.href=item.target_url||'#';mark.type='button';mark.onclick=async()=>{if(mark.disabled)return;mark.disabled=true;mark.textContent='正在標示…';const result=await db.rpc('mark_app_notification_read',{p_id:item.id});if(result.error){mark.disabled=false;mark.textContent='讀完，標示已讀';return;}card.remove();unread=Math.max(0,unread-1);badge.textContent=unread?unread+' 則未讀':'沒有未讀';if(!unread)area.append(el('p','目前沒有未讀通知。','muted'));};actions.append(open,mark);card.append(copy,actions);area.append(card);
+  const actions=el('div','','app-notification-actions'),expand=el('button','展開閱讀','secondary app-notification-expand'),open=el('a','開啟相關頁面','app-notification-open'),mark=el('button','讀完，標示已讀','secondary app-notification-mark-read');expand.type=mark.type='button';expand.setAttribute('aria-expanded','false');expand.onclick=()=>{const opened=content.classList.toggle('is-collapsed')===false;expand.setAttribute('aria-expanded',String(opened));expand.textContent=opened?'收合內容':'展開閱讀';};open.href=item.target_url||'#';mark.onclick=async()=>{if(mark.disabled)return;mark.disabled=true;mark.textContent='正在標示…';const result=await db.rpc('mark_app_notification_read',{p_id:item.id});if(result.error){mark.disabled=false;mark.textContent='讀完，標示已讀';return;}card.remove();unread=Math.max(0,unread-1);badge.textContent=unread?unread+' 則未讀':'沒有未讀';if(!unread)area.append(el('p','目前沒有未讀通知。','muted'));};actions.append(expand,open,mark);card.append(copy,actions);area.append(card);
  }
 }
 export async function createTestNotification(church){const result=await db.rpc('create_my_test_notification',{p_church:church});if(result.error)throw new Error('測試通知未建立。');return result.data;}

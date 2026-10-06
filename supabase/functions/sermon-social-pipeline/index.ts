@@ -47,10 +47,11 @@ async function synthesize(video:{id:string;title:string;published:string;url:str
  return {model,result:await gemini(key,model,[{text:prompt}],12000)};
 }
 async function notifyInitialReviewer(db:any,draft:any){
+ if(!Array.isArray(draft.social_image_options)||draft.social_image_options.length!==3)return 0;
  const initial=await db.from('pastoral_staff').select('id,display_name').eq('id','d066ac92-9801-46cc-9293-2932399b4e11').eq('is_active',true).maybeSingle();
  if(!initial.data)return 0;
  const person=initial.data,key='sermon-social-review:'+draft.id+':'+person.id,url='/sermon-social-review.html?draft='+draft.id;
- await db.from('pastoral_tasks').upsert({entity_key:'mplus',title:'初審 '+draft.service_date+' 講道 IG 內容',description:'請核對整理後的大綱、重點與貼文內容，並從 1080p 原始影片截取的全身、半身、膝蓋以上三張講員圖中選擇一張；初審通過後才送牧師、師母確認發出。',task_type:'document',status:'pending',assigned_to:person.id,idempotency_key:key,payload:{workflow:'sermon_social_initial_review',draft_id:draft.id,review_stage:'initial_review',action_url:url,required_image_selection:true,required_image_count:3,required_image_shots:['full_body','half_body','knees_up'],image_source:'youtube_1080p_frame',image_template:'mplus_sermon_card_v1',composition_labels_embedded:false}},{onConflict:'idempotency_key',ignoreDuplicates:true});
+ await db.from('pastoral_tasks').upsert({entity_key:'mplus',title:'初審 '+draft.service_date+' 講道 IG 內容',description:'請核對整理後的大綱、重點與貼文內容，並從 1080p 原始影片截取的兩張膝蓋以上、一張半身講員圖中選擇一張；初審通過後才送牧師、師母確認發出。',task_type:'document',status:'pending',assigned_to:person.id,idempotency_key:key,payload:{workflow:'sermon_social_initial_review',draft_id:draft.id,review_stage:'initial_review',action_url:url,required_image_selection:true,required_image_count:3,required_image_shots:['knees_up','knees_up','half_body'],image_source:'youtube_1080p_frame',image_template:'mplus_sermon_card_v1',composition_labels_embedded:false}},{onConflict:'idempotency_key',ignoreDuplicates:true});
  const queued=await db.from('sermon_social_notification_queue').upsert({draft_id:draft.id,staff_id:person.id,stage:'initial_review',source_key:key,title:'講道 IG 內容等待初審',body:draft.service_date+'｜'+draft.sermon_title,target_url:url,deliver_after:new Date(Date.now()+3*60*1000).toISOString(),status:'pending',attempt_count:0,error_code:null,sent_at:null,updated_at:new Date().toISOString()},{onConflict:'source_key'});if(queued.error)throw new Error('notification_queue_failed');
  return 1;
 }
@@ -91,7 +92,7 @@ Deno.serve(async req=>{
   const output=await synthesize(video,completed),r=output.result;
   const saved=await db.from('sermon_social_drafts').update({sermon_title:String(r.sermon_title||video.title),speaker:String(r.speaker||''),scripture:String(r.scripture||''),sermon_start_seconds:Number(r.sermon_start_seconds)||null,sermon_end_seconds:Number(r.sermon_end_seconds)||null,transcript:null,outline:Array.isArray(r.outline)?r.outline:[],key_points:Array.isArray(r.key_points)?r.key_points:[],applications:Array.isArray(r.applications)?r.applications:[],caption:String(r.caption||'').replace(/\*/g,''),status:'pending_review',review_stage:'initial_review',initial_reviewer_id:'d066ac92-9801-46cc-9293-2932399b4e11',model:output.model,error_code:null,updated_at:new Date().toISOString()}).eq('id',started.data.id).select('*').single();
   if(saved.error)throw new Error('draft_update');
-  const recipients=0;return json(200,{ok:true,draft_id:saved.data.id,status:'pending_review',recipients,notification_deferred_until_subtitle_review:true,video});
+  const recipients=await notifyInitialReviewer(db,saved.data);return json(200,{ok:true,draft_id:saved.data.id,status:'pending_review',recipients,instagram_review_independent_of_subtitles:true,video});
  }catch(error){
   const message=error instanceof Error?error.message:'unknown';
   if(video?.id)await db.from('sermon_social_drafts').update({status:'failed',error_code:message.slice(0,500),updated_at:new Date().toISOString()}).eq('church_id','M+').eq('youtube_video_id',video.id);

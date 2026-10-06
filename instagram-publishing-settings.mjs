@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-feedback1';
+import {db} from './admin-db.mjs?v=20261006-feedback2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261006-inventory1';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/instagram-publishing';

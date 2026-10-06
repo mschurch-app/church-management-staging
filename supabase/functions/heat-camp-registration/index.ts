@@ -26,7 +26,6 @@ async function checkout(origin:string,input:any){
     const newOrderNo=orderNo();
     const created=await db().rpc('heat_camp_2027_create_registration',{p_request_id:requestId,p_payload:registration,p_merchant_order_no:newOrderNo});
     const createError=created.error?.message?.match(/(registration_closed|pricing_mode_not_ready|price_unavailable|invalid_[a-z_]+|camp_full|jersey_or_order_unavailable|encryption_unavailable)/)?.[1]||'';
-    if(created.error&&createError!=='jersey_or_order_unavailable')return json(origin,409,{ok:false,error:createError||'registration_failed'});
     if(created.data?.status==='exception_review')return json(origin,200,{ok:true,status:created.data.status,registration_no:created.data.registration_no});
 
     const prepared=await db().rpc('heat_camp_2027_prepare_payment',{
@@ -38,7 +37,10 @@ async function checkout(origin:string,input:any){
       p_jersey_number:Number(registration.jersey_number),
       p_merchant_order_no:newOrderNo
     });
-    if(prepared.error)return json(origin,409,{ok:false,error:createError||'payment_retry_unavailable'});
+    if(prepared.error){
+      console.error('heat-camp payment preparation failed',{createError:createError||created.error?.message||'',prepareError:prepared.error.message||''});
+      return json(origin,409,{ok:false,error:createError||'payment_retry_unavailable'});
+    }
     const row=prepared.data;
     if(row.status==='paid')return json(origin,409,{ok:false,error:'payment_already_completed'});
 

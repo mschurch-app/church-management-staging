@@ -6,7 +6,7 @@ function weatherOverlay(mood) {
   if (mood === 'cloudy') return '<g class="live-weather-fx" fill="#fff" opacity=".86"><path d="M103 164a24 24 0 0 1 46-8 18 18 0 0 1 25 17h-66a14 14 0 0 1-5-9"/></g>';
   return '<g class="live-weather-fx weather-breeze" fill="#fff6c7" opacity=".72"><circle cx="148" cy="166" r="24"/><path d="M78 218q57-23 98-2t73-2" fill="none" stroke="#95ceb1" stroke-width="4" stroke-linecap="round"/></g>';
 }
-export function renderLifeTree(person, stats, date, gardenMode = false, weather = 'partly-cloudy', growthMultiplier = 1) {
+export function renderLifeTree(person, stats, date, gardenMode = false, weather = 'partly-cloudy', growthMultiplier = 1, visualPalette = 'seasonal') {
   // 保留先前「生命樹繪本花園」的 Q 版棉花糖樹冠、溪流與草坡造型。
   const progressDays = stats.onTime + stats.late;
   const visualProgressDays = progressDays * Math.max(1, Number(growthMultiplier) || 1);
@@ -92,6 +92,6 @@ export function renderLifeTree(person, stats, date, gardenMode = false, weather 
       <filter id="leaf-shadow"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#166534" flood-opacity=".2"/></filter><filter id="trunk-shadow"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#78350f" flood-opacity=".2"/></filter><filter id="fruit-shadow"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#d97706" flood-opacity=".35"/></filter><filter id="bird-shadow"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#334155" flood-opacity=".16"/></filter>
     </defs>
     ${gardenMode ? gardenGround : personalScene}
-    <g class="tree-canopy">${trunk}${branches}${leaves}${blossoms}${fruits}${bird}${baseTufts}${blessingFlowers}</g>${gardenMode ? '' : weatherOverlay(weather)}${storm}${worm}${stormStress}
+    <g class="tree-canopy" transform="${visualPalette === "test" ? "translate(68 112) scale(.82)" : ""}">${trunk}${branches}${leaves}${blossoms}${fruits}${bird}${baseTufts}${blessingFlowers}</g>${gardenMode ? '' : weatherOverlay(weather)}${storm}${worm}${stormStress}
   </svg>`;
 }

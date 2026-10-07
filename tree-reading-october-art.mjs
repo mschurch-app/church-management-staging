@@ -6,10 +6,11 @@ function weatherOverlay(mood) {
   if (mood === 'cloudy') return '<g class="live-weather-fx" fill="#fff" opacity=".86"><path d="M103 164a24 24 0 0 1 46-8 18 18 0 0 1 25 17h-66a14 14 0 0 1-5-9"/></g>';
   return '<g class="live-weather-fx weather-breeze" fill="#fff6c7" opacity=".72"><circle cx="148" cy="166" r="24"/><path d="M78 218q57-23 98-2t73-2" fill="none" stroke="#95ceb1" stroke-width="4" stroke-linecap="round"/></g>';
 }
-export function renderLifeTree(person, stats, date, gardenMode = false, weather = 'partly-cloudy') {
+export function renderLifeTree(person, stats, date, gardenMode = false, weather = 'partly-cloudy', growthMultiplier = 1) {
   // 保留先前「生命樹繪本花園」的 Q 版棉花糖樹冠、溪流與草坡造型。
   const progressDays = stats.onTime + stats.late;
-  const displayProgressDays = Math.max(0, progressDays - (stats.missedStreak >= 3 ? 1 : 0));
+  const visualProgressDays = progressDays * Math.max(1, Number(growthMultiplier) || 1);
+  const displayProgressDays = Math.max(0, visualProgressDays - (stats.missedStreak >= 3 ? 1 : 0));
   const week = Math.max(1, Math.ceil(displayProgressDays / 7));
   const stage = week <= 3 ? 1 : week <= 13 ? 2 : week <= 26 ? 3 : week <= 39 ? 4 : 5;
   const season = seasonFor(date);

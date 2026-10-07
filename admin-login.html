@@ -19,6 +19,11 @@
     <p class="login-note">帳號與權限由系統安全管理</p>
   </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs?v=20261006-mobile-stability1"></script>
+<script>
+window.adminLoginReady=false;
+window.addEventListener('error',event=>{if(!(event.target instanceof HTMLScriptElement)||!event.target.src.includes('cdn.jsdelivr.net/npm/@supabase/'))return;const status=document.querySelector('#status'),button=document.querySelector('#submit');status.textContent='登入服務未能載入，請確認網路後重新整理。';button.disabled=true;},{capture:true});
+window.setTimeout(()=>{if(window.adminLoginReady)return;const status=document.querySelector('#status'),button=document.querySelector('#submit');status.textContent='登入程式載入逾時，請確認網路後重新整理。';button.disabled=true;},12000);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="admin-login.mjs?v=20261007-button-recovery1"></script>
 <script type="module" src="church-brand.mjs?v=20261006-mobile-stability1"></script>
 <script type="module" src="app-pwa.mjs?v=20261006-mobile-stability1"></script></body></html>

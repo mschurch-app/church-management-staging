@@ -5,6 +5,7 @@ const requestedNext=new URLSearchParams(location.search).get('next');
 const defaultButton=button.innerHTML;
 const timeout=(promise,milliseconds,message)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),milliseconds))]);
 function safeNext(){if(!requestedNext)return '';try{const target=new URL(requestedNext,location.origin);if(target.origin!==location.origin||target.pathname.includes('..')||!target.pathname.endsWith('.html'))return '';return target.pathname.replace(/^\//,'')+target.search+target.hash;}catch{return '';}}
+window.adminLoginReady=true;
 form.addEventListener('submit',async event=>{
  event.preventDefault();button.disabled=true;button.setAttribute('aria-busy','true');button.textContent='正在登入，請稍候…';status.textContent='正在安全驗證帳號…';
  try{

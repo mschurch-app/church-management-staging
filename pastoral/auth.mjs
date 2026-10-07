@@ -2,6 +2,7 @@ import {LINE_LOGIN_CHANNEL_ID, PASTORAL_LIFF_ID, PASTORAL_AUTH_ENDPOINT} from '.
 import {db} from '../admin-db.mjs?v=20261006-mobile-stability1';
 
 let initialization;
+function timeout(promise,milliseconds,message){return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(message)),milliseconds);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});}
 export function loginConfigured(){
   try{return PASTORAL_LIFF_ID.startsWith(`${LINE_LOGIN_CHANNEL_ID}-`)&&new URL(PASTORAL_AUTH_ENDPOINT).protocol==='https:';}
   catch{return false;}
@@ -9,28 +10,28 @@ export function loginConfigured(){
 async function initialize(){
   if(!loginConfigured())throw new Error('教會同工專用 LINE 入口尚在設定中，請等待管理者提供啟用通知。');
   if(!initialization)initialization=(async()=>{
-    await new Promise((resolve,reject)=>{
+    await timeout(new Promise((resolve,reject)=>{
       const script=document.createElement('script');
       script.src='https://static.line-scdn.net/liff/edge/2/sdk.js';
       script.onload=resolve;
       script.onerror=()=>reject(new Error('LINE 登入服務無法載入，請稍後再試。'));
       document.head.append(script);
-    });
-    await window.liff.init({liffId:PASTORAL_LIFF_ID});
+    }),12000,'LINE 登入服務載入逾時，請確認網路後再試。');
+    await timeout(window.liff.init({liffId:PASTORAL_LIFF_ID}),12000,'LINE 登入服務初始化逾時，請重新整理後再試。');
   })();
   try{await initialization;}catch(error){initialization=undefined;throw error;}
 }
 export async function authenticateStaff({interactive=false,enrollmentCode='',returnUrl=''}={}){
-  const session=await db.auth.getSession();
+  const session=await timeout(db.auth.getSession(),10000,'登入狀態查詢逾時，請重新整理後再試。');
   if(session.data.session){
-    const profile=await db.rpc('get_my_pastoral_staff');
+    const profile=await timeout(db.rpc('get_my_pastoral_staff'),12000,'同工權限查詢逾時，請重新整理後再試。');
     if(!profile.error&&profile.data)return {id:profile.data.id,name:profile.data.name,role:profile.data.role,churches:(profile.data.entityKeys||[]).map(key=>key==='mplus'?'M+':key==='shine'?'SHiNE':'台灣基督教社會關懷協會')};
     throw new Error('這個教會 OS 帳號尚未設定同工身分，請由管理員在帳號權限中完成設定。');
   }
   const query=new URLSearchParams(location.search);
   const openedFromLine=query.has('liff.state')||query.has('liffClientId')||document.referrer.startsWith('https://liff.line.me/');
   if(!openedFromLine)throw new Error('請先使用教會 OS 帳號登入，即可進入同工協作平台。');
-  await initialize();
+  await timeout(initialize(),15000,'LINE 登入初始化逾時，請重新整理後再試。');
   if(!window.liff.isLoggedIn()){
     if(interactive)window.liff.login({redirectUri:returnUrl||new URL('./',location.href).href});
     throw new Error('請先使用已獲授權的 LINE 帳號登入。');

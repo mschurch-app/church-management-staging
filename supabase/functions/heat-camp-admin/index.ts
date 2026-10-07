@@ -37,9 +37,19 @@ Deno.serve(async req=>{
   const user=verified.data.user;
   if(verified.error||!user)return json(401,{ok:false,error:'login_required'});
   const input=await req.json().catch(()=>null);
-  if(!input||!['list','excel','pdf'].includes(input.action))return json(400,{ok:false,error:'invalid_request'});
+  if(!input||!['list','excel','pdf','details','update'].includes(input.action))return json(400,{ok:false,error:'invalid_request'});
   const action=input.action==='list'?'view':'export';
   const admin=createClient(url,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
+  if(input.action==='details'){
+    const details=await admin.rpc('heat_camp_2027_admin_details',{p_user:user.id,p_registration_no:String(input.registration_no||'').slice(0,80)});
+    if(details.error){const code=String(details.error.message||'');return json(code.includes('forbidden')?403:404,{ok:false,error:code.includes('forbidden')?'forbidden':'request_failed'});}
+    return json(200,{ok:true,...details.data});
+  }
+  if(input.action==='update'){
+    const updated=await admin.rpc('heat_camp_2027_admin_update',{p_user:user.id,p_registration_no:String(input.registration_no||'').slice(0,80),p_changes:input.changes||{}});
+    if(updated.error){const code=String(updated.error.message||'');return json(code.includes('forbidden')?403:code.includes('registration_not_found')?404:400,{ok:false,error:code.includes('forbidden')?'forbidden':code.includes('registration_not_found')?'not_found':'invalid_request'});}
+    return json(200,{ok:true,saved:Boolean(updated.data)});
+  }
   const result=await admin.rpc('heat_camp_2027_admin_list',{
     p_user:user.id,p_action:action,p_search:String(input.search||'').slice(0,100),
     p_status:String(input.status||''),p_payment:String(input.payment||''),

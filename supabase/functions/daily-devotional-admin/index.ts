@@ -24,8 +24,13 @@ Deno.serve(async request=>{
   const db=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}}),action=clean(body.action,30);
   if(action==='content_list'){
     const from=/^2027-\d{2}-\d{2}$/.test(clean(body.from,10))?clean(body.from,10):'2027-01-01',to=/^2027-\d{2}-\d{2}$/.test(clean(body.to,10))?clean(body.to,10):'2027-01-31';
-    const result=await db.from('daily_devotionals').select('id,devotional_date,weekday,month_theme,week_theme,devotional_title,selected_scripture_reference,roots_reading,branches_reading,fruit_reading,scripture_text,scripture_is_excerpt,scripture_version,scripture_source,scripture_license_note,context_summary,key_points,reflection_questions,life_application,response_prayer,review_status,reviewed_by,reviewed_at,approved_by,approved_at,published_at,version').eq('church_id','M+').gte('devotional_date',from).lte('devotional_date',to).order('devotional_date');
-    if(result.error)return json(origin,{ok:false,error:'unavailable'},503);return json(origin,{ok:true,items:result.data||[]});
+    const [result,workflow]=await Promise.all([
+      db.from('daily_devotionals').select('id,devotional_date,weekday,month_theme,week_theme,devotional_title,selected_scripture_reference,roots_reading,branches_reading,fruit_reading,scripture_text,scripture_is_excerpt,scripture_version,scripture_source,scripture_license_note,context_summary,key_points,reflection_questions,life_application,response_prayer,review_status,reviewed_by,reviewed_at,second_reviewed_by,second_reviewed_at,approved_by,approved_at,published_at,version').eq('church_id','M+').gte('devotional_date',from).lte('devotional_date',to).order('devotional_date'),
+      db.from('daily_devotional_reviewers').select('initial_reviewer_id,second_reviewer_id,final_reviewer_id').eq('church_id','M+').single()
+    ]);
+    if(result.error||workflow.error)return json(origin,{ok:false,error:'unavailable'},503);
+    const reviewerStage=user.id===workflow.data.initial_reviewer_id?'initial':user.id===workflow.data.second_reviewer_id?'second':user.id===workflow.data.final_reviewer_id?'final':'viewer';
+    return json(origin,{ok:true,items:result.data||[],reviewerStage});
   }
   if(feature?.approve===false&&['content_update','content_review'].includes(action))return json(origin,{ok:false,error:'forbidden'},403);
   const id=clean(body.id,50);if(!/^[0-9a-f-]{36}$/i.test(id))return json(origin,{ok:false,error:'invalid_request'},400);
@@ -36,9 +41,9 @@ Deno.serve(async request=>{
     const result=await db.rpc('update_daily_devotional_content',{p_id:id,p_editor:user.id,p_values:values});if(result.error)return json(origin,{ok:false,error:'update_failed'},409);return json(origin,{ok:true,item:result.data});
   }
   if(action==='content_review'){
-    const toStatus=clean(body.toStatus,30),comment=clean(body.comment,1000);if(!['final_review','approved','returned'].includes(toStatus))return json(origin,{ok:false,error:'invalid_transition'},400);
+    const toStatus=clean(body.toStatus,30),comment=clean(body.comment,1000);if(!['spouse_review','final_review','approved','returned'].includes(toStatus))return json(origin,{ok:false,error:'invalid_transition'},400);
     const result=await db.rpc('review_daily_devotional',{p_id:id,p_reviewer:user.id,p_to_status:toStatus,p_comment:comment||null});
-    if(result.error){const message=String(result.error.message||'');const code=['different_reviewer_required','licensing_required','comment_required','invalid_transition'].find(value=>message.includes(value))||'review_failed';return json(origin,{ok:false,error:code},409);}return json(origin,{ok:true,item:result.data});
+    if(result.error){const message=String(result.error.message||'');const code=['wrong_reviewer','reviewers_not_configured','licensing_required','comment_required','invalid_transition'].find(value=>message.includes(value))||'review_failed';return json(origin,{ok:false,error:code},409);}return json(origin,{ok:true,item:result.data});
   }
   return json(origin,{ok:false,error:'invalid_action'},400);
 });

@@ -18,7 +18,7 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 
 ## In progress
 
-- 2027 每日靈修生命樹 MVP 已在 `codex/daily-devotional-january-mvp` 建立本機實作：一月31篇預檢資料、資料庫 migration、兩階段審核、會員每日頁面與完成紀錄。尚未套用 migration、匯入正式資料、部署 Edge Functions 或發布前端。
+- 2027 每日靈修生命樹 MVP 已上線：一月31篇資料、會員每日頁面與完成紀錄已部署；審核流程正調整為鈺庭初審、師母複審、牧師終審的固定三階段。
 - Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. PR #18 is merged; the RPC migration is applied and Edge Function version 2 is active.
 - Additional stability and mobile usability fixes are tracked through recent repository history and `docs/codex-log/`.
 

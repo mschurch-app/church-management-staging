@@ -28,6 +28,8 @@ function helpPage(data){const items=data.items||[],categories=[...new Set(items.
 function weeklyPage(data){const items=data.items||[],settings=data.settings||{};content.innerHTML=`${hero('SEE YOU THIS WEEK','不見不散喔','看看本週聚會，期待與你見面。')}${items.map(item=>`<article class="surface gathering"><div class="day-tile"><small>週</small><b>${escape(item.day_name||item.day_of_week)}</b></div><div><h2>${escape(item.title)}</h2><p>🕒 ${escape(item.time||'時間請洽同工')}</p><p>📍 ${escape(item.location||settings.address||'地點請洽同工')}</p>${item.description?`<p>${escape(item.description)}</p>`:''}${settings.map_url?`<a class="map-link" href="${escape(settings.map_url)}" target="_blank" rel="noopener">查看交通方式 →</a>`:''}</div></article>`).join('')||'<div class="surface empty">本週聚會資訊整理中。</div>'}`;}
 
 function imageElement(url,alt,cls=''){return url?`<img class="${cls}" src="${escape(url)}" alt="${escape(alt)}" crossorigin="anonymous">`:'';}
+function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.crossOrigin='anonymous';image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('image_load_failed'));image.src=new URL(url,document.baseURI).href;if(image.complete&&image.naturalWidth)resolve(image);});}
+function cover(ctx,image,width,height){const scale=Math.max(width/image.naturalWidth,height/image.naturalHeight),sourceWidth=width/scale,sourceHeight=height/scale;ctx.drawImage(image,(image.naturalWidth-sourceWidth)/2,(image.naturalHeight-sourceHeight)/2,sourceWidth,sourceHeight,0,0,width,height);}
 function splitGreeting(item){
   const raw=String($('#message')?.value||item.share_caption||'').trim().replace(/^【[^】]*】\s*/,'');
   const match=raw.match(/「([\s\S]*?)」/);
@@ -97,14 +99,14 @@ function roundedRect(ctx,x,y,width,height,radius){
 function showDownloadPreview(image){
   document.querySelector('.download-preview')?.remove();
   const overlay=document.createElement('section');overlay.className='download-preview';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','儲存祝福圖卡');
-  overlay.innerHTML='<div class="download-preview-panel"><div class="download-preview-head"><strong>圖卡已製作完成</strong><button type="button" aria-label="關閉">×</button></div><p>請長按下方圖片，再選擇「儲存影像」或「加入照片」。</p><img alt="已完成的教會祝福圖卡"><button type="button" class="primary download-file">下載圖片檔案</button></div>';
-  const close=()=>overlay.remove(),img=overlay.querySelector('img'),download=overlay.querySelector('.download-file');img.src=image;overlay.querySelector('.download-preview-head button').onclick=close;overlay.onclick=event=>{if(event.target===overlay)close();};download.onclick=()=>{const link=document.createElement('a');link.href=image;link.download='教會祝福卡.jpg';document.body.append(link);link.click();link.remove();};document.body.append(overlay);
+  overlay.innerHTML='<div class="download-preview-panel"><div class="download-preview-head"><strong>圖卡已製作完成</strong><button type="button" aria-label="關閉">×</button></div><p>在 LINE 內請按「儲存圖片」並在分享選單選「儲存影像」；也可以長按預覽圖儲存。</p><img alt="已完成的教會祝福圖卡"><button type="button" class="primary download-file">儲存圖片</button><p class="download-result" role="status" aria-live="polite"></p></div>';
+  const img=overlay.querySelector('img'),download=overlay.querySelector('.download-file'),result=overlay.querySelector('.download-result');let objectUrl='';const close=()=>{overlay.remove();if(objectUrl)URL.revokeObjectURL(objectUrl);};fetch(image).then(response=>response.blob()).then(blob=>{objectUrl=URL.createObjectURL(blob);img.src=objectUrl;download.onclick=async()=>{const file=new File([blob],'教會祝福卡.jpg',{type:'image/jpeg'});if(navigator.canShare?.({files:[file]})&&navigator.share){try{await navigator.share({files:[file],title:'教會祝福卡'});result.textContent='已開啟分享選單，請選擇「儲存影像」。';return;}catch(error){if(error.name==='AbortError'){result.textContent='已取消儲存。';return;}}}const link=document.createElement('a');link.href=objectUrl;link.download='教會祝福卡.jpg';document.body.append(link);link.click();link.remove();result.textContent='若沒有開始下載，請長按上方圖片並選擇「儲存影像」。';};}).catch(()=>{result.textContent='圖片準備失敗，請關閉後重新製作。';download.disabled=true;});overlay.querySelector('.download-preview-head button').onclick=close;overlay.onclick=event=>{if(event.target===overlay)close();};document.body.append(overlay);
 }
 async function composeCard(item){
   const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;
   const ctx=canvas.getContext('2d'),brand=BRANDS[config.church],copy=splitGreeting(item);
   ctx.fillStyle=brand.accent;ctx.fillRect(0,0,canvas.width,canvas.height);
-  if(item.image_url){try{cover(ctx,await loadImage(item.image_url),canvas.width,canvas.height);}catch{}}
+  if(item.image_url){cover(ctx,await loadImage(item.image_url),canvas.width,canvas.height);}
   const shade=ctx.createLinearGradient(0,0,0,canvas.height);shade.addColorStop(0,'rgba(16,48,42,.10)');shade.addColorStop(.45,'rgba(16,48,42,.18)');shade.addColorStop(1,'rgba(16,48,42,.58)');ctx.fillStyle=shade;ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=3;ctx.strokeRect(58,58,964,1234);
   try{const logo=await loadImage(brand.logo),ratio=Math.min(270/logo.width,120/logo.height);ctx.drawImage(logo,(1080-logo.width*ratio)/2,82,logo.width*ratio,logo.height*ratio);}catch{}

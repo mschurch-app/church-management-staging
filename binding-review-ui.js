@@ -27,7 +27,7 @@ async function load(){
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation)return;
             for(const member of candidates)select.append(new Option(`${member.name} · 電話 ${member.phone||'未填'} · 編號 ${member.id}`,String(member.id)));
             result.textContent=candidates.length?'最多顯示 30 筆；請核對姓名、電話與會員編號，系統不會自動選擇。':'查無相符會員。請確認姓名，或先到會友名冊建立資料。';
-          }catch(error){if(current===generation){clear();status.textContent=error.message;}}
+          }catch(error){if(current===generation){result.textContent=error.message||'查詢未完成，請稍後再試。';}}
           finally{search.disabled=false;}
         });
         select.addEventListener('change',()=>{verified.checked=false;});
@@ -54,10 +54,10 @@ async function load(){
   }catch(error){if(current===generation){clear();status.textContent=error.message;}}
 }
 async function save(id,action,member=null){
-  if(busy)return;busy=true;clear();const current=generation;status.textContent='正在處理…';
+  if(busy)return;busy=true;const current=generation,controls=[...list.querySelectorAll('button,input,select')],disabledStates=controls.map(control=>control.disabled);controls.forEach(control=>control.disabled=true);status.textContent='正在處理，請勿關閉頁面…';
   try{await reviewRequest(db,church,id,action,member);if(current===generation)await load();}
   catch(error){if(current===generation)status.textContent=error.message;}
-  finally{busy=false;}
+  finally{busy=false;if(current===generation)controls.forEach((control,index)=>{if(control.isConnected)control.disabled=disabledStates[index];});}
 }
 document.querySelector('#reload').addEventListener('click',()=>{if(!busy)load();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();else load();});

@@ -6,6 +6,9 @@ Last reviewed: 2026-10-07
 
 Church OS is an active production system at `mscos.mchurch.online`. Heat Camp admin PR #18 has been merged. Its additive RPC migration is applied to Supabase project `aqanuwilmvdtlzuqlrau`, and `heat-camp-admin` is deployed at version 2. No registration or payment records were changed. GitHub Pages contains the merged source; direct CDN/page verification was not available in this session.
 
+
+A cross-page button stability audit was completed on 2026-10-07. Shared mobile focus/scroll interception, indefinite user-action requests, incorrect disabled-state restoration, and blank pending states were corrected without changing production data.
+
 ## Main capabilities
 
 - Church administration, member and group management, attendance, schedules, pastoral care, and room reservations.
@@ -23,6 +26,7 @@ Church OS is an active production system at `mscos.mchurch.online`. Heat Camp ad
 - The camp data exists in a private Supabase schema. Use an account with the explicit `heat_camp` grant; decrypting or editing identity and health fields additionally requires owner or `can_manage` permission.
 - PDF export uses the browser print dialog; the user selects “Save as PDF”.
 - No repository-level package scripts or automated CI workflow were found during this inventory.
+- Authenticated browser smoke tests remain necessary because the repository has no automated end-to-end coverage for its 45 button-bearing pages.
 
 ## Technical debt
 
@@ -37,6 +41,7 @@ Church OS is an active production system at `mscos.mchurch.online`. Heat Camp ad
 2. Verify the published mobile interface using an authorized staff account, including list, detail, edits, payment read-only behavior, exports, and receipt printing.
 3. Assign the `heat_camp` permission only to approved staff and verify their least-privilege access.
 4. Continue documenting releases and verification in `docs/codex-log/`.
+5. Add a small authenticated smoke-test suite for high-risk save, approval, publishing, and permission flows.
 
 ## Important risks
 

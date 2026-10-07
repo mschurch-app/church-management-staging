@@ -34,13 +34,13 @@ async function load(reuse=false){
 }
 save.onclick=async()=>{
  if(saving)return;saving=true;save.disabled=true;const snapshot=structuredClone(current),expected=version,ticket=generation;
- area.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
+ const controls=[...area.querySelectorAll('input,select,button')],disabledStates=controls.map(control=>control.disabled);controls.forEach(control=>control.disabled=true);
  try{
   await allowed();
   const {data,error}=await db.from('welcome_form_options').update({options:snapshot,version:expected+1,updated_at:new Date().toISOString()}).eq('church_id',church).eq('version',expected).select('version');
   if(error||data?.length!==1)throw Error('未儲存：請檢查空白、重複值與預設選項；若別人已修改，請重整後再編輯。');
   version=data[0].version;status.textContent='已儲存。新開啟的迎新表單會使用這些選項。';
- }catch(e){if(ticket===generation)status.textContent=e.message;}finally{saving=false;if(ticket===generation&&!document.hidden){save.disabled=false;area.querySelectorAll('input,select,button').forEach(x=>x.disabled=false);}}
+ }catch(e){if(ticket===generation)status.textContent=e.message;}finally{saving=false;if(ticket===generation&&!document.hidden){save.disabled=false;controls.forEach((control,index)=>{if(control.isConnected)control.disabled=disabledStates[index];});}}
 };
 document.addEventListener('visibilitychange',()=>{if(document.hidden){generation++;area.replaceChildren();save.disabled=true;}else load(true);});
 db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){generation++;area.replaceChildren();save.disabled=true;status.textContent='請重新登入。';}});

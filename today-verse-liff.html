@@ -694,9 +694,21 @@
       } finally {sendCardButton.disabled=false;sendCardButton.textContent='📤 分享給好友';}
     }
 
-    function downloadShareCard() {
-      renderShareCard(sharePreview,currentTheme,1);
-      sharePreview.toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='給今天的你-經文圖卡.jpg';link.click();URL.revokeObjectURL(url);showToast('圖卡已下載 ✨');},'image/jpeg',.9);
+    async function downloadShareCard() {
+      downloadCardButton.disabled=true;downloadCardButton.textContent='正在準備圖片…';
+      try {
+        renderShareCard(sharePreview,currentTheme,1);
+        const blob=await new Promise(resolve=>sharePreview.toBlob(resolve,'image/jpeg',.9));
+        if(!blob)throw new Error('image_unavailable');
+        const file=new File([blob],'給今天的你-經文圖卡.jpg',{type:'image/jpeg'});
+        if(navigator.canShare?.({files:[file]})&&navigator.share){
+          try {await navigator.share({files:[file],title:'給今天的你'});showToast('請在分享選單選擇「儲存影像」 ✨');return;}
+          catch(error){if(error.name==='AbortError'){showToast('已取消儲存');return;}}
+        }
+        const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);showToast('若沒有開始下載，請長按上方圖卡並選擇儲存影像');
+      } catch(error) {
+        console.error('Download card failed',error);showToast('圖卡儲存暫時無法使用，請稍後再試');
+      } finally {downloadCardButton.disabled=false;downloadCardButton.textContent='⬇️ 下載圖卡';}
     }
 
     async function fetchTodayContent(idToken) {

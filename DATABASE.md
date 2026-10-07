@@ -23,11 +23,12 @@
 - Database changes are tracked as timestamped SQL in `supabase/migrations/` and applied in version order using Supabase migration tooling.
 - Generate migrations with `supabase migration new <name>`; review the SQL and migration status before any apply/push.
 - Do not edit or apply a production migration without reviewing its scope and backup/rollback plan.
+- Heat Camp admin detail/edit migration `heat_camp_admin_details_edit` was applied as version `20261007035411`; it adds two RPCs and does not change registration/payment rows.
 
 ## RLS and authorization
 
 - Church data access is based on authenticated user identity, `church_auth.grants`, role assignments, and feature-level action settings.
-- Camp data resides in a private schema and is accessed by existing server-side functions. The proposed admin listing function grants execution only to `service_role`; the Edge Function verifies the bearer token and checks active account, church grant, and view/export permission before calling it.
+- Camp data resides in a private schema and is accessed through service-role-only RPCs. The `heat-camp-admin` Edge Function verifies the bearer token and the RPC checks active account, `heat_camp` grant, and feature permissions. Detail access logs every view; identity/health decryption and edits require owner or explicit `can_manage`. Payment status, payment method, amount, and bank/order information are not in the edit allowlist. Anonymous and authenticated roles cannot execute these RPCs directly.
 - Service-role credentials must never be shipped to browser code.
 
 ## Safe change practices

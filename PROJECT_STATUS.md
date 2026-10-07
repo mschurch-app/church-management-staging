@@ -4,7 +4,7 @@ Last reviewed: 2026-10-07
 
 ## Current state
 
-Church OS is an active production system at `mscos.mchurch.online`. This checkout is a separate review branch based on the GitHub `main` revision identified during this task. No production data or live database configuration was changed.
+Church OS is an active production system at `mscos.mchurch.online`. Heat Camp admin PR #18 has been merged. Its additive RPC migration is applied to Supabase project `aqanuwilmvdtlzuqlrau`, and `heat-camp-admin` is deployed at version 2. No registration or payment records were changed. GitHub Pages contains the merged source; direct CDN/page verification was not available in this session.
 
 ## Main capabilities
 
@@ -15,12 +15,12 @@ Church OS is an active production system at `mscos.mchurch.online`. This checkou
 
 ## In progress
 
-- Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. Draft PR #18 is open; the details/edit migration and Edge Function changes are not deployed.
+- Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. PR #18 is merged; the RPC migration is applied and Edge Function version 2 is active.
 - Additional stability and mobile usability fixes are tracked through recent repository history and `docs/codex-log/`.
 
 ## Known issues
 
-- The camp data exists in a private Supabase schema. The new admin interface requires its additive permission migration and Edge Function before it can be used.
+- The camp data exists in a private Supabase schema. Use an account with the explicit `heat_camp` grant; decrypting or editing identity and health fields additionally requires owner or `can_manage` permission.
 - PDF export uses the browser print dialog; the user selects “Save as PDF”.
 - No repository-level package scripts or automated CI workflow were found during this inventory.
 
@@ -33,10 +33,9 @@ Church OS is an active production system at `mscos.mchurch.online`. This checkou
 
 ## Next steps
 
-1. Review the Heat Camp detail/edit UI, Edge Function, and migration in the draft change.
-2. Receive the official association name and seal files, then finalize the receipt layout.
-3. Apply the reviewed migration and deploy the Edge Function through the established Supabase release process.
-4. Assign the `heat_camp` permission only to approved staff and verify list, payment reconciliation, and export access.
+1. Receive the official association name and seal files, then finalize the receipt layout.
+2. Verify the published mobile interface using an authorized staff account, including list, detail, edits, payment read-only behavior, exports, and receipt printing.
+3. Assign the `heat_camp` permission only to approved staff and verify their least-privilege access.
 4. Continue documenting releases and verification in `docs/codex-log/`.
 
 ## Important risks

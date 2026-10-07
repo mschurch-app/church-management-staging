@@ -32,3 +32,6 @@ verify_jwt = true
 
 [functions.media-publishing-settings]
 verify_jwt = true
+
+[functions.heat-camp-admin]
+verify_jwt = false

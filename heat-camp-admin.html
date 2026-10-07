@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>熱火籃球營報名｜教會 OS</title>
+  <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
+  <link rel="stylesheet" href="church-brand.css?v=20261003-context1">
+  <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
+  <link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
+  <link rel="stylesheet" href="church-palette.css?v=20261003-contrast1">
+  <link rel="stylesheet" href="heat-camp-admin.css?v=20261007-v1">
+</head>
+<body>
+<main class="member-page camp-admin">
+  <header class="page-header"><div><p class="eyebrow">M+ · 2027 HEAT BASKETBALL CAMP</p><h1>熱火籃球營報名</h1><p class="muted">查看報名、繳費與球衣資料；個人證件及健康資料不會顯示在此頁。</p></div><a class="header-action" href="admin-dashboard.html?church=M%2B">返回管理首頁</a></header>
+  <nav class="page-nav"><a href="admin-dashboard.html?church=M%2B">管理首頁</a><a href="https://mchurch.online/heat-camp-2027.html" target="_blank" rel="noopener">開啟報名頁</a></nav>
+  <p id="status" class="status-message" role="status" aria-live="polite">正在確認登入權限…</p>
+  <div class="camp-summary-heading"><h2>全營會報名摘要</h2><span class="muted">以下數字不受清單篩選影響</span></div><section id="summary" class="camp-summary" aria-label="報名摘要"></section>
+  <section class="camp-panel">
+    <div class="camp-toolbar"><div><h2>報名清單</h2><p id="result-count" class="muted">—</p></div><div class="camp-export"><button id="export-excel" class="secondary" type="button">匯出 Excel</button><button id="export-pdf" class="secondary" type="button">匯出 PDF</button></div></div>
+    <form id="filters" class="camp-filters"><label>搜尋<input id="search" type="search" maxlength="100" placeholder="姓名、電話、Email 或報名編號"></label><label>報名狀態<select id="registration-status"><option value="">全部</option><option value="draft">資料待確認</option><option value="exception_review">例外待審</option><option value="awaiting_pair">友情價配對中</option><option value="awaiting_payment">待付款</option><option value="paid">已付款</option><option value="waitlisted">候補</option><option value="cancelled">已取消</option><option value="refunded">已退款</option></select></label><label>付款狀態<select id="payment-status"><option value="">全部</option><option value="paid">已付款</option><option value="awaiting_payment">待付款</option><option value="expired">已逾期</option><option value="failed">付款失敗</option><option value="unpaid">未建立訂單</option><option value="refunded">已退款</option><option value="cancelled">已取消</option></select></label><button type="submit">套用篩選</button><button id="reset" class="secondary" type="button">清除</button></form>
+    <div class="camp-table-wrap"><table class="camp-table"><thead><tr><th>報名資料</th><th>聯絡人</th><th>學校／球衣</th><th>應繳</th><th>付款</th><th>繳費資訊</th><th>報名時間</th></tr></thead><tbody id="rows"><tr><td colspan="7">載入中…</td></tr></tbody></table></div>
+    <div class="camp-pagination"><button id="previous" class="secondary" type="button">上一頁</button><span id="page-label">第 1 頁</span><button id="next" class="secondary" type="button">下一頁</button></div>
+  </section>
+  <p class="camp-footnote">匯出 Excel 包含聯絡與繳費對帳所需資料，請妥善保存。PDF 會開啟列印視窗，可選擇「儲存為 PDF」。每次查看與匯出均會留下存取紀錄。</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
+<script type="module" src="heat-camp-admin.mjs?v=20261007-v1"></script>
+<script type="module" src="church-brand.mjs?v=20261006-mobile-stability1"></script>
+</body>
+</html>

@@ -15,6 +15,8 @@ export function renderLifeTree(person, stats, date, gardenMode = false, weather 
   const stage = week <= 3 ? 1 : week <= 13 ? 2 : week <= 26 ? 3 : week <= 39 ? 4 : 5;
   const season = seasonFor(date);
   const activeTypes = new Set(stats.personalEvents.map((event) => event.type));
+  const foliageMode = visualPalette === 'test' ? (activeTypes.size ? 'storm' : stats.missedStreak ? 'dry' : 'healthy') : (stats.missedStreak ? 'dry' : season === 'autumn' ? 'autumn' : 'healthy');
+  const leafColors = foliageMode === 'storm' ? ['#fee2e2', '#ef4444', '#b91c1c', '#7f1d1d'] : foliageMode === 'dry' ? ['#fef9c3', '#e6cf69', '#b9a74f', '#8c8042'] : foliageMode === 'autumn' ? ['#fef3c7', '#fbbf24', '#ea580c', '#9a3412'] : ['#bbf7d0', '#4ade80', '#16a34a', '#15803d'];
   const damage = stats.personalEvents.reduce((sum, event) => sum + event.impact, 0);
   const hardshipPresent = stats.personalEvents.some((event) => !event.blessing);
   const leafOpacity = Math.min(hardshipPresent ? Math.max(.56, .96 - damage / 180) : 1, stats.missedStreak >= 2 ? .78 : stats.missedStreak === 1 ? .9 : 1);
@@ -26,7 +28,7 @@ export function renderLifeTree(person, stats, date, gardenMode = false, weather 
     const sproutH = baseY - week * 22;
     trunk = `<path d="M${baseX} ${baseY}Q${baseX - 6} ${(baseY + sproutH) / 2} ${baseX} ${sproutH}" stroke="url(#sprout-${person.id})" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="${baseX + 3}" cy="${sproutH + 10}" r="4" fill="#fff"/>`;
     const r = week * 9;
-    const sproutColors = stats.missedStreak ? ['#e6cf69', '#f0d979'] : ['#84cc16', '#a3e635'];
+    const sproutColors = foliageMode === 'storm' ? ['#ef4444', '#b91c1c'] : foliageMode === 'dry' ? ['#e6cf69', '#f0d979'] : ['#84cc16', '#a3e635'];
     leaves = `<ellipse cx="${baseX - r * .75}" cy="${sproutH - 5}" rx="${r}" ry="${r * .75}" fill="${sproutColors[0]}" opacity="${leafOpacity}" transform="rotate(-25 ${baseX - r * .75} ${sproutH - 5})"/><ellipse cx="${baseX + r * .75}" cy="${sproutH - 5}" rx="${r}" ry="${r * .75}" fill="${sproutColors[1]}" opacity="${leafOpacity}" transform="rotate(25 ${baseX + r * .75} ${sproutH - 5})"/>`;
   } else if (week <= 13) {
     const top = baseY - (60 + week * 14), width = 8 + week * 1.3, flare = width * 1.5;
@@ -80,7 +82,7 @@ export function renderLifeTree(person, stats, date, gardenMode = false, weather 
       <radialGradient id="sun-${person.id}" cx="50%" cy="50%" r="50%"><stop stop-color="#fef08a" stop-opacity=".8"/><stop offset=".45" stop-color="#fed7aa" stop-opacity=".4"/><stop offset="1" stop-color="#bae6fd" stop-opacity="0"/></radialGradient>
       <radialGradient id="aura-${person.id}" cx="50%" cy="50%" r="50%"><stop stop-color="#fef08a" stop-opacity=".48"/><stop offset=".62" stop-color="#bbf7d0" stop-opacity=".2"/><stop offset="1" stop-color="white" stop-opacity="0"/></radialGradient>
       <linearGradient id="trunk-${person.id}" x1="0" x2="1"><stop stop-color="#9a5a3a"/><stop offset=".38" stop-color="#c8825c"/><stop offset=".72" stop-color="#df9a75"/><stop offset="1" stop-color="#8a4d30"/></linearGradient>
-      <radialGradient id="leaf-${person.id}" cx="35%" cy="30%" r="70%"><stop stop-color="${stats.missedStreak ? '#fef9c3' : season === 'autumn' ? '#fef3c7' : '#bbf7d0'}"/><stop offset=".45" stop-color="${stats.missedStreak ? '#e6cf69' : season === 'autumn' ? '#fbbf24' : '#4ade80'}"/><stop offset=".9" stop-color="${stats.missedStreak ? '#b9a74f' : season === 'autumn' ? '#ea580c' : '#16a34a'}"/><stop offset="1" stop-color="${stats.missedStreak ? '#8c8042' : season === 'autumn' ? '#9a3412' : '#15803d'}"/></radialGradient>
+      <radialGradient id="leaf-${person.id}" cx="35%" cy="30%" r="70%"><stop stop-color="${leafColors[0]}"/><stop offset=".45" stop-color="${leafColors[1]}"/><stop offset=".9" stop-color="${leafColors[2]}"/><stop offset="1" stop-color="${leafColors[3]}"/></radialGradient>
       <linearGradient id="leaf-shine-${person.id}" x2="0" y2="1"><stop stop-color="#dcfce7" stop-opacity=".9"/><stop offset="1" stop-color="#86efac" stop-opacity=".2"/></linearGradient>
       <linearGradient id="sprout-${person.id}" x2="0" y2="1"><stop stop-color="#bef264"/><stop offset="1" stop-color="#4ade80"/></linearGradient>
       <linearGradient id="fruit-${person.id}" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".28" stop-color="#fef08a"/><stop offset=".7" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient>

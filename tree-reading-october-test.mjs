@@ -1,5 +1,5 @@
 import { loadScheduledChapters } from './bible-scripture-loader.mjs';
-import { renderLifeTree } from './tree-reading-october-art.mjs?v=20261007-seasonal-bg';
+import { renderLifeTree } from './tree-reading-october-art.mjs?v=20261008-renderfix';
 import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-login-fallback';
 
 const $ = (selector) => document.querySelector(selector);

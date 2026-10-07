@@ -11,7 +11,7 @@
 
 - Supabase Postgres stores church administration data and the separate `camp_registration` schema.
 - Supabase Edge Functions handle server-side operations and integrations. Camp registration and payment processing are in `supabase/functions/heat-camp-registration/`.
-- The proposed `heat-camp-admin` Edge Function verifies the user token, checks access through a service-only database RPC, and returns a restricted list or export data.
+- The `heat-camp-admin` Edge Function verifies the user token and calls service-only database RPCs for filtered lists, exports, detail access, and permission-gated edits. The database RPCs enforce the feature grant and write audit entries; payment and bank fields remain read-only.
 
 ## API and authentication
 

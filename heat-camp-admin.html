@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
   <link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
   <link rel="stylesheet" href="church-palette.css?v=20261003-contrast1">
-  <link rel="stylesheet" href="heat-camp-admin.css?v=20261007-v1">
+  <link rel="stylesheet" href="heat-camp-admin.css?v=20261007-mobile-edit1">
 </head>
 <body>
 <main class="member-page camp-admin">
@@ -22,13 +22,21 @@
   <section class="camp-panel">
     <div class="camp-toolbar"><div><h2>報名清單</h2><p id="result-count" class="muted">—</p></div><div class="camp-export"><button id="export-excel" class="secondary" type="button">匯出 Excel</button><button id="export-pdf" class="secondary" type="button">匯出 PDF</button></div></div>
     <form id="filters" class="camp-filters"><label>搜尋<input id="search" type="search" maxlength="100" placeholder="姓名、電話、Email 或報名編號"></label><label>報名狀態<select id="registration-status"><option value="">全部</option><option value="draft">資料待確認</option><option value="exception_review">例外待審</option><option value="awaiting_pair">友情價配對中</option><option value="awaiting_payment">待付款</option><option value="paid">已付款</option><option value="waitlisted">候補</option><option value="cancelled">已取消</option><option value="refunded">已退款</option></select></label><label>付款狀態<select id="payment-status"><option value="">全部</option><option value="paid">已付款</option><option value="awaiting_payment">待付款</option><option value="expired">已逾期</option><option value="failed">付款失敗</option><option value="unpaid">未建立訂單</option><option value="refunded">已退款</option><option value="cancelled">已取消</option></select></label><button type="submit">套用篩選</button><button id="reset" class="secondary" type="button">清除</button></form>
-    <div class="camp-table-wrap"><table class="camp-table"><thead><tr><th>報名資料</th><th>聯絡人</th><th>學校／球衣</th><th>應繳</th><th>付款</th><th>繳費資訊</th><th>報名時間</th></tr></thead><tbody id="rows"><tr><td colspan="7">載入中…</td></tr></tbody></table></div>
+    <div class="camp-table-wrap"><table class="camp-table"><thead><tr><th>報名資料</th><th>聯絡人</th><th>學校／球衣</th><th>應繳</th><th>付款</th><th>繳費資訊</th><th>報名時間</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="8">載入中…</td></tr></tbody></table></div>
     <div class="camp-pagination"><button id="previous" class="secondary" type="button">上一頁</button><span id="page-label">第 1 頁</span><button id="next" class="secondary" type="button">下一頁</button></div>
   </section>
   <p class="camp-footnote">匯出 Excel 包含聯絡與繳費對帳所需資料，請妥善保存。PDF 會開啟列印視窗，可選擇「儲存為 PDF」。每次查看與匯出均會留下存取紀錄。</p>
 </main>
+<dialog id="registration-dialog" class="camp-dialog" aria-labelledby="dialog-title">
+  <form id="registration-form" method="dialog">
+    <header class="camp-dialog-header"><div><p class="eyebrow">2027 HEAT BASKETBALL CAMP</p><h2 id="dialog-title">報名資料</h2><p id="dialog-registration-no" class="muted"></p></div><button id="close-dialog" class="secondary" type="button" aria-label="關閉">關閉</button></header>
+    <p id="dialog-status" class="status-message" role="status" aria-live="polite"></p>
+    <div id="registration-details" class="camp-detail-grid"></div>
+    <div class="camp-dialog-footer"><p class="muted">銀行、付款狀態、金額、訂單、加密身分證及健康資料均為唯讀或遮罩資訊。</p><div class="camp-dialog-actions"><button id="print-receipt" class="secondary" type="button" hidden>列印收據</button><button id="save-registration" type="submit">儲存可修改資料</button></div></div>
+  </form>
+</dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-<script type="module" src="heat-camp-admin.mjs?v=20261007-v1"></script>
+<script type="module" src="heat-camp-admin.mjs?v=20261007-mobile-edit1"></script>
 <script type="module" src="church-brand.mjs?v=20261006-mobile-stability1"></script>
 </body>
 </html>

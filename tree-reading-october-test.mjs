@@ -1,5 +1,5 @@
 import { loadScheduledChapters } from './bible-scripture-loader.mjs';
-import { renderLifeTree } from './tree-reading-october-art.mjs?v=20261007-green-palette12';
+import { renderLifeTree } from './tree-reading-october-art.mjs?v=20261007-seasonal-bg';
 import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-login-fallback';
 
 const $ = (selector) => document.querySelector(selector);
@@ -22,7 +22,7 @@ async function api(action, extra={}) {
 }
 function record(date=today()){return state.records.find((r)=>r.reading_date===date)}
 function progressStats(){const n=state.records.filter(r=>r.completion_type==='on_time').length,l=state.records.filter(r=>r.completion_type==='makeup').length; let streak=0; for(let i=30;i>=0;i--){const d=`2026-10-${String(i+1).padStart(2,'0')}`;if(d>today())continue;if(record(d))streak++;else break;}let misses=0;for(let i=Math.min(30,chapterDay(today())-2);i>=0;i--){if(record(`2026-10-${String(i+1).padStart(2,'0')}`))break;misses++;}return{onTime:n,late:l,streak,missedStreak:today()<'2026-10-01'?0:misses,growth:Math.round((n+l)/31*100),health:Math.max(20,100-misses*13),personalEvents:state.challenges.filter(c=>c.status==='active').map(c=>({type:c.challenge_type,impact:12})),blessingCount:state.notes.length,logs:Object.fromEntries(state.records.map(r=>[r.reading_date,{kind:r.completion_type}]))};}
-function season(){return 'spring'}
+function season(){const month=Number(today().slice(5,7));return month>=3&&month<=5?'spring':month>=6&&month<=8?'summer':month>=9&&month<=11?'autumn':'winter'}
 function challengeFx(type){const cls=type==='worm'?'care-pest-active':'care-water-active';const art=$('#tree-art');art.classList.add(cls);const fx=document.createElement('div');fx.className='care-animation';fx.setAttribute('aria-hidden','true');fx.innerHTML=type==='worm'?'<span class="pest-bug">🐛</span><span class="pest-spray">✨</span>':type==='celebration'?'<span class="celebration-piece celebration-one">🎉</span><span class="celebration-piece celebration-two">✨</span><span class="celebration-piece celebration-three">🌟</span><span class="celebration-piece celebration-four">🎊</span><span class="celebration-piece celebration-five">💛</span>':'<span class="water-drop drop-one">💧</span><span class="water-drop drop-two">💧</span><span class="water-drop drop-three">💧</span><span class="care-sparkle sparkle-one">✦</span><span class="care-sparkle sparkle-two">✦</span><span class="care-sparkle sparkle-three">✦</span>';art.append(fx);setTimeout(()=>{art.classList.remove(cls);fx.remove();},2600);}
 function showStatus(text,where='#reading-status'){const node=$(where);if(node)node.textContent=text;}
 function setReadingContext(date=today()){const isMakeup=date!==today();$('#reading-eyebrow').textContent=isMakeup?'MAKEUP READING':"TODAY'S READING";$('#reading-heading').textContent=isMakeup?'補讀經文':'今天的讀經';$('#reading-date').textContent=fmt(date);$('#passage-title').textContent=`箴言 ${today()<'2026-10-01'?1:chapterDay(date)} 章`;$('#passage-detail').textContent=today()<'2026-10-01'?'10 月 1 日開始；加入前日期已保送。':isMakeup?`${fmt(date)} · 補讀經文載入中…`:'完整讀完後回到樹下記錄，接著澆水。';}

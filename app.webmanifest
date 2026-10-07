@@ -4,7 +4,7 @@
  "short_name":"教會 OS",
  "description":"教會管理、同工協作、課輔與事工系統單一入口",
  "lang":"zh-Hant",
- "start_url":"/admin-login.html?source=app",
+ "start_url":"/admin-login-v2.html?source=app-v2",
  "scope":"/",
  "display":"standalone",
  "orientation":"portrait-primary",

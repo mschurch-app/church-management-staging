@@ -1,8 +1,8 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown;date?:unknown;note?:unknown};
 const churches=new Set(['M+','SHiNE']);
-const features=new Set(['menu','today','help','weekly','love']);
+const features=new Set(['menu','today','help','weekly','love','devotional']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
 const cors=(origin:string)=>({'access-control-allow-origin':origins.has(origin)?origin:'https://mscos.mchurch.online','access-control-allow-headers':'content-type,apikey,authorization','access-control-allow-methods':'POST,OPTIONS','content-type':'application/json; charset=utf-8','cache-control':'no-store','vary':'Origin'});
 const respond=(origin:string,data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:cors(origin)});
@@ -58,6 +58,20 @@ Deno.serve(async request=>{
       if(gatherings.error)return respond(origin,{ok:false,error:'unavailable'},503);
       return respond(origin,{ok:true,profile:{name:identity.name},items:gatherings.data||[],settings:settings.data||{}});
     }
+    if(feature==='devotional'){
+      if(church!=='M+')return respond(origin,{ok:false,error:'content_empty'},404);
+      const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+      const requested=clean(body.date,10)||today;
+      if(!/^2027-\d{2}-\d{2}$/.test(requested))return respond(origin,{ok:false,error:'invalid_date'},400);
+      if(requested>today)return respond(origin,{ok:true,profile:{name:identity.name},date:requested,launchPending:true});
+      const [contentResult,progressResult]=await Promise.all([
+        db.from('daily_devotionals').select('devotional_date,weekday,month_theme,tree_stage,week_theme,devotional_title,selected_scripture_reference,roots_reading,branches_reading,fruit_reading,chapter_count,scripture_text,scripture_is_excerpt,scripture_version,context_summary,key_points,reflection_questions,life_application,response_prayer').eq('church_id',church).eq('devotional_date',requested).eq('review_status','approved').lte('published_at',new Date().toISOString()).maybeSingle(),
+        db.from('daily_devotional_progress').select('devotional_date,completed_at,reflection_note').eq('church_id',church).eq('line_subject',identity.id).order('devotional_date'),
+      ]);
+      if(contentResult.error||progressResult.error)return respond(origin,{ok:false,error:'unavailable'},503);
+      if(!contentResult.data)return respond(origin,{ok:false,error:'content_empty'},404);
+      return respond(origin,{ok:true,profile:{name:identity.name},date:requested,item:contentResult.data,progress:progressResult.data||[]});
+    }
     const scenarioResult=await db.from('love_share_scenarios').select('name,icon,sort_order').eq('church_id',church).eq('is_active',true).order('sort_order').limit(100);
     if(scenarioResult.error)return respond(origin,{ok:false,error:'unavailable'},503);
     const scenarios=scenarioResult.data||[],names=scenarios.map(row=>row.name);
@@ -67,6 +81,18 @@ Deno.serve(async request=>{
     const order=new Map(scenarios.map((row,index)=>[row.name,index])),sorted=(result.data||[]).sort((a,b)=>(order.get(a.category)??999)-(order.get(b.category)??999));
     const items=await Promise.all(sorted.map(async row=>({...row,image_url:await signedImage(db,row.image_url)})));
     return respond(origin,{ok:true,profile:{name:identity.name},scenarios,items});
+  }
+
+  if(action==='devotional_complete'){
+    if(church!=='M+')return respond(origin,{ok:false,error:'invalid_church'},400);
+    const date=clean(body.date,10),today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date()),note=clean(body.note,1000);
+    if(!/^2027-\d{2}-\d{2}$/.test(date)||date>today)return respond(origin,{ok:false,error:'invalid_date'},400);
+    const available=await db.from('daily_devotionals').select('devotional_date').eq('church_id',church).eq('devotional_date',date).eq('review_status','approved').lte('published_at',new Date().toISOString()).maybeSingle();
+    if(available.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    if(!available.data)return respond(origin,{ok:false,error:'content_empty'},404);
+    const saved=await db.from('daily_devotional_progress').upsert({church_id:church,line_subject:identity.id,devotional_date:date,completed_at:new Date().toISOString(),reflection_note:note||null,note_updated_at:note?new Date().toISOString():null},{onConflict:'church_id,line_subject,devotional_date'}).select('devotional_date,completed_at,reflection_note').single();
+    if(saved.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    return respond(origin,{ok:true,record:saved.data});
   }
 
   if(action==='share_image'){

@@ -35,3 +35,6 @@ verify_jwt = true
 
 [functions.heat-camp-admin]
 verify_jwt = false
+
+[functions.daily-devotional-admin]
+verify_jwt = true

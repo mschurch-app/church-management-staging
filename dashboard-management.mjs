@@ -2,7 +2,7 @@ import {readAccess,chooseChurch} from './admin-access.mjs?v=20261006-mobile-stab
 export const MODULES=Object.freeze([
  {key:'members',permission:'members',title:'會友名冊',description:'會員、新朋友、封存與操作紀錄',file:'members.html',icon:'👥'},
  {key:'newcomer_care',permission:'newcomer_care',title:'新朋友關懷',description:'分派關懷、聯絡紀錄、下一步與逾期追蹤',file:'newcomer-care.html',icon:'🌱'},
- {key:'tree_reading_admin',permission:'tree_reading_admin',title:'讀經生命樹',description:'查看參與同工、讀經進度與生命樹活動',file:'tree-reading-admin.html',icon:'🌳'},
+ {key:'tree_reading_admin',permission:'tree_reading_admin',title:'每日靈修生命樹',description:'管理每日內容、審核與讀經進度',file:'daily-devotional-admin.html',icon:'🌳'},
  {key:'binding_review',permission:'binding_review',title:'LINE 綁定審核',description:'確認既有會友、補登手機並綁定 LINE',file:'binding-review.html',icon:'🔗'},
  {key:'notification_settings',permission:'notification_settings',title:'LINE 通知設定',description:'設定自動通知的同工與群組',file:'notification-settings.html',icon:'🔔'},
  {key:'groups',permission:'groups',title:'小組／小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🫶'},

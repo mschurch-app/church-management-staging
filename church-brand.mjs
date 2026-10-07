@@ -10,7 +10,7 @@ const modules=[
   {key:'dashboard',file:'admin-dashboard.html',label:'管理首頁',icon:'🏠'},
   {key:'members',file:'members.html',label:'會友名冊',icon:'👥',permission:'members',also:['member-audit.html']},
   {key:'newcomer_care',file:'newcomer-care.html',label:'新朋友關懷',icon:'🌱',permission:'newcomer_care'},
-  {key:'tree_reading_admin',file:'tree-reading-admin.html',label:'讀經生命樹',icon:'🌳',permission:'tree_reading_admin'},
+  {key:'tree_reading_admin',file:'daily-devotional-admin.html',label:'每日靈修生命樹',icon:'🌳',permission:'tree_reading_admin',also:['tree-reading-admin.html']},
   {key:'binding_review',file:'binding-review.html',label:'LINE 綁定審核',icon:'🔗',permission:'binding_review'},
   {key:'notification_settings',file:'notification-settings.html',label:'LINE 通知設定',icon:'🔔',permission:'notification_settings'},
   {key:'groups',file:'groups.html',label:'小組／小家',icon:'🫶',permission:'groups',also:['group-members.html']},

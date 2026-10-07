@@ -15,6 +15,13 @@ This is a static browser application plus Supabase services. There is no root `p
 - For Edge Functions, use the project’s configured Deno/Supabase checks when available.
 - No automated test, lint, typecheck, or build script was discovered during the initial inventory. Record checks as “not run” when they were not actually run.
 
+### Daily devotional import
+
+- Validate a workbook with `python3 scripts/import_daily_devotionals.py <xlsx> --month YYYY-MM --out <directory>`.
+- The validator rejects missing fields, placeholders, duplicate core content, and selected references outside that day's reading.
+- Generated seed SQL is insert-only and never overwrites an existing reviewed date.
+- Apply the schema migration before the January seed. Confirm scripture version, source, and license in the admin editor before final approval.
+
 ## Deployment
 
 - Frontend: review and merge the approved change to the repository’s GitHub Pages publishing branch (`main`), then confirm the public page update.

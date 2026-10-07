@@ -11,6 +11,7 @@
 - `church_auth`: `accounts`, `owners`, `grants`, `account_roles`, `account_feature_permissions`, and `account_home_preferences` support administrator identities, church grants, feature actions, and dashboard preferences.
 - `public`: shared application tables and RPCs. Representative areas include members, groups, attendance, schedules, notifications, and inventory.
 - `camp_registration`: `events`, `registrations`, `payment_orders`, `receipt_profiles`, `eoffering_sync`, and `audit_log` support the independent camp registration and payment workflow.
+- Daily devotionals: proposed migration `20261008090000_daily_devotional_2027_mvp` adds `daily_devotionals`, private LINE-member progress in `daily_devotional_progress`, and the append-only `daily_devotional_reviews` audit trail. The migration is prepared locally and has not been applied.
 
 ## Relationships
 
@@ -30,6 +31,7 @@
 - Church data access is based on authenticated user identity, `church_auth.grants`, role assignments, and feature-level action settings.
 - Camp data resides in a private schema and is accessed through service-role-only RPCs. The `heat-camp-admin` Edge Function verifies the bearer token and the RPC checks active account, `heat_camp` grant, and feature permissions. Detail access logs every view; identity/health decryption and edits require owner or explicit `can_manage`. Payment status, payment method, amount, and bank/order information are not in the edit allowlist. Anonymous and authenticated roles cannot execute these RPCs directly.
 - Service-role credentials must never be shipped to browser code.
+- Devotional tables revoke direct `anon` and `authenticated` access. Edge Functions verify either LINE identity or a Church OS session before using server-side access. Final approval requires a different reviewer from initial review and complete scripture licensing metadata.
 
 ## Safe change practices
 

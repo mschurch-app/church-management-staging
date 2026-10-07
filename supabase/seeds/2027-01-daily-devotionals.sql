@@ -1,0 +1,221 @@
+-- Generated from Mplus_2027_每日靈修_一月正式修訂版.xlsx
+-- Insert-only seed: existing reviewed dates are never overwritten.
+begin;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 1, '2027-01-01', '週五', '起初的氣息與立約之根', '扎根起初', 1, '起初的光照與未知的試煉', '在空虛混沌深處，神說：要有光', '創世記 1:2-3', '創世記 1–2', '', '', 2, '地是空虛混沌，淵面黑暗；神的靈運行在水面上。神說：「要有光」，就有了光。(創1:2-3)', '【深度釋經】
+這段經文是整個宇宙與信仰的起點。希伯來原文的「創造(Bara)」專指神從無到有的絕對作為。當時地是「空虛混沌」，毫無秩序，但「神的靈運行在水面上」。「運行」一詞帶有母鳥孵育生命的意象。這宣告了神的大能不受環境限制，在最黑暗荒涼的處境中，聖靈依然溫柔地動工，神的話語一出，便帶來全新的秩序。', '1. 神的創造是從無到有，不受環境條件的限制。
+2. 聖靈如同孵育生命般，運行在我們生命的混沌之上。
+3. 神的話語帶有絕對權柄，一開口就帶來光與秩序。', 'Q1: 檢視目前的生活，有哪些領域讓你感到失去秩序、空虛混沌？
+Q2: 你是否願意邀請聖靈在這些混亂中運行，並讓神的話成為你的光？', '【生活應用】
+今天給自己 5 分鐘安靜的時間，不要急著解決眼前的混亂。在心裡具體點出讓你焦慮的事，然後宣告：「神的靈正運行在我的處境上，求主賜下真光。」', '【回應禱告】
+天父，感謝祢是創造的主。當我面對生活的混亂時，求祢赦免我總想靠自己掌控。願祢的聖靈運行在我的心思意念中，對我的生命說「要有光」，驅散黑暗與懼怕。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 2, '2027-01-02', '週六', '起初的氣息與立約之根', '扎根起初', 1, '起初的光照與未知的試煉', '風暴與背離之中，以馬內利悄然臨在', '馬太福音 1:21-23', '創世記 3–4', '馬太福音 1', '約伯記 1', 4, '她將要生一個兒子，你要給他起名叫耶穌，因他要將自己的百姓從罪惡裡救出來。…人要稱他的名為以馬內利。（以馬內利翻出來就是「神與我們同在」。）(太1:21, 23)', '【深度釋經】
+舊約結束後，以色列人經歷了長達四百年的「先知靜默期」。在無盡的等待與黑暗中，神透過天使向約瑟宣告了「以馬內利」。真正的同在，不是神高高在上地將風暴挪走，而是親自道成肉身，踏入我們四百年的死寂與個人的風暴中。耶穌(耶和華拯救)的名字，宣告了祂要把我們從罪惡的根本中拯救出來。', '1. 耶穌的名字宣告了祂降生的終極目的：把百姓從罪惡中救贖出來。
+2. 以馬內利啟示了神介入歷史的方式：親自進入苦難與我們同在。
+3. 在看似神靜默不語的最黑暗時刻，往往正醞釀著最偉大的拯救。', 'Q1: 你生命中是否也經歷過彷彿神「靜默不語」的漫長黑夜？
+Q2: 當風暴來臨時，你更渴望神立刻解決問題，還是渴望深刻經歷「以馬內利」？', '【生活應用】
+當你今天面對棘手的人際關係或壓力時，在心裡默默呼喊「以馬內利」。提醒自己：我不孤單，那位創造天地的主，現在正與我同在。', '【回應禱告】
+主耶穌，謝謝祢道成肉身，進入這個充滿風暴的世界。當我面對無解的難題，或覺得祢沉默不語時，求祢幫助我堅信「以馬內利」的應許。奉主耶穌的名，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 3, '2027-01-03', '週日', '起初的氣息與立約之根', '扎根起初', 1, '起初的光照與未知的試煉', '在彎曲悖謬的世代中與神同行', '創世記 6:8-9', '創世記 5–6', '馬太福音 2', '', 3, '惟有挪亞在耶和華眼前蒙恩。…挪亞是個義人，在當時的世代是個完全人。挪亞與神同行。(創6:8-9)', '【深度釋經】
+在創世記第六章，全地充滿了強暴與敗壞，但經文卻記載「惟有挪亞在耶和華眼前蒙恩」。在原文中，恩典(Chen)一詞首次出現在這裡。挪亞被稱為「完全人」，並非指他道德上毫無瑕疵，而是指他對神專一、不妥協的心志。在一個大家都背離神的社會裡，挪亞選擇了逆流而上，與神同行。', '1. 神的恩典是我們在敗壞世代中站立得穩的唯一倚靠。
+2. 「完全」不是指行為無過，而是指心思意念對神的專一。
+3. 與神同行往往意味著不隨波逐流，選擇一條孤獨卻蒙福的路。', 'Q1: 在你的職場或人際圈中，堅持信仰原則是否會讓你感到孤立？
+Q2: 挪亞「與神同行」的榜樣，如何鼓勵你在今日的處境中為主站立？', '【生活應用】
+今天若遇到需要妥協原則的試探（如：說小謊、附和八卦），請勇敢選擇安靜或說出誠實的話，用實際行動操練「與神同行」。', '【回應禱告】
+主啊，這世代充滿了各樣的誘惑與妥協，求祢將挪亞那樣「與祢同行」的心志賜給我。讓我在祢眼前蒙恩，不隨波逐流，單單討祢的喜悅。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 4, '2027-01-04', '週一', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '洪濤之上，記念深處那扇敞開的天窗', '創世記 8:1', '創世記 7–8', '', '約伯記 2', 3, '神記念挪亞和挪亞方舟裡的一切走獸牲畜。神叫風吹地，水勢漸落。(創8:1)', '【深度釋經】
+「神記念」在聖經中是一個極具行動力的詞彙，不是指神原本忘記了，而是神決定介入並施行拯救的關鍵轉折。在漫長且令人窒息的方舟歲月裡，外面是死亡的洪水，但因著神主動的「記念」，審判的洪水開始退去，生命重新迎來轉機。方舟頂部的透光處，引導挪亞在洪濤中只能定睛仰望天上的神。', '1. 「神記念」是苦難走向終結、恩典開始彰顯的轉折點。
+2. 當環境充滿絕望時，神主動的介入能叫「水勢漸落」。
+3. 仰望天上的光，勝過注視周圍翻騰的風浪。', 'Q1: 你目前生命中，有哪個領域感覺像是被困在漫長的洪水中？
+Q2: 「神記念你」這個真理，如何為你帶來平安與盼望？', '【生活應用】
+今天寫下一件你等候已久、幾乎要放棄的事。在旁邊寫上「神必記念」，當焦慮湧上時，看著這四個字宣告神的信實。', '【回應禱告】
+信實的主，當我覺得被困在環境中，看不見出路時，求祢讓我知道祢沒有忘記我。謝謝祢記念我的軟弱與呼求，求祢叫我生命中的風浪漸息。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 5, '2027-01-05', '週二', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '曠野的呼聲：預備主的道，修直祂的路', '馬太福音 3:1-3', '創世記 9–10', '馬太福音 3', '約伯記 3', 4, '那時，有施洗的約翰出來，在猶太的曠野傳道，說：「天國近了，你們應當悔改！」…「在曠野有人聲喊著說：預備主的道，修直他的路！」(太3:1-3)', '【深度釋經】
+施洗約翰沒有出現在繁華的耶路撒冷聖殿，而是出現在荒涼的曠野。他的信息非常直接：「悔改」。在原文中，悔改(Metanoia)不僅是感到懊悔，更是「心思意念的徹底轉向」。要迎接天國君王的到來，我們必須先「修直」內心的道路，移除那些攔阻神工作的驕傲、自私與隱藏的罪。', '1. 神的工作往往從「曠野」——遠離世俗喧囂、安靜的心靈開始。
+2. 悔改不是定罪，而是轉向神，是迎接天國恩典的先決條件。
+3. 我們的心需要被「修直」，挪去一切攔阻主同在的障礙。', 'Q1: 你的心靈深處，是否有需要「修直」的彎曲道路（如：隱藏的苦毒、驕傲）？
+Q2: 悔改如何幫助你更真實地經歷神的同在？', '【生活應用】
+今天在通勤或獨處時，放下手機，安靜5分鐘，求聖靈光照你心中是否有需要悔改、轉向神的地方，並勇敢向神承認。', '【回應禱告】
+主啊，求祢光照我內心那些彎曲、高傲的地方，賜我真實悔改的勇氣。願我的心成為平坦的大道，歡迎祢的同在與掌權。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 6, '2027-01-06', '週三', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '離開本鄉：踏向未知之地的信心冒險', '創世記 12:1-3', '創世記 11–12', '馬太福音 4', '', 3, '耶和華對亞伯蘭說：「你要離開本地、本族、父家，往我所要指示你的地去。…為你祝福的，我必賜福與他；那咒詛你的，我必咒詛他。地上的萬族都要因你得福。」(創12:1,3)', '【深度釋經】
+亞伯蘭蒙召離開吾珥，這是整本聖經救贖歷史的重大轉折。神呼召他放下已知的安全感（本地、本族、父家），前往一個「我所要指示你」的未知之地。信心，就是在還看不見目的地時，就選擇起步。而神給予的承諾極其宏大：這不僅關乎他個人的蒙福，更是要使他成為「萬族得福」的管道。', '1. 神的呼召常要求我們放下舊有的安全感與舒適圈。
+2. 真實的信心，是順服那位引導者，勝過知道所有的路線圖。
+3. 我們蒙福的終極目的，是為了成為別人的祝福。', 'Q1: 神目前是否在呼召你離開某種「安全感」或「習慣」，邁向新的成長？
+Q2: 你可以如何成為身邊同事、家人的祝福管道？', '【生活應用】
+今天主動為一個正在經歷困難的同事或朋友禱告，並傳一則鼓勵的訊息給他，實踐「使人因你得福」的應許。', '【回應禱告】
+親愛的天父，賜我亞伯拉罕般的信心，願意順服祢的引導，即便前方的道路我還看不清。求祢使用我的生命，成為祝福他人的導管。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 7, '2027-01-07', '週四', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '不憑眼見的寬廣：在退讓中看見神的應許', '創世記 13:14-17', '創世記 13–14', '', '約伯記 4', 3, '羅得離別亞伯蘭以後，耶和華對亞伯蘭說：「從你所在的地方，你舉目向東西南北觀看；凡你所看見的一切地，我都要賜給你和你的後裔，直到永遠。」(創13:14-15)', '【深度釋經】
+當牧地不足引起紛爭時，亞伯蘭選擇了退讓，讓羅得先選。羅得憑肉眼選擇了滋潤的平原，卻一步步挪移帳棚直到所多瑪。而亞伯蘭放棄了眼前的利益，換來的卻是神親自的顯現。當羅得離去後，神要亞伯蘭「舉目觀看」，神的應許不是基於人為的爭搶，而是賜給那願意為和睦退讓、專心仰望神的人。', '1. 屬靈的眼光超越肉眼的短視，看重神的應許勝過眼前的利益。
+2. 為和睦而退讓，並不會讓我們失去神定意要賜給我們的產業。
+3. 當我們不再與人爭競，神就會親自向我們顯明祂的寬廣。', 'Q1: 在利益衝突或人際摩擦中，你通常是像羅得般抓取，還是像亞伯蘭般退讓？
+Q2: 放下手抓取的控制權，如何幫助你更深經歷神的供應？', '【生活應用】
+今天若遇到與人意見相左或利益小衝突，試著刻意「退一步」，不爭辯到底，並在心裡宣告：我的產業與供應都在神的手中。', '【回應禱告】
+主啊，求祢賜我屬天的眼光，不被眼前的利益蒙蔽。幫助我有一顆寬廣的心，願意為和睦退讓，深信祢為我預備的，是人奪不走的產業。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 8, '2027-01-08', '週五', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '天國八福的靈性高度：虛心與清心者的福分', '馬太福音 5:3-8', '創世記 15–16', '馬太福音 5', '約伯記 5', 4, '虛心的人有福了！因為天國是他們的。…清心的人有福了！因為他們必得見神。(太5:3, 8)', '【深度釋經】
+登山寶訓徹底顛覆了世俗對「有福」的定義。原文的「虛心(Ptochos)」是指靈裡極度貧窮、完全無助，必須仰賴他人施捨的狀態。耶穌指出，唯有當我們承認自己靈性上的破產、毫無可誇，我們才能完全向神敞開，承受天國的豐盛。而「清心」則是動機純粹、單一愛神，這樣的人將經歷與神毫無攔阻的親密。', '1. 承認自己的軟弱與不足，是經歷天國恩典的第一步。
+2. 天國的價值觀顛覆世界：降卑的被升高，倒空的被充滿。
+3. 動機的純潔(清心)能帶來屬靈視覺的清晰，使我們得見神。', 'Q1: 你是否常覺得必須靠自己的好表現才能換取神的愛？
+Q2: 你的內心是否被太多世俗的渴望塞滿，失去了單單愛神的「清心」？', '【生活應用】
+今天在禱告中，刻意放下一切的要求，只向神承認一件事：「主啊，我需要祢，離了祢我什麼都不能。」體會這種倒空後的安息。', '【回應禱告】
+親愛的主，赦免我常常驕傲自恃，以為能靠自己站立。求祢賜我「虛心」的態度，並潔淨我的心思意念，使我能「清心」地仰望祢。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 9, '2027-01-09', '週六', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '暗室裡的禱告：天父深知你的所需', '馬太福音 6:6-8', '創世記 17', '馬太福音 6', '', 2, '你禱告的時候，要進你的內屋，關上門，禱告你在暗中的父；你父在暗中察看，必然報答你。…因為你們沒有祈求以先，你們所需用的，你們的父早已知道了。(太6:6, 8)', '【深度釋經】
+法利賽人喜歡在十字路口禱告，以贏得人的掌聲。但耶穌教導我們進入「內屋」，關上門。內屋代表著我們心靈最深處、卸下一切宗教面具與防備的地方。在這裡沒有觀眾，只有你與天父。神看重的不是我們言詞的多寡，而是我們真實倚靠的心，因為在我們開口前，祂已經深知我們的需要。', '1. 真實的禱告建立在與天父的親密關係上，而非宗教表演。
+2. 關上門，意味著隔絕外界的干擾與他人的眼光，專注於神。
+3. 神的供應建立在祂的全知與慈愛上，我們只需安心交託。', 'Q1: 你的禱告生活是像交差了事，還是真實的「內屋」相交？
+Q2: 「你沒有祈求以先，父早已知道」這句話如何減輕你的焦慮？', '【生活應用】
+今天找一個安靜的空間，不用華麗的詞彙，用最誠實、像孩子對父親說話的語氣，把今天的重擔告訴神。', '【回應禱告】
+阿爸天父，謝謝祢深知我一切的需要。求祢幫助我卸下外在的偽裝，每天都能在內屋裡與祢相遇，享受祢暗中的察看與豐富的供應。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 10, '2027-01-10', '週日', '起初的氣息與立約之根', '扎根起初', 2, '立約的記號與天國的登山寶訓', '蓋在磐石上的根基：聽見就去行的智慧', '馬太福音 7:24-25', '創世記 18–19', '馬太福音 7', '約伯記 6', 4, '所以，凡聽見我這話就去行的，好比一個聰明人，把房子蓋在磐石上；雨淋，水沖，風吹，撞著那房子，房子總不倒塌，因為根基立在磐石上。(太7:24-25)', '【深度釋經】
+耶穌用建造房屋的比喻總結了整篇登山寶訓。無論是聰明人還是無知的人，都會面臨同樣的「雨淋、水沖、風吹」——信仰不能使我們免於人生的風暴。決定房屋是否倒塌的關鍵，不是房子的外觀多美，而是埋在地底下的「根基」。聽見主的話並切實遵行，就是把生命錨定在不可動搖的磐石上。', '1. 人生必然會經歷風暴，無人能倖免。
+2. 屬靈的穩固不在於我們聽了多少道，而在於我們行了多少。
+3. 耶穌的話語是我們生命唯一穩妥的磐石。', 'Q1: 最近有哪一句神的話，是你「聽見」卻還沒有「去行」的？
+Q2: 你的生命房屋目前是建立在世俗的價值（沙土），還是真理（磐石）上？', '【生活應用】
+挑選一句這週主日聽到的經文或今天的靈修亮光，在今天結束前，實際採取一個行動來實踐它。', '【回應禱告】
+主耶穌，祢是那萬古磐石。求祢幫助我不做一個只聽道卻不行道的人。讓我的生命深深扎根在祢的話語上，使我在面對人生風暴時能屹立不搖。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 11, '2027-01-11', '週一', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '神聽見曠野中的哭聲：為夏甲與以實瑪利開道路', '創世記 21:17-19', '創世記 20–21', '', '約伯記 7', 3, '神聽見童子的聲音… 神使夏甲的眼睛明亮，她就看見一口水井，便去將皮袋盛滿了水，給童子喝。(創21:17, 19)', '【深度釋經】
+亞伯拉罕因撒拉的要求將夏甲與以實瑪利遣走。在別是巴的曠野，皮袋的水用盡了，夏甲絕望地將孩子撇在小樹下放聲大哭。然而，「神聽見童子的聲音」。神沒有忽略一個被趕逐的婢女與她的孩子。神使夏甲的眼睛明亮，她就看見早已存在的水井。這啟示我們，即使在被人遺棄、資源耗盡的絕境，神的看顧與預備依然沒有斷絕。', '1. 人的絕境與被棄，往往是經歷神親自看顧的起點。
+2. 神是憐憫人的主，祂垂聽每一個在曠野中絕望的呼求。
+3. 恩典往往就在身邊，我們需要神開啟屬靈的眼睛去看見。', 'Q1: 你現在是否覺得自己正處於資源耗盡、無人理解的「曠野」中？
+Q2: 這段經文如何幫助你相信，神依然聽見你的呼求？', '【生活應用】
+當你感到孤單或匱乏時，花三分鐘安靜下來，向這位「看顧人的神」傾吐你的無助，並求祂開啟你的眼睛，看見周遭隱藏的恩典與出路。', '【回應禱告】
+親愛的主，謝謝祢是聽見曠野哭聲的神。當我感到被遺棄、走投無路時，求祢開我的眼睛，讓我看見祢為我預備的活水泉源。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 12, '2027-01-12', '週二', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '摩利亞山上的預備：放手的恩典', '創世記 22:12-14', '創世記 22–23', '馬太福音 8', '', 3, '天使說：「你不可在這童子身上下手…因為你沒有將你的兒子，就是你獨生的兒子，留下不給我。」亞伯拉罕給那地方起名叫「耶和華以勒」。(創22:12, 14)', '【深度釋經】
+這是舊約最震撼的試驗之一。神要亞伯拉罕獻上他等了25年才得來的獨生子以撒。當亞伯拉罕舉刀的剎那，天使阻止了他。這個考驗揭示了亞伯拉罕心中神的首要地位——他願意向神完全鬆開雙手。當人願意獻上最珍貴的，神就親自預備了代替的羔羊。「耶和華以勒」(在耶和華的山上必有預備)，成為了所有信靠順服之人的極大安慰。', '1. 神的試驗是為了顯明我們的信心，也是為了煉淨我們的優先次序。
+2. 真實的敬畏，是不留下任何東西不給神。
+3. 當我們願意順服放手，就會看見神豐富的「以勒」預備。', 'Q1: 你生命中目前的「以撒」（最不願放手的東西）是什麼？
+Q2: 順服神的旨意，是否曾讓你經歷過「耶和華以勒」的預備？', '【生活應用】
+今天在禱告中，把你最擔憂、最抓緊的一件事物（金錢、孩子、前途）交在神手中，宣告：主啊，我願意放手，相信祢必有預備。', '【回應禱告】
+主啊，求祢赦免我常常緊抓著祢所賜的恩典，卻忘記了賜恩典的祢。賜我亞伯拉罕般的信心，願意全然順服放手，並真實經歷「耶和華以勒」的豐富預備。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 13, '2027-01-13', '週三', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '好牧人的憐憫心腸：莊稼多工人少的呼求', '馬太福音 9:36-38', '創世記 24–25', '馬太福音 9', '約伯記 8', 4, '他看見許多的人，就憐憫他們；因為他們困苦流離，如同羊沒有牧人一般。於是對門徒說：「要收的莊稼多，做工的人少。」(太9:36-37)', '【深度釋經】
+耶穌走遍各城各鄉，面對擁擠的人群，祂的反應是「憐憫」。原文的憐憫(splagchnizomai)形容五臟六腑被牽動的極深情感，是感同身受的痛楚。祂看見人們表面的疾病，更看見他們靈魂的「困苦流離」，如同沒有牧人的羊。這份深切的愛，促使祂呼召門徒一同參與收割莊稼的工作，將神的安慰帶給失喪的人。', '1. 耶穌對人的苦難充滿了感同身受的深刻憐憫。
+2. 人類最深的悲哀不是物質的缺乏，而是靈魂「沒有牧人」。
+3. 主呼召我們體貼祂的心腸，成為收割莊稼的工人。', 'Q1: 面對身邊未信主或正在受苦的人，你是否擁有基督那樣的「憐憫」？
+Q2: 你可以如何在目前的生活圈中，成為主的「工人」去關懷他人？', '【生活應用】
+今天特別留心一位在工作或生活中看起來疲憊、孤單的人，為他遞上一杯咖啡或一句溫暖的問候，把主的憐憫傳遞出去。', '【回應禱告】
+主耶穌，求祢把祢那憐憫的心腸賜給我。讓我不再對周遭的需要冷漠，幫助我看見那些困苦流離的靈魂，並願意被祢差遣，成為收割莊稼的工人。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 14, '2027-01-14', '週四', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '退讓中的利河伯：神必為投靠祂的人開路', '創世記 26:22', '創世記 26–27', '', '約伯記 9', 3, '以撒離開那裡，又挖了一口井，他們不為這井爭競了，他就給那井起名叫利河伯（就是寬闊的意思）。他說：「耶和華現在給我們寬闊之地，我們必在這地生養眾多。」(創26:22)', '【深度釋經】
+以撒在基拉耳寄居時，因蒙神賜福而遭非利士人嫉妒，屢次填埋他挖的井。以撒沒有選擇以牙還牙，而是不斷退讓、重新挖井。直到第三口井，仇敵不再爭競了，他將其命名為「利河伯（寬闊）」。以撒的柔和與退讓不是懦弱，而是深知祝福的源頭是神。當人選擇不爭競，神親自為他開闢了無人能奪的寬闊之地。', '1. 屬靈的柔和與退讓，展現了對神掌權的絕對信任。
+2. 人可以奪走我們眼前的利益（井），卻奪不走神要給我們的祝福。
+3. 神必親自為不與人爭競、專心仰望祂的人，預備寬闊之地。', 'Q1: 最近是否有什麼事或人，激起了你想要「爭到底」的防衛心？
+Q2: 效法以撒的退讓，對你目前的人際關係會有什麼正面的影響？', '【生活應用】
+在今天的溝通中，若遇到不合理的要求或誤解，試著不要立刻反擊或辯解。選擇安靜，將委屈交給神，相信神必為你開路。', '【回應禱告】
+主啊，教導我以撒的柔和與不爭競。當我面臨不公或被剝奪時，求祢保守我的心，不落入血氣的爭鬥，而是單單仰望祢，相信祢必為我預備利河伯的寬闊之地。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 15, '2027-01-15', '週五', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '枕石而眠的夜：天梯連接處，神就在這裡', '創世記 28:15-17', '創世記 28–29', '馬太福音 10', '', 3, '「我也與你同在。你無論往哪裡去，我必保佑你，領你歸回這地...」雅各睡醒了，說：「耶和華真在這裡，我竟不知道！」(創28:15-16)', '【深度釋經】
+雅各因為欺騙哥哥而被迫逃亡。在伯特利的曠野，日頭落下，他孤獨地以石頭為枕。這原本是他人生最低谷、最充滿恐懼與罪疚的夜晚。然而，神卻在此時用「天梯」的異象向他顯現，主動賜下保護與同在的應許。雅各驚呼「耶和華真在這裡」。神常常在我們自覺最不配、最孤單的曠野，向我們顯明祂不離不棄的愛。', '1. 人的盡頭往往是遇見神恩典的起頭。
+2. 神的同在不受地域限制，在最荒涼的曠野，祂依然在那裡。
+3. 恩典超越我們的過犯，神主動尋找並立約保護逃亡的雅各。', 'Q1: 你是否曾在人生最孤獨、最低潮的時刻，意外地經歷了神的安慰？
+Q2: 「耶和華真在這裡」這句話，如何改變你對目前困境的看法？', '【生活應用】
+如果你今天感到疲憊或孤單，請找個安靜的地方，閉上眼睛宣告：「雖然環境艱難，但我知道耶和華真在這裡，祂與我同在。」', '【回應禱告】
+愛我的天父，謝謝祢總是在我最軟弱、最無助的時候主動靠近我。求祢開我的眼，讓我在每個看似荒涼的處境中，都能看見祢恩典的天梯，確信祢與我同在。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 16, '2027-01-16', '週六', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '勞苦擔重擔的釋放：回到那輕省的軛', '馬太福音 11:28-30', '創世記 30–31', '馬太福音 11', '約伯記 10', 4, '凡勞苦擔重擔的人可以到我這裡來，我就使你們得安息。我心裡柔和謙卑，你們當負我的軛，學我的樣式；這樣，你們心裡就必得享安息。(太11:28-29)', '【深度釋經】
+當時的文士與法利賽人將繁重的宗教規條加在百姓身上，使信仰成了一種重擔。耶穌卻發出了一個極其溫柔的邀請：「到我這裡來」。祂不是要我們放下一切責任，而是邀請我們「負祂的軛」。在農業社會，老牛與小牛同負一軛，重擔其實是由老牛承擔。當我們學主的樣式，與主同負一軛，人生就不再是獨自掙扎，而是充滿安息。', '1. 耶穌主動邀請所有疲憊、被重擔壓傷的人來到祂面前。
+2. 安息不是什麼都不做，而是與柔和謙卑的主建立正確的連結。
+3. 與主同負一軛，意味著我們不需獨自承擔生命的重壓。', 'Q1: 你目前生活或服事中，最大的「重擔」是什麼？
+Q2: 你是否試圖靠自己的力量扛起一切，而忘記了「與主同負一軛」？', '【生活應用】
+今天當你感到壓力極大時，停下來禱告：「主啊，我把這個重擔交給祢，求祢帶著我一起走，我願意學祢柔和謙卑的樣式。」', '【回應禱告】
+主耶穌，我承認我常常靠自己硬撐，以致心力交瘁。謝謝祢邀請我來到祢面前得安息。求祢幫助我卸下自己的重擔，歡喜地負祢的軛，經歷祢的輕省與平安。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 17, '2027-01-17', '週日', '起初的氣息與立約之根', '扎根起初', 3, '信心的攀登與破曉後的祝福', '雅博渡口的瘸腿破曉：抓取止息之處，真祝福降臨', '創世記 32:26-28', '創世記 32', '馬太福音 12', '約伯記 11', 3, '雅各說：「你不給我祝福，我就不容你去。」…那人說：「你的名不要再叫雅各，要叫以色列；因為你與神與人較力，都得了勝。」(創32:26, 28)', '【深度釋經】
+雅各的名字意為「抓取」，他一生靠聰明手段抓取長子名分與財富。但在雅博渡口，面對哥哥以掃的追兵，他一無所靠。夜裡他與神摔跤，大腿窩被摸了一把而瘸了。這看似是失敗，卻是他屬靈生命的破曉！當他瘸了腿，無法再靠自己奔跑時，他只能死死抱住神呼求祝福。「以色列」的新名字，宣告了他從一個靠自己抓取的騙子，變成了緊緊倚靠神的王子。', '1. 屬靈的轉折，常發生在我們被剝奪了自以為可倚靠的事物時。
+2. 當人不再用血氣「抓取」，而是緊緊抱住神呼求時，真祝福才會降臨。
+3. 瘸腿的軟弱，成了雅各一生倚靠神的榮耀記號。', 'Q1: 你生命中有沒有什麼事是你一直想要靠自己的聰明手段去「抓取」的？
+Q2: 面對無法改變的困境，你願意向神降服，承認自己的無能為力嗎？', '【生活應用】
+今天若有一件讓你非常焦慮、想用力控制的事，試著放開雙手，在禱告中對神說：「主啊，我不再靠自己掙扎，我只單單仰望祢的帶領。」', '【回應禱告】
+主啊，我常常像雅各一樣，用盡全力去抓取我要的安全感。求祢打破我的驕傲，讓我知道離了祢我一無所能。願我的生命經歷真實的降服，得著祢所賜的新名與祝福。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 18, '2027-01-18', '週一', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '重整內在的祭壇：在恩典中邁向真正的和解', '創世記 33:10-11', '創世記 33–34', '', '', 2, '雅各說：「不然，我若在你眼前蒙恩，就求你從我手裡收下這禮物；因為我見了你的面，如同見了神的面，並且你容納了我。」(創33:10)', '【深度釋經】
+二十年前，雅各因奪取祝福而與哥哥以掃結下深仇。二十年後，經歷了雅博渡口生命被破碎的雅各，拖著瘸腿走到以掃面前，連連俯伏在地。他不再是那個驕傲的騙子。當以掃跑來擁抱他時，雅各說「我見了你的面，如同見了神的面」。當一個人的生命先與神和好、經歷了神的恩典與接納，他才能帶著謙卑，去與昔日的仇敵尋求真實的和解。', '1. 真實的生命改變，會帶出尋求關係和解的具體行動。
+2. 唯有先深刻經歷神的饒恕與接納，我們才能真正去愛與包容他人。
+3. 放下身段、真誠致歉，能化解多年的苦毒與仇恨。', 'Q1: 你的生命中，是否有某段破碎的關係，至今仍是你的重擔？
+Q2: 雅各的謙卑退讓，如何啟發你去面對那些曾經傷害你或你傷害過的人？', '【生活應用】
+求神賜給你勇氣，今天主動發個訊息或打通電話，關心一位你已經很久沒有聯絡、甚至有過摩擦的親友。', '【回應禱告】
+主啊，謝謝祢先用恩典接納了我這個不配的人。求祢賜我饒恕與尋求和好的勇氣，挪去我心中的驕傲，讓我能在破碎的關係中，活出祢使人和睦的呼召。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 19, '2027-01-19', '週二', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '讓道種落在好土裡：結出三十、六十、一百倍的果實', '馬太福音 13:23', '創世記 35–36', '馬太福音 13', '約伯記 12', 4, '撒在好地上的，就是人聽道明白了，後來結實，有一百倍的，有六十倍的，有三十倍的。(太13:23)', '【深度釋經】
+在撒種的比喻中，撒種的人與種子（神的道）都是一樣的，決定能否結果子的關鍵在於「土壤」——人的心。路旁的剛硬、石頭地的淺薄、荊棘地的世俗思慮，都扼殺了道種的生長。唯有「好土」：一顆誠實良善、願意領受並付諸實踐的心，能讓神的話語深深扎根，最終結出超越想像的豐盛果實。', '1. 神的話語大有能力，但需要人柔軟的心來領受。
+2. 我們必須警醒，不讓驕傲、苦難或世俗的思慮擠住了真理。
+3. 真實聽道明白的人，必然會在生命中結出可見的品格與行動果實。', 'Q1: 檢視你的心，目前最像哪一種土壤（剛硬、淺薄、充滿思慮、還是好土）？
+Q2: 你需要拔除生活中的哪些「荊棘」（擔憂、貪財），好讓神的話能成長？', '【生活應用】
+今天在閱讀聖經或聽講道時，預備一本筆記，寫下一句最觸動你的話，並在下方寫出一個今天就能執行的具體改變。', '【回應禱告】
+主啊，求祢犁鬆我心中的硬土，拔除那些讓我分心的世俗思慮與荊棘。願我的心成為誠實良善的好土，讓祢的話語在我生命中扎根，結出豐盛的果實來榮耀祢。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 20, '2027-01-20', '週三', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '行在水面上的信心：在狂風巨浪中定睛望主', '馬太福音 14:29-31', '創世記 37–38', '馬太福音 14', '約伯記 13', 4, '彼得…在水面上走，要到耶穌那裡去；只因見風甚大，就害怕，將要沉下去，便喊著說：「主啊，救我！」耶穌趕緊伸手拉住他。(太14:29-31)', '【深度釋經】
+在黑夜的狂風巨浪中，彼得憑著耶穌的一句「你來吧」，就跨出安全的船身行在水面上。這展現了極大的信心！但當他的目光從耶穌轉向周圍「甚大的風」時，恐懼立刻讓他下沉。這生動地描繪了我們的信仰歷程：信心不是永遠不害怕，而是在風浪中，我們選擇讓目光定睛在哪裡。而當彼得呼救時，主「趕緊伸手」的恩典，遠大於彼得的軟弱。', '1. 跨出舒適圈（船）經歷神，需要極大的信心與順服。
+2. 當目光轉向環境的艱難時，恐懼就會吞噬我們的信心。
+3. 即便我們信心軟弱下沉，主的手依然隨時預備拯救呼求祂的人。', 'Q1: 最近有什麼「甚大的風浪」，讓你的焦點從神的應許轉移到了恐懼上？
+Q2: 彼得下沉時立刻呼求主，這如何提醒你在軟弱時該有的反應？', '【生活應用】
+當今天遇到讓你感到恐慌或壓力極大的事情時，刻意閉上眼睛5秒鐘，在心裡說：「主啊，我定睛於祢，不看風浪。」', '【回應禱告】
+主耶穌，我承認我的信心常常很微小，容易被環境的風浪嚇倒而下沉。求祢幫助我定睛在祢身上，並在我軟弱呼救時，緊緊拉住我的手。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 21, '2027-01-21', '週四', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '監牢裡的亨通：因耶和華與他同在', '創世記 39:21-23', '創世記 39–40', '', '', 2, '但耶和華與約瑟同在，向他施恩，使他在司獄的眼前蒙恩。…凡在約瑟手下的事，司獄一概不察，因為耶和華與約瑟同在；耶和華使他所做的盡都順利。(創39:21, 23)', '【深度釋經】
+約瑟被親哥哥出賣、被主母誣陷，從原本受寵的愛子淪為奴隸，再淪為死囚。從人的眼光看，他的人生簡直是一場徹頭徹尾的悲劇。但創世記39章反覆強調一個震撼的真理：「耶和華與約瑟同在」。環境的極度惡劣，並沒有隔絕神的同在。真正的「亨通（順利）」，不是一帆風順，而是在任何卑微、痛苦的處境中，因著神的同在，依然能活出卓越與恩典。', '1. 惡劣的環境與不公的遭遇，不能攔阻神在我們身上的同在與計畫。
+2. 真實的屬靈生命，是在暗處（監牢）依然對神忠心、對人負責。
+3. 「亨通」的定義，是有神同在，使我們無論在何處都能成為祝福。', 'Q1: 你目前是否處於某種受限制、被誤解的「監牢」處境中？
+Q2: 約瑟在逆境中依然忠心做事的態度，對你的工作或生活有何啟發？', '【生活應用】
+今天在處理一件你覺得繁瑣、甚至感到委屈的工作時，帶著「為主而做」的心態，把它做到最好，經歷在暗處的神的同在。', '【回應禱告】
+主啊，當我遭遇不平、覺得人生跌入谷底時，求祢讓我深信祢依然與我同在。幫助我在每個處境中都不自怨自艾，而是忠心作好當下的事，經歷祢所賜的亨通。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 22, '2027-01-22', '週五', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '忘卻苦楚與倍加繁茂：神親自成全祂的命定', '創世記 41:51-52', '創世記 41–42', '馬太福音 15', '約伯記 14', 4, '約瑟給長子起名叫瑪拿西，因為他說：「神使我忘了一切的困苦和我父的全家。」他給次子起名叫以法蓮，因為他說：「神使我在受苦的地方昌盛。」(創41:51-52)', '【深度釋經】
+歷經十三年的奴隸與囚徒生涯，約瑟終於被神高舉，成為埃及宰相。他為兩個兒子起的名字，總結了他生命得醫治的歷程。「瑪拿西（使之忘了）」宣告了神的大能醫治了他被背叛的創傷，使他能放下過去的苦毒；「以法蓮（使之繁茂）」則見證了神能在曾經流淚受苦的土壤中，開出最豐盛的花朵。醫治與繁茂，全是出於神。', '1. 神能醫治我們最深的創傷，使我們放下過去的苦毒與遺憾。
+2. 苦難不是結局，神能使我們在曾經受苦的地方，經歷倍加的昌盛。
+3. 屬靈的成熟，是清楚看見這一切翻轉都是「神使我...」。', 'Q1: 你生命中有沒有什麼過去的傷害，至今仍難以「忘記」與放下？
+Q2: 你相信神能使你在曾經跌倒、受苦的地方，重新經歷繁盛嗎？', '【生活應用】
+今天在禱告中，宣告把過去某個傷害你的回憶交給神，求神賜下「瑪拿西」的恩典，幫助你真實地饒恕並走向自由。', '【回應禱告】
+醫治的主，謝謝祢不僅能撫平我過去的傷痕，使我忘記背後的苦毒，祢還能使我在曾經受苦的地方再次昌盛。求祢帶領我走出過去的陰霾，迎接祢豐盛的命定。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 23, '2027-01-23', '週六', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '你是基督：在緊要關頭認清信仰的焦點', '馬太福音 16:15-17', '創世記 43–44', '馬太福音 16', '約伯記 15', 4, '耶穌說：「你們說我是誰？」西門彼得回答說：「你是基督，是永生神的兒子。」耶穌對他說：「…這不是屬血肉的指示你的，乃是我在天上的父指示的。」(太16:15-17)', '【深度釋經】
+在該撒利亞腓立比這個充滿外邦偶像的城市，耶穌向門徒提出了信仰最核心的拷問：「你們說我是誰？」別人怎麼說並不重要，關鍵是你自己對耶穌的認識。彼得宣告了劃時代的真理：「你是基督（受膏的君王與救主），是永生神的兒子。」這個宣告不是出於人的聰明，而是天父的啟示。基督的教會，正是建造在這個不可動搖的磐石認信之上。', '1. 信仰不是人云亦云，而是必須對耶穌有個人、真實的認識。
+2. 耶穌不僅是偉大的先知或老師，祂是掌管生命的基督。
+3. 能認識真理並不是靠人的聰明，而是出於聖靈的光照與啟示。', 'Q1: 如果耶穌今天問你：「你說我是誰？」你會根據你目前的生活經歷如何回答？
+Q2: 在生活中面對各種挑戰時，你是否真的把耶穌當作掌權的「基督」來順服？', '【生活應用】
+今天花一分鐘時間，安靜地對主說：「主啊，在我今天的工作與困難中，我宣告祢是我的基督，我願意讓祢來掌權。」', '【回應禱告】
+主耶穌，我承認祢是基督，是永生神的兒子！求祢開啟我的屬靈眼睛，讓我對祢的認識不再停留在頭腦的知識，而是成為我生命中不可動搖的磐石。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 24, '2027-01-24', '週日', '起初的氣息與立約之根', '扎根起初', 4, '幽谷中的種子與掌管萬有的主', '神的意思原是好的：在饒恕中看見神的手', '創世記 45:5-8', '創世記 45–46', '馬太福音 17', '', 3, '「現在，不要因為把我賣到這裡自憂自恨。這是神差我在你們以先來，為要保全生命。…這樣看來，差我到這裡來的不是你們，乃是神。」(創45:5, 8)', '【深度釋經】
+當約瑟與當年出賣他的哥哥們相認時，他大可以利用權力進行報復。但他卻說出舊約中最偉大的一句關於饒恕與神主權的話語：「差我到這裡來的不是你們，乃是神。」約瑟的眼光穿越了人性的邪惡與多年的苦難，看見了神那為要「保全許多人生命」的宏大計畫。當我們能從神的視角重新解讀過往的傷害，真實的饒恕與自由就會臨到。', '1. 人的惡意與傷害，無法廢棄神要在我們身上成就的美意。
+2. 真實的饒恕，建立在看見「神掌權」的更廣闊視野上。
+3. 我們所經歷的苦難，神常要用來成為保全、祝福他人的器皿。', 'Q1: 你是否曾因為別人的過犯而深受傷害，難以釋懷？
+Q2: 約瑟「神的意思原是好的」這種屬天眼光，如何幫助你面對過去的傷痛？', '【生活應用】
+針對一件讓你覺得委屈或受傷的事，今天試著用神的眼光寫下一句正面的解讀：「雖然這件事很痛，但我相信神能用它來...」', '【回應禱告】
+主啊，教導我用祢的眼光來看待過去的傷害與不公。幫助我深信祢在萬事中掌權，賜我約瑟般寬廣的心，去饒恕那些傷害我的人，看見祢那原本就美好的旨意。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 25, '2027-01-25', '週一', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '承認客旅與寄居：在地上仰望永恆的家鄉', '創世記 47:9', '創世記 47', '', '約伯記 16', 2, '雅各對法老說：「我寄居在世的年日是一百三十歲，我平生的年日又少又苦，不及我列祖而在世寄居的年日。」(創47:9)', '【深度釋經】
+一生都在抓取地土、財富與祝福的雅各，晚年站在當時世界上最有權勢的法老面前時，卻形容自己平生是「寄居在世的年日」。這是一位歷經滄桑的長者，被神對付後所淬鍊出的屬天眼光。他看透了世俗的繁華，明白即使在最富庶的埃及，這世界依然不是他最終的家。屬靈的成熟，就是承認我們在地不過是客旅，我們真正的產業與盼望在於永恆的神。', '1. 屬靈的成熟使我們不再緊抓地上的成就，看透世界的短暫。
+2. 承認自己是客旅，意味著我們不被今生的得失所轄制。
+3. 即使人生充滿勞苦愁煩，神依然是我們終極的歸宿與盼望。', 'Q1: 你目前的生活重心，是投注在「寄居的地上」還是「永恆的家鄉」？
+Q2: 明白人生短暫如客旅，如何影響你面對今日得失的態度？', '【生活應用】
+當今天遇到讓你感到極度挫折的「得失」時，提醒自己：這不過是客旅途中的一站，不值得我失去平安。將眼光轉向永恆。', '【回應禱告】
+主啊，謝謝祢提醒我，這世界非我永恆的家。求祢幫助我有一顆超脫的心，不在地上的得失中患得患失，而是定睛於祢，帶著客旅的盼望，忠心走完人生的旅程。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 26, '2027-01-26', '週二', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '泉旁探出牆外的枝子：活出超越限制的祝福', '創世記 49:22', '創世記 48–49', '馬太福音 18', '約伯記 17', 4, '約瑟是多結果子的樹枝，是泉旁多結果的枝子；他的枝條探出牆外。(創49:22)', '【深度釋經】
+雅各臨終前對約瑟的祝福，描繪了一幅極其生動的畫面。約瑟之所以能「多結果子」，是因為他的根深深扎在「泉旁」（生命源頭的神）。而「枝條探出牆外」，意味著他的生命力與祝福，突破了種族、仇恨與環境的圍牆，不僅供應了自己的家族，更祝福了整個埃及甚至列國。當我們深深連結於神，我們的生命也能突破原本的限制，溢出祝福。', '1. 豐盛生命的關鍵，在於深深扎根在神這生命活泉之旁。
+2. 恩典會帶來突破，使我們的影響力超越自我與環境的限制(牆)。
+3. 神賜福給我們，是為了讓我們「探出牆外」去供應他人的需要。', 'Q1: 你的生命目前是扎根在「活泉旁」，還是乾涸的沙土中？
+Q2: 在你的生活中，有哪道「牆」（偏見、恐懼、舒適圈）是神呼召你要探出枝條去祝福的？', '【生活應用】
+今天刻意去關心一位「牆外」的人（例如跨部門的同事、平常少互動的鄰居），分享一份小點心或問候，散播生命的祝福。', '【回應禱告】
+生命的主，我渴望我的根能深深扎在祢的溪水旁，吸取祢的恩典。求祢擴充我的生命，使我的枝條能探出自我的圍牆，結出豐盛的果子，成為更多人的祝福。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 27, '2027-01-27', '週三', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '敬畏神的收生婆：在暗處堅守生命的勇敢', '出埃及記 1:17', '創世記 50；出埃及記 1', '馬太福音 19', '', 3, '但是收生婆敬畏神，不照埃及王的吩咐行，竟存留男孩的性命。(出1:17)', '【深度釋經】
+在法老下達殘忍屠嬰令的黑暗時代，兩位微小的希伯來收生婆施弗阿與普阿，作出了驚人的抉擇。面對世上最大權勢的威脅，她們選擇了「敬畏神」。她們沒有大聲疾呼的革命，只是在暗處的接生工作中，默默存留了男孩的性命。這啟示我們，真實的信仰往往不彰顯在聚光燈下，而是展現在我們日常的微小選擇中——因敬畏神，而拒絕向世界的罪惡妥協。', '1. 真正的敬畏神，會賦予我們勝過權勢與環境壓力的勇氣。
+2. 即使是最平凡的職位，也能成為神成就拯救計畫的關鍵管道。
+3. 在暗處堅持真理與良善，神都看見，並會大大賜福。', 'Q1: 在職場或生活中，你是否曾面臨需要妥協信仰原則的壓力？
+Q2: 兩位收生婆「暗處的勇敢」，如何激勵你在小事上堅持敬畏神？', '【生活應用】
+今天在工作中，若遇到遊走灰色地帶的要求（如：造假、推卸責任），請勇敢地因著「敬畏神」而做出誠實、正直的選擇。', '【回應禱告】
+主啊，當世界充滿了妥協的聲音時，求祢賜我兩位收生婆那樣敬畏祢的心。讓我不畏懼人的權勢，在日常的工作與生活中，勇敢堅守真理與良善。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 28, '2027-01-28', '週四', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '何烈山不燒毀的荊棘：脫下鞋子，踏入聖潔同在', '出埃及記 3:2-5', '出埃及記 2–3', '', '約伯記 18', 3, '耶和華的使者從荊棘裡火焰中向摩西顯現... 神說：「不要近前來。當把你腳上的鞋脫下來，因為你所站之地是聖地。」(出3:2-5)', '【深度釋經】
+摩西在曠野牧羊四十年，人生早已歸於平淡，直到看見那「焚而不毀」的荊棘異象。荊棘在曠野極其平凡、毫無價值，但當神的聖火降臨時，它卻能發出榮光而不被燒毀。這象徵著神看顧在埃及受苦的以色列人，也預表神要使用平凡的我們。神要摩西「脫下鞋子」，鞋子沾滿了世俗的塵土與自我的籌算。要經歷神的大能，我們必須先帶著敬畏，卸下自己的驕傲。', '1. 神樂意降臨在最平凡、微小的事物上（荊棘），彰顯祂的榮耀。
+2. 我們如同荊棘，靠著神同在的火發光，卻不致被消耗殆盡。
+3. 「脫下鞋子」是我們親近神、接受呼召前，必須有的降服與敬畏。', 'Q1: 你是否覺得自己的生命平凡如荊棘，不配被神使用？
+Q2: 你目前生命中，有什麼沾滿世俗塵土的「鞋子」需要脫下來？', '【生活應用】
+今天在開始服事或重要工作前，花一分鐘做「脫鞋」的禱告：主，我放下我自己的經驗與驕傲，求祢的聖火今天與我同在。', '【回應禱告】
+聖潔的主，謝謝祢不嫌棄我這平凡如荊棘的生命。求祢的聖火燃燒我，使我能為祢發光。我願意脫下自我籌算與驕傲的鞋子，存敬畏的心進入祢的同在，聽候祢的差遣。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 29, '2027-01-29', '週五', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '我是拙口笨舌的：神說，我必賜你口才指示你', '出埃及記 4:10-12', '出埃及記 4–5', '馬太福音 20', '約伯記 19', 4, '摩西對耶和華說：「主啊...我本是拙口笨舌的。」耶和華對他說：「誰造人的口呢？...現在去吧，我必賜你口才，指示你所當說的話。」(出4:10-12)', '【深度釋經】
+面對神拯救以色列人的偉大呼召，摩西卻極力推辭。他看見的是自己四十年前的失敗，以及現在「拙口笨舌」的軟弱。但神的回應直指核心：「誰造人的口呢？」神呼召我們，從來不是看我們原有的條件多麼優秀，而是要透過我們的軟弱，彰顯造物主的絕對大能。當我們承認自己的無能，並願意順服邁出腳步時，神「必賜下」所需要的一切恩典與能力。', '1. 我們常因為看見自己的軟弱與限制，而逃避神的呼召。
+2. 神的呼召不倚靠我們的天然才幹，而是倚靠那創造我們的主。
+3. 只要願意順服「去吧」，神必負責供應我們一切所需的裝備。', 'Q1: 當面對一項新的服事或挑戰時，你最常拿什麼藉口（軟弱）來推辭？
+Q2: 認識神是「造人生命的主」，如何幫助你克服自卑與恐懼？', '【生活應用】
+今天面對一件你覺得「我做不來」的挑戰時，不要立刻拒絕。在心裡禱告：「主，我是拙口笨舌的，但求祢指示我當做的事。」然後勇敢嘗試。', '【回應禱告】
+主啊，我常常看著自己的軟弱與不足而心生退縮。求祢提醒我，祢是造我的主！我願意順服祢的呼召前行，相信祢必賜給我夠用的恩典、口才與智慧。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 30, '2027-01-30', '週六', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '神宣告的七個「我要」：用伸出來的膀臂救贖', '出埃及記 6:6-7', '出埃及記 6–7', '馬太福音 21', '', 3, '所以你要對以色列人說：『我是耶和華；我要用伸出來的膀臂重重地刑罰埃及人，救贖你們脫離他們的重擔…我要以你們為我的百姓，我也要作你們的神。』(出6:6-7)', '【深度釋經】
+當摩西初次見法老卻導致百姓遭受更重苦工時，百姓充滿怨言，摩西也深感挫折。就在這信心的最低谷，神以極其肯定的語氣，連續宣告了七次「我要」（我要救贖、我要帶領...）。這表明了救恩的主動權完全在神，祂的膀臂從未縮短。即使環境看起來更加惡化，神的約依然堅立。我們得救，不是因為我們夠好，而是因為神那不容置疑的「我要」。', '1. 在困境惡化、信心動搖時，神用祂絕對的宣告來堅固我們。
+2. 救恩完全是出於神主動的介入，而非倚靠人的努力或配得。
+3. 神伸出來的膀臂大有能力，必能打破仇敵的轄制。', 'Q1: 當事情沒有如預期好轉，反而更加惡化時，你還能相信神的應許嗎？
+Q2: 神對你宣告「我要救贖你、作你的神」，對你帶來什麼安慰？', '【生活應用】
+今天當負面思想或挫折感湧上來時，大聲朗讀一次這段經文，用神堅定的「我要」，來抵擋心中疑惑的「我不能」。', '【回應禱告】
+信實的主，當環境令人灰心、甚至看似毫無希望時，求祢讓神聖的「我要」響徹我的心底。謝謝祢用伸出來的膀臂救贖了我，我是祢的百姓，祢是我永遠的神。奉耶穌的名求，阿們。', true, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+insert into public.daily_devotionals (church_id, day_number, devotional_date, weekday, month_theme, tree_stage, week_number, week_theme, devotional_title, selected_scripture_reference, roots_reading, branches_reading, fruit_reading, chapter_count, scripture_text, context_summary, key_points, reflection_questions, life_application, response_prayer, scripture_is_excerpt, scripture_version, scripture_source, scripture_license_note, review_status) values ('M+', 31, '2027-01-31', '週日', '起初的氣息與立約之根', '扎根起初', 5, '探出牆外的多果枝子與荊棘火光', '盡心愛神與愛人如己：一切律法與先知的總綱', '馬太福音 22:37-39', '出埃及記 8–9', '馬太福音 22', '約伯記 20', 4, '耶穌對他說：「你要盡心、盡性、盡意愛主你的神。這是誡命中的第一，且是最大的。其次也相倣，就是要愛人如己。」(太22:37-39)', '【深度釋經】
+法利賽人用律法來試探耶穌，耶穌卻用愛總結了整本舊約（律法和先知）。「盡心、盡性、盡意」意味著將我們全人的情感、意志與理智，毫無保留地降服於神。而「愛人如己」則是愛神的自然延伸。十字架的真理就是這兩條線的交會：向上，基督為我們成就了與神和好的路；向外，呼召我們用神愛我們的愛，去接納、包容身邊的人。這不僅是誡命，更是生命的本質。', '1. 信仰的核心不是繁複的宗教規條，而是與神建立全然相愛的關係。
+2. 真實的愛神，必然會反映在我們對待鄰舍（身邊的人）的態度上。
+3. 「盡心盡性盡意」是一種全人傾注、不留退路的委身。', 'Q1: 你的信仰生活，是充滿了「規定」，還是充滿了對神的「愛」？
+Q2: 目前在你身邊，有哪位「鄰舍」是神呼召你要去「愛人如己」的？', '【生活應用】
+今天檢視自己的時間與金錢分配，用一個具體的行動（例如陪伴家人、關心同事），來展現你對神與對人的愛。', '【回應禱告】
+主耶穌，謝謝祢先愛了我。求祢赦免我常把信仰變成枯燥的宗教儀式，求聖靈更新我，讓我能盡心、盡性、盡意地愛祢，並賜我力量，去切實地愛我身邊的人。奉耶穌的名求，阿們。', false, null, null, null, 'initial_review') on conflict (church_id, devotional_date) do nothing;
+commit;

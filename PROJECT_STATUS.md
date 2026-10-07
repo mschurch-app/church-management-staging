@@ -15,7 +15,7 @@ Church OS is an active production system at `mscos.mchurch.online`. This checkou
 
 ## In progress
 
-- Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. Changes are being prepared for review; the details/edit migration and Edge Function changes are not deployed.
+- Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. Draft PR #18 is open; the details/edit migration and Edge Function changes are not deployed.
 - Additional stability and mobile usability fixes are tracked through recent repository history and `docs/codex-log/`.
 
 ## Known issues

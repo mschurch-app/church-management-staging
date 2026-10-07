@@ -15,7 +15,7 @@ Church OS is an active production system at `mscos.mchurch.online`. This checkou
 
 ## In progress
 
-- Church OS admin list for Heat Camp registrations, payment status, and Excel/PDF exports. Changes are being prepared for review; migration and Edge Function are not deployed.
+- Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. Draft PR #18 is open; the details/edit migration and Edge Function changes are not deployed.
 - Additional stability and mobile usability fixes are tracked through recent repository history and `docs/codex-log/`.
 
 ## Known issues
@@ -29,12 +29,14 @@ Church OS is an active production system at `mscos.mchurch.online`. This checkou
 - No single root operations guide or deployment runbook existed before this task.
 - Static frontend deployment and Supabase deployment are separate operations and need explicit release coordination.
 - Camp registration, payment, and receipts currently have independent workflows; broader camp management actions are not included in this admin list.
+- Receipt template still needs the official association name and seal artwork before it can serve as a finalized official receipt.
 
 ## Next steps
 
-1. Review the Heat Camp admin UI, Edge Function, and migration in the draft change.
-2. Apply the reviewed migration and deploy the Edge Function through the established Supabase release process.
-3. Assign the `heat_camp` permission only to approved staff and verify list, payment reconciliation, and export access.
+1. Review the Heat Camp detail/edit UI, Edge Function, and migration in the draft change.
+2. Receive the official association name and seal files, then finalize the receipt layout.
+3. Apply the reviewed migration and deploy the Edge Function through the established Supabase release process.
+4. Assign the `heat_camp` permission only to approved staff and verify list, payment reconciliation, and export access.
 4. Continue documenting releases and verification in `docs/codex-log/`.
 
 ## Important risks

@@ -104,17 +104,19 @@ Deno.serve(async request=>{
       return reply(origin,{ok:true,participant,records:await recordsFor(db,identity.subject),challenges:await challengesFor(db,identity.subject),notes:notes.data||[],is_admin:Boolean(participant.is_admin)});
     }
     if(action==='mark_read'){
-      if(!validDate(body.readingDate)||body.readingDate>today||body.readingDate<participant.reading_start_date)return reply(origin,{ok:false,error:'date_not_allowed'},400);
+      if(!validDate(body.readingDate)||body.readingDate>today||body.readingDate<participant.reading_start_date||(body.readingDate!==today&&body.readingDate<shiftDate(today,-7)))return reply(origin,{ok:false,error:'date_not_allowed'},400);
       const completion_type=body.readingDate===today?'on_time':'makeup';
       const inserted=await db.from('tree_reading_october_test_progress').insert({line_subject:identity.subject,reading_date:body.readingDate,completion_type});
       if(inserted.error&&inserted.error.code!=='23505')return reply(origin,{ok:false,error:'unavailable'},503);
       return reply(origin,{ok:true,completion_type,records:await recordsFor(db,identity.subject)});
     }
     if(action==='water_tree'){
-      const watered=await db.from('tree_reading_october_test_progress').update({watered_at:new Date().toISOString()}).eq('line_subject',identity.subject).eq('reading_date',today).is('watered_at',null).select('reading_date').maybeSingle();
+      const readingDate=body.readingDate||today;
+      if(!validDate(readingDate)||readingDate>today||readingDate<participant.reading_start_date||(readingDate!==today&&readingDate<shiftDate(today,-7)))return reply(origin,{ok:false,error:'date_not_allowed'},400);
+      const watered=await db.from('tree_reading_october_test_progress').update({watered_at:new Date().toISOString()}).eq('line_subject',identity.subject).eq('reading_date',readingDate).is('watered_at',null).select('reading_date').maybeSingle();
       if(watered.error)return reply(origin,{ok:false,error:'unavailable'},503);
       if(!watered.data){
-        const existing=await db.from('tree_reading_october_test_progress').select('watered_at').eq('line_subject',identity.subject).eq('reading_date',today).maybeSingle();
+        const existing=await db.from('tree_reading_october_test_progress').select('watered_at').eq('line_subject',identity.subject).eq('reading_date',readingDate).maybeSingle();
         if(existing.error||!existing.data)return reply(origin,{ok:false,error:'read_first'},400);
       }
       return reply(origin,{ok:true,records:await recordsFor(db,identity.subject)});

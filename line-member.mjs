@@ -71,7 +71,7 @@ function lovePage(data){
     content.querySelectorAll('[data-love-category]').forEach(item=>item.classList.toggle('active',item===button));
     $('#message').value=selected().share_caption;refreshLove();drawScenes();
   });
-  $('#next-love-verse').onclick=()=>{const list=items.filter(item=>item.category===activeCategory);if(list.length<2){$('#share-status').textContent='這個情境目前只有一則內容，請先切換其他情境。';return;}const currentCaption=$('#message').value,here=list.findIndex(item=>item.share_caption!==currentCaption),next=list[(here<0?0:here+1)%list.length];$('#message').value=next.share_caption;refreshLove();const index=list.indexOf(next)+1;$('#share-status').textContent='已換成這個情境第 '+index+' 則經文／祝福。';};
+  $('#next-love-verse').onclick=event=>{const button=event.currentTarget,captions=[...new Set(items.filter(item=>item.category===activeCategory).map(item=>String(item.share_caption||'').trim()).filter(Boolean))];if(captions.length<2){button.textContent='此情境目前只有一則祝福';$('#share-status').textContent='請先切換其他祝福情境。';setTimeout(()=>{if(button.isConnected)button.textContent='🔄 換一句經文／祝福';},1800);return;}const currentCaption=$('#message').value.trim(),currentIndex=captions.indexOf(currentCaption),nextIndex=currentIndex<0?0:(currentIndex+1)%captions.length;$('#message').value=captions[nextIndex];refreshLove();button.disabled=true;button.textContent='✓ 已更換';$('#share-status').textContent='已換成這個情境第 '+(nextIndex+1)+' 則經文／祝福。';navigator.vibrate?.(25);setTimeout(()=>{if(button.isConnected){button.disabled=false;button.textContent='🔄 換一句經文／祝福';}},500);};
   const refreshLove=()=>{$('#love-preview').innerHTML=lovePreview(selected());};
   for(const id of ['recipient','signature','message'])$('#'+id).addEventListener('input',refreshLove);
   drawScenes();

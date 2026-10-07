@@ -5,3 +5,5 @@
 .tree-art[data-weather="rain"][data-season],.tree-art[data-weather="cold-rain"][data-season],.tree-art[data-weather="rain"],.tree-art[data-weather="cold-rain"]{background:linear-gradient(180deg,#7999ad 0%,#aec8d2 38%,#dce8df 74%,#a4c49f 100%)}
 .tree-art[data-weather="storm"][data-season],.tree-art[data-weather="storm"]{background:linear-gradient(180deg,#526c83 0%,#91a8b4 42%,#c6d5ce 75%,#8ead91 100%)}
 .tree-art[data-weather="windy"][data-season],.tree-art[data-weather="windy"]{background:linear-gradient(180deg,#9bcfe0 0%,#d7ece6 43%,#fff0cb 74%,#9bc890 100%)}
+
+@media(max-width:660px){.tree-art[data-season]{height:min(84vw,52vh);min-height:0;aspect-ratio:auto}.tree-art[data-season] svg{width:100%;height:100%}}

@@ -110,7 +110,7 @@ async function mountManagement(){
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;updateManagementBrand(managementRoot,selected);
     cleanLegacyNavigation();mountModuleBar(access,selected,settings);mountHeaderTools(access,selected);
     const header=document.querySelector('.member-page>.page-header'),content=header?.querySelector(':scope>div:not(.header-tools)');
-    if(content){const existing=content.querySelector('#welcome');if(existing){existing.className='admin-identity';existing.textContent=access.user.name+'｜'+access.user.title;}else if(!content.querySelector('.admin-identity')){const chip=document.createElement('p'),name=document.createElement('strong'),title=document.createElement('span');chip.className='admin-identity';name.textContent=access.user.name;title.textContent=access.user.title;chip.append(name,document.createTextNode('｜'),title);content.append(chip);}}
+    if(content){const existing=content.querySelector('#welcome, #identity');if(existing){existing.className='admin-identity';existing.textContent=access.user.name+'｜'+access.user.title;}else if(!content.querySelector('.admin-identity')){const chip=document.createElement('p'),name=document.createElement('strong'),title=document.createElement('span');chip.className='admin-identity';name.textContent=access.user.name;title.textContent=access.user.title;chip.append(name,document.createTextNode('｜'),title);content.append(chip);}}
   }catch{}
 }
 mountManagement();

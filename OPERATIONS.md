@@ -41,4 +41,5 @@ This is a static browser application plus Supabase services. There is no root `p
 - Edge Function unavailable: check function deployment, Supabase project linkage, CORS origin, and required server-side secrets without printing secret values.
 - Missing camp list: verify the migration has been applied, the private schema/RPC exists, and the caller has the `heat_camp` view permission.
 - Export unavailable: verify `heat_camp` export permission; large exports must be narrowed with filters.
+- App notification appears in the notification center but the phone does not alert: confirm the user has an active `app_push_subscriptions` row, inspect the notification's `push_sent_at` / `push_last_error`, and verify the `church-os-app-push-delivery` cron job and `app-push` Edge Function are active.
 - Do not use real personal information in test logs or screenshots.

@@ -11,9 +11,30 @@ Deno.serve(async request=>{
   if(request.method!=='POST')return json(405,{ok:false,error:'method_not_allowed'});
   try{
     const token=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
-    const db=admin(),verified=await db.auth.getUser(token);
+    const db=admin(),body=await request.json().catch(()=>({}));
+    if(body.action==='deliver-pending'){
+      const secret=request.headers.get('x-cron-secret')||'',valid=secret?(await db.rpc('pastoral_validate_care_cron_secret',{p_secret:secret})).data===true:false;
+      if(!valid)return json(401,{ok:false,error:'unauthorized'});
+      let publicKey=Deno.env.get('VAPID_PUBLIC_KEY')||'',privateKey=Deno.env.get('VAPID_PRIVATE_KEY')||'',subject=Deno.env.get('VAPID_SUBJECT')||'mailto:james@tcsc.org.tw';
+      if(!publicKey||!privateKey){const stored=await db.rpc('get_app_push_vapid_config');if(!stored.error){publicKey=stored.data?.public_key||'';privateKey=stored.data?.private_key||'';subject=stored.data?.subject||subject;}}
+      if(!publicKey||!privateKey)return json(503,{ok:false,error:'push_not_configured'});
+      webpush.setVapidDetails(subject,publicKey,privateKey);
+      const pending=await db.from('app_notifications').select('id,user_id,title,body,target_url,source_key,push_attempt_count').is('push_sent_at',null).lt('push_attempt_count',6).order('created_at').limit(25);
+      if(pending.error)return json(503,{ok:false,error:'load_failed'});
+      let notifications=0,sent=0;
+      for(const item of pending.data||[]){
+        const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',item.user_id).eq('is_active',true);
+        let delivered=0,lastError=subscriptions.error?'subscription_load_failed':(subscriptions.data||[]).length?'delivery_failed':'no_active_device';
+        for(const subscription of subscriptions.data||[])try{await webpush.sendNotification({endpoint:subscription.endpoint,keys:{p256dh:subscription.p256dh,auth:subscription.auth_key}},JSON.stringify({title:item.title,body:item.body,url:item.target_url,tag:item.source_key||item.id}));delivered++;}
+        catch(error){const status=Number((error as {statusCode?:number}).statusCode||0);lastError=status?`push_${status}`:'push_failed';if(status===404||status===410)await db.from('app_push_subscriptions').update({is_active:false,updated_at:new Date().toISOString()}).eq('id',subscription.id);}
+        await db.from('app_notifications').update({push_sent_at:delivered?new Date().toISOString():null,push_attempt_count:Number(item.push_attempt_count||0)+1,push_last_error:delivered?null:lastError}).eq('id',item.id);
+        notifications++;sent+=delivered;
+      }
+      return json(200,{ok:true,notifications,sent});
+    }
+    const verified=await db.auth.getUser(token);
     if(verified.error||!verified.data.user)return json(401,{ok:false,error:'unauthorized'});
-    const user=verified.data.user,body=await request.json().catch(()=>({}));
+    const user=verified.data.user;
     if(body.action==='subscribe'){
       const subscription=body.subscription;
       if(!subscription?.endpoint||!subscription?.keys?.p256dh||!subscription?.keys?.auth)return json(400,{ok:false,error:'invalid_subscription'});

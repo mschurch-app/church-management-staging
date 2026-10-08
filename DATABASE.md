@@ -10,6 +10,7 @@
 
 - `church_auth`: `accounts`, `owners`, `grants`, `account_roles`, `account_feature_permissions`, and `account_home_preferences` support administrator identities, church grants, feature actions, and dashboard preferences.
 - `public`: shared application tables and RPCs. Representative areas include members, groups, attendance, schedules, notifications, and inventory.
+- `public.app_notifications` records notification-center items and background push delivery state (`push_sent_at`, attempt count, and a non-secret last error). Existing producers remain opt-in for queued delivery; the delivery worker processes rows whose `push_sent_at` is null.
 - `camp_registration`: `events`, `registrations`, `payment_orders`, `receipt_profiles`, `eoffering_sync`, and `audit_log` support the independent camp registration and payment workflow.
 - Daily devotionals: migration `20261008090000_daily_devotional_2027_mvp` adds `daily_devotionals`, private LINE-member progress in `daily_devotional_progress`, and the append-only `daily_devotional_reviews` audit trail. A follow-up migration defines the fixed reviewer assignment: 鈺庭初審、師母複審、牧師終審。
 

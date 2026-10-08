@@ -1,4 +1,4 @@
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261006-mobile-stability1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-line-link1';
 export const MODULES=Object.freeze([
  {key:'members',permission:'members',title:'會友名冊',description:'會員、新朋友、封存與操作紀錄',file:'members.html',icon:'👥'},
  {key:'newcomer_care',permission:'newcomer_care',title:'新朋友關懷',description:'分派關懷、聯絡紀錄、下一步與逾期追蹤',file:'newcomer-care.html',icon:'🌱'},

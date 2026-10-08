@@ -37,6 +37,13 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
     user = verified.data.user;
   }
 
+  const hasLineIdentity=(user.identities||[]).some(identity=>identity.provider==='custom:line-web');
+  if(!hasLineIdentity&&location.pathname.split('/').pop()!=='admin-line-link.html'){
+    const next=location.pathname.split('/').pop()+location.search+location.hash;
+    location.replace('admin-line-link.html?next='+encodeURIComponent(next));
+    throw new Error('請先完成 LINE 綁定。');
+  }
+
   let result, profileResult;
   const attempts = retry ? 2 : 1;
   for (let attempt = 0; attempt < attempts; attempt += 1) {

@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261006-mobile-stability1';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261008-line-link1';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-bulletin-review';
 const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search),church=params.get('church')||'M+';

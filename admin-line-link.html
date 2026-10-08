@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <title>綁定 LINE｜教會 OS</title>
+  <link rel="icon" href="assets/app/church-os-icon.svg">
+  <link rel="stylesheet" href="auth.css?v=20261008-line-link1">
+  <link rel="stylesheet" href="church-palette.css?v=20261008-line-link1">
+</head>
+<body class="auth-entry-body">
+<main class="login-app">
+  <section class="login-visual" aria-hidden="true"><span class="login-glow one"></span><span class="login-glow two"></span><div class="login-mark">M<span>＋</span></div><p>CHURCH OS · ACCOUNT</p><h2>再一步<br>完成 LINE 綁定</h2></section>
+  <section class="login-panel">
+    <div class="login-badge">帳號安全設定</div>
+    <h1>綁定 LINE</h1>
+    <p class="muted">管理帳號 <strong id="account">正在確認…</strong> 尚未綁定 LINE。完成後可直接使用 LINE 登入，原有權限會完整保留。</p>
+    <button id="link-line" type="button" disabled>使用 LINE 完成綁定</button>
+    <p id="status" class="app-status" role="status" aria-live="assertive">綁定完成後將自動進入教會 OS。</p>
+    <button id="logout" class="secondary" type="button">改用其他帳號</button>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
+<script type="module" src="admin-line-link.mjs?v=20261008-line-link1"></script>
+</body>
+</html>

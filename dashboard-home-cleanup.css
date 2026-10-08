@@ -90,6 +90,20 @@
 .dashboard-page .summary-card-copy small{color:#8a756c;font-size:10px;white-space:normal}
 .dashboard-page .summary-card-arrow{color:#c74632;font-size:24px;line-height:1}
 .mobile-app-nav{display:none}
+.dashboard-page .quick-links-help{margin:4px 0 0;color:#8a756c;font-size:11px}
+.dashboard-page .quick-links-actions{display:flex;gap:8px}
+.dashboard-page .quick-links-actions button{min-height:40px;margin:0;padding:8px 14px}
+.dashboard-page .primary-hub .app-hub-card{position:relative;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,opacity .18s ease,box-shadow .18s ease}
+.dashboard-page .quick-link-remove{position:absolute;z-index:3;top:-8px;left:-8px;display:none;width:28px;height:28px;min-height:0;margin:0;padding:0;border:2px solid #fff;border-radius:50%;background:#3d3734;color:#fff;font-size:22px;font-weight:500;line-height:22px;box-shadow:0 4px 12px rgba(53,40,35,.24)}
+.dashboard-page .is-editing .app-hub-card{cursor:grab;touch-action:none;animation:quick-jiggle .17s ease-in-out infinite alternate}
+.dashboard-page .is-editing .app-hub-card:nth-child(2n){animation-direction:alternate-reverse}
+.dashboard-page .is-editing .app-hub-card:active{cursor:grabbing}
+.dashboard-page .is-editing .quick-link-remove{display:grid;place-items:center}
+.dashboard-page .app-hub-card.is-dragging{z-index:4;opacity:.78;animation:none;transform:scale(1.04);box-shadow:0 18px 38px rgba(53,40,35,.18)!important}
+.dashboard-page .app-hub-card.is-removing{opacity:0;transform:scale(.72)}
+.dashboard-page .quick-links-restore{display:block;margin:12px auto 0;background:#fff;color:#8b4936;box-shadow:none}
+.dashboard-page .quick-links-restore[hidden]{display:none}
+@keyframes quick-jiggle{from{transform:rotate(-.55deg)}to{transform:rotate(.55deg)}}
 @media(max-width:760px){
   html{scroll-behavior:smooth;scroll-padding-top:14px}
   body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
@@ -119,6 +133,7 @@
   .dashboard-page .primary-hub .app-hub-card span{font-size:24px!important}
   .dashboard-page .primary-hub .app-hub-card strong{font-size:14px!important;line-height:1.25}
   .dashboard-page .primary-hub .app-hub-card small{display:-webkit-box;overflow:hidden;font-size:11px!important;line-height:1.35;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+  .dashboard-page .quick-links-actions button{min-height:38px!important;padding:7px 11px!important;font-size:12px}
   .dashboard-page .home-drawer>summary{grid-template-columns:minmax(0,1fr) auto;min-height:60px;padding:13px 15px}
   .dashboard-page .drawer-note{display:none}
   .dashboard-page .module-groups{grid-template-columns:1fr;padding:4px 12px 14px}

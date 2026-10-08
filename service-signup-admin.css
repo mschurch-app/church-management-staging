@@ -8,6 +8,8 @@
 .signup-admin .season-tabs button{border-color:#ead0c4;background:#fff;color:#a63d2d}
 .signup-admin .season-tabs button.active{border-color:#c94b35;background:#c94b35;color:#fff}
 .signup-admin .season-head{background:linear-gradient(135deg,#ad3c2a,#c94b35);box-shadow:0 14px 34px #ad3c2a26}
+.signup-admin .season-head h2{color:#fff!important;text-shadow:0 1px 2px #6f211f55}
+.signup-admin .season-head small{color:#fff3ed!important;font-weight:700;opacity:1}
 .signup-admin .season-head select{border-color:#efd8cd}
 .signup-admin .season-actions .smart-match-button{border-color:#fff!important;background:#fff!important;color:#ad3c2a!important;box-shadow:0 8px 22px #74271933}
 .signup-admin .date-section{border-color:#eadbd3;background:#fffdfa}

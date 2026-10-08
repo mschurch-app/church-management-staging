@@ -20,4 +20,20 @@
 @media(max-width:760px){.header-tools{min-width:0;gap:7px}.church-switcher a{min-width:45px;padding:6px 10px}.module-bar{margin:-18px 8px 18px;padding:7px;border-radius:17px}.module-bar a{min-width:72px;min-height:56px;padding:6px 7px;font-size:10px}.module-bar-icon{font-size:17px}.context-nav{margin-top:-7px!important}.ministry-app>.module-bar{margin:-14px 9px 18px}.ministry-hero>.church-switcher{top:18px;right:18px}}
 @media(max-width:480px){.member-page>.page-header{position:relative;display:block!important;padding-bottom:38px!important}.header-tools{position:static;align-items:flex-start;margin-top:14px}.header-tools>.church-switcher{position:absolute;top:18px;right:16px}.header-tools>button,.header-tools>.toolbar-actions{margin-top:0}.header-tools>.toolbar-actions{display:grid;grid-template-columns:1fr}.module-bar{margin-top:-20px}.church-switcher{padding:3px}.church-switcher a{min-width:42px;padding:6px 8px}}
 
+/* Shared compact mobile header for every Church OS management page. */
+@media(max-width:760px){
+  .member-page:before{width:52px;height:4px;margin:0 0 14px 5px}
+  .member-page>.page-header{position:relative;display:block!important;min-height:142px!important;margin-bottom:10px!important;padding:14px 16px 16px!important;border-radius:0 0 20px 20px!important}
+  .member-page>.page-header>div:first-child:not(.header-tools){min-width:0;padding-right:min(38vw,148px)}
+  .member-page>.page-header .church-brand{margin-bottom:5px;padding:5px 7px;border-radius:11px}
+  .member-page>.page-header .church-brand img{height:25px;max-width:min(116px,31vw)}
+  .member-page>.page-header .eyebrow{margin-bottom:6px;font-size:9px!important;letter-spacing:.08em}
+  .member-page>.page-header h1{margin-bottom:3px;font-size:22px!important;line-height:1.12}
+  .member-page>.page-header :is(#welcome,#identity,.admin-identity){margin-top:4px!important;margin-bottom:0!important;font-size:11px!important}
+  .member-page>.page-header .header-tools{position:absolute;top:13px;right:13px;align-items:flex-end;gap:6px;max-width:142px;margin:0}
+  .member-page>.page-header .header-tools>.church-switcher{position:static;padding:3px}
+  .member-page>.page-header .church-switcher a{min-width:38px;padding:5px 7px;font-size:10px}
+  .member-page>.page-header .header-tools :is(button,.header-action,.secondary){min-height:32px!important;margin:0!important;padding:6px 10px!important;border-radius:11px!important;font-size:11px!important;text-align:center}
+}
+
 @media(max-width:760px){.module-bar{position:sticky;top:max(8px,env(safe-area-inset-top));scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;box-shadow:0 13px 34px rgba(35,78,91,.16)}.module-bar a{scroll-snap-align:start}.module-bar a.current{transform:translateY(-1px)}.module-bar-icon{width:32px;height:28px;border-radius:10px;background:#eef8f7;font-size:19px}.module-bar a.current .module-bar-icon{background:rgba(255,255,255,.2)}.church-switcher a{min-height:36px}}

@@ -1,4 +1,5 @@
 import {db} from './admin-db.mjs?v=20261008-toast-loop2';
+import {readAccess} from './admin-access.mjs?v=20261008-shine-email1';
 
 const status=document.querySelector('#status');
 const button=document.querySelector('#link-line');
@@ -18,6 +19,14 @@ async function start(){
   const {data,error}=await db.auth.getUser();
   if(error||!data.user){location.replace('admin-login-v2.html');return;}
   if((data.user.identities||[]).some(identity=>identity.provider==='custom:line-web')){location.replace(safeNext());return;}
+  try{
+    const access=await readAccess(db,{user:data.user,fresh:true,retry:true});
+    if(access.churches.includes('SHiNE')){
+      status.textContent='已確認火樂教會管理權限，正在開啟管理首頁…';
+      location.replace('admin-dashboard.html?church=SHiNE');
+      return;
+    }
+  }catch{}
   const email=data.user.email||'目前的管理帳號';
   document.querySelector('#account').textContent=email;
   button.disabled=false;

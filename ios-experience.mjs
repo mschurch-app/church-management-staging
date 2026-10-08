@@ -1,6 +1,6 @@
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
-  const version='20261008-ios3';
+  const version='20261008-ios4';
   const stylesheet=document.createElement('link');
   stylesheet.rel='stylesheet';stylesheet.href=new URL(`./ios-experience.css?v=${version}`,import.meta.url).href;document.head.append(stylesheet);
   document.documentElement.classList.add('church-ios');
@@ -11,16 +11,16 @@ if(!window.__churchIosExperience){
 
   const paths={
     home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/>',
-    people:'<circle cx="9" cy="8" r="3"/><path d="M3.5 20v-2.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V20"/><path d="M15.5 5.4a3 3 0 0 1 0 5.2M16.5 13.2a4.5 4.5 0 0 1 4 4.5V20"/>',
-    sprout:'<path d="M12 21V10"/><path d="M12 13C8 13 5 10.8 5 7c4 0 7 2.2 7 6Z"/><path d="M12 10c0-3.8 3-6 7-6 0 3.8-3 6-7 6Z"/>',
-    tree:'<path d="M12 22v-7"/><path d="M8.5 18H15"/><path d="M12 3a5 5 0 0 0-4.4 7.4A4 4 0 0 0 10 17h4a4 4 0 0 0 2.4-6.6A5 5 0 0 0 12 3Z"/>',
+    people:'<path data-tone="soft" d="M3.2 20v-2.3A5.2 5.2 0 0 1 8.4 12.5h1.2a5.2 5.2 0 0 1 5.2 5.2V20Z"/><circle data-tone="soft" cx="9" cy="7.7" r="3.4"/><circle cx="9" cy="7.7" r="3.1"/><path d="M3.8 20v-2.2A4.6 4.6 0 0 1 8.4 13h1.2a4.6 4.6 0 0 1 4.6 4.8V20M15.6 5.4a3 3 0 0 1 0 5.2M16.7 13.2a4.3 4.3 0 0 1 3.8 4.5V20"/>',
+    sprout:'<path data-tone="soft" d="M12 13C7.7 13 4.8 10.5 4.8 6.6c4.3 0 7.2 2.5 7.2 6.4ZM12 10c0-4 3-6.4 7.2-6.4 0 4-3 6.4-7.2 6.4Z"/><path d="M12 21V10M12 13C7.7 13 4.8 10.5 4.8 6.6c4.3 0 7.2 2.5 7.2 6.4ZM12 10c0-4 3-6.4 7.2-6.4 0 4-3 6.4-7.2 6.4Z"/>',
+    tree:'<path data-tone="soft" d="M12 2.8a5.2 5.2 0 0 0-4.6 7.6A4.2 4.2 0 0 0 9.9 17h4.2a4.2 4.2 0 0 0 2.5-6.6A5.2 5.2 0 0 0 12 2.8Z"/><path d="M12 22v-7M8.5 18H15M12 3a5 5 0 0 0-4.4 7.4A4 4 0 0 0 10 17h4a4 4 0 0 0 2.4-6.6A5 5 0 0 0 12 3Z"/>',
     link:'<path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/>',
-    bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/>',
-    check:'<path d="m5 12 4 4L19 6"/><rect x="3" y="3" width="18" height="18" rx="5"/>',
-    calendar:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',
-    box:'<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 7 8 4 8-4v10l-8 4-8-4V7Z"/><path d="M12 11v10"/>',
-    heart:'<path d="M20.8 5.8a5.5 5.5 0 0 0-7.8 0L12 6.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/>',
-    chat:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.7-4A8.2 8.2 0 0 1 3 11.5a8.4 8.4 0 0 1 9-8.5 8.4 8.4 0 0 1 9 8.5Z"/>',
+    bell:'<path data-tone="soft" d="M18.4 8.2a6.4 6.4 0 0 0-12.8 0c0 6.6-3 7-3 9h18.8c0-2-3-2.4-3-9Z"/><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
+    check:'<rect data-tone="soft" x="3" y="3" width="18" height="18" rx="5"/><path d="m5.5 12.2 4 4L18.8 7"/><rect x="3" y="3" width="18" height="18" rx="5"/>',
+    calendar:'<rect data-tone="soft" x="3" y="5" width="18" height="16" rx="3"/><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h2M14 14h2M8 18h2M14 18h2"/>',
+    box:'<path data-tone="soft" d="m4 7 8-4 8 4-8 4-8-4Zm0 0 8 4v10l-8-4V7Z"/><path d="m4 7 8-4 8 4-8 4-8-4Zm0 0 8 4 8-4v10l-8 4-8-4V7ZM12 11v10"/>',
+    heart:'<path data-tone="soft" d="M20.8 5.8a5.5 5.5 0 0 0-7.8 0L12 6.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/><path d="M20.8 5.8a5.5 5.5 0 0 0-7.8 0L12 6.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/>',
+    chat:'<path data-tone="soft" d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.7-4A8.2 8.2 0 0 1 3 11.5a8.4 8.4 0 0 1 9-8.5 8.4 8.4 0 0 1 9 8.5Z"/><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.7-4A8.2 8.2 0 0 1 3 11.5a8.4 8.4 0 0 1 9-8.5 8.4 8.4 0 0 1 9 8.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/>',
     sparkle:'<path d="m12 3 1.3 4.2L17 9l-3.7 1.8L12 15l-1.3-4.2L7 9l3.7-1.8L12 3Z"/><path d="m19 15 .7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15ZM5 3l.6 1.8L7.5 5 5.6 5.6 5 7.5l-.6-1.9L2.5 5l1.9-.2L5 3Z"/>',
     gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/>',
     pin:'<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
@@ -30,8 +30,8 @@ if(!window.__churchIosExperience){
     grid:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     play:'<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/>',
     camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="m8 6 1.5-2h5L16 6"/><circle cx="12" cy="13" r="3.5"/>',
-    student:'<circle cx="12" cy="8" r="3"/><path d="M5 21v-2.2A4.8 4.8 0 0 1 9.8 14h4.4a4.8 4.8 0 0 1 4.8 4.8V21"/><path d="m3 6 9-4 9 4-9 4-9-4Z"/><path d="M18 8v5"/>',
-    printer:'<path d="M7 8V3h10v5"/><rect x="5" y="14" width="14" height="7" rx="1"/><path d="M5 17H3V9h18v8h-2M17 11h.01"/>',
+    student:'<path data-tone="soft" d="m3 6 9-4 9 4-9 4-9-4Z"/><circle data-tone="soft" cx="12" cy="11" r="3"/><path d="m3 6 9-4 9 4-9 4-9-4ZM18 8v5M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a3 3 0 0 0 6 0"/>',
+    printer:'<path data-tone="soft" d="M5 14h14v7H5z"/><path d="M7 8V3h10v5M5 17H3V9h18v8h-2M5 14h14v7H5M17 11h.01"/>',
     trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5M8 21h8M9 18h6"/>',
     clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4.5V3h6v1.5M9 10h6M9 14h6M9 18h4"/>',
     target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',

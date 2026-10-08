@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios3';import {listPastoralMessages,savePastoralFollowup} from './pastoral-inbox-management.mjs';
+import {db} from './admin-db.mjs?v=20261008-ios4';import {listPastoralMessages,savePastoralFollowup} from './pastoral-inbox-management.mjs';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s);let rows=[],busy=false,generation=0;const states=['待回覆','處理中','已完成'];const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const date=value=>value?new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'未記錄';
 function close(){generation++;$('#editor').hidden=true;$('#editor').replaceChildren();}

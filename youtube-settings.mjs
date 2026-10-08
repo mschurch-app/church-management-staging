@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios3';
+import {db} from './admin-db.mjs?v=20261008-ios4';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261008-access-deadline1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/youtube-oauth',q=new URLSearchParams(location.search),church=q.get('church')||'M+',$=selector=>document.querySelector(selector);
 function status(text,tone=''){const node=$('#status');node.textContent=text;node.dataset.tone=tone;}

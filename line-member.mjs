@@ -1,4 +1,4 @@
-import {lineConfig,LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS,PRAYER_LIFF_IDS} from './line-config.mjs';
+import {lineConfig,LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS,PRAYER_LIFF_IDS} from './line-config.mjs?v=20261009-plus-state1';
 
 const $=selector=>document.querySelector(selector),content=$('#content');
 const BRANDS={

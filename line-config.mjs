@@ -17,8 +17,11 @@ export const LINE_MEMBER_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/func
 export const PRAYER_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/prayer-wall';
 
 function liffState(value){
+  // URLSearchParams has already decoded the outer liff.state value. Decoding
+  // the complete value again turns an encoded M%2B church id into "M+" before
+  // the inner query parser sees it, where + means a space.
   let decoded=String(value||'');
-  for(let i=0;i<2;i++){try{const next=decodeURIComponent(decoded);if(next===decoded)break;decoded=next;}catch{break;}}
+  if(!decoded.includes('?')&&/%3f/i.test(decoded)){try{decoded=decodeURIComponent(decoded);}catch{}}
   const question=decoded.indexOf('?'),path=(question>=0?decoded.slice(0,question):decoded).replace(/^\/+|\/+$/g,''),params=new URLSearchParams(question>=0?decoded.slice(question+1):decoded.replace(/^[?#]/,''));
   return {params,path};
 }

@@ -38,11 +38,6 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
   }
 
   const hasLineIdentity=(user.identities||[]).some(identity=>identity.provider==='custom:line-web');
-  if(!hasLineIdentity&&location.pathname.split('/').pop()!=='admin-line-link.html'){
-    const next=location.pathname.split('/').pop()+location.search+location.hash;
-    location.replace('admin-line-link.html?next='+encodeURIComponent(next));
-    throw new Error('請先完成 LINE 綁定。');
-  }
 
   let result, profileResult;
   const attempts = retry ? 2 : 1;
@@ -57,7 +52,15 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
     }
   }
   if (result?.error || !Array.isArray(result?.data)) throw new Error('密碼已驗證，但暫時無法讀取管理權限，請再登入一次。');
-  const grants = result.data.filter(row => churches.has(row.church_id) && permissions.has(row.permission));
+  const availableGrants = result.data.filter(row => churches.has(row.church_id) && permissions.has(row.permission));
+  const grants = hasLineIdentity ? availableGrants : availableGrants.filter(row => row.church_id === 'SHiNE');
+  if (!hasLineIdentity && !grants.length && availableGrants.some(row => row.church_id === 'M+')) {
+    if(location.pathname.split('/').pop()!=='admin-line-link.html'){
+      const next=location.pathname.split('/').pop()+location.search+location.hash;
+      location.replace('admin-line-link.html?next='+encodeURIComponent(next));
+    }
+    throw new Error('M+ 大雅教會管理功能需先完成 LINE 綁定。');
+  }
   if (!grants.length) throw new Error('帳號尚未獲授權，或已停用。');
   const grantedChurches = [...new Set(grants.map(row => row.church_id))];
   const featureResults = await Promise.all(grantedChurches.map(async church_id => {

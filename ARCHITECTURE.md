@@ -17,6 +17,7 @@
 ## API and authentication
 
 - Browser authentication is Supabase Auth. The app persists the session in local storage and refreshes it when appropriate.
+- SHiNE-only administrators may use Email/password without linking LINE. M+ grants remain hidden until the same Auth user has a verified `custom:line-web` identity; dual-church accounts without LINE are restricted to SHiNE grants.
 - Browser calls use the Supabase publishable key plus the authenticated bearer token. A publishable key is not an authorization boundary; database grants, RLS, RPC checks, and server-side checks provide access control.
 - Supabase Edge Functions expose the HTTP API. Sensitive service-role credentials remain server-side.
 

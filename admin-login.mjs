@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261008-toast-loop2';
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-access-deadline1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-shine-email1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 const requestedNext=new URLSearchParams(location.search).get('next');
 const timeout=(promise,milliseconds,message)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),milliseconds))]);
@@ -12,10 +12,6 @@ window.performAdminLogin=async()=>{
   const {data,error}=await timeout(db.auth.signInWithPassword({email:document.querySelector('#email').value.trim(),password:document.querySelector('#password').value}),15000,'登入連線逾時，請確認網路後再按一次。');
   if(error)throw new Error('登入失敗，請確認帳號與密碼。');
   if(!data?.session||!data?.user)throw new Error('登入狀態尚未建立，請再試一次。');
-  if(!(data.user.identities||[]).some(identity=>identity.provider==='custom:line-web')){
-    location.replace('admin-line-link.html?next='+encodeURIComponent(safeNext()||'admin-dashboard.html'));
-    return true;
-  }
   button.textContent='登入成功，正在開啟首頁…';status.textContent='密碼已驗證，正在載入管理權限…';
   const access=await timeout(readAccess(db,{user:data.user,retry:true}),15000,'登入成功，但權限載入逾時。請再按一次登入。'),church=chooseChurch(access);
   status.textContent='權限確認完成，正在切換頁面…';

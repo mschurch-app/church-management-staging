@@ -63,8 +63,21 @@ async function start(){
     }
     const churches=[...new Set(access.data.map(row=>row.church_id).filter(value=>['M+','SHiNE'].includes(value)))];
     if(!churches.length)throw new Error('帳號尚未設定可使用的堂會。');
+    const destination=safeNext()||'admin-dashboard.html?church='+encodeURIComponent(churches[0]);
+    if(params.get('return')==='app'&&window.opener&&!window.opener.closed){
+      status.textContent='登入成功，正在返回教會 OS App…';
+      const opener=window.opener;
+      window.addEventListener('message',event=>{if(event.origin===location.origin&&event.source===opener&&event.data?.type==='church-os-line-auth-received')window.close();},{once:true});
+      opener.postMessage({type:'church-os-line-auth-complete',access_token:session.access_token,refresh_token:session.refresh_token,target:destination},location.origin);
+      back.textContent='關閉此頁，返回教會 OS App';
+      back.href='#';
+      back.hidden=false;
+      back.addEventListener('click',event=>{event.preventDefault();window.close();},{once:true});
+      setTimeout(()=>{status.textContent='登入已完成。若頁面沒有自動關閉，請按下方返回教會 OS App。';},1200);
+      return;
+    }
     status.textContent='登入成功，正在開啟管理首頁…';
-    location.replace(safeNext()||'admin-dashboard.html?church='+encodeURIComponent(churches[0]));
+    location.replace(destination);
   }catch(error){
     status.textContent=error.message||'LINE 登入暫時無法使用。';
     back.hidden=false;

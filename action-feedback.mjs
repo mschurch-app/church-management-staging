@@ -1,3 +1,5 @@
+if(!window.__churchActionFeedbackInstalled){
+window.__churchActionFeedbackInstalled=true;
 const state={lastInteraction:0,pending:0,failed:false,quietTimer:0,lastTerminalAt:0};
 const ACTION_TIMEOUT_MS=20000;
 let toast,icon,copy,timer,watchdog;
@@ -31,3 +33,5 @@ function install(){ensure();watchStatus();new MutationObserver(records=>{for(con
 const originalFetch=window.fetch.bind(window);window.fetch=async(input,init={})=>{const tracked=Date.now()-state.lastInteraction<3000;if(tracked){state.pending++;clearTimeout(state.quietTimer);}let timeout,controller,requestInit=init;const requestHasSignal=typeof Request!=='undefined'&&input instanceof Request&&input.signal;if(tracked&&!init.signal&&!requestHasSignal){controller=new AbortController();timeout=setTimeout(()=>controller.abort(new DOMException('操作逾時','TimeoutError')),ACTION_TIMEOUT_MS);requestInit={...init,signal:controller.signal};}try{const response=await originalFetch(input,requestInit);if(tracked&&!response.ok)state.failed=true;return response;}catch(error){if(tracked)state.failed=true;if(controller?.signal.aborted)throw new Error('連線逾時，請重新載入頁面確認結果後再試。');throw error;}finally{clearTimeout(timeout);if(tracked){state.pending=Math.max(0,state.pending-1);if(state.pending===0)state.quietTimer=setTimeout(()=>{if(Date.now()-state.lastTerminalAt<1200)return;clearTimeout(watchdog);clearButtons();show(state.failed?'操作未完成，請查看頁面訊息。':'操作已完成。',state.failed?'error':'success',state.failed?6000:3000);},650);}}};
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+
+}

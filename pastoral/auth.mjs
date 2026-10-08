@@ -1,5 +1,5 @@
 import {LINE_LOGIN_CHANNEL_ID, PASTORAL_LIFF_ID, PASTORAL_AUTH_ENDPOINT} from './config.mjs?v=20260924-4';
-import {db} from '../admin-db.mjs?v=20261008-toast-loop1';
+import {db} from '../admin-db.mjs?v=20261008-toast-loop2';
 
 let initialization;
 function timeout(promise,milliseconds,message){return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(message)),milliseconds);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});}

@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown;date?:unknown;note?:unknown;slotId?:unknown;registrationId?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown;date?:unknown;note?:unknown;slotId?:unknown;registrationId?:unknown;accept?:unknown};
 const churches=new Set(['M+','SHiNE']);
 const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
@@ -27,6 +27,14 @@ async function signedImage(db:ReturnType<typeof createClient>,path:string){
   return result.data?.signedUrl||'';
 }
 
+async function notifySignupOffer(subject:unknown,registrationId:unknown,expiresAt:unknown){
+  const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||'';
+  if(typeof subject!=='string'||!token)return;
+  const page='https://mscos.mchurch.online/service-signup.html';
+  const expiry=typeof expiresAt==='string'?new Date(expiresAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'24 小時內';
+  await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:subject,messages:[{type:'text',text:`主日服事有名額釋出，現在輪到你確認是否承接。請在 ${expiry} 前開啟登記頁，按下「接受候補邀請」才會保留名額。\n${page}`} ]})}).catch(()=>{});
+}
+
 Deno.serve(async request=>{
   const origin=request.headers.get('origin')||'';
   if(request.method==='OPTIONS')return new Response('ok',{headers:cors(origin)});
@@ -46,6 +54,7 @@ Deno.serve(async request=>{
       if(church!=='M+')return respond(origin,{ok:false,error:'content_empty'},404);
       const result=await db.rpc('service_signup_member_view',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id});
       if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
+      for(const offer of result.data?.issued_offers||[])await notifySignupOffer(offer.line_subject,offer.registration_id,offer.expires_at);
       return respond(origin,{ok:true,profile:{name:identity.name},...result.data});
     }
     if(feature==='today'){
@@ -106,10 +115,18 @@ Deno.serve(async request=>{
     if(church!=='M+'||!Number.isSafeInteger(Number(body.registrationId))||Number(body.registrationId)<1)return respond(origin,{ok:false,error:'invalid_request'},400);
     const result=await db.rpc('service_signup_cancel',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_registration:Number(body.registrationId)});
     if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
-    const promoted=clean(result.data?.promoted_line_subject,80),token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||'';
-    if(promoted&&token){
-      await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:promoted,messages:[{type:'text',text:'主日服事名額已釋出，你已由候補遞補為已登記。請回到服事登記頁查看最新狀態。'}]})}).catch(()=>{});
-    }
+    const offer=result.data?.next_offer;
+    if(offer)await notifySignupOffer(offer.line_subject,offer.registration_id,offer.expires_at);
+    return respond(origin,{ok:true,...result.data});
+  }
+
+  if(action==='service_signup_offer'){
+    const registration=Number(body.registrationId),accept=body.accept===true;
+    if(church!=='M+'||!Number.isSafeInteger(registration)||registration<1)return respond(origin,{ok:false,error:'invalid_request'},400);
+    const result=await db.rpc('service_signup_accept_offer',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_registration:registration,p_accept:accept});
+    if(result.error){const error=String(result.error.message||'');return respond(origin,{ok:false,error:error.includes('binding_required')?'binding_required':error.includes('offer_expired')?'offer_expired':'unavailable'},error.includes('offer_expired')?409:503);}
+    const next=result.data?.next_offer;
+    if(next)await notifySignupOffer(next.line_subject,next.registration_id,next.expires_at);
     return respond(origin,{ok:true,...result.data});
   }
 

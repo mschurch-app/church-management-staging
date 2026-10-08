@@ -8,7 +8,7 @@
     <header class="app-head"><button id="home" aria-label="回到六功能首頁">⌂</button><div class="identity"><img id="brand-logo" alt=""><div><strong id="brand-name">教會會員服務</strong><small id="connection">願平安與你同在</small></div></div><span id="streak" class="streak" hidden></span></header>
     <section id="content" class="content"><div class="loading"><span></span><strong>為你準備內容中</strong><small>請稍候片刻</small></div></section>
   </main>
-  <template id="error-template"><section class="state-card"><span>🕊️</span><h1>暫時無法載入</h1><p>請回到 LINE 後重新開啟；若問題持續，請告訴教會同工。</p><button onclick="location.reload()">重新整理</button></section></template>
+  <template id="error-template"><section class="state-card"><span>🕊️</span><h1>LINE 連線尚未完成</h1><p>請按下方按鈕重新連線。</p><small data-error-detail></small><button type="button" data-error-retry>重新連線</button></section></template>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script type="module" src="line-member.mjs?v=20261009-line-auth-fallback1"></script>
+  <script type="module" src="line-member.mjs?v=20261009-line-safari2"></script>
 </body></html>

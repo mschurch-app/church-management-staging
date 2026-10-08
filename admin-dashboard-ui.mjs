@@ -34,7 +34,7 @@ function renderChurches(){const nav=$('#churches');nav.replaceChildren();for(con
 function moduleCard(item,module,key=''){const a=document.createElement('a'),moduleKey=key||item.key||module.key||'';a.href=module.file.startsWith('http')?module.file:href(module.file);a.className='dashboard-card';a.dataset.iosIcon=moduleKey;a.dataset.folderKey=folderKey(moduleKey);a.append(el('span',item.icon||module.icon,'dashboard-icon'),el('h3',friendlyLabel(item.label||module.title)),el('p',item.description||module.description));return a;}
 function renderModules(settings,home){
  const area=$('#modules');area.replaceChildren();area.className='module-groups';
- const configured=featureSettings(settings,'dashboard'),byKey=new Map(MODULES.map(item=>[item.key,item])),placed=new Set();
+ const configured=featureSettings(settings,'dashboard'),byKey=new Map(MODULES.map(item=>[item.key,item])),placed=new Set(),allowedQuick=new Set(allowedQuickKeys());
  const categories=[
   {key:'pastoral',title:'人與關懷',note:'會友、新朋友、小組、代禱與關懷訊息',keys:['members','newcomer_care','groups','prayers','pastoral_inbox','tree_reading_admin']},
   {key:'service',title:'聚會與服事',note:'出席登記與主日服事安排',keys:['schedules','attendance']},
@@ -46,12 +46,14 @@ function renderModules(settings,home){
  for(const category of categories){
   const group=el('section','','module-group module-group--'+category.key),head=el('div','','module-group-heading'),grid=el('div','','dashboard-grid');head.append(el('h3',category.title),el('p',category.note,'muted'));
   for(const item of configured){if(!category.keys.includes(item.key)||placed.has(item.key))continue;const module=byKey.get(item.key);if(!module||!canOpen(access,church,module.permission))continue;grid.append(moduleCard(item,module));placed.add(item.key);}
-  if(category.key==='community'){addExtra(grid,'school');addExtra(grid,'basketball');addExtra(grid,'school_reports');if(church==='M+')addExtra(grid,'heat_camp');}
+  if(category.key==='pastoral'&&allowedQuick.has('pastoral_workspace'))addExtra(grid,'pastoral_workspace');
+  if(category.key==='community'){for(const key of ['school','school_checkin','school_schedules','school_rollcall','school_students','school_counseling','school_reports','basketball','basketball_gamecenter','basketball_tactics','basketball_assignments','basketball_schedule','basketball_daily'])if(allowedQuick.has(key))addExtra(grid,key);if(church==='M+')addExtra(grid,'heat_camp');}
   if(category.key==='media'&&church==='M+'&&canOpen(access,church,'website_weekly')&&canAction(access,church,'website_weekly','approve')){const publishing={file:'media-publishing-settings.html',icon:'▶',title:'社群發布',description:'Instagram、YouTube 與字幕'};grid.append(moduleCard(publishing,publishing,'media_publishing'));}
   if(category.key==='system'){addExtra(grid,'church_settings');addExtra(grid,'system_monitor');}
   if(grid.children.length){group.append(head,grid);area.append(group);}
  }
  const remaining=configured.filter(item=>!placed.has(item.key));if(remaining.length){const group=el('section','','module-group module-group--system'),head=el('div','','module-group-heading'),grid=el('div','','dashboard-grid');head.append(el('h3','其他功能'),el('p','依你的身分顯示可用功能','muted'));for(const item of remaining){const module=byKey.get(item.key);if(!module||!canOpen(access,church,module.permission))continue;grid.append(moduleCard(item,module));}if(grid.children.length){group.append(head,grid);area.append(group);}}
+ const existing=new Set([...area.querySelectorAll('[data-folder-key]')].map(card=>card.dataset.folderKey)),missing=[...allowedQuick].filter(key=>!existing.has(folderKey(key)));if(missing.length){const group=el('section','','module-group module-group--system'),head=el('div','','module-group-heading'),grid=el('div','','dashboard-grid');head.append(el('h3','其他可用功能'),el('p','從常用移除的功能會回到這裡','muted'));for(const key of missing)addExtra(grid,key);if(grid.children.length){group.append(head,grid);area.append(group);}}
  if(!area.children.length)area.append(el('p','此堂會目前沒有開放中的管理功能。','muted'));
  area.onclick=event=>{const link=event.target.closest('[data-school-link]');if(link)openSchool(event,link.href);};
  syncFunctionFolder();

@@ -82,7 +82,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
   }
   if(body.action==='get'){
     if(!profile.reviewer||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
-    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
+    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(result.error||!result.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
     return json(APP_ORIGIN,{ok:true,bulletin:result.data});
   }

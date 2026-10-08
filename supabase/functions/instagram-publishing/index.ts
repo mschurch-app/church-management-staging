@@ -65,7 +65,7 @@ async function publishingEnabled(db:ReturnType<typeof createClient>,church:strin
 }
 async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,church:string,bulletinId:string,userId:string){
   if(!await publishingEnabled(db,church,'instagram_weekly_reel_enabled'))throw new Error('publishing_disabled');
-  const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle(),bulletin=bulletinResult.data;
+  const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_cover_image_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle(),bulletin=bulletinResult.data;
   if(bulletinResult.error||!bulletin)throw new Error('bulletin_not_found');
   if(bulletin.status!=='published')throw new Error('bulletin_not_published');
   if(!bulletin.reel_enabled||!bulletin.reel_video_path)return {status:'skipped'};
@@ -78,7 +78,8 @@ async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,
   if(queued.error||!queued.data)throw new Error('job_store');
   try{
     const token=await decryptToken(connection.access_token_ciphertext,connection.access_token_iv,serviceKey),videoUrl=db.storage.from('church-website-public-media').getPublicUrl(bulletin.reel_video_path).data.publicUrl;
-    const created=await graph(`${connection.instagram_user_id}/media`,token,'POST',{media_type:'REELS',video_url:videoUrl,caption,share_to_feed:'true'}),containerId=String(created.id||'');
+    const coverUrl=bulletin.reel_cover_image_path?db.storage.from('church-website-public-media').getPublicUrl(bulletin.reel_cover_image_path).data.publicUrl:null;
+    const created=await graph(`${connection.instagram_user_id}/media`,token,'POST',{media_type:'REELS',video_url:videoUrl,caption,share_to_feed:'true',...(coverUrl?{cover_url:coverUrl}:{})}),containerId=String(created.id||'');
     if(!containerId)throw new Error('instagram_api');
     await db.from('instagram_publication_jobs').update({container_id:containerId,attempt_count:1,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
     let ready=false;
@@ -151,7 +152,7 @@ Deno.serve(async request=>{
     if(body.action==='save_reel'){
       const bulletinId=String(body.bulletinId||''),videoPath=String(body.reelVideoPath||''),audioPath=body.reelAudioPath?String(body.reelAudioPath):null,caption=String(body.reelCaption||'').trim().slice(0,2200),audioStart=Math.max(0,Math.min(86400,Number(body.reelAudioStart)||0));
       if(!/^[0-9a-f-]{36}$/i.test(bulletinId)||!videoPath.startsWith(`${church}/weekly/${bulletinId}/`)||!videoPath.endsWith('.mp4')||(audioPath&&!audioPath.startsWith(`${church}/reel-music/`)))return json(origin,{ok:false,error:'invalid_request'},400);
-      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,updated_by:user!.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).select('id,church_id,service_date,title,subtitle,service_time,hero_image_path,sections,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
+      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,updated_by:user!.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
       if(saved.error||!saved.data)return json(origin,{ok:false,error:'not_found'},404);
       return json(origin,{ok:true,bulletin:saved.data});
     }

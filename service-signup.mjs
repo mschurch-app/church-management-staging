@@ -1,5 +1,5 @@
 import {MEMBER_LIFF_IDS,LINE_MEMBER_ENDPOINT} from './line-config.mjs';
-const church='M+',channel=MEMBER_LIFF_IDS[church],lineEntry=`https://liff.line.me/${channel}?church=M%2B&feature=service_signup`,$=s=>document.querySelector(s),app=$('#app'),status=$('#status');
+const church='M+',channel=MEMBER_LIFF_IDS[church],lineEntry=`https://liff.line.me/${channel}/service_signup?church=M%2B`,$=s=>document.querySelector(s),app=$('#app'),status=$('#status');
 const ministries={media:['🎛️','影音'],worship:['🎶','敬拜團'],welcome:['🤝','接待'],children:['🧒','兒童主日學']};
 const roles={sound:'音控',projection_director:'投影字幕／導播',lighting:'燈光',worship_leader:'主領',assistant_worship_leader:'副主領',keyboard_1:'第一鍵盤',keyboard_2:'第二鍵盤',drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer_1:'歌手一',singer_2:'歌手二',singer_3:'歌手三',welcome_1:'接待一',welcome_2:'接待二',children_teacher:'老師',children_assistant:'助手'};
 let token='',data={},step=1,selectedMinistries=new Set(),selectedRole='',selectedSlot=null,busy=false;

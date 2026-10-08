@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {db} from './admin-db.mjs?v=20261008-ios1';
 import {loadRequests,findCandidates,reviewRequest} from './binding-review.mjs?v=20261006-mobile-stability1';
 const church=new URLSearchParams(location.search).get('church');
 const list=document.querySelector('#requests'),status=document.querySelector('#status');

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-toast-loop2';
+import {db} from './admin-db.mjs?v=20261008-ios1';
 import {readAccess} from './admin-access.mjs?v=20261008-shine-email1';
 
 const status=document.querySelector('#status');

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-toast-loop2';
+import {db} from './admin-db.mjs?v=20261008-ios1';
 import {
   listRooms, saveRoom, listBookings, createBooking, updateBooking,
   setBookingStatus, setRoomActive

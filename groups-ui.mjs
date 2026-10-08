@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-toast-loop2';
+import {db} from './admin-db.mjs?v=20261008-ios1';
 import {listGroups,listGroupMembers,saveGroup,setGroupArchived} from './group-management.mjs?v=20261003-access-guard1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s),status=$('#status'),container=$('#groups'),editor=$('#editor'),term=church==='SHiNE'?'小家':'小組',leaderTerm=church==='SHiNE'?'小家長':'小組長';

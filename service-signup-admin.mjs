@@ -1,4 +1,4 @@
-import {db,SUPABASE_URL} from './admin-db.mjs?v=20261008-toast-loop2';
+import {db,SUPABASE_URL} from './admin-db.mjs?v=20261008-ios1';
 const church='M+',$=s=>document.querySelector(s),status=$('#status'),overview=$('#overview'),tabs=$('#seasonTabs');let payload={seasons:[],slots:[]},active=null,busy=false;
 const labels={media:'影音',worship:'敬拜團',welcome:'接待',children:'兒童主日學',sound:'音控',projection_director:'投影字幕／導播',lighting:'燈光',worship_leader:'主領',assistant_worship_leader:'副主領',keyboard_1:'第一鍵盤',keyboard_2:'第二鍵盤',drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer_1:'歌手一',singer_2:'歌手二',singer_3:'歌手三',welcome_1:'接待一',welcome_2:'接待二',children_teacher:'老師',children_assistant:'助手'};
 const el=(tag,text='',cls='')=>{const node=document.createElement(tag);node.textContent=text;node.className=cls;return node;};

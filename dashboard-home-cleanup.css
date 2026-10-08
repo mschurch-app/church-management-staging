@@ -56,8 +56,18 @@
   display:grid;
   width:44px;
   height:44px;
+  min-height:44px;
   place-items:center;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent!important;
+  color:inherit;
+  box-shadow:none!important;
+  cursor:pointer;
 }
+.dashboard-page .notification-ticker-bell-wrap:focus-visible{outline:3px solid rgba(199,70,50,.28);outline-offset:3px}
+.dashboard-page .notification-ticker-bell-wrap:active{transform:scale(.95)}
 .dashboard-page .notification-ticker-bell{
   width:42px;
   height:42px;
@@ -191,7 +201,7 @@
 .dashboard-page .app-hub-card.is-removing{opacity:0;transform:scale(.72)}
 .dashboard-page .quick-links-restore{display:block;margin:12px auto 0;background:#fff;color:#8b4936;box-shadow:none}
 .dashboard-page .quick-links-restore[hidden]{display:none}
-.notification-detail-dialog{
+.notification-detail-dialog,.notification-history-dialog{
   width:min(620px,calc(100vw - 28px));
   max-height:min(82dvh,760px);
   margin:auto;
@@ -203,15 +213,16 @@
   color:#352823;
   box-shadow:0 28px 80px rgba(53,40,35,.24);
 }
-.notification-detail-dialog::backdrop{background:rgba(42,31,27,.34);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.notification-detail-dialog::backdrop,.notification-history-dialog::backdrop{background:rgba(42,31,27,.34);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:none}
 .notification-detail-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;max-height:inherit}
+.notification-history-shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;max-height:inherit}
 .notification-detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:24px 24px 18px;background:linear-gradient(145deg,#fff7f0,#fffdfa);border-bottom:1px solid #f0e2d8}
 .notification-detail-heading{display:grid;min-width:0;gap:6px}
 .notification-detail-heading .eyebrow{margin:0;color:#bd4935;font-size:10px;font-weight:850;letter-spacing:.13em}
 .notification-detail-title{margin:0;color:#352823;font-size:22px;line-height:1.4;overflow-wrap:anywhere}
 .notification-detail-time{color:#8b7770;font-size:12px}
 .notification-detail-close{display:grid;width:38px;height:38px;min-height:0;flex:0 0 38px;place-items:center;margin:0;padding:0;border:1px solid #ead9ce;border-radius:50%;background:#fff!important;color:#68473d!important;font-size:26px;font-weight:400;line-height:1;box-shadow:none!important}
-.notification-detail-content{min-height:110px;padding:22px 24px;overflow:auto;overscroll-behavior:contain}
+.notification-detail-content{min-height:110px;padding:22px 24px;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 .notification-detail-body{margin:0;color:#4f6663;font-size:15px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
 .notification-detail-content .app-notification-report{grid-template-columns:1fr}
 .notification-detail-status{margin:0;padding:9px 24px;color:#8a756c;font-size:11px;line-height:1.45;background:#fffaf6}
@@ -219,6 +230,22 @@
 .notification-detail-actions>*{min-height:44px;margin:0;padding:10px 17px;border-radius:13px;font-size:14px;font-weight:800}
 .notification-detail-open{display:inline-flex;align-items:center;justify-content:center;background:#c74632;color:#fff;text-decoration:none;box-shadow:0 7px 16px rgba(199,70,50,.18)}
 .notification-detail-open[hidden]{display:none}
+.notification-history-summary{margin:0;color:#8b7770;font-size:12px}
+.notification-history-list{display:grid;align-content:start;gap:10px;min-height:150px;padding:16px 18px 20px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.notification-history-empty{margin:auto;padding:34px 0;text-align:center}
+.notification-history-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:0;margin:0;padding:15px 16px;border:1px solid #ecded5;border-radius:17px;background:#fff!important;color:#3f302b!important;text-align:left;box-shadow:none!important}
+.notification-history-item.is-unread{border-color:#e8ad98;background:#fff7f2!important}
+.notification-history-copy{display:grid;min-width:0;gap:6px}
+.notification-history-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.notification-history-heading strong{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.notification-history-state{flex:0 0 auto;padding:3px 7px;border-radius:999px;background:#eee7e2;color:#826f67;font-size:10px;font-weight:800;line-height:1.3}
+.notification-history-item.is-unread .notification-history-state{background:#c74632;color:#fff}
+.notification-history-body{display:-webkit-box;overflow:hidden;color:#6f7d79;font-size:12px;line-height:1.55;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.notification-history-item time{color:#9a8880;font-size:10px}
+.notification-history-arrow{color:#bd4935;font-size:22px;line-height:1}
+html.notification-modal-open{overflow:hidden;overscroll-behavior:none}
+body.notification-modal-open{position:fixed;right:0;left:0;width:100%;overflow:hidden;overscroll-behavior:none}
+dialog.notification-modal[open]{touch-action:pan-y}
 @keyframes quick-jiggle{from{transform:rotate(-.55deg)}to{transform:rotate(.55deg)}}
 @media(max-width:760px){
   html{scroll-behavior:smooth;scroll-padding-top:14px}
@@ -267,14 +294,17 @@
   .dashboard-page .module-group .dashboard-card p{display:none}
   .dashboard-page .system-links{grid-template-columns:1fr}
   .dashboard-page .app-install-row{gap:9px}
-  .church-ios dialog.notification-detail-dialog[open]{max-height:min(88dvh,760px);padding:0 0 env(safe-area-inset-bottom);overflow:hidden}
-  .church-ios dialog.notification-detail-dialog[open]:before{position:absolute;z-index:3;top:9px;left:50%;margin:0;transform:translateX(-50%)}
+  .church-ios dialog.notification-detail-dialog[open],.church-ios dialog.notification-history-dialog[open]{max-height:min(88dvh,760px);padding:0 0 env(safe-area-inset-bottom);overflow:hidden}
+  .church-ios dialog.notification-detail-dialog[open]:before,.church-ios dialog.notification-history-dialog[open]:before{position:absolute;z-index:3;top:9px;left:50%;margin:0;transform:translateX(-50%)}
   .notification-detail-header{padding:28px 18px 14px}
   .notification-detail-title{font-size:20px}
   .notification-detail-content{padding:18px}
   .notification-detail-status{padding:8px 18px}
   .notification-detail-actions{display:grid;grid-template-columns:1fr 1fr;padding:12px 18px 18px}
   .notification-detail-actions>*{width:100%}
+  .notification-history-dialog .notification-detail-actions{grid-template-columns:1fr}
+  .notification-history-list{padding:12px 14px 16px}
+  .notification-history-item{padding:13px 14px}
   .mobile-app-nav{position:fixed;z-index:100;right:10px;bottom:max(8px,env(safe-area-inset-bottom));left:10px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid rgba(221,207,197,.92);border-radius:22px;background:rgba(255,252,249,.94);box-shadow:0 12px 34px rgba(63,41,31,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
   .mobile-app-nav a{display:flex;min-width:0;min-height:50px;align-items:center;justify-content:center;flex-direction:column;gap:2px;border-radius:16px;color:#715c52;font-size:10px;font-weight:800;text-decoration:none}
   .mobile-app-nav a span{font-size:19px;line-height:1}

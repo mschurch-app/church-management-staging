@@ -37,6 +37,7 @@ button.addEventListener('click',async()=>{
   status.textContent='正在開啟 LINE 安全綁定…';
   const callback=new URL('admin-line-callback.html',location.href);
   callback.searchParams.set('next',safeNext());
+  callback.searchParams.set('flow','link');
   const {error}=await db.auth.linkIdentity({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile'}});
   if(error){status.textContent='目前無法啟動 LINE 綁定，請稍後再試。';button.disabled=false;}
 });

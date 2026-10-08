@@ -30,6 +30,43 @@ function renderDailyReport(value){
  }
  return wrap.childElementCount?wrap:null;
 }
+let notificationDialog;
+function ensureNotificationDialog(){
+ if(notificationDialog)return notificationDialog;
+ const dialog=el('dialog','','notification-detail-dialog');dialog.setAttribute('aria-labelledby','notification-detail-title');
+ const shell=el('div','','notification-detail-shell');
+ const header=el('header','','notification-detail-header');
+ const heading=el('div','','notification-detail-heading'),title=el('h2','','notification-detail-title');title.id='notification-detail-title';heading.append(el('p','最新通知','eyebrow'),title,el('time','','notification-detail-time'));
+ const close=el('button','×','notification-detail-close');close.type='button';close.setAttribute('aria-label','關閉通知');
+ header.append(heading,close);
+ const content=el('div','','notification-detail-content');
+ const status=el('p','','notification-detail-status');status.setAttribute('role','status');
+ const actions=el('footer','','notification-detail-actions');
+ const dismiss=el('button','關閉','secondary notification-detail-dismiss');dismiss.type='button';
+ const open=el('a','前往相關頁面','notification-detail-open');
+ actions.append(dismiss,open);shell.append(header,content,status,actions);dialog.append(shell);document.body.append(dialog);
+ close.onclick=()=>dialog.close();dismiss.onclick=()=>dialog.close();dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+ notificationDialog={dialog,title:heading.querySelector('h2'),time:heading.querySelector('time'),content,status,close,open};
+ return notificationDialog;
+}
+function showNotificationDetail(item,{onMarked,onClose}={}){
+ const modal=ensureNotificationDialog();
+ modal.title.textContent=item.title||'通知';modal.time.textContent=time(item.created_at);modal.time.dateTime=item.created_at||'';
+ const report=item.event_key==='line_group_summary'?renderDailyReport(item.body):null;
+ modal.content.replaceChildren(report||el('p',item.body||'這則通知沒有附加內容。','notification-detail-body'));
+ const destination=String(item.target_url||'').trim();modal.open.hidden=!destination;modal.open.removeAttribute('href');if(destination)modal.open.href=destination;
+ modal.status.textContent='正在更新未讀狀態…';
+ let markedNotified=false;
+ const markPromise=db.rpc('mark_app_notification_read',{p_id:item.id}).then(result=>{
+  if(result.error)throw result.error;
+  modal.status.textContent='已標示為已讀';
+  if(!markedNotified){markedNotified=true;onMarked?.();}
+  return true;
+ }).catch(()=>{modal.status.textContent='暫時無法更新已讀狀態，關閉後仍可再次開啟。';return false;});
+ modal.open.onclick=async event=>{event.preventDefault();await Promise.race([markPromise,new Promise(resolve=>setTimeout(resolve,500))]);location.assign(destination);};
+ modal.dialog.addEventListener('close',async()=>{await markPromise;onClose?.();},{once:true});
+ modal.dialog.showModal();setTimeout(()=>modal.close.focus(),0);
+}
 export async function loadNotificationCenter(area,badge){
  const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(error||!Array.isArray(data)){area.replaceChildren(el('p','最新通知暫時無法載入。','muted'));return;}
  clearInterval(tickerTimer);clearTimeout(tickerResetTimer);tickerTimer=0;tickerResetTimer=0;
@@ -40,7 +77,7 @@ export async function loadNotificationCenter(area,badge){
   const card=el('a','','notification-ticker-item');card.href=item.target_url||'#';card.dataset.notificationId=String(item.id);card.setAttribute('aria-label',`${item.title}。${item.body||''}`);
   const copy=el('span','','notification-ticker-copy');copy.append(el('strong',item.title),el('span',String(item.body||'').replace(/\s+/g,' ').trim(),'notification-ticker-body'));
   card.append(copy,el('time',time(item.created_at)),el('b','›','notification-ticker-arrow'));
-  card.onclick=async event=>{event.preventDefault();const destination=item.target_url||'';if(destination){try{await Promise.race([db.rpc('mark_app_notification_read',{p_id:item.id}),new Promise(resolve=>setTimeout(resolve,500))]);}catch{}location.assign(destination);return;}try{const result=await db.rpc('mark_app_notification_read',{p_id:item.id});if(result.error)throw result.error;await loadNotificationCenter(area,badge);}catch{}};
+  card.onclick=event=>{event.preventDefault();clearInterval(tickerTimer);tickerTimer=0;showNotificationDetail(item,{onMarked:()=>{unread=Math.max(0,unread-1);updateBadge();},onClose:()=>loadNotificationCenter(area,badge)});};
   track.append(card);
  }
  const cards=[...track.children];let active=0;cards[0].classList.add('is-active');cards.forEach((card,index)=>card.setAttribute('aria-hidden',index?'true':'false'));

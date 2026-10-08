@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {db} from './admin-db.mjs?v=20261008-action-recovery1';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminProfile,saveAdminAccess,saveHomePreferences,saveFeaturePermissions} from './admin-accounts-management.mjs?v=20261007-heat-camp1';
 const search=new URLSearchParams(location.search),church=search.get('church')||'M+',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false;
 const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
@@ -48,13 +48,14 @@ async function accountForm(row){
   home=homeEditor(row,getTarget,getRole);form._home=home;
   const getFeatures=()=>row.is_owner?Object.keys(PERMISSIONS):form._access.boxes.filter(box=>box.checked).map(box=>box.dataset.permission);
   feature=featureEditor(row,getTarget,getRole,getFeatures);form._feature=feature;
-  const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button','儲存管理員資料');cancel.type='button';cancel.onclick=close;actions.append(cancel);if(!row.is_owner){const remove=el('button','移除管理員資格','danger');remove.type='button';remove.onclick=()=>removeRow(row);actions.append(remove);}actions.append(save);form.append(el('h2','編輯 '+(row.display_name||row.email)),grid,activeLabel);if(!row.is_owner)form.append(matrix);form.append(actions);
+  const actions=el('div','','editor-actions'),saveStatus=el('p','','form-message'),cancel=el('button','取消','secondary'),save=el('button','儲存管理員資料');form.dataset.actionFeedback='off';save.type='submit';cancel.type='button';cancel.onclick=close;actions.append(cancel);if(!row.is_owner){const remove=el('button','移除管理員資格','danger');remove.type='button';remove.onclick=()=>removeRow(row);actions.append(remove);}actions.append(save);form.append(el('h2','編輯 '+(row.display_name||row.email)),grid,activeLabel);if(!row.is_owner)form.append(matrix);form.append(saveStatus,actions);
   form.insertBefore(home.section,actions);form.insertBefore(feature.section,actions);
   form.onsubmit=async event=>{
     event.preventDefault();
     if(busy)return;
     busy=true;save.disabled=true;save.textContent='正在儲存…';
-    const setStep=message=>{$('#status').textContent=message;save.textContent=message.replace('…','');};
+    const setStep=(message,state='')=>{saveStatus.textContent=message;saveStatus.className='form-message '+state;save.textContent=state?'儲存管理員資料':message.replace('…','');};
+    const saveRpc=async(name,args,errorMessage)=>{const result=await timeout(db.rpc(name,args),errorMessage.replace('未儲存','儲存逾時'));if(result.error||result.data!==true)throw new Error(result.error?.message||errorMessage);};
     try{
       let grants=[],roles=[];
       if(!row.is_owner){
@@ -70,24 +71,26 @@ async function accountForm(row){
         return record;
       });
       setStep('正在儲存每頁操作權限…');
-      await timeout(saveFeaturePermissions(db,row,targetChurch,featureRows),'操作權限儲存逾時，請再按一次儲存。');
+      await saveRpc('set_admin_feature_permissions',{p_user:row.user_id,p_church:targetChurch,p_permissions:featureRows},'操作權限未儲存，請再試一次。');
       setStep('正在儲存基本資料…');
-      await timeout(saveAdminProfile(db,row,name.value,title.value),'基本資料儲存逾時，請再按一次儲存。');
+      const cleanName=name.value.trim(),cleanTitle=title.value.trim();if(!cleanName||!cleanTitle)throw new Error('姓名與職稱皆為必填。');
+      await saveRpc('set_admin_account_profile',{p_user:row.user_id,p_display_name:cleanName,p_job_title:cleanTitle},'基本資料未儲存，請再試一次。');
       setStep('正在儲存首頁設定…');
-      await timeout(saveHomePreferences(db,row,targetChurch,homeModules),'首頁設定儲存逾時，請再按一次儲存。');
+      await saveRpc('set_admin_home_preferences',{p_user:row.user_id,p_church:targetChurch,p_home_modules:homeModules,p_notification_topics:[]},'首頁設定未儲存，請再試一次。');
       if(!row.is_owner){
         setStep('正在儲存堂會權限…');
-        await timeout(saveAdminAccess(db,row,active.checked,grants,roles),'堂會權限儲存逾時，請再按一次儲存。');
+        await saveRpc('set_admin_account_access_v3',{p_user:row.user_id,p_active:Boolean(active.checked),p_grants:grants,p_roles:roles},'堂會權限未儲存，請再試一次。');
         const ministries=form._serviceScopes.scopeBoxes.filter(box=>box.checked).map(box=>box.value);
         setStep('正在儲存主日服事負責類別…');
         const scopeResult=await timeout(db.rpc('set_service_signup_scopes',{p_user:row.user_id,p_church:targetChurch,p_ministries:ministries}),'主日服事負責類別儲存逾時，請再按一次儲存。');
-        if(scopeResult.error||scopeResult.data!==true)throw new Error('主日服事負責類別未儲存，請重新整理後再試。');
+        if(scopeResult.error||scopeResult.data!==true)throw new Error(scopeResult.error?.message||'主日服事負責類別未儲存，請重新整理後再試。');
       }
       const success='管理員資料、首頁版面、頁面操作與服事類別權限已儲存。';
-      close();$('#status').textContent=success;
+      setStep(success,'success');$('#status').textContent=success;
+      await new Promise(resolve=>setTimeout(resolve,650));close();
       requestAnimationFrame(()=>setTimeout(async()=>{try{rows=await listAdminAccounts(db);render();$('#status').textContent=success;}catch{$('#status').textContent=success+' 名單可稍後重新整理。';}},180));
     }catch(error){
-      $('#status').textContent=error?.message||'管理員資料未儲存，請再試一次。';
+      const message=error?.message||'管理員資料未儲存，請再試一次。';setStep(message,'error');$('#status').textContent=message;
     }finally{
       busy=false;save.disabled=false;save.textContent='儲存管理員資料';
     }

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {db} from './admin-db.mjs?v=20261008-action-recovery1';
 import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule,listRolePreferences,saveRolePreferences} from './schedule-management.mjs?v=20261003-access-guard1';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;

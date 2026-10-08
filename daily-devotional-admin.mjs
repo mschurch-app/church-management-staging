@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {db} from './admin-db.mjs?v=20261008-action-recovery1';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261008-line-link1';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/daily-devotional-admin';

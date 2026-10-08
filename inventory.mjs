@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261006-mobile-stability1';
+import {db} from './admin-db.mjs?v=20261008-action-recovery1';
 import {readAccess,chooseChurch,canOpen,canAction} from './admin-access.mjs?v=20261008-line-link1';
 
 const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search),editor=$('#editor-dialog'),detail=$('#detail-dialog');

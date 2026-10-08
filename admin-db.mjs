@@ -1,5 +1,5 @@
 // Public client configuration; access is enforced by Auth and RLS.
-import './action-feedback.mjs?v=20261006-mobile-stability1';
+import './action-feedback.mjs?v=20261008-action-recovery1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 export {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';
 const appMode=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;

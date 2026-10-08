@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios2';
+import {db} from './admin-db.mjs?v=20261008-ios3';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261008-access-deadline1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/subtitle-knowledge-admin',q=new URLSearchParams(location.search),$=s=>document.querySelector(s);let data={drafts:[],items:[]},busy=false;
 function message(text,tone=''){const node=$('#status');node.textContent=text;node.dataset.tone=tone;}

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios2';import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';
+import {db} from './admin-db.mjs?v=20261008-ios3';import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';
 const $=s=>document.querySelector(s);let rows=[],user,current=null;const church='M+';const status=(t,e=false)=>{$('#status').textContent=t;$('#status').dataset.tone=e?'error':'success'};
 function edit(r){current=r||null;$('#id').value=r?.id||'';$('#date').value=r?.published_on||'';$('#state').value=r?.status||'draft';$('#title').value=r?.title||'';$('#excerpt').value=r?.excerpt||'';$('#content').value=r?.content_html||'';$('#image').value=r?.hero_image_url||'';$('#form-title').textContent=r?'編輯教材':'新增教材';$('#form-mode').textContent=r?'正在編輯':'尚未儲存';$('#save').textContent=r?'儲存修改':'儲存新教材';$('#delete').disabled=!r;render()}
 function render(){$('#items').replaceChildren(...rows.map(r=>{const b=document.createElement('button');b.type='button';b.className='item'+(r.id===current?.id?' active':'');b.textContent=`${r.published_on}｜${r.title}`;b.onclick=()=>edit(r);return b}))}

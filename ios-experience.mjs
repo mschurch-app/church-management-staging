@@ -1,6 +1,6 @@
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
-  const version='20261008-ios2';
+  const version='20261008-ios3';
   const stylesheet=document.createElement('link');
   stylesheet.rel='stylesheet';stylesheet.href=new URL(`./ios-experience.css?v=${version}`,import.meta.url).href;document.head.append(stylesheet);
   document.documentElement.classList.add('church-ios');

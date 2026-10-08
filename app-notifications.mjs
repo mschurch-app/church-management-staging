@@ -33,17 +33,17 @@ function renderDailyReport(value){
 export async function loadNotificationCenter(area,badge){
  const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(error||!Array.isArray(data)){area.replaceChildren(el('p','最新通知暫時無法載入。','muted'));return;}
  clearInterval(tickerTimer);clearTimeout(tickerResetTimer);tickerTimer=0;tickerResetTimer=0;
- const unreadItems=data.filter(item=>!item.read_at);let unread=unreadItems.length;badge.textContent=unread?unread+' 則未讀':'沒有未讀';area.replaceChildren();area.classList.add('is-ticker');
+ const unreadItems=data.filter(item=>!item.read_at);let unread=unreadItems.length;const updateBadge=()=>{badge.textContent=String(unread);badge.hidden=!unread;badge.setAttribute('aria-label',unread?`${unread} 則未讀通知`:'沒有未讀通知');};updateBadge();area.replaceChildren();area.classList.add('is-ticker');
  if(!unread){area.append(el('p','目前沒有未讀通知。','muted'));return;}
  const track=el('div','','notification-ticker-track');area.append(track);
  for(const item of unreadItems){
   const card=el('a','','notification-ticker-item');card.href=item.target_url||'#';card.dataset.notificationId=String(item.id);card.setAttribute('aria-label',`${item.title}。${item.body||''}`);
   const copy=el('span','','notification-ticker-copy');copy.append(el('strong',item.title),el('span',String(item.body||'').replace(/\s+/g,' ').trim(),'notification-ticker-body'));
-  card.append(el('span','●','notification-ticker-dot'),copy,el('time',time(item.created_at)),el('b','›','notification-ticker-arrow'));
+  card.append(copy,el('time',time(item.created_at)),el('b','›','notification-ticker-arrow'));
   card.onclick=async event=>{event.preventDefault();const destination=item.target_url||'';if(destination){try{await Promise.race([db.rpc('mark_app_notification_read',{p_id:item.id}),new Promise(resolve=>setTimeout(resolve,500))]);}catch{}location.assign(destination);return;}try{const result=await db.rpc('mark_app_notification_read',{p_id:item.id});if(result.error)throw result.error;await loadNotificationCenter(area,badge);}catch{}};
   track.append(card);
  }
  const cards=[...track.children];let active=0;cards[0].classList.add('is-active');cards.forEach((card,index)=>card.setAttribute('aria-hidden',index?'true':'false'));
- if(cards.length>1)tickerTimer=setInterval(()=>{const current=cards[active],nextIndex=(active+1)%cards.length,next=cards[nextIndex];current.classList.remove('is-active');current.classList.add('is-leaving');current.setAttribute('aria-hidden','true');next.classList.add('is-active');next.setAttribute('aria-hidden','false');tickerResetTimer=setTimeout(()=>current.classList.remove('is-leaving'),460);active=nextIndex;},1000);
+ if(cards.length>1)tickerTimer=setInterval(()=>{const current=cards[active],nextIndex=(active+1)%cards.length,next=cards[nextIndex];current.classList.remove('is-active');current.classList.add('is-leaving');current.setAttribute('aria-hidden','true');next.classList.add('is-active');next.setAttribute('aria-hidden','false');tickerResetTimer=setTimeout(()=>current.classList.remove('is-leaving'),720);active=nextIndex;},3000);
 }
 export async function createTestNotification(church){const result=await db.rpc('create_my_test_notification',{p_church:church});if(result.error)throw new Error('測試通知未建立。');return result.data;}

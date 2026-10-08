@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown;date?:unknown;note?:unknown;slotId?:unknown;registrationId?:unknown;accept?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;slotId?:unknown;registrationId?:unknown;accept?:unknown};
 const churches=new Set(['M+','SHiNE']);
 const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
@@ -18,6 +18,22 @@ async function verifyLine(idToken:unknown){
     const value=await response.json(),now=Math.floor(Date.now()/1000);
     if(value.iss!=='https://access.line.me'||value.aud!==channel||!Number.isSafeInteger(value.exp)||value.exp<=now||typeof value.sub!=='string'||!/^U[0-9a-f]{32}$/.test(value.sub))return null;
     return {id:value.sub,name:clean(value.name,80)||'主內家人'};
+  }catch{return null;}
+}
+
+async function verifyLineAccessToken(accessToken:unknown){
+  const channel=Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391';
+  if(typeof accessToken!=='string'||!accessToken||accessToken.length>8192)return null;
+  try{
+    const checked=await fetch(`https://api.line.me/oauth2/v2.1/verify?access_token=${encodeURIComponent(accessToken)}`,{redirect:'error',signal:AbortSignal.timeout(8000)});
+    if(!checked.ok)return null;
+    const details=await checked.json();
+    if(details.client_id!==channel||!Number.isFinite(details.expires_in)||details.expires_in<=0)return null;
+    const response=await fetch('https://api.line.me/v2/profile',{redirect:'error',signal:AbortSignal.timeout(8000),headers:{authorization:`Bearer ${accessToken}`}});
+    if(!response.ok)return null;
+    const value=await response.json();
+    if(typeof value.userId!=='string'||!/^U[0-9a-f]{32}$/.test(value.userId))return null;
+    return {id:value.userId,name:clean(value.displayName,80)||'主內家人'};
   }catch{return null;}
 }
 
@@ -42,7 +58,7 @@ Deno.serve(async request=>{
   let body:Body={};try{body=await request.json();}catch{return respond(origin,{ok:false,error:'invalid_request'},400);}
   const church=clean(body.church,10),action=clean(body.action,30),feature=clean(body.feature,20);
   if(!churches.has(church))return respond(origin,{ok:false,error:'invalid_church'},400);
-  const identity=await verifyLine(body.idToken);if(!identity)return respond(origin,{ok:false,error:'login_required'},401);
+  const identity=await verifyLine(body.idToken)||await verifyLineAccessToken(body.accessToken);if(!identity)return respond(origin,{ok:false,error:'login_required'},401);
   const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SECRET_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
   if(!url||!key)return respond(origin,{ok:false,error:'unavailable'},503);
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});

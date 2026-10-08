@@ -35,6 +35,21 @@ Deno.serve(async request=>{
     const verified=await db.auth.getUser(token);
     if(verified.error||!verified.data.user)return json(401,{ok:false,error:'unauthorized'});
     const user=verified.data.user;
+    if(body.action==='request-admin-access-review'){
+      const hasLine=(user.identities||[]).some(identity=>identity.provider==='custom:line-web');
+      if(!hasLine)return json(403,{ok:false,error:'line_identity_required'});
+      const name=String(user.user_metadata?.name||user.user_metadata?.display_name||'LINE 同工').trim().slice(0,60)||'LINE 同工';
+      const owners=await db.rpc('get_app_push_owner_users');
+      if(owners.error||!Array.isArray(owners.data)||!owners.data.length)return json(503,{ok:false,error:'owner_unavailable'});
+      const sourceKey=`line-admin-access:${user.id}`;
+      for(const ownerId of owners.data){
+        const existing=await db.from('app_notifications').select('id').eq('user_id',ownerId).eq('event_key','admin_access_review').eq('source_key',sourceKey).maybeSingle();
+        const payload={church_id:'M+',title:'同工 LINE 權限待審核',body:`${name} 已使用 LINE 登入，但尚未取得教會 OS 權限。請核對身分並設定事工權限。`,target_url:'/admin-accounts.html?church=M%2B',read_at:null,push_sent_at:null,push_attempt_count:0,push_last_error:null,created_at:new Date().toISOString()};
+        if(existing.data)await db.from('app_notifications').update(payload).eq('id',existing.data.id);
+        else await db.from('app_notifications').insert({user_id:ownerId,event_key:'admin_access_review',source_key:sourceKey,...payload});
+      }
+      return json(200,{ok:true,status:'queued',recipients:owners.data.length});
+    }
     if(body.action==='subscribe'){
       const subscription=body.subscription;
       if(!subscription?.endpoint||!subscription?.keys?.p256dh||!subscription?.keys?.auth)return json(400,{ok:false,error:'invalid_subscription'});

@@ -35,17 +35,17 @@
 </main>
 <script>
 (()=>{
-  const URL='https://aqanuwilmvdtlzuqlrau.supabase.co',KEY='sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',STORAGE='church-staging-admin-v1';
+  const AUTH_URL='https://aqanuwilmvdtlzuqlrau.supabase.co',KEY='sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',STORAGE='church-staging-admin-v1';
   const form=document.getElementById('form'),button=document.getElementById('submit'),status=document.getElementById('status'),label=button.innerHTML;
-  const next=new URLSearchParams(location.search).get('next')||'',callback=new URL('admin-line-callback.html',location.href);if(next)callback.searchParams.set('next',next);document.getElementById('line-login').href=URL+'/auth/v1/authorize?provider='+encodeURIComponent('custom:line')+'&scopes='+encodeURIComponent('openid profile email')+'&redirect_to='+encodeURIComponent(callback.href);
+  const next=new URLSearchParams(location.search).get('next')||'',callback=new URL('admin-line-callback.html',location.href);if(next)callback.searchParams.set('next',next);document.getElementById('line-login').href=AUTH_URL+'/auth/v1/authorize?provider='+encodeURIComponent('custom:line')+'&scopes='+encodeURIComponent('openid profile email')+'&redirect_to='+encodeURIComponent(callback.href);
   const request=async(url,options,timeoutMessage)=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{return await fetch(url,{...options,cache:'no-store',credentials:'omit',signal:controller.signal});}catch(error){if(error.name==='AbortError')throw new Error(timeoutMessage);throw new Error('無法連接登入服務，請確認網路後再試（D02）。');}finally{clearTimeout(timer);}};
   navigator.serviceWorker?.getRegistrations().then(items=>Promise.all(items.map(item=>item.unregister()))).catch(()=>{});
   if('caches'in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('church-os-')).map(key=>caches.delete(key)))).catch(()=>{});
   form.addEventListener('submit',async event=>{event.preventDefault();if(button.disabled)return;button.disabled=true;button.setAttribute('aria-busy','true');button.textContent='正在驗證帳號…';status.textContent='已收到點擊，正在連接教會登入服務…';try{
-    const response=await request(URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'content-type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value})},'登入連線逾時，請再試一次（D01）。');
+    const response=await request(AUTH_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'content-type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value})},'登入連線逾時，請再試一次（D01）。');
     const session=await response.json().catch(()=>({}));if(!response.ok||!session.access_token||!session.user)throw new Error(response.status===400?'登入失敗，請確認帳號與密碼。':'登入服務暫時無法使用（D03）。');
     session.expires_at=session.expires_at||Math.floor(Date.now()/1000)+Number(session.expires_in||3600);localStorage.setItem(STORAGE,JSON.stringify(session));status.textContent='密碼已驗證，正在確認管理權限…';button.textContent='正在載入權限…';
-    const accessResponse=await request(URL+'/rest/v1/rpc/get_my_church_access',{method:'POST',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:'{}'},'權限查詢逾時，請再試一次（D04）。');
+    const accessResponse=await request(AUTH_URL+'/rest/v1/rpc/get_my_church_access',{method:'POST',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:'{}'},'權限查詢逾時，請再試一次（D04）。');
     const grants=await accessResponse.json().catch(()=>[]);if(!accessResponse.ok||!Array.isArray(grants)||!grants.length)throw new Error('帳號已登入，但尚未取得管理權限（D05）。');
     const churches=[...new Set(grants.map(row=>row.church_id).filter(value=>value==='M+'||value==='SHiNE'))];if(!churches.length)throw new Error('帳號沒有可使用的堂會權限（D06）。');
     status.textContent='登入成功，正在開啟管理首頁…';button.textContent='登入成功，正在開啟…';location.replace('admin-dashboard.html?church='+encodeURIComponent(churches[0]));

@@ -19,6 +19,7 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 - The public M+ Sunday service signup URL automatically starts LINE login when opened without a member session, then returns to the signup page.
 - M+ Sunday service signup requires the member's typed name, supports selecting several service roles and several Sundays per role, excludes dates already used by another selected role, and submits the complete selection atomically. Repeated positions are presented as one public preference (such as 接待、歌手、鍵盤); the database assigns an available numbered position and only uses waitlist after the combined capacity is full.
 - Service leaders can preview an intention-based smart match, deselect individual suggestions, and then copy selected volunteers into the official schedule. Existing official assignments are preserved and conflicting suggestions are skipped.
+- Volunteers can delete and reselect service preferences before a season starts. Once the season starts, cancellation or adjustment becomes a two-stage request: the responsible ministry leader coordinates and reviews first, then Yuting gives final approval.
 - Website and media publishing tools.
 - A separate 2027 Heat Basketball Camp registration and payment flow in Supabase, including NewebPay and receipt synchronization preparation.
 

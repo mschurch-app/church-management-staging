@@ -10,15 +10,25 @@ Deno.serve(async request=>{
   if(request.method!=='POST'||!allowedOrigins.has(origin))return reply(origin,{ok:false,error:'forbidden'},403);
   const authorization=request.headers.get('authorization')||'';
   if(!/^Bearer\s+\S+$/.test(authorization))return reply(origin,{ok:false,error:'login_required'},401);
-  let body:{church?:unknown;registrationId?:unknown;status?:unknown};
+  let body:{church?:unknown;registrationId?:unknown;status?:unknown;action?:unknown;requestId?:unknown;decision?:unknown;note?:unknown};
   try{body=await request.json();}catch{return reply(origin,{ok:false,error:'invalid_request'},400);}
-  const church=String(body.church||''),registrationId=Number(body.registrationId),status=String(body.status||'');
-  if(church!=='M+'||!Number.isSafeInteger(registrationId)||registrationId<1||!['confirmed','declined'].includes(status))return reply(origin,{ok:false,error:'invalid_request'},400);
+  const church=String(body.church||''),action=String(body.action||'registration_review'),registrationId=Number(body.registrationId),status=String(body.status||'');
+  if(church!=='M+')return reply(origin,{ok:false,error:'invalid_request'},400);
   const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_ANON_KEY')||Deno.env.get('SUPABASE_PUBLISHABLE_KEY')||'';
   if(!url||!key)return reply(origin,{ok:false,error:'unavailable'},503);
   const db=createClient(url,key,{global:{headers:{Authorization:authorization}},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
   const {data:userResult,error:userError}=await db.auth.getUser(authorization.slice(7));
   if(userError||!userResult.user)return reply(origin,{ok:false,error:'login_required'},401);
+  if(action==='change_review'){
+    const requestId=Number(body.requestId),decision=String(body.decision||''),note=String(body.note||'').trim().slice(0,600);
+    if(!Number.isSafeInteger(requestId)||requestId<1||!['approve','reject'].includes(decision))return reply(origin,{ok:false,error:'invalid_request'},400);
+    const reviewed=await db.rpc('service_signup_review_change_request',{p_church:church,p_request:requestId,p_decision:decision,p_note:note||null});
+    if(reviewed.error){const error=String(reviewed.error.message||'');return reply(origin,{ok:false,error:error.includes('forbidden')?'forbidden':'unavailable'},error.includes('forbidden')?403:503);}
+    const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||'',result=reviewed.data;
+    if(result?.line_subject&&token){const stage=result.status==='admin_review'?'已通過服事領袖初審，等待行政同工複審。':result.status==='approved'?'已由行政同工核准。':'未獲核准，請與服事領袖聯絡。';await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:result.line_subject,messages:[{type:'text',text:`${result.member_name}，你的服事調整申請${stage}\nhttps://mscos.mchurch.online/service-signup.html`}]})}).catch(()=>{});}
+    return reply(origin,{ok:true,...result});
+  }
+  if(!Number.isSafeInteger(registrationId)||registrationId<1||!['confirmed','declined'].includes(status))return reply(origin,{ok:false,error:'invalid_request'},400);
   const result=await db.rpc('service_signup_review_registration',{p_church:church,p_registration:registrationId,p_status:status});
   if(result.error){const error=String(result.error.message||'');return reply(origin,{ok:false,error:error.includes('forbidden')?'forbidden':'unavailable'},error.includes('forbidden')?403:503);}
   const offer=result.data?.next_offer,token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||'';

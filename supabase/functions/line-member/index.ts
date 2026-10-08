@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;choices?:unknown;registrationId?:unknown;accept?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;choices?:unknown;registrationId?:unknown;accept?:unknown;requestType?:unknown};
 const churches=new Set(['M+','SHiNE']);
 const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
@@ -68,10 +68,11 @@ Deno.serve(async request=>{
     if(feature==='menu')return respond(origin,{ok:true,profile:{name:identity.name}});
     if(feature==='service_signup'){
       if(church!=='M+')return respond(origin,{ok:false,error:'content_empty'},404);
-      const result=await db.rpc('service_signup_member_view',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id});
-      if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
+      const identityArgs={p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id};
+      const [result,changes]=await Promise.all([db.rpc('service_signup_member_view',identityArgs),db.rpc('service_signup_my_change_requests',identityArgs)]);
+      if(result.error||changes.error)return respond(origin,{ok:false,error:'unavailable'},503);
       for(const offer of result.data?.issued_offers||[])await notifySignupOffer(offer.line_subject,offer.registration_id,offer.expires_at);
-      return respond(origin,{ok:true,profile:{name:identity.name},...result.data});
+      return respond(origin,{ok:true,profile:{name:identity.name},...result.data,change_requests:changes.data||[]});
     }
     if(feature==='today'){
       const result=await db.from('spiritual_cards').select('id,scripture,scripture_ref,prayer_text').eq('church_id',church).eq('category','給今天的你').eq('is_active',true).limit(500);
@@ -150,10 +151,18 @@ Deno.serve(async request=>{
 
   if(action==='service_signup_cancel'){
     if(church!=='M+'||!Number.isSafeInteger(Number(body.registrationId))||Number(body.registrationId)<1)return respond(origin,{ok:false,error:'invalid_request'},400);
-    const result=await db.rpc('service_signup_cancel',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_registration:Number(body.registrationId)});
+    const result=await db.rpc('service_signup_cancel_or_request',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_registration:Number(body.registrationId)});
     if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
     const offer=result.data?.next_offer;
     if(offer)await notifySignupOffer(offer.line_subject,offer.registration_id,offer.expires_at);
+    return respond(origin,{ok:true,...result.data});
+  }
+
+  if(action==='service_signup_change_request'){
+    const registration=Number(body.registrationId),requestType=clean(body.requestType,20),note=clean(body.note,600);
+    if(church!=='M+'||!Number.isSafeInteger(registration)||registration<1||!['cancel','adjust'].includes(requestType)||note.length<2)return respond(origin,{ok:false,error:'invalid_request'},400);
+    const result=await db.rpc('service_signup_submit_change_request',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_registration:registration,p_request_type:requestType,p_note:note});
+    if(result.error){const error=String(result.error.message||'');return respond(origin,{ok:false,error:error.includes('direct_change_allowed')?'direct_change_allowed':error.includes('duplicate key')?'request_exists':'unavailable'},error.includes('duplicate key')?409:400);}
     return respond(origin,{ok:true,...result.data});
   }
 

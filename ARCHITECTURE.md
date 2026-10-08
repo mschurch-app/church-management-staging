@@ -21,6 +21,7 @@
 - Browser calls use the Supabase publishable key plus the authenticated bearer token. A publishable key is not an authorization boundary; database grants, RLS, RPC checks, and server-side checks provide access control.
 - Supabase Edge Functions expose the HTTP API. Sensitive service-role credentials remain server-side.
 - Public Sunday service signup uses the LINE-authenticated `line-member` Edge Function. Multi-role selections call the service-only `service_signup_register_batch` RPC so name matching, duplicate-date checks, capacity calculation, waitlist placement, and all inserts run in one database transaction.
+- In-season service changes are stored separately from registrations. The member submits through `line-member`; ministry scope controls the initial review, and configured final reviewers control administrative approval through `service-signup-admin`. App notifications queue each handoff.
 
 ## Third-party services
 

@@ -64,10 +64,15 @@ function shell(title,copy,body,actions=''){
 }
 function existingRegistrations(){
   const currentSeason=season();
+  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
   return (data.registrations||[]).map(record=>{
     const slot=currentSeason?.slots.find(item=>Number(item.id)===Number(record.slot_id));
+    const request=(data.change_requests||[]).find(item=>Number(item.registration_id)===Number(record.id)&&['leader_review','admin_review'].includes(item.status));
+    const started=currentSeason?.starts_on&&today>=currentSeason.starts_on;
     const label=record.status==='waitlisted'?`候補第 ${record.queue_number} 位`:record.status==='offered'?`名額已釋出，請於 ${record.offer_expires_at?new Date(record.offer_expires_at).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'24 小時內'} 接受`:record.status==='confirmed'?'已由負責人確認':'已登記，等待負責人協調';
-    return `<div class="registration"><span><strong>${fmt(record.service_date)}・${esc(roles[publicRole(slot?.role_key)]||'服事')}</strong><small>${label}</small></span>${record.status==='offered'?`<button data-offer="${record.id}">接受候補邀請</button>`:`<button data-cancel="${record.id}">取消</button>`}</div>`;
+    const review=request?`<small class="review-state">${request.status==='leader_review'?'等待服事領袖初審':'領袖已通過，等待鈺庭複審'}</small>`:'';
+    const actions=record.status==='offered'?`<button data-offer="${record.id}">接受候補邀請</button>`:request?'':started?`<span class="registration-actions"><button data-adjust="${record.id}">申請調整</button><button data-cancel="${record.id}">申請取消</button></span>`:`<span class="registration-actions"><button data-adjust="${record.id}">修改</button><button data-cancel="${record.id}">刪除</button></span>`;
+    return `<div class="registration"><span><strong>${fmt(record.service_date)}・${esc(roles[publicRole(slot?.role_key)]||'服事')}</strong><small>${label}</small>${review}</span>${actions}</div>`;
   }).join('');
 }
 
@@ -86,6 +91,7 @@ function renderIdentityAndMinistries(){
     render();
   });
   app.querySelectorAll('[data-cancel]').forEach(button=>button.onclick=()=>cancelRegistration(Number(button.dataset.cancel)));
+  app.querySelectorAll('[data-adjust]').forEach(button=>button.onclick=()=>adjustRegistration(Number(button.dataset.adjust)));
   app.querySelectorAll('[data-offer]').forEach(button=>button.onclick=()=>respondOffer(Number(button.dataset.offer),true));
   $('#next').onclick=()=>{step=2;render();};
 }
@@ -180,10 +186,23 @@ async function submit(){
 }
 
 async function cancelRegistration(id){
-  if(busy||!confirm('確定取消這筆主日服事登記？'))return;
+  if(busy||!confirm('確定刪除或提出取消這筆服事？當季開始後會送交領袖與鈺庭審核。'))return;
   busy=true;
-  try{await api('service_signup_cancel',{registrationId:id});data=await api('content',{feature:'service_signup'});render();}
+  try{const result=await api('service_signup_cancel',{registrationId:id});data=await api('content',{feature:'service_signup'});render();alert(result.direct?'已刪除，可重新選擇服事與日期。':'已送出取消申請，等待服事領袖初審。');}
   catch{alert('取消未完成，請稍後再試。');}
+  finally{busy=false;}
+}
+async function adjustRegistration(id){
+  const currentSeason=season(),today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+  if(currentSeason?.starts_on&&today<currentSeason.starts_on){
+    if(confirm('季前修改會先刪除這筆登記，再讓你重新選擇。確定繼續？'))await cancelRegistration(id);
+    return;
+  }
+  const note=prompt('請寫下希望調整的日期、服事項目或其他需求。服事領袖會先與你協調，再送鈺庭複審。','');
+  if(!note?.trim()||busy)return;
+  busy=true;
+  try{await api('service_signup_change_request',{registrationId:id,requestType:'adjust',note:note.trim()});data=await api('content',{feature:'service_signup'});render();alert('調整需求已送出，等待服事領袖初審。');}
+  catch(error){alert(error.code==='request_exists'?'這筆服事已有待審申請。':'申請未送出，請稍後再試。');}
   finally{busy=false;}
 }
 async function respondOffer(id,accept){

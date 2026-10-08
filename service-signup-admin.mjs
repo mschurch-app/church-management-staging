@@ -3,8 +3,8 @@ import {listSchedules} from './schedule-management.mjs?v=20261003-access-guard1'
 
 const church='M+';
 const $=selector=>document.querySelector(selector);
-const status=$('#status'),overview=$('#overview'),tabs=$('#seasonTabs'),smartPanel=$('#smartPanel');
-let payload={seasons:[],slots:[]},active=null,busy=false;
+const status=$('#status'),overview=$('#overview'),tabs=$('#seasonTabs'),smartPanel=$('#smartPanel'),changePanel=$('#changePanel');
+let payload={seasons:[],slots:[]},changeQueue={requests:[],is_final_reviewer:false},active=null,busy=false;
 
 const labels={media:'影音',worship:'敬拜團',welcome:'接待',children:'兒童主日學',sound:'音控',projection_director:'投影字幕／導播',lighting:'燈光',worship_leader:'主領',assistant_worship_leader:'副主領',keyboard_1:'第一鍵盤',keyboard_2:'第二鍵盤',drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer_1:'歌手一',singer_2:'歌手二',singer_3:'歌手三',welcome_1:'接待一',welcome_2:'接待二',children_teacher:'老師',children_assistant:'助手'};
 const targetLabels={tech_sound:'音控控台',tech_video:'投影字幕／導播',worship_leader:'敬拜主領',guitar:'吉他',bass:'Bass',drums:'爵士鼓',usher1:'招待一',usher2:'招待二',sunday_school:'兒主老師',sunday_school_ta:'兒主助教',custom_f15e659f6a90065d:'燈光',custom_9ce39850489c56cd:'敬拜副主領',custom_321a786c791201d4:'第一鍵盤',custom_5a2347d6f4712277:'第二鍵盤',custom_9462bfb6bd5d047b:'歌手一',custom_8111d3ff9bdab05c:'歌手二',custom_24781cd4004d4df5:'歌手三'};
@@ -21,6 +21,19 @@ function renderTabs(){
     button.classList.toggle('active',season.id===active);
     button.onclick=()=>{active=season.id;smartPanel.hidden=true;smartPanel.replaceChildren();render();};
     tabs.append(button);
+  }
+}
+
+function renderChangeRequests(){
+  const requests=changeQueue.requests||[];changePanel.replaceChildren();changePanel.hidden=!requests.length;if(!requests.length)return;
+  const head=el('div','','change-panel-head');head.append(el('div','服事調整審核','change-panel-title'),el('span',`${requests.length} 筆待處理`));changePanel.append(head);
+  for(const request of requests){
+    const card=el('article','','change-request'),copy=el('div'),actions=el('div','','change-actions');
+    const stage=request.status==='leader_review'?'服事領袖初審':'鈺庭複審';
+    copy.append(el('small',`${stage} · ${labels[request.ministry_key]||request.ministry_key}`),el('strong',`${request.member_name}｜${fmt(request.service_date)}｜${labels[request.role_key]||request.role_key}`),el('p',`${request.request_type==='cancel'?'申請取消':'申請調整'}：${request.member_note}`));
+    if(request.leader_note)copy.append(el('p',`領袖協調紀錄：${request.leader_note}`,'review-note'));
+    const approve=el('button',request.status==='leader_review'?'初審通過，送鈺庭':'複審核准','primary'),reject=el('button','退回申請','secondary');
+    approve.type=reject.type='button';approve.onclick=()=>reviewChange(request,'approve');reject.onclick=()=>reviewChange(request,'reject');actions.append(approve,reject);card.append(copy,actions);changePanel.append(card);
   }
 }
 
@@ -122,7 +135,8 @@ function renderSmartMatch(suggestions,conflicts,unfilled){
 
 async function saveSlot(slot,capacity,button){if(busy)return;busy=true;capacity.disabled=button.disabled=true;try{await rpc('update_service_signup_slot',{p_church:church,p_slot:slot.id,p_capacity:Number(capacity.value),p_open:slot.is_open});status.textContent='名額設定已儲存。';}catch{status.textContent='名額未更新，請重新整理後再試。';}finally{busy=false;capacity.disabled=button.disabled=false;}}
 async function reviewRegistration(id,nextStatus){if(busy)return;busy=true;try{const {data:{session}}=await db.auth.getSession();if(!session?.access_token)throw new Error('login_required');const response=await fetch(`${SUPABASE_URL}/functions/v1/service-signup-admin`,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${session.access_token}`},body:JSON.stringify({church,registrationId:id,status:nextStatus}),cache:'no-store',credentials:'omit'}),result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'unavailable');await load();status.textContent=nextStatus==='confirmed'?'已確認服事安排。':'已婉拒並釋出名額；已向下一位候補者發送 LINE 確認邀請。';}catch(error){status.textContent=error.message==='forbidden'?'無此類別的確認權限。':'狀態未更新，請重新整理後再試。';}finally{busy=false;}}
-async function load(){try{payload=await rpc('get_service_signup_admin',{p_church:church});active=active||payload.seasons[0]?.id||null;$('#create').hidden=!payload.can_manage;render();status.textContent=payload.can_manage?'已載入全部服事類別。':`已載入負責類別：${payload.scopes.map(scope=>labels[scope]||scope).join('、')}`;}catch(error){status.textContent=error.message?.includes('forbidden')?'沒有主日服事登記的管理權限。':'無法載入主日服事登記。';}}
+async function reviewChange(request,decision){if(busy)return;const note=prompt(decision==='approve'?'請填寫協調／核准說明（可留空）':'請填寫退回原因','')??null;if(note===null)return;busy=true;try{const {data:{session}}=await db.auth.getSession();if(!session?.access_token)throw new Error('login_required');const response=await fetch(`${SUPABASE_URL}/functions/v1/service-signup-admin`,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${session.access_token}`},body:JSON.stringify({action:'change_review',church,requestId:request.id,decision,note}),cache:'no-store',credentials:'omit'}),result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'unavailable');await load();status.textContent=result.status==='admin_review'?'初審完成，已通知鈺庭複審。':result.status==='approved'?'複審核准完成，已通知申請人。':'申請已退回並通知申請人。';}catch(error){status.textContent=error.message==='forbidden'?'沒有此階段的審核權限。':'審核未完成，請重新整理後再試。';}finally{busy=false;}}
+async function load(){try{[payload,changeQueue]=await Promise.all([rpc('get_service_signup_admin',{p_church:church}),rpc('get_service_signup_change_requests',{p_church:church})]);active=active||payload.seasons[0]?.id||null;$('#create').hidden=!payload.can_manage;renderChangeRequests();render();status.textContent=payload.can_manage?'已載入全部服事類別。':`已載入負責類別：${payload.scopes.map(scope=>labels[scope]||scope).join('、')}`;}catch(error){status.textContent=error.message?.includes('forbidden')?'沒有主日服事登記的管理權限。':'無法載入主日服事登記。';}}
 
 $('#year').value=new Date().getFullYear()+1;$('#quarter').value='1';
 $('#createQuarter').onclick=async()=>{if(busy)return;busy=true;try{await rpc('create_service_signup_quarter',{p_church:church,p_year:Number($('#year').value),p_quarter:Number($('#quarter').value)});await load();status.textContent='季度與所有主日職務已建立。';}catch(error){status.textContent=String(error.message||'').includes('unique')?'這一季已經建立。':'建立失敗，請檢查年度與季度。';}finally{busy=false;}};

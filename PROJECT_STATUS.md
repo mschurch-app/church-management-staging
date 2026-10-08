@@ -1,6 +1,6 @@
 # Project Status
 
-Last reviewed: 2026-10-08
+Last reviewed: 2026-10-09
 
 ## Current state
 
@@ -18,6 +18,7 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 - LINE administrator access notifications now open a dedicated owner review card where the LINE identity can be matched to an existing administrator and inherit the reviewed access profile.
 - The public M+ Sunday service signup URL automatically starts LINE login when opened without a member session, then returns to the signup page.
 - M+ Sunday service signup requires the member's typed name, supports selecting several service roles and several Sundays per role, excludes dates already used by another selected role, and submits the complete selection atomically.
+- Service leaders can preview an intention-based smart match, deselect individual suggestions, and then copy selected volunteers into the official schedule. Existing official assignments are preserved and conflicting suggestions are skipped.
 - Website and media publishing tools.
 - A separate 2027 Heat Basketball Camp registration and payment flow in Supabase, including NewebPay and receipt synchronization preparation.
 

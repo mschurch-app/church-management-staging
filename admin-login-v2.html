@@ -21,7 +21,7 @@
     <div class="login-badge">教會管理系統 · 登入 v2</div>
     <h1>歡迎回來</h1>
     <p class="muted">使用 LINE 或 Email 登入；兩種方式共用同一套堂會與功能權限。</p>
-    <a id="line-login" class="line-login-button" href="#">使用 LINE 登入 <span aria-hidden="true">→</span></a>
+    <button id="line-login" class="line-login-button" type="button">使用 LINE 登入 <span aria-hidden="true">→</span></button>
     <div class="login-divider"><span>或使用 Email</span></div>
     <form id="form" class="login-form">
       <label for="email">電子郵件<input id="email" type="email" autocomplete="username" placeholder="name@example.com" required></label>
@@ -33,11 +33,12 @@
     <p class="login-note">LINE 登入會沿用既有權限；讀經生命樹與每日靈修也使用同一個 LINE 身分。</p>
   </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
 <script>
 (()=>{
   const AUTH_URL='https://aqanuwilmvdtlzuqlrau.supabase.co',KEY='sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',STORAGE='church-staging-admin-v1';
   const form=document.getElementById('form'),button=document.getElementById('submit'),status=document.getElementById('status'),label=button.innerHTML;
-  const next=new URLSearchParams(location.search).get('next')||'',callback=new URL('admin-line-callback.html',location.href);if(next)callback.searchParams.set('next',next);document.getElementById('line-login').href=AUTH_URL+'/auth/v1/authorize?provider='+encodeURIComponent('custom:line')+'&scopes='+encodeURIComponent('openid profile email')+'&redirect_to='+encodeURIComponent(callback.href);
+  const next=new URLSearchParams(location.search).get('next')||'',callback=new URL('admin-line-callback.html',location.href);if(next)callback.searchParams.set('next',next);const lineButton=document.getElementById('line-login'),oauth=window.supabase.createClient(AUTH_URL,KEY,{auth:{storageKey:STORAGE,storage:window.localStorage,detectSessionInUrl:false,persistSession:true,autoRefreshToken:true,flowType:'pkce'}});lineButton.onclick=async()=>{if(lineButton.disabled)return;lineButton.disabled=true;status.textContent='正在開啟 LINE 安全登入…';const {error}=await oauth.auth.signInWithOAuth({provider:'custom:line',options:{redirectTo:callback.href,scopes:'openid profile email'}});if(error){status.textContent='目前無法開啟 LINE 登入，請稍後再試。';lineButton.disabled=false;}};
   const request=async(url,options,timeoutMessage)=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{return await fetch(url,{...options,cache:'no-store',credentials:'omit',signal:controller.signal});}catch(error){if(error.name==='AbortError')throw new Error(timeoutMessage);throw new Error('無法連接登入服務，請確認網路後再試（D02）。');}finally{clearTimeout(timer);}};
   navigator.serviceWorker?.getRegistrations().then(items=>Promise.all(items.map(item=>item.unregister()))).catch(()=>{});
   if('caches'in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('church-os-')).map(key=>caches.delete(key)))).catch(()=>{});

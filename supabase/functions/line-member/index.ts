@@ -1,8 +1,8 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown;date?:unknown;note?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;image?:unknown;date?:unknown;note?:unknown;slotId?:unknown;registrationId?:unknown};
 const churches=new Set(['M+','SHiNE']);
-const features=new Set(['menu','today','help','weekly','love','devotional']);
+const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
 const cors=(origin:string)=>({'access-control-allow-origin':origins.has(origin)?origin:'https://mscos.mchurch.online','access-control-allow-headers':'content-type,apikey,authorization','access-control-allow-methods':'POST,OPTIONS','content-type':'application/json; charset=utf-8','cache-control':'no-store','vary':'Origin'});
 const respond=(origin:string,data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:cors(origin)});
@@ -42,6 +42,12 @@ Deno.serve(async request=>{
   if(action==='content'){
     if(!features.has(feature))return respond(origin,{ok:false,error:'invalid_feature'},400);
     if(feature==='menu')return respond(origin,{ok:true,profile:{name:identity.name}});
+    if(feature==='service_signup'){
+      if(church!=='M+')return respond(origin,{ok:false,error:'content_empty'},404);
+      const result=await db.rpc('service_signup_member_view',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id});
+      if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
+      return respond(origin,{ok:true,profile:{name:identity.name},...result.data});
+    }
     if(feature==='today'){
       const result=await db.from('spiritual_cards').select('id,scripture,scripture_ref,prayer_text').eq('church_id',church).eq('category','給今天的你').eq('is_active',true).limit(500);
       if(result.error||!result.data?.length)return respond(origin,{ok:false,error:'content_empty'},404);
@@ -81,6 +87,30 @@ Deno.serve(async request=>{
     const order=new Map(scenarios.map((row,index)=>[row.name,index])),sorted=(result.data||[]).sort((a,b)=>(order.get(a.category)??999)-(order.get(b.category)??999));
     const items=await Promise.all(sorted.map(async row=>({...row,image_url:await signedImage(db,row.image_url)})));
     return respond(origin,{ok:true,profile:{name:identity.name},scenarios,items});
+  }
+
+  if(action==='service_signup_register'){
+    if(church!=='M+'||!Number.isSafeInteger(Number(body.slotId))||Number(body.slotId)<1)return respond(origin,{ok:false,error:'invalid_request'},400);
+    const result=await db.rpc('service_signup_register',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_slot:Number(body.slotId)});
+    if(result.error){
+      const error=String(result.error.message||'');
+      if(error.includes('binding_required'))return respond(origin,{ok:false,error:'binding_required'},403);
+      if(error.includes('one_service_per_sunday'))return respond(origin,{ok:false,error:'one_service_per_sunday'},409);
+      if(error.includes('slot_unavailable'))return respond(origin,{ok:false,error:'slot_unavailable'},409);
+      return respond(origin,{ok:false,error:'unavailable'},503);
+    }
+    return respond(origin,{ok:true,registration:result.data});
+  }
+
+  if(action==='service_signup_cancel'){
+    if(church!=='M+'||!Number.isSafeInteger(Number(body.registrationId))||Number(body.registrationId)<1)return respond(origin,{ok:false,error:'invalid_request'},400);
+    const result=await db.rpc('service_signup_cancel',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_registration:Number(body.registrationId)});
+    if(result.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    const promoted=clean(result.data?.promoted_line_subject,80),token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||'';
+    if(promoted&&token){
+      await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({to:promoted,messages:[{type:'text',text:'主日服事名額已釋出，你已由候補遞補為已登記。請回到服事登記頁查看最新狀態。'}]})}).catch(()=>{});
+    }
+    return respond(origin,{ok:true,...result.data});
   }
 
   if(action==='devotional_complete'){

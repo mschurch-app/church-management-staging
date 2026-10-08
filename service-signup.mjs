@@ -13,10 +13,12 @@ const ministries={
 };
 const roles={
   sound:'音控',projection_director:'投影字幕／導播',lighting:'燈光',
-  worship_leader:'主領',assistant_worship_leader:'副主領',keyboard_1:'第一鍵盤',keyboard_2:'第二鍵盤',
-  drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer_1:'歌手一',singer_2:'歌手二',singer_3:'歌手三',
-  welcome_1:'接待一',welcome_2:'接待二',children_teacher:'老師',children_assistant:'助手',
+  worship_leader:'主領',assistant_worship_leader:'副主領',keyboard:'鍵盤',
+  drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer:'歌手',
+  welcome:'接待',children_teacher:'老師',children_assistant:'助手',
 };
+const groupedRoles={keyboard:['keyboard_1','keyboard_2'],singer:['singer_1','singer_2','singer_3'],welcome:['welcome_1','welcome_2']};
+const publicRole=role=>Object.entries(groupedRoles).find(([,members])=>members.includes(role))?.[0]||role;
 
 let idToken='';
 let accessToken='';
@@ -46,14 +48,14 @@ async function api(action,extra={}){
 
 function season(){return data.seasons?.[0];}
 function chosenRoles(){return [...selectedRoles];}
-function slotsForRole(role){return (season()?.slots||[]).filter(slot=>slot.role_key===role);}
-function chosenSlotIds(){return chosenRoles().flatMap(role=>[...(roleSlots.get(role)||[])].map(Number));}
-function chosenSlots(){const ids=new Set(chosenSlotIds());return (season()?.slots||[]).filter(slot=>ids.has(Number(slot.id))).sort((a,b)=>a.service_date.localeCompare(b.service_date)||a.role_key.localeCompare(b.role_key));}
+function slotsForRole(role){const keys=groupedRoles[role]||[role];return (season()?.slots||[]).filter(slot=>keys.includes(slot.role_key));}
+function chosenChoices(){return chosenRoles().flatMap(role=>[...(roleSlots.get(role)||[])].map(service_date=>({role_key:role,service_date}))).sort((a,b)=>a.service_date.localeCompare(b.service_date)||a.role_key.localeCompare(b.role_key));}
+function capacityFor(role,serviceDate){const slots=slotsForRole(role).filter(slot=>slot.service_date===serviceDate);return{capacity:slots.reduce((sum,slot)=>sum+Number(slot.capacity||0),0),taken:slots.reduce((sum,slot)=>sum+Number(slot.registered_count||0),0)};}
 function occupiedDates(exceptRole){
   const dates=new Set((data.registrations||[]).map(record=>record.service_date));
-  for(const [role,ids] of roleSlots){
+  for(const [role,selectedDates] of roleSlots){
     if(role===exceptRole)continue;
-    for(const id of ids){const slot=(season()?.slots||[]).find(item=>Number(item.id)===Number(id));if(slot)dates.add(slot.service_date);}
+    for(const date of selectedDates)dates.add(date);
   }
   return dates;
 }
@@ -65,7 +67,7 @@ function existingRegistrations(){
   return (data.registrations||[]).map(record=>{
     const slot=currentSeason?.slots.find(item=>Number(item.id)===Number(record.slot_id));
     const label=record.status==='waitlisted'?`候補第 ${record.queue_number} 位`:record.status==='offered'?`名額已釋出，請於 ${record.offer_expires_at?new Date(record.offer_expires_at).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'24 小時內'} 接受`:record.status==='confirmed'?'已由負責人確認':'已登記，等待負責人協調';
-    return `<div class="registration"><span><strong>${fmt(record.service_date)}・${esc(roles[slot?.role_key]||'服事')}</strong><small>${label}</small></span>${record.status==='offered'?`<button data-offer="${record.id}">接受候補邀請</button>`:`<button data-cancel="${record.id}">取消</button>`}</div>`;
+    return `<div class="registration"><span><strong>${fmt(record.service_date)}・${esc(roles[publicRole(slot?.role_key)]||'服事')}</strong><small>${label}</small></span>${record.status==='offered'?`<button data-offer="${record.id}">接受候補邀請</button>`:`<button data-cancel="${record.id}">取消</button>`}</div>`;
   }).join('');
 }
 
@@ -90,7 +92,7 @@ function renderIdentityAndMinistries(){
 
 function renderRoles(){
   const groups=[...selectedMinistries].map(ministry=>{
-    const keys=[...new Set((season()?.slots||[]).filter(slot=>slot.ministry_key===ministry).map(slot=>slot.role_key))];
+    const keys=[...new Set((season()?.slots||[]).filter(slot=>slot.ministry_key===ministry).map(slot=>publicRole(slot.role_key)))];
     return `<section class="role-group"><h3>${ministries[ministry][0]} ${ministries[ministry][1]}</h3><div class="choice-grid">${keys.map(role=>`<button type="button" class="choice ${selectedRoles.has(role)?'selected':''}" data-role="${role}"><div><strong>${esc(roles[role]||role)}</strong><small>可選擇多個主日</small></div></button>`).join('')}</div></section>`;
   }).join('');
   shell('選擇服事項目','可複選多項；下一步會依序為每一項選擇可服事日期。',groups,'<button class="secondary" id="back">上一步</button><button class="primary" id="next" '+(!selectedRoles.size?'disabled':'')+'>選擇日期</button>');
@@ -110,16 +112,17 @@ function renderRoleDates(){
   const selected=roleSlots.get(role)||new Set();
   const blockedDates=occupiedDates(role);
   const slots=slotsForRole(role);
-  const list=slots.map(slot=>{
-    const id=Number(slot.id),blocked=blockedDates.has(slot.service_date),chosen=selected.has(id),full=Number(slot.registered_count)>=Number(slot.capacity);
+  const dates=[...new Set(slots.map(slot=>slot.service_date))];
+  const list=dates.map(serviceDate=>{
+    const blocked=blockedDates.has(serviceDate),chosen=selected.has(serviceDate),availability=capacityFor(role,serviceDate),full=availability.taken>=availability.capacity;
     const note=blocked?'這一天已用於其他服事':full?'目前額滿，送出後列入候補':'可登記';
-    return `<button type="button" class="date-choice ${full?'full':''} ${chosen?'selected':''}" data-slot="${id}" ${blocked?'disabled':''}><span class="date-copy"><span class="date-day">${slot.service_date.slice(-2)}</span><span><strong>${fmt(slot.service_date)}</strong><small>${note}</small></span></span><span class="badge">${blocked?'已排除':chosen?'已選':full?'候補':'可登記'}</span></button>`;
+    return `<button type="button" class="date-choice ${full?'full':''} ${chosen?'selected':''}" data-date="${serviceDate}" ${blocked?'disabled':''}><span class="date-copy"><span class="date-day">${serviceDate.slice(-2)}</span><span><strong>${fmt(serviceDate)}</strong><small>${note}</small></span></span><span class="badge">${blocked?'已排除':chosen?'已選':full?'候補':'可登記'}</span></button>`;
   }).join('')||'<div class="empty">此服事項目目前沒有開放日期。</div>';
   const count=selected.size;
   shell(`第 ${roleIndex+1} 項：${roles[role]||role}`,`日期可複選。後面的服事項目會自動排除這裡已選的日期。（${roleIndex+1}/${roleList.length}）`,`<div class="selection-count">已選 ${count} 個主日</div><div class="date-list">${list}</div>`,`<button class="secondary" id="back">上一步</button><button class="primary" id="next" ${count?'':'disabled'}>${roleIndex<roleList.length-1?'下一項服事':'確認全部'}</button>`);
-  app.querySelectorAll('[data-slot]').forEach(button=>button.onclick=()=>{
-    const id=Number(button.dataset.slot),set=roleSlots.get(role)||new Set();
-    set.has(id)?set.delete(id):set.add(id);
+  app.querySelectorAll('[data-date]').forEach(button=>button.onclick=()=>{
+    const date=button.dataset.date,set=roleSlots.get(role)||new Set();
+    set.has(date)?set.delete(date):set.add(date);
     roleSlots.set(role,set);
     render();
   });
@@ -128,8 +131,8 @@ function renderRoleDates(){
 }
 
 function renderConfirmation(){
-  const selections=chosenSlots();
-  const rows=selections.map(slot=>`<article><small>${esc(roles[slot.role_key]||slot.role_key)}</small><strong>${fmt(slot.service_date)}</strong><span>${Number(slot.registered_count)>=Number(slot.capacity)?'候補':'可登記'}</span></article>`).join('');
+  const selections=chosenChoices();
+  const rows=selections.map(choice=>{const availability=capacityFor(choice.role_key,choice.service_date);return `<article><small>${esc(roles[choice.role_key]||choice.role_key)}</small><strong>${fmt(choice.service_date)}</strong><span>${availability.taken>=availability.capacity?'候補':'可登記'}</span></article>`;}).join('');
   const body=`<div class="identity-summary"><small>登記姓名</small><strong>${esc(memberName.trim())}</strong></div><div class="summary">${rows}</div><p class="confirmation-note">共 ${selections.length} 個主日；同一天只會安排一項服事。</p>`;
   shell('確認全部登記','送出後會一次處理所有選擇；若其中一筆無法登記，整批都不會寫入。',body,'<button class="secondary" id="back">修改日期</button><button class="primary" id="submit">確認送出</button>');
   $('#back').onclick=()=>{roleIndex=Math.max(0,chosenRoles().length-1);step=3;render();};
@@ -156,13 +159,13 @@ function render(){
 
 async function submit(){
   if(busy)return;
-  const slotIds=chosenSlotIds();
-  if(!memberName.trim()||!slotIds.length)return;
+  const choices=chosenChoices();
+  if(!memberName.trim()||!choices.length)return;
   busy=true;
   const button=$('#submit');
   button.disabled=true;
   try{
-    const result=await api('service_signup_register_batch',{memberName:memberName.trim(),slotIds});
+    const result=await api('service_signup_register_batch',{memberName:memberName.trim(),choices});
     data=await api('content',{feature:'service_signup'});
     const records=result.registrations||[],waitlisted=records.filter(record=>record.status==='waitlisted').length;
     memberName='';selectedMinistries.clear();selectedRoles.clear();roleSlots.clear();roleIndex=0;step=1;

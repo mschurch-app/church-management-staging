@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;registrationId?:unknown;accept?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;choices?:unknown;registrationId?:unknown;accept?:unknown};
 const churches=new Set(['M+','SHiNE']);
 const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
@@ -130,9 +130,12 @@ Deno.serve(async request=>{
   }
 
   if(action==='service_signup_register_batch'){
-    const memberName=clean(body.memberName,80),rawSlots=Array.isArray(body.slotIds)?body.slotIds:[],slotIds=rawSlots.map(Number);
-    if(church!=='M+'||!memberName||slotIds.length<1||slotIds.length>60||slotIds.some(id=>!Number.isSafeInteger(id)||id<1))return respond(origin,{ok:false,error:!memberName?'member_name_required':'invalid_request'},400);
-    const result=await db.rpc('service_signup_register_batch',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_member_name:memberName,p_slots:slotIds});
+    const memberName=clean(body.memberName,80),choices=Array.isArray(body.choices)?body.choices:[];
+    const allowedRoles=new Set(['sound','projection_director','lighting','worship_leader','assistant_worship_leader','keyboard','drums','guitar','bass','singer','welcome','children_teacher','children_assistant']);
+    const validChoices=choices.length>=1&&choices.length<=60&&choices.every(choice=>choice&&typeof choice==='object'&&allowedRoles.has(clean((choice as {role_key?:unknown}).role_key,40))&&/^20\d{2}-\d{2}-\d{2}$/.test(clean((choice as {service_date?:unknown}).service_date,10)));
+    if(church!=='M+'||!memberName||!validChoices)return respond(origin,{ok:false,error:!memberName?'member_name_required':'invalid_request'},400);
+    const safeChoices=choices.map(choice=>({role_key:clean((choice as {role_key?:unknown}).role_key,40),service_date:clean((choice as {service_date?:unknown}).service_date,10)}));
+    const result=await db.rpc('service_signup_register_preference_batch',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_member_name:memberName,p_choices:safeChoices});
     if(result.error){
       const error=String(result.error.message||'');
       if(error.includes('binding_required'))return respond(origin,{ok:false,error:'binding_required'},403);

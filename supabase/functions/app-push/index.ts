@@ -44,7 +44,7 @@ Deno.serve(async request=>{
       const sourceKey=`line-admin-access:${user.id}`;
       for(const ownerId of owners.data){
         const existing=await db.from('app_notifications').select('id').eq('user_id',ownerId).eq('event_key','admin_access_review').eq('source_key',sourceKey).maybeSingle();
-        const payload={church_id:'M+',title:'同工 LINE 權限待審核',body:`${name} 已使用 LINE 登入，但尚未取得教會 OS 權限。請核對身分並設定事工權限。`,target_url:'/admin-accounts.html?church=M%2B',read_at:null,push_sent_at:null,push_attempt_count:0,push_last_error:null,created_at:new Date().toISOString()};
+        const payload={church_id:'M+',title:'同工 LINE 權限待審核',body:`${name} 已使用 LINE 登入，但尚未取得教會 OS 權限。請核對身分並設定事工權限。`,target_url:`/admin-accounts.html?church=M%2B&review_user=${encodeURIComponent(user.id)}`,read_at:null,push_sent_at:null,push_attempt_count:0,push_last_error:null,created_at:new Date().toISOString()};
         if(existing.data)await db.from('app_notifications').update(payload).eq('id',existing.data.id);
         else await db.from('app_notifications').insert({user_id:ownerId,event_key:'admin_access_review',source_key:sourceKey,...payload});
       }

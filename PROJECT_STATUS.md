@@ -15,6 +15,7 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 - App notifications, feature access controls, and configurable dashboard shortcuts.
 - App notification-center items can be queued for background delivery to registered devices; a one-minute backend worker records delivery attempts and non-secret failure states.
 - SHiNE administrators can sign in with Email/password without mandatory LINE linking. M+ management access continues to require LINE identity verification.
+- LINE administrator access notifications now open a dedicated owner review card where the LINE identity can be matched to an existing administrator and inherit the reviewed access profile.
 - Website and media publishing tools.
 - A separate 2027 Heat Basketball Camp registration and payment flow in Supabase, including NewebPay and receipt synchronization preparation.
 

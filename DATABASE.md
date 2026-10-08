@@ -30,6 +30,7 @@
 ## RLS and authorization
 
 - Church data access is based on authenticated user identity, `church_auth.grants`, role assignments, and feature-level action settings.
+- Owner-only RPCs `get_line_admin_access_review` and `approve_line_admin_access_review` support explicit LINE identity matching. Approval replaces only the selected LINE Auth user's access rows with the chosen existing administrator's grants, role, feature actions, and home preferences.
 - Camp data resides in a private schema and is accessed through service-role-only RPCs. The `heat-camp-admin` Edge Function verifies the bearer token and the RPC checks active account, `heat_camp` grant, and feature permissions. Detail access logs every view; identity/health decryption and edits require owner or explicit `can_manage`. Payment status, payment method, amount, and bank/order information are not in the edit allowlist. Anonymous and authenticated roles cannot execute these RPCs directly.
 - Service-role credentials must never be shipped to browser code.
 - Devotional tables revoke direct `anon` and `authenticated` access. Edge Functions verify either LINE identity or a Church OS session before using server-side access. Final approval requires a different reviewer from initial review and complete scripture licensing metadata.

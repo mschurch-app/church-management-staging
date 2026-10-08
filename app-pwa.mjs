@@ -1,5 +1,5 @@
 let installPrompt=null;
-import {db} from './admin-db.mjs?v=20261008-toast-loop2';
+import {db} from './admin-db.mjs?v=20261008-ios6';
 import {VAPID_PUBLIC_KEY} from './app-push-config.mjs';
 const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);

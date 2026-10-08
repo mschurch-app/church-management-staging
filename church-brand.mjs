@@ -1,4 +1,5 @@
 import './action-feedback.mjs?v=20261008-toast-loop2';
+import './ios-experience.mjs?v=20261008-ios6';
 const validChurches=new Set(['M+','SHiNE']);
 const requested=new URLSearchParams(location.search).get('church');
 const church=validChurches.has(requested)?requested:null;
@@ -7,21 +8,23 @@ const brands={
   SHiNE:{name:'火樂教會',short:'火樂',src:'assets/brands/shine-logo.png'}
 };
 const modules=[
-  {key:'dashboard',file:'admin-dashboard.html',label:'管理首頁',icon:'🏠'},
-  {key:'members',file:'members.html',label:'會友名冊',icon:'👥',permission:'members',also:['member-audit.html']},
-  {key:'newcomer_care',file:'newcomer-care.html',label:'新朋友關懷',icon:'🌱',permission:'newcomer_care'},
-  {key:'tree_reading_admin',file:'daily-devotional-admin.html',label:'每日靈修生命樹',icon:'🌳',permission:'tree_reading_admin',also:['tree-reading-admin.html']},
-  {key:'binding_review',file:'binding-review.html',label:'LINE 綁定審核',icon:'🔗',permission:'binding_review'},
-  {key:'notification_settings',file:'notification-settings.html',label:'LINE 通知設定',icon:'🔔',permission:'notification_settings'},
-  {key:'groups',file:'groups.html',label:'小組／小家',icon:'🫶',permission:'groups',also:['group-members.html']},
-  {key:'attendance',file:'attendance.html',label:'聚會點名',icon:'✅',permission:'attendance'},
-  {key:'schedules',file:'schedules.html',label:'服事排班',icon:'📅',permission:'schedules'},
-  {key:'inventory',file:'inventory.html',label:'物品清冊',icon:'📦',permission:'inventory'},
-  {key:'prayers',file:'prayers.html',label:'代禱關懷',icon:'🙏',permission:'private_prayers'},
-  {key:'pastoral_inbox',file:'pastoral-inbox.html',label:'牧養訊息',icon:'💬',permission:'pastoral_chats'},
-  {key:'pastoral_content',file:'pastoral-content.html',label:'教牧內容',icon:'✨',permission:'pastoral_chats'},
-  {key:'settings',file:'church-settings.html',label:'系統設定',icon:'⚙️',also:['customization-settings.html','welcome-settings.html','ministry-settings.html','admin-accounts.html','todays-message-settings.html','love-share-settings.html']}
+  {key:'dashboard',file:'admin-dashboard.html',label:'首頁',icon:'🏠'},
+  {key:'members',file:'members.html',label:'會友',icon:'👥',permission:'members',also:['member-audit.html']},
+  {key:'newcomer_care',file:'newcomer-care.html',label:'新朋友',icon:'🌱',permission:'newcomer_care'},
+  {key:'tree_reading_admin',file:'daily-devotional-admin.html',label:'生命樹',icon:'🌳',permission:'tree_reading_admin',also:['tree-reading-admin.html']},
+  {key:'binding_review',file:'binding-review.html',label:'LINE 身分確認',icon:'🔗',permission:'binding_review'},
+  {key:'notification_settings',file:'notification-settings.html',label:'通知設定',icon:'🔔',permission:'notification_settings'},
+  {key:'groups',file:'groups.html',label:'小組與小家',icon:'🫶',permission:'groups',also:['group-members.html']},
+  {key:'attendance',file:'attendance.html',label:'出席登記',icon:'✅',permission:'attendance'},
+  {key:'schedules',file:'schedules.html',label:'服事安排',icon:'📅',permission:'schedules'},
+  {key:'inventory',file:'inventory.html',label:'物品與借用',icon:'📦',permission:'inventory'},
+  {key:'prayers',file:'prayers.html',label:'代禱與關懷',icon:'🙏',permission:'private_prayers'},
+  {key:'pastoral_inbox',file:'pastoral-inbox.html',label:'關懷訊息',icon:'💬',permission:'pastoral_chats'},
+  {key:'pastoral_content',file:'pastoral-content.html',label:'牧養圖卡',icon:'✨',permission:'pastoral_chats'},
+  {key:'settings',file:'church-settings.html',label:'教會設定',icon:'⚙️',also:['customization-settings.html','welcome-settings.html','ministry-settings.html','admin-accounts.html','todays-message-settings.html','love-share-settings.html']}
 ];
+const friendlyLabels=Object.freeze({'會友名冊':'會友','新朋友關懷':'新朋友','每日靈修生命樹':'生命樹','讀經生命樹':'生命樹','LINE 綁定審核':'LINE 身分確認','LINE 通知設定':'通知設定','小組／小家':'小組與小家','聚會點名':'出席登記','服事排班':'服事安排','物品清冊':'物品與借用','代禱關懷':'代禱與關懷','牧養訊息':'關懷訊息','教牧內容':'牧養圖卡','系統設定':'教會設定'});
+const friendlyLabel=value=>friendlyLabels[value]||value;
 const contextualModules={
   members:['members','newcomer_care','binding_review'],
   newcomer_care:['newcomer_care','members','prayers'],
@@ -83,7 +86,7 @@ function mountModuleBar(access,selected,settings){
   const configured=new Map(configuredItems.filter(item=>item.enabled&&item.navigation).map(item=>[item.key,item]));
   const current=modules.find(moduleIsCurrent),related=contextualModules[current?.key]||[current?.key].filter(Boolean);
   const visible=[modules[0],...related.map(key=>modules.find(module=>module.key===key)).filter(Boolean).filter(module=>module===current||module.key==='settings'||configured.has(module.key))];
-  for(const module of visible.filter(item=>allowed(access,selected,item))){const setting=configured.get(module.key),link=document.createElement('a'),icon=document.createElement('span'),label=document.createElement('span');link.href=moduleUrl(module.file,selected);link.className=moduleIsCurrent(module)?'current':'';icon.className='module-bar-icon';icon.textContent=setting?.icon||module.icon;icon.setAttribute('aria-hidden','true');label.textContent=setting?.label||module.label;link.append(icon,label);nav.append(link);}
+  for(const module of visible.filter(item=>allowed(access,selected,item))){const setting=configured.get(module.key),link=document.createElement('a'),icon=document.createElement('span'),label=document.createElement('span');link.href=moduleUrl(module.file,selected);link.className=moduleIsCurrent(module)?'current':'';link.dataset.iosIcon=module.key;icon.className='module-bar-icon';icon.textContent=setting?.icon||module.icon;icon.setAttribute('aria-hidden','true');label.textContent=friendlyLabel(setting?.label||module.label);link.append(icon,label);nav.append(link);}
   anchor.after(nav);
 }
 
@@ -104,7 +107,7 @@ async function mountManagement(){
   const managementRoot=document.querySelector('.member-page,.ministry-app');if(!managementRoot)return;
   try{
     const localPreview=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('preview')==='1';
-    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261008-toast-loop2'),import('./admin-access.mjs?v=20261008-access-deadline1'),import('./church-customizations.mjs?v=20260924-custom1')]);
+    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261008-ios6'),import('./admin-access.mjs?v=20261008-access-deadline1'),import('./church-customizations.mjs?v=20260924-custom1')]);
     const allPermissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces'];
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;updateManagementBrand(managementRoot,selected);

@@ -61,7 +61,7 @@ export function mountMemberPanel(){
       panel.append(button('確認並儲存資料',()=>client.update(Object.fromEntries(Object.entries(fields).map(([key,el])=>[key,el.value])))));
     }
   }
-  if(!MEMBER_ENDPOINT){panel.append(text('h2','既有會員資料更新'),text('p','身份綁定功能尚未開放，請聯絡教會同工。'));return;}
+  if(!MEMBER_ENDPOINT){panel.append(text('h2','既有會友資料更新'),text('p','身份綁定功能尚未開放，請聯絡教會同工。'));return;}
   try{
     client=makeMemberClient({liff:window.liff,search:location.search,onState:render,send:async body=>{
       const response=await fetch(MEMBER_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(15000)});

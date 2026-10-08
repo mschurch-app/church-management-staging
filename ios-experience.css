@@ -1,0 +1,63 @@
+:root{--ios-safe-top:env(safe-area-inset-top,0px);--ios-safe-right:env(safe-area-inset-right,0px);--ios-safe-bottom:env(safe-area-inset-bottom,0px);--ios-safe-left:env(safe-area-inset-left,0px);--ios-keyboard-inset:0px;--ios-blue:#0a84ff;--ios-red:#ff453a;--ios-green:#30a46c;--ios-label:#2e2724;--ios-secondary:#786b65;--ios-separator:rgba(91,70,59,.14);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang TC","Helvetica Neue",Arial,sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+html.church-ios{scroll-behavior:smooth;scroll-padding-top:calc(12px + var(--ios-safe-top));overscroll-behavior-y:auto}
+.church-ios body,.church-ios button,.church-ios input,.church-ios select,.church-ios textarea{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang TC","Helvetica Neue",Arial,sans-serif}
+.church-ios body{padding-right:max(var(--ios-safe-right),0px);padding-left:max(var(--ios-safe-left),0px);font-size:15px;line-height:1.48;letter-spacing:-.006em;-webkit-text-size-adjust:100%}
+.church-ios :is(h1,h2,h3,h4){color:var(--ios-label);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang TC","Helvetica Neue",Arial,sans-serif;font-weight:760;letter-spacing:-.035em;text-wrap:balance}
+.church-ios h1{line-height:1.12}.church-ios h2{line-height:1.18}.church-ios h3{line-height:1.25}
+.church-ios :is(button,a,input,select,textarea){-webkit-tap-highlight-color:transparent}
+.church-ios :is(button,a,.dashboard-card,.app-hub-card,.member-card){transition:transform .14s ease,opacity .14s ease,background-color .14s ease,box-shadow .14s ease}
+.church-ios .ios-pressed{transform:scale(.975)!important;opacity:.74!important}
+.church-ios button{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.church-ios input,.church-ios select,.church-ios textarea{font-size:16px;line-height:1.4}
+.church-ios :is(.muted,small,.footnote){color:var(--ios-secondary)}
+.church-ios :is(.summary-card strong,.todo-count,.metric-card strong,time){font-variant-numeric:tabular-nums}
+.church-ios :is(.dashboard-icon,.module-bar-icon,.todo-icon,.drawer-icon,.app-hub-card>span:first-of-type)[data-ios-symbol]{display:grid;place-items:center}
+.church-ios [data-ios-symbol] svg{width:1em;height:1em;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.church-ios [data-ios-symbol="more"] svg{fill:currentColor;stroke:none}
+.church-ios .dashboard-icon[data-ios-symbol] svg{width:25px;height:25px}.church-ios .module-bar-icon[data-ios-symbol] svg{width:18px;height:18px}.church-ios .todo-icon[data-ios-symbol] svg{width:23px;height:23px}
+.church-ios .mobile-app-nav [data-ios-symbol] svg{width:20px;height:20px}
+.church-ios .app-hub-card>span[data-ios-symbol]{width:42px;height:42px;border-radius:13px;font-size:25px}.church-ios .app-hub-card>span[data-ios-symbol] svg{width:24px;height:24px}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol]{position:relative;isolation:isolate;overflow:hidden;border:0!important;background:#667180!important;color:#fff!important;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.3),0 1px 2px rgba(24,29,35,.16)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol]:after{position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 42%,rgba(0,0,0,.045));content:"";pointer-events:none}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol] svg{filter:drop-shadow(0 .7px .7px rgba(0,0,0,.12));stroke-width:1.85}
+.church-ios [data-ios-symbol] [data-tone="soft"]{fill:currentColor;stroke:none;opacity:.22}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="people"]{background:linear-gradient(155deg,#43b5ff,#087af5 64%,#0663cf)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="sprout"]{background:linear-gradient(155deg,#64dc7d,#21b85a 62%,#159642)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="tree"]{background:linear-gradient(155deg,#5bd5bb,#12a889 66%,#0d8772)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="student"]{background:linear-gradient(180deg,#fff,#f3f1ff)!important;color:#6253d7!important;box-shadow:inset 0 0 0 .5px rgba(81,68,178,.14),0 1px 2px rgba(66,54,150,.16)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="globe"]{background:radial-gradient(circle at 36% 32%,#75dcff 0 8%,#1597f4 42%,#0865cc 100%)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="bell"]{background:linear-gradient(155deg,#ff7568,#ef3e48 66%,#cb2434)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="link"]{background:linear-gradient(155deg,#59da8b,#22b55c 66%,#109242)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="gear"]{background:radial-gradient(circle at 50% 44%,#cdd1d6 0 20%,#8d949d 21% 54%,#626973 55% 100%)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="book"]{background:linear-gradient(155deg,#ffb44f,#f07925 68%,#d85413)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="box"]{background:linear-gradient(155deg,#dba06b,#a96b38 70%,#87502a)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="calendar"]{background:linear-gradient(180deg,#ff4f5e 0 28%,#fff 28% 100%)!important;color:#df2d3c!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="check"]{background:linear-gradient(155deg,#53c7ff,#247cec 70%,#155fc9)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="heart"]{background:linear-gradient(155deg,#ff7f9d,#ed3f74 68%,#cf245c)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="chat"]{background:linear-gradient(155deg,#62dc72,#22b64c 68%,#139137)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="pin"]{background:linear-gradient(180deg,#fff,#f7f7f7)!important;color:#ef3d45!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.1),0 1px 2px rgba(52,55,60,.15)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="camera"]{background:radial-gradient(circle at 50% 50%,#6bd9ff 0 12%,#6d63e8 34%,#222837 64%,#10131b 100%)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="target"]{background:linear-gradient(155deg,#ffac48,#f06b22 68%,#d34b15)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="trophy"]{background:linear-gradient(155deg,#ffd85a,#f0ad1f 68%,#d68a0b)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="clipboard"]{background:linear-gradient(155deg,#64cbd0,#26959e 68%,#15757f)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="chart"]{background:linear-gradient(155deg,#63c7ff,#356ddd 68%,#2452b8)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="printer"]{background:linear-gradient(180deg,#fff,#eff2f5)!important;color:#526274!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.1),0 1px 2px rgba(52,55,60,.15)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="sparkle"]{background:linear-gradient(155deg,#b17cff,#7452d8 68%,#5135ae)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="play"]{background:linear-gradient(155deg,#ff6d8f,#eb365f 68%,#c82049)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="bolt"]{background:linear-gradient(155deg,#ffcf4d,#f39a1d 68%,#d8760a)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="alert"]{background:linear-gradient(155deg,#ff6964,#eb353e 68%,#c92330)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="clock"]{background:linear-gradient(155deg,#ffb14a,#ef7722 68%,#d25412)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="sliders"]{background:linear-gradient(155deg,#6cc4db,#357f9c 68%,#245e79)!important}
+.church-ios :is(.app-hub-card>span,.dashboard-icon)[data-ios-symbol="church"]{background:linear-gradient(155deg,#61cfc2,#168e88 68%,#0b6d6a)!important}
+@media(max-width:760px){.church-ios .app-hub-card>span[data-ios-symbol]{border-radius:14px!important}.church-ios .app-hub-card>span[data-ios-symbol] svg{width:32px;height:32px}.church-ios .dashboard-icon[data-ios-symbol]{border-radius:13px!important}.church-ios .dashboard-icon[data-ios-symbol] svg{width:29px;height:29px}}
+.church-ios .switch{position:relative;display:inline-flex;width:51px;height:31px;flex:0 0 51px;align-items:center}.church-ios .switch input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.church-ios .switch>span{width:51px;height:31px;border-radius:999px;background:#c8c7cc;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);transition:.22s cubic-bezier(.4,0,.2,1)}.church-ios .switch>span:after{content:"";display:block;width:27px;height:27px;margin:2px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.22);transition:.22s cubic-bezier(.4,0,.2,1)}.church-ios .switch input:checked+span{background:var(--ios-green)}.church-ios .switch input:checked+span:after{transform:translateX(20px)}.church-ios .switch input:focus-visible+span{outline:3px solid rgba(10,132,255,.28);outline-offset:3px}
+.ios-page-transition{position:fixed;z-index:2147483645;top:0;right:0;left:0;height:3px;opacity:0;pointer-events:none;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#ff795f,#f0a14a);transition:opacity .15s,transform .45s ease}.ios-page-transition.is-loading{opacity:1;transform:scaleX(.82)}
+.ios-back-hint{position:fixed;z-index:2147483644;top:50%;left:8px;display:grid;width:42px;height:42px;place-items:center;border:1px solid rgba(255,255,255,.72);border-radius:50%;background:rgba(35,31,29,.72);color:#fff;font-size:34px;line-height:1;opacity:0;transform:translate(-18px,-50%) scale(calc(.7 + var(--back-progress,.3)*.3));box-shadow:0 10px 28px rgba(0,0,0,.18);backdrop-filter:blur(16px);transition:opacity .12s,transform .12s;pointer-events:none}.ios-back-hint.show{opacity:calc(.35 + var(--back-progress,.3)*.65);transform:translate(calc(-18px + var(--back-progress,.3)*18px),-50%) scale(calc(.7 + var(--back-progress,.3)*.3))}
+.church-ios dialog{border:0;box-shadow:0 28px 80px rgba(46,33,27,.25)}.church-ios dialog::backdrop{background:rgba(25,22,20,.35);backdrop-filter:blur(4px)}
+.church-ios .mobile-app-nav{padding-bottom:max(7px,var(--ios-safe-bottom))!important}
+.church-ios .welcome-save-bar{bottom:max(14px,calc(var(--ios-safe-bottom) + 8px))}
+html.ios-keyboard-open .mobile-app-nav{transform:translateY(calc(var(--ios-keyboard-inset) + 90px))}
+@media(max-width:760px){.church-ios body{padding-bottom:max(76px,calc(68px + var(--ios-safe-bottom)))}.church-ios :is(button,a.button){min-height:44px}.church-ios dialog[open]{position:fixed;top:auto;right:0;bottom:0;left:0;width:100%;max-width:none;max-height:min(88dvh,760px);margin:0;padding:20px 16px calc(18px + var(--ios-safe-bottom));overflow:auto;border-radius:24px 24px 0 0;animation:ios-sheet-in .28s cubic-bezier(.22,.8,.25,1)}.church-ios dialog[open]:before{content:"";display:block;width:36px;height:5px;margin:-8px auto 13px;border-radius:999px;background:#d0cbc8}.church-ios dialog form{max-width:none}.church-ios .module-bar{scroll-snap-type:x proximity}.church-ios .module-bar a{scroll-snap-align:start}.church-ios .page-header{padding-top:max(22px,calc(var(--ios-safe-top) + 12px))!important}}
+@keyframes ios-sheet-in{from{opacity:.7;transform:translateY(28%)}to{opacity:1;transform:none}}
+@media(display-mode:standalone){.church-ios body{padding-top:var(--ios-safe-top)}.church-ios .ios-page-transition{top:var(--ios-safe-top)}}
+@media(prefers-reduced-motion:reduce){html.church-ios{scroll-behavior:auto}.church-ios *{scroll-behavior:auto!important}.ios-page-transition,.ios-back-hint,.church-ios :is(button,a,.dashboard-card,.app-hub-card,.member-card),.church-ios dialog[open]{animation:none!important;transition:none!important}}

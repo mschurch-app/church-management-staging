@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-toast-loop2';
+import {db} from './admin-db.mjs?v=20261008-ios6';
 import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule,listRolePreferences,saveRolePreferences} from './schedule-management.mjs?v=20261003-access-guard1';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
@@ -95,7 +95,7 @@ async function exportMonthly(){const month=$('#monthPick').value,rows=schedules.
 function setExportBusy(value){$('#weekPng').disabled=value;$('#monthPng').disabled=value;status.textContent=value?'正在製作 PNG 圖片…':'共 '+schedules.length+' 筆排班。';}
 async function load(){status.textContent='正在載入…';try{if(preview){schedules=previewRows;members=[];rolePreferences=previewPreferences();}else [schedules,members,rolePreferences]=await Promise.all([listSchedules(db,church),listScheduleMembers(db,church),listRolePreferences(db,church)]);render();configureExports();$('#new').disabled=false;status.textContent=(preview?'版面預覽 · ':'共 ')+schedules.length+' 筆排班。';}catch(error){status.textContent=error.message;}}
 
-$('#title').textContent=churchName+' · 服事排班';
+$('#title').textContent=churchName+' · 主日服事安排';
 $('#members').href='members.html?church='+encodeURIComponent(church||'');
 $('#new').onclick=()=>openForm();
 $('#manageRoles').onclick=openRoleSettings;

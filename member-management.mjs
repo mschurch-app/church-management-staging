@@ -14,7 +14,7 @@ export function normalizeMember(input){
  result.birthday=result.birthday||null;return result;
 }
 async function authorize(db,church){
- if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'members'))throw new Error('沒有此堂會的會員管理權限。');
+ if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'members'))throw new Error('沒有此堂會的會友管理權限。');
 }
 export async function listMembers(db,church,search='',page=0,newcomersOnly=false,options={}){
  await authorize(db,church);
@@ -31,7 +31,7 @@ export async function listMembers(db,church,search='',page=0,newcomersOnly=false
   q=q.or(['name','phone','memo','group_name'].map(field=>field+'.ilike.%'+term+'%').join(','));
  }
  const {data,error}=await q;
- if(error||!Array.isArray(data))throw new Error('無法載入會員，請稍後重試。');
+ if(error||!Array.isArray(data))throw new Error('無法載入會友，請稍後重試。');
  await authorize(db,church);
  if(data.some(row=>row.church_id!==church))throw new Error('資料範圍不正確。');
  // Read LINE status from the private binding table through an authorized RPC.
@@ -48,7 +48,7 @@ export async function listMembers(db,church,search='',page=0,newcomersOnly=false
 
 export async function setMemberArchived(db,church,row,archived){
  await authorize(db,church);
- if(row?.church_id!==church||!/^[0-9]+$/.test(String(row.id))||typeof archived!=='boolean')throw new Error('會員範圍不正確。');
+ if(row?.church_id!==church||!/^[0-9]+$/.test(String(row.id))||typeof archived!=='boolean')throw new Error('會友範圍不正確。');
  const {data:{user}}=await db.auth.getUser();if(!user)throw new Error('登入已失效。');
  const patch={archived_at:archived?new Date().toISOString():null,archived_by:archived?user.id:null};
  let q=db.from('members').update(patch).eq('id',row.id).eq('church_id',church);
@@ -83,7 +83,7 @@ export async function saveMember(db,church,input,previous=null){
  const patch=normalizeMember(input);
  let q;
  if(previous){
-  if(previous.church_id!==church||!/^\d+$/.test(String(previous.id)))throw new Error('會員範圍不正確。');
+  if(previous.church_id!==church||!/^\d+$/.test(String(previous.id)))throw new Error('會友範圍不正確。');
   for(const key of Object.keys(FIELDS))if((input[key]??'')===(previous[key]??''))patch[key]=previous[key]??null;
   q=db.from('members').update(patch).eq('id',previous.id).eq('church_id',church);
   // Optimistic concurrency: do not overwrite any changed editable field.

@@ -20,6 +20,7 @@
 - SHiNE-only administrators may use Email/password without linking LINE. M+ grants remain hidden until the same Auth user has a verified `custom:line-web` identity; dual-church accounts without LINE are restricted to SHiNE grants.
 - Browser calls use the Supabase publishable key plus the authenticated bearer token. A publishable key is not an authorization boundary; database grants, RLS, RPC checks, and server-side checks provide access control.
 - Supabase Edge Functions expose the HTTP API. Sensitive service-role credentials remain server-side.
+- Public Sunday service signup uses the LINE-authenticated `line-member` Edge Function. Multi-role selections call the service-only `service_signup_register_batch` RPC so name matching, duplicate-date checks, capacity calculation, waitlist placement, and all inserts run in one database transaction.
 
 ## Third-party services
 

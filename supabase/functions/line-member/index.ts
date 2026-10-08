@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;slotId?:unknown;registrationId?:unknown;accept?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;registrationId?:unknown;accept?:unknown};
 const churches=new Set(['M+','SHiNE']);
 const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
@@ -115,16 +115,34 @@ Deno.serve(async request=>{
   }
 
   if(action==='service_signup_register'){
-    if(church!=='M+'||!Number.isSafeInteger(Number(body.slotId))||Number(body.slotId)<1)return respond(origin,{ok:false,error:'invalid_request'},400);
-    const result=await db.rpc('service_signup_register',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_slot:Number(body.slotId)});
+    const memberName=clean(body.memberName,80);
+    if(church!=='M+'||!memberName||!Number.isSafeInteger(Number(body.slotId))||Number(body.slotId)<1)return respond(origin,{ok:false,error:!memberName?'member_name_required':'invalid_request'},400);
+    const result=await db.rpc('service_signup_register_batch',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_member_name:memberName,p_slots:[Number(body.slotId)]});
     if(result.error){
       const error=String(result.error.message||'');
       if(error.includes('binding_required'))return respond(origin,{ok:false,error:'binding_required'},403);
+      if(error.includes('member_name_mismatch'))return respond(origin,{ok:false,error:'member_name_mismatch'},400);
       if(error.includes('one_service_per_sunday'))return respond(origin,{ok:false,error:'one_service_per_sunday'},409);
       if(error.includes('slot_unavailable'))return respond(origin,{ok:false,error:'slot_unavailable'},409);
       return respond(origin,{ok:false,error:'unavailable'},503);
     }
-    return respond(origin,{ok:true,registration:result.data});
+    return respond(origin,{ok:true,registration:result.data?.registrations?.[0]||null});
+  }
+
+  if(action==='service_signup_register_batch'){
+    const memberName=clean(body.memberName,80),rawSlots=Array.isArray(body.slotIds)?body.slotIds:[],slotIds=rawSlots.map(Number);
+    if(church!=='M+'||!memberName||slotIds.length<1||slotIds.length>60||slotIds.some(id=>!Number.isSafeInteger(id)||id<1))return respond(origin,{ok:false,error:!memberName?'member_name_required':'invalid_request'},400);
+    const result=await db.rpc('service_signup_register_batch',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id,p_member_name:memberName,p_slots:slotIds});
+    if(result.error){
+      const error=String(result.error.message||'');
+      if(error.includes('binding_required'))return respond(origin,{ok:false,error:'binding_required'},403);
+      if(error.includes('member_name_required'))return respond(origin,{ok:false,error:'member_name_required'},400);
+      if(error.includes('member_name_mismatch'))return respond(origin,{ok:false,error:'member_name_mismatch'},400);
+      if(error.includes('one_service_per_sunday')||error.includes('duplicate_service_date'))return respond(origin,{ok:false,error:'one_service_per_sunday'},409);
+      if(error.includes('slot_unavailable'))return respond(origin,{ok:false,error:'slot_unavailable'},409);
+      return respond(origin,{ok:false,error:'unavailable'},503);
+    }
+    return respond(origin,{ok:true,...result.data});
   }
 
   if(action==='service_signup_cancel'){

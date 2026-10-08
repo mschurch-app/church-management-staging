@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios5';
+import {db} from './admin-db.mjs?v=20261008-ios6';
 import {listAmenities,saveAmenity,setAmenityActive} from './space-management.mjs';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios5';import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs';
+import {db} from './admin-db.mjs?v=20261008-ios6';import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s);let current=null,busy=false;
 const fields={brand_color:'#brand-color',logo_url:'#logo-url',service_info:'#service-info',address:'#address',map_url:'#map-url'};
 function enabled(value){$('#form').querySelectorAll('input,textarea,button').forEach(n=>n.disabled=!value);}

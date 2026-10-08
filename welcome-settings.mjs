@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios5';import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';import {getOptions,GROUPS} from './welcome-options.mjs';
+import {db} from './admin-db.mjs?v=20261008-ios6';import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';import {getOptions,GROUPS} from './welcome-options.mjs';
 const church=new URLSearchParams(location.search).get('church'),area=document.querySelector('#options'),status=document.querySelector('#status'),save=document.querySelector('#save');
 let current,version,generation=0,saving=false;
 for(const [id,page] of [['back-members','church-settings.html'],['preview-form','newcomer.html']])document.getElementById(id).href=page+'?church='+encodeURIComponent(church||'');

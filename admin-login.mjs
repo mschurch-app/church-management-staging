@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261008-action-recovery1';
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-line-link1';
+import {db} from './admin-db.mjs?v=20261008-toast-loop1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-access-deadline1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 const requestedNext=new URLSearchParams(location.search).get('next');
 const timeout=(promise,milliseconds,message)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),milliseconds))]);

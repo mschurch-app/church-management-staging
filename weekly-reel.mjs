@@ -1,4 +1,4 @@
-import {AudioBufferSource,AudioBufferSource,BufferTarget,CanvasSource,Mp4OutputFormat,Output,Quality,canEncodeVideo} from 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/+esm';
+import {AudioBufferSource,BufferTarget,CanvasSource,Mp4OutputFormat,Output,Quality,canEncodeVideo} from 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/+esm';
 
 const WIDTH=720,HEIGHT=1280,FPS=24,DURATION=5;
 function hero(ctx,image,progress){const scale=Math.min(612/image.width,344/image.height)*(1+progress*.015),w=image.width*scale,h=image.height*scale,x=(WIDTH-w)/2,y=190+(344-h)/2;ctx.save();ctx.beginPath();ctx.roundRect(54,190,612,344,24);ctx.clip();ctx.drawImage(image,x,y,w,h);ctx.restore();}

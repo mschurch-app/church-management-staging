@@ -73,11 +73,16 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
     featurePermissions: featureResults.flat()
   };
 }
+function withAccessDeadline(promise,milliseconds){
+  let timer;
+  const deadline=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('管理權限確認逾時，請檢查網路後重試。')),milliseconds);});
+  return Promise.race([promise,deadline]).finally(()=>clearTimeout(timer));
+}
 export async function readAccess(db, options = {}) {
   const fresh=options.fresh===true;
   if(!fresh&&accessCache&&Date.now()-accessCachedAt<30000)return accessCache;
   if(!fresh&&accessRequest)return accessRequest;
-  const request=fetchAccess(db,options);
+  const request=withAccessDeadline(fetchAccess(db,options),options.timeoutMs||20000);
   accessRequest=request;
   try{
     const value=await request;

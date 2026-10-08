@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-action-recovery1';
+import {db} from './admin-db.mjs?v=20261008-toast-loop1';
 
 const status=document.querySelector('#status');
 const button=document.querySelector('#link-line');

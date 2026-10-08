@@ -1,4 +1,4 @@
-import {readAccess} from './admin-access.mjs?v=20261007-heat-camp1';
+import {readAccess} from './admin-access.mjs?v=20261008-access-deadline1';
 export const PERMISSIONS=Object.freeze({members:'會友名冊',attendance:'聚會點名',groups:'小組／小家',schedules:'服事排班',private_prayers:'代禱關懷',pastoral_chats:'牧養與內容',spaces:'場地預約',newcomer_care:'新朋友關懷',tree_reading_admin:'讀經生命樹',binding_review:'LINE 綁定審核',notification_settings:'LINE 通知設定',website_weekly:'教會網站維護',website_group_resources:'小組聚會資源',inventory:'物品清冊',heat_camp:'熱火籃球營報名'});
 const PASTOR_PERMISSIONS=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory'];
 export const ROLE_TEMPLATES=Object.freeze({

@@ -25,5 +25,34 @@ function render(){const item=state.item,completed=state.progress.find(row=>row.d
   if(!state.preview)$('#complete').onclick=complete;
 }
 async function complete(){const button=$('#complete');button.disabled=true;button.textContent='正在儲存…';try{const result=await api('devotional_complete',{date:state.date,note:$('#note').value.trim()});state.progress=state.progress.filter(row=>row.devotional_date!==state.date).concat(result.record);render();$('#completion-message').textContent='已完成今天的靈修，生命樹多了一天養分。';navigator.vibrate?.(35);}catch{button.disabled=false;button.textContent='完成今日靈修';$('#completion-message').textContent='暫時無法儲存，請檢查網路後再試。';}}
-async function start(){try{if(state.preview){const response=await fetch('data/devotionals-2027-01.json',{cache:'no-store'}),data=await response.json();state.item=data.items?.[0];state.date=state.item?.devotional_date||'2027-01-01';if(!state.item)throw new Error('content_empty');render();return;}state.token=sessionStorage.getItem(`line-member-token:${church}`)||'';if(!state.token&&window.liff){await window.liff.init({liffId:MEMBER_LIFF_IDS[church]});state.token=window.liff.getIDToken()||'';}if(!state.token){location.replace(`https://liff.line.me/${MEMBER_LIFF_IDS[church]}?feature=tree`);return;}state.date=params.get('date')||taipeiToday();const data=await api('content',{feature:'devotional',date:state.date});if(data.launchPending){$('#status').hidden=true;$('#empty').hidden=false;return;}state.item=data.item;state.progress=data.progress||[];render();}catch(error){if(error.code==='login_required'){sessionStorage.removeItem(`line-member-token:${church}`);location.replace(`https://liff.line.me/${MEMBER_LIFF_IDS[church]}?feature=tree`);return;}$('#content').hidden=true;$('#empty').hidden=false;$('#status').textContent=error.code==='content_empty'?'今天的內容尚未核准發布。':'連線暫時中斷，請稍後重新整理。';}}
+function memberLoginUrl(){
+  const url=new URL(`https://liff.line.me/${MEMBER_LIFF_IDS[church]}`);
+  url.searchParams.set('feature','devotional');
+  const date=params.get('date');
+  if(date)url.searchParams.set('date',date);
+  return url.href;
+}
+async function start(){
+  try{
+    if(state.preview){
+      const response=await fetch('data/devotionals-2027-01.json',{cache:'no-store'}),data=await response.json();
+      state.item=data.items?.[0];state.date=state.item?.devotional_date||'2027-01-01';
+      if(!state.item)throw new Error('content_empty');
+      render();return;
+    }
+    state.token=sessionStorage.getItem(`line-member-token:${church}`)||'';
+    if(!state.token){location.replace(memberLoginUrl());return;}
+    state.date=params.get('date')||taipeiToday();
+    const data=await api('content',{feature:'devotional',date:state.date});
+    if(data.launchPending){$('#status').hidden=true;$('#empty').hidden=false;return;}
+    state.item=data.item;state.progress=data.progress||[];render();
+  }catch(error){
+    if(error.code==='login_required'){
+      sessionStorage.removeItem(`line-member-token:${church}`);
+      location.replace(memberLoginUrl());return;
+    }
+    $('#content').hidden=true;$('#empty').hidden=false;
+    $('#status').textContent=error.code==='content_empty'?'今天的內容尚未核准發布。':'連線暫時中斷，請稍後重新整理。';
+  }
+}
 start();

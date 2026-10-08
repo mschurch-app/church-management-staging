@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261008-action-recovery1';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261007-heat-camp1';
+import {db} from './admin-db.mjs?v=20261008-toast-loop1';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261008-access-deadline1';
 
 const $=selector=>document.querySelector(selector),statusNode=$('#status');
 const params=new URLSearchParams(location.search);let access,page=0,total=0,busy=false;

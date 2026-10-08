@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-action-recovery1';
+import {db} from './admin-db.mjs?v=20261008-toast-loop1';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminProfile,saveAdminAccess,saveHomePreferences,saveFeaturePermissions} from './admin-accounts-management.mjs?v=20261008-admin-actions2';
 const search=new URLSearchParams(location.search),church=search.get('church')||'M+',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false;
 const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};

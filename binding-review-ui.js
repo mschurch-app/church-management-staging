@@ -15,25 +15,25 @@ async function load(){
       card.append(text('h2',row.applicant_name),text('p',`申請手機：${row.applicant_phone}`),text('p',names[row.status]||'未知狀態'));
       const result=text('p','');result.setAttribute('role','status');
       if(row.status==='pending'){
-        const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢會員姓名');
-        const searchLabel=text('label','要綁定的會員姓名（可輸入部分姓名）');searchLabel.append(input);
+        const input=document.createElement('input');input.value=row.applicant_name;input.maxLength=80;input.setAttribute('aria-label','查詢會友姓名');
+        const searchLabel=text('label','要綁定的會友姓名（可輸入部分姓名）');searchLabel.append(input);
         const hint=text('p','請確認姓名與本人身份。核准後，申請手機會寫入所選會友資料，並永久綁定這個 LINE 帳號。');
-        const search=text('button','查詢會員'),select=document.createElement('select');select.setAttribute('aria-label','選擇核對過的會員');
-        select.append(new Option('請先查詢並選擇會員',''));
+        const search=text('button','查詢會友'),select=document.createElement('select');select.setAttribute('aria-label','選擇核對過的會友');
+        select.append(new Option('請先查詢並選擇會友',''));
         const verified=document.createElement('input');verified.type='checkbox';
         const label=text('label','我已確認本人身份，並同意寫入申請手機及綁定 LINE ');label.append(verified);
         search.addEventListener('click',async()=>{
-          search.disabled=true;select.replaceChildren(new Option('請選擇會員',''));verified.checked=false;
+          search.disabled=true;select.replaceChildren(new Option('請選擇會友',''));verified.checked=false;
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation)return;
             for(const member of candidates)select.append(new Option(`${member.name} · 電話 ${member.phone||'未填'} · 編號 ${member.id}`,String(member.id)));
-            result.textContent=candidates.length?'最多顯示 30 筆；請核對姓名、電話與會員編號，系統不會自動選擇。':'查無相符會員。請確認姓名，或先到會友名冊建立資料。';
+            result.textContent=candidates.length?'最多顯示 30 筆；請核對姓名、電話與會友編號，系統不會自動選擇。':'查無相符會友。請確認姓名，或先到會友名冊建立資料。';
           }catch(error){if(current===generation){result.textContent=error.message||'查詢未完成，請稍後再試。';}}
           finally{search.disabled=false;}
         });
         select.addEventListener('change',()=>{verified.checked=false;});
         const approve=text('button','核准綁定'),reject=text('button','拒絕申請');
         approve.addEventListener('click',()=>{
-          if(!select.value||!verified.checked){result.textContent='請選擇會員，並確認已核對本人身份。';return;}
+          if(!select.value||!verified.checked){result.textContent='請選擇會友，並確認已核對本人身份。';return;}
           save(row.id,'approve',select.value);
         });
         reject.addEventListener('click',()=>save(row.id,'reject'));
@@ -43,7 +43,7 @@ async function load(){
         const label=text('label','確認撤銷這筆綁定 ');label.append(confirmed);
         const revoke=text('button','撤銷本人更新權限');
         revoke.addEventListener('click',()=>{if(!confirmed.checked){result.textContent='請先勾選確認撤銷。';return;}save(row.id,'revoke');});
-        card.append(text('p',`會員編號：${row.member_id}`),label,revoke);
+        card.append(text('p',`會友編號：${row.member_id}`),label,revoke);
       }
       card.append(result);list.append(card);
     }

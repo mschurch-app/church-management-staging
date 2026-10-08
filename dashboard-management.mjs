@@ -1,20 +1,20 @@
 import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-access-deadline1';
 export const MODULES=Object.freeze([
- {key:'members',permission:'members',title:'會友名冊',description:'會員、新朋友、封存與操作紀錄',file:'members.html',icon:'👥'},
- {key:'newcomer_care',permission:'newcomer_care',title:'新朋友關懷',description:'分派關懷、聯絡紀錄、下一步與逾期追蹤',file:'newcomer-care.html',icon:'🌱'},
- {key:'tree_reading_admin',permission:'tree_reading_admin',title:'每日靈修生命樹',description:'管理每日內容、審核與讀經進度',file:'daily-devotional-admin.html',icon:'🌳'},
- {key:'binding_review',permission:'binding_review',title:'LINE 綁定審核',description:'確認既有會友、補登手機並綁定 LINE',file:'binding-review.html',icon:'🔗'},
- {key:'notification_settings',permission:'notification_settings',title:'LINE 通知設定',description:'設定自動通知的同工與群組',file:'notification-settings.html',icon:'🔔'},
- {key:'groups',permission:'groups',title:'小組／小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🫶'},
- {key:'attendance',permission:'attendance',title:'聚會點名',description:'出席登記、修改與統計',file:'attendance.html',icon:'✅'},
- {key:'schedules',permission:'schedules',title:'服事排班',description:'主日與聚會服事安排',file:'schedules.html',icon:'📅'},
- {key:'spaces',permission:'spaces',title:'場地預約',description:'空間、設備與借用審核',file:'spaces.html',icon:'📍'},
- {key:'inventory',permission:'inventory',title:'物品清冊',description:'位置、數量、借出歸還、盤點與列印',file:'inventory.html',icon:'📦'},
- {key:'prayers',permission:'private_prayers',title:'代禱關懷',description:'公開與私密代禱追蹤',file:'prayers.html',icon:'🙏'},
- {key:'pastoral_inbox',permission:'pastoral_chats',title:'牧養訊息',description:'一對一訊息與跟進紀錄',file:'pastoral-inbox.html',icon:'💬'},
- {key:'pastoral_content',permission:'pastoral_chats',title:'教牧內容',description:'祝禱、小卡、旅程與圖卡',file:'pastoral-content.html',icon:'✨'},
- {key:'website_weekly',permission:'website_weekly',title:'教會網站維護',description:'維護週報、主日預告圖片與服事表',file:'website-maintenance.html',icon:'🌐'},
- {key:'website_group_resources',permission:'website_group_resources',title:'小組聚會資源',description:'維護每週小組教材與完整聚會內容',file:'group-resources-management.html',icon:'📚'}
+ {key:'members',permission:'members',title:'會友',description:'會友、新朋友與資料紀錄',file:'members.html',icon:'👥'},
+ {key:'newcomer_care',permission:'newcomer_care',title:'新朋友',description:'聯絡紀錄、下一步與後續關懷',file:'newcomer-care.html',icon:'🌱'},
+ {key:'tree_reading_admin',permission:'tree_reading_admin',title:'生命樹',description:'每日靈修與讀經進度',file:'daily-devotional-admin.html',icon:'🌳'},
+ {key:'binding_review',permission:'binding_review',title:'LINE 身分確認',description:'確認會友與 LINE 帳號',file:'binding-review.html',icon:'🔗'},
+ {key:'notification_settings',permission:'notification_settings',title:'通知設定',description:'設定手機與 LINE 通知',file:'notification-settings.html',icon:'🔔'},
+ {key:'groups',permission:'groups',title:'小組與小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🫶'},
+ {key:'attendance',permission:'attendance',title:'出席登記',description:'聚會出席與統計',file:'attendance.html',icon:'✅'},
+ {key:'schedules',permission:'schedules',title:'服事安排',description:'主日與聚會服事',file:'schedules.html',icon:'📅'},
+ {key:'spaces',permission:'spaces',title:'場地與設備',description:'空間、設備與預約',file:'spaces.html',icon:'📍'},
+ {key:'inventory',permission:'inventory',title:'物品與借用',description:'位置、數量、借出與歸還',file:'inventory.html',icon:'📦'},
+ {key:'prayers',permission:'private_prayers',title:'代禱與關懷',description:'公開與私密代禱追蹤',file:'prayers.html',icon:'🙏'},
+ {key:'pastoral_inbox',permission:'pastoral_chats',title:'關懷訊息',description:'一對一訊息與跟進紀錄',file:'pastoral-inbox.html',icon:'💬'},
+ {key:'pastoral_content',permission:'pastoral_chats',title:'牧養圖卡',description:'祝禱、小卡與新朋友旅程',file:'pastoral-content.html',icon:'✨'},
+ {key:'website_weekly',permission:'website_weekly',title:'主日週報',description:'週報、主日預告圖與服事表',file:'website-maintenance.html',icon:'🌐'},
+ {key:'website_group_resources',permission:'website_group_resources',title:'小組教材',description:'每週教材與聚會內容',file:'group-resources-management.html',icon:'📚'}
 ]);
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}
 export const HOME_TEMPLATES=Object.freeze({pastor:['newcomer_care','private_prayers','pastoral_chats','pastoral_workspace','members','schedules','system_monitor'],pastor_spouse:['newcomer_care','private_prayers','pastoral_workspace','members','groups','schedules'],administrator:['attendance','members','groups','schedules','spaces','binding_review','notification_settings','website_weekly'],group_leader:['groups','attendance','members','pastoral_workspace'],care:['newcomer_care','private_prayers','pastoral_chats','members','pastoral_workspace'],facilities:['spaces','pastoral_workspace'],custom:['pastoral_workspace']});

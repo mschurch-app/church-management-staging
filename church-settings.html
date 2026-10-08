@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
-  <title>系統設定｜教牧管理</title>
+  <title>教會設定｜教會 OS</title>
   <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
 <link rel="stylesheet" href="church-brand.css?v=20261003-context1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
 <link rel="stylesheet" href="apple-ui.css?v=20260924-app3"><link rel="stylesheet" href="church-palette.css?v=20261003-contrast1"><link rel="stylesheet" href="mobile-layout-fixes.css?v=20261008-nav1"></head>
@@ -14,37 +14,37 @@
   <header class="page-header">
     <div>
       <p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p>
-      <h1 id="title">系統設定</h1>
+      <h1 id="title">教會設定</h1>
       <p class="muted">集中管理表單選項、帳號權限、外觀與堂會公開資訊。</p>
     </div>
   </header>
-  <nav class="page-nav" aria-label="系統設定導覽">
+  <nav class="page-nav" aria-label="教會設定導覽">
     <a id="dashboard" href="admin-dashboard.html">管理首頁</a>
     <a id="members" href="members.html">會友名冊</a>
-    <a href="church-settings.html?church=M%2B">M＋系統設定</a>
-    <a href="church-settings.html?church=SHiNE">火樂系統設定</a>
+    <a href="church-settings.html?church=M%2B">M＋教會設定</a>
+    <a href="church-settings.html?church=SHiNE">火樂教會設定</a>
   </nav>
 
   <section class="settings-hub" aria-labelledby="settings-tools-title">
     <div class="settings-hub-heading">
-      <h2 id="settings-tools-title">設定工具</h2>
+      <h2 id="settings-tools-title">設定與工具</h2>
       <p class="muted">設定類功能集中在此，會友名冊保持簡潔。</p>
     </div>
     <div class="settings-link-grid settings-link-grid--wide">
       <a id="customization-options" class="settings-link-card" href="customization-settings.html">
         <span class="settings-link-icon" aria-hidden="true">☰</span>
-        <span class="settings-link-copy"><strong>功能與表單呈現</strong><span>整合管理功能列、迎新表單、題目選項與服事恩賜</span></span>
+        <span class="settings-link-copy"><strong>首頁與表單設定</strong><span>整合管理功能列、迎新表單、題目選項與服事恩賜</span></span>
         <span class="settings-link-arrow" aria-hidden="true">›</span>
       </a>
       <a id="admin-accounts" class="settings-link-card" href="admin-accounts.html">
         <span class="settings-link-icon" aria-hidden="true">◎</span>
-        <span class="settings-link-copy"><strong>管理員與權限</strong><span>設定管理帳號可使用的功能</span></span>
+        <span class="settings-link-copy"><strong>同工帳號與權限</strong><span>設定管理帳號可使用的功能</span></span>
         <span class="settings-link-arrow" aria-hidden="true">›</span>
       </a>
       <section class="line-settings-card" aria-labelledby="line-settings-title">
         <div class="line-settings-heading">
           <span class="settings-link-icon" aria-hidden="true">LINE</span>
-          <span><strong id="line-settings-title">LINE 功能與內容</strong><span>六項會員服務的內容、表單與關懷管理集中在這裡</span></span>
+          <span><strong id="line-settings-title">LINE 功能與內容</strong><span>六項會友服務的內容、表單與關懷管理集中在這裡</span></span>
         </div>
         <nav class="line-settings-shortcuts" aria-label="LINE 六項功能設定">
           <a id="line-today" href="todays-message-settings.html"><span aria-hidden="true">🌅</span><strong>給今天的你</strong></a>
@@ -61,12 +61,12 @@
       </section>
       <a id="website-maintenance" class="settings-link-card" href="website-maintenance.html">
         <span class="settings-link-icon" aria-hidden="true">🌐</span>
-        <span class="settings-link-copy"><strong>教會網站維護</strong><span>管理 M+大雅教會週報、主日預告圖片與自動服事表</span></span>
+        <span class="settings-link-copy"><strong>主日週報與預告圖</strong><span>管理 M+大雅教會週報、主日預告圖片與自動服事表</span></span>
         <span class="settings-link-arrow" aria-hidden="true">›</span>
       </a>
       <a id="media-publishing" class="settings-link-card" href="media-publishing-settings.html?church=M%2B">
         <span class="settings-link-icon" aria-hidden="true">▶</span>
-        <span class="settings-link-copy"><strong>媒體自動化與發布</strong><span>集中管理 IG、YouTube 與各項內容發布開關及平台連線</span></span>
+        <span class="settings-link-copy"><strong>社群內容發布</strong><span>集中管理 IG、YouTube 與各項內容發布開關及平台連線</span></span>
         <span class="settings-link-arrow" aria-hidden="true">›</span>
       </a>
       <a id="subtitle-library" class="settings-link-card" href="youtube-subtitle-library.html">
@@ -96,13 +96,13 @@
         <label>地址<textarea id="address" placeholder="教會地址"></textarea></label>
         <label class="full-width">Google Maps 或地圖網址<input id="map-url" type="url" placeholder="https://..."></label>
       </div>
-      <div class="editor-actions"><button id="reload" type="button" class="secondary">重新載入</button><button id="save" type="submit">儲存系統設定</button></div>
+      <div class="editor-actions"><button id="reload" type="button" class="secondary">重新載入</button><button id="save" type="submit">儲存教會設定</button></div>
     </form>
   </section>
 </main>
 <script>const websiteMaintChurch=new URLSearchParams(location.search).get('church')||'M+';document.querySelector('#website-maintenance').href='website-maintenance.html?church='+encodeURIComponent(websiteMaintChurch);</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-<script type="module" src="church-settings-ui.mjs?v=20261008-access-deadline1"></script>
-<script type="module" src="church-brand.mjs?v=20261008-ios6"></script>
+<script type="module" src="church-settings-ui.mjs?v=20261008-names1"></script>
+<script type="module" src="church-brand.mjs?v=20261008-names1"></script>
 </body>
 </html>

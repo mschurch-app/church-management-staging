@@ -30,7 +30,7 @@ function renderDailyReport(value){
  return wrap.childElementCount?wrap:null;
 }
 export async function loadNotificationCenter(area,badge){
- const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(error||!Array.isArray(data)){area.replaceChildren(el('p','通知中心暫時無法載入。','muted'));return;}
+ const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(error||!Array.isArray(data)){area.replaceChildren(el('p','最新通知暫時無法載入。','muted'));return;}
  const unreadItems=data.filter(item=>!item.read_at);let unread=unreadItems.length;badge.textContent=unread?unread+' 則未讀':'沒有未讀';const drawer=area.closest('details');if(drawer)drawer.open=Boolean(unread);area.replaceChildren();
  if(!unread){area.append(el('p','目前沒有未讀通知。','muted'));return;}
  for(const item of unreadItems){

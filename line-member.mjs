@@ -12,7 +12,7 @@ let config,token='',profile={name:'主內家人'},current='menu',payload,selecte
 
 const escape=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 function hero(eyebrow,title,copy){return `<header class="hero"><p class="eyebrow">${eyebrow}</p><h1>${title}</h1><p>${copy}</p></header>`;}
-function applyBrand(){const brand=BRANDS[config.church];document.documentElement.style.setProperty('--accent',brand.accent);document.documentElement.style.setProperty('--soft',brand.soft);$('#brand-logo').src=brand.logo;$('#brand-logo').alt=brand.name;$('#brand-name').textContent=brand.name;document.title=brand.name+'｜LINE 會員服務';}
+function applyBrand(){const brand=BRANDS[config.church];document.documentElement.style.setProperty('--accent',brand.accent);document.documentElement.style.setProperty('--soft',brand.soft);$('#brand-logo').src=brand.logo;$('#brand-logo').alt=brand.name;$('#brand-name').textContent=brand.name;document.title=brand.name+'｜LINE 會友服務';}
 function setConnection(value){$('#connection').textContent=value;}
 function featureFromLocation(){const query=new URLSearchParams(location.search);return query.get('feature')||config.feature||'menu';}
 function route(feature,{replace=false}={}){if(!Object.hasOwn(features(),feature)&&feature!=='menu')feature='menu';current=feature;const url=new URL(location.href);url.searchParams.set('church',config.church);url.searchParams.set('feature',feature);url.searchParams.delete('liff.state');history[replace?'replaceState':'pushState']({},'',url);render().catch(showError);}

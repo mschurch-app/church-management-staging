@@ -12,14 +12,14 @@ const prayerHaloState=new Map(DEMO.prayer.requests.map(item=>[item.id,{level:ite
 let prayerDay=new Date().getDay(),addedPrayer=false,selectedLoveCard=0,prayerRealtimeTimer=null,prayerExpiryTimer=null;
 
 function escape(value=''){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));}
-function setTheme(){const data=CHURCHES[church];document.documentElement.style.setProperty('--accent',data.accent);document.documentElement.style.setProperty('--accent-soft',data.accentSoft);$('#church-logo').src=data.logo;$('#church-logo').alt=data.name;$('#church-name').textContent=data.name;$('#page-context').textContent=feature==='menu'?'LINE 圖文選單':FEATURES.find(item=>item.key===feature)?.title||'LINE 會員服務';}
+function setTheme(){const data=CHURCHES[church];document.documentElement.style.setProperty('--accent',data.accent);document.documentElement.style.setProperty('--accent-soft',data.accentSoft);$('#church-logo').src=data.logo;$('#church-logo').alt=data.name;$('#church-name').textContent=data.name;$('#page-context').textContent=feature==='menu'?'LINE 圖文選單':FEATURES.find(item=>item.key===feature)?.title||'LINE 會友服務';}
 function updateUrl(){const next=new URL(location.href);next.searchParams.set('church',church);next.searchParams.set('feature',feature);history.replaceState(null,'',next);}
 function go(next){feature=next;updateUrl();renderControls();render();view.scrollTop=0;}
 function hero(title,copy,eyebrow='MEMBER CARE'){return `<header class="page-hero"><p class="eyebrow">${eyebrow}</p><h2>${title}</h2><p>${copy}</p></header>`;}
 
 function menuPage(){return `<div class="menu-page">
   <article class="chat-sample"><span class="pill">☀️ 晨光出發 · 給今天的你</span><p class="verse">「你們心裡不要憂愁；你們信神，也當信我。」</p><p class="verse-ref">— 約翰福音 14:1</p></article>
-  <div class="rich-menu-label"><strong>${escape(CHURCHES[church].group)}會員服務</strong><span>點選任一項預覽</span></div>
+  <div class="rich-menu-label"><strong>${escape(CHURCHES[church].group)}會友服務</strong><span>點選任一項預覽</span></div>
   <nav class="rich-menu">${FEATURES.map(item=>`<a href="?church=${encodeURIComponent(church)}&feature=${item.key}" data-feature="${item.key}"><span class="menu-icon">${item.icon}</span><strong>${item.title}</strong><small>${item.subtitle}</small></a>`).join('')}</nav>
   <p class="micro muted" style="text-align:center;margin:14px 4px 0">此畫面模擬 LINE 圖文選單；不會連接正式聊天室。</p>
   </div>`;}

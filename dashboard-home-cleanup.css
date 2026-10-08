@@ -41,6 +41,8 @@
   white-space:nowrap;
 }
 .dashboard-page .home-drawer>summary:after{color:#ad3c2a!important}
+.dashboard-page .module-group[hidden],
+.dashboard-page .module-group .dashboard-card[hidden]{display:none!important}
 .dashboard-page .notification-center{
   display:grid;
   grid-template-columns:44px minmax(0,1fr);

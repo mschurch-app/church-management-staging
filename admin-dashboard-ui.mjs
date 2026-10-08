@@ -51,7 +51,7 @@ function renderModules(settings,home){
   if(category.key==='pastoral'&&allowedQuick.has('pastoral_workspace'))addExtra(grid,'pastoral_workspace');
   if(category.key==='community'){for(const key of ['school','school_checkin','school_schedules','school_rollcall','school_students','school_counseling','school_reports','basketball','basketball_gamecenter','basketball_tactics','basketball_assignments','basketball_schedule','basketball_daily'])if(allowedQuick.has(key))addExtra(grid,key);if(church==='M+')addExtra(grid,'heat_camp');}
   if(category.key==='media'&&church==='M+'&&canOpen(access,church,'website_weekly')&&canAction(access,church,'website_weekly','approve')){const publishing={file:'media-publishing-settings.html',icon:'▶',title:'社群發布',description:'Instagram、YouTube 與字幕'};grid.append(moduleCard(publishing,publishing,'media_publishing'));}
-  if(category.key==='system'){addExtra(grid,'church_settings');addExtra(grid,'system_monitor');}
+  if(category.key==='system'){addExtra(grid,'review_workflows');addExtra(grid,'church_settings');addExtra(grid,'system_monitor');}
   if(grid.children.length){group.append(head,grid);area.append(group);}
  }
  const remaining=configured.filter(item=>!placed.has(item.key));if(remaining.length){const group=el('section','','module-group module-group--system'),head=el('div','','module-group-heading'),grid=el('div','','dashboard-grid');head.append(el('h3','其他功能'),el('p','依你的身分顯示可用功能','muted'));for(const item of remaining){const module=byKey.get(item.key);if(!module||!canOpen(access,church,module.permission))continue;grid.append(moduleCard(item,module));}if(grid.children.length){group.append(head,grid);area.append(group);}}

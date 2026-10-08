@@ -1,5 +1,5 @@
 import {MEMBER_LIFF_IDS,LINE_MEMBER_ENDPOINT} from './line-config.mjs';
-const church='M+',channel=MEMBER_LIFF_IDS[church],lineEntry=`https://liff.line.me/${channel}?church=M%2B&feature=service_signup`,$=s=>document.querySelector(s),app=$('#app'),status=$('#status');
+const church='M+',channel=MEMBER_LIFF_IDS[church],lineEntry=`https://liff.line.me/${channel}/?church=M%2B&feature=service_signup`,$=s=>document.querySelector(s),app=$('#app'),status=$('#status');
 const ministries={media:['🎛️','影音'],worship:['🎶','敬拜團'],welcome:['🤝','接待'],children:['🧒','兒童主日學']};
 const roles={sound:'音控',projection_director:'投影字幕／導播',lighting:'燈光',worship_leader:'主領',assistant_worship_leader:'副主領',keyboard_1:'第一鍵盤',keyboard_2:'第二鍵盤',drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer_1:'歌手一',singer_2:'歌手二',singer_3:'歌手三',welcome_1:'接待一',welcome_2:'接待二',children_teacher:'老師',children_assistant:'助手'};
 let token='',data={},step=1,selectedMinistries=new Set(),selectedRole='',selectedSlot=null,busy=false;
@@ -14,5 +14,5 @@ async function submit(){if(busy)return;busy=true;const button=$('#submit');butto
 async function cancelRegistration(id){if(busy||!confirm('確定取消這筆主日服事登記？'))return;busy=true;try{await api('service_signup_cancel',{registrationId:id});await load();render();}catch{alert('取消未完成，請稍後再試。');}finally{busy=false;}}
 async function respondOffer(id,accept){if(busy)return;busy=true;try{await api('service_signup_offer',{registrationId:id,accept});await load();render();}catch(e){alert(e.code==='offer_expired'?'確認期限已過，系統會通知下一位候補。':'目前無法回覆候補邀請，請重新載入。');await load();}finally{busy=false;}}
 async function load(){data=await api('content',{feature:'service_signup'});render();}
-async function start(){try{token=readToken();if(token){try{await load();return;}catch{forgetToken();token='';}}await window.liff.init({liffId:channel});if(!window.liff.isLoggedIn()){status.querySelector('strong').textContent='正在前往 LINE 登入';status.querySelector('small').textContent='登入後會自動回到主日服事登記';location.replace(lineEntry);return;}token=window.liff.getIDToken()||'';if(!token)throw new Error();rememberToken(token);await load();}catch{forgetToken();status.innerHTML='<strong>需要透過 LINE 開啟</strong><small>點擊下方按鈕完成身分確認，就會自動回到登記頁。</small>';const button=document.createElement('button');button.className='primary';button.textContent='使用 LINE 開啟';button.onclick=()=>location.href=lineEntry;status.append(button);}}
+async function start(){token=readToken();if(token){try{await load();return;}catch{forgetToken();token='';}}status.querySelector('strong').textContent='正在前往 LINE 登入';status.querySelector('small').textContent='登入後會自動回到 2027 服事登記';location.replace(lineEntry);}
 start();

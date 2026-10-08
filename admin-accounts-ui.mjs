@@ -50,7 +50,48 @@ async function accountForm(row){
   feature=featureEditor(row,getTarget,getRole,getFeatures);form._feature=feature;
   const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button','儲存管理員資料');cancel.type='button';cancel.onclick=close;actions.append(cancel);if(!row.is_owner){const remove=el('button','移除管理員資格','danger');remove.type='button';remove.onclick=()=>removeRow(row);actions.append(remove);}actions.append(save);form.append(el('h2','編輯 '+(row.display_name||row.email)),grid,activeLabel);if(!row.is_owner)form.append(matrix);form.append(actions);
   form.insertBefore(home.section,actions);form.insertBefore(feature.section,actions);
-  form.onsubmit=async e=>{e.preventDefault();if(busy)return;let grants=[],roles=[];if(!row.is_owner){const {target,role,boxes}=form._access;grants=boxes.filter(box=>box.checked).map(box=>({church_id:target.value,permission:box.dataset.permission}));if(grants.length)roles=[{church_id:target.value,role_key:role.value}];}if(!row.is_owner&&active.checked&&!grants.length){$('#status').textContent='啟用帳號前至少選擇一項功能權限。';return;}const targetChurch=getTarget(),homeModules=home.values(),featureRows=getFeatures().map(featureKey=>{const record={feature_key:featureKey};for(const action of Object.keys(FEATURE_ACTIONS))record[action]=Boolean(feature.boxes.find(box=>box.dataset.feature===featureKey&&box.dataset.action===action)?.checked);return record;});busy=true;save.disabled=true;save.textContent='正在儲存…';$('#status').textContent='正在儲存每頁操作權限…';try{await timeout(saveFeaturePermissions(db,row,targetChurch,featureRows),'操作權限儲存逾時，請再按一次儲存。');$('#status').textContent='正在儲存基本資料…';await timeout(saveAdminProfile(db,row,name.value,title.value),'基本資料儲存逾時，請再按一次儲存。');$('#status').textContent='正在儲存首頁設定…';await timeout(saveHomePreferences(db,row,targetChurch,homeModules),'首頁設定儲存逾時，請再按一次儲存。');if(!row.is_owner){$('#status').textContent='正在儲存堂會權限…';await timeout(saveAdminAccess(db,row,active.checked,grants,roles),'堂會權限儲存逾時，請再按一次儲存。');const ministries=form._serviceScopes.scopeBoxes.filter(box=>box.checked).map(box=>box.value);$('#status').textContent='正在儲存主日服事負責類別…';const {data,error}=await db.rpc('set_service_signup_scopes',{p_user:row.user_id,p_church:targetChurch,p_ministries:ministries});if(error||data!==true)throw new Error('主日服事負責類別未儲存，請重新整理後再試。');}const success='管理員資料、首頁版面、頁面操作與服事類別權限已儲存。';close();$('#status').textContent=success;requestAnimationFrame(()=>setTimeout(async()=>{try{rows=await listAdminAccounts(db);render();$('#status').textContent=success;}catch{$('#status').textContent=success+' 名單可稍後重新整理。';}},180));}catch(error){$('#status').textContent=error.message;}finally{busy=false;save.disabled=false;save.textContent='儲存管理員資料';}};
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    if(busy)return;
+    busy=true;save.disabled=true;save.textContent='正在儲存…';
+    const setStep=message=>{$('#status').textContent=message;save.textContent=message.replace('…','');};
+    try{
+      let grants=[],roles=[];
+      if(!row.is_owner){
+        const {target,role,boxes}=form._access;
+        grants=boxes.filter(box=>box.checked).map(box=>({church_id:target.value,permission:box.dataset.permission}));
+        if(grants.length)roles=[{church_id:target.value,role_key:role.value}];
+      }
+      if(!row.is_owner&&active.checked&&!grants.length)throw new Error('啟用帳號前至少選擇一項功能權限。');
+      const targetChurch=getTarget(),homeModules=home.values();
+      const featureRows=getFeatures().map(featureKey=>{
+        const record={feature_key:featureKey};
+        for(const action of Object.keys(FEATURE_ACTIONS))record[action]=Boolean(feature.boxes.find(box=>box.dataset.feature===featureKey&&box.dataset.action===action)?.checked);
+        return record;
+      });
+      setStep('正在儲存每頁操作權限…');
+      await timeout(saveFeaturePermissions(db,row,targetChurch,featureRows),'操作權限儲存逾時，請再按一次儲存。');
+      setStep('正在儲存基本資料…');
+      await timeout(saveAdminProfile(db,row,name.value,title.value),'基本資料儲存逾時，請再按一次儲存。');
+      setStep('正在儲存首頁設定…');
+      await timeout(saveHomePreferences(db,row,targetChurch,homeModules),'首頁設定儲存逾時，請再按一次儲存。');
+      if(!row.is_owner){
+        setStep('正在儲存堂會權限…');
+        await timeout(saveAdminAccess(db,row,active.checked,grants,roles),'堂會權限儲存逾時，請再按一次儲存。');
+        const ministries=form._serviceScopes.scopeBoxes.filter(box=>box.checked).map(box=>box.value);
+        setStep('正在儲存主日服事負責類別…');
+        const scopeResult=await timeout(db.rpc('set_service_signup_scopes',{p_user:row.user_id,p_church:targetChurch,p_ministries:ministries}),'主日服事負責類別儲存逾時，請再按一次儲存。');
+        if(scopeResult.error||scopeResult.data!==true)throw new Error('主日服事負責類別未儲存，請重新整理後再試。');
+      }
+      const success='管理員資料、首頁版面、頁面操作與服事類別權限已儲存。';
+      close();$('#status').textContent=success;
+      requestAnimationFrame(()=>setTimeout(async()=>{try{rows=await listAdminAccounts(db);render();$('#status').textContent=success;}catch{$('#status').textContent=success+' 名單可稍後重新整理。';}},180));
+    }catch(error){
+      $('#status').textContent=error?.message||'管理員資料未儲存，請再試一次。';
+    }finally{
+      busy=false;save.disabled=false;save.textContent='儲存管理員資料';
+    }
+  };
   area.append(form);revealEditor(area,name);
 }
 function render(){const area=$('#items');area.replaceChildren();for(const row of rows){const card=el('article','','admin-account-card'),head=el('div','','admin-profile-head'),avatar=el('span',(row.display_name||row.email||'管').trim().slice(0,1).toUpperCase(),'admin-profile-avatar'),identity=el('div','','admin-profile-copy'),badge=el('span',row.is_owner?'專案擁有者':row.invitation_state==='pending'?'等待接受邀請':row.is_active?'已啟用':'已停用','status-badge');identity.append(el('strong',row.display_name||row.email),el('span',row.job_title||'管理同工','muted'),el('small',row.email));head.append(avatar,identity,badge);card.append(head);for(const target of ['M+','SHiNE']){const names=(row.grants||[]).filter(g=>g.church_id===target).map(g=>PERMISSIONS[g.permission]).filter(Boolean),roleKey=(row.roles||[]).find(r=>r.church_id===target)?.role_key,roleName=row.is_owner?'擁有者':ROLE_TEMPLATES[roleKey]?.label;const p=el('p','','admin-role-line');p.append(el('strong',churchName(target)),el('span',row.is_owner?'擁有者 · 完整權限':names.length?`${roleName||'自訂權限'} · ${names.join('、')}`:'未授權'));card.append(p);}const actions=el('div','','admin-card-actions'),edit=el('button',row.is_owner?'編輯基本資料':'編輯資料與權限','secondary');edit.type='button';edit.onclick=async()=>{if(edit.disabled)return;edit.disabled=true;$('#status').textContent='正在開啟管理員資料與權限…';try{await accountForm(row);}catch(error){$('#status').textContent='無法開啟編輯畫面：'+error.message;}finally{edit.disabled=false;}};actions.append(edit);if(row.invitation_state==='pending'){const resend=el('button','重新寄送邀請','secondary');resend.type='button';resend.onclick=()=>resendRow(row);actions.append(resend);}if(!row.is_owner){const remove=el('button','移除管理員資格','danger');remove.type='button';remove.onclick=()=>removeRow(row);actions.append(remove);}card.append(actions);area.append(card);}$('#status').textContent='共 '+rows.length+' 個管理員帳號。角色名稱只協助套用權限，不會取代資料庫授權。';}

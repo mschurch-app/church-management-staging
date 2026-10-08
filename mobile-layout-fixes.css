@@ -1,0 +1,9 @@
+@media (max-width: 760px) {
+  .member-page > .page-nav {
+    width: auto !important;
+    max-width: calc(100% - 20px);
+    min-width: 0;
+    margin-right: 10px !important;
+    margin-left: 10px !important;
+  }
+}

@@ -14,6 +14,7 @@ const modules=[
   {key:'tree_reading_admin',file:'daily-devotional-admin.html',label:'生命樹',icon:'🌳',permission:'tree_reading_admin',also:['tree-reading-admin.html']},
   {key:'binding_review',file:'binding-review.html',label:'LINE 身分確認',icon:'🔗',permission:'binding_review'},
   {key:'notification_settings',file:'notification-settings.html',label:'通知設定',icon:'🔔',permission:'notification_settings'},
+  {key:'review_workflows',file:'review-workflow-settings.html',label:'審核流程',icon:'✅',permission:'notification_settings'},
   {key:'groups',file:'groups.html',label:'小組與小家',icon:'🫶',permission:'groups',also:['group-members.html']},
   {key:'attendance',file:'attendance.html',label:'出席登記',icon:'✅',permission:'attendance'},
   {key:'schedules',file:'schedules.html',label:'服事安排',icon:'📅',permission:'schedules'},

@@ -15,6 +15,7 @@
 - Daily devotionals: migration `20261008090000_daily_devotional_2027_mvp` adds `daily_devotionals`, private LINE-member progress in `daily_devotional_progress`, and the append-only `daily_devotional_reviews` audit trail. A follow-up migration defines the fixed reviewer assignment: 鈺庭初審、師母複審、牧師終審。
 - Sunday service signup uses `service_signup_seasons`, `service_signup_slots`, and `service_signup_registrations`. Migration file `20261009052000_service_signup_batch_registration` (applied version `20261008171831`) adds the service-role-only `service_signup_register_batch` RPC for required typed-name verification and atomic multi-date registration. It does not alter existing rows or RLS.
 - In-season cancellation and adjustment requests use `service_signup_change_requests`. `church_auth.service_signup_final_reviewers` defines the final administrative reviewers; leader access continues to use `service_ministry_scopes`. Request records are private and exposed only through identity-checked RPCs.
+- `review_workflow_settings` centralizes initial/final reviewer selection and App/LINE notification preferences for multi-stage workflows. Direct browser table access is revoked; authenticated management RPCs verify notification-settings permission and reject LINE delivery when a selected account lacks a verified LINE identity.
 
 ## Relationships
 

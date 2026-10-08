@@ -14,6 +14,7 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 - Church administration, member and group management, attendance, schedules, pastoral care, and room reservations.
 - App notifications, feature access controls, and configurable dashboard shortcuts.
 - App notification-center items can be queued for background delivery to registered devices; a one-minute backend worker records delivery attempts and non-secret failure states.
+- A centralized review workflow settings page lists sermon social, daily devotional, and ministry-specific service change reviews. Administrators can select initial/final reviewers and App/LINE channels; LINE cannot be enabled unless both selected accounts have a verified LINE identity.
 - SHiNE administrators can sign in with Email/password without mandatory LINE linking. M+ management access continues to require LINE identity verification.
 - LINE administrator access notifications now open a dedicated owner review card where the LINE identity can be matched to an existing administrator and inherit the reviewed access profile.
 - The public M+ Sunday service signup URL automatically starts LINE login when opened without a member session, then returns to the signup page.

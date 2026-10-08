@@ -22,6 +22,7 @@
 - Supabase Edge Functions expose the HTTP API. Sensitive service-role credentials remain server-side.
 - Public Sunday service signup uses the LINE-authenticated `line-member` Edge Function. Multi-role selections call the service-only `service_signup_register_batch` RPC so name matching, duplicate-date checks, capacity calculation, waitlist placement, and all inserts run in one database transaction.
 - In-season service changes are stored separately from registrations. The member submits through `line-member`; ministry scope controls the initial review, and configured final reviewers control administrative approval through `service-signup-admin`. App notifications queue each handoff.
+- Review routing configuration is stored in `review_workflow_settings` and managed from `review-workflow-settings.html`. Reviewer choices use active Church OS accounts; LINE availability is derived from verified `custom:line-web` Auth identities.
 
 ## Third-party services
 

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios4';
+import {db} from './admin-db.mjs?v=20261008-ios5';
 const $=s=>document.querySelector(s),draft=new URLSearchParams(location.search).get('draft'),endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-social-review';let item,youtubeWorkflow,isFinalReviewer=false,busy=false;
 function setStatus(text,tone=''){const n=$('#status'),near=$('#action-status');n.textContent=text;n.dataset.tone=tone;if(near){near.textContent=text;near.dataset.tone=tone;}}
 function syncApproveAvailability(){if(!item)return;const needsImage=item.review_stage==='initial_review'&&!$('input[name="social-image"]:checked')?.value,button=$('#approve');button.disabled=busy||needsImage;button.title=needsImage?'請先選擇一張講道講員圖。':'';$('#approve-hint').textContent=needsImage?'請向上滑動選擇一張講員圖，才能送出初審。':'';}

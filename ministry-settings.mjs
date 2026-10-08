@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios4';
+import {db} from './admin-db.mjs?v=20261008-ios5';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';
 import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20260922-min2';
 const church=new URLSearchParams(location.search).get('church'),status=document.querySelector('#status'),area=document.querySelector('#options'),add=document.querySelector('#add'),save=document.querySelector('#save');

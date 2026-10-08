@@ -1,6 +1,6 @@
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
-  const version='20261008-ios4';
+  const version='20261008-ios5';
   const stylesheet=document.createElement('link');
   stylesheet.rel='stylesheet';stylesheet.href=new URL(`./ios-experience.css?v=${version}`,import.meta.url).href;document.head.append(stylesheet);
   document.documentElement.classList.add('church-ios');
@@ -11,26 +11,26 @@ if(!window.__churchIosExperience){
 
   const paths={
     home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/>',
-    people:'<path data-tone="soft" d="M3.2 20v-2.3A5.2 5.2 0 0 1 8.4 12.5h1.2a5.2 5.2 0 0 1 5.2 5.2V20Z"/><circle data-tone="soft" cx="9" cy="7.7" r="3.4"/><circle cx="9" cy="7.7" r="3.1"/><path d="M3.8 20v-2.2A4.6 4.6 0 0 1 8.4 13h1.2a4.6 4.6 0 0 1 4.6 4.8V20M15.6 5.4a3 3 0 0 1 0 5.2M16.7 13.2a4.3 4.3 0 0 1 3.8 4.5V20"/>',
-    sprout:'<path data-tone="soft" d="M12 13C7.7 13 4.8 10.5 4.8 6.6c4.3 0 7.2 2.5 7.2 6.4ZM12 10c0-4 3-6.4 7.2-6.4 0 4-3 6.4-7.2 6.4Z"/><path d="M12 21V10M12 13C7.7 13 4.8 10.5 4.8 6.6c4.3 0 7.2 2.5 7.2 6.4ZM12 10c0-4 3-6.4 7.2-6.4 0 4-3 6.4-7.2 6.4Z"/>',
-    tree:'<path data-tone="soft" d="M12 2.8a5.2 5.2 0 0 0-4.6 7.6A4.2 4.2 0 0 0 9.9 17h4.2a4.2 4.2 0 0 0 2.5-6.6A5.2 5.2 0 0 0 12 2.8Z"/><path d="M12 22v-7M8.5 18H15M12 3a5 5 0 0 0-4.4 7.4A4 4 0 0 0 10 17h4a4 4 0 0 0 2.4-6.6A5 5 0 0 0 12 3Z"/>',
-    link:'<path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/>',
-    bell:'<path data-tone="soft" d="M18.4 8.2a6.4 6.4 0 0 0-12.8 0c0 6.6-3 7-3 9h18.8c0-2-3-2.4-3-9Z"/><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
-    check:'<rect data-tone="soft" x="3" y="3" width="18" height="18" rx="5"/><path d="m5.5 12.2 4 4L18.8 7"/><rect x="3" y="3" width="18" height="18" rx="5"/>',
-    calendar:'<rect data-tone="soft" x="3" y="5" width="18" height="16" rx="3"/><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h2M14 14h2M8 18h2M14 18h2"/>',
-    box:'<path data-tone="soft" d="m4 7 8-4 8 4-8 4-8-4Zm0 0 8 4v10l-8-4V7Z"/><path d="m4 7 8-4 8 4-8 4-8-4Zm0 0 8 4 8-4v10l-8 4-8-4V7ZM12 11v10"/>',
+    people:'<circle cx="9" cy="8" r="3.25" fill="#fff" stroke="none"/><path d="M2.9 19.8c0-3.7 2.45-6.15 6.1-6.15s6.1 2.45 6.1 6.15c0 .65-.45 1.2-1.1 1.2H4c-.65 0-1.1-.55-1.1-1.2Z" fill="#fff" stroke="none"/><circle cx="16.5" cy="8.4" r="2.55" fill="#fff" opacity=".72" stroke="none"/><path d="M15.2 13.7c3.65-.35 6 1.8 6 5.1 0 .65-.45 1.2-1.1 1.2h-3.25c.05-2.6-.55-4.7-1.65-6.3Z" fill="#fff" opacity=".72" stroke="none"/>',
+    sprout:'<path d="M11 21V11.7c-4.5-.1-7.35-2.6-7.35-7.1 4.55 0 7.25 2.15 7.65 6.1.55-4.55 3.55-7.1 8.7-7.1 0 4.95-3.45 7.75-8 7.95V21Z" fill="#fff" stroke="none"/><path d="M12 11.2c1.4-2.6 3.4-4.45 6.05-5.55M10.8 11.4C9.6 9.2 8 7.7 5.65 6.75" opacity=".38"/>',
+    tree:'<path d="M12 2.5c2.75 0 5 2.05 5.25 4.75A4.85 4.85 0 0 1 16.1 16H7.9a4.85 4.85 0 0 1-1.15-8.75A5.28 5.28 0 0 1 12 2.5Z" fill="#fff" stroke="none"/><path d="M11 13h2v8.5h-2zM7.8 19.5h8.4V22H7.8z" fill="#fff" opacity=".78" stroke="none"/>',
+    link:'<path d="M14.4 4.4a5.15 5.15 0 0 1 7.3 7.3l-2.5 2.5a5.15 5.15 0 0 1-7.3 0 1.55 1.55 0 1 1 2.2-2.2 2.05 2.05 0 0 0 2.9 0l2.5-2.5a2.05 2.05 0 0 0-2.9-2.9l-1.45 1.45a1.55 1.55 0 1 1-2.2-2.2Z" fill="#fff" stroke="none"/><path d="M9.6 19.6a5.15 5.15 0 0 1-7.3-7.3l2.5-2.5a5.15 5.15 0 0 1 7.3 0 1.55 1.55 0 1 1-2.2 2.2A2.05 2.05 0 0 0 7 12l-2.5 2.5a2.05 2.05 0 0 0 2.9 2.9l1.45-1.45a1.55 1.55 0 1 1 2.2 2.2Z" fill="#fff" opacity=".8" stroke="none"/>',
+    bell:'<path d="M12 2.5a2 2 0 0 1 1.8 1.12A6.55 6.55 0 0 1 18.5 9.9v3.3l2.2 3.65c.5.85-.1 1.95-1.1 1.95H4.4c-1 0-1.6-1.1-1.1-1.95l2.2-3.65V9.9a6.55 6.55 0 0 1 4.7-6.28A2 2 0 0 1 12 2.5Z" fill="#fff" stroke="none"/><path d="M9.2 20h5.6a2.9 2.9 0 0 1-5.6 0Z" fill="#fff" opacity=".72" stroke="none"/>',
+    check:'<rect x="3" y="3" width="18" height="18" rx="5.2" fill="#fff" stroke="none"/><path d="m6.7 12.3 3.25 3.3 7.55-7.4" fill="none" stroke="#1976e8" stroke-width="2.6"/>',
+    calendar:'<rect x="3" y="4" width="18" height="17" rx="3.5" fill="#fff" stroke="none"/><path d="M3 8.5h18V7.2A3.2 3.2 0 0 0 17.8 4H6.2A3.2 3.2 0 0 0 3 7.2Z" fill="#ff4f5e" stroke="none"/><path d="M7.5 13h2M11 13h2M14.5 13h2M7.5 17h2M11 17h2M14.5 17h2" stroke="#d83a46" stroke-width="1.7"/>',
+    box:'<path d="m12 2.8 9 4.5-9 4.55L3 7.3Z" fill="#fff" stroke="none"/><path d="M3 8.8 11 13v8.2l-8-4.15ZM21 8.8 13 13v8.2l8-4.15Z" fill="#fff" opacity=".78" stroke="none"/><path d="m8 5 9 4.5v3.1" opacity=".45"/>',
     heart:'<path data-tone="soft" d="M20.8 5.8a5.5 5.5 0 0 0-7.8 0L12 6.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/><path d="M20.8 5.8a5.5 5.5 0 0 0-7.8 0L12 6.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/>',
     chat:'<path data-tone="soft" d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.7-4A8.2 8.2 0 0 1 3 11.5a8.4 8.4 0 0 1 9-8.5 8.4 8.4 0 0 1 9 8.5Z"/><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.7-4A8.2 8.2 0 0 1 3 11.5a8.4 8.4 0 0 1 9-8.5 8.4 8.4 0 0 1 9 8.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/>',
     sparkle:'<path d="m12 3 1.3 4.2L17 9l-3.7 1.8L12 15l-1.3-4.2L7 9l3.7-1.8L12 3Z"/><path d="m19 15 .7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15ZM5 3l.6 1.8L7.5 5 5.6 5.6 5 7.5l-.6-1.9L2.5 5l1.9-.2L5 3Z"/>',
-    gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/>',
+    gear:'<path d="M10.1 2h3.8l.55 2.35c.55.2 1.08.42 1.55.72l2.05-1.25 2.7 2.7-1.25 2.05c.3.47.53 1 .72 1.55l2.35.55v3.8l-2.35.55c-.2.55-.42 1.08-.72 1.55l1.25 2.05-2.7 2.7L16 19.93c-.47.3-1 .53-1.55.72L13.9 23h-3.8l-.55-2.35A8.6 8.6 0 0 1 8 19.93l-2.05 1.25-2.7-2.7 1.25-2.05a8.6 8.6 0 0 1-.72-1.55l-2.35-.55v-3.8l2.35-.55c.2-.55.42-1.08.72-1.55L3.25 6.38l2.7-2.7L8 4.93c.47-.3 1-.53 1.55-.72Z" fill="#fff" stroke="none"/><circle cx="12" cy="12.5" r="3.4" fill="#7b838d" stroke="none"/>',
     pin:'<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
-    globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
-    book:'<path d="M4 4h6a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H4V4Z"/><path d="M20 4h-4a3 3 0 0 0-3 3v13a3 3 0 0 1 3-3h4V4Z"/>',
+    globe:'<circle cx="12" cy="12" r="9.5" fill="#fff" opacity=".2" stroke="none"/><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    book:'<path d="M3.2 4.2h6.1c1.55 0 2.7.65 3.4 1.55v14.7c-.8-1.15-1.95-1.75-3.65-1.75H3.2Z" fill="#fff" stroke="none"/><path d="M20.8 4.2h-6.1c-.85 0-1.5.3-2 .78v15.47c.8-1.15 1.95-1.75 3.65-1.75h4.45Z" fill="#fff" opacity=".78" stroke="none"/><path d="M6 8h4M6 11h4M15 8h3.2M15 11h3.2" opacity=".38"/>',
     chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
     grid:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     play:'<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/>',
     camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="m8 6 1.5-2h5L16 6"/><circle cx="12" cy="13" r="3.5"/>',
-    student:'<path data-tone="soft" d="m3 6 9-4 9 4-9 4-9-4Z"/><circle data-tone="soft" cx="12" cy="11" r="3"/><path d="m3 6 9-4 9 4-9 4-9-4ZM18 8v5M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a3 3 0 0 0 6 0"/>',
+    student:'<path d="m2.4 6.4 9.6-4.6 9.6 4.6L12 11Z" fill="currentColor" stroke="none"/><path d="M18.6 8.1v5.1"/><circle cx="12" cy="12" r="3" fill="currentColor" opacity=".72" stroke="none"/><path d="M5.5 21c.25-4.05 2.6-6.2 6.5-6.2s6.25 2.15 6.5 6.2Z" fill="currentColor" opacity=".72" stroke="none"/>',
     printer:'<path data-tone="soft" d="M5 14h14v7H5z"/><path d="M7 8V3h10v5M5 17H3V9h18v8h-2M5 14h14v7H5M17 11h.01"/>',
     trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5M8 21h8M9 18h6"/>',
     clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4.5V3h6v1.5M9 10h6M9 14h6M9 18h4"/>',

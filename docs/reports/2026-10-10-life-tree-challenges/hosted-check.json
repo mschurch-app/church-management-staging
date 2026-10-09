@@ -1,0 +1,39 @@
+{
+  "checked_at_utc": "2026-10-09T22:30:11.777945+00:00",
+  "pr": 44,
+  "resources": [
+    {
+      "path": "tree-reading-october-test.html",
+      "expected_sha256": "6e5ed197c9cea7629a9def5b91b9e44cb1463d79c029831b5b2318e77d28cbd2",
+      "status": 200,
+      "bytes": 13578,
+      "actual_sha256": "6e5ed197c9cea7629a9def5b91b9e44cb1463d79c029831b5b2318e77d28cbd2",
+      "matches": true
+    },
+    {
+      "path": "tree-reading-october-test.mjs",
+      "expected_sha256": "fdb900bfc7d97af6ac555f52a92c6d06c6198617cf27d2ea015ca1b29233d027",
+      "status": 200,
+      "bytes": 42246,
+      "actual_sha256": "fdb900bfc7d97af6ac555f52a92c6d06c6198617cf27d2ea015ca1b29233d027",
+      "matches": true
+    },
+    {
+      "path": "tree-reading-october-art.mjs",
+      "expected_sha256": "5b1cd043f83e6825a129b96e5074f0e8774a3d5c10fbf4e3031169d60b0a1eef",
+      "status": 200,
+      "bytes": 19691,
+      "actual_sha256": "5b1cd043f83e6825a129b96e5074f0e8774a3d5c10fbf4e3031169d60b0a1eef",
+      "matches": true
+    },
+    {
+      "path": "tree-reading-october-journey.css",
+      "expected_sha256": "993d79fd56d5d763c8160849dfe1c8f3a57291da907245b5708078b94012ed44",
+      "status": 200,
+      "bytes": 9620,
+      "actual_sha256": "993d79fd56d5d763c8160849dfe1c8f3a57291da907245b5708078b94012ed44",
+      "matches": true
+    }
+  ],
+  "all_match": true
+}

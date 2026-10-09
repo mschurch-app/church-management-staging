@@ -26,4 +26,4 @@ JavaScript語法與git diff檢查通過；Build、Lint、Typecheck未執行，�
 
 ## 發布與回復
 
-透過既有GitHub PR與Pages流程發布，正式資源更新確認後補記證據。若需回復，以git revert回復本次前端提交並發布；不需資料庫回復。
+實作提交 `b7cea82` 已push，GitHub [PR #40](https://github.com/mschurch-app/church-management-staging/pull/40) 已合併main（`176344e8d55daa9da6f4ac2ff1e2477862e87002`），沿用既有Pages發布。01:12（台北）確認正式HTML、模組與樣式均HTTP 200且SHA-256符合來源，見 `hosted-check.json`；模組與樣式使用頁面實際資源版本檢查。這是發布資源驗證，不代表實機LINE登入／聲音已驗收。若需回復，以git revert回復本次前端提交並發布；不需資料庫回復。

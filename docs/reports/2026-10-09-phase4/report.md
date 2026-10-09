@@ -2,7 +2,7 @@
 
 日期：2026-10-09。教會 OS 正式環境；延續第三階段已發布的 72f430a。此階段處理裝置恢復、更新時機、文字放大、鍵盤及發布回歸。
 
-發布狀態：本機驗收完成，正式站發布與檔案比對待記錄。
+發布狀態：已發布至 https://mscos.mchurch.online 。實作版本 `4cdc0d32342075cb465b204b7e0d7647cb668927`，正式站 100 個前端檔案 SHA-256 全部一致。正式網址上的第四階段 73 項與工作區 80 項合成流程複測均通過。
 
 ## 已實作
 
@@ -71,3 +71,13 @@
 需要回復時，以第三階段 72f430a 為參考，使用新的修正／還原提交及新的 Worker／資源版本；不要改寫主分支歷史。此次沒有資料庫遷移，無資料回復步驟。
 
 版本等待及明確接管依 [Service Worker lifecycle](https://web.dev/articles/service-worker-lifecycle) 與 [W3C Worker 規格](https://www.w3.org/TR/service-workers/)；減少動態效果參考 [WebKit 文件](https://webkit.org/blog/7551/responsive-design-for-motion/)。Safari 自動化條件參考 [Apple WebDriver 文件](https://developer.apple.com/documentation/webkit/testing-with-webdriver-in-safari)。
+
+## 正式站證據
+
+- [發布檔案與 SHA-256](deployment.json)
+- [本機固定清單](local-suite.json)、[第四階段本機結果](browser-local.json)、[正式站結果](browser-hosted.json)
+- [本機工作區結果](workflows-local.json)、[正式站工作區結果](workflows-hosted.json)
+- [35 頁手機與桌面版面](management-pages.json)、[手機文字對比](contrast-mobile.json)
+- [大字首頁](admin-dashboard-large.png)、[大字設定](church-settings-large.png)、[大字週報上稿](website-maintenance-large.png)、[離線恢復](offline-recovery.png)
+
+正式站複測讀取已發布的 HTML／CSS／JS，Auth 與業務 API 仍使用隔離合成資料；不代表真實 LINE、媒體發布或實機驗收已完成。

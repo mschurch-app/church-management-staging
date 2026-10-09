@@ -1,0 +1,7 @@
+{
+  "date": "2026-10-09",
+  "version": "17.6",
+  "status": "pending",
+  "session_created": false,
+  "reason": "Safari WebDriver did not allow a session because remote automation was not enabled; system settings were not changed."
+}

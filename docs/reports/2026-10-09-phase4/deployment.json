@@ -1,0 +1,707 @@
+{
+  "origin": "https://mscos.mchurch.online",
+  "commit": "4cdc0d3",
+  "verified_at": "2026-10-09T08:15:39.986Z",
+  "files": [
+    {
+      "file": "admin-accounts.html",
+      "local_sha256": "6805d582d4411e346e82f9ddabff6a34871c3d7cb705a3b73539e5de8dc757a9",
+      "status": 200,
+      "served_sha256": "6805d582d4411e346e82f9ddabff6a34871c3d7cb705a3b73539e5de8dc757a9",
+      "match": true
+    },
+    {
+      "file": "admin-line-launch.html",
+      "local_sha256": "841b7cccbfd2541ff00762778a0eabfad4d29558936fdb5d874ce9450564667e",
+      "status": 200,
+      "served_sha256": "841b7cccbfd2541ff00762778a0eabfad4d29558936fdb5d874ce9450564667e",
+      "match": true
+    },
+    {
+      "file": "admin-db.mjs",
+      "local_sha256": "4d112cd39214a2abe614c8a820b223b23962046e474357deba365bb0f91a063d",
+      "status": 200,
+      "served_sha256": "4d112cd39214a2abe614c8a820b223b23962046e474357deba365bb0f91a063d",
+      "match": true
+    },
+    {
+      "file": "admin-line-callback.mjs",
+      "local_sha256": "fc5dc51588ef5a48fcc615daf79e0185dd110d65cb283ccd3b6fbc97de840907",
+      "status": 200,
+      "served_sha256": "fc5dc51588ef5a48fcc615daf79e0185dd110d65cb283ccd3b6fbc97de840907",
+      "match": true
+    },
+    {
+      "file": "admin-dashboard.html",
+      "local_sha256": "a8022540602b3fd4396f8e0559ff719d3bcbc598b80411e8381dc4b07cbd170d",
+      "status": 200,
+      "served_sha256": "a8022540602b3fd4396f8e0559ff719d3bcbc598b80411e8381dc4b07cbd170d",
+      "match": true
+    },
+    {
+      "file": "admin-line-callback.html",
+      "local_sha256": "57be82ec15bd10faa60ff80d3427252f7ed8c2c88af3194ad5494a3939b9d910",
+      "status": 200,
+      "served_sha256": "57be82ec15bd10faa60ff80d3427252f7ed8c2c88af3194ad5494a3939b9d910",
+      "match": true
+    },
+    {
+      "file": "admin-dashboard-ui.mjs",
+      "local_sha256": "1f7cf611149dcb478525c7c034306feb92359aac178d77e083ef0fc34ef01374",
+      "status": 200,
+      "served_sha256": "1f7cf611149dcb478525c7c034306feb92359aac178d77e083ef0fc34ef01374",
+      "match": true
+    },
+    {
+      "file": "admin-accounts-ui.mjs",
+      "local_sha256": "45ff87bd76a171131b35848cce3f384b5521d9e96778279b5cf5a5343ed6b5d6",
+      "status": 200,
+      "served_sha256": "45ff87bd76a171131b35848cce3f384b5521d9e96778279b5cf5a5343ed6b5d6",
+      "match": true
+    },
+    {
+      "file": "admin-line-link.html",
+      "local_sha256": "f7d28faf782a4751de7f27e36d368221bae348ccdf2117736ec5077af2400b15",
+      "status": 200,
+      "served_sha256": "f7d28faf782a4751de7f27e36d368221bae348ccdf2117736ec5077af2400b15",
+      "match": true
+    },
+    {
+      "file": "admin-login.mjs",
+      "local_sha256": "9e5303cdbd31c7edf46e0c7d730ed41970e8369492f295daa07edb6b13ffd2ce",
+      "status": 200,
+      "served_sha256": "9e5303cdbd31c7edf46e0c7d730ed41970e8369492f295daa07edb6b13ffd2ce",
+      "match": true
+    },
+    {
+      "file": "admin-password-reset.html",
+      "local_sha256": "d1a74b91cc051510ac7c57946fb7a24a4fa641763cca38573fe67a1a95f0ced0",
+      "status": 200,
+      "served_sha256": "d1a74b91cc051510ac7c57946fb7a24a4fa641763cca38573fe67a1a95f0ced0",
+      "match": true
+    },
+    {
+      "file": "admin-line-link.mjs",
+      "local_sha256": "73b8a2dd361e712cad8b748febaa16f9f70bbb70b3d302ed9db74e07aba6a904",
+      "status": 200,
+      "served_sha256": "73b8a2dd361e712cad8b748febaa16f9f70bbb70b3d302ed9db74e07aba6a904",
+      "match": true
+    },
+    {
+      "file": "admin-password-reset.mjs",
+      "local_sha256": "40a8e61bb9db9a40446efa5999b04ac81ff4086284f1551c6f85e161a349f82a",
+      "status": 200,
+      "served_sha256": "40a8e61bb9db9a40446efa5999b04ac81ff4086284f1551c6f85e161a349f82a",
+      "match": true
+    },
+    {
+      "file": "admin-set-password.html",
+      "local_sha256": "15c36d1e953a7392ef8537df06f99660189458c2dfa41611c861128e140a206d",
+      "status": 200,
+      "served_sha256": "15c36d1e953a7392ef8537df06f99660189458c2dfa41611c861128e140a206d",
+      "match": true
+    },
+    {
+      "file": "admin-login.html",
+      "local_sha256": "89ce9d242c0d091f9a62f9dcaf1f8b31c3e1bd82bab46c8c45a159e3ed63739c",
+      "status": 200,
+      "served_sha256": "89ce9d242c0d091f9a62f9dcaf1f8b31c3e1bd82bab46c8c45a159e3ed63739c",
+      "match": true
+    },
+    {
+      "file": "admin-login-v2.html",
+      "local_sha256": "646f4fb6b66d0c05d494d0d796fb45ed7b73f5492bd1bd4f2c73eb3948e6498f",
+      "status": 200,
+      "served_sha256": "646f4fb6b66d0c05d494d0d796fb45ed7b73f5492bd1bd4f2c73eb3948e6498f",
+      "match": true
+    },
+    {
+      "file": "app-offline.mjs",
+      "local_sha256": "97de1c391ba81487337bc0e357fb74974a5df403fbaaecf6ae6a2f421a8dabd3",
+      "status": 200,
+      "served_sha256": "97de1c391ba81487337bc0e357fb74974a5df403fbaaecf6ae6a2f421a8dabd3",
+      "match": true
+    },
+    {
+      "file": "app-offline.html",
+      "local_sha256": "2fd9c0b9c72b52a801f6c796d58e7c7416e2afe89eb0d08d878ef79932b6acba",
+      "status": 200,
+      "served_sha256": "2fd9c0b9c72b52a801f6c796d58e7c7416e2afe89eb0d08d878ef79932b6acba",
+      "match": true
+    },
+    {
+      "file": "amenities.html",
+      "local_sha256": "d0a19c33d42689ae432631b3c8b9189d1c53c2a75f6f53135fe6d0c07f88adde",
+      "status": 200,
+      "served_sha256": "d0a19c33d42689ae432631b3c8b9189d1c53c2a75f6f53135fe6d0c07f88adde",
+      "match": true
+    },
+    {
+      "file": "amenities.mjs",
+      "local_sha256": "5d4a81db0fd0e00c260c8e93beb8b76efacc8f2192b8ffe120b80ca912ca9601",
+      "status": 200,
+      "served_sha256": "5d4a81db0fd0e00c260c8e93beb8b76efacc8f2192b8ffe120b80ca912ca9601",
+      "match": true
+    },
+    {
+      "file": "app-pwa.mjs",
+      "local_sha256": "f25826af61bb599d9faa37a305bc9bd33a5aca8488cc374244d0ab271d05d8a6",
+      "status": 200,
+      "served_sha256": "f25826af61bb599d9faa37a305bc9bd33a5aca8488cc374244d0ab271d05d8a6",
+      "match": true
+    },
+    {
+      "file": "app-runtime.mjs",
+      "local_sha256": "fc88f7c1b85f2c87dacb8cfb7e1fe83e4b0c4bc3c64302ddcb251231468a8645",
+      "status": 200,
+      "served_sha256": "fc88f7c1b85f2c87dacb8cfb7e1fe83e4b0c4bc3c64302ddcb251231468a8645",
+      "match": true
+    },
+    {
+      "file": "app-notifications.mjs",
+      "local_sha256": "4c3a3fa8280996c66ec7049c89789493f36f65067bf135b6466172aafa71d3bf",
+      "status": 200,
+      "served_sha256": "4c3a3fa8280996c66ec7049c89789493f36f65067bf135b6466172aafa71d3bf",
+      "match": true
+    },
+    {
+      "file": "app-consistency.css",
+      "local_sha256": "7891b801750c209ef235df3b8c67d209267996dbd5e0ac3245376939c6399ce5",
+      "status": 200,
+      "served_sha256": "7891b801750c209ef235df3b8c67d209267996dbd5e0ac3245376939c6399ce5",
+      "match": true
+    },
+    {
+      "file": "binding-review.html",
+      "local_sha256": "e7eed3a4588e7244b035977e2b4979fbf881fb6b81f17adbe97a6500b993cfa4",
+      "status": 200,
+      "served_sha256": "e7eed3a4588e7244b035977e2b4979fbf881fb6b81f17adbe97a6500b993cfa4",
+      "match": true
+    },
+    {
+      "file": "attendance.html",
+      "local_sha256": "6ea5f68fb5646e6065722e3713817f17b8961e0b1056f89351942e6b186abc86",
+      "status": 200,
+      "served_sha256": "6ea5f68fb5646e6065722e3713817f17b8961e0b1056f89351942e6b186abc86",
+      "match": true
+    },
+    {
+      "file": "attendance-ui.mjs",
+      "local_sha256": "06a6ebf3459e6b0200cd7bb192aa9b7ac15cbb6475a7f8d77428668d88000278",
+      "status": 200,
+      "served_sha256": "06a6ebf3459e6b0200cd7bb192aa9b7ac15cbb6475a7f8d77428668d88000278",
+      "match": true
+    },
+    {
+      "file": "church-os-sw.js",
+      "local_sha256": "2feea6ca9e3edc7a8b815d044453b4f81fa9a4a714dd662407ec4d3b23142ee4",
+      "status": 200,
+      "served_sha256": "2feea6ca9e3edc7a8b815d044453b4f81fa9a4a714dd662407ec4d3b23142ee4",
+      "match": true
+    },
+    {
+      "file": "church-settings.html",
+      "local_sha256": "1e361ebcf7b548219930a449f7b1383bf6405f5e6bb0b246039530e255bf7167",
+      "status": 200,
+      "served_sha256": "1e361ebcf7b548219930a449f7b1383bf6405f5e6bb0b246039530e255bf7167",
+      "match": true
+    },
+    {
+      "file": "church-settings-ui.mjs",
+      "local_sha256": "161c7ab2d717217e5cd0ae29997c2513b00dfeab590c56af967c7f751a345eb2",
+      "status": 200,
+      "served_sha256": "161c7ab2d717217e5cd0ae29997c2513b00dfeab590c56af967c7f751a345eb2",
+      "match": true
+    },
+    {
+      "file": "app-workflow.mjs",
+      "local_sha256": "936cc3cbe07773f3ec074e20c2ddbb82e9a485b565655f3493dcdd3f63ef65e7",
+      "status": 200,
+      "served_sha256": "936cc3cbe07773f3ec074e20c2ddbb82e9a485b565655f3493dcdd3f63ef65e7",
+      "match": true
+    },
+    {
+      "file": "church-brand.mjs",
+      "local_sha256": "b20833baee45ca67469f89c081b26769bff7b8f8913e451a9ce6aa08474b9b46",
+      "status": 200,
+      "served_sha256": "b20833baee45ca67469f89c081b26769bff7b8f8913e451a9ce6aa08474b9b46",
+      "match": true
+    },
+    {
+      "file": "group-members.html",
+      "local_sha256": "959efe0885de9abce7a7f3934154cc4e042703f559870eaeef3d4ece006addc8",
+      "status": 200,
+      "served_sha256": "959efe0885de9abce7a7f3934154cc4e042703f559870eaeef3d4ece006addc8",
+      "match": true
+    },
+    {
+      "file": "customization-settings.html",
+      "local_sha256": "e92a0a7e96d6877cee70a2dd6fed042538d218aa6953f064add6c4938b9fd041",
+      "status": 200,
+      "served_sha256": "e92a0a7e96d6877cee70a2dd6fed042538d218aa6953f064add6c4938b9fd041",
+      "match": true
+    },
+    {
+      "file": "group-resources-management.mjs",
+      "local_sha256": "5a24a63d143e90a942d8f6ec7015982a8754923d6079e0f377ed3af81ba79212",
+      "status": 200,
+      "served_sha256": "5a24a63d143e90a942d8f6ec7015982a8754923d6079e0f377ed3af81ba79212",
+      "match": true
+    },
+    {
+      "file": "group-resources-management.html",
+      "local_sha256": "81b83bb871ae2571d7516d220dff92eb2bf7bd89ab996ef709110485d52ad808",
+      "status": 200,
+      "served_sha256": "81b83bb871ae2571d7516d220dff92eb2bf7bd89ab996ef709110485d52ad808",
+      "match": true
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "local_sha256": "507d5409267bdde53361dc2952337ff7c9785b8330ca850f3da52979334ac71c",
+      "status": 200,
+      "served_sha256": "507d5409267bdde53361dc2952337ff7c9785b8330ca850f3da52979334ac71c",
+      "match": true
+    },
+    {
+      "file": "group-members.mjs",
+      "local_sha256": "d6ac237b8bbe0db058885d5904b44cb5217f404474287ccad17290d97ba89ce1",
+      "status": 200,
+      "served_sha256": "d6ac237b8bbe0db058885d5904b44cb5217f404474287ccad17290d97ba89ce1",
+      "match": true
+    },
+    {
+      "file": "daily-devotional-admin.mjs",
+      "local_sha256": "8cd4206bea4e4c8f29456d814d4e1bb930df2706be24c610f6a97e539ba5a2c1",
+      "status": 200,
+      "served_sha256": "8cd4206bea4e4c8f29456d814d4e1bb930df2706be24c610f6a97e539ba5a2c1",
+      "match": true
+    },
+    {
+      "file": "customization-settings-ui.mjs",
+      "local_sha256": "9573340e0f67d1e258736f8800c268f538b3af71f527cc40ac6b498bec60bcc8",
+      "status": 200,
+      "served_sha256": "9573340e0f67d1e258736f8800c268f538b3af71f527cc40ac6b498bec60bcc8",
+      "match": true
+    },
+    {
+      "file": "index.html",
+      "local_sha256": "8133d36da7e3474e434b4cc16e41a8683975d4bb4941896c8285a1d6cae3bd53",
+      "status": 200,
+      "served_sha256": "8133d36da7e3474e434b4cc16e41a8683975d4bb4941896c8285a1d6cae3bd53",
+      "match": true
+    },
+    {
+      "file": "groups.html",
+      "local_sha256": "73a8684f17034b03ecbeaa20a4a6579382ce775efb033a2e66e841069a65ca05",
+      "status": 200,
+      "served_sha256": "73a8684f17034b03ecbeaa20a4a6579382ce775efb033a2e66e841069a65ca05",
+      "match": true
+    },
+    {
+      "file": "heat-camp-admin.html",
+      "local_sha256": "f46c1c19b3114e1561be640cf54dde58d8f96c48c6c0e890c56bd9d60b196452",
+      "status": 200,
+      "served_sha256": "f46c1c19b3114e1561be640cf54dde58d8f96c48c6c0e890c56bd9d60b196452",
+      "match": true
+    },
+    {
+      "file": "instagram-publishing-settings.html",
+      "local_sha256": "e36370f03dd0a176fd49cca076e8227c2269e22fa20eb96c9f4d428cbbe3c29c",
+      "status": 200,
+      "served_sha256": "e36370f03dd0a176fd49cca076e8227c2269e22fa20eb96c9f4d428cbbe3c29c",
+      "match": true
+    },
+    {
+      "file": "instagram-publishing-settings.mjs",
+      "local_sha256": "4c0227d0b7c3153ff453518293fee7bd088ebd4bebc7c98afd26ab85432afe7e",
+      "status": 200,
+      "served_sha256": "4c0227d0b7c3153ff453518293fee7bd088ebd4bebc7c98afd26ab85432afe7e",
+      "match": true
+    },
+    {
+      "file": "inventory.html",
+      "local_sha256": "f2a5d9abcc54514b82941a99f3117036795e45e939933fa750e06bde412d92d7",
+      "status": 200,
+      "served_sha256": "f2a5d9abcc54514b82941a99f3117036795e45e939933fa750e06bde412d92d7",
+      "match": true
+    },
+    {
+      "file": "groups-ui.mjs",
+      "local_sha256": "3d9bc827222bf9e5599db0e4c2a65399999d2fa10891be9f58880d5152f2ab8d",
+      "status": 200,
+      "served_sha256": "3d9bc827222bf9e5599db0e4c2a65399999d2fa10891be9f58880d5152f2ab8d",
+      "match": true
+    },
+    {
+      "file": "heat-camp-admin.mjs",
+      "local_sha256": "a5688aae1ddf60c281645720b2a99e9cde48f5914ecc8de8fd1eb58ecd341b5e",
+      "status": 200,
+      "served_sha256": "a5688aae1ddf60c281645720b2a99e9cde48f5914ecc8de8fd1eb58ecd341b5e",
+      "match": true
+    },
+    {
+      "file": "member-audit.html",
+      "local_sha256": "15f6f7b35a9696da8a2bedaf114f939704cb1ce9938539cae5b3948a104bb05e",
+      "status": 200,
+      "served_sha256": "15f6f7b35a9696da8a2bedaf114f939704cb1ce9938539cae5b3948a104bb05e",
+      "match": true
+    },
+    {
+      "file": "member-audit.mjs",
+      "local_sha256": "cdc563b34145e489e2d9e3d3bb53051849b59b1bd041ac2ac4fb6f2be1a7e489",
+      "status": 200,
+      "served_sha256": "cdc563b34145e489e2d9e3d3bb53051849b59b1bd041ac2ac4fb6f2be1a7e489",
+      "match": true
+    },
+    {
+      "file": "ios-experience.mjs",
+      "local_sha256": "30b85c5ee607a652a07bdbc0f6957dff991f05ba38e4385772002a3d23297e3e",
+      "status": 200,
+      "served_sha256": "30b85c5ee607a652a07bdbc0f6957dff991f05ba38e4385772002a3d23297e3e",
+      "match": true
+    },
+    {
+      "file": "media-publishing-settings.html",
+      "local_sha256": "7aa91fe9a8adc5365d04b415fe64a546c57574986a2d4ddd1a4fb4d1de74a11d",
+      "status": 200,
+      "served_sha256": "7aa91fe9a8adc5365d04b415fe64a546c57574986a2d4ddd1a4fb4d1de74a11d",
+      "match": true
+    },
+    {
+      "file": "media-publishing-settings.mjs",
+      "local_sha256": "8bb9ab7ff0ec6801f07ce569fb457e34cef888bfc0101d348184a943bf3aa794",
+      "status": 200,
+      "served_sha256": "8bb9ab7ff0ec6801f07ce569fb457e34cef888bfc0101d348184a943bf3aa794",
+      "match": true
+    },
+    {
+      "file": "love-share-settings.html",
+      "local_sha256": "3235eed138ddabe4d91171a900e2878d7c806cda49bfa6aec02b553a155c4686",
+      "status": 200,
+      "served_sha256": "3235eed138ddabe4d91171a900e2878d7c806cda49bfa6aec02b553a155c4686",
+      "match": true
+    },
+    {
+      "file": "line-content-settings.mjs",
+      "local_sha256": "a6b0e5b88dbd58ec4bc2669dcc93081c0fcb3697dd3020d77efd2857dd4abf8d",
+      "status": 200,
+      "served_sha256": "a6b0e5b88dbd58ec4bc2669dcc93081c0fcb3697dd3020d77efd2857dd4abf8d",
+      "match": true
+    },
+    {
+      "file": "inventory.mjs",
+      "local_sha256": "0f8f05a7bb6abd44fe14613da265dba853991e20f8739f1b76189c9363fd8c7b",
+      "status": 200,
+      "served_sha256": "0f8f05a7bb6abd44fe14613da265dba853991e20f8739f1b76189c9363fd8c7b",
+      "match": true
+    },
+    {
+      "file": "newcomer-care.html",
+      "local_sha256": "ab365f196f6cddffc47c50af9702e71f4abf4ff0fac84fa6437a59717f4dbf9c",
+      "status": 200,
+      "served_sha256": "ab365f196f6cddffc47c50af9702e71f4abf4ff0fac84fa6437a59717f4dbf9c",
+      "match": true
+    },
+    {
+      "file": "notification-settings.html",
+      "local_sha256": "c082e8b4fa986f339ee4cdf1c3ec178e3007bc566f054e1afb2abfff8d7b3c58",
+      "status": 200,
+      "served_sha256": "c082e8b4fa986f339ee4cdf1c3ec178e3007bc566f054e1afb2abfff8d7b3c58",
+      "match": true
+    },
+    {
+      "file": "members.html",
+      "local_sha256": "140a3661c1dfc9d49abe4b2793b2ffb3b711d96d78535686fa1a7953085a45bc",
+      "status": 200,
+      "served_sha256": "140a3661c1dfc9d49abe4b2793b2ffb3b711d96d78535686fa1a7953085a45bc",
+      "match": true
+    },
+    {
+      "file": "ministry-settings.mjs",
+      "local_sha256": "0fb95a5a3be81498707f8f038f2970918a4a18621494324be6acbcbcd02ac7b3",
+      "status": 200,
+      "served_sha256": "0fb95a5a3be81498707f8f038f2970918a4a18621494324be6acbcbcd02ac7b3",
+      "match": true
+    },
+    {
+      "file": "notification-settings.mjs",
+      "local_sha256": "d7b1b4a5197c4d152f1863392cf6b347e3d01d50e9258cf9a856a33ee5033723",
+      "status": 200,
+      "served_sha256": "d7b1b4a5197c4d152f1863392cf6b347e3d01d50e9258cf9a856a33ee5033723",
+      "match": true
+    },
+    {
+      "file": "newcomer-care-ui.mjs",
+      "local_sha256": "3c9522bbc54ddc96620c10c2bdd3c32cfe7078382843f94f650775700c03b981",
+      "status": 200,
+      "served_sha256": "3c9522bbc54ddc96620c10c2bdd3c32cfe7078382843f94f650775700c03b981",
+      "match": true
+    },
+    {
+      "file": "newcomer.html",
+      "local_sha256": "43ec2abacb545e80fb264169e5bddcb8a6deeace3fa8501889048ce443f09240",
+      "status": 200,
+      "served_sha256": "43ec2abacb545e80fb264169e5bddcb8a6deeace3fa8501889048ce443f09240",
+      "match": true
+    },
+    {
+      "file": "members-ui.mjs",
+      "local_sha256": "721daadfafed556574afc97325203a74f4c4044a3507500d1eb9cc3205cae0d1",
+      "status": 200,
+      "served_sha256": "721daadfafed556574afc97325203a74f4c4044a3507500d1eb9cc3205cae0d1",
+      "match": true
+    },
+    {
+      "file": "pastoral-content.html",
+      "local_sha256": "13c6894c56e4c5250b3ca2a40b1e1837e39c2e537dd1fe9f4569319d5e1bd29c",
+      "status": 200,
+      "served_sha256": "13c6894c56e4c5250b3ca2a40b1e1837e39c2e537dd1fe9f4569319d5e1bd29c",
+      "match": true
+    },
+    {
+      "file": "pastoral/login.mjs",
+      "local_sha256": "3478b44d409c57a5bff5182bb3394d1ff1660a8cfb39e62304542752c5e4813a",
+      "status": 200,
+      "served_sha256": "3478b44d409c57a5bff5182bb3394d1ff1660a8cfb39e62304542752c5e4813a",
+      "match": true
+    },
+    {
+      "file": "pastoral-inbox.html",
+      "local_sha256": "acf81a0915f50d933b39fa03bbfd2a65e5546f92ba1a4be7688dc8554838e754",
+      "status": 200,
+      "served_sha256": "acf81a0915f50d933b39fa03bbfd2a65e5546f92ba1a4be7688dc8554838e754",
+      "match": true
+    },
+    {
+      "file": "pastoral-inbox-ui.mjs",
+      "local_sha256": "b1fcfff94e00cd46f273f8b952fe6a97db9be9b64f6fc13e24a2fea64f44d3d5",
+      "status": 200,
+      "served_sha256": "b1fcfff94e00cd46f273f8b952fe6a97db9be9b64f6fc13e24a2fea64f44d3d5",
+      "match": true
+    },
+    {
+      "file": "pastoral/auth.mjs",
+      "local_sha256": "93475b7d182f90ff3970b200863c6f43cd512408b09237257cd0a219df955e74",
+      "status": 200,
+      "served_sha256": "93475b7d182f90ff3970b200863c6f43cd512408b09237257cd0a219df955e74",
+      "match": true
+    },
+    {
+      "file": "pastoral/coworker-tools.html",
+      "local_sha256": "e8d7368e54c3715dc9ee60dc53798864e1549d9f4b0b6de69deff724ecf34c67",
+      "status": 200,
+      "served_sha256": "e8d7368e54c3715dc9ee60dc53798864e1549d9f4b0b6de69deff724ecf34c67",
+      "match": true
+    },
+    {
+      "file": "pastoral-content-ui.mjs",
+      "local_sha256": "3bc7d212e24a39a363edf4a0af731ef5e1867443b97fd16b0ef61b78168b0386",
+      "status": 200,
+      "served_sha256": "3bc7d212e24a39a363edf4a0af731ef5e1867443b97fd16b0ef61b78168b0386",
+      "match": true
+    },
+    {
+      "file": "pastoral/coworker-tools.mjs",
+      "local_sha256": "68e14fafc94593c3c09356b6aa3724ddb6473623b8a9f3c134af6db43cf69fc0",
+      "status": 200,
+      "served_sha256": "68e14fafc94593c3c09356b6aa3724ddb6473623b8a9f3c134af6db43cf69fc0",
+      "match": true
+    },
+    {
+      "file": "prayers.html",
+      "local_sha256": "b9e4ef68a3b6bbecdad8c32df81945b8f04f17f61507fcba8a151e982e8aee8b",
+      "status": 200,
+      "served_sha256": "b9e4ef68a3b6bbecdad8c32df81945b8f04f17f61507fcba8a151e982e8aee8b",
+      "match": true
+    },
+    {
+      "file": "review-workflow-settings.html",
+      "local_sha256": "ae69b8bd049b22c9e96e12627d65c0503d1054cc90b2c4f27556762f64a9fe9f",
+      "status": 200,
+      "served_sha256": "ae69b8bd049b22c9e96e12627d65c0503d1054cc90b2c4f27556762f64a9fe9f",
+      "match": true
+    },
+    {
+      "file": "review-workflow-settings.mjs",
+      "local_sha256": "0cb0ed8583d30bf8a44689fff2dad324ee8d5c289c27b62a493f109ef6a46ebc",
+      "status": 200,
+      "served_sha256": "0cb0ed8583d30bf8a44689fff2dad324ee8d5c289c27b62a493f109ef6a46ebc",
+      "match": true
+    },
+    {
+      "file": "schedules.html",
+      "local_sha256": "30f0b4a7a5aa1f699dbafaeee3a63d3a2c6f64abacb055a2ae41f877ec38ad29",
+      "status": 200,
+      "served_sha256": "30f0b4a7a5aa1f699dbafaeee3a63d3a2c6f64abacb055a2ae41f877ec38ad29",
+      "match": true
+    },
+    {
+      "file": "prayers-ui.mjs",
+      "local_sha256": "9b2b8ec2057fa166e19dd181eb9450855aff4eaf708f34f341632e8216e9deb0",
+      "status": 200,
+      "served_sha256": "9b2b8ec2057fa166e19dd181eb9450855aff4eaf708f34f341632e8216e9deb0",
+      "match": true
+    },
+    {
+      "file": "schedules-ui.mjs",
+      "local_sha256": "f3f939de34418e33850168dc34daef927d4ab4e21cc7cb5e77ee8e7431f8973a",
+      "status": 200,
+      "served_sha256": "f3f939de34418e33850168dc34daef927d4ab4e21cc7cb5e77ee8e7431f8973a",
+      "match": true
+    },
+    {
+      "file": "pastoral/pastoral-assistant-ui.mjs",
+      "local_sha256": "86e4c731e8fd48ddd3311473b1cccb3cf51f8858b60b9fac7686319a30dcedfd",
+      "status": 200,
+      "served_sha256": "86e4c731e8fd48ddd3311473b1cccb3cf51f8858b60b9fac7686319a30dcedfd",
+      "match": true
+    },
+    {
+      "file": "pastoral/workspace.html",
+      "local_sha256": "1d89f474902b4dee2e8f18cd075ca50c5364f9f84030a31ab9ae292e5fda32ec",
+      "status": 200,
+      "served_sha256": "1d89f474902b4dee2e8f18cd075ca50c5364f9f84030a31ab9ae292e5fda32ec",
+      "match": true
+    },
+    {
+      "file": "system-monitor.html",
+      "local_sha256": "362f48fdc800730690e1e22da4f377aa545cd7dbbafdb20637a1de8b448e9b9b",
+      "status": 200,
+      "served_sha256": "362f48fdc800730690e1e22da4f377aa545cd7dbbafdb20637a1de8b448e9b9b",
+      "match": true
+    },
+    {
+      "file": "spaces.html",
+      "local_sha256": "143c714fdd7bb96dc79a1918c5693db8ea466020dba5c4f21638fd3226893141",
+      "status": 200,
+      "served_sha256": "143c714fdd7bb96dc79a1918c5693db8ea466020dba5c4f21638fd3226893141",
+      "match": true
+    },
+    {
+      "file": "sermon-social-review.html",
+      "local_sha256": "330e44c0e8503bf120a393d6b88c5d5aaa2f6d8b9b3a7b622fe3df92bb486889",
+      "status": 200,
+      "served_sha256": "330e44c0e8503bf120a393d6b88c5d5aaa2f6d8b9b3a7b622fe3df92bb486889",
+      "match": true
+    },
+    {
+      "file": "service-signup-admin.html",
+      "local_sha256": "57ea99c822354b3003ab7ab6c68aa5dfbcc2f0b50e948f918baaccec45412577",
+      "status": 200,
+      "served_sha256": "57ea99c822354b3003ab7ab6c68aa5dfbcc2f0b50e948f918baaccec45412577",
+      "match": true
+    },
+    {
+      "file": "system-monitor.mjs",
+      "local_sha256": "e858b2ed73eefdfea97fa66cc4a4a3eed3ed78b67b86a148903c57932e237fda",
+      "status": 200,
+      "served_sha256": "e858b2ed73eefdfea97fa66cc4a4a3eed3ed78b67b86a148903c57932e237fda",
+      "match": true
+    },
+    {
+      "file": "spaces-ui.mjs",
+      "local_sha256": "c6a3bfe2384a4d121e96b12b28c34aa17367290383fe39b2dc79e1edace462b4",
+      "status": 200,
+      "served_sha256": "c6a3bfe2384a4d121e96b12b28c34aa17367290383fe39b2dc79e1edace462b4",
+      "match": true
+    },
+    {
+      "file": "sermon-social-review.mjs",
+      "local_sha256": "1c866979e8c89c3cec31c452882be2bcb2bf39fe52368dd081c5d2c676abb715",
+      "status": 200,
+      "served_sha256": "1c866979e8c89c3cec31c452882be2bcb2bf39fe52368dd081c5d2c676abb715",
+      "match": true
+    },
+    {
+      "file": "service-signup-admin.mjs",
+      "local_sha256": "ad4ec61a9a9f12b9bd72ae08a57a004bde2f18eaad9b6e016fec338db96826ce",
+      "status": 200,
+      "served_sha256": "ad4ec61a9a9f12b9bd72ae08a57a004bde2f18eaad9b6e016fec338db96826ce",
+      "match": true
+    },
+    {
+      "file": "todays-message-settings.html",
+      "local_sha256": "080c67044edc47ee32276fc81b7a054d204b981d4770212b62dfbb42a33ac3a6",
+      "status": 200,
+      "served_sha256": "080c67044edc47ee32276fc81b7a054d204b981d4770212b62dfbb42a33ac3a6",
+      "match": true
+    },
+    {
+      "file": "tree-reading-admin.html",
+      "local_sha256": "80248a3893dd37d6ae1106e1a992209073c78878cd17eb256af7e448b50ff2da",
+      "status": 200,
+      "served_sha256": "80248a3893dd37d6ae1106e1a992209073c78878cd17eb256af7e448b50ff2da",
+      "match": true
+    },
+    {
+      "file": "welcome-settings.mjs",
+      "local_sha256": "1db3106455b71276cf3ecec134479f9e097f0ee9cf38a7b69cb6f3f46c5d8722",
+      "status": 200,
+      "served_sha256": "1db3106455b71276cf3ecec134479f9e097f0ee9cf38a7b69cb6f3f46c5d8722",
+      "match": true
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "local_sha256": "7cfd82db8a17dedb68b70b3b8e76d3f9cd89a6ce449a529600ea8f124e534abb",
+      "status": 200,
+      "served_sha256": "7cfd82db8a17dedb68b70b3b8e76d3f9cd89a6ce449a529600ea8f124e534abb",
+      "match": true
+    },
+    {
+      "file": "tree-reading-admin.mjs",
+      "local_sha256": "1cc94913d9afa805ae694f2168e50df50dfc6d325ade4efbb722efac5640221d",
+      "status": 200,
+      "served_sha256": "1cc94913d9afa805ae694f2168e50df50dfc6d325ade4efbb722efac5640221d",
+      "match": true
+    },
+    {
+      "file": "weekly-bulletin-review.mjs",
+      "local_sha256": "dec76a7acfe888b731e18374e485b737a0592e9da9a03f70fb8a52c2a1f5dffe",
+      "status": 200,
+      "served_sha256": "dec76a7acfe888b731e18374e485b737a0592e9da9a03f70fb8a52c2a1f5dffe",
+      "match": true
+    },
+    {
+      "file": "website-maintenance.html",
+      "local_sha256": "e4cca1d15bc98689fb9f55b00c03276d2212117b5a50c9e17936920673f6d2c0",
+      "status": 200,
+      "served_sha256": "e4cca1d15bc98689fb9f55b00c03276d2212117b5a50c9e17936920673f6d2c0",
+      "match": true
+    },
+    {
+      "file": "website-maintenance-management.mjs",
+      "local_sha256": "dc744169230bc6e208aff5851bc0a509f019e2b971eb7b8e7213fea05140bcab",
+      "status": 200,
+      "served_sha256": "dc744169230bc6e208aff5851bc0a509f019e2b971eb7b8e7213fea05140bcab",
+      "match": true
+    },
+    {
+      "file": "youtube-settings.html",
+      "local_sha256": "86ee45a98a273026d7c563be0d02228146463803559231bdfb13d5136567199e",
+      "status": 200,
+      "served_sha256": "86ee45a98a273026d7c563be0d02228146463803559231bdfb13d5136567199e",
+      "match": true
+    },
+    {
+      "file": "youtube-settings.mjs",
+      "local_sha256": "eda4d2ef74120f0a1f12dacfbeb0613625b4bd2bbb3a166dec0aa314433baf86",
+      "status": 200,
+      "served_sha256": "eda4d2ef74120f0a1f12dacfbeb0613625b4bd2bbb3a166dec0aa314433baf86",
+      "match": true
+    },
+    {
+      "file": "youtube-subtitle-library.html",
+      "local_sha256": "d9fe35d6e277bbdfbdb668a1389e3244b17c1aff9e3f41be95f903b7c7bac232",
+      "status": 200,
+      "served_sha256": "d9fe35d6e277bbdfbdb668a1389e3244b17c1aff9e3f41be95f903b7c7bac232",
+      "match": true
+    },
+    {
+      "file": "youtube-subtitle-library.mjs",
+      "local_sha256": "1d66712d4bac25195c7282cbc6a41f2efd11bec577604c18221df483dfe6bafe",
+      "status": 200,
+      "served_sha256": "1d66712d4bac25195c7282cbc6a41f2efd11bec577604c18221df483dfe6bafe",
+      "match": true
+    }
+  ]
+}

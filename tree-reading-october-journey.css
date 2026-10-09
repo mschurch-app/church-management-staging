@@ -85,3 +85,20 @@
 .october-journey .daily-route>.sound-feedback{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .october-journey .sound-feedback .music-status{width:auto;flex:1;min-width:160px}
 .october-journey #test-sound{width:auto;margin:0;min-height:44px;flex:none}
+.october-journey .tree-scene{position:relative;isolation:isolate;max-width:480px;margin-inline:auto}
+.october-journey .tree-scene .tree-art{position:relative;z-index:0}
+.october-journey .tree-scene-tools{position:absolute;inset:12px 12px auto;z-index:2;display:grid;grid-template-columns:minmax(90px,.8fr) minmax(0,1.4fr);gap:8px;align-items:stretch}
+.october-journey .tree-scene-tools :is(.sound-toggle,.devotional-entry){display:flex;align-items:center;justify-content:center;min-width:0;min-height:58px;width:100%;margin:0;padding:8px 10px;border:1px solid #d3dfcc;border-radius:16px;background:#fffefa;color:#244f43;font-size:14px;font-weight:750;line-height:1.4;text-align:center;text-decoration:none;box-shadow:0 4px 14px #294c3510}
+.october-journey .tree-scene-tools .devotional-entry{flex-direction:column}
+.october-journey .tree-scene-tools .devotional-entry span{font-size:13px}
+.october-journey .tree-preview-note{font-size:12px;line-height:1.6;color:#536b5f;text-align:center;margin:8px 0}
+.october-journey .tree-challenge-notice{padding:16px;margin:0 0 14px;border:1px solid #bc7040;border-radius:18px;background:#fff2df;color:#56341d;box-shadow:0 5px 18px #9c572014}
+.october-journey .tree-challenge-notice[hidden]{display:none}
+.october-journey .care-notice-label{display:block;font-size:12px;font-weight:750;color:#75431e}
+.october-journey .tree-challenge-notice h3{font-size:19px;line-height:1.45;margin:5px 0}
+.october-journey .tree-challenge-notice p{font-size:14px;line-height:1.7;margin:0 0 12px}
+.october-journey .tree-challenge-notice .primary{width:100%;margin:0;min-height:48px}
+.october-journey .tree-art[data-challenge]:not([data-challenge="none"]){outline:2px solid #b77c43;outline-offset:-2px}
+.october-journey .challenge-card{scroll-margin-top:18px}
+.october-journey .challenge-item:focus-visible{outline:3px solid #b14d28;outline-offset:4px}
+.october-journey .tree-card[data-needs-care="true"] .health-badge{background:#fff2df;color:#75431e;border:1px solid #bc7040}

@@ -1,0 +1,10 @@
+{
+  "notification_id": "337c61b9-8b07-4c46-a81e-793a8fe10d50",
+  "source_key": "devotional-import:2027-02:9b89ec9c",
+  "target_url": "/daily-devotional-admin.html?church=M%2B&month=2027-02",
+  "push_sent_at": "2026-10-09T17:03:02.018Z",
+  "push_attempt_count": 1,
+  "push_last_error": null,
+  "read_at": null,
+  "meaning": "At least one registered device accepted delivery; reading and visible device alert are not verified."
+}

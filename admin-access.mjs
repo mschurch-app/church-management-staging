@@ -29,6 +29,13 @@ function serverProfile(value, fallback) {
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 let accessCache=null,accessCachedAt=0,accessRequest=null;
 
+export async function hasVerifiedLine(db,user){
+  if((user?.identities||[]).some(identity=>identity.provider==='custom:line-web'))return true;
+  const result=await db.rpc('get_my_app_capabilities');
+  if(result.error)throw new Error('無法確認 LINE 身分連結，請稍後重試。');
+  return result.data?.has_line===true;
+}
+
 async function fetchAccess(db, { user: signedInUser = null, retry = true } = {}) {
   let user = signedInUser;
   if (!user) {
@@ -37,7 +44,7 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
     user = verified.data.user;
   }
 
-  const hasLineIdentity=(user.identities||[]).some(identity=>identity.provider==='custom:line-web');
+  const hasLineIdentity=await hasVerifiedLine(db,user);
 
   let result, profileResult;
   const attempts = retry ? 2 : 1;

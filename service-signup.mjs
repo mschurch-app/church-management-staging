@@ -215,7 +215,19 @@ async function respondOffer(id,accept){
 async function load(){data=await api('content',{feature:'service_signup'});render();}
 async function start(){
   ({idToken,accessToken}=readCredentials());
-  if(idToken||accessToken){try{await load();return;}catch{forgetCredentials();idToken='';accessToken='';}}
+  if(idToken||accessToken){
+    try{await load();return;}
+    catch(error){
+      if(error.code!=='login_required'){
+        status.hidden=false;app.hidden=true;status.querySelector('.spinner')?.remove();
+        status.querySelector('strong').textContent='暫時無法載入服事登記';
+        status.querySelector('small').textContent=error.code==='binding_required'?'請先完成 LINE 會友身分確認，再回來登記。':'連線暫時中斷，登入資料仍保留，請稍後重試。';
+        let retry=status.querySelector('button');if(!retry){retry=document.createElement('button');retry.type='button';retry.textContent='重新載入';status.append(retry);}retry.onclick=async()=>{retry.disabled=true;try{await start();}finally{retry.disabled=false;}};
+        return;
+      }
+      forgetCredentials();idToken='';accessToken='';
+    }
+  }
   status.querySelector('strong').textContent='正在前往 LINE 登入';
   status.querySelector('small').textContent='登入後會自動回到 2027 服事登記';
   location.replace(lineEntry);

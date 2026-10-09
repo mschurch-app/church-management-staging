@@ -12,20 +12,24 @@ export async function handoffRequest(body,token){const response=await fetch(endp
 export function pendingHandoff(){try{const value=JSON.parse(localStorage.getItem(HANDOFF_STORAGE)||'null');if(value&&value.expires>Date.now()&&/^[0-9a-f]{64}$/.test(value.secret))return value;}catch{}localStorage.removeItem(HANDOFF_STORAGE);return null;}
 export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboard.html',onResume}={}){
  let popup=null,polling=false,timer=null,resumed=false;
+ const stillPending=pending=>{const active=pendingHandoff();return active?.id===pending.id&&active.secret===pending.secret;};
  const cancel=document.createElement('button');cancel.type='button';cancel.className='secondary line-auth-cancel';cancel.textContent='取消這次 LINE 登入';cancel.hidden=true;status.after(cancel);
- cancel.onclick=()=>{localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);try{popup?.close();}catch{}reset();status.textContent='已取消，可重新選擇登入方式。';};
- const reset=()=>{cancel.hidden=true;button.disabled=false;button.removeAttribute('aria-busy');};
+ cancel.onclick=()=>{if(cancel.disabled)return;localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);try{popup?.close();}catch{}reset();status.textContent='已取消，可重新選擇登入方式。';};
+ const reset=()=>{cancel.disabled=false;cancel.hidden=true;button.disabled=false;button.removeAttribute('aria-busy');};
  async function resume(){
   if(polling||resumed||document.visibilityState==='hidden')return;
   const pending=pendingHandoff();if(!pending){reset();return;}
   button.disabled=true;button.setAttribute('aria-busy','true');cancel.hidden=false;polling=true;
   try{
    const result=await handoffRequest({action:'read',id:pending.id,secret:pending.secret});
+   if(!stillPending(pending))return;
    if(!result.ready){status.textContent='請完成 LINE 登入，再回到教會 OS App；系統會接續登入。';return;}
    let session;try{session=await decryptHandoff(pending.secret,result.cipher);}catch{throw Object.assign(Error('登入交接資料無法驗證，請重新登入。'),{fatal:true});}
    const verified=await db.auth.getUser(session.access_token);
+   if(!stillPending(pending))return;
    if(verified.error)throw verified.error;
    if(!verified.data.user?.identities?.some(i=>i.provider==='custom:line-web')||pending.expected_user&&verified.data.user.id!==pending.expected_user)throw Object.assign(Error('綁定帳號與原登入帳號不符，請重新綁定。'),{fatal:true});
+   cancel.disabled=true;
    const saved=await db.auth.setSession({access_token:session.access_token,refresh_token:session.refresh_token});if(saved.error)throw saved.error;
    resumed=true;clearInterval(timer);localStorage.removeItem(HANDOFF_STORAGE);
    handoffRequest({action:'finish',id:pending.id,secret:pending.secret}).catch(()=>{});
@@ -33,7 +37,7 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
    status.textContent='登入成功，正在開啟教會 OS…';
    if(onResume)await onResume(session);else location.replace(safeAppTarget(pending.next));
   }catch(error){status.textContent=error.fatal?error.message:'連線暫時中斷，正在等待恢復；也可取消後重新登入。';if(error.fatal){localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);reset();}}
-  finally{polling=false;}
+  finally{polling=false;cancel.disabled=false;}
  }
  function watch(){clearInterval(timer);timer=setInterval(()=>{if(!pendingHandoff()){clearInterval(timer);if(!resumed){status.textContent='LINE 登入等待已結束，請再按一次登入。';reset();}return;}void resume();},2000);void resume();}
  window.addEventListener('pageshow',()=>{if(pendingHandoff())watch();});

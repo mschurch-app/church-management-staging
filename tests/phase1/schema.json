@@ -1,0 +1,734 @@
+{
+  "columns": [
+    {
+      "data_type": "uuid",
+      "table_name": "account_feature_permissions",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "account_feature_permissions",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "account_feature_permissions",
+      "column_name": "feature_key",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_view",
+      "is_nullable": "NO",
+      "column_default": "true"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_create",
+      "is_nullable": "NO",
+      "column_default": "true"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_edit",
+      "is_nullable": "NO",
+      "column_default": "true"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_delete",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_export",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_approve",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "account_feature_permissions",
+      "column_name": "can_manage",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "account_feature_permissions",
+      "column_name": "updated_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "account_home_preferences",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "account_home_preferences",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "ARRAY",
+      "table_name": "account_home_preferences",
+      "column_name": "home_modules",
+      "is_nullable": "NO",
+      "column_default": "'{}'::text[]"
+    },
+    {
+      "data_type": "ARRAY",
+      "table_name": "account_home_preferences",
+      "column_name": "notification_topics",
+      "is_nullable": "NO",
+      "column_default": "'{}'::text[]"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "account_home_preferences",
+      "column_name": "updated_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "account_roles",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "account_roles",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "account_roles",
+      "column_name": "role_key",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "accounts",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "accounts",
+      "column_name": "is_active",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "data_type": "text",
+      "table_name": "accounts",
+      "column_name": "display_name",
+      "is_nullable": "NO",
+      "column_default": "''::text"
+    },
+    {
+      "data_type": "text",
+      "table_name": "accounts",
+      "column_name": "job_title",
+      "is_nullable": "NO",
+      "column_default": "'管理同工'::text"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "accounts",
+      "column_name": "updated_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "text",
+      "table_name": "accounts",
+      "column_name": "invitation_state",
+      "is_nullable": "NO",
+      "column_default": "'active'::text"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "accounts",
+      "column_name": "invited_at",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "accounts",
+      "column_name": "invited_by",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "binding_requests",
+      "column_name": "id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_requests",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_requests",
+      "column_name": "login_channel_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_requests",
+      "column_name": "line_subject",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_requests",
+      "column_name": "applicant_name",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_requests",
+      "column_name": "applicant_phone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_requests",
+      "column_name": "status",
+      "is_nullable": "NO",
+      "column_default": "'pending'::text"
+    },
+    {
+      "data_type": "bigint",
+      "table_name": "binding_requests",
+      "column_name": "member_id",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "binding_requests",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "bigint",
+      "table_name": "binding_reviews",
+      "column_name": "id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "binding_reviews",
+      "column_name": "request_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "binding_reviews",
+      "column_name": "actor",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "binding_reviews",
+      "column_name": "action",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "bigint",
+      "table_name": "binding_reviews",
+      "column_name": "member_id",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "binding_reviews",
+      "column_name": "reviewed_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "grants",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "grants",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "grants",
+      "column_name": "permission",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "member_bindings",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "member_bindings",
+      "column_name": "login_channel_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "member_bindings",
+      "column_name": "line_subject",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "bigint",
+      "table_name": "member_bindings",
+      "column_name": "member_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "member_bindings",
+      "column_name": "active",
+      "is_nullable": "NO",
+      "column_default": "false"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "member_bindings",
+      "column_name": "approved_by",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "member_bindings",
+      "column_name": "approved_at",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "member_rate_windows",
+      "column_name": "scope",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "member_rate_windows",
+      "column_name": "identity_hash",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "member_rate_windows",
+      "column_name": "window_start",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "integer",
+      "table_name": "member_rate_windows",
+      "column_name": "hits",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "newcomer_receipts",
+      "column_name": "request_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "newcomer_receipts",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "newcomer_receipts",
+      "column_name": "payload_hash",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "newcomer_receipts",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "bigint",
+      "table_name": "newcomer_receipts",
+      "column_name": "member_id",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "owners",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "owners",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "service_ministry_scopes",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "service_ministry_scopes",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "service_ministry_scopes",
+      "column_name": "ministry_key",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "service_ministry_scopes",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "text",
+      "table_name": "service_signup_final_reviewers",
+      "column_name": "church_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "service_signup_final_reviewers",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "service_signup_final_reviewers",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "system_monitor_viewers",
+      "column_name": "user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "system_monitor_viewers",
+      "column_name": "granted_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    }
+  ],
+  "constraints": [
+    {
+      "def": "PRIMARY KEY (user_id)",
+      "table": "church_auth.accounts"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table": "church_auth.accounts"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.grants"
+    },
+    {
+      "def": "PRIMARY KEY (user_id, church_id, permission)",
+      "table": "church_auth.grants"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES church_auth.accounts(user_id) ON DELETE CASCADE",
+      "table": "church_auth.grants"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "CHECK ((login_channel_id = '2011645391'::text))",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "CHECK ((line_subject ~ '^U[0-9a-f]{32}$'::text))",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "CHECK (((NOT active) OR ((approved_by IS NOT NULL) AND (approved_at IS NOT NULL))))",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "PRIMARY KEY (church_id, login_channel_id, line_subject)",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "UNIQUE (church_id, login_channel_id, member_id)",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "FOREIGN KEY (approved_by) REFERENCES auth.users(id)",
+      "table": "church_auth.member_bindings"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "CHECK ((login_channel_id = '2011645391'::text))",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "CHECK ((line_subject ~ '^U[0-9a-f]{32}$'::text))",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "CHECK (((length(btrim(applicant_name)) >= 1) AND (length(btrim(applicant_name)) <= 80)))",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "CHECK (((length(btrim(applicant_phone)) >= 1) AND (length(btrim(applicant_phone)) <= 40)))",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text, 'revoked'::text])))",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "PRIMARY KEY (id)",
+      "table": "church_auth.binding_requests"
+    },
+    {
+      "def": "CHECK ((action = ANY (ARRAY['approve'::text, 'reject'::text, 'revoke'::text])))",
+      "table": "church_auth.binding_reviews"
+    },
+    {
+      "def": "PRIMARY KEY (id)",
+      "table": "church_auth.binding_reviews"
+    },
+    {
+      "def": "FOREIGN KEY (request_id) REFERENCES church_auth.binding_requests(id)",
+      "table": "church_auth.binding_reviews"
+    },
+    {
+      "def": "CHECK ((hits > 0))",
+      "table": "church_auth.member_rate_windows"
+    },
+    {
+      "def": "PRIMARY KEY (scope, identity_hash, window_start)",
+      "table": "church_auth.member_rate_windows"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.newcomer_receipts"
+    },
+    {
+      "def": "PRIMARY KEY (request_id)",
+      "table": "church_auth.newcomer_receipts"
+    },
+    {
+      "def": "PRIMARY KEY (user_id)",
+      "table": "church_auth.owners"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table": "church_auth.owners"
+    },
+    {
+      "def": "CHECK (((length(TRIM(BOTH FROM display_name)) >= 1) AND (length(TRIM(BOTH FROM display_name)) <= 60)))",
+      "table": "church_auth.accounts"
+    },
+    {
+      "def": "CHECK (((length(TRIM(BOTH FROM job_title)) >= 1) AND (length(TRIM(BOTH FROM job_title)) <= 60)))",
+      "table": "church_auth.accounts"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.account_roles"
+    },
+    {
+      "def": "CHECK ((role_key = ANY (ARRAY['pastor'::text, 'pastor_spouse'::text, 'administrator'::text, 'group_leader'::text, 'care'::text, 'facilities'::text, 'custom'::text])))",
+      "table": "church_auth.account_roles"
+    },
+    {
+      "def": "PRIMARY KEY (user_id, church_id)",
+      "table": "church_auth.account_roles"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES church_auth.accounts(user_id) ON DELETE CASCADE",
+      "table": "church_auth.account_roles"
+    },
+    {
+      "def": "FOREIGN KEY (invited_by) REFERENCES auth.users(id)",
+      "table": "church_auth.accounts"
+    },
+    {
+      "def": "CHECK ((invitation_state = ANY (ARRAY['pending'::text, 'active'::text])))",
+      "table": "church_auth.accounts"
+    },
+    {
+      "def": "FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL",
+      "table": "church_auth.newcomer_receipts"
+    },
+    {
+      "def": "PRIMARY KEY (user_id, church_id)",
+      "table": "church_auth.account_home_preferences"
+    },
+    {
+      "def": "PRIMARY KEY (user_id)",
+      "table": "church_auth.system_monitor_viewers"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES church_auth.accounts(user_id) ON DELETE CASCADE",
+      "table": "church_auth.system_monitor_viewers"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table": "church_auth.account_home_preferences"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.account_home_preferences"
+    },
+    {
+      "def": "CHECK ((cardinality(notification_topics) <= 24))",
+      "table": "church_auth.account_home_preferences"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.account_feature_permissions"
+    },
+    {
+      "def": "PRIMARY KEY (user_id, church_id, feature_key)",
+      "table": "church_auth.account_feature_permissions"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table": "church_auth.account_feature_permissions"
+    },
+    {
+      "def": "CHECK ((cardinality(home_modules) <= 40))",
+      "table": "church_auth.account_home_preferences"
+    },
+    {
+      "def": "CHECK ((permission = ANY (ARRAY['attendance'::text, 'groups'::text, 'members'::text, 'pastoral_chats'::text, 'private_prayers'::text, 'schedules'::text, 'spaces'::text, 'newcomer_care'::text, 'tree_reading_admin'::text, 'binding_review'::text, 'notification_settings'::text, 'website_weekly'::text, 'website_group_resources'::text, 'inventory'::text, 'heat_camp'::text])))",
+      "table": "church_auth.grants"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.service_ministry_scopes"
+    },
+    {
+      "def": "CHECK ((ministry_key = ANY (ARRAY['media'::text, 'worship'::text, 'welcome'::text, 'children'::text, 'all'::text])))",
+      "table": "church_auth.service_ministry_scopes"
+    },
+    {
+      "def": "PRIMARY KEY (user_id, church_id, ministry_key)",
+      "table": "church_auth.service_ministry_scopes"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table": "church_auth.service_ministry_scopes"
+    },
+    {
+      "def": "CHECK ((church_id = ANY (ARRAY['M+'::text, 'SHiNE'::text])))",
+      "table": "church_auth.service_signup_final_reviewers"
+    },
+    {
+      "def": "PRIMARY KEY (church_id, user_id)",
+      "table": "church_auth.service_signup_final_reviewers"
+    },
+    {
+      "def": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table": "church_auth.service_signup_final_reviewers"
+    }
+  ]
+}

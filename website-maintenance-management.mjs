@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261009-app-audit2';
-import {readAccess,canOpen} from './admin-access.mjs?v=20261009-app-audit2';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261009-stage1';
 
 const BUCKET='church-website-public-media';
 const REVIEW_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-bulletin-review';

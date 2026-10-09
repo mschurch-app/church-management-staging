@@ -14,11 +14,12 @@ async function verifyLine(idToken:unknown){
   if(typeof idToken!=='string'||!idToken||idToken.length>8192)return null;
   try{
     const response=await fetch('https://api.line.me/oauth2/v2.1/verify',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({id_token:idToken,client_id:channel})});
+    if(response.status===429||response.status>=500)throw new Error('line_unavailable');
     if(!response.ok)return null;
     const value=await response.json(),now=Math.floor(Date.now()/1000);
     if(value.iss!=='https://access.line.me'||value.aud!==channel||!Number.isSafeInteger(value.exp)||value.exp<=now||typeof value.sub!=='string'||!/^U[0-9a-f]{32}$/.test(value.sub))return null;
     return {id:value.sub,name:clean(value.name,80)||'主內家人'};
-  }catch{return null;}
+  }catch{throw new Error('line_unavailable');}
 }
 
 async function verifyLineAccessToken(accessToken:unknown){
@@ -26,15 +27,17 @@ async function verifyLineAccessToken(accessToken:unknown){
   if(typeof accessToken!=='string'||!accessToken||accessToken.length>8192)return null;
   try{
     const checked=await fetch(`https://api.line.me/oauth2/v2.1/verify?access_token=${encodeURIComponent(accessToken)}`,{redirect:'error',signal:AbortSignal.timeout(8000)});
+    if(checked.status===429||checked.status>=500)throw new Error('line_unavailable');
     if(!checked.ok)return null;
     const details=await checked.json();
     if(details.client_id!==channel||!Number.isFinite(details.expires_in)||details.expires_in<=0)return null;
     const response=await fetch('https://api.line.me/v2/profile',{redirect:'error',signal:AbortSignal.timeout(8000),headers:{authorization:`Bearer ${accessToken}`}});
+    if(response.status===429||response.status>=500)throw new Error('line_unavailable');
     if(!response.ok)return null;
     const value=await response.json();
     if(typeof value.userId!=='string'||!/^U[0-9a-f]{32}$/.test(value.userId))return null;
     return {id:value.userId,name:clean(value.displayName,80)||'主內家人'};
-  }catch{return null;}
+  }catch{throw new Error('line_unavailable');}
 }
 
 async function signedImage(db:ReturnType<typeof createClient>,path:string){
@@ -58,7 +61,10 @@ Deno.serve(async request=>{
   let body:Body={};try{body=await request.json();}catch{return respond(origin,{ok:false,error:'invalid_request'},400);}
   const church=clean(body.church,10),action=clean(body.action,30),feature=clean(body.feature,20);
   if(!churches.has(church))return respond(origin,{ok:false,error:'invalid_church'},400);
-  const identity=await verifyLine(body.idToken)||await verifyLineAccessToken(body.accessToken);if(!identity)return respond(origin,{ok:false,error:'login_required'},401);
+  let identity=null,providerUnavailable=false;
+  try{identity=await verifyLine(body.idToken);}catch{providerUnavailable=true;}
+  if(!identity){try{identity=await verifyLineAccessToken(body.accessToken);}catch{providerUnavailable=true;}}
+  if(!identity)return respond(origin,{ok:false,error:providerUnavailable?'line_unavailable':'login_required'},providerUnavailable?503:401);
   const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SECRET_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
   if(!url||!key)return respond(origin,{ok:false,error:'unavailable'},503);
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});

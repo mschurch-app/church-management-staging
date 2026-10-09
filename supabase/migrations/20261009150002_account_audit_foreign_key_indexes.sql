@@ -1,0 +1,2 @@
+create index account_identity_links_approved_by_idx on church_auth.account_identity_links(approved_by);
+create index account_change_audit_actor_idx on church_auth.account_change_audit(actor_user_id);

@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "anonymous account listing is refused",
+      "status": "passed",
+      "httpStatus": 401,
+      "error": "permission denied for function list_admin_accounts_v4"
+    },
+    {
+      "name": "anonymous bundle save is refused",
+      "status": "passed",
+      "httpStatus": 401,
+      "error": "permission denied for function save_admin_account_bundle"
+    },
+    {
+      "name": "LINE member endpoint requires verified credentials",
+      "status": "passed",
+      "httpStatus": 401,
+      "error": "login_required"
+    }
+  ],
+  "realPersonalDataMutations": 0,
+  "realLineNetworkCalls": 0
+}

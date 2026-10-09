@@ -2,13 +2,13 @@ import {LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS} from './line-config.mjs';
 
 const $=selector=>document.querySelector(selector);
 const params=new URLSearchParams(location.search),church=params.get('church')==='M+'?'M+':'M+';
-const state={token:'',date:'',item:null,progress:[],preview:params.get('preview')==='1'};
+const state={token:'',accessToken:'',date:'',item:null,progress:[],preview:params.get('preview')==='1'};
 const escape=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const taipeiToday=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
 const lines=value=>String(value||'').split(/\r?\n/).map(line=>line.replace(/^\s*(?:\d+[.、]|Q\d+:)\s*/,'').trim()).filter(Boolean);
 
 async function api(action,extra={}){
-  const response=await fetch(LINE_MEMBER_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(20000),body:JSON.stringify({action,church,idToken:state.token,...extra})});
+  const response=await fetch(LINE_MEMBER_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(20000),body:JSON.stringify({action,church,idToken:state.token,accessToken:state.accessToken,...extra})});
   const data=await response.json().catch(()=>({}));
   if(!response.ok||data.ok!==true){const error=new Error(data.error||'unavailable');error.code=data.error;throw error;}return data;
 }
@@ -41,7 +41,8 @@ async function start(){
       render();return;
     }
     state.token=sessionStorage.getItem(`line-member-token:${church}`)||'';
-    if(!state.token){location.replace(memberLoginUrl());return;}
+    state.accessToken=sessionStorage.getItem(`line-member-access-token:${church}`)||'';
+    if(!state.token&&!state.accessToken){location.replace(memberLoginUrl());return;}
     state.date=params.get('date')||taipeiToday();
     const data=await api('content',{feature:'devotional',date:state.date});
     if(data.launchPending){$('#status').hidden=true;$('#empty').hidden=false;return;}
@@ -49,10 +50,12 @@ async function start(){
   }catch(error){
     if(error.code==='login_required'){
       sessionStorage.removeItem(`line-member-token:${church}`);
+      sessionStorage.removeItem(`line-member-access-token:${church}`);
       location.replace(memberLoginUrl());return;
     }
-    $('#content').hidden=true;$('#empty').hidden=false;
-    $('#status').textContent=error.code==='content_empty'?'今天的內容尚未核准發布。':'連線暫時中斷，請稍後重新整理。';
+    $('#content').hidden=true;$('#empty').hidden=true;
+    $('#status').textContent=error.code==='content_empty'?'今天的內容尚未核准發布。':'連線暫時中斷，請稍後重試。';
+    const retry=document.createElement('button');retry.type='button';retry.textContent='重新載入';retry.onclick=()=>{retry.remove();void start();};$('#status').append(retry);
   }
 }
 start();

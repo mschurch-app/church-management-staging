@@ -1,4 +1,4 @@
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261009-app-audit2';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261009-stage1';
 export const MODULES=Object.freeze([
  {key:'members',permission:'members',title:'會友',description:'會友、新朋友與資料紀錄',file:'members.html',icon:'👥'},
  {key:'newcomer_care',permission:'newcomer_care',title:'新朋友',description:'聯絡紀錄、下一步與後續關懷',file:'newcomer-care.html',icon:'🌱'},

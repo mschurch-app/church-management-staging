@@ -29,6 +29,6 @@ adminLoginForm.addEventListener('submit',async event=>{event.preventDefault();if
 window.addEventListener('error',event=>{if(!(event.target instanceof HTMLScriptElement))return;const source=event.target.src||'';if(!source.includes('/vendor/supabase-2.102.0.js'))return;adminLoginStatus.textContent='登入核心程式載入失敗（L02），請重新整理後再試。';resetAdminLogin();},{capture:true});
 window.setTimeout(()=>{if(window.adminLoginReady)return;adminLoginStatus.textContent='登入程式載入逾時（L03），請重新整理後再試。';resetAdminLogin();},12000);
 </script>
-<script src="vendor/supabase-2.102.0.js?v=20261007-local1"></script><script type="module" src="admin-login.mjs?v=20261008-shine-email1"></script>
+<script src="vendor/supabase-2.102.0.js?v=20261007-local1"></script><script type="module" src="admin-login.mjs?v=20261009-stage1"></script>
 <script type="module" src="church-brand.mjs?v=20261009-app-audit2"></script>
 <script type="module" src="app-pwa.mjs?v=20261009-app-audit2"></script></body></html>

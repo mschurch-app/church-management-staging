@@ -1,0 +1,22 @@
+import fs from 'node:fs';import vm from 'node:vm';import {stripTypeScriptTypes} from 'node:module';import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../../supabase/functions/line-member/index.ts',import.meta.url),'utf8').replace(/^import .*\n/,'');
+const code=stripTypeScriptTypes(source),subject='U40000000000000000000000000000001',channel='2011645391';
+let handler,fixture=[],calls=0;const checks=[];
+const ctx={Deno:{env:{get:key=>({SUPABASE_URL:'https://isolated.example.invalid',SUPABASE_SERVICE_ROLE_KEY:'synthetic-service-key'}[key])},serve:fn=>handler=fn},createClient:()=>({}),Response,URLSearchParams,AbortSignal,console,Date,Math,Number,Set,fetch:async()=>{calls++;const value=fixture.shift();if(value instanceof Error)throw value;if(!value)throw new Error('fixture exhausted');return new Response(value.raw||JSON.stringify(value.body),{status:value.status||200,headers:{'content-type':'application/json'}});}};
+vm.runInNewContext(code,ctx);
+const validID={body:{iss:'https://access.line.me',aud:channel,exp:Math.floor(Date.now()/1000)+3600,sub:subject,name:'合成會友'}};
+const validAccess=[{body:{client_id:channel,expires_in:3600}},{body:{userId:subject,displayName:'合成會友'}}];
+async function test(name,token,fixtures,status,error){fixture=[...fixtures];calls=0;const response=await handler(new Request('https://isolated.example.invalid',{method:'POST',headers:{origin:'https://mscos.mchurch.online','content-type':'application/json'},body:JSON.stringify({action:'content',feature:'menu',church:'M+',...token})}));assert.equal(response.status,status);const result=await response.json();if(error)assert.equal(result.error,error);else assert.equal(result.profile.name,'合成會友');assert.equal(fixture.length,0);checks.push({name,status:'passed'});console.log('PASS',name);}
+await test('missing credentials fail closed',{},[],401,'login_required');
+await test('invalid ID token requires authentication',{idToken:'synthetic'},[{status:400,body:{error:'invalid'}}],401,'login_required');
+await test('valid ID token reaches menu',{idToken:'synthetic'},[validID],200);
+await test('valid access token without ID token reaches menu',{accessToken:'synthetic'},validAccess,200);
+await test('token issued to another LINE channel is rejected',{accessToken:'synthetic'},[{body:{client_id:'another-channel',expires_in:3600}}],401,'login_required');
+await test('expired ID token is rejected',{idToken:'synthetic'},[{body:{...validID.body,exp:0}}],401,'login_required');
+await test('LINE rate limit retains session via retryable 503',{idToken:'synthetic'},[{status:429,body:{}}],503,'line_unavailable');
+await test('LINE server error is not reported as invalid login',{idToken:'synthetic'},[{status:500,body:{}}],503,'line_unavailable');
+await test('LINE timeout is retryable without forcing login',{idToken:'synthetic'},[new Error('timeout')],503,'line_unavailable');
+await test('ID verification outage falls back to valid access token',{idToken:'synthetic',accessToken:'synthetic'},[{status:500,body:{}},...validAccess],200);
+await test('LINE profile rate limit is retryable',{accessToken:'synthetic'},[validAccess[0],{status:429,body:{}}],503,'line_unavailable');
+await test('malformed provider JSON is retryable',{idToken:'synthetic'},[{raw:'broken-json'}],503,'line_unavailable');
+const output=new URL('./results/',import.meta.url);fs.mkdirSync(output,{recursive:true});fs.writeFileSync(new URL('line-provider-results.json',output),JSON.stringify({checks,syntheticCredentials:true,providerResponses:'isolated fixtures',realLineNetworkCalls:0},null,2));console.log('TOTAL',checks.length);

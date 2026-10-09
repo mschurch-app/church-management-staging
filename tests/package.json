@@ -1,0 +1,17 @@
+{
+  "name": "church-os-isolated-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "phase1:db": "node phase1/database.mjs",
+    "phase1:browser": "node phase1/browser.mjs && node phase1/handoff.mjs",
+    "catalog": "node app-catalog.mjs",
+    "phase1:line": "node phase1/line-provider.mjs",
+    "phase1:email": "node phase1/email-login.mjs",
+    "phase1:regression": "node phase1/regression.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "puppeteer-core": "25.12.0"
+  }
+}

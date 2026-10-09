@@ -25,6 +25,10 @@
 - iPhone 17 Safari、LINE內及主畫面實機驗收尚未執行。本報告不宣稱完整99%品質門檻已達成，也不以合成請求時間代表真實網速。
 - Build／Lint／Typecheck：未執行；本次相關靜態前端沒有這些設定指令。未執行整站quality gate；本次為受影響頁面的專項回歸。
 
+## 發布確認
+
+GitHub [PR #36](https://github.com/mschurch-app/church-management-staging/pull/36) 已合併，正式提交 `19f50a1a32e99446d0a81b6baea3f7a373afceea`。2026-10-10 00:42（台北）唯讀確認 `mscos.mchurch.online` 七項變更靜態資源全部 HTTP 200，內容 SHA-256 符合來源，詳見 [hosted-check.json](hosted-check.json)。這是發布資源確認，真實 LINE 登入、資料寫入與實機聲音仍待驗收。
+
 ## 資料庫與環境
 
 今日無資料庫結構異動。沒有migration、RLS、function、trigger、Edge Function部署或正式業務資料修改。十月API端點及隔離測試資料庫不變；靈修正式LINE登入、審核與發布權限不變。

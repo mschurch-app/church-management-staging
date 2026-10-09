@@ -2,6 +2,10 @@
 
 Last reviewed: 2026-10-10
 
+## 生命樹聲音修復（2026-10-10）
+
+使用者回報仍無音樂與音效，確認舊版只驗證AudioContext狀態不足以證明音訊輸出，且音樂增益過低、音效播放拒絕被忽略。已改原生媒體播放器及本站原創WAV，首次可信任點擊啟用兩種聲音，提供「試聽音效」、逾時及失敗重試、背景暫停。35項Chromium隔離回歸通過。只改十月箴言前端與驗證，沒有資料庫異動。發布狀態見當日紀錄及 `docs/reports/2026-10-10-life-tree-audio/report.md`；iPhone／LINE實際可聽見及Mac Safari仍待驗收。
+
 ## Current state
 
 Church OS is an active production system at `mscos.mchurch.online`. Heat Camp admin PR #18 has been merged. Its additive RPC migration is applied to Supabase project `aqanuwilmvdtlzuqlrau`, and `heat-camp-admin` is deployed at version 2. No registration or payment records were changed. GitHub Pages contains the merged source; direct CDN/page verification was not available in this session.

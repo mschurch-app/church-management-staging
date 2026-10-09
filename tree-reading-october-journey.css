@@ -69,7 +69,7 @@
  .october-journey *,.october-journey *::before,.october-journey *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 .october-journey .daily-route{flex-wrap:wrap}
-.october-journey .daily-route-actions{display:flex;align-items:center;gap:10px}
+.october-journey .daily-route>.daily-route-actions{display:flex;align-items:center;gap:10px}
 .october-journey .daily-route .music-status{width:100%;margin:0;text-align:left}
 .october-journey .status-line:empty{display:none}
 @media(min-width:661px){
@@ -81,3 +81,7 @@
  .october-journey .daily-route-actions .primary{width:auto;flex:1}
  .october-journey .daily-route-actions .sound-toggle{flex:none;min-width:100px;padding-inline:10px}
 }
+
+.october-journey .daily-route>.sound-feedback{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.october-journey .sound-feedback .music-status{width:auto;flex:1;min-width:160px}
+.october-journey #test-sound{width:auto;margin:0;min-height:44px;flex:none}

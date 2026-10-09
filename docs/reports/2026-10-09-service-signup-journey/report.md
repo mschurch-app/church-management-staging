@@ -46,3 +46,10 @@ RPC 固定空 `search_path`，僅授予 `service_role` 執行；前端仍透過�
 瀏覽器 API 全部以合成資料攔截，資料庫測試使用 PGlite；正式資料僅執行唯讀統計查驗。沒有新增、修改或刪除任何會友登記，也沒有發送 LINE 通知。
 
 手機為 Chrome viewport 模擬，實際 iPhone 17、LINE 內開啟與 Mac Safari 本次尚待實機驗收；本次結果不代表全系統 99% 驗收。
+
+## 正式站發布核對
+
+- 功能版本：`82d9a1f`；正式 LINE Edge Function 版本 27。
+- [發布核對](deployment.json)：2026-10-09 14:18（台北時間），四個正式前端檔案 HTTP 200，內容雜湊與發布版本一致。
+- [正式頁面隔離驗收](hosted-checks.json)：正式站實際 HTML／CSS／JavaScript 載入後，48 項操作再次通過；API 仍採合成資料攔截。
+- 實際 iPhone／LINE 登入授權及 Safari 實機體驗仍需使用者驗收；未用合成資料結果代替實機登入驗證。

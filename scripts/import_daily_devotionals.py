@@ -24,7 +24,7 @@ def workbook_rows(path: Path) -> list[dict[str,str]]:
             values={}
             for cell in row.findall(NS+"c"):
                 column=re.match(r"[A-Z]+",cell.attrib["r"]).group(); kind=cell.attrib.get("t"); raw=cell.find(NS+"v")
-                values[column]="".join(node.text or "" for node in cell.iter(NS+"t")) if kind=="inlineStr" else (strings[int(raw.text)] if raw is not None and kind=="s" else (raw.text if raw is not None else ""))
+                values[column]="".join(node.text or "" for node in cell.iter(NS+"t")) if kind=="inlineStr" else (strings[int(raw.text)] if raw is not None and kind=="s" else ((raw.text or "") if raw is not None else ""))
             rows.append(values)
     header=rows[0]; columns=sorted(header,key=column_index)
     return [{header[column]:row.get(column,"").strip() for column in columns} for row in rows[1:]]

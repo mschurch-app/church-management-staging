@@ -26,7 +26,7 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 
 ## In progress
 
-- 2027 每日靈修生命樹 MVP 已上線：一月31篇資料、會員每日頁面與完成紀錄已部署；審核流程正調整為鈺庭初審、師母複審、牧師終審的固定三階段。
+- 2027 每日靈修生命樹 MVP 已上線：一月31篇及二月28篇已匯入（共59篇，待初審）；會員每日頁面與完成紀錄已部署，沿用鈺庭初審、師母複審、牧師終審。經文版本、來源與授權仍須補齊才能核准發布。二月匯入及管理月份切換詳見 `docs/reports/2026-10-10-devotional-february/report.md`。
 - Church OS Heat Camp admin: mobile registration cards, full details, permission-gated edits, immutable payment/banking information, payment status/method in details and receipts, and printable receipt draft. PR #18 is merged; the RPC migration is applied and Edge Function version 2 is active.
 - Additional stability and mobile usability fixes are tracked through recent repository history and `docs/codex-log/`.
 
@@ -46,8 +46,8 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 
 ## Next steps
 
-1. Review the daily devotional migration and January content package; confirm scripture version/source/license before any item can be finally approved.
-2. Apply the devotional migration and insert-only January seed in the approved Supabase release window, then deploy `daily-devotional-admin` and the updated `line-member` function.
+1. Review the imported January and February devotional content; confirm scripture version/source/license before final approval.
+2. Complete the fixed three-stage devotional review and verify month selection on iPhone and Mac; migrations and backend were already deployed, so do not reapply them as a next step.
 3. Receive the official association name and seal files, then finalize the camp receipt layout.
 4. Continue documenting releases and verification in `docs/codex-log/`.
 5. Add a small authenticated smoke-test suite for high-risk save, approval, publishing, and permission flows.

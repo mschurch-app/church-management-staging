@@ -27,6 +27,11 @@ let step=1;
 let memberName='';
 let roleIndex=0;
 let busy=false;
+let view=null;
+let canReturnToList=false;
+let feedback='';
+let needsRefresh=false;
+let lockedControls=[];
 const selectedMinistries=new Set();
 const selectedRoles=new Set();
 const roleSlots=new Map();
@@ -47,6 +52,11 @@ async function api(action,extra={}){
 }
 
 function season(){return data.seasons?.[0];}
+function setBusy(value){
+  busy=value;app.setAttribute('aria-busy',String(value));
+  if(value){lockedControls=[...app.querySelectorAll('button,input')].map(node=>({node,disabled:node.disabled}));lockedControls.forEach(({node})=>node.disabled=true);}
+  else{lockedControls.forEach(({node,disabled})=>{if(node.isConnected)node.disabled=disabled;});lockedControls=[];}
+}
 function chosenRoles(){return [...selectedRoles];}
 function slotsForRole(role){const keys=groupedRoles[role]||[role];return (season()?.slots||[]).filter(slot=>keys.includes(slot.role_key));}
 function chosenChoices(){return chosenRoles().flatMap(role=>[...(roleSlots.get(role)||[])].map(service_date=>({role_key:role,service_date}))).sort((a,b)=>a.service_date.localeCompare(b.service_date)||a.role_key.localeCompare(b.role_key));}
@@ -61,12 +71,52 @@ function occupiedDates(exceptRole){
 }
 function shell(title,copy,body,actions=''){
   app.innerHTML=`<div class="stepbar">${[1,2,3,4].map(number=>`<i class="${number<=step?'on':''}"></i>`).join('')}</div><section class="panel"><h2>${title}</h2><p>${copy}</p>${body}${actions?`<div class="actions">${actions}</div>`:''}</section>`;
+  if(view==='form'&&canReturnToList){
+    const back=document.createElement('button');back.type='button';back.className='list-return';back.textContent='返回我的登記';
+    back.onclick=()=>{if(!busy){view='list';render();}};
+    app.prepend(back);
+  }
+}
+function registrationName(){return data.member?.name||memberName.trim()||'會友';}
+function openRegistrationForm(){
+  if(busy||needsRefresh)return;
+  memberName=data.member?.name||memberName.trim();
+  selectedMinistries.clear();selectedRoles.clear();roleSlots.clear();roleIndex=0;step=1;
+  view='form';canReturnToList=true;feedback='';render();
+  $('#member-name')?.focus({preventScroll:true});
+  app.scrollIntoView({block:'start'});
+}
+function bindRegistrationActions(){
+  app.querySelectorAll('[data-cancel]').forEach(button=>button.onclick=()=>cancelRegistration(Number(button.dataset.cancel)));
+  app.querySelectorAll('[data-adjust]').forEach(button=>button.onclick=()=>adjustRegistration(Number(button.dataset.adjust)));
+  app.querySelectorAll('[data-offer]').forEach(button=>button.onclick=()=>respondOffer(Number(button.dataset.offer),true));
+}
+function renderRegistrationList(){
+  const records=data.registrations||[];
+  app.innerHTML=`<section class="panel registration-panel" aria-labelledby="registration-heading"><header class="registration-header"><div><small>我的服事登記</small><h2 id="registration-heading" tabindex="-1">${esc(registrationName())}</h2></div><span class="registration-count">${records.length} 筆登記</span></header><p>${esc(season()?.title||'主日服事')}・依主日日期排列</p>${feedback?`<div class="notice list-feedback" role="status">${esc(feedback)}</div>`:''}${needsRefresh?'<button type="button" class="secondary" id="refresh-list">重新載入清單</button>':''}<div class="registration-list">${existingRegistrations()||'<div class="empty">目前沒有服事登記。準備好時，可以重新選擇服事與日期。</div>'}</div><div class="actions"><button type="button" class="primary" id="add-registration" ${needsRefresh?'disabled':''}>${records.length?'新增服事登記':'重新選擇服事'}</button></div></section>`;
+  bindRegistrationActions();
+  if(needsRefresh)app.querySelectorAll('.registration button').forEach(button=>button.disabled=true);
+  $('#add-registration').onclick=()=>{if(!busy&&confirm('是否重新選擇服事與日期？已完成的其他登記會保留。'))openRegistrationForm();};
+  if(needsRefresh)$('#refresh-list').onclick=async()=>{
+    if(busy)return;setBusy(true);
+    try{data=await api('content',{feature:'service_signup'});needsRefresh=false;feedback='清單已更新。';}
+    catch{feedback='暫時無法更新清單，請稍後重新載入。已完成的操作不會再次送出。';}
+    finally{setBusy(false);render();}
+  };
+}
+async function refreshAfterMutation(message){
+  view='list';canReturnToList=true;feedback=message;
+  try{data=await api('content',{feature:'service_signup'});needsRefresh=false;}
+  catch{needsRefresh=true;feedback=message+' 清單暫時無法更新，請重新載入清單；不要重複送出。';}
+  render();
+  $('#registration-heading')?.focus({preventScroll:true});
+  app.scrollIntoView({block:'start'});
 }
 function existingRegistrations(){
   const currentSeason=season();
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
   return (data.registrations||[]).map(record=>{
-    const slot=currentSeason?.slots.find(item=>Number(item.id)===Number(record.slot_id));
+    const slot=currentSeason?.slots?.find(item=>Number(item.id)===Number(record.slot_id));
     const request=(data.change_requests||[]).find(item=>Number(item.registration_id)===Number(record.id)&&['leader_review','admin_review'].includes(item.status));
     const started=currentSeason?.starts_on&&today>=currentSeason.starts_on;
     const label=record.status==='waitlisted'?`候補第 ${record.queue_number} 位`:record.status==='offered'?`名額已釋出，請於 ${record.offer_expires_at?new Date(record.offer_expires_at).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'24 小時內'} 接受`:record.status==='confirmed'?'已由負責人確認':'已登記，等待負責人協調';
@@ -77,8 +127,7 @@ function existingRegistrations(){
 }
 
 function renderIdentityAndMinistries(){
-  const existing=existingRegistrations();
-  const body=`<label class="field name-field"><span>會友姓名 <b>必填</b></span><input id="member-name" maxlength="80" autocomplete="name" placeholder="請輸入會友名冊上的姓名" value="${esc(memberName)}"><small>姓名會與已綁定的會友名冊核對，不使用 LINE 顯示名稱代替。</small></label><h3>選擇服事類別（可複選）</h3><div class="choice-grid">${Object.entries(ministries).map(([key,value])=>`<button type="button" class="choice ${selectedMinistries.has(key)?'selected':''}" data-ministry="${key}"><span>${value[0]}</span><div><strong>${value[1]}</strong><small>查看可參與的服事項目</small></div></button>`).join('')}</div>${existing?`<h3>我的登記</h3>${existing}`:''}`;
+  const body=`<label class="field name-field"><span>會友姓名 <b>必填</b></span><input id="member-name" maxlength="80" autocomplete="name" placeholder="請輸入會友名冊上的姓名" value="${esc(memberName)}"><small>姓名會與已綁定的會友名冊核對，不使用 LINE 顯示名稱代替。</small></label><h3>選擇服事類別（可複選）</h3><div class="choice-grid">${Object.entries(ministries).map(([key,value])=>`<button type="button" class="choice ${selectedMinistries.has(key)?'selected':''}" data-ministry="${key}"><span>${value[0]}</span><div><strong>${value[1]}</strong><small>查看可參與的服事項目</small></div></button>`).join('')}</div>`;
   shell('先確認姓名與服事類別','每位登記者都必須填寫姓名；服事類別可以複選。',body,`<button class="primary" id="next" ${!memberName.trim()||!selectedMinistries.size?'disabled':''}>選擇服事項目</button>`);
   const input=$('#member-name');
   input.oninput=()=>{memberName=input.value;$('#next').disabled=!memberName.trim()||!selectedMinistries.size;};
@@ -90,9 +139,6 @@ function renderIdentityAndMinistries(){
     }else selectedMinistries.add(key);
     render();
   });
-  app.querySelectorAll('[data-cancel]').forEach(button=>button.onclick=()=>cancelRegistration(Number(button.dataset.cancel)));
-  app.querySelectorAll('[data-adjust]').forEach(button=>button.onclick=()=>adjustRegistration(Number(button.dataset.adjust)));
-  app.querySelectorAll('[data-offer]').forEach(button=>button.onclick=()=>respondOffer(Number(button.dataset.offer),true));
   $('#next').onclick=()=>{step=2;render();};
 }
 
@@ -157,6 +203,8 @@ function render(){
     shell('目前尚未開放登記','下一季的服事登記還在預備中。開放後再回來就可以選擇。','<div class="empty">尚無開放中的季度</div>');
     return;
   }
+  if(view===null){view=data.registrations?.length?'list':'form';canReturnToList=view==='list';}
+  if(view==='list'){renderRegistrationList();return;}
   if(step===1)renderIdentityAndMinistries();
   else if(step===2)renderRoles();
   else if(step===3)renderRoleDates();
@@ -167,50 +215,54 @@ async function submit(){
   if(busy)return;
   const choices=chosenChoices();
   if(!memberName.trim()||!choices.length)return;
-  busy=true;
+  setBusy(true);
   const button=$('#submit');
   button.disabled=true;
   try{
     const result=await api('service_signup_register_batch',{memberName:memberName.trim(),choices});
-    data=await api('content',{feature:'service_signup'});
     const records=result.registrations||[],waitlisted=records.filter(record=>record.status==='waitlisted').length;
-    memberName='';selectedMinistries.clear();selectedRoles.clear();roleSlots.clear();roleIndex=0;step=1;
-    render();
-    const note=document.createElement('section');note.className='panel notice';
-    note.textContent=`已完成 ${records.length} 筆登記${waitlisted?`，其中 ${waitlisted} 筆為候補`:''}。負責人確認班表後會再通知。`;
-    app.prepend(note);
+    memberName=result.member_name||memberName.trim();selectedMinistries.clear();selectedRoles.clear();roleSlots.clear();roleIndex=0;step=1;
+    await refreshAfterMutation(`已完成 ${records.length} 筆登記${waitlisted?`，其中 ${waitlisted} 筆為候補`:''}。負責人確認班表後會再通知。`);
   }catch(error){
     const messages={member_name_required:'請先填寫姓名。',member_name_mismatch:'姓名與會友名冊不一致，請輸入名冊上的姓名或聯絡同工確認。',one_service_per_sunday:'選擇中有重複日期，或該主日已登記其他服事。',slot_unavailable:'部分名額已停止登記，請重新選擇。',binding_required:'LINE 尚未完成會友綁定。'};
     alert(messages[error.code]||'暫時無法送出，請稍後再試。');
-  }finally{busy=false;if(button.isConnected)button.disabled=false;}
+  }finally{setBusy(false);if(button.isConnected)button.disabled=false;}
 }
 
-async function cancelRegistration(id){
-  if(busy||!confirm('確定刪除或提出取消這筆服事？當季開始後會送交領袖與鈺庭審核。'))return;
-  busy=true;
-  try{const result=await api('service_signup_cancel',{registrationId:id});data=await api('content',{feature:'service_signup'});render();alert(result.direct?'已刪除，可重新選擇服事與日期。':'已送出取消申請，等待服事領袖初審。');}
+async function cancelRegistration(id,{reselect=false,confirmed=false}={}){
+  if(busy||needsRefresh)return;
+  const started=season()?.starts_on&&new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date())>=season().starts_on;
+  if(!confirmed&&!confirm(started?'是否提出取消這筆服事的申請？會先送交服事領袖初審，再由鈺庭複審。':'確定刪除這筆服事登記？其他登記會保留。'))return;
+  setBusy(true);
+  try{
+    const result=await api('service_signup_cancel',{registrationId:id});
+    await refreshAfterMutation(result.direct?'這筆服事登記已刪除。':'取消申請已送出，等待服事領袖初審；審核通過前保留原登記。');
+    setBusy(false);
+    if(result.direct&&!needsRefresh&&(reselect||confirm('已刪除這筆登記。是否重新選擇服事與日期？')))openRegistrationForm();
+  }
   catch{alert('取消未完成，請稍後再試。');}
-  finally{busy=false;}
+  finally{setBusy(false);}
 }
 async function adjustRegistration(id){
+  if(busy||needsRefresh)return;
   const currentSeason=season(),today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
   if(currentSeason?.starts_on&&today<currentSeason.starts_on){
-    if(confirm('季前修改會先刪除這筆登記，再讓你重新選擇。確定繼續？'))await cancelRegistration(id);
+    if(confirm('是否重新選擇服事與日期？確認後會先刪除這筆登記，再展開重新登記；其他登記會保留。'))await cancelRegistration(id,{reselect:true,confirmed:true});
     return;
   }
   const note=prompt('請寫下希望調整的日期、服事項目或其他需求。服事領袖會先與你協調，再送鈺庭複審。','');
   if(!note?.trim()||busy)return;
-  busy=true;
-  try{await api('service_signup_change_request',{registrationId:id,requestType:'adjust',note:note.trim()});data=await api('content',{feature:'service_signup'});render();alert('調整需求已送出，等待服事領袖初審。');}
+  setBusy(true);
+  try{await api('service_signup_change_request',{registrationId:id,requestType:'adjust',note:note.trim()});await refreshAfterMutation('調整需求已送出，等待服事領袖初審；審核通過前保留原登記。');}
   catch(error){alert(error.code==='request_exists'?'這筆服事已有待審申請。':'申請未送出，請稍後再試。');}
-  finally{busy=false;}
+  finally{setBusy(false);}
 }
 async function respondOffer(id,accept){
-  if(busy)return;
-  busy=true;
-  try{await api('service_signup_offer',{registrationId:id,accept});data=await api('content',{feature:'service_signup'});render();}
+  if(busy||needsRefresh)return;
+  setBusy(true);
+  try{await api('service_signup_offer',{registrationId:id,accept});await refreshAfterMutation('已接受候補邀請。');}
   catch(error){alert(error.code==='offer_expired'?'確認期限已過，系統會通知下一位候補。':'目前無法回覆候補邀請，請重新載入。');data=await api('content',{feature:'service_signup'}).catch(()=>data);render();}
-  finally{busy=false;}
+  finally{setBusy(false);}
 }
 async function load(){data=await api('content',{feature:'service_signup'});render();}
 async function start(){

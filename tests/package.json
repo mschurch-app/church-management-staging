@@ -11,7 +11,8 @@
     "phase1:regression": "node phase1/regression.mjs",
     "phase2:definitions": "node phase2/definitions.mjs",
     "phase2:browser": "node phase2/browser.mjs",
-    "phase2:contrast": "node phase2/contrast.mjs"
+    "phase2:contrast": "node phase2/contrast.mjs",
+    "phase2:signup": "node phase2/service-signup-list.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",

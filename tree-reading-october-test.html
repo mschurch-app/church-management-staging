@@ -8,9 +8,10 @@
   <title>箴言十月讀經｜M+大雅教會同工測試</title>
   <link rel="stylesheet" href="tree-reading-preview.css?v=20261007-green-makeup12">
   <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20261008-date-music-water">
+  <link rel="stylesheet" href="tree-reading-october-journey.css?v=20261010-journey1">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body class="tree-reading-body">
+<body class="tree-reading-body october-journey">
   <main class="app-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="回 M+ 大雅教會首頁"><span class="brand-mark">M+</span><span>M+大雅教會<small>生命樹讀經計畫</small></span></a>
@@ -18,7 +19,7 @@
     </header>
 
     <section class="hero" aria-labelledby="main-title">
-      <div class="hero-copy"><p class="eyebrow">PROVERBS · OCTOBER 2026</p><h1 id="main-title">十月，每天一點養分，<br>長成自己的生命樹。</h1><p>10 月 1 日 — 10 月 31 日｜每天讀一章箴言。</p></div>
+      <div class="hero-copy"><p class="eyebrow">PROVERBS · OCTOBER 2026</p><h1 id="main-title">每天一點養分，<br>長成自己的生命樹。</h1><p>10 月 1 日 — 10 月 31 日｜每天讀一章箴言。</p></div>
       <div class="hero-orbit" aria-hidden="true"><span class="sun"></span><span class="bird bird-one">⌁</span><span class="bird bird-two">⌁</span><span class="hill hill-back"></span><span class="hill hill-front"></span></div>
     </section>
 
@@ -36,6 +37,7 @@
     </section>
 
     <section id="member-view" class="view" hidden>
+      <section class="daily-route" aria-label="今日讀經入口"><div><span id="journey-date">十月箴言</span><strong id="journey-passage">今天，讓神的話滋養你。</strong></div><div class="daily-route-actions"><button id="read-today" class="primary" type="button">開始今日讀經</button><button id="sound-toggle" class="secondary sound-toggle" type="button" aria-pressed="false">播放音樂</button></div><p id="music-status" class="music-status" role="status"></p></section>
       <section class="tree-card">
         <div class="tree-head"><div><p class="eyebrow">YOUR TREE · <span id="tree-date-label">OCTOBER JOURNEY</span></p><h2 id="tree-title">你的生命樹</h2><p id="tree-caption">每一棵樹，都有自己的生長節奏。</p></div><span class="health-badge" id="health-badge">🌿 生長中</span></div>
         <div class="tree-art" id="tree-art" aria-label="依讀經、挑戰和大雅即時天氣呈現的個人生命樹"><span class="tree-loading" role="img" aria-label="生命樹插畫">🌳</span></div>
@@ -45,33 +47,37 @@
         <p id="tree-mood" class="tree-mood">小樹正在等今天的活水 ✨</p>
         <div class="tree-action-dock" id="tree-action-dock" aria-label="生命樹互動操作">
           <button class="care-button tree-care-action" id="care-tree" type="button" disabled hidden>💧 澆水照顧生命樹</button>
-          <button id="sound-toggle" class="secondary sound-toggle" type="button" aria-pressed="true">🔊 音樂開啟</button>
         </div>
         <p id="reading-status" class="status-line tree-action-status" role="status"></p>
+        <section id="devotional-invitation" class="devotional-invitation" aria-labelledby="devotional-invitation-title" hidden><p id="devotional-invitation-title">讓神的話，繼續陪伴今天。</p><a id="devotional-preview-link" href="daily-devotional.html?church=M%2B&amp;preview=1&amp;from=october-tree">體驗每日靈修 / 與神相遇 <span aria-hidden="true">↗</span></a><small>2027 年 1 月 1 日・創世記試閱，不計入十月箴言進度。</small></section>
         <div class="tree-stats" id="tree-stats"><div><strong id="stat-on-time">0</strong><span>準時讀經</span></div><div><strong id="stat-late">0</strong><span>補讀完成</span></div><div><strong id="stat-streak">0</strong><span>目前連續</span></div><div><strong id="stat-growth">0%</strong><span>十月旅程</span></div></div>
         <div class="growth-track" id="growth-track"><span id="growth-fill"></span></div>
       </section>
 
       <div class="identity-strip"><div><strong id="signed-member-name">同工</strong><span id="signed-member-id">LINE 身分已驗證 · 十月測試</span></div><button id="switch-member" class="secondary" type="button">重新整理進度</button></div>
+      <p id="progress-status" class="status-line" role="status"></p>
       <div class="tree-view-switch" role="group" aria-label="生命樹觀看視角"><button type="button" class="tree-view-button active" data-tree-view="personal">🌱 個人</button><button type="button" class="tree-view-button" data-tree-view="group">🌿 小組小花園</button><button type="button" class="tree-view-button" data-tree-view="church">🌳 教會大花園</button></div>
-      <section class="section-card challenge-card" id="challenge-section">
-        <div class="section-heading"><div><p class="eyebrow">LIFE HAPPENS</p><h2>生命中的風雨</h2></div><span class="challenge-count" id="challenge-count">0</span></div>
-        <p id="challenge-reward-summary" class="challenge-reward-summary" role="status">🌟 每完成一次挑戰，就收藏 1 枚守護星光。</p>
-        <div id="drought-alert" class="drought-alert" hidden role="status"></div>
-        <div id="active-challenges" class="challenge-list"></div>
-        <p id="challenge-empty" class="empty-note">今天沒有新的挑戰，繼續好好照顧你的樹。</p>
-      </section>
 
+
+      <p id="view-status" class="status-line" role="status"></p>
       <section class="reading-card section-card">
         <div class="section-heading"><div><p class="eyebrow" id="reading-eyebrow">TODAY'S READING</p><h2 id="reading-heading">今天的讀經</h2></div><span class="date-pill" id="reading-date"></span></div>
         <div class="reading-placeholder"><span class="book-icon">📖</span><div><strong id="passage-title">箴言 1 章</strong><p id="passage-detail">10 月 1 日開始，每天完整讀一章箴言。</p></div></div>
         <button id="toggle-scripture" class="scripture-toggle" type="button" aria-expanded="false" aria-controls="scripture-text">📖 展開完整經文</button>
         <div id="scripture-text" class="scripture-text" aria-label="完整經文" hidden></div>
-        <div id="audio-controls" class="audio-controls" hidden><button id="read-aloud" class="secondary">🔊 朗讀經文</button><button id="stop-reading" class="text-button">停止朗讀</button><span>可調整手機音量</span></div>
+        <div id="audio-controls" class="audio-controls" hidden><button id="read-aloud" class="secondary" type="button">🔊 朗讀經文</button><button id="stop-reading" class="text-button" type="button">停止朗讀</button><span>可調整手機音量</span></div>
         <div id="complete-reading-actions" class="complete-reading-actions" hidden><p id="scripture-read-hint" role="status">請先滑到經文最後，解鎖讀完按鈕。</p><button id="mark-read" class="primary tree-read-action" type="button" disabled>📖 我讀完了，前往小樹</button></div>
         <p class="demo-warning">請滑到完整經文最下方，再按「我讀完了」回到小樹澆水。</p>
         <div class="reading-actions"><label class="late-date-field">補讀日期<select id="late-date" aria-label="選擇未讀日期"><option value="">載入可補讀日期…</option></select></label><button id="mark-late" class="secondary" type="button">補讀完成</button></div>
       </section>
+
+      <details class="section-card challenge-card" id="challenge-section"><summary>生命中的風雨與守護星光</summary>
+        <div class="section-heading"><div><p class="eyebrow">LIFE HAPPENS</p><h2>生命中的風雨</h2></div><span class="challenge-count" id="challenge-count">0</span></div>
+        <p id="challenge-reward-summary" class="challenge-reward-summary" role="status">🌟 每完成一次挑戰，就收藏 1 枚守護星光。</p>
+        <div id="drought-alert" class="drought-alert" hidden role="status"></div>
+        <div id="active-challenges" class="challenge-list"></div>
+        <p id="challenge-empty" class="empty-note">今天沒有新的挑戰，繼續好好照顧你的樹。</p>
+      </details>
 
       <section class="section-card reflection-card" aria-labelledby="reflection-title">
         <div class="section-heading"><div><p class="eyebrow">A MOMENT TO KEEP</p><h2 id="reflection-title">收藏今天的拾光</h2></div><span class="date-pill">🔒 只有你看得到</span></div>
@@ -90,16 +96,16 @@
         <div class="book-controls"><button id="book-older" class="secondary" type="button">← 較早</button><span id="book-page-count">尚無頁面</span><button id="book-newer" class="secondary" type="button">較新 →</button></div>
       </section>
 
-      <section class="section-card leaderboard-card">
+      <details class="section-card leaderboard-card"><summary>看看同行的腳步</summary>
         <div class="section-heading"><div><p class="eyebrow">STEADY IN THE WORD</p><h2>準時讀經排行</h2></div><span class="date-pill">本年度</span></div>
         <p class="muted">依每天完成讀經的日期計算；補讀不計入準時天數。</p>
         <ol id="leaderboard" class="leaderboard"></ol>
-      </section>
+      </details>
       <p class="privacy-note">同工測試資料使用獨立資料庫；拾光手札只有本人可查看。</p>
     </section>
 
     <footer>© 2026 M+大雅教會 · 十月箴言同工測試</footer>
   </main>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261008-access-deadline1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261010-journey1"></script>
 </body>
 </html>

@@ -18,7 +18,8 @@
     "serve": "node serve.mjs",
     "phase4:worker": "node phase4/worker.mjs",
     "phase4:browser": "node phase4/browser.mjs",
-    "quality:gate": "node quality-gate.mjs"
+    "quality:gate": "node quality-gate.mjs",
+    "life-tree:browser": "node life-tree/browser.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",

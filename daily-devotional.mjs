@@ -2,6 +2,7 @@ import {LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS} from './line-config.mjs';
 
 const $=selector=>document.querySelector(selector);
 const params=new URLSearchParams(location.search),church=params.get('church')==='M+'?'M+':'M+';
+const fromOctoberTree=params.get('preview')==='1'&&params.get('from')==='october-tree';
 const state={token:'',accessToken:'',date:'',item:null,progress:[],preview:params.get('preview')==='1'};
 const escape=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const taipeiToday=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
@@ -22,6 +23,10 @@ function render(){const item=state.item,completed=state.progress.find(row=>row.d
   <section class="card"><h2>今天的行動</h2><div class="formatted">${escape(item.life_application)}</div></section>
   <section class="card"><h2>回應禱告</h2><div class="formatted">${escape(item.response_prayer)}</div></section>
   <section class="card reflection"><h2>我的拾光</h2><textarea id="note" maxlength="1000" placeholder="寫下一句今天的領受，只有你自己看得到。" ${state.preview?'disabled':''}>${escape(completed?.reflection_note||'')}</textarea><button id="complete" class="complete" ${completed||state.preview?'disabled':''}>${state.preview?'預覽模式不儲存':completed?'✓ 今天已完成':'完成今日靈修'}</button><p id="completion-message" class="completion-message" role="status"></p></section>`;
+  if(fromOctoberTree){
+    $('#status').textContent='2027 年 1 月 1 日・創世記試閱｜不會儲存完成紀錄，也不計入十月箴言進度。';
+    const back=document.createElement('a');back.className='tree-return';back.href='tree-reading-october-test.html#devotional-invitation';back.textContent='返回箴言生命樹';back.addEventListener('click',returnToTree);$('#content').append(back);
+  }
   if(!state.preview)$('#complete').onclick=complete;
 }
 async function complete(){const button=$('#complete');button.disabled=true;button.textContent='正在儲存…';try{const result=await api('devotional_complete',{date:state.date,note:$('#note').value.trim()});state.progress=state.progress.filter(row=>row.devotional_date!==state.date).concat(result.record);render();$('#completion-message').textContent='已完成今天的靈修，生命樹多了一天養分。';navigator.vibrate?.(35);}catch{button.disabled=false;button.textContent='完成今日靈修';$('#completion-message').textContent='暫時無法儲存，請檢查網路後再試。';}}
@@ -32,10 +37,16 @@ function memberLoginUrl(){
   if(date)url.searchParams.set('date',date);
   return url.href;
 }
+function returnToTree(event){
+  // Only the known same-origin reading page may use history; never accept an arbitrary return URL.
+  try{const referrer=new URL(document.referrer);if(referrer.origin===location.origin&&referrer.pathname===new URL('tree-reading-october-test.html',location.href).pathname&&history.length>1){event.preventDefault();history.back();}}catch{}
+}
 async function start(){
+  if(fromOctoberTree){const back=$('.topbar a');back.href='tree-reading-october-test.html#devotional-invitation';back.setAttribute('aria-label','返回箴言生命樹');back.onclick=returnToTree;}
+
   try{
     if(state.preview){
-      const response=await fetch('data/devotionals-2027-01.json',{cache:'no-store'}),data=await response.json();
+      const response=await fetch('data/devotionals-2027-01.json',{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('preview_unavailable');const data=await response.json();
       state.item=data.items?.[0];state.date=state.item?.devotional_date||'2027-01-01';
       if(!state.item)throw new Error('content_empty');
       render();return;

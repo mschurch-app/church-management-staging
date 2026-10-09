@@ -1,0 +1,19 @@
+# 生命樹讀經與靈修試閱回歸
+
+使用 `tests/package.json` 鎖定的 puppeteer-core。安裝及執行：
+
+```sh
+cd tests
+npm ci --ignore-scripts
+npm run life-tree:browser
+```
+
+可設定 `CHROME_EXECUTABLE`；`TREE_TEST_OUTPUT` 指定證據目錄。預設結果放在被忽略的 `tests/life-tree/results/`。`PUPPETEER_MODULE` 可指定已安裝的同一版本模組路徑。
+
+測試自行建立本機伺服器與獨立 Chrome profile，攔截所有 Supabase、LINE SDK、經文與天氣請求，使用虛構身分和資料；其餘外部請求封鎖。不登入真實 LINE、不寫入任何資料庫，不寄送通知。
+
+驗證音樂偏好與實際 AudioContext 狀態、啟動失敗重試、進度更新、讀到經文結尾、記錄和澆水的等待／重複點擊／失敗恢復、一月試閱與固定返回、手札草稿保留、挑戰、補讀日期、18人花園、切換競態、排行按需載入、320–1920 CSS px 版面、44px 按鈕高度、減少動效，以及經文失敗與逾時後重試。
+
+逾時測試只在隔離瀏覽器內將經文來源的15秒 timer縮短為100毫秒。正式程式仍為15秒。
+
+這些是 Chromium 模擬尺寸與合成資料的檢查；不能代表真實網路速度、可聽見的音量、iPhone LINE、Mac Safari或完整99%驗收。

@@ -20,6 +20,8 @@ This is a static browser application plus Supabase services. There is no root `p
 - Validate a workbook with `python3 scripts/import_daily_devotionals.py <xlsx> --month YYYY-MM --out <directory>`.
 - The validator rejects missing fields, placeholders, duplicate core content, and selected references outside that day's reading.
 - Generated seed SQL is insert-only and never overwrites an existing reviewed date.
+- Confirm the exact target project and existing month count before executing a seed; read back every imported field afterward and compare the previous month's checksum. A workbook's approval label does not bypass the configured reviewers.
+- In `daily-devotional-admin.html`, select the content month. A direct link may use `?church=M%2B&month=2027-02`; the existing authenticated API enforces permissions and receives that month's inclusive date range.
 - Apply the schema migration before the January seed. Confirm scripture version, source, and license in the admin editor before final approval.
 
 ## Deployment

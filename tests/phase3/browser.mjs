@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-core';
+const {default:puppeteer}=await import(process.env.PUPPETEER_MODULE||'puppeteer-core');
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {contrastMetrics} from './contrast.mjs';
@@ -40,7 +40,7 @@ page.on('request',async req=>{
    else if(name==='list_church_schedules')data=[];
   }
   else if(url.pathname.includes('/functions/v1/daily-devotional-admin')){
-   if(body.action==='content_list'){if(failRead){code=503;data={ok:false,error:'unavailable'};}else data={ok:true,items,reviewerStage:stage};}
+   if(body.action==='content_list'){if(failRead){code=503;data={ok:false,error:'unavailable'};}else{const records=body.from?.startsWith('2027-02')?Array.from({length:28},(_,n)=>({...daily()[0],id:'f'+n,devotional_date:`2027-02-${String(n+1).padStart(2,'0')}`,devotional_title:`二月測試 ${n+1}`})):items;data={ok:true,items:records.filter(row=>row.devotional_date>=body.from&&row.devotional_date<=body.to),reviewerStage:stage};}}
    else if(await write()){const row=items.find(item=>item.id===body.id);if(body.action==='content_update'){Object.assign(row,body.values);row.review_status='initial_review';}else row.review_status=body.toStatus;data={ok:true};}
   }
   else if(url.pathname.includes('/functions/v1/weekly-bulletin-review')){
@@ -77,9 +77,13 @@ try{
  await visit('daily-devotional-admin.html');
  await test('iOS setup preserves loaded shared stylesheet and header rules',async()=>{assert.equal(await page.evaluate(()=>window.sharedStyleRemovals),0);assert.equal(await page.$eval('.page-header',n=>n.getBoundingClientRect().height),164);});
  await test('devotional master detail shows workflow and one selected article',async()=>{assert.match(await text('#workflow'),/初審/);assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),3);assert.equal(await page.$$eval('.devotional-item',ns=>ns.length),1);assert.equal(await page.$eval('.devotional-choice',n=>getComputedStyle(n).backgroundImage),'none');});
+ await test('devotional February month shows 28 dates with correct end date and no write',async()=>{await input('#devotional-month','2027-02','change');await waitIdle();assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),28);assert.match(await text('#devotional-month-title'),/2 月 · 28 篇/);assert.equal(requests.filter(r=>r.body.action==='content_list').at(-1).body.to,'2027-02-28');assert.equal(writes.length,0);});
+ await test('devotional unimported month has clear empty state',async()=>{await input('#devotional-month','2027-03','change');await waitIdle();assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),0);assert.match(await text('#devotional-records'),/目前月份尚無/);assert.equal(await page.$('.devotional-item'),null);});
+ await test('devotional month failure clears stale records and retries selected month',async()=>{failRead=true;await input('#devotional-month','2027-02','change');await waitIdle();assert.match(await text('#status'),/重新載入/);assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),0);assert.equal(await page.$eval('#devotional-month',n=>n.disabled),false);failRead=false;await click('#devotional-reload');await waitIdle();assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),28);await input('#devotional-month','2027-01','change');await waitIdle();assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),3);assert.equal(writes.length,0);});
  await test('devotional search and status filter do not write',async()=>{await input('#devotional-search','平安');assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),1);await input('#devotional-search','');await input('#devotional-filter','approved','change');assert.equal(await page.$$eval('.devotional-choice',ns=>ns.length),1);await input('#devotional-filter','','change');assert.equal(writes.length,0);});
  await click('[data-edit]');await input('[name=devotional_title]','保留我的修改');
  await test('devotional editing uses labeled groups and protects dirty switch',async()=>{assert.equal(await page.$$eval('.devotional-editor fieldset',ns=>ns.length),3);answers.push(false);await click('.devotional-choice[data-id=d2]');assert.equal(await value('[name=devotional_title]'),'保留我的修改');assert.equal(writes.length,0);});
+ await test('devotional dirty month switch cancellation preserves editor and month',async()=>{const before=requests.length;answers.push(false);await input('#devotional-month','2027-02','change');assert.equal(await value('#devotional-month'),'2027-01');assert.equal(await value('[name=devotional_title]'),'保留我的修改');assert.equal(requests.length,before);});
  await test('unsaved devotional cannot be reviewed over edited values',async()=>{await click('[data-review=spouse_review]');assert.match(await text('#status'),/先儲存/);assert.equal(writes.length,0);});
  await test('failed devotional save keeps input and permits retry',async()=>{failWrite=true;await click('.devotional-editor button[type=submit]');await waitIdle();assert.equal(await value('[name=devotional_title]'),'保留我的修改');assert.equal(await page.$eval('.devotional-editor button[type=submit]',n=>n.disabled),false);});
  await test('rapid devotional save sends once and restores selected content',async()=>{failWrite=false;delayWrite=180;const before=writes.length;await page.$eval('.devotional-editor',form=>{form.requestSubmit();form.requestSubmit();});await waitIdle();assert.equal(writes.length,before+1);assert.match(await text('.devotional-head'),/保留我的修改/);assert.equal(await page.$('.devotional-editor'),null);});

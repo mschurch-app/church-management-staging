@@ -1,0 +1,343 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "api_mode": "isolated_synthetic",
+  "checks": [
+    {
+      "name": "iOS setup preserves loaded shared stylesheet and header rules",
+      "status": "passed"
+    },
+    {
+      "name": "devotional master detail shows workflow and one selected article",
+      "status": "passed"
+    },
+    {
+      "name": "devotional February month shows 28 dates with correct end date and no write",
+      "status": "passed"
+    },
+    {
+      "name": "devotional unimported month has clear empty state",
+      "status": "passed"
+    },
+    {
+      "name": "devotional month failure clears stale records and retries selected month",
+      "status": "passed"
+    },
+    {
+      "name": "devotional search and status filter do not write",
+      "status": "passed"
+    },
+    {
+      "name": "devotional editing uses labeled groups and protects dirty switch",
+      "status": "passed"
+    },
+    {
+      "name": "devotional dirty month switch cancellation preserves editor and month",
+      "status": "passed"
+    },
+    {
+      "name": "unsaved devotional cannot be reviewed over edited values",
+      "status": "passed"
+    },
+    {
+      "name": "failed devotional save keeps input and permits retry",
+      "status": "passed"
+    },
+    {
+      "name": "rapid devotional save sends once and restores selected content",
+      "status": "passed"
+    },
+    {
+      "name": "devotional saved but refresh failed locks writes until readonly reload",
+      "status": "passed"
+    },
+    {
+      "name": "devotional return requires note and reviewer stage limits actions",
+      "status": "passed"
+    },
+    {
+      "name": "devotional initial load failure has retry",
+      "status": "passed"
+    },
+    {
+      "name": "devotional view permission does not grant content edits or review",
+      "status": "passed"
+    },
+    {
+      "name": "devotional final publication requires confirmation",
+      "status": "passed"
+    },
+    {
+      "name": "weekly reviewer search and required return comment",
+      "status": "passed"
+    },
+    {
+      "name": "late weekly read cannot replace new selection",
+      "status": "passed"
+    },
+    {
+      "name": "weekly reviewer protects unsubmitted comments",
+      "status": "passed"
+    },
+    {
+      "name": "publication confirmation traps background and restores focus on cancel",
+      "status": "passed"
+    },
+    {
+      "name": "weekly failed decision retains comment and unlocks both decisions",
+      "status": "passed"
+    },
+    {
+      "name": "weekly saved decision refresh failure blocks duplicates and reload only reads",
+      "status": "passed"
+    },
+    {
+      "name": "weekly reviewer permission is required",
+      "status": "passed"
+    },
+    {
+      "name": "service manager scopes and status filters guide work",
+      "status": "passed"
+    },
+    {
+      "name": "failed service open toggle restores original display and model",
+      "status": "passed"
+    },
+    {
+      "name": "failed service capacity restores original value and allows retry",
+      "status": "passed"
+    },
+    {
+      "name": "invalid service capacity never writes",
+      "status": "passed"
+    },
+    {
+      "name": "confirmed service refresh failure has safe reload without second confirmation",
+      "status": "passed"
+    },
+    {
+      "name": "service decline confirmation cancellation never releases place",
+      "status": "passed"
+    },
+    {
+      "name": "service change review uses labeled note dialog and requires return reason",
+      "status": "passed"
+    },
+    {
+      "name": "service suggestions keep own choices and confirm before applying",
+      "status": "passed"
+    },
+    {
+      "name": "service leader scope limits available filters and controls",
+      "status": "passed"
+    },
+    {
+      "name": "revoked service access clears working data and prevents writes",
+      "status": "passed"
+    },
+    {
+      "name": "weekly editor shows collapsed preview and clear section shortcuts",
+      "status": "passed"
+    },
+    {
+      "name": "weekly dirty switch can be cancelled without losing values",
+      "status": "passed"
+    },
+    {
+      "name": "weekly failed save preserves inputs and optimistic version checks",
+      "status": "passed"
+    },
+    {
+      "name": "weekly double save creates one write and saved feedback",
+      "status": "passed"
+    },
+    {
+      "name": "late schedule lookup cannot overwrite selected Sunday",
+      "status": "passed"
+    },
+    {
+      "name": "thematic promo generates both previews and marks unsaved draft",
+      "status": "passed"
+    },
+    {
+      "name": "weekly saved but reload failed preserves acknowledgement and blocks repeat",
+      "status": "passed"
+    },
+    {
+      "name": "weekly submit has confirmation and locks published draft editing after server result",
+      "status": "passed"
+    },
+    {
+      "name": "weekly acknowledged submission refresh failure cannot send another notice",
+      "status": "passed"
+    },
+    {
+      "name": "weekly view-only permission does not grant edit or create",
+      "status": "passed"
+    },
+    {
+      "name": "daily interrupted write requires readonly verification before retry",
+      "status": "passed"
+    },
+    {
+      "name": "review interrupted write requires readonly verification before retry",
+      "status": "passed"
+    },
+    {
+      "name": "service interrupted write requires readonly verification before retry",
+      "status": "passed"
+    },
+    {
+      "name": "weekly interrupted write requires readonly verification before retry",
+      "status": "passed"
+    },
+    {
+      "name": "daily missing acknowledgement cannot report success or resend",
+      "status": "passed"
+    },
+    {
+      "name": "review missing acknowledgement cannot report success or resend",
+      "status": "passed"
+    },
+    {
+      "name": "service missing acknowledgement cannot report success or resend",
+      "status": "passed"
+    },
+    {
+      "name": "weekly missing acknowledgement cannot report success or resend",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html layout at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html layout at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html text contrast at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html layout at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html layout at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html layout at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html text contrast at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "daily-devotional-admin.html layout at 1920px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html layout at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html layout at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html text contrast at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html layout at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html layout at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html layout at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html text contrast at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "weekly-bulletin-review.html layout at 1920px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html layout at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html layout at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html text contrast at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html layout at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html layout at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html layout at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html text contrast at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "service-signup-admin.html layout at 1920px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html layout at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html layout at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html text contrast at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html layout at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html layout at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html layout at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html text contrast at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "website-maintenance.html layout at 1920px",
+      "status": "passed"
+    },
+    {
+      "name": "workflow pages have no uncaught browser errors or unexpected dialogs",
+      "status": "passed"
+    }
+  ],
+  "total": 84
+}

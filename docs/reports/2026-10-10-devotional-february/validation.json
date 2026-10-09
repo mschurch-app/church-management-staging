@@ -1,0 +1,160 @@
+{
+  "source_file": "1-Mplus_2027_每日靈修_1與2月結案版.xlsx",
+  "source_sha256": "9b89ec9ce12b385b96f4566fbf9435fa8ace982e40c8a9e641a32415bc22e6fe",
+  "target_project": "aqanuwilmvdtlzuqlrau",
+  "church_id": "M+",
+  "month": "2027-02",
+  "count": 28,
+  "dates_complete": true,
+  "dates_weekdays_day_numbers_valid": true,
+  "chapter_counts_valid": true,
+  "content_preserved": true,
+  "import_status": "initial_review",
+  "source_review_statuses": [
+    "approved"
+  ],
+  "scripture_metadata": "not supplied; retained as null for review",
+  "sql_sha256": "21c60e7861425e0823f1b93f2f49f3b3c1b90f7de0dc7a24873fcef7cb05dfe7",
+  "dates": [
+    {
+      "date": "2027-02-01",
+      "title": "黑暗中的亮光",
+      "selected_scripture": "出埃及記 10:22–23"
+    },
+    {
+      "date": "2027-02-02",
+      "title": "逾越節門楣上的羔羊寶血：出離死亡的拯救",
+      "selected_scripture": "出埃及記 12:12–13"
+    },
+    {
+      "date": "2027-02-03",
+      "title": "不要懼怕，只管站住：看耶和華所施行的救恩",
+      "selected_scripture": "出埃及記 14:13–14"
+    },
+    {
+      "date": "2027-02-04",
+      "title": "每日新鮮的嗎哪：操練學習倚靠的功課",
+      "selected_scripture": "出埃及記 16:4–5、14–21"
+    },
+    {
+      "date": "2027-02-05",
+      "title": "爭戰中不同人的忠心與彼此扶持",
+      "selected_scripture": "出埃及記 17:8–13"
+    },
+    {
+      "date": "2027-02-06",
+      "title": "客西馬尼的降服：願你的旨意成就",
+      "selected_scripture": "馬太福音 26:36–39；路加福音 22:39–44"
+    },
+    {
+      "date": "2027-02-07",
+      "title": "幔子裂開：基督受死帶來親近神的道路",
+      "selected_scripture": "馬太福音 27:50–51；希伯來書 4:14–16"
+    },
+    {
+      "date": "2027-02-08",
+      "title": "立約的血灑在百姓身上：遵行神話語的回應",
+      "selected_scripture": "出埃及記 24:7–8"
+    },
+    {
+      "date": "2027-02-09",
+      "title": "天上地下的權柄與同行應許：大使命的差遣",
+      "selected_scripture": "馬太福音 28:18–20"
+    },
+    {
+      "date": "2027-02-10",
+      "title": "曠野晨光的禱告：在安靜深處得著前行力量",
+      "selected_scripture": "馬可福音 1:35"
+    },
+    {
+      "date": "2027-02-11",
+      "title": "我要住在你們中間",
+      "selected_scripture": "出埃及記 29:45–46"
+    },
+    {
+      "date": "2027-02-12",
+      "title": "康健的人用不著醫生",
+      "selected_scripture": "馬可福音 2:17"
+    },
+    {
+      "date": "2027-02-13",
+      "title": "破口之中的代求：寧願捨己也要挽回的愛",
+      "selected_scripture": "出埃及記 32:31–32"
+    },
+    {
+      "date": "2027-02-14",
+      "title": "磐石縫裡的親密凝視：有憐憫有恩典的神",
+      "selected_scripture": "出埃及記 34:6–7"
+    },
+    {
+      "date": "2027-02-15",
+      "title": "富餘的奉獻",
+      "selected_scripture": "出埃及記 36:5–6"
+    },
+    {
+      "date": "2027-02-16",
+      "title": "不要怕，只要信：跨越絕望死蔭的信心飛躍",
+      "selected_scripture": "馬可福音 5:36"
+    },
+    {
+      "date": "2027-02-17",
+      "title": "雲彩的引導：起行與安營全看主吩咐",
+      "selected_scripture": "出埃及記 40:34–38；民數記 9:15–23"
+    },
+    {
+      "date": "2027-02-18",
+      "title": "獻上平安祭",
+      "selected_scripture": "利未記 3:1"
+    },
+    {
+      "date": "2027-02-19",
+      "title": "從內心發出的污穢",
+      "selected_scripture": "馬可福音 7:20–23"
+    },
+    {
+      "date": "2027-02-20",
+      "title": "祭司每日早晨的職責",
+      "selected_scripture": "利未記 6:12–13"
+    },
+    {
+      "date": "2027-02-21",
+      "title": "在軟弱中真實的呼求",
+      "selected_scripture": "馬可福音 9:23–24"
+    },
+    {
+      "date": "2027-02-22",
+      "title": "我在親近我的人中要顯為聖",
+      "selected_scripture": "利未記 10:3"
+    },
+    {
+      "date": "2027-02-23",
+      "title": "你們要聖潔：因為我是聖潔的",
+      "selected_scripture": "利未記 11:44–45"
+    },
+    {
+      "date": "2027-02-24",
+      "title": "信靠神，也學習饒恕",
+      "selected_scripture": "馬可福音 11:22–25"
+    },
+    {
+      "date": "2027-02-25",
+      "title": "贖罪日的潔淨：藉基督的血得以潔淨",
+      "selected_scripture": "利未記 16:29–34；希伯來書 9:11–14"
+    },
+    {
+      "date": "2027-02-26",
+      "title": "竭盡心力愛神：全人傾注的最高敬拜",
+      "selected_scripture": "馬可福音 12:29–30"
+    },
+    {
+      "date": "2027-02-27",
+      "title": "要愛人如己：神聖誡命的終極實踐",
+      "selected_scripture": "利未記 19:18；馬太福音 22:37–40"
+    },
+    {
+      "date": "2027-02-28",
+      "title": "一位婦人用香膏膏耶穌",
+      "selected_scripture": "馬可福音 14:3–9"
+    }
+  ]
+}

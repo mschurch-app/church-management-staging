@@ -8,7 +8,7 @@
   <title>教會設定｜教會 OS</title>
   <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
 <link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app3"><link rel="stylesheet" href="church-palette.css?v=20261003-contrast1"><link rel="stylesheet" href="mobile-layout-fixes.css?v=20261008-nav1"></head>
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app3"><link rel="stylesheet" href="church-palette.css?v=20261009-app-audit1"><link rel="stylesheet" href="mobile-layout-fixes.css?v=20261008-nav1"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-app-audit1"></head>
 <body>
 <main class="member-page">
   <header class="page-header">
@@ -40,6 +40,9 @@
         <span class="settings-link-icon" aria-hidden="true">◎</span>
         <span class="settings-link-copy"><strong>同工帳號與權限</strong><span>設定管理帳號可使用的功能</span></span>
         <span class="settings-link-arrow" aria-hidden="true">›</span>
+      </a>
+      <a id="review-workflows" class="settings-link-card" data-ios-icon="review_workflows" href="review-workflow-settings.html" hidden>
+        <span class="settings-link-icon" aria-hidden="true">✅</span><span class="settings-link-copy"><strong>初審與複審</strong><span>設定靈修、講道及其他工作的審核人員與通知方式</span></span><span class="settings-link-arrow" aria-hidden="true">›</span>
       </a>
       <section class="line-settings-card" aria-labelledby="line-settings-title">
         <div class="line-settings-heading">
@@ -101,8 +104,8 @@
   </section>
 </main>
 <script>const websiteMaintChurch=new URLSearchParams(location.search).get('church')||'M+';document.querySelector('#website-maintenance').href='website-maintenance.html?church='+encodeURIComponent(websiteMaintChurch);</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-<script type="module" src="church-settings-ui.mjs?v=20261008-names1"></script>
-<script type="module" src="church-brand.mjs?v=20261008-names1"></script>
+<script src="vendor/supabase-2.102.0.js"></script>
+<script type="module" src="church-settings-ui.mjs?v=20261009-app-audit1"></script>
+<script type="module" src="church-brand.mjs?v=20261009-app-audit1"></script>
 </body>
 </html>

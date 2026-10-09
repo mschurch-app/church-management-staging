@@ -1,4 +1,4 @@
-import {db,SUPABASE_URL} from './admin-db.mjs?v=20261008-ios6';
+import {db,SUPABASE_URL} from './admin-db.mjs?v=20261009-app-audit1';
 import {listSchedules} from './schedule-management.mjs?v=20261003-access-guard1';
 
 const church='M+';

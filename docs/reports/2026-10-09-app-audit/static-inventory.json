@@ -1,0 +1,393 @@
+{
+  "htmlDocuments": 64,
+  "staticButtons": 191,
+  "missingLocalResources": [],
+  "syntaxErrors": [],
+  "pages": [
+    {
+      "file": "daily-devotional.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "line-member.html",
+      "staticButtons": 2,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "pastoral-content.html",
+      "staticButtons": 4,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "group-resources-management.html",
+      "staticButtons": 3,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "website-maintenance.html",
+      "staticButtons": 14,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-login-v2.html",
+      "staticButtons": 2,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "prayers.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "todays-message-settings.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "help-companion.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "index.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "service-signup.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "shine-newcomer.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "admin-set-password.html",
+      "staticButtons": 1,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "member-audit.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "inventory.html",
+      "staticButtons": 8,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "groups.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "system-monitor.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "scripture-tree-preview.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "prayer-wall.html",
+      "staticButtons": 8,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "today-verse-liff.html",
+      "staticButtons": 8,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "login-recovery.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "attendance.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-accounts.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "newcomer.html",
+      "staticButtons": 4,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "media-publishing-settings.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-dashboard.html",
+      "staticButtons": 8,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "schedules.html",
+      "staticButtons": 4,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "pastoral-inbox.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "amenities.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "members.html",
+      "staticButtons": 8,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "notification-settings.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "tree-reading-admin.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "mplus-about.html",
+      "staticButtons": 1,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "review-workflow-settings.html",
+      "staticButtons": 0,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "binding-review.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "mplus-homepage.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "customization-settings.html",
+      "staticButtons": 6,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-password-reset.html",
+      "staticButtons": 1,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "love-share-settings.html",
+      "staticButtons": 4,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-line-callback.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "heat-camp-admin.html",
+      "staticButtons": 9,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "welcome-settings.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "mplus-weekly.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "ministry-settings.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "youtube-settings.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "mplus-group-resources.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "newcomer-care.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "group-members.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "service-signup-admin.html",
+      "staticButtons": 1,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "tree-reading-october-test.html",
+      "staticButtons": 16,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "admin-line-launch.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "instagram-publishing-settings.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "sermon-social-review.html",
+      "staticButtons": 6,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-line-link.html",
+      "staticButtons": 2,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "spaces.html",
+      "staticButtons": 3,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "admin-login.html",
+      "staticButtons": 1,
+      "management": false,
+      "consistentTheme": true
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "church-settings.html",
+      "staticButtons": 2,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "line-preview.html",
+      "staticButtons": 2,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "youtube-subtitle-library.html",
+      "staticButtons": 4,
+      "management": true,
+      "consistentTheme": true
+    },
+    {
+      "file": "pastoral/index.html",
+      "staticButtons": 0,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "pastoral/coworker-tools.html",
+      "staticButtons": 15,
+      "management": false,
+      "consistentTheme": false
+    },
+    {
+      "file": "pastoral/workspace.html",
+      "staticButtons": 16,
+      "management": false,
+      "consistentTheme": false
+    }
+  ],
+  "dynamicTemplateReferences": "另以瀏覽器載入檢查，靜態插值不當作實體檔案"
+}

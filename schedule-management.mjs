@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261009-app-audit1';
 export const COMMON=['event','speaker','worship_leader','tech_sound','tech_video','usher1','usher2'];
 export const M_PLUS=['presider','prayer','sunday_school','sunday_school_ta','transport','communion','communion_bread','communion_cup','wed_prayer'];
 export const SHINE=['singers','keyboard','guitar','bass','drums','ushers'];

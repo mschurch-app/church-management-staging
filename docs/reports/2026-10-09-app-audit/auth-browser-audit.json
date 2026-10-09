@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checks": 10,
+  "crossContext": true,
+  "reopen": true,
+  "wrongAccountRejected": true,
+  "popupBlockedPreservesApp": true,
+  "tamperRejected": true,
+  "reads": 7,
+  "finishes": 1
+}

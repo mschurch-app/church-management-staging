@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261008-ios6';
-import {readAccess,chooseChurch,canOpen,canAction} from './admin-access.mjs?v=20261008-access-deadline1';
+import {db} from './admin-db.mjs?v=20261009-app-audit1';
+import {readAccess,chooseChurch,canOpen,canAction} from './admin-access.mjs?v=20261009-app-audit1';
 
 const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search),editor=$('#editor-dialog'),detail=$('#detail-dialog');
 const SCOPE_NAMES={'M+':'M+ 大雅教會',MSCHOOL:'課輔班',SHiNE:'火樂教會'},STATUS_NAMES={available:'正常使用',maintenance:'維修中',damaged:'故障',missing_parts:'缺件',retired:'已報廢',lost:'遺失'},TYPE_NAMES={building:'建築',floor:'樓層',room:'房間',cabinet:'櫃子',shelf:'層架',box:'箱子',area:'區域'};

@@ -1,5 +1,6 @@
+import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261009-app-audit1';
 import './action-feedback.mjs?v=20261008-toast-loop2';
-import './ios-experience.mjs?v=20261008-ios6';
+import './ios-experience.mjs?v=20261009-app-audit1';
 const validChurches=new Set(['M+','SHiNE']);
 const requested=new URLSearchParams(location.search).get('church');
 const church=validChurches.has(requested)?requested:null;
@@ -31,7 +32,8 @@ const contextualModules={
   newcomer_care:['newcomer_care','members','prayers'],
   tree_reading_admin:['tree_reading_admin'],
   binding_review:['binding_review','members'],
-  notification_settings:['notification_settings','settings'],
+  notification_settings:['notification_settings','review_workflows','settings'],
+  review_workflows:['review_workflows','notification_settings','settings'],
   groups:['groups','members','attendance'],
   attendance:['attendance','groups'],
   schedules:['schedules'],
@@ -39,7 +41,7 @@ const contextualModules={
   prayers:['prayers','newcomer_care','pastoral_inbox'],
   pastoral_inbox:['pastoral_inbox','pastoral_content','prayers'],
   pastoral_content:['pastoral_content','pastoral_inbox','prayers'],
-  settings:['settings','notification_settings']
+  settings:['settings','notification_settings','review_workflows']
 };
 const currentFile=location.pathname.split('/').pop()||'admin-dashboard.html';
 document.documentElement.dataset.church=church||'';
@@ -59,8 +61,9 @@ function mountBrand(){
   const header=document.querySelector('.member-page>.page-header');if(header){const content=header.querySelector(':scope>div')||header;content.prepend(lockup(selected));}
 }
 mountBrand();
+const managementHeader=document.querySelector('.member-page>.page-header');if(managementHeader){for(const description of managementHeader.querySelectorAll(':scope>div:not(.header-tools)>p:not(.eyebrow):not(#welcome):not(#identity):not(.admin-identity)')){description.classList.add('page-intro');managementHeader.after(description);}}
 
-function allowed(access,selected,module){return !module.permission||access.grants.some(row=>row.church_id===selected&&row.permission===module.permission);}
+function allowed(access,selected,module){const aliases={private_prayers:'prayers',pastoral_chats:'pastoral'},tab=aliases[module.permission]||module.permission;const required=TAB_PERMISSIONS[tab];return !module.permission||Boolean(required&&required.every(permission=>access.grants.some(row=>row.church_id===selected&&row.permission===permission)&&access.featurePermissions?.find(row=>row.church_id===selected&&row.feature_key===permission)?.view!==false));}
 function moduleIsCurrent(module){return currentFile===module.file||(module.also||[]).includes(currentFile);}
 function moduleUrl(file,selected){const url=new URL(file,location.href);url.searchParams.set('church',selected);return url.pathname.split('/').pop()+url.search;}
 
@@ -86,7 +89,7 @@ function mountModuleBar(access,selected,settings){
   const configuredItems=Array.isArray(settings?.feature_modules)?settings.feature_modules:defaults;
   const configured=new Map(configuredItems.filter(item=>item.enabled&&item.navigation).map(item=>[item.key,item]));
   const current=modules.find(moduleIsCurrent),related=contextualModules[current?.key]||[current?.key].filter(Boolean);
-  const visible=[modules[0],...related.map(key=>modules.find(module=>module.key===key)).filter(Boolean).filter(module=>module===current||module.key==='settings'||configured.has(module.key))];
+  const visible=[modules[0],...related.map(key=>modules.find(module=>module.key===key)).filter(Boolean).filter(module=>module===current||module.key==='settings'||configuredItems.find(item=>item.key===module.key)?.enabled!==false)];
   for(const module of visible.filter(item=>allowed(access,selected,item))){const setting=configured.get(module.key),link=document.createElement('a'),icon=document.createElement('span'),label=document.createElement('span');link.href=moduleUrl(module.file,selected);link.className=moduleIsCurrent(module)?'current':'';link.dataset.iosIcon=module.key;icon.className='module-bar-icon';icon.textContent=setting?.icon||module.icon;icon.setAttribute('aria-hidden','true');label.textContent=friendlyLabel(setting?.label||module.label);link.append(icon,label);nav.append(link);}
   anchor.after(nav);
 }
@@ -108,7 +111,7 @@ async function mountManagement(){
   const managementRoot=document.querySelector('.member-page,.ministry-app');if(!managementRoot)return;
   try{
     const localPreview=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('preview')==='1';
-    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261008-ios6'),import('./admin-access.mjs?v=20261008-access-deadline1'),import('./church-customizations.mjs?v=20260924-custom1')]);
+    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261009-app-audit1'),import('./admin-access.mjs?v=20261009-app-audit1'),import('./church-customizations.mjs?v=20260924-custom1')]);
     const allPermissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces'];
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;updateManagementBrand(managementRoot,selected);

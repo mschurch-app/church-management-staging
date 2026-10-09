@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261008-ios6';
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261008-shine-email1';
+import {db} from './admin-db.mjs?v=20261009-app-audit1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261009-app-audit1';
 const form=document.querySelector('#form'),status=document.querySelector('#status'),button=document.querySelector('#submit');
 const requestedNext=new URLSearchParams(location.search).get('next');
 const timeout=(promise,milliseconds,message)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),milliseconds))]);

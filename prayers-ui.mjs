@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios6';
+import {db} from './admin-db.mjs?v=20261009-app-audit1';
 import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261003-access-guard1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
 

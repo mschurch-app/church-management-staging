@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261008-ios6';
+import {db} from './admin-db.mjs?v=20261009-app-audit1';
 import {
   listRooms, saveRoom, listBookings, createBooking, updateBooking,
   setBookingStatus, setRoomActive

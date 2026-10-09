@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261008-ios6';
-import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';
+import {db} from './admin-db.mjs?v=20261009-app-audit1';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261009-app-audit1';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/daily-devotional-admin';
 const $=selector=>document.querySelector(selector),labels={draft:'草稿',initial_review:'等待鈺庭初審',spouse_review:'等待師母複審',final_review:'等待牧師終審',approved:'已核准',returned:'退回修改',archived:'已封存'};

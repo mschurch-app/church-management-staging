@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261008-ios6';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261008-access-deadline1';
+import {db} from './admin-db.mjs?v=20261009-app-audit1';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-app-audit1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/subtitle-knowledge-admin',q=new URLSearchParams(location.search),$=s=>document.querySelector(s);let data={drafts:[],items:[]},busy=false;
 function message(text,tone=''){const node=$('#status');node.textContent=text;node.dataset.tone=tone;}
 async function api(action,payload={}){const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token){location.replace('admin-login.html?next='+encodeURIComponent(location.pathname+location.search));throw Error('登入已失效。');}const response=await fetch(ENDPOINT,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify({action,church:'M+',...payload}),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(18000)}),result=await response.json().catch(()=>({}));if(!response.ok||!result.ok){const errors={forbidden:'沒有字幕詞庫管理權限。',duplicate_knowledge:'已有相同的詞彙或錯字對照。',invalid_knowledge:'請檢查詞彙內容。'};throw Error(errors[result.error]||'字幕詞庫暫時無法處理。');}return result;}

@@ -1,0 +1,26 @@
+{
+  "missing": {
+    "status": 200,
+    "body": {
+      "ready": false
+    }
+  },
+  "denied": {
+    "status": 401,
+    "body": {
+      "error": "invalid_line_session"
+    }
+  },
+  "origin": {
+    "status": 403,
+    "body": {
+      "error": "origin_not_allowed"
+    }
+  },
+  "malformed": {
+    "status": 400,
+    "body": {
+      "error": "invalid_request"
+    }
+  }
+}

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <meta name="theme-color" content="#173f39">
+  <meta name="theme-color" content="#ad3c2a"><link rel="manifest" href="app.webmanifest">
   <meta name="robots" content="noindex,nofollow">
   <title>登入教會 OS</title>
   <link rel="icon" href="assets/app/church-os-icon.svg">
@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="church-brand.css?v=20261007-direct1">
   <link rel="stylesheet" href="theme-vitality.css?v=20261007-direct1">
   <link rel="stylesheet" href="apple-ui.css?v=20261007-direct1">
-  <link rel="stylesheet" href="church-palette.css?v=20261007-direct1">
-</head>
+  <link rel="stylesheet" href="church-palette.css?v=20261009-app-audit1">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-app-audit1"></head>
 <body class="auth-entry-body">
 <main class="login-app">
   <section class="login-visual" aria-hidden="true"><span class="login-glow one"></span><span class="login-glow two"></span><div class="login-mark">M<span>＋</span></div><p>CHURCH MANAGEMENT</p><h2>讓服事與關懷<br>更靠近每一個人</h2></section>
@@ -33,21 +33,36 @@
     <p class="login-note">火樂教會管理員可直接使用 Email 登入；M+ 大雅教會管理功能及每日靈修仍使用 LINE 身分。</p>
   </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script>
-<script>
+<script src="vendor/supabase-2.102.0.js"></script>
+<script type="module">
+import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261009-app-audit1';
 (()=>{
   const AUTH_URL='https://aqanuwilmvdtlzuqlrau.supabase.co',KEY='sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',STORAGE='church-staging-admin-v1';
   const form=document.getElementById('form'),button=document.getElementById('submit'),status=document.getElementById('status'),label=button.innerHTML;
   const query=new URLSearchParams(location.search),next=query.get('next')||'',appMode=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||query.get('source')==='app-v2';
   const callback=new URL('admin-line-callback.html',location.href);if(next)callback.searchParams.set('next',next);if(appMode)callback.searchParams.set('return','app');
-  const lineButton=document.getElementById('line-login'),oauth=window.supabase.createClient(AUTH_URL,KEY,{auth:{storageKey:STORAGE,storage:window.localStorage,detectSessionInUrl:false,persistSession:true,autoRefreshToken:true,flowType:'implicit'}});
-  const safeAppTarget=raw=>{try{const target=new URL(raw||'admin-dashboard.html',location.origin);if(target.origin===location.origin&&target.pathname.endsWith('.html')&&!target.pathname.includes('..'))return target.pathname.replace(/^\//,'')+target.search+target.hash;}catch{}return'admin-dashboard.html';};
-  let lineAuthWindow=null;
-  window.addEventListener('message',async event=>{if(event.origin!==location.origin||event.data?.type!=='church-os-line-auth-complete'||appMode&&event.source!==lineAuthWindow)return;try{const saved=await oauth.auth.setSession({access_token:event.data.access_token,refresh_token:event.data.refresh_token});if(saved.error)throw saved.error;event.source?.postMessage({type:'church-os-line-auth-received'},location.origin);status.textContent='LINE 登入成功，正在返回教會 OS…';location.replace(safeAppTarget(event.data.target));}catch{status.textContent='LINE 已完成驗證，但 App 登入狀態同步失敗，請再試一次。';lineButton.disabled=false;}});
-  lineButton.onclick=async()=>{if(lineButton.disabled)return;lineButton.disabled=true;status.textContent=appMode?'正在開啟 LINE，完成後會自動回到 App…':'正在開啟 LINE 安全登入…';lineAuthWindow=appMode?window.open('about:blank','church-os-line-auth'):null;try{const {data,error}=await Promise.race([oauth.auth.signInWithOAuth({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile',skipBrowserRedirect:appMode}}),new Promise((_,reject)=>setTimeout(()=>reject(new Error('line_login_timeout')),15000))]);if(error)throw error;if(appMode){if(!data?.url)throw new Error('line_login_url_missing');if(lineAuthWindow)lineAuthWindow.location.replace(data.url);else location.assign(data.url);return;}setTimeout(()=>{if(location.pathname.endsWith('admin-login-v2.html')){status.textContent='LINE 登入未開啟，請再按一次。';lineButton.disabled=false;}},15000);}catch{try{lineAuthWindow?.close();}catch{}status.textContent='目前無法開啟 LINE 登入，請稍後再試。';lineButton.disabled=false;}};
+  const lineButton=document.getElementById('line-login'),oauth=window.supabase.createClient(AUTH_URL,KEY,{global:{fetch:(input,options={})=>fetch(input,{...options,signal:options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(15000)]):AbortSignal.timeout(15000)})},auth:{storageKey:STORAGE,storage:window.localStorage,detectSessionInUrl:false,persistSession:true,autoRefreshToken:true,flowType:'implicit'}});
+  const lineAuth=wireLineAuth(oauth,lineButton,status,{next:next||'admin-dashboard.html'});
   const request=async(url,options,timeoutMessage)=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{return await fetch(url,{...options,cache:'no-store',credentials:'omit',signal:controller.signal});}catch(error){if(error.name==='AbortError')throw new Error(timeoutMessage);throw new Error('無法連接登入服務，請確認網路後再試（D02）。');}finally{clearTimeout(timer);}};
-  navigator.serviceWorker?.getRegistrations().then(items=>Promise.all(items.map(item=>item.unregister()))).catch(()=>{});
-  if('caches'in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('church-os-')).map(key=>caches.delete(key)))).catch(()=>{});
+  // Keep the installed App shell. Deleting every worker/cache on login caused
+  // cold starts and interrupted resumes on iOS.
+  navigator.serviceWorker?.register('/church-os-sw.js?v=20261009-app-audit1').then(registration=>registration.update()).catch(()=>{});
+  async function resumeExistingSession(){
+    if(pendingHandoff())return;
+    try{
+      const current=await Promise.race([oauth.auth.getSession(),new Promise((_,reject)=>setTimeout(()=>reject(Error('session_timeout')),15000))]);if(!current.data.session)return;
+      status.textContent='正在恢復登入狀態…';
+      const verified=await request(AUTH_URL+'/auth/v1/user',{headers:{apikey:KEY,authorization:'Bearer '+current.data.session.access_token}},'登入狀態確認逾時，請重新登入。');
+      if(!verified.ok){status.textContent='請重新登入。';return;}
+      const user=await verified.json(),hasLine=(user.identities||[]).some(i=>i.provider==='custom:line-web');
+      const response=await request(AUTH_URL+'/rest/v1/rpc/get_my_church_access',{method:'POST',headers:{apikey:KEY,authorization:'Bearer '+current.data.session.access_token,'content-type':'application/json'},body:'{}'},'管理權限確認逾時，請重新登入。');
+      const grants=await response.json();if(!response.ok||!Array.isArray(grants)||!grants.length){status.textContent='已登入，尚待管理員確認權限。';return;}
+      if(!hasLine&&grants.some(row=>row.church_id==='M+')&&!grants.some(row=>row.church_id==='SHiNE')){location.replace('admin-line-link.html?next='+encodeURIComponent(next||'admin-dashboard.html'));return;}
+      const allowed=hasLine?grants:grants.filter(row=>row.church_id==='SHiNE');
+      const church=allowed.find(row=>['M+','SHiNE'].includes(row.church_id))?.church_id;if(church)location.replace(next?safeAppTarget(next):'admin-dashboard.html?church='+encodeURIComponent(church));
+    }catch{status.textContent='登入狀態未能恢復，請使用 LINE 或 Email 重新登入。';}
+  }
+  void resumeExistingSession();
   form.addEventListener('submit',async event=>{event.preventDefault();if(button.disabled)return;button.disabled=true;button.setAttribute('aria-busy','true');button.textContent='正在驗證帳號…';status.textContent='已收到點擊，正在連接教會登入服務…';try{
     const response=await request(AUTH_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'content-type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value})},'登入連線逾時，請再試一次（D01）。');
     const session=await response.json().catch(()=>({}));if(!response.ok||!session.access_token||!session.user)throw new Error(response.status===400?'登入失敗，請確認帳號與密碼。':'登入服務暫時無法使用（D03）。');

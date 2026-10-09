@@ -30,7 +30,7 @@
   accent-color:var(--church-green-600);
 }
 
-body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){
+body:where(:not(.collab-app)):not(.tree-reading-body):not(.prayer-wall-body){
   color:var(--church-ink);
   background:
     radial-gradient(circle at 8% 2%,rgba(159,196,186,.24),transparent 27%),
@@ -76,8 +76,8 @@ html[data-church="SHiNE"] .library-page>.library-hero{
 .module-bar a.current .module-bar-icon{background:rgba(255,255,255,.18)!important}
 
 /* Buttons and form controls */
-body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove),
-body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light),
+body:where(:not(.collab-app)) button:where(:not(.secondary):not(.danger):not(.ghost-button):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)),
+body:where(:not(.collab-app)) .button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):not(.glass):not(.light),
 .content-tabs button.active,
 .app-save,
 .newcomer-body .pill-btn.active,
@@ -89,8 +89,8 @@ body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.ligh
   background:linear-gradient(135deg,var(--church-green-700),var(--church-green-600))!important;
   box-shadow:0 9px 22px rgba(40,102,89,.21)!important;
 }
-body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):hover,
-body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light):hover{
+body:where(:not(.collab-app)) button:where(:not(.secondary):not(.danger):not(.ghost-button):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):hover,
+body:where(:not(.collab-app)) .button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):not(.glass):not(.light):hover{
   background:linear-gradient(135deg,var(--church-green-800),var(--church-green-700))!important;
   box-shadow:0 12px 28px rgba(23,63,57,.24)!important;
 }
@@ -190,7 +190,7 @@ input:focus,select:focus,textarea:focus{
 .todo-card.warning .todo-count{color:#8b6422!important;background:#f8edcf!important}
 
 @media(max-width:620px){
-  body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){background:var(--church-green-050);background-attachment:scroll}
+  body:where(:not(.collab-app)):not(.tree-reading-body):not(.prayer-wall-body){background:var(--church-green-050);background-attachment:scroll}
 }
 
 /* Unified typography and component geometry */
@@ -293,13 +293,13 @@ table{max-width:100%}
   --accent-soft:var(--church-apricot);
   accent-color:var(--church-coral);
 }
-body:not(.collab-app):not(.tree-reading-body):not(.prayer-wall-body){background:radial-gradient(circle at 8% 2%,rgba(255,190,153,.25),transparent 27%),radial-gradient(circle at 96% 6%,rgba(159,196,186,.28),transparent 29%),linear-gradient(155deg,#fffaf6 0%,var(--church-canvas) 100%)}
+body:where(:not(.collab-app)):not(.tree-reading-body):not(.prayer-wall-body){background:radial-gradient(circle at 8% 2%,rgba(255,190,153,.25),transparent 27%),radial-gradient(circle at 96% 6%,rgba(159,196,186,.28),transparent 29%),linear-gradient(155deg,#fffaf6 0%,var(--church-canvas) 100%)}
 .member-page:before{background:linear-gradient(90deg,var(--church-coral),#f4b650,#22a89d,#5f8de0)!important}
 .member-page>.page-header,.library-page>.library-hero{background:linear-gradient(128deg,var(--church-green-900) 0%,var(--church-green-700) 64%,#c87653 100%)!important}
 html[data-church="SHiNE"] .member-page>.page-header,html[data-church="SHiNE"] .library-page>.library-hero{background:linear-gradient(128deg,#087f80 0%,#16a69d 58%,#55a6d9 100%)!important}
 .module-bar a.current{background:linear-gradient(135deg,var(--church-coral),var(--church-coral-deep))!important;box-shadow:0 8px 20px rgba(216,93,56,.24)!important}
-body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove),body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light),.content-tabs button.active,.app-save,.newcomer-body .pill-btn.active,.newcomer-body .btn-submit,.newcomer-body #headerIconWrapper,.newcomer-body #successSection>div:first-child{background:linear-gradient(135deg,var(--church-coral),var(--church-coral-deep))!important;box-shadow:0 9px 22px rgba(216,93,56,.22)!important}
-body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):hover,body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light):hover{background:linear-gradient(135deg,#f08b66,#c95131)!important;box-shadow:0 12px 28px rgba(216,93,56,.27)!important}
+body:where(:not(.collab-app)) button:where(:not(.secondary):not(.danger):not(.ghost-button):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)),body:where(:not(.collab-app)) .button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):not(.glass):not(.light),.content-tabs button.active,.app-save,.newcomer-body .pill-btn.active,.newcomer-body .btn-submit,.newcomer-body #headerIconWrapper,.newcomer-body #successSection>div:first-child{background:linear-gradient(135deg,var(--church-coral),var(--church-coral-deep))!important;box-shadow:0 9px 22px rgba(216,93,56,.22)!important}
+body:where(:not(.collab-app)) button:where(:not(.secondary):not(.danger):not(.ghost-button):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):hover,body:where(:not(.collab-app)) .button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):not(.glass):not(.light):hover{background:linear-gradient(135deg,#f08b66,#c95131)!important;box-shadow:0 12px 28px rgba(216,93,56,.27)!important}
 .dashboard-card:nth-child(4n+1) .dashboard-icon,.settings-link-card:nth-child(4n+1) .settings-link-icon{color:var(--church-coral-deep)!important;background:linear-gradient(145deg,#fff0e7,#ffdcd0)!important}
 .dashboard-card:nth-child(4n+2) .dashboard-icon,.settings-link-card:nth-child(4n+2) .settings-link-icon{color:#087f7b!important;background:linear-gradient(145deg,#e3f7f3,#ccece6)!important}
 .dashboard-card:nth-child(4n+3) .dashboard-icon,.settings-link-card:nth-child(4n+3) .settings-link-icon{color:#3975cb!important;background:linear-gradient(145deg,#e9f1ff,#d9e6fb)!important}
@@ -336,8 +336,8 @@ h1,h2,h3,h4,h5,h6{color:#352823}a,.eyebrow{color:#c94b35}:focus-visible{outline-
 .member-page>.page-header :is(h1,h2,h3,p,.muted,.eyebrow),.library-page>.library-hero :is(h1,h2,h3,p,.muted,.eyebrow){color:#fff!important}
 .page-nav,.member-page>.page-nav,.module-bar{border-color:#efdfd3!important;background:rgba(255,255,255,.95)!important;box-shadow:0 13px 32px rgba(53,40,35,.08)!important}
 .page-nav a,.module-bar a,.module-bar button{color:#a63d2d!important}.page-nav a.active,.module-bar a.active,.module-bar button.active{color:#fff!important;background:#c94b35!important}
-button:not(.secondary):not(.danger),.button.primary,.primary-button,input[type="submit"]{color:#fff!important;background:linear-gradient(135deg,#c94b35,#be422e)!important;border-color:#c94b35!important;box-shadow:0 9px 22px rgba(201,75,53,.20)!important}
-button:not(.secondary):not(.danger):hover,.button.primary:hover,.primary-button:hover{background:linear-gradient(135deg,#c94b35,#a73524)!important}
+button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)),.button.primary,.primary-button,input[type="submit"]{color:#fff!important;background:linear-gradient(135deg,#c94b35,#be422e)!important;border-color:#c94b35!important;box-shadow:0 9px 22px rgba(201,75,53,.20)!important}
+button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):hover,.button.primary:hover,.primary-button:hover{background:linear-gradient(135deg,#c94b35,#a73524)!important}
 button.secondary,.button.secondary,a.secondary{color:#ad3c2a!important;background:#fff!important;border-color:#f1c9b8!important}
 .member-card,.dashboard-card,.app-hub-card,.todo-card,.editor-panel,.home-drawer,.notification-center,.metric-card,.monitor-card,.panel,.card{color:#352823!important;border-color:#efdfd3!important;background:#fff!important;box-shadow:0 12px 32px rgba(53,40,35,.07)!important}
 .member-card :is(h1,h2,h3,h4,strong,p,span),.dashboard-card :is(h1,h2,h3,h4,strong,p,span),.app-hub-card :is(h1,h2,h3,h4,strong,p,span),.todo-card :is(h1,h2,h3,h4,strong,p,span),.home-drawer :is(h1,h2,h3,h4,strong,p,span){color:inherit}
@@ -356,8 +356,8 @@ table{color:#352823}thead th{color:#63382b!important;background:#fff0e6!importan
 @media(max-width:720px){.page-nav,.module-bar{border-color:#efdfd3!important}.mobile-bar{background:rgba(255,255,255,.95)!important;border-color:#efdfd3!important;box-shadow:0 12px 36px rgba(53,40,35,.16)!important}}
 
 /* Keep selected controls and dark surfaces legible across legacy pages. */
-body:not(.collab-app) button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):hover,
-body:not(.collab-app) .button:not(.secondary):not(.danger):not(.glass):not(.light):hover{color:#fff!important;background:linear-gradient(135deg,#c94b35,#a73524)!important;box-shadow:0 12px 28px rgba(201,75,53,.24)!important}
+body:where(:not(.collab-app)) button:where(:not(.secondary):not(.danger):not(.ghost-button):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):hover,
+body:where(:not(.collab-app)) .button:where(:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item)):not(.glass):not(.light):hover{color:#fff!important;background:linear-gradient(135deg,#c94b35,#a73524)!important;box-shadow:0 12px 28px rgba(201,75,53,.24)!important}
 .module-bar a.current{color:#fff!important;background:#c94b35!important}
 .login-visual,.flow-hero,.ministry-hero,html[data-church="SHiNE"] .ministry-hero{background:linear-gradient(135deg,#352823,#c94b35)!important}
 .login-visual :is(h1,h2,h3,p,.eyebrow),.flow-hero :is(h1,h2,h3,p,.eyebrow),.ministry-hero :is(h1,h2,h3,p,.eyebrow){color:#fff!important}

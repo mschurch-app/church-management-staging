@@ -1,4 +1,4 @@
-import {readAccess,canOpen} from './admin-access.mjs?v=20261008-access-deadline1';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261009-app-audit1';
 async function authorize(db,church){
   if(!['M+','SHiNE'].includes(church)||!canOpen(await readAccess(db),church,'binding_review'))throw new Error('沒有這間教會的會友管理權限。');
 }

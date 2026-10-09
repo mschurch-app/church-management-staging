@@ -96,7 +96,8 @@ export async function readAccess(db, options = {}) {
   }
 }
 export function canOpen(access, church, tab) {
-  const required = TAB_PERMISSIONS[tab];
+  const canonical=({private_prayers:'prayers',pastoral_chats:'pastoral'})[tab]||tab;
+  const required = TAB_PERMISSIONS[canonical];
   return Boolean(required && required.every(permission =>
     access.grants.some(row => row.church_id === church && row.permission === permission)
     && access.featurePermissions?.find(row => row.church_id === church && row.feature_key === permission)?.view !== false));

@@ -35,12 +35,17 @@ function cleanVerse(value) {
 async function loadBook(book) {
   if (!bookLoads.has(book.sourceId)) {
     const url = `https://raw.githubusercontent.com/MaatheusGois/bible/main/versions/zh/cuv/${book.sourceId}/${book.sourceId}.json`;
-    const request = fetch(url).then(async (response) => {
+    // Bound the shared source request and body read; failed loads are evicted
+    // below so every consumer can recover by retrying.
+    const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 15000);
+    const request = fetch(url, { signal: controller.signal }).then(async (response) => {
       if (!response.ok) throw new Error(`經文來源暫時無法讀取（${response.status}）。`);
       const data = await response.json();
       if (!Array.isArray(data.chapters)) throw new Error('經文來源格式不正確。');
       return data.chapters;
-    }).catch((error) => { bookLoads.delete(book.sourceId); throw error; });
+    }).catch((error) => { bookLoads.delete(book.sourceId); throw error; })
+      .finally(() => clearTimeout(deadline));
     bookLoads.set(book.sourceId, request);
   }
   return bookLoads.get(book.sourceId);

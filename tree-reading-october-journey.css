@@ -35,11 +35,19 @@
 .october-journey .tree-view-switch[aria-busy="true"]{opacity:.75}
 .october-journey .late-date-field select{width:100%;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font-size:16px}
 .october-journey .line-login-gate input{width:100%;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:12px;font-size:16px}
-.october-journey .devotional-invitation{margin:18px 0;padding:20px;border:1px solid #cddfcf;border-radius:18px;background:linear-gradient(120deg,#edf6ed,#fff8e9)}
+.october-journey .devotional-invitation{margin:0;padding:20px;border:1px solid #cddfcf;border-radius:18px;background:linear-gradient(120deg,#edf6ed,#fff8e9)}
 .october-journey .devotional-invitation>p{margin:0 0 10px;font-size:18px;font-weight:750}
 .october-journey .devotional-invitation a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;color:#235747;font-size:17px;font-weight:750;text-decoration:none}
 .october-journey .devotional-invitation a:focus-visible{outline:3px solid #b14d28;outline-offset:3px}
 .october-journey .devotional-invitation small{display:block;margin-top:8px;color:#536b5f;font-size:13px;line-height:1.6}
+.october-journey.has-devotional-dock{padding-bottom:calc(var(--devotional-dock-space,220px) + env(safe-area-inset-bottom))}
+.october-journey .devotional-dock{position:fixed;z-index:30;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));max-width:560px;max-height:50vh;max-height:50dvh;overflow:auto;overscroll-behavior:contain;margin-inline:auto;padding:14px 16px;border:1px solid #d5e2d5;border-radius:22px;background:#fffdf6;box-shadow:0 12px 48px #1e443b30}
+.october-journey .devotional-dock-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.october-journey .devotional-dock-heading p{margin:0;color:#235747;font-size:16px;line-height:1.5;font-weight:750}
+.october-journey .devotional-dock-heading button{flex:none;display:grid;place-items:center;width:44px;min-height:44px;margin:-6px -6px -6px 0;padding:0;border:0;border-radius:50%;background:#eff3eb;color:#365849;font-size:26px;line-height:1;cursor:pointer}
+.october-journey .devotional-dock a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:12px 16px;border-radius:14px;background:#235747;color:#fff;font-size:16px;line-height:1.5;font-weight:750;text-decoration:none}
+.october-journey .devotional-dock small{display:block;margin-top:9px;color:#536b5f;font-size:12px;line-height:1.6}
+.october-journey .devotional-dock :is(a,button):focus-visible{outline:3px solid #b14d28;outline-offset:3px}
 @media(max-width:660px){
  .october-journey .app-shell{padding-top:env(safe-area-inset-top)}
  .october-journey .hero{min-height:156px}

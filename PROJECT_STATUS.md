@@ -63,3 +63,5 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 十月箴言測試頁完成音樂狀態、進度更新、等待／重試、防重複送出、首屏讀經入口、多人花園與觸控尺寸修正，澆水後串接既有一月靈修試閱及固定返回。24項隔離Chromium回歸通過，GitHub PR #36 已合併發布（`19f50a1`），正式網站七項資源HTTP 200且符合來源；詳細發布狀態以當日 `docs/codex-log/2026-10-10.md` 為準；詳見 `docs/reports/2026-10-10-life-tree/report.md`。
 
 沒有資料庫或權限異動；十月測試與正式2027靈修紀錄維持隔離。Mac Safari未啟用遠端自動化，iPhone 17／LINE實機仍待驗收；不宣稱整體99%已完成。
+
+同日依使用者回饋調整靈修入口位置：常駐卡片移至今日讀經入口下方、生命樹圖上方；今日澆水成功後在目前畫面提供可關閉的底部浮動邀請，上方入口可見或正在輸入時收起，避免重複及遮擋。仍連到一月創世記試閱，沒有變更資料或發布權限。最新驗證及發布紀錄見 `docs/reports/2026-10-10-devotional-dock/report.md`。

@@ -1,0 +1,235 @@
+{
+  "environment": "Chromium isolated synthetic LINE/API/Scripture; no external database access; no real-device or audible-output claims",
+  "checks": [
+    {
+      "name": "Remember muted preference; hidden garden/ranking not requested on entry",
+      "passed": true
+    },
+    {
+      "name": "Reading entry visible on first 402×874 screen; no devotional dock before watering",
+      "passed": true
+    },
+    {
+      "name": "Refresh button works and ignores repeat clicks",
+      "passed": true
+    },
+    {
+      "name": "Explicit music touch starts audio; pause stores preference",
+      "passed": true
+    },
+    {
+      "name": "Audio failure shows retry without claiming playback",
+      "passed": true
+    },
+    {
+      "name": "Today reading requires reaching Scripture end",
+      "passed": true
+    },
+    {
+      "name": "Read request has pending state and duplicate guard",
+      "passed": true
+    },
+    {
+      "name": "Failed watering remains retryable and does not unlock preview or floating dock",
+      "passed": true
+    },
+    {
+      "name": "Watering success unlocks invitation once and preserves celebration",
+      "passed": true
+    },
+    {
+      "name": "Watering success puts clickable invitation in the current viewport and permanent entry before tree",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation fits mobile, short and desktop viewports with 44px controls",
+      "passed": true
+    },
+    {
+      "name": "Upper entry visibility suppresses duplicate floating card; scrolling away restores it",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation hides while writing and returns after leaving the input",
+      "passed": true
+    },
+    {
+      "name": "Floating entry and fixed return preserve October progress and draft without repeating the invitation",
+      "passed": true
+    },
+    {
+      "name": "Dismissal survives progress refresh and keeps the permanent upper entry",
+      "passed": true
+    },
+    {
+      "name": "Permanent upper devotional entry still works after dismissing floating invitation",
+      "passed": true
+    },
+    {
+      "name": "Journal failure retains input; success ignores repeat submissions",
+      "passed": true
+    },
+    {
+      "name": "Active challenge opens, failure recovers, and success runs once",
+      "passed": true
+    },
+    {
+      "name": "18-person garden uses readable rows without horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Late garden response cannot overwrite a newer personal view",
+      "passed": true
+    },
+    {
+      "name": "Ranking loads on demand",
+      "passed": true
+    },
+    {
+      "name": "320–1920px layouts fit and visible controls meet 44px height",
+      "passed": true
+    },
+    {
+      "name": "Reduced-motion preference stops decorative animations",
+      "passed": true
+    },
+    {
+      "name": "Failed Scripture fetch offers a working retry",
+      "passed": true
+    },
+    {
+      "name": "Scripture deadline clears failed cache and permits retry",
+      "passed": true
+    },
+    {
+      "name": "Makeup reading and watering use selected date without unlocking today preview",
+      "passed": true
+    },
+    {
+      "name": "Refresh failure restores controls and displays recovery",
+      "passed": true
+    },
+    {
+      "name": "Ordinary devotional preview keeps existing member-menu return and ignores arbitrary destinations",
+      "passed": true
+    },
+    {
+      "name": "Direct preview entry has a working fixed tree return",
+      "passed": true
+    },
+    {
+      "name": "No uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "calls": [
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "mark_read",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "garden",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "garden",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "leaderboard",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "mark_read",
+      "date": "2026-10-09",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-09",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    }
+  ]
+}

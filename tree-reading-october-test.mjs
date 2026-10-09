@@ -5,12 +5,23 @@ import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './t
 const $ = (selector) => document.querySelector(selector);
 const state = { idToken:'', participant:null, records:[], challenges:[], notes:[], leaderboard:[], garden:[], admin:false, view:'personal', passage:null, sound:musicPreference(),writeBusy:false, journalIndex:0, loadedScriptureDate:'',pendingWaterDate:'' };
 let scriptureEndObserver=null, scriptureRequest=0, viewRequest=0;
+let dismissedDevotionalKey='';
+function devotionalDockKey(){return state.participant?.id?`october-devotional-dismissed:${state.participant.id}:${today()}`:'';}
+function dismissDevotionalDock(){const key=devotionalDockKey();dismissedDevotionalKey=key;try{if(key)sessionStorage.setItem(key,'1');}catch{}syncDevotionalDock();}
+function measureDevotionalDock(){const dock=$('#devotional-dock');if(!dock.hidden)document.body.style.setProperty('--devotional-dock-space',`${Math.ceil(dock.getBoundingClientRect().height)+32}px`);}
+function syncDevotionalDock(){
+  const key=devotionalDockKey();let dismissed=Boolean(key&&dismissedDevotionalKey===key);try{dismissed||=Boolean(key&&sessionStorage.getItem(key)==='1');}catch{}
+  const available=Boolean(state.participant&&record()?.watered_at&&!dismissed);
+  const editing=document.activeElement?.matches('input,textarea,select,[contenteditable="true"]');
+  const upper=$('#devotional-preview-link').getBoundingClientRect(),upperVisible=upper.height>0&&upper.top>=0&&upper.bottom<=innerHeight;
+  $('#devotional-dock').hidden=!available||Boolean(editing)||upperVisible;document.body.classList.toggle('has-devotional-dock',available);measureDevotionalDock();
+}
 function musicPreference(){try{return localStorage.getItem('lifeTreeSound')!=='off';}catch{return true;}}
 function restoreTreeScroll(){if(!state.participant)return;try{const value=sessionStorage.getItem('october-tree-return-scroll');if(value!==null){sessionStorage.removeItem('october-tree-return-scroll');requestAnimationFrame(()=>window.scrollTo({top:Number(value)||0,behavior:'instant'}));}}catch{}}
 function draftKey(){return state.participant?.id?`october-tree-draft:${state.participant.id}`:'';}
 function rememberMusic(){try{localStorage.setItem('lifeTreeSound',state.sound?'on':'off');}catch{}}
 function scrollToSection(node){if(!node)return;node.tabIndex=-1;node.focus({preventScroll:true});node.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
-function renderInvitation(){const visible=Boolean(record()?.watered_at);$('#devotional-invitation').hidden=!visible;$('#journey-date').textContent=`${fmt(today())} · 箴言 ${chapterDay(today())} 章`;$('#journey-passage').textContent=visible?'活水已澆灌，讓神的話繼續陪伴。':record()?'讀經完成，回到小樹澆水。':'今天，讓神的話滋養你。';$('#read-today').textContent=visible?'重讀今日經文':record()?'回到小樹澆水':'開始今日讀經';}
+function renderInvitation(){const visible=Boolean(record()?.watered_at);$('#devotional-invitation').hidden=!visible;syncDevotionalDock();$('#journey-date').textContent=`${fmt(today())} · 箴言 ${chapterDay(today())} 章`;$('#journey-passage').textContent=visible?'活水已澆灌，讓神的話繼續陪伴。':record()?'讀經完成，回到小樹澆水。':'今天，讓神的話滋養你。';$('#read-today').textContent=visible?'重讀今日經文':record()?'回到小樹澆水':'開始今日讀經';}
 
 const today = () => {const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const part=(type)=>parts.find((item)=>item.type===type)?.value||'';return `${part('year')}-${part('month')}-${part('day')}`;};
 const fmt = (date) => `${Number(date.slice(5,7))}/${Number(date.slice(8,10))}`;
@@ -142,7 +153,11 @@ function setup(){
   $('.leaderboard-card').addEventListener('toggle',async()=>{if(!$('.leaderboard-card').open)return;$('#leaderboard').textContent='正在載入同行進度…';try{const result=await api('leaderboard');state.leaderboard=result.members||[];renderLeaderboard();}catch{$('#leaderboard').textContent='暫時無法載入，請收合後再開啟重試。';}});
   $('#switch-member').onclick=async()=>{if(state.writeBusy)return;const button=$('#switch-member');if(button.disabled)return;state.writeBusy=true;button.disabled=true;button.textContent='正在更新…';showStatus('正在重新整理進度…','#progress-status');try{await refresh();showStatus('進度已更新。','#progress-status');}catch(error){showStatus(error.message,'#progress-status');}finally{state.writeBusy=false;renderView();button.disabled=false;button.textContent='重新整理進度';}};
   $('#read-today').onclick=async()=>{if(record()&&!record().watered_at){state.view='personal';renderView();scrollToSection($('.tree-card'));return;}scrollToSection($('.reading-card'));if($('#scripture-text').hidden||state.loadedScriptureDate!==today())await loadScripture(today());};
-  $('#devotional-preview-link').addEventListener('click',event=>{if(state.writeBusy){event.preventDefault();showStatus('請等目前的儲存完成，再進入靈修。');return;}try{sessionStorage.setItem('october-tree-return-scroll',String(window.scrollY));const key=draftKey();if(key)sessionStorage.setItem(key,$('#reflection-note').value);}catch{}});
+  document.querySelectorAll('.devotional-entry').forEach(link=>link.addEventListener('click',event=>{if(state.writeBusy){event.preventDefault();showStatus('請等目前的儲存完成，再進入靈修。');return;}try{sessionStorage.setItem('october-tree-return-scroll',String(window.scrollY));const key=draftKey();if(key)sessionStorage.setItem(key,$('#reflection-note').value);}catch{}dismissDevotionalDock();}));
+  $('#dismiss-devotional-dock').onclick=()=>{dismissDevotionalDock();const tree=$('.tree-card');tree.tabIndex=-1;tree.focus({preventScroll:true});};
+  document.addEventListener('focusin',syncDevotionalDock);document.addEventListener('focusout',()=>requestAnimationFrame(syncDevotionalDock));
+  new ResizeObserver(measureDevotionalDock).observe($('#devotional-dock'));
+  new IntersectionObserver(syncDevotionalDock,{threshold:[0,1]}).observe($('#devotional-preview-link'));
   $('#login-member').onclick=join;$('#mark-read').onclick=()=>markRead();$('#care-tree').onclick=water;
   $('#toggle-scripture').onclick=()=>$('#scripture-text').hidden?loadScripture(state.loadedScriptureDate||''):(()=>{++scriptureRequest;scriptureEndObserver?.disconnect();$('#scripture-text').hidden=true;$('#complete-reading-actions').hidden=true;$('#audio-controls').hidden=true;$('#toggle-scripture').setAttribute('aria-expanded','false');$('#toggle-scripture').textContent='📖 展開完整經文';window.speechSynthesis?.cancel();})();
   $('#read-aloud').onclick=sayScripture;$('#stop-reading').onclick=()=>{window.speechSynthesis?.cancel();showStatus('已停止朗讀。');};

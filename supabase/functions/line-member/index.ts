@@ -75,10 +75,10 @@ Deno.serve(async request=>{
     if(feature==='service_signup'){
       if(church!=='M+')return respond(origin,{ok:false,error:'content_empty'},404);
       const identityArgs={p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id};
-      const [result,changes]=await Promise.all([db.rpc('service_signup_member_view',identityArgs),db.rpc('service_signup_my_change_requests',identityArgs)]);
+      const [result,changes,journey]=await Promise.all([db.rpc('service_signup_member_view',identityArgs),db.rpc('service_signup_my_change_requests',identityArgs),db.rpc('service_signup_member_journey',identityArgs)]);
       if(result.error||changes.error)return respond(origin,{ok:false,error:'unavailable'},503);
       for(const offer of result.data?.issued_offers||[])await notifySignupOffer(offer.line_subject,offer.registration_id,offer.expires_at);
-      return respond(origin,{ok:true,profile:{name:identity.name},...result.data,change_requests:changes.data||[]});
+      return respond(origin,{ok:true,profile:{name:identity.name},...result.data,change_requests:changes.data||[],service_journey:journey.error?null:journey.data});
     }
     if(feature==='today'){
       const result=await db.from('spiritual_cards').select('id,scripture,scripture_ref,prayer_text').eq('church_id',church).eq('category','給今天的你').eq('is_active',true).limit(500);

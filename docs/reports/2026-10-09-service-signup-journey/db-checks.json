@@ -1,0 +1,83 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "service role can read only an approved LINE member journey",
+      "status": "passed"
+    },
+    {
+      "name": "confirmed past service counts once per Sunday",
+      "status": "passed"
+    },
+    {
+      "name": "unconfirmed, cancelled, declined and waitlisted history do not increase total",
+      "status": "passed"
+    },
+    {
+      "name": "today and future confirmed services are not completed yet",
+      "status": "passed"
+    },
+    {
+      "name": "future dates are deduplicated in prepared count",
+      "status": "passed"
+    },
+    {
+      "name": "offered and waitlisted dates are counted separately from preparation",
+      "status": "passed"
+    },
+    {
+      "name": "closed-season previous-year history remains available",
+      "status": "passed"
+    },
+    {
+      "name": "future year has preparation but zero completed services",
+      "status": "passed"
+    },
+    {
+      "name": "other member and church registrations are excluded",
+      "status": "passed"
+    },
+    {
+      "name": "registration detail retains role and historical season date",
+      "status": "passed"
+    },
+    {
+      "name": "unbound LINE subject cannot read anyone else",
+      "status": "passed"
+    },
+    {
+      "name": "incorrect channel cannot inherit a binding",
+      "status": "passed"
+    },
+    {
+      "name": "invalid and null identity fields fail closed",
+      "status": "passed"
+    },
+    {
+      "name": "empty member still receives zero counts and open-year options",
+      "status": "passed"
+    },
+    {
+      "name": "anon cannot execute identity-based privileged read",
+      "status": "passed"
+    },
+    {
+      "name": "authenticated cannot execute identity-based privileged read",
+      "status": "passed"
+    },
+    {
+      "name": "archived member cannot read historical journey",
+      "status": "passed"
+    },
+    {
+      "name": "revoked binding cannot read historical journey",
+      "status": "passed"
+    },
+    {
+      "name": "statistics read never changes registration rows",
+      "status": "passed"
+    }
+  ],
+  "synthetic_data_only": true,
+  "timezone": "Asia/Taipei"
+}

@@ -1,4 +1,5 @@
 import {LINE_MEMBER_ENDPOINT} from './line-config.mjs?v=20261009-plus-state1';
+import {journeyCard} from './service-signup-journey.mjs?v=20261009-signup-finish1';
 
 const church='M+';
 const lineEntry='https://mscos.mchurch.online/line-member.html?church=M%2B&feature=service_signup&entry=20261009-clean-state5';
@@ -32,6 +33,7 @@ let canReturnToList=false;
 let feedback='';
 let needsRefresh=false;
 let lockedControls=[];
+let journeyYear=null;
 const selectedMinistries=new Set();
 const selectedRoles=new Set();
 const roleSlots=new Map();
@@ -76,6 +78,16 @@ function shell(title,copy,body,actions=''){
     back.onclick=()=>{if(!busy){view='list';render();}};
     app.prepend(back);
   }
+  if(view==='form'&&data.binding_status==='approved'){
+    app.insertAdjacentHTML('afterbegin',journeyCard(data,currentJourneyYear()));bindJourneyYear();
+  }
+}
+function currentJourneyYear(){return journeyYear||Number(season()?.starts_on?.slice(0,4))||Number(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date()).slice(0,4));}
+function bindJourneyYear(){const select=$('#journey-year');if(select)select.onchange=()=>{journeyYear=Number(select.value);render();};}
+function renderCompletion(){
+  const records=data.registrations||[],offered=records.filter(record=>record.status==='offered').length;
+  app.innerHTML=`${journeyCard(data,currentJourneyYear())}<section class="panel completion-panel" aria-labelledby="completion-heading"><p class="completion-kicker">謝謝你的參與</p><h2 id="completion-heading" tabindex="-1">登記已完成</h2><p class="completion-lead">${esc(registrationName())}，謝謝你願意一起服事。<br>我們已收到你的 ${records.length} 筆登記。</p><section class="next-steps"><h3>接下來做什麼？</h3><ol><li>負責人會協調並確認班表，實際服事安排以負責人確認為準。</li><li>請留意教會 LINE 的後續通知。若名額釋出，候補邀請需在通知期限內接受。</li></ol>${offered?`<p class="notice">你有 ${offered} 筆候補邀請等待回覆，請回到登記清單確認。</p>`:''}</section><section class="return-guide"><h3>之後想查看或調整？</h3><p>回到 <strong>M＋大雅教會首頁</strong>，點選 <strong>「2027 讓我們一起服事」</strong>，使用<strong>這次登記的同一個 LINE 帳號</strong>登入，再按「修改我的登記」。</p><small>季前可直接修改、刪除；當季開始後，調整會交由服事負責人協調審核。</small></section><div class="completion-actions"><a class="primary home-link" href="https://mchurch.online/">完成，返回首頁</a><button type="button" class="secondary" id="view-my-registration">查看／修改我的登記</button></div></section>`;
+  bindJourneyYear();$('#view-my-registration').onclick=()=>{view='list';render();$('#registration-heading')?.focus({preventScroll:true});app.scrollIntoView({block:'start'});};
 }
 function registrationName(){return data.member?.name||memberName.trim()||'會友';}
 function openRegistrationForm(){
@@ -93,8 +105,13 @@ function bindRegistrationActions(){
 }
 function renderRegistrationList(){
   const records=data.registrations||[];
-  app.innerHTML=`<section class="panel registration-panel" aria-labelledby="registration-heading"><header class="registration-header"><div><small>我的服事登記</small><h2 id="registration-heading" tabindex="-1">${esc(registrationName())}</h2></div><span class="registration-count">${records.length} 筆登記</span></header><p>${esc(season()?.title||'主日服事')}・依主日日期排列</p>${feedback?`<div class="notice list-feedback" role="status">${esc(feedback)}</div>`:''}${needsRefresh?'<button type="button" class="secondary" id="refresh-list">重新載入清單</button>':''}<div class="registration-list">${existingRegistrations()||'<div class="empty">目前沒有服事登記。準備好時，可以重新選擇服事與日期。</div>'}</div><div class="actions"><button type="button" class="primary" id="add-registration" ${needsRefresh?'disabled':''}>${records.length?'新增服事登記':'重新選擇服事'}</button></div></section>`;
+  app.innerHTML=`${journeyCard(data,currentJourneyYear())}<section class="panel registration-panel" aria-labelledby="registration-heading"><header class="registration-header"><div><small>我的服事登記</small><h2 id="registration-heading" tabindex="-1">${esc(registrationName())}</h2></div><span class="registration-count">${records.length} 筆登記</span></header><p>${esc(season()?.title||'我的主日服事')}・依主日日期排列</p>${records.length?'<button type="button" class="secondary modify-entry" id="modify-registration">修改我的登記</button>':''}${!season()?'<div class="notice">目前尚未開放新登記，仍可查看自己的紀錄。</div>':''}${feedback?`<div class="notice list-feedback" role="status">${esc(feedback)}</div>`:''}${needsRefresh?'<button type="button" class="secondary" id="refresh-list">重新載入清單</button>':''}<div class="registration-list">${existingRegistrations()||'<div class="empty">目前沒有服事登記。準備好時，可以重新選擇服事與日期。</div>'}</div><div class="actions registration-footer">${records.length?`<button type="button" class="primary" id="finish-registration" ${needsRefresh?'disabled':''}>完成</button>`:''}<button type="button" class="${records.length?'secondary':'primary'}" id="add-registration" ${needsRefresh||!season()?'disabled':''}>${records.length?'新增服事登記':'重新選擇服事'}</button></div></section>`;
+  bindJourneyYear();
   bindRegistrationActions();
+  if(records.length){
+    $('#modify-registration').onclick=()=>{const target=app.querySelector('[data-adjust],.registration');target?.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});target?.focus?.({preventScroll:true});};
+    $('#finish-registration').onclick=()=>{if(busy||needsRefresh)return;view='done';render();$('#completion-heading')?.focus({preventScroll:true});app.scrollIntoView({block:'start'});};
+  }
   if(needsRefresh)app.querySelectorAll('.registration button').forEach(button=>button.disabled=true);
   $('#add-registration').onclick=()=>{if(!busy&&confirm('是否重新選擇服事與日期？已完成的其他登記會保留。'))openRegistrationForm();};
   if(needsRefresh)$('#refresh-list').onclick=async()=>{
@@ -116,13 +133,15 @@ function existingRegistrations(){
   const currentSeason=season();
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
   return (data.registrations||[]).map(record=>{
-    const slot=currentSeason?.slots?.find(item=>Number(item.id)===Number(record.slot_id));
+    const details=(data.service_journey?.registration_details||[]).find(item=>Number(item.id)===Number(record.id));
+    const slot=currentSeason?.slots?.find(item=>Number(item.id)===Number(record.slot_id))||details;
     const request=(data.change_requests||[]).find(item=>Number(item.registration_id)===Number(record.id)&&['leader_review','admin_review'].includes(item.status));
-    const started=currentSeason?.starts_on&&today>=currentSeason.starts_on;
+    const startsOn=details?.season_starts_on||currentSeason?.starts_on,started=startsOn&&today>=startsOn;
+    const completed=details?.completed===true;
     const label=record.status==='waitlisted'?`候補第 ${record.queue_number} 位`:record.status==='offered'?`名額已釋出，請於 ${record.offer_expires_at?new Date(record.offer_expires_at).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'24 小時內'} 接受`:record.status==='confirmed'?'已由負責人確認':'已登記，等待負責人協調';
     const review=request?`<small class="review-state">${request.status==='leader_review'?'等待服事領袖初審':'領袖已通過，等待鈺庭複審'}</small>`:'';
-    const actions=record.status==='offered'?`<button data-offer="${record.id}">接受候補邀請</button>`:request?'':started?`<span class="registration-actions"><button data-adjust="${record.id}">申請調整</button><button data-cancel="${record.id}">申請取消</button></span>`:`<span class="registration-actions"><button data-adjust="${record.id}">修改</button><button data-cancel="${record.id}">刪除</button></span>`;
-    return `<div class="registration"><span><strong>${fmt(record.service_date)}・${esc(roles[publicRole(slot?.role_key)]||'服事')}</strong><small>${label}</small>${review}</span>${actions}</div>`;
+    const actions=completed?'':record.status==='offered'?`<button data-offer="${record.id}">接受候補邀請</button>`:request?'':started?`<span class="registration-actions"><button data-adjust="${record.id}">申請調整</button><button data-cancel="${record.id}">申請取消</button></span>`:`<span class="registration-actions"><button data-adjust="${record.id}">修改</button><button data-cancel="${record.id}">刪除</button></span>`;
+    return `<div class="registration"><span><strong>${fmt(record.service_date)}・${esc(roles[publicRole(slot?.role_key)]||'服事')}</strong><small>${completed?'已記入恩典腳蹤，謝謝你的擺上':label}</small>${review}</span>${actions}</div>`;
   }).join('');
 }
 
@@ -199,12 +218,10 @@ function render(){
     $('#bind').onclick=()=>location.href='newcomer.html?church=M%2B';
     return;
   }
-  if(!season()){
-    shell('目前尚未開放登記','下一季的服事登記還在預備中。開放後再回來就可以選擇。','<div class="empty">尚無開放中的季度</div>');
-    return;
-  }
+  if(!season())view=view==='done'?'done':'list';
   if(view===null){view=data.registrations?.length?'list':'form';canReturnToList=view==='list';}
   if(view==='list'){renderRegistrationList();return;}
+  if(view==='done'){renderCompletion();return;}
   if(step===1)renderIdentityAndMinistries();
   else if(step===2)renderRoles();
   else if(step===3)renderRoleDates();
@@ -231,7 +248,8 @@ async function submit(){
 
 async function cancelRegistration(id,{reselect=false,confirmed=false}={}){
   if(busy||needsRefresh)return;
-  const started=season()?.starts_on&&new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date())>=season().starts_on;
+  const startsOn=(data.service_journey?.registration_details||[]).find(item=>Number(item.id)===id)?.season_starts_on||season()?.starts_on;
+  const started=startsOn&&new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date())>=startsOn;
   if(!confirmed&&!confirm(started?'是否提出取消這筆服事的申請？會先送交服事領袖初審，再由鈺庭複審。':'確定刪除這筆服事登記？其他登記會保留。'))return;
   setBusy(true);
   try{
@@ -245,7 +263,8 @@ async function cancelRegistration(id,{reselect=false,confirmed=false}={}){
 }
 async function adjustRegistration(id){
   if(busy||needsRefresh)return;
-  const currentSeason=season(),today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+  const details=(data.service_journey?.registration_details||[]).find(item=>Number(item.id)===id);
+  const currentSeason={starts_on:details?.season_starts_on||season()?.starts_on},today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
   if(currentSeason?.starts_on&&today<currentSeason.starts_on){
     if(confirm('是否重新選擇服事與日期？確認後會先刪除這筆登記，再展開重新登記；其他登記會保留。'))await cancelRegistration(id,{reselect:true,confirmed:true});
     return;

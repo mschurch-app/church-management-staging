@@ -11,6 +11,14 @@ const initial=()=>({ok:true,binding_status:'approved',member:{id:101,name:'測�
   {id:13,service_date:'2027-01-17',ministry_key:'worship',role_key:'worship_leader',capacity:1,registered_count:1},
   {id:14,service_date:'2027-01-03',ministry_key:'worship',role_key:'worship_leader',capacity:1,registered_count:0},
 ]}],registrations:[{id:1,slot_id:12,service_date:'2027-01-10',status:'registered'},{id:2,slot_id:13,service_date:'2027-01-17',status:'registered'}],change_requests:[]});
+function mockJourney(data){
+  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+  const years=[...new Set([2026,2027,...data.registrations.map(r=>Number(r.service_date.slice(0,4)))])];
+  return{as_of:today,counting_rule:'confirmed_and_date_passed',years:years.map(year=>{
+    const rows=data.registrations.filter(r=>Number(r.service_date.slice(0,4))===year),total=predicate=>new Set(rows.filter(predicate).map(r=>r.service_date)).size;
+    return{year,completed_count:total(r=>r.status==='confirmed'&&r.service_date<today),registered_count:total(r=>['registered','confirmed'].includes(r.status)&&r.service_date>=today),waitlisted_count:total(r=>['waitlisted','offered'].includes(r.status)&&r.service_date>=today)};
+  }),registration_details:data.registrations.map(r=>({id:r.id,role_key:data.seasons[0]?.slots.find(s=>s.id===r.slot_id)?.role_key||'sound',season_starts_on:data.seasons[0]?.starts_on||'2020-01-01',completed:r.status==='confirmed'&&r.service_date<today}))};
+}
 let fixture=initial(),writes=[],answers=[],dialogs=[],alerts=[],failMutation=false,failContent=0,failAfterWrite=false,delay=0;
 const checks=[],errors=[];
 let passed=false;
@@ -34,6 +42,7 @@ page.on('request',async req=>{
     if(req.method()==='OPTIONS'){await req.respond({status:204,headers:{'access-control-allow-origin':'*','access-control-allow-methods':'POST, OPTIONS','access-control-allow-headers':'*'}});return;}
     const body=JSON.parse(req.postData()||'{}');let response=fixture,status=200;
     if(body.action==='content'){
+      fixture.service_journey=fixture.journeyUnavailable?null:mockJourney(fixture);
       if(failContent>0){failContent--;status=503;response={ok:false,error:'unavailable'};}
     }else{
       writes.push(body);
@@ -91,8 +100,12 @@ try{
   await test('existing registrations show member name in list header and hide wizard',async()=>{await list();assert.equal(await page.$eval('#registration-heading',n=>n.textContent),'測試同工');assert.equal(await page.$$eval('.registration',ns=>ns.length),2);});
   await test('LINE nickname is never used in the registrant header',async()=>assert(!(await page.$eval('#registration-heading',n=>n.textContent)).includes('LINE')));
   await test('reload returns to completed list',async()=>{await page.reload({waitUntil:'networkidle0'});await list();});
+  await test('Grace Footprints displays selected-year cumulative and prepared counts',async()=>{assert.equal(await page.$eval('#journey-heading',n=>n.textContent),'恩典腳蹤');assert.equal(await page.$eval('#journey-year',n=>n.value),'2027');assert.deepEqual(await page.$$eval('.journey-counts strong',ns=>ns.map(n=>n.textContent.trim())),['0 次','2 次']);});
+  await test('finish opens next steps and homepage return guidance without writing',async()=>{await click('#finish-registration');await page.waitForSelector('#completion-heading');assert.match(await page.$eval('.return-guide',n=>n.textContent),/2027 讓我們一起服事/);assert.match(await page.$eval('.return-guide',n=>n.textContent),/同一個 LINE 帳號/);assert.equal(await page.$eval('.home-link',n=>n.href),'https://mchurch.online/');assert.equal(await page.$('#add-registration'),null);assert.equal(writes.length,0);});
+  await test('completion page returns directly to own editable list',async()=>{await click('#view-my-registration');await list();assert(await page.$('#modify-registration'));assert.equal(writes.length,0);});
   await test('declining add confirmation leaves list intact',async()=>{await click('#add-registration',[false]);await list();assert.equal(writes.length,0);});
   await test('confirmed add opens clean form with verified member name',async()=>{await click('#add-registration',[true]);await form();assert.equal(await page.$eval('#member-name',n=>n.value),'測試同工');assert.equal(await page.$('.choice.selected'),null);});
+  await test('annual encouragement stays visible while editing',async()=>{assert(await page.$('.service-journey'));assert.match(await page.$eval('.service-journey',n=>n.textContent),/謝謝/);});
   await test('form can return to list without changing registrations',async()=>{await click('.list-return');await list();assert.equal(writes.length,0);});
   await test('declining delete performs no mutation',async()=>{await click('[data-cancel="1"]',[false]);await list();assert.equal(writes.length,0);assert.equal(fixture.registrations.length,2);});
   await test('delete then decline reselection keeps list closed and remaining row',async()=>{await click('[data-cancel="1"]',[true,false]);await waitWrite();await list();assert.equal(fixture.registrations.length,1);assert.equal(writes.length,1);assert.equal(dialogs.at(-1).message,'已刪除這筆登記。是否重新選擇服事與日期？');});
@@ -131,24 +144,46 @@ try{
   await visit();
   for(const width of [375,390,430,1280,1440]){
     await page.setViewport({width,height:900,isMobile:width<500,hasTouch:width<500});
+    await page.waitForSelector('#registration-heading');
     await test('list layout and touch targets at '+width+'px',async()=>{
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
       assert(await page.$$eval('#app button',ns=>ns.every(n=>{const r=n.getBoundingClientRect();return r.width>=44&&r.height>=44;})));
     });
     if([390,1440].includes(width))await page.screenshot({path:out+'list-'+width+'.png',fullPage:true});
   }
+  await click('#finish-registration');
+  for(const width of [375,390,430,1280,1440]){
+    await page.setViewport({width,height:900,isMobile:width<500,hasTouch:width<500});
+    await page.waitForFunction(()=>!document.querySelector('#app').hidden);
+    if(await page.$('#finish-registration'))await click('#finish-registration');
+    await page.waitForSelector('#completion-heading');
+    await test('completion layout and return controls at '+width+'px',async()=>{
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
+      assert(await page.$$eval('.completion-actions a,.completion-actions button,#journey-year',ns=>ns.length===3&&ns.every(n=>{const r=n.getBoundingClientRect();return r.width>=44&&r.height>=44;})));
+      assert.equal(await page.$('#member-name'),null);
+    });
+    if([390,1440].includes(width))await page.screenshot({path:out+'completion-'+width+'.png',fullPage:true});
+  }
+  await click('#view-my-registration');
   await test('list text and buttons meet 4.5:1 contrast',async()=>{
     const failures=await page.evaluate(()=>{
       const rgb=value=>{const n=value.match(/[\d.]+/g)?.map(Number)||[0,0,0,0];return[n[0],n[1],n[2],n[3]??1];};
       const blend=(top,bottom)=>top.slice(0,3).map((v,i)=>v*top[3]+bottom[i]*(1-top[3]));
       const background=node=>{if(!node)return[255,255,255];return blend(rgb(getComputedStyle(node).backgroundColor),background(node.parentElement));};
       const luminance=color=>color.map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
-      return [...document.querySelectorAll('.registration-panel h2,.registration-panel p,.registration-header small,.registration-count,.registration strong,.registration small,.registration button,#add-registration')].flatMap(node=>{
+      return [...document.querySelectorAll('.registration-panel h2,.registration-panel p,.registration-header small,.registration-count,.registration strong,.registration small,.registration button,#add-registration,#finish-registration,.journey-counts span,.journey-note')].flatMap(node=>{
         const bg=background(node),fg=blend(rgb(getComputedStyle(node).color),bg),a=luminance(fg),b=luminance(bg),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
         return ratio<4.5?[{text:node.textContent,ratio}]:[];
       });
     });assert.deepEqual(failures,[]);
   });
+  await test('year switch reads history and preserves registration list',async()=>{
+    fixture.registrations.push({id:3,slot_id:11,service_date:'2026-01-04',status:'confirmed'});await page.reload({waitUntil:'networkidle0'});await page.select('#journey-year','2026');
+    assert.equal(await page.$eval('.journey-counts strong',n=>n.textContent.trim()),'1 次');assert.match(await page.$eval('.service-journey>p',n=>n.textContent),/1 次/);await list();assert.equal(await page.$('[data-adjust="3"]'),null);
+  });
+  await test('no open season still shows own records and cumulative history',async()=>{fixture.seasons=[];await page.reload({waitUntil:'networkidle0'});await list();assert.match(await page.$eval('.registration-panel',n=>n.textContent),/目前尚未開放/);assert(await page.$eval('#add-registration',n=>n.disabled));assert(await page.$('.service-journey'));});
+  await visit();fixture.journeyUnavailable=true;await page.reload({waitUntil:'networkidle0'});
+  await test('unavailable annual API never fabricates zero or blocks registration list',async()=>{await list();assert.match(await page.$eval('.service-journey',n=>n.textContent),/暫時無法載入/);assert.equal(await page.$('.journey-counts'),null);assert(await page.$('[data-adjust="1"]'));});
   await test('name header escapes markup',async()=>{fixture.member.name='<b>測試姓名</b>';await page.reload({waitUntil:'networkidle0'});assert.equal(await page.$eval('#registration-heading',n=>n.textContent),fixture.member.name);assert.equal(await page.$('#registration-heading b'),null);});
   await test('no unexpected dialogs or uncaught browser errors',async()=>{assert.deepEqual(answers,[]);assert.deepEqual(errors,[]);});
   fs.writeFileSync(out+'checks.json',JSON.stringify({status:'passed',checks,errors,environment:{browser:await browser.version(),data:'synthetic fixtures; all remote requests intercepted; no production writes',devices:'Chrome viewport simulation, real iPhone / Mac Safari not covered'}},null,2));

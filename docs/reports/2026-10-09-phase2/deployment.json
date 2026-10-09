@@ -1,0 +1,717 @@
+{
+  "frontendCommit": "2d50298b415c74397d01395557d0a4609101d7fb",
+  "frontendVersion": "20261009-stage2",
+  "checkedAt": "2026-10-09T04:56:11.398794+00:00",
+  "origin": "https://mscos.mchurch.online",
+  "allMatched": true,
+  "assets": [
+    {
+      "file": "admin-accounts-management.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "5e95aed67e0bd74235dd4179480f735c144068d9b83ad1ac1de5e7fe208c35eb",
+      "hostedSha256": "5e95aed67e0bd74235dd4179480f735c144068d9b83ad1ac1de5e7fe208c35eb"
+    },
+    {
+      "file": "admin-accounts-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "3b0df7ebdc534f48e2956306ddc63713cf7d49d9bfe4bd875d3fa4d6ee2d082e",
+      "hostedSha256": "3b0df7ebdc534f48e2956306ddc63713cf7d49d9bfe4bd875d3fa4d6ee2d082e"
+    },
+    {
+      "file": "admin-accounts.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "9e4ac8247d8e5795512f75550330a94ce4eceeb2ac1ffde508a0f72fe2a537d0",
+      "hostedSha256": "9e4ac8247d8e5795512f75550330a94ce4eceeb2ac1ffde508a0f72fe2a537d0"
+    },
+    {
+      "file": "admin-dashboard-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "5d736617b15b37a1ea95fb234b2f79ed2d7c1930be5920e3d85cbd300bb6f4d5",
+      "hostedSha256": "5d736617b15b37a1ea95fb234b2f79ed2d7c1930be5920e3d85cbd300bb6f4d5"
+    },
+    {
+      "file": "admin-dashboard.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "f9777721af79e6692b9a7f8ed305ff243c1e473c2891ab79edc84aed9e63f36f",
+      "hostedSha256": "f9777721af79e6692b9a7f8ed305ff243c1e473c2891ab79edc84aed9e63f36f"
+    },
+    {
+      "file": "admin-db.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "91b9785be8a24ef232a2ab39ba91fa9086974f8a4e6f66ceda675c3c7ae4be19",
+      "hostedSha256": "91b9785be8a24ef232a2ab39ba91fa9086974f8a4e6f66ceda675c3c7ae4be19"
+    },
+    {
+      "file": "admin-line-callback.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "015bb3ede09b0a8733ddfbefc29e30c400fa9851dbaa9aeb7bc16a64bc3cc1a0",
+      "hostedSha256": "015bb3ede09b0a8733ddfbefc29e30c400fa9851dbaa9aeb7bc16a64bc3cc1a0"
+    },
+    {
+      "file": "admin-line-launch.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "da4cf178d7362808571dc94dc246f9a08fa7300890034d741decc81b35f176d3",
+      "hostedSha256": "da4cf178d7362808571dc94dc246f9a08fa7300890034d741decc81b35f176d3"
+    },
+    {
+      "file": "admin-line-link.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "17881b050b324c2adda97d80f8928a0a0e922aeb931bb76e38f5087ce0b94e8d",
+      "hostedSha256": "17881b050b324c2adda97d80f8928a0a0e922aeb931bb76e38f5087ce0b94e8d"
+    },
+    {
+      "file": "admin-line-link.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7faa25fd3e5a92e8b0d10b77eea7c088bca0a8cb9601ac505cd1f5a64ac07024",
+      "hostedSha256": "7faa25fd3e5a92e8b0d10b77eea7c088bca0a8cb9601ac505cd1f5a64ac07024"
+    },
+    {
+      "file": "admin-login-v2.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "76f19e40e40d2a987dc3567bdcf26ad386b49f7c18f6de1bd25133ae6b73f923",
+      "hostedSha256": "76f19e40e40d2a987dc3567bdcf26ad386b49f7c18f6de1bd25133ae6b73f923"
+    },
+    {
+      "file": "admin-login.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "873918cedd6dd1cfdfd9f810180cf901fb915324e7d57e928fd17bcb38d81af3",
+      "hostedSha256": "873918cedd6dd1cfdfd9f810180cf901fb915324e7d57e928fd17bcb38d81af3"
+    },
+    {
+      "file": "admin-login.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "58207697887e84d65e8039609e66d0939b87c8dc4d83c70da93793b41a81879d",
+      "hostedSha256": "58207697887e84d65e8039609e66d0939b87c8dc4d83c70da93793b41a81879d"
+    },
+    {
+      "file": "admin-password-reset.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "2de8984af129fe250a1bdaaa12fa4681a618f3a3c80cc01a67fca9b95ebe16be",
+      "hostedSha256": "2de8984af129fe250a1bdaaa12fa4681a618f3a3c80cc01a67fca9b95ebe16be"
+    },
+    {
+      "file": "admin-password-reset.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7d7faa84887fe830679b97061c392bb1b9b2fe441d980770ec4925fef140ef16",
+      "hostedSha256": "7d7faa84887fe830679b97061c392bb1b9b2fe441d980770ec4925fef140ef16"
+    },
+    {
+      "file": "admin-set-password.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7e04ea1f2c5862e3d3f3f8eadc76d7e03f4a545a12d30c3276a5e22e3b4f7e3b",
+      "hostedSha256": "7e04ea1f2c5862e3d3f3f8eadc76d7e03f4a545a12d30c3276a5e22e3b4f7e3b"
+    },
+    {
+      "file": "amenities.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "ea7b9f2cb3dfea42660ef2b91fc7ee499ed796b772d3b72937379a7aafaf4096",
+      "hostedSha256": "ea7b9f2cb3dfea42660ef2b91fc7ee499ed796b772d3b72937379a7aafaf4096"
+    },
+    {
+      "file": "amenities.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "9cfc39033ac11bb61a1d90bd839d13743d3711ea3dcaf17cce9f4537ad0e2ac2",
+      "hostedSha256": "9cfc39033ac11bb61a1d90bd839d13743d3711ea3dcaf17cce9f4537ad0e2ac2"
+    },
+    {
+      "file": "app-consistency.css",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "5f8bf5491ad0c4fd2e41e9efdc581ba8b13585c523b9c416509bc6c45e8538fc",
+      "hostedSha256": "5f8bf5491ad0c4fd2e41e9efdc581ba8b13585c523b9c416509bc6c45e8538fc"
+    },
+    {
+      "file": "app-design-tokens.css",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "edc94c8df0b24377dfbb88de1dd331d4f5c28ecdd06a9cca98b92f36f8bac180",
+      "hostedSha256": "edc94c8df0b24377dfbb88de1dd331d4f5c28ecdd06a9cca98b92f36f8bac180"
+    },
+    {
+      "file": "app-function-catalog.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "2e140e00a74a00d63cca07de216a42582ef609f64cd63f5bad34fc8b984786a0",
+      "hostedSha256": "2e140e00a74a00d63cca07de216a42582ef609f64cd63f5bad34fc8b984786a0"
+    },
+    {
+      "file": "app-function-definitions.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "65771282be396f6e4b0a308652535c60d20d0f385b5dc5c3b50bf7d0d41f0269",
+      "hostedSha256": "65771282be396f6e4b0a308652535c60d20d0f385b5dc5c3b50bf7d0d41f0269"
+    },
+    {
+      "file": "app-icons.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "793248f438c9f4672d620064f536bb31fb1811d5988f1898fdcf69c2fb47ccd4",
+      "hostedSha256": "793248f438c9f4672d620064f536bb31fb1811d5988f1898fdcf69c2fb47ccd4"
+    },
+    {
+      "file": "app-notifications.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "2f7e09c172fc9be72ed7ed533bf68c5683fcbd16467448fcf27cfa7aefac8899",
+      "hostedSha256": "2f7e09c172fc9be72ed7ed533bf68c5683fcbd16467448fcf27cfa7aefac8899"
+    },
+    {
+      "file": "app-pwa.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "2d8785e301bdd9e04547fc1f98c915c2d288d4afae162dc1321676cab4dd1b80",
+      "hostedSha256": "2d8785e301bdd9e04547fc1f98c915c2d288d4afae162dc1321676cab4dd1b80"
+    },
+    {
+      "file": "app-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "dca49885d81370b15b2748265b18ed9baca1d13d556383c64e930872f5471297",
+      "hostedSha256": "dca49885d81370b15b2748265b18ed9baca1d13d556383c64e930872f5471297"
+    },
+    {
+      "file": "attendance-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "e6b16dbe7e9e05859b8bed7baf7ee862faf4f71cf964d7b5427e487b07d3b0f6",
+      "hostedSha256": "e6b16dbe7e9e05859b8bed7baf7ee862faf4f71cf964d7b5427e487b07d3b0f6"
+    },
+    {
+      "file": "attendance.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "1fb1c4bef3f9a76dd469f577349974f6b2638e11fdd1d04e04c4770e5e0a17d0",
+      "hostedSha256": "1fb1c4bef3f9a76dd469f577349974f6b2638e11fdd1d04e04c4770e5e0a17d0"
+    },
+    {
+      "file": "binding-review.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "5d310b2551a1e514bdc5a4032b0f422628dca5632f657454910f15fc7f8c8fda",
+      "hostedSha256": "5d310b2551a1e514bdc5a4032b0f422628dca5632f657454910f15fc7f8c8fda"
+    },
+    {
+      "file": "church-brand.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "63b3819d5fb7d736f91222eb20c4fcbda3c33ac7186f487f938863399ebe8401",
+      "hostedSha256": "63b3819d5fb7d736f91222eb20c4fcbda3c33ac7186f487f938863399ebe8401"
+    },
+    {
+      "file": "church-customizations.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "4b03537b3f4ee9ae7c711b68e5e753c7aca43511d3e4a8e1a06ea20a9277ee60",
+      "hostedSha256": "4b03537b3f4ee9ae7c711b68e5e753c7aca43511d3e4a8e1a06ea20a9277ee60"
+    },
+    {
+      "file": "church-os-sw.js",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "40b95843f0bd1c75a74e01645cba5de62d34b5d1282b19aa87a189ea13f2ca69",
+      "hostedSha256": "40b95843f0bd1c75a74e01645cba5de62d34b5d1282b19aa87a189ea13f2ca69"
+    },
+    {
+      "file": "church-settings-management.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "fa64aea67d28f1b0e51d0b5f0da0fdccfc324aefb29d0139906ad6ab95f4484e",
+      "hostedSha256": "fa64aea67d28f1b0e51d0b5f0da0fdccfc324aefb29d0139906ad6ab95f4484e"
+    },
+    {
+      "file": "church-settings-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "fcb1ac8d4e0289b9b51066f72de6f48863671a67bf48f02f217a56136a7da119",
+      "hostedSha256": "fcb1ac8d4e0289b9b51066f72de6f48863671a67bf48f02f217a56136a7da119"
+    },
+    {
+      "file": "church-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "0a25171e2db2c289bac2245bdef35207c6283d551e9d9e1dc9f4e98d83f57fd4",
+      "hostedSha256": "0a25171e2db2c289bac2245bdef35207c6283d551e9d9e1dc9f4e98d83f57fd4"
+    },
+    {
+      "file": "customization-settings-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "fdced638f3bd71f42a210592225a08faf005a360ac18a126804f7a5f2cdb4cd0",
+      "hostedSha256": "fdced638f3bd71f42a210592225a08faf005a360ac18a126804f7a5f2cdb4cd0"
+    },
+    {
+      "file": "customization-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "c6e243592541392d471a30e206a803bc640255bf58a17aa94385529c628a399f",
+      "hostedSha256": "c6e243592541392d471a30e206a803bc640255bf58a17aa94385529c628a399f"
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "a7e470c5b658fce44266809c6551593104d07b11c84ff8058ba61ae5dba33f18",
+      "hostedSha256": "a7e470c5b658fce44266809c6551593104d07b11c84ff8058ba61ae5dba33f18"
+    },
+    {
+      "file": "daily-devotional-admin.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "3fae44d152a473d6f786ae7a2684c9bb62868fd01de17bec5c97bcc11d5e8cb0",
+      "hostedSha256": "3fae44d152a473d6f786ae7a2684c9bb62868fd01de17bec5c97bcc11d5e8cb0"
+    },
+    {
+      "file": "dashboard-management.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "418f08033aaa5c20171b37fe5be41e57afd95b06915fd53748eb7ef7fe00d651",
+      "hostedSha256": "418f08033aaa5c20171b37fe5be41e57afd95b06915fd53748eb7ef7fe00d651"
+    },
+    {
+      "file": "group-members.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "66b9a54529bdb760474d057282473ced861a32e42991d6a08daf9ee08fb1513f",
+      "hostedSha256": "66b9a54529bdb760474d057282473ced861a32e42991d6a08daf9ee08fb1513f"
+    },
+    {
+      "file": "group-members.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "b214409694124465a000257650f10ce78f24f6c3cfab7c59e31cf3d3d2538827",
+      "hostedSha256": "b214409694124465a000257650f10ce78f24f6c3cfab7c59e31cf3d3d2538827"
+    },
+    {
+      "file": "group-resources-management.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "b1dcd0da70469881405d1d39b267ff5ef06ef362d2c137d5563c284f021ee47e",
+      "hostedSha256": "b1dcd0da70469881405d1d39b267ff5ef06ef362d2c137d5563c284f021ee47e"
+    },
+    {
+      "file": "group-resources-management.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "b95558957509340f432ecd9367c331068fd43a98e727fa49e2ebec9cab87a756",
+      "hostedSha256": "b95558957509340f432ecd9367c331068fd43a98e727fa49e2ebec9cab87a756"
+    },
+    {
+      "file": "groups-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "16c10e69cddb3dec727b869172feaafe74049b1ece78c111d2e1ce4561cf51b5",
+      "hostedSha256": "16c10e69cddb3dec727b869172feaafe74049b1ece78c111d2e1ce4561cf51b5"
+    },
+    {
+      "file": "groups.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "680c35c5a554d204f0265db4658e899e1da77fe6c8c265c1caf87e4d969a1e4b",
+      "hostedSha256": "680c35c5a554d204f0265db4658e899e1da77fe6c8c265c1caf87e4d969a1e4b"
+    },
+    {
+      "file": "heat-camp-admin.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "8a1636dd79d422c4d1aac8f7fac5e1dfdab559e6c366cf53a925154e1a0e2f42",
+      "hostedSha256": "8a1636dd79d422c4d1aac8f7fac5e1dfdab559e6c366cf53a925154e1a0e2f42"
+    },
+    {
+      "file": "heat-camp-admin.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7cfac304e6ab1c25cc1bf40f43e45811776464026885b54330157a7be2bdf289",
+      "hostedSha256": "7cfac304e6ab1c25cc1bf40f43e45811776464026885b54330157a7be2bdf289"
+    },
+    {
+      "file": "index.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "6e31561aa40cd3e3a15aac1b4692e03c8471e4f1fdbe606f0d8f868fb14e5cad",
+      "hostedSha256": "6e31561aa40cd3e3a15aac1b4692e03c8471e4f1fdbe606f0d8f868fb14e5cad"
+    },
+    {
+      "file": "instagram-publishing-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "b2b609e030f66643708fbea2b4a107d8ec9fda32dbe53306b2db275b37906088",
+      "hostedSha256": "b2b609e030f66643708fbea2b4a107d8ec9fda32dbe53306b2db275b37906088"
+    },
+    {
+      "file": "instagram-publishing-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "e51234ab18d3c782e7fb91024df86c3f2e99a3b8b8783db7595e8216e34b7bc9",
+      "hostedSha256": "e51234ab18d3c782e7fb91024df86c3f2e99a3b8b8783db7595e8216e34b7bc9"
+    },
+    {
+      "file": "inventory.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "73b3d6774df0fd0258a39a82d1282afaf1888aa36f7e36e60e939d4c2a191e07",
+      "hostedSha256": "73b3d6774df0fd0258a39a82d1282afaf1888aa36f7e36e60e939d4c2a191e07"
+    },
+    {
+      "file": "inventory.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "e81cea6bd3d0d7d59e84d805ba956be29800312a43864cd19c791f998cd4d31b",
+      "hostedSha256": "e81cea6bd3d0d7d59e84d805ba956be29800312a43864cd19c791f998cd4d31b"
+    },
+    {
+      "file": "ios-experience.css",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "3396dd87fe49fbc7402316f3a3e96f1b7b8f72fcc70641109df181d855d8c47c",
+      "hostedSha256": "3396dd87fe49fbc7402316f3a3e96f1b7b8f72fcc70641109df181d855d8c47c"
+    },
+    {
+      "file": "ios-experience.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "86cac9d7146cfc08982b32f7646bf121ae75e9937684dd00d37d79d92ea687ea",
+      "hostedSha256": "86cac9d7146cfc08982b32f7646bf121ae75e9937684dd00d37d79d92ea687ea"
+    },
+    {
+      "file": "line-content-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "c454d539a359650bfa1831b5b2a215f902743d6bcda2e1d0dbe34b4afad98620",
+      "hostedSha256": "c454d539a359650bfa1831b5b2a215f902743d6bcda2e1d0dbe34b4afad98620"
+    },
+    {
+      "file": "love-share-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "b95fd558dadd4a51645f9627be618e990a1d0976be28c325500643ca265c74a5",
+      "hostedSha256": "b95fd558dadd4a51645f9627be618e990a1d0976be28c325500643ca265c74a5"
+    },
+    {
+      "file": "media-publishing-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "e1c194fb2b572eb1e97293ccf11c28a2112f7f7e19679b9d467ef4cef64d6194",
+      "hostedSha256": "e1c194fb2b572eb1e97293ccf11c28a2112f7f7e19679b9d467ef4cef64d6194"
+    },
+    {
+      "file": "media-publishing-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "fc6ea388e243155e1c22a47bc3fd426ac2aef8670af882acfbbb7a10686be438",
+      "hostedSha256": "fc6ea388e243155e1c22a47bc3fd426ac2aef8670af882acfbbb7a10686be438"
+    },
+    {
+      "file": "member-audit.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "f2c2807c8ba2299e23d3a0b8103fb900b08283674f2b72852f8f1e4d65a06ab8",
+      "hostedSha256": "f2c2807c8ba2299e23d3a0b8103fb900b08283674f2b72852f8f1e4d65a06ab8"
+    },
+    {
+      "file": "member-audit.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "8df98293bc818f8d3ac0b3fa3a4ffadfed162b009e8b92d59274ae62bc9cc5c7",
+      "hostedSha256": "8df98293bc818f8d3ac0b3fa3a4ffadfed162b009e8b92d59274ae62bc9cc5c7"
+    },
+    {
+      "file": "members-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "6fef3b5c4fc3ca8068ba7fd4d5e77df36dc4d6adcf3547d10b943479e97a9084",
+      "hostedSha256": "6fef3b5c4fc3ca8068ba7fd4d5e77df36dc4d6adcf3547d10b943479e97a9084"
+    },
+    {
+      "file": "members.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "37d1b997473cdccd7f0b00bce2fd9612805ee8b05aad08853817fb524286da12",
+      "hostedSha256": "37d1b997473cdccd7f0b00bce2fd9612805ee8b05aad08853817fb524286da12"
+    },
+    {
+      "file": "ministry-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "1cee2f3a02f90358f71692ae137ca08d36019717745d88a4f62b9554d7781522",
+      "hostedSha256": "1cee2f3a02f90358f71692ae137ca08d36019717745d88a4f62b9554d7781522"
+    },
+    {
+      "file": "newcomer-care-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "f3945befd5d674a911e7ba807a66620e64ee7665122a00ff5850216340905b81",
+      "hostedSha256": "f3945befd5d674a911e7ba807a66620e64ee7665122a00ff5850216340905b81"
+    },
+    {
+      "file": "newcomer-care.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "be6afaa90f49fc4fe6ded5b395ba26eaf1bad0389b868cd2eba1f9ae255509e2",
+      "hostedSha256": "be6afaa90f49fc4fe6ded5b395ba26eaf1bad0389b868cd2eba1f9ae255509e2"
+    },
+    {
+      "file": "newcomer.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "be800a91c0ea8fb31cd06ac1955a8dfc7dc3f3f839a7714ec7ad5911dc658664",
+      "hostedSha256": "be800a91c0ea8fb31cd06ac1955a8dfc7dc3f3f839a7714ec7ad5911dc658664"
+    },
+    {
+      "file": "notification-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "5434925a315e6a1966f3b7379ec7eee3513b695b826487e27f286b63ecacea4e",
+      "hostedSha256": "5434925a315e6a1966f3b7379ec7eee3513b695b826487e27f286b63ecacea4e"
+    },
+    {
+      "file": "notification-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "cd8f3aed82aab70a38d8910da11cd3f3e02bb4d097f661d62d482eebfe50f885",
+      "hostedSha256": "cd8f3aed82aab70a38d8910da11cd3f3e02bb4d097f661d62d482eebfe50f885"
+    },
+    {
+      "file": "pastoral-content-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "93684446c3ef99973d9d2d6014429231770316c0bd80228dc8011b923441686c",
+      "hostedSha256": "93684446c3ef99973d9d2d6014429231770316c0bd80228dc8011b923441686c"
+    },
+    {
+      "file": "pastoral-content.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "96b1a1df293f7f9767168f3d83a439ea8bb73d5ad51df84557bd31e2431d03f6",
+      "hostedSha256": "96b1a1df293f7f9767168f3d83a439ea8bb73d5ad51df84557bd31e2431d03f6"
+    },
+    {
+      "file": "pastoral-inbox-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "ad2634d230cd75808d87434b46516426b2434f6bb79d78df2abdc919e8330c1d",
+      "hostedSha256": "ad2634d230cd75808d87434b46516426b2434f6bb79d78df2abdc919e8330c1d"
+    },
+    {
+      "file": "pastoral-inbox.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "2c99ecf387f74db3acdb9b272c344c4be4f323ddfd91f7a7517f820a1ac64507",
+      "hostedSha256": "2c99ecf387f74db3acdb9b272c344c4be4f323ddfd91f7a7517f820a1ac64507"
+    },
+    {
+      "file": "prayers-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "f7476eb5df51c3131b244c4d69fdfd1a5538a3f9d6ad177389da47659171ca13",
+      "hostedSha256": "f7476eb5df51c3131b244c4d69fdfd1a5538a3f9d6ad177389da47659171ca13"
+    },
+    {
+      "file": "prayers.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "2fc3781710330f13cd4f34a2806c39b944f47927ed75790851b469b943061b01",
+      "hostedSha256": "2fc3781710330f13cd4f34a2806c39b944f47927ed75790851b469b943061b01"
+    },
+    {
+      "file": "review-workflow-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "daf7afe03e2dbc7960cde65ebd4c49b0913d5e3ccd6cd27e324053cb97daa738",
+      "hostedSha256": "daf7afe03e2dbc7960cde65ebd4c49b0913d5e3ccd6cd27e324053cb97daa738"
+    },
+    {
+      "file": "review-workflow-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "1c22fc5ebc6126751fc6bf12af07aee834cead930e533c04bc566e8668d4df1f",
+      "hostedSha256": "1c22fc5ebc6126751fc6bf12af07aee834cead930e533c04bc566e8668d4df1f"
+    },
+    {
+      "file": "schedules-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7e032df7719bea35a6b048965f1642f08edbc8247a11132811cdb6e49e52ecd5",
+      "hostedSha256": "7e032df7719bea35a6b048965f1642f08edbc8247a11132811cdb6e49e52ecd5"
+    },
+    {
+      "file": "schedules.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "0c5bde2da5cbc31f20c5fb89c99b41fe5936254c6644dbeef73344c2ce6a5667",
+      "hostedSha256": "0c5bde2da5cbc31f20c5fb89c99b41fe5936254c6644dbeef73344c2ce6a5667"
+    },
+    {
+      "file": "sermon-social-review.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "39c6a355b97033fa27cff2dab50b2a683923de1560e8a32475f1ad9ef950677b",
+      "hostedSha256": "39c6a355b97033fa27cff2dab50b2a683923de1560e8a32475f1ad9ef950677b"
+    },
+    {
+      "file": "sermon-social-review.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "bf980c256857a8d2ed2f43410eb794104bf676fb481211d0919aa8e1dd528100",
+      "hostedSha256": "bf980c256857a8d2ed2f43410eb794104bf676fb481211d0919aa8e1dd528100"
+    },
+    {
+      "file": "service-signup-admin.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "08fb474b4518b777c7b2d764b8958f419dadbbde9c2252dc392da3e8954c73bb",
+      "hostedSha256": "08fb474b4518b777c7b2d764b8958f419dadbbde9c2252dc392da3e8954c73bb"
+    },
+    {
+      "file": "service-signup-admin.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "1b5e5308fc57df4827a847d4125660422c993b90d67f4b27c75037d5cbac37fb",
+      "hostedSha256": "1b5e5308fc57df4827a847d4125660422c993b90d67f4b27c75037d5cbac37fb"
+    },
+    {
+      "file": "spaces-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "a176e147b92e29de24a44e2c3ee2263a7894820097596d4ecd69bbffa37e5d3a",
+      "hostedSha256": "a176e147b92e29de24a44e2c3ee2263a7894820097596d4ecd69bbffa37e5d3a"
+    },
+    {
+      "file": "spaces.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "9357ea2ef2076e181991117a387bd9ee6edfc57419230909956537f1449b765a",
+      "hostedSha256": "9357ea2ef2076e181991117a387bd9ee6edfc57419230909956537f1449b765a"
+    },
+    {
+      "file": "system-monitor.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7f418dcbf2c1a6e325ed34d2215a9109ec96da1487e5a3e976d13a88395a5dc4",
+      "hostedSha256": "7f418dcbf2c1a6e325ed34d2215a9109ec96da1487e5a3e976d13a88395a5dc4"
+    },
+    {
+      "file": "system-monitor.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "29dff9513a93e07e947aac7b6ebead37c3de74631376575ad0b3b86e78c111bd",
+      "hostedSha256": "29dff9513a93e07e947aac7b6ebead37c3de74631376575ad0b3b86e78c111bd"
+    },
+    {
+      "file": "todays-message-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "5233c611867bb62546c70d744ab7c5ed3fb546a003753fe06a159359b93ee8bf",
+      "hostedSha256": "5233c611867bb62546c70d744ab7c5ed3fb546a003753fe06a159359b93ee8bf"
+    },
+    {
+      "file": "tree-reading-admin.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "308d3b9b7dff0d7c9188d53723556340a6b8bcb33ab6b7bc5784516637bffe4d",
+      "hostedSha256": "308d3b9b7dff0d7c9188d53723556340a6b8bcb33ab6b7bc5784516637bffe4d"
+    },
+    {
+      "file": "tree-reading-admin.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "ff48a1d80a1e3f08c4ff60552edce8051e3987ca6b299d601acc05d8d96dda0f",
+      "hostedSha256": "ff48a1d80a1e3f08c4ff60552edce8051e3987ca6b299d601acc05d8d96dda0f"
+    },
+    {
+      "file": "website-maintenance-management.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "ce7dc3ae60523d0a99f542124fa31bdc20f35eac97c3e0845d5853f9818f3b16",
+      "hostedSha256": "ce7dc3ae60523d0a99f542124fa31bdc20f35eac97c3e0845d5853f9818f3b16"
+    },
+    {
+      "file": "website-maintenance.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "9af966476ee69fa6bd72bf9d1bd0d3aaf101f08567ef60d656f87d0de55b8017",
+      "hostedSha256": "9af966476ee69fa6bd72bf9d1bd0d3aaf101f08567ef60d656f87d0de55b8017"
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "94311f9ae65f0e9f35e0584e9085cffe77d6299a9219f39a38ddfa9d226dc4e8",
+      "hostedSha256": "94311f9ae65f0e9f35e0584e9085cffe77d6299a9219f39a38ddfa9d226dc4e8"
+    },
+    {
+      "file": "weekly-bulletin-review.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "104241e0ac55439598a218429923504a3411425c163294404db28f4f823d4932",
+      "hostedSha256": "104241e0ac55439598a218429923504a3411425c163294404db28f4f823d4932"
+    },
+    {
+      "file": "welcome-original-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "4e481c3d792ad6f6f47184cf706b426eff96f92d43731679080d00f384aea1de",
+      "hostedSha256": "4e481c3d792ad6f6f47184cf706b426eff96f92d43731679080d00f384aea1de"
+    },
+    {
+      "file": "welcome-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "ec3e35eb9c49a901edd8d688401a13f3af9a150aaa1e22824a50b7ff55025e89",
+      "hostedSha256": "ec3e35eb9c49a901edd8d688401a13f3af9a150aaa1e22824a50b7ff55025e89"
+    },
+    {
+      "file": "youtube-settings.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "40eeba5d83b7bd11afe8a0c7762ddfbe94c95b74b6a3de849638bfc39773f3ea",
+      "hostedSha256": "40eeba5d83b7bd11afe8a0c7762ddfbe94c95b74b6a3de849638bfc39773f3ea"
+    },
+    {
+      "file": "youtube-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "6c9779f1500c958fbebea3a152e45ed41562d4b2c30871d1f57b881bf9a0cba8",
+      "hostedSha256": "6c9779f1500c958fbebea3a152e45ed41562d4b2c30871d1f57b881bf9a0cba8"
+    },
+    {
+      "file": "youtube-subtitle-library.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "c860f30131624d5e6d9b345870e5cfb850f2ec084cc132af194ae763e2e39855",
+      "hostedSha256": "c860f30131624d5e6d9b345870e5cfb850f2ec084cc132af194ae763e2e39855"
+    },
+    {
+      "file": "youtube-subtitle-library.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "28ee9f21aaecc0d228f681b5e3e4d48a17703620dbb9d2c5949a03910641f619",
+      "hostedSha256": "28ee9f21aaecc0d228f681b5e3e4d48a17703620dbb9d2c5949a03910641f619"
+    }
+  ],
+  "backendChanged": false,
+  "fullDeviceAcceptance": "pending",
+  "overall99PercentClaimed": false,
+  "hostedInterfaceChecks": {
+    "status": "passed",
+    "count": 49,
+    "authAndDataResponses": "isolated fixtures, no real writes"
+  }
+}

@@ -8,7 +8,7 @@
 - 正式 Supabase 專案：`aqanuwilmvdtlzuqlrau`，`public.daily_devotionals`，堂會 `M+`。
 - 新增 2027-02-01 至 2027-02-28 共28篇。全部內容逐欄讀回一致，狀態為 `initial_review`，版本1。
 - 一月31篇完整紀錄的匯入前後校驗值相同。原靈修進度及審核紀錄數均未改變；總內容由31篇增加為59篇。
-- 本次只有新增二月內容，沒有 schema、migration、RLS、function、trigger 或 Edge Function 部署。
+- 內容匯入只有新增二月資料，另新增一則使用者已授權的App審核提醒；沒有 schema、migration、RLS、function、trigger 或 Edge Function 部署。
 - 採交易內 insert-only seed，日期衝突 `DO NOTHING`，不覆寫既有內容或審核。實際資料列識別及驗證見 `database-verification.json`。
 
 ## 審核與內容限制
@@ -35,6 +35,12 @@
 - 靈修HTML更新模組版本；既有Worker對頁面與模組採網路優先，不更動共用快取版本。
 - Build、Lint、Typecheck：未執行；本次靜態前端未配置相關指令。
 - Mac Safari、iPhone 17 實機：未執行，不宣稱99%驗收完成。
+
+## GitHub 與發布
+
+實作提交 `8383620` 已push，GitHub [PR #38](https://github.com/mschurch-app/church-management-staging/pull/38) 已合併main（`ec7f649fc96899be471a8d53a57a498ab9bafe12`）。2026-10-10 01:02（台北）正式後台HTML及模組皆HTTP 200，SHA-256符合來源；見 `hosted-check.json`。首次檢查仍是舊資源，第二次確認發布完成。此為靜態發布核對，真實登入與裝置操作仍待驗收。
+
+依使用者既有要求新增一則App審核提醒給牧師，連到二月管理頁；沿用既有排程、來源鍵防重複，未更動推播機制。01:03（台北）查回 `push_sent_at` 已寫入，嘗試1次、無錯誤；代表至少一台裝置接受送達，不代表使用者已讀或實際看到提示。見 `notification-delivery.json`。
 
 ## 回復方式
 

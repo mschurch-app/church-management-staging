@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit1';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-app-audit1';
+import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-app-audit2';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/instagram-publishing';
 const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search),church=params.get('church')||'M+';

@@ -1,4 +1,4 @@
-import {readAccess} from './admin-access.mjs?v=20261009-app-audit1';
+import {readAccess} from './admin-access.mjs?v=20261009-app-audit2';
 export const PERMISSIONS=Object.freeze({members:'會友',attendance:'出席登記',groups:'小組與小家',schedules:'服事安排',private_prayers:'代禱與關懷',pastoral_chats:'關懷訊息與圖卡',spaces:'場地與設備',newcomer_care:'新朋友',tree_reading_admin:'生命樹',binding_review:'LINE 身分確認',notification_settings:'通知設定',website_weekly:'主日週報',website_group_resources:'小組教材',inventory:'物品與借用',heat_camp:'熱火籃球營'});
 const PASTOR_PERMISSIONS=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory'];
 export const ROLE_TEMPLATES=Object.freeze({

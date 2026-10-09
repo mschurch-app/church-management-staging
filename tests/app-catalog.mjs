@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 globalThis.window={};
 const {FUNCTION_CATALOG,FUNCTION_GROUPS,availableFunctionKeys,favoriteKeys}=await import('../app-function-catalog.mjs');
-const {canOpen}=await import('../admin-access.mjs?v=20261009-app-audit1');
+const {canOpen}=await import('../admin-access.mjs?v=20261009-app-audit2');
 const permissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp'];
 const full={grants:permissions.map(permission=>({church_id:'M+',permission})),featurePermissions:[]};
 const home={is_owner:true,system_monitor_access:true,home_modules:Object.keys(FUNCTION_CATALOG)};

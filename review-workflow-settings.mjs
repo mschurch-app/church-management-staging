@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit1';
-import {readAccess,canOpen} from './admin-access.mjs?v=20261009-app-audit1';
+import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {readAccess,canOpen} from './admin-access.mjs?v=20261009-app-audit2';
 const $=s=>document.querySelector(s),church=new URLSearchParams(location.search).get('church')||'M+',status=$('#status'),root=$('#workflows');
 const el=(tag,text='',cls='')=>{const node=document.createElement(tag);node.textContent=text;node.className=cls;return node;};
 let payload={people:[],workflows:[],can_manage:false},busy=false;

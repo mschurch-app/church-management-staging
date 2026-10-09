@@ -1,4 +1,4 @@
-import {encryptHandoff,handoffRequest} from './app-line-auth.mjs?v=20261009-app-audit1';
+import {encryptHandoff,handoffRequest} from './app-line-auth.mjs?v=20261009-app-audit2';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 
 const status=document.querySelector('#status');

@@ -1,4 +1,4 @@
-const CACHE='church-os-shell-20261009-audit1';
+const CACHE='church-os-shell-20261009-audit2';
 const SHELL=['/admin-login-v2.html','/admin-dashboard.html','/app.webmanifest','/assets/app/church-os-icon.svg','/assets/app/church-os-icon-192.png','/assets/app/church-os-icon-512.png','/auth.css','/apple-ui.css','/church-brand.css','/theme-vitality.css','/church-palette.css','/app-consistency.css','/vendor/supabase-2.102.0.js','/app-line-auth.mjs','/admin-auth-config.mjs'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('church-os-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));

@@ -1,6 +1,6 @@
-import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261009-app-audit1';
-import {db} from './admin-db.mjs?v=20261009-app-audit1';
-import {readAccess} from './admin-access.mjs?v=20261009-app-audit1';
+import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {readAccess} from './admin-access.mjs?v=20261009-app-audit2';
 
 const status=document.querySelector('#status');
 const button=document.querySelector('#link-line');

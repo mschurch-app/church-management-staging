@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="church-brand.css?v=20261007-direct1">
   <link rel="stylesheet" href="theme-vitality.css?v=20261007-direct1">
   <link rel="stylesheet" href="apple-ui.css?v=20261007-direct1">
-  <link rel="stylesheet" href="church-palette.css?v=20261009-app-audit1">
-<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-app-audit1"></head>
+  <link rel="stylesheet" href="church-palette.css?v=20261009-app-audit2">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-app-audit2"></head>
 <body class="auth-entry-body">
 <main class="login-app">
   <section class="login-visual" aria-hidden="true"><span class="login-glow one"></span><span class="login-glow two"></span><div class="login-mark">M<span>＋</span></div><p>CHURCH MANAGEMENT</p><h2>讓服事與關懷<br>更靠近每一個人</h2></section>
@@ -35,7 +35,7 @@
 </main>
 <script src="vendor/supabase-2.102.0.js"></script>
 <script type="module">
-import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261009-app-audit1';
+import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261009-app-audit2';
 (()=>{
   const AUTH_URL='https://aqanuwilmvdtlzuqlrau.supabase.co',KEY='sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',STORAGE='church-staging-admin-v1';
   const form=document.getElementById('form'),button=document.getElementById('submit'),status=document.getElementById('status'),label=button.innerHTML;
@@ -46,7 +46,7 @@ import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=2
   const request=async(url,options,timeoutMessage)=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{return await fetch(url,{...options,cache:'no-store',credentials:'omit',signal:controller.signal});}catch(error){if(error.name==='AbortError')throw new Error(timeoutMessage);throw new Error('無法連接登入服務，請確認網路後再試（D02）。');}finally{clearTimeout(timer);}};
   // Keep the installed App shell. Deleting every worker/cache on login caused
   // cold starts and interrupted resumes on iOS.
-  navigator.serviceWorker?.register('/church-os-sw.js?v=20261009-app-audit1').then(registration=>registration.update()).catch(()=>{});
+  navigator.serviceWorker?.register('/church-os-sw.js?v=20261009-app-audit2').then(registration=>registration.update()).catch(()=>{});
   async function resumeExistingSession(){
     if(pendingHandoff())return;
     try{

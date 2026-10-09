@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit1';
+import {db} from './admin-db.mjs?v=20261009-app-audit2';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminProfile,saveAdminAccess,saveHomePreferences,saveFeaturePermissions} from './admin-accounts-management.mjs?v=20261008-line-dedupe1';
 const search=new URLSearchParams(location.search),church=search.get('church')||'M+',reviewUser=/^[0-9a-f-]{36}$/i.test(search.get('review_user')||'')?search.get('review_user'):'',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false;
 const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};

@@ -1,0 +1,89 @@
+{
+  "checked_at_utc": "2026-10-09T17:24:57.424759+00:00",
+  "pr": 42,
+  "merge_commit": "dc90a3d23c382800cc325f122bc178a5c4eeb6d4",
+  "resources": [
+    {
+      "path": "tree-reading-october-test.html",
+      "expected_sha256": "a67cc1c13698350f548166543d469db0110472e1704836e0af1c062324b3fa5b",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 12878,
+      "actual_sha256": "a67cc1c13698350f548166543d469db0110472e1704836e0af1c062324b3fa5b",
+      "matches": true
+    },
+    {
+      "path": "tree-reading-october-test.mjs",
+      "expected_sha256": "3bc774ddb78d57fe2a23cd7f2cf0a9fced5989c0bcabec076d4c749ac60fc075",
+      "status": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 39861,
+      "actual_sha256": "3bc774ddb78d57fe2a23cd7f2cf0a9fced5989c0bcabec076d4c749ac60fc075",
+      "matches": true
+    },
+    {
+      "path": "tree-reading-october-journey.css",
+      "expected_sha256": "4e6830ed229845689d1641080c89a1f972a42fdd20e894a0e19646aab245c725",
+      "status": 200,
+      "content_type": "text/css; charset=utf-8",
+      "bytes": 7622,
+      "actual_sha256": "4e6830ed229845689d1641080c89a1f972a42fdd20e894a0e19646aab245c725",
+      "matches": true
+    },
+    {
+      "path": "assets/audio/life-tree/reading.wav",
+      "expected_sha256": "26aeffcfe8ab360bd593631994d3095fa5cf5a700434c47dbc921c39bf8803ee",
+      "status": 200,
+      "content_type": "audio/wav",
+      "bytes": 705644,
+      "actual_sha256": "26aeffcfe8ab360bd593631994d3095fa5cf5a700434c47dbc921c39bf8803ee",
+      "matches": true
+    },
+    {
+      "path": "assets/audio/life-tree/open.wav",
+      "expected_sha256": "b3d2af6a1f1d4a32c93cd056ac7ab5fe42d46e279c4ee2cbe7c6a3592c91203d",
+      "status": 200,
+      "content_type": "audio/wav",
+      "bytes": 25622,
+      "actual_sha256": "b3d2af6a1f1d4a32c93cd056ac7ab5fe42d46e279c4ee2cbe7c6a3592c91203d",
+      "matches": true
+    },
+    {
+      "path": "assets/audio/life-tree/water.wav",
+      "expected_sha256": "7e2db0a45984aca2c9fdef07947ca3a5df2263dd2d23da264072ae92f192777f",
+      "status": 200,
+      "content_type": "audio/wav",
+      "bytes": 31796,
+      "actual_sha256": "7e2db0a45984aca2c9fdef07947ca3a5df2263dd2d23da264072ae92f192777f",
+      "matches": true
+    },
+    {
+      "path": "assets/audio/life-tree/celebration.wav",
+      "expected_sha256": "4793508439fc0da7150db4d855176c1e993b004a319f461c9ff8184d10aeedb4",
+      "status": 200,
+      "content_type": "audio/wav",
+      "bytes": 56492,
+      "actual_sha256": "4793508439fc0da7150db4d855176c1e993b004a319f461c9ff8184d10aeedb4",
+      "matches": true
+    },
+    {
+      "path": "assets/audio/life-tree/wind.wav",
+      "expected_sha256": "9121cabd3eb68c5b8305772a7d94f5327978fc619b89293dd9208e60c29f4a3d",
+      "status": 200,
+      "content_type": "audio/wav",
+      "bytes": 31796,
+      "actual_sha256": "9121cabd3eb68c5b8305772a7d94f5327978fc619b89293dd9208e60c29f4a3d",
+      "matches": true
+    },
+    {
+      "path": "assets/audio/life-tree/journal.wav",
+      "expected_sha256": "06ee03c453808336022e62650f2194a1a2f508db5a014b8eca435d72aa7b3554",
+      "status": 200,
+      "content_type": "audio/wav",
+      "bytes": 25622,
+      "actual_sha256": "06ee03c453808336022e62650f2194a1a2f508db5a014b8eca435d72aa7b3554",
+      "matches": true
+    }
+  ],
+  "all_match": true
+}

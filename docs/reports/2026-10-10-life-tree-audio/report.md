@@ -22,6 +22,6 @@ Chromium 使用虛構 LINE／API／經文，封鎖其餘外部請求。檢查媒
 
 ## 發布與回復
 
-由 `codex/life-tree-audio-recovery` 送PR至main；GitHub Pages依既有流程發布。發布後須讀回HTML、模組、樣式與六個音訊，逐檔比對SHA-256。最終發布資訊由同目錄 `hosted-check.json` 及當日codex-log補記。
+`codex/life-tree-audio-recovery` 的 `ef29fcb` 已push，PR #42 合併main為 `dc90a3d23c382800cc325f122bc178a5c4eeb6d4`；GitHub Pages依既有流程發布。2026-10-10 01:24:57（台北）讀回HTML、模組、樣式與六個音訊，共九項HTTP 200且SHA-256逐檔符合來源，見 `hosted-check.json`。第一次01:24:06讀到舊版與新增音訊404，屬發布尚未生效，證據保留於 `hosted-check-initial.json`，未將首次檢查當作通過。
 
 如需回復，以revert本次程式PR恢復上一版本，不改寫已共享history。沒有migration、schema、RLS、function、trigger或資料異動，無資料庫回復需求。

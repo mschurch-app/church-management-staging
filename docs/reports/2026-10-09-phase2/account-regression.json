@@ -1,0 +1,51 @@
+{
+  "checks": [
+    {
+      "name": "verified Email/LINE accounts appear as one editable row",
+      "status": "passed"
+    },
+    {
+      "name": "lost server response restores save button and preserves input",
+      "status": "passed"
+    },
+    {
+      "name": "retry reuses request ID and succeeds without a second change",
+      "status": "passed"
+    },
+    {
+      "name": "administrative coordinator scope remains selectable and exclusive",
+      "status": "passed"
+    },
+    {
+      "name": "revocation removes the one combined card and both principals",
+      "status": "passed"
+    },
+    {
+      "name": "daily devotional accepts access-token-only LINE session",
+      "status": "passed"
+    },
+    {
+      "name": "devotional network failure keeps credentials and offers retry",
+      "status": "passed"
+    },
+    {
+      "name": "devotional retry recovers in same page",
+      "status": "passed"
+    },
+    {
+      "name": "service signup network failure avoids LINE redirect loop",
+      "status": "passed"
+    },
+    {
+      "name": "service signup retry loads a recoverable empty-season state",
+      "status": "passed"
+    },
+    {
+      "name": "no uncaught browser JavaScript errors",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "serverResponseLoss": true,
+  "syntheticCredentials": true
+}

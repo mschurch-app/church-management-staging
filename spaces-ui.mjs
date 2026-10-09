@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-stage2';
 import {
   listRooms, saveRoom, listBookings, createBooking, updateBooking,
   setBookingStatus, setRoomActive

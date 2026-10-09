@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-stage2';
 const $=s=>document.querySelector(s),draft=new URLSearchParams(location.search).get('draft'),endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-social-review';let item,youtubeWorkflow,isFinalReviewer=false,busy=false,submitted=false;
 function setStatus(text,tone=''){const n=$('#status'),near=$('#action-status');n.textContent=text;n.dataset.tone=tone;if(near){near.textContent=text;near.dataset.tone=tone;}}
 function syncApproveAvailability(){if(!item)return;const initial=item.review_stage==='initial_review',pastoral=item.review_stage==='pastoral_confirmation',actionable=(initial&&!isFinalReviewer)||(pastoral&&isFinalReviewer),needsImage=initial&&!$('input[name="social-image"]:checked')?.value,button=$('#approve');button.disabled=busy||submitted||!actionable||needsImage;button.title=submitted||!actionable?'這個審核階段已完成。':needsImage?'請先選擇一張講道講員圖。':'';$('#approve-hint').textContent=submitted||!actionable?'此審核階段已送出，無法重複送出。':needsImage?'請向上滑動選擇一張講員圖，才能送出初審。':'';}

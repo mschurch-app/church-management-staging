@@ -1,7 +1,7 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-stage2';
 import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20261003-access-guard1';
 import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260924-custom2';
-import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
+import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#list'),editor=$('#editor');
 const groupTerm=church==='SHiNE'?'小家':'小組';

@@ -1,23 +1,7 @@
 import {readAccess,chooseChurch} from './admin-access.mjs?v=20261009-stage1';
-export const MODULES=Object.freeze([
- {key:'members',permission:'members',title:'會友',description:'會友、新朋友與資料紀錄',file:'members.html',icon:'👥'},
- {key:'newcomer_care',permission:'newcomer_care',title:'新朋友',description:'聯絡紀錄、下一步與後續關懷',file:'newcomer-care.html',icon:'🌱'},
- {key:'tree_reading_admin',permission:'tree_reading_admin',title:'生命樹',description:'每日靈修與讀經進度',file:'daily-devotional-admin.html',icon:'🌳'},
- {key:'binding_review',permission:'binding_review',title:'LINE 身分確認',description:'確認會友與 LINE 帳號',file:'binding-review.html',icon:'🔗'},
- {key:'notification_settings',permission:'notification_settings',title:'通知設定',description:'設定手機與 LINE 通知',file:'notification-settings.html',icon:'🔔'},
- {key:'groups',permission:'groups',title:'小組與小家',description:'分組、組長與成員安排',file:'groups.html',icon:'🫶'},
- {key:'attendance',permission:'attendance',title:'出席登記',description:'聚會出席與統計',file:'attendance.html',icon:'✅'},
- {key:'schedules',permission:'schedules',title:'服事安排',description:'主日與聚會服事',file:'schedules.html',icon:'📅'},
- {key:'spaces',permission:'spaces',title:'場地與設備',description:'空間、設備與預約',file:'spaces.html',icon:'📍'},
- {key:'inventory',permission:'inventory',title:'物品與借用',description:'位置、數量、借出與歸還',file:'inventory.html',icon:'📦'},
- {key:'prayers',permission:'private_prayers',title:'代禱與關懷',description:'公開與私密代禱追蹤',file:'prayers.html',icon:'🙏'},
- {key:'pastoral_inbox',permission:'pastoral_chats',title:'關懷訊息',description:'一對一訊息與跟進紀錄',file:'pastoral-inbox.html',icon:'💬'},
- {key:'pastoral_content',permission:'pastoral_chats',title:'牧養圖卡',description:'祝禱、小卡與新朋友旅程',file:'pastoral-content.html',icon:'✨'},
- {key:'website_weekly',permission:'website_weekly',title:'主日週報',description:'週報、主日預告圖與服事表',file:'website-maintenance.html',icon:'🌐'},
- {key:'website_group_resources',permission:'website_group_resources',title:'小組教材',description:'每週教材與聚會內容',file:'group-resources-management.html',icon:'📚'}
-]);
+export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261009-stage2';
+import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261009-stage2';
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}
-export const HOME_TEMPLATES=Object.freeze({pastor:['newcomer_care','private_prayers','pastoral_chats','pastoral_workspace','members','schedules','system_monitor'],pastor_spouse:['newcomer_care','private_prayers','pastoral_workspace','members','groups','schedules'],administrator:['attendance','members','groups','schedules','spaces','binding_review','notification_settings','website_weekly'],group_leader:['groups','attendance','members','pastoral_workspace'],care:['newcomer_care','private_prayers','pastoral_chats','members','pastoral_workspace'],facilities:['spaces','pastoral_workspace'],custom:['pastoral_workspace']});
 export async function dashboardHomePreferences(db,church){const [home,features]=await Promise.all([db.rpc('get_my_home_preferences',{p_church:church}),db.rpc('get_my_feature_permissions',{p_church:church})]);const data=home.data||{};return {role_key:data.role_key||'custom',home_modules:Array.isArray(data.home_modules)?data.home_modules:(HOME_TEMPLATES[data.role_key]||HOME_TEMPLATES.custom),feature_permissions:Array.isArray(features.data)?features.data:[]};}
 export async function dashboardCounts(db,church,grants){
  const has=p=>grants.some(g=>g.church_id===church&&g.permission===p),jobs=[];

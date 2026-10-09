@@ -1,18 +1,6 @@
 import {readAccess} from './admin-access.mjs?v=20261009-stage1';
-export const PERMISSIONS=Object.freeze({members:'會友',attendance:'出席登記',groups:'小組與小家',schedules:'服事安排',private_prayers:'代禱與關懷',pastoral_chats:'關懷訊息與圖卡',spaces:'場地與設備',newcomer_care:'新朋友',tree_reading_admin:'生命樹',binding_review:'LINE 身分確認',notification_settings:'通知設定',website_weekly:'主日週報',website_group_resources:'小組教材',inventory:'物品與借用',heat_camp:'熱火籃球營'});
-const PASTOR_PERMISSIONS=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory'];
-export const ROLE_TEMPLATES=Object.freeze({
-  pastor:{label:'牧者',permissions:PASTOR_PERMISSIONS},
-  pastor_spouse:{label:'師母',permissions:PASTOR_PERMISSIONS},
-  administrator:{label:'行政管理',permissions:['members','attendance','groups','schedules','spaces','newcomer_care','binding_review','notification_settings','inventory']},
-  group_leader:{label:'小組／小家長',permissions:['members','attendance','groups']},
-  care:{label:'關懷同工',permissions:['members','private_prayers','pastoral_chats','newcomer_care']},
-  facilities:{label:'總務同工',permissions:['spaces','inventory']},
-  custom:{label:'自訂權限',permissions:[]}
-});
-export const HOME_MODULES=Object.freeze({members:'會友',newcomer_care:'新朋友',pastoral_workspace:'同工工作區',private_prayers:'代禱與關懷',pastoral_chats:'關懷訊息',attendance:'出席登記',groups:'小組與小家',schedules:'服事安排',spaces:'場地與設備',inventory:'物品與借用',heat_camp:'熱火籃球營',website_weekly:'主日週報',website_group_resources:'小組教材',tree_reading_admin:'生命樹',binding_review:'LINE 身分確認',notification_settings:'通知設定',school:'課輔',school_checkin:'課輔｜打卡',school_schedules:'課輔｜安排',school_rollcall:'課輔｜出席',school_students:'課輔｜學生',school_counseling:'課輔｜個別輔導',school_reports:'課輔｜報表',basketball:'籃球隊',basketball_gamecenter:'籃球隊｜比賽紀錄',basketball_tactics:'籃球隊｜戰術',basketball_assignments:'籃球隊｜球員作業',basketball_schedule:'籃球隊｜行程',basketball_daily:'籃球隊｜每日狀態',system_monitor:'系統狀況',church_settings:'教會設定'});
-export const HOME_TEMPLATES=Object.freeze({pastor:['newcomer_care','private_prayers','pastoral_chats','pastoral_workspace','members','schedules','system_monitor'],pastor_spouse:['newcomer_care','private_prayers','pastoral_workspace','members','groups','schedules'],administrator:['attendance','members','groups','schedules','inventory','binding_review','notification_settings','website_weekly'],group_leader:['groups','attendance','members','pastoral_workspace'],care:['newcomer_care','private_prayers','pastoral_chats','members','pastoral_workspace'],facilities:['inventory','pastoral_workspace'],custom:['pastoral_workspace']});
-export const FEATURE_ACTIONS=Object.freeze({view:'查看',create:'新增',edit:'修改',delete:'刪除',export:'匯出',approve:'審核',manage:'管理設定'});
+export {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261009-stage2';
+import {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES} from './app-function-definitions.mjs?v=20261009-stage2';
 async function signedIn(db){await readAccess(db);}
 export function permissionsForRole(role){return [...(ROLE_TEMPLATES[role]?.permissions||[])];}
 export async function listAdminAccounts(db){await signedIn(db);const {data,error}=await db.rpc('list_admin_accounts_v4');if(error||!Array.isArray(data))throw new Error(String(error?.message||'').includes('not_owner')?'只有已啟用的專案擁有者可以管理帳號。':'無法載入同工帳號，請重新整理後再試。');return data.map(row=>({...row,invitation_state:row.invitation_state||'active',linked_user_ids:row.linked_user_ids||[]}));}

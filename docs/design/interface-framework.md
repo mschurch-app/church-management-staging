@@ -18,7 +18,7 @@
 | 常用功能 | 每列三顆，長按排列；移除後仍在收納盒可找到並加回。 |
 | 響應式 | 使用可用 viewport 與安全區域，避免硬套裝置實體像素。Mac 清單、詳情、表格與工作區依視窗寬度安排。 |
 
-目前的主要文字、次要文字、強調色及表頭高度定義於 `app-consistency.css`：`--app-ink`、`--app-secondary`、`--app-accent`、`--app-header-height`。調整共用設計時修改語意變數與共用元件，並檢查受影響頁面。
+主要文字、次要文字、強調色、表頭高度、間距、圓角及圖示配色集中定義於 `app-design-tokens.css`；`app-consistency.css` 將變數套用到共用元件：`--app-ink`、`--app-secondary`、`--app-accent`、`--app-header-height`。調整共用設計時修改語意變數與共用元件，並檢查受影響頁面。
 
 色彩與文字對比依 [W3C 文字對比準則](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum)；觸控範圍參考 [Apple 設計建議](https://developer.apple.com/design/tips/)及 [Web 觸控範圍準則](https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced)。
 
@@ -37,16 +37,17 @@
 
 | 職責 | 現有共用來源 | 新功能的接入方式 |
 | --- | --- | --- |
-| 語意樣式 | `app-consistency.css`、`ios-experience.css` | 沿用共用樣式與 CSS 變數；頁面專屬 CSS 限於該頁工作內容，避免新的全域 button／文字覆蓋。 |
-| 圖示與裝置互動 | `ios-experience.mjs` | 延伸功能 key、SVG 及配色對應；保留安全區域、鍵盤、動態圖示及減少動效支援。 |
+| 語意樣式 | `app-design-tokens.css`、`app-consistency.css`、`ios-experience.css` | 沿用共用樣式與 CSS 變數；頁面專屬 CSS 限於該頁工作內容，避免新的全域 button／文字覆蓋。 |
+| 圖示與裝置互動 | `app-icons.mjs`、`ios-experience.mjs` | SVG 在 `app-icons.mjs`；功能對應在 definitions、配色在 tokens；保留安全區域、鍵盤、動態圖示及減少動效支援。 |
 | 堂會品牌與相關導覽 | `church-brand.mjs` | 管理頁沿用共用表頭及堂會範圍；公開頁依用途安排導覽，保持同一套視覺語言。 |
-| 完整功能入口 | `app-function-catalog.mjs` | 新功能加入唯一 key、名稱、路由、分類、堂會及權限條件；確保搜尋、收納與常用一致。 |
+| 完整功能入口 | `app-function-definitions.mjs`、`app-function-catalog.mjs` | metadata／分類／角色建議在 definitions，catalog 依既有權限篩選；新功能加入唯一 key、名稱、路由、分類、堂會及權限條件；確保搜尋、收納與常用一致。 |
+| 功能與設定元件 | `app-ui.mjs` | 以 `createFunctionEntry`／`createSettingsEntry` 建立入口；導覽連結與加入／移除按鈕為並列控制，避免巢狀互動。 |
 | 前端權限 | `admin-access.mjs` | 沿用既有權限判斷；另由後端檢查實際資料操作權。首頁捷徑只表示偏好。 |
 | 資料請求 | `admin-db.mjs` | 管理頁沿用共用資料客戶端與期限；登入、錯誤及儲存由業務處理器呈現結果。公開頁只接入必要的服務。 |
 | 操作回饋 | `action-feedback.mjs` 與頁面處理器 | 純導覽、開關浮窗與送出資料分清；完成提示依實際結果，逾時提供恢復方式。 |
 | App 安裝與更新 | `app-pwa.mjs`、`church-os-sw.js`、`app.webmanifest` | 變更共用資源時統一版本；驗收已安裝 App 的更新、返回與重開。 |
 
-表中的程式路徑為教會 OS 專案的共用接入點；兩個官網在各自專案使用其共用樣式與內容模組，逐步對齊同一套設計規範。上述並非已完成所有元件重構。後續整理應逐步集中重複定義，同時維持既有登入、資料、堂會與權限行為。
+表中的程式路徑為教會 OS 專案的共用接入點；兩個官網在各自專案使用其共用樣式與內容模組，逐步對齊同一套設計規範。第二階段已集中功能、路由、角色建議與圖示定義，首頁與設定區已沿用入口元件；既有各業務表單尚未全數改用新元件。後續改版維持既有登入、資料、堂會與權限行為。
 
 ## 標準頁面模式
 
@@ -80,10 +81,13 @@
 
 ## 參考畫面與狀態
 
-- [手機首頁](../reports/2026-10-09-app-audit/dashboard-390.png)
-- [桌面首頁](../reports/2026-10-09-app-audit/dashboard-1280.png)
-- [管理員編輯](../reports/2026-10-09-app-audit/account-editor-390.png)
-- [初審與複審](../reports/2026-10-09-app-audit/review-390.png)
-- [既有盤點與剩餘問題](../reports/2026-10-09-app-audit/report.md)
+- [手機首頁](../reports/2026-10-09-phase2/dashboard-390.png)
+- [桌面首頁](../reports/2026-10-09-phase2/dashboard-1440.png)
+- [手機設定](../reports/2026-10-09-phase2/settings-390.png)
+- [桌面設定](../reports/2026-10-09-phase2/settings-1440.png)
+- [管理員編輯](../reports/2026-10-09-phase2/account-editor-390.png)
+- [初審與複審](../reports/2026-10-09-phase2/review-390.png)
+- [第二階段實作與驗收紀錄](../reports/2026-10-09-phase2/report.md)
+- [共用元件接入方式](component-contract.md)
 
-參考截圖使用隔離資料，呈現目前共用設計起點；iPhone 17 與 Mac 的完整實機驗收及 99% 目標仍須依驗收紀錄確認。
+參考截圖使用隔離資料；iPhone 17 與 Mac Safari 完整實機驗收及 99% 目標仍須依驗收紀錄確認。

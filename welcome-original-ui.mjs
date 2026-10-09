@@ -1,5 +1,5 @@
 import {getOptions} from './welcome-options.mjs';
-import {loadChurchCustomizations} from './church-customizations.mjs?v=20260924-custom1';
+import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';
 import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261002-shine1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;

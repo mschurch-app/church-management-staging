@@ -1,0 +1,84 @@
+{
+  "checks": [
+    {
+      "name": "all 41 functions belong to exactly one category",
+      "status": "passed"
+    },
+    {
+      "name": "every function has a known SVG and stable metadata",
+      "status": "passed"
+    },
+    {
+      "name": "all internal function destinations exist",
+      "status": "passed"
+    },
+    {
+      "name": "settings contain unique functions in four groups",
+      "status": "passed"
+    },
+    {
+      "name": "admin and dashboard share identical role recommendations",
+      "status": "passed"
+    },
+    {
+      "name": "role recommendation keys remain valid preference and permission keys",
+      "status": "passed"
+    },
+    {
+      "name": "server preference allowlist still exactly matches configurable home definitions",
+      "status": "passed"
+    },
+    {
+      "name": "aliases preserve saved favorites without duplicate grants",
+      "status": "passed"
+    },
+    {
+      "name": "search finds old names and review aliases",
+      "status": "passed"
+    },
+    {
+      "name": "local destinations always preserve selected church",
+      "status": "passed"
+    },
+    {
+      "name": "external destinations retain original route and query",
+      "status": "passed"
+    },
+    {
+      "name": "service leader has only service functions and no settings",
+      "status": "passed"
+    },
+    {
+      "name": "notification coworker can find review and notification settings",
+      "status": "passed"
+    },
+    {
+      "name": "facilities coworker can open settings without unrelated tools",
+      "status": "passed"
+    },
+    {
+      "name": "view and approval restrictions apply equally to settings",
+      "status": "passed"
+    },
+    {
+      "name": "disabled functions disappear from both directories",
+      "status": "passed"
+    },
+    {
+      "name": "SHiNE settings cannot show M+ only tools",
+      "status": "passed"
+    },
+    {
+      "name": "personal favorites never enable unassigned external tools",
+      "status": "passed"
+    },
+    {
+      "name": "navigation and legacy customization routes derive from the catalog",
+      "status": "passed"
+    },
+    {
+      "name": "definitions are deeply immutable",
+      "status": "passed"
+    }
+  ]
+}

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="theme-vitality.css?v=20261007-direct1">
   <link rel="stylesheet" href="apple-ui.css?v=20261007-direct1">
   <link rel="stylesheet" href="church-palette.css?v=20261009-app-audit2">
-<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-app-audit2"></head>
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-stage2"></head>
 <body class="auth-entry-body">
 <main class="login-app">
   <section class="login-visual" aria-hidden="true"><span class="login-glow one"></span><span class="login-glow two"></span><div class="login-mark">M<span>＋</span></div><p>CHURCH MANAGEMENT</p><h2>讓服事與關懷<br>更靠近每一個人</h2></section>
@@ -47,7 +47,7 @@ import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=2
   async function hasLineForSession(user,token){if((user.identities||[]).some(i=>i.provider==='custom:line-web'))return true;const response=await request(AUTH_URL+'/rest/v1/rpc/get_my_app_capabilities',{method:'POST',headers:{apikey:KEY,authorization:'Bearer '+token,'content-type':'application/json'},body:'{}'},'LINE 身分確認逾時，請稍後重試。');if(!response.ok)throw new Error('LINE 身分暫時無法確認，請稍後重試。');return (await response.json()).has_line===true;}
   // Keep the installed App shell. Deleting every worker/cache on login caused
   // cold starts and interrupted resumes on iOS.
-  navigator.serviceWorker?.register('/church-os-sw.js?v=20261009-stage1').then(registration=>registration.update()).catch(()=>{});
+  navigator.serviceWorker?.register('/church-os-sw.js?v=20261009-stage2').then(registration=>registration.update()).catch(()=>{});
   async function resumeExistingSession(){
     if(pendingHandoff())return;
     try{

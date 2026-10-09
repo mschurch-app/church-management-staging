@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-stage2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 
 const $=selector=>document.querySelector(selector),statusNode=$('#status');

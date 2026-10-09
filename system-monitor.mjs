@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-stage2';
 const $=s=>document.querySelector(s),endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/system-monitor';
 const el=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};
 const labels={church:{title:'教會 OS',icon:'⛪',items:[['members','全部會友'],['mplus_members','M+ 會友'],['shine_members','火樂會友'],['newcomers','M+ 新朋友'],['groups','小組／小家'],['open_care','關懷進行中'],['overdue_care','逾期關懷'],['pending_prayers','待關懷代禱'],['future_services','未來服事表']]},school:{title:'課輔管理',icon:'📚',items:[['students','在班學生'],['staff','老師／同工'],['today_checkins','今日打卡'],['month_rollcalls','本月點名'],['today_counseling','今日輔導']]},basketball:{title:'籃球隊',icon:'🏀',items:[['players','球員'],['members','系統成員'],['future_games','未來賽事'],['game_stats','球員比賽紀錄'],['today_checkins','今日簽到']]}};

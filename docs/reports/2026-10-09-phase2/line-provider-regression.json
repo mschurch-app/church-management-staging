@@ -1,0 +1,55 @@
+{
+  "checks": [
+    {
+      "name": "missing credentials fail closed",
+      "status": "passed"
+    },
+    {
+      "name": "invalid ID token requires authentication",
+      "status": "passed"
+    },
+    {
+      "name": "valid ID token reaches menu",
+      "status": "passed"
+    },
+    {
+      "name": "valid access token without ID token reaches menu",
+      "status": "passed"
+    },
+    {
+      "name": "token issued to another LINE channel is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "expired ID token is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "LINE rate limit retains session via retryable 503",
+      "status": "passed"
+    },
+    {
+      "name": "LINE server error is not reported as invalid login",
+      "status": "passed"
+    },
+    {
+      "name": "LINE timeout is retryable without forcing login",
+      "status": "passed"
+    },
+    {
+      "name": "ID verification outage falls back to valid access token",
+      "status": "passed"
+    },
+    {
+      "name": "LINE profile rate limit is retryable",
+      "status": "passed"
+    },
+    {
+      "name": "malformed provider JSON is retryable",
+      "status": "passed"
+    }
+  ],
+  "syntheticCredentials": true,
+  "providerResponses": "isolated fixtures",
+  "realLineNetworkCalls": 0
+}

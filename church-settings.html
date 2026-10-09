@@ -8,9 +8,9 @@
   <title>教會設定｜教會 OS</title>
   <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
 <link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app3"><link rel="stylesheet" href="church-palette.css?v=20261009-app-audit2"><link rel="stylesheet" href="mobile-layout-fixes.css?v=20261008-nav1"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-app-audit2"></head>
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app3"><link rel="stylesheet" href="church-palette.css?v=20261009-app-audit2"><link rel="stylesheet" href="mobile-layout-fixes.css?v=20261008-nav1"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261009-stage2"></head>
 <body>
-<main class="member-page">
+<main class="member-page settings-page">
   <header class="page-header">
     <div>
       <p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p>
@@ -18,94 +18,37 @@
       <p class="muted">集中管理表單選項、帳號權限、外觀與堂會公開資訊。</p>
     </div>
   </header>
-  <nav class="page-nav" aria-label="教會設定導覽">
-    <a id="dashboard" href="admin-dashboard.html">管理首頁</a>
-    <a id="members" href="members.html">會友名冊</a>
-    <a href="church-settings.html?church=M%2B">M＋教會設定</a>
-    <a href="church-settings.html?church=SHiNE">火樂教會設定</a>
-  </nav>
-
-  <section class="settings-hub" aria-labelledby="settings-tools-title">
-    <div class="settings-hub-heading">
-      <h2 id="settings-tools-title">設定與工具</h2>
-      <p class="muted">設定類功能集中在此，會友名冊保持簡潔。</p>
-    </div>
-    <div class="settings-link-grid settings-link-grid--wide">
-      <a id="customization-options" class="settings-link-card" href="customization-settings.html">
-        <span class="settings-link-icon" aria-hidden="true">☰</span>
-        <span class="settings-link-copy"><strong>首頁與表單設定</strong><span>整合管理功能列、迎新表單、題目選項與服事恩賜</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="admin-accounts" class="settings-link-card" href="admin-accounts.html">
-        <span class="settings-link-icon" aria-hidden="true">◎</span>
-        <span class="settings-link-copy"><strong>同工帳號與權限</strong><span>設定管理帳號可使用的功能</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="review-workflows" class="settings-link-card" data-ios-icon="review_workflows" href="review-workflow-settings.html" hidden>
-        <span class="settings-link-icon" aria-hidden="true">✅</span><span class="settings-link-copy"><strong>初審與複審</strong><span>設定靈修、講道及其他工作的審核人員與通知方式</span></span><span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <section class="line-settings-card" aria-labelledby="line-settings-title">
-        <div class="line-settings-heading">
-          <span class="settings-link-icon" aria-hidden="true">LINE</span>
-          <span><strong id="line-settings-title">LINE 功能與內容</strong><span>六項會友服務的內容、表單與關懷管理集中在這裡</span></span>
-        </div>
-        <nav class="line-settings-shortcuts" aria-label="LINE 六項功能設定">
-          <a id="line-today" href="todays-message-settings.html"><span aria-hidden="true">🌅</span><strong>給今天的你</strong></a>
-          <a id="line-help" href="help-companion.html"><span aria-hidden="true">🕊️</span><strong>隨時的幫助</strong></a>
-          <a id="line-prayer" href="prayers.html"><span aria-hidden="true">🙏</span><strong>需要禱告時</strong></a>
-          <a id="line-newcomer" href="customization-settings.html?tab=form"><span aria-hidden="true">☕</span><strong>歡迎新朋友</strong></a>
-          <a id="line-weekly" href="#church-public-info"><span aria-hidden="true">⛪</span><strong>不見不散喔</strong></a>
-          <a id="line-love" href="love-share-settings.html"><span aria-hidden="true">💌</span><strong>把愛傳出去</strong></a>
-        </nav>
-        <div class="line-hub-actions">
-          <a id="line-pastoral" class="line-preview-link" href="pastoral-content.html">✨ 教牧內容範本</a>
-          <a id="line-preview" class="line-preview-link" href="line-preview.html">▦ 預覽 LINE 六項功能</a>
-        </div>
-      </section>
-      <a id="website-maintenance" class="settings-link-card" href="website-maintenance.html">
-        <span class="settings-link-icon" aria-hidden="true">🌐</span>
-        <span class="settings-link-copy"><strong>主日週報與預告圖</strong><span>管理 M+大雅教會週報、主日預告圖片與自動服事表</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="media-publishing" class="settings-link-card" href="media-publishing-settings.html?church=M%2B">
-        <span class="settings-link-icon" aria-hidden="true">▶</span>
-        <span class="settings-link-copy"><strong>社群內容發布</strong><span>集中管理 IG、YouTube 與各項內容發布開關及平台連線</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="subtitle-library" class="settings-link-card" href="youtube-subtitle-library.html">
-        <span class="settings-link-icon" aria-hidden="true">字</span>
-        <span class="settings-link-copy"><strong>YouTube 字幕詞庫</strong><span>逐集校正辨識錯字、專有名詞與講員用語</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-      <a id="space-settings" class="settings-link-card" href="spaces.html" hidden>
-        <span class="settings-link-icon" aria-hidden="true">🏛️</span>
-        <span class="settings-link-copy"><strong>場地與設備</strong><span>管理教會空間、設備及預約設定</span></span>
-        <span class="settings-link-arrow" aria-hidden="true">›</span>
-      </a>
-    </div>
+  <section class="settings-search function-finder" aria-label="搜尋設定工具">
+    <label for="settings-search">找設定</label>
+    <input id="settings-search" type="search" placeholder="輸入同工、初審、通知、週報…" autocomplete="off">
+    <p id="settings-search-state" class="muted" role="status" hidden></p>
   </section>
-
-  <p id="status" role="status" class="status-message"></p>
-  <section id="church-public-info" class="editor-panel settings-panel">
+  <p id="hub-status" role="status" class="status-message"></p>
+  <div class="settings-layout">
+    <nav id="settings-directory" class="settings-directory" aria-label="設定分類"></nav>
+    <section id="settings-tools" class="settings-groups" aria-label="設定與工具"></section>
+  </div>
+  <section id="church-public-info" class="editor-panel settings-panel" hidden aria-labelledby="church-info-title">
     <form id="form">
-      <h2>堂會外觀</h2>
+      <h3 id="church-info-title">堂會資訊</h3><p id="public-info-state" class="muted"></p><h4>外觀</h4>
       <div class="edit-grid">
         <label>堂會代表色<div class="color-input"><input id="color-picker" type="color"><input id="brand-color" required maxlength="7" pattern="#[0-9A-Fa-f]{6}" placeholder="#F97316"></div></label>
         <label>Logo 圖片網址<input id="logo-url" type="url" placeholder="https://..."></label>
       </div>
-      <h2>聚會與位置</h2>
+      <h4>聚會與位置</h4>
       <div class="edit-grid">
         <label>聚會資訊<textarea id="service-info" placeholder="聚會時間、場次與簡要說明"></textarea></label>
         <label>地址<textarea id="address" placeholder="教會地址"></textarea></label>
         <label class="full-width">Google Maps 或地圖網址<input id="map-url" type="url" placeholder="https://..."></label>
       </div>
+      <p id="status" role="status" class="status-message"></p>
       <div class="editor-actions"><button id="reload" type="button" class="secondary">重新載入</button><button id="save" type="submit">儲存教會設定</button></div>
     </form>
   </section>
 </main>
-<script>const websiteMaintChurch=new URLSearchParams(location.search).get('church')||'M+';document.querySelector('#website-maintenance').href='website-maintenance.html?church='+encodeURIComponent(websiteMaintChurch);</script>
+
 <script src="vendor/supabase-2.102.0.js"></script>
-<script type="module" src="church-settings-ui.mjs?v=20261009-app-audit2"></script>
-<script type="module" src="church-brand.mjs?v=20261009-app-audit2"></script>
+<script type="module" src="church-settings-ui.mjs?v=20261009-stage2"></script>
+<script type="module" src="church-brand.mjs?v=20261009-stage2"></script>
 </body>
 </html>

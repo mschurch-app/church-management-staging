@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';import {listGroups,listGroupMembers,assignMemberToGroup,setGroupLeader} from './group-management.mjs';
+import {db} from './admin-db.mjs?v=20261009-stage2';import {listGroups,listGroupMembers,assignMemberToGroup,setGroupLeader} from './group-management.mjs';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s),term=church==='SHiNE'?'小家':'小組',leaderTerm=church==='SHiNE'?'小家長':'小組長';let groups=[],members=[],busy=false;
 const el=(tag,value,cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 function selectedGroup(){return groups.find(x=>String(x.id)===$('#group').value);}

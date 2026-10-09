@@ -1,26 +1,60 @@
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
-import {db} from './admin-db.mjs?v=20261009-app-audit2';import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs';
-const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:'M+',$=s=>document.querySelector(s);let current=null,busy=false;
+import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20261009-stage1';
+import {db} from './admin-db.mjs?v=20261009-stage2';
+import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs?v=20261009-stage2';
+import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';
+import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261009-stage2';
+import {createSettingsEntry,element,setStatus} from './app-ui.mjs?v=20261009-stage2';
+const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search);
+let church=params.get('church')||'M+',current=null,busy=false,canEdit=false;
+const publicInfoPanel=$('#church-public-info');
+const info=selector=>publicInfoPanel.querySelector(selector);
 const fields={brand_color:'#brand-color',logo_url:'#logo-url',service_info:'#service-info',address:'#address',map_url:'#map-url'};
-function enabled(value){$('#form').querySelectorAll('input,textarea,button').forEach(n=>n.disabled=!value);}
-async function load(){enabled(false);$('#status').textContent='正在載入教會設定…';try{current=await loadChurchSettings(db,church);for(const [key,selector] of Object.entries(fields))$(selector).value=current[key]||'';$('#color-picker').value=current.brand_color||'#F97316';enabled(true);$('#status').textContent='設定已載入。';}catch(error){current=null;$('#status').textContent=error.message;}}
-$('#form').onsubmit=async e=>{e.preventDefault();if(busy||!current)return;busy=true;enabled(false);try{await saveChurchSettings(db,church,Object.fromEntries(Object.entries(fields).map(([key,selector])=>[key,$(selector).value])),current);await load();$('#status').textContent='教會設定已儲存。';}catch(error){enabled(true);$('#status').textContent=error.message;}finally{busy=false;}};
-$('#color-picker').oninput=()=>$('#brand-color').value=$('#color-picker').value.toUpperCase();$('#brand-color').oninput=()=>{if(/^#[0-9A-Fa-f]{6}$/.test($('#brand-color').value))$('#color-picker').value=$('#brand-color').value;};$('#reload').onclick=load;const scoped=file=>file+'?church='+encodeURIComponent(church||'');$('#title').textContent=(church==='M+'?'M＋大雅教會':'火樂教會')+' · 教會設定';$('#dashboard').href=scoped('admin-dashboard.html');$('#members').href=scoped('members.html');$('#customization-options').href=scoped('customization-settings.html');$('#admin-accounts').href=scoped('admin-accounts.html');$('#space-settings').href=scoped('spaces.html');$('#line-today').href=scoped('todays-message-settings.html');$('#line-help').href=scoped('line-preview.html')+'&feature=help';$('#line-prayer').href=scoped('prayers.html');$('#line-newcomer').href=scoped('customization-settings.html')+'&tab=form';$('#line-weekly').href=scoped('church-settings.html')+'#church-public-info';$('#line-love').href=scoped('love-share-settings.html');$('#line-pastoral').href=scoped('pastoral-content.html');$('#line-preview').href=scoped('line-preview.html')+'&feature=menu';$('#media-publishing').href=scoped('media-publishing-settings.html');$('#subtitle-library').hidden=church!=='M+';startHub();
-
-async function startHub(){
-  enabled(false);
-  const cards=document.querySelectorAll('.settings-link-card,.line-settings-card');cards.forEach(n=>n.hidden=true);
-  try{
-    const access=await readAccess(db),capabilities=await db.rpc('get_my_app_capabilities');
-    const show=(id,allowed)=>{const node=document.getElementById(id);if(node)node.hidden=!allowed;};
-    const pastoral=canOpen(access,church,'pastoral'),weekly=canOpen(access,church,'website_weekly'),notifications=canOpen(access,church,'notification_settings');
-    show('customization-options',pastoral);show('admin-accounts',capabilities.data?.is_owner===true);
-    show('review-workflows',notifications);$('#review-workflows').href=scoped('review-workflow-settings.html');
-    document.querySelector('.line-settings-card').hidden=!pastoral;
-    show('website-maintenance',weekly);show('media-publishing',weekly&&canAction(access,church,'website_weekly','approve'));
-    show('subtitle-library',church==='M+'&&weekly&&canAction(access,church,'website_weekly','edit'));
-    show('space-settings',canOpen(access,church,'spaces'));show('members',canOpen(access,church,'members'));
-    $('#church-public-info').hidden=!pastoral;
-    if(pastoral)await load();else $('#status').textContent='依你的權限顯示可使用的設定工具。';
-  }catch(error){$('#status').textContent=error.message;}
+function enabled(value){info('#form').querySelectorAll('input,textarea,button[type=submit]').forEach(node=>node.disabled=!value||!canEdit);info('#reload').disabled=!value;}
+async function load(){
+  enabled(false);setStatus(info('#status'),'正在載入堂會資訊…',{busy:true});
+  try{current=await loadChurchSettings(db,church);for(const [key,selector] of Object.entries(fields))info(selector).value=current[key]||'';info('#color-picker').value=current.brand_color||'#A83929';enabled(true);setStatus(info('#status'),'');}
+  catch(error){current=null;setStatus(info('#status'),error.message,{tone:'error'});info('#reload').disabled=false;}
 }
+info('#form').onsubmit=async event=>{
+  event.preventDefault();if(busy||!current||!canEdit)return;busy=true;enabled(false);setStatus(info('#status'),'正在儲存堂會資訊…',{busy:true});
+  try{await saveChurchSettings(db,church,Object.fromEntries(Object.entries(fields).map(([key,selector])=>[key,info(selector).value])),current);await load();if(current)setStatus(info('#status'),'堂會資訊已儲存。',{tone:'success'});}
+  catch(error){enabled(true);setStatus(info('#status'),error.message,{tone:'error'});}
+  finally{busy=false;}
+};
+info('#color-picker').oninput=()=>info('#brand-color').value=info('#color-picker').value.toUpperCase();
+info('#brand-color').oninput=()=>{if(/^#[0-9A-Fa-f]{6}$/.test(info('#brand-color').value))info('#color-picker').value=info('#brand-color').value;};
+info('#reload').onclick=load;
+function filterSettings(){
+ const query=$('#settings-search').value.trim();let visible=0;
+ for(const group of document.querySelectorAll('.settings-group')){
+  for(const card of group.querySelectorAll('.settings-link-card')){card.hidden=!matchesFunction(card.dataset.functionKey,query);if(!card.hidden)visible++;}
+  const publicForm=group.querySelector('#church-public-info');if(publicForm){const keywords='堂會 外觀 聚會 地址 資訊 位置 logo';publicForm.hidden=Boolean(query&&!query.toLowerCase().split(/\s+/).every(term=>keywords.includes(term)));if(!publicForm.hidden)visible++;}
+  group.hidden=![...group.querySelectorAll('.settings-link-card')].some(card=>!card.hidden)&&(!publicForm||publicForm.hidden);
+  const directory=document.querySelector(`[data-settings-target="${group.id}"]`);if(directory)directory.hidden=group.hidden;
+ }
+ const state=$('#settings-search-state');state.hidden=!query;state.textContent=visible?'找到 '+visible+' 項設定工具':'找不到符合的設定，請換個名稱。';
+}
+$('#settings-search').addEventListener('input',filterSettings);
+async function startHub(){
+ canEdit=false;enabled(false);setStatus($('#hub-status'),'正在確認可使用的設定…',{busy:true});
+ try{
+  const access=await readAccess(db);church=chooseChurch(access,church);
+  const [capabilities,settings]=await Promise.all([db.rpc('get_my_app_capabilities'),loadChurchCustomizations(db,church)]);
+  if(capabilities.error)throw new Error('暫時無法確認設定權限，請稍後重試。');
+  const home={is_owner:!capabilities.error&&capabilities.data?.is_owner===true};
+  const groups=availableSettingsGroups(access,church,home,settings),container=$('#settings-tools'),directory=$('#settings-directory');
+  publicInfoPanel.hidden=true;publicInfoPanel.remove();container.replaceChildren();directory.replaceChildren();
+  $('#title').textContent=(church==='M+'?'M＋大雅教會':'火樂教會')+' · 教會設定';
+  for(const group of groups){
+    const section=element('section','','settings-group');section.id='settings-group-'+group.key;section.dataset.settingsGroup=group.key;
+    const heading=element('header','','settings-group-heading'),title=element('h2',group.title);title.id=section.id+'-title';section.setAttribute('aria-labelledby',title.id);heading.append(title,element('p',group.note,'muted'));
+    const grid=element('div','','settings-link-grid');for(const key of group.keys)grid.append(createSettingsEntry(key,church));section.append(heading,grid);container.append(section);
+    const jump=element('a',group.title);jump.href='#'+section.id;jump.dataset.settingsTarget=section.id;directory.append(jump);
+  }
+  const publicInfo=canOpen(access,church,'pastoral'),churchGroup=$('#settings-group-church');
+  if(publicInfo&&churchGroup){canEdit=canAction(access,church,'pastoral_chats','edit');churchGroup.append(publicInfoPanel);publicInfoPanel.hidden=false;info('#public-info-state').textContent=canEdit?'更新教會公開的聚會資訊與位置。':'你可查看堂會資訊；修改請由有編輯權限的同工處理。';await load();}
+  setStatus($('#hub-status'),groups.length?'':'目前沒有可使用的設定工具。');
+  filterSettings();
+ }catch(error){setStatus($('#hub-status'),error.message,{tone:'error'});const retry=element('button','重新載入','secondary');retry.type='button';retry.dataset.actionFeedback='off';retry.onclick=()=>{retry.remove();void startHub();};$('#hub-status').append(retry);}
+}
+void startHub();

@@ -1,6 +1,6 @@
-import {db} from './admin-db.mjs?v=20261009-app-audit2';
+import {db} from './admin-db.mjs?v=20261009-stage2';
 import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261003-access-guard1';
-import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20260924-custom2';
+import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';
 
 const params=new URLSearchParams(location.search),values=params.getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);
 const requestedState=params.get('state'),currentScope=params.get('scope')==='current',DAY_MS=24*60*60*1000;

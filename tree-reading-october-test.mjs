@@ -74,33 +74,65 @@ async function refresh(){const result=await api('me');state.participant=result.p
 async function loadScripture(requestedDate=''){const request=++scriptureRequest;state.loadedScriptureDate='';$('#mark-late').disabled=true;window.speechSynthesis?.cancel();const target=$('#scripture-text'),date=requestedDate||(isLaunch()?today():'2026-10-01'),isMakeup=date!==today();scriptureEndObserver?.disconnect();state.scriptureReadDate='';setReadingContext(date);$('#complete-reading-actions').hidden=true;$('#mark-read').disabled=true;target.replaceChildren();target.hidden=false;$('#audio-controls').hidden=true;$('#toggle-scripture').setAttribute('aria-expanded','true');$('#toggle-scripture').textContent='📖 收合完整經文';$('#passage-detail').textContent=isLaunch()?(isMakeup?`${fmt(date)} · 補讀經文載入中…`:`${fmt(date)} · 完整章節｜讀到最底後即可回樹下澆水`):'預覽十月首日完整經文；正式記錄自 10 月 1 日開始';const loading=document.createElement('p');loading.textContent='正在載入完整經文…';target.append(loading);try{const [chapter]=await loadScheduledChapters(prompt(date));if(request!==scriptureRequest)return;target.replaceChildren();const section=document.createElement('section');section.className='scripture-chapter';const h=document.createElement('h3');h.textContent=chapter.title;section.append(h);chapter.verses.forEach(v=>{const p=document.createElement('p');p.textContent=v;section.append(p)});target.append(section);const marker=document.createElement('span');marker.id='scripture-end';marker.className='scripture-end-marker';marker.setAttribute('aria-hidden','true');target.append(marker);state.passage=chapter.verses.join(' ');state.loadedScriptureDate=date;$('#audio-controls').hidden=false;$('#complete-reading-actions').hidden=isMakeup;if(isMakeup){$('#passage-detail').textContent=`${fmt(date)} · 補讀經文已載入｜按下「補讀完成」`;$('#mark-late').disabled=false;showStatus(`已載入 ${fmt(date)} 的箴言 ${chapterDay(date)} 章。`);}else{$('#scripture-read-hint').textContent='請滑到經文最後，解鎖讀完按鈕。';observeScriptureEnd(date);}play('open');}catch(e){if(request!==scriptureRequest)return;target.textContent='經文暫時無法載入，請確認網路後重試。';const retry=document.createElement('button');retry.type='button';retry.className='secondary';retry.textContent='重新載入經文';retry.onclick=()=>loadScripture(date);target.append(retry);}}
 function observeScriptureEnd(date){const marker=$('#scripture-end');if(!marker)return;if(!('IntersectionObserver' in window)){state.scriptureReadDate=date;renderTree();$('#scripture-read-hint').textContent='讀完後，按下按鈕回到小樹。';return;}scriptureEndObserver?.disconnect();scriptureEndObserver=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){state.scriptureReadDate=date;$('#mark-read').disabled=state.writeBusy||!isLaunch()||Boolean(record(date));$('#scripture-read-hint').textContent='讀到最後了！按下按鈕，帶你回小樹澆水 🌱';}}, {threshold:0.95});scriptureEndObserver.observe(marker);}
 function sayScripture(){if(!window.speechSynthesis){showStatus('此瀏覽器不支援朗讀。');return;}const lines=[...$('#scripture-text').querySelectorAll('p')].map(p=>p.textContent.trim()).filter(Boolean);if(!lines.length){showStatus('先展開完整經文再開始朗讀。');return;}speechSynthesis.cancel();let index=0;const next=()=>{if(index>=lines.length){showStatus('朗讀完成，願神的話陪伴你。');return;}const u=new SpeechSynthesisUtterance(lines[index++]);u.lang='zh-TW';u.rate=.86;u.onend=next;speechSynthesis.speak(u);};next();showStatus('正在朗讀經文…');}
-let audioContext=null,musicMaster=null,musicTimer=null,musicPhrase=0,musicVersion=0,musicStarting=false;
-const musicPhrases=[[523.25,659.25,783.99,659.25,587.33,698.46,880,698.46],[523.25,587.33,659.25,783.99,698.46,659.25,587.33,523.25]];
-function musicPlaying(){return Boolean(state.sound&&musicTimer&&audioContext?.state==='running');}
-function updateMusicButton(){const button=$('#sound-toggle'),playing=musicPlaying();button.textContent=musicStarting?'正在開啟音樂…':playing?'暫停音樂':'播放音樂';button.setAttribute('aria-pressed',String(playing));button.disabled=musicStarting;}
-function ensureAudio(){
-  if(!audioContext){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('audio_unavailable');audioContext=new Audio();audioContext.addEventListener('statechange',()=>{if(audioContext.state!=='running'&&musicTimer){clearInterval(musicTimer);musicTimer=null;}updateMusicButton();});}
-  if(!musicMaster){musicMaster=audioContext.createGain();musicMaster.gain.value=0;musicMaster.connect(audioContext.destination);}return audioContext;
+// Reuse native media elements: iOS authorizes each element during a trusted click.
+// Keeping the effect element allows success sounds after asynchronous saves.
+let backgroundAudio=null,effectAudio=null,musicVersion=0,musicStarting=false;
+let effectVersion=0,effectStarting=false,effectsReady=false;
+function musicPlaying(){return Boolean(state.sound&&backgroundAudio&&!backgroundAudio.paused&&!backgroundAudio.error&&backgroundAudio.readyState>=2);}
+function updateMusicButton(){const button=$('#sound-toggle');button.textContent=musicStarting?'正在開啟聲音…':musicPlaying()?'關閉聲音':'開啟聲音';button.setAttribute('aria-pressed',String(musicPlaying()));button.disabled=musicStarting;}
+function createAudio(kind){
+  const audio=document.createElement('audio');audio.preload='none';audio.hidden=true;audio.dataset.lifeTreeAudio=kind;audio.setAttribute('playsinline','');document.body.append(audio);return audio;
 }
-function scheduleMusicPhrase(){if(!state.sound||document.hidden||audioContext?.state!=='running')return;const now=audioContext.currentTime+.04,notes=musicPhrases[musicPhrase++%musicPhrases.length];notes.forEach((frequency,index)=>{const oscillator=audioContext.createOscillator(),gain=audioContext.createGain(),start=now+index*.42;oscillator.type=index%2?'sine':'triangle';oscillator.frequency.value=frequency;gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(.16,start+.04);gain.gain.exponentialRampToValueAtTime(.0001,start+.34);oscillator.connect(gain);gain.connect(musicMaster);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(start);oscillator.stop(start+.38);});}
+function audioURL(name){return new URL(`./assets/audio/life-tree/${name}.wav?v=20261010-audio1`,import.meta.url).href;}
+function ensureAudio(){
+  if(!backgroundAudio){
+    backgroundAudio=createAudio('music');backgroundAudio.src=audioURL('reading');backgroundAudio.loop=true;backgroundAudio.volume=.65;
+    ['playing','pause','ended'].forEach(name=>backgroundAudio.addEventListener(name,updateMusicButton));
+    backgroundAudio.addEventListener('error',()=>{updateMusicButton();if(state.sound)$('#music-status').textContent='音樂載入失敗，請按「開啟聲音」重試。';});
+  }
+  if(!effectAudio){effectAudio=createAudio('effect');effectAudio.volume=.85;}
+}
+async function boundedPlayback(audio){
+  let deadline;
+  try{await Promise.race([audio.play(),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(Error('audio_timeout')),6000);})]);}
+  finally{clearTimeout(deadline);}
+}
 async function startBackgroundMusic(){
-  if(!state.sound||document.hidden||musicStarting||musicPlaying())return;
-  const version=++musicVersion;musicStarting=true;updateMusicButton();let deadline;
+  if(!state.sound||document.hidden)return;
+  ensureAudio();
+  // Both play calls occur before any await in the user gesture, not after a fetch.
+  if(!effectsReady&&!effectStarting)void play('open',true);
+  if(musicStarting||musicPlaying())return;
+  const version=++musicVersion;musicStarting=true;updateMusicButton();$('#music-status').textContent='正在載入音樂與音效…';
   try{
-    ensureAudio();await Promise.race([audioContext.resume(),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(Error('audio_timeout')),1800);})]);
+    if(backgroundAudio.error)backgroundAudio.load();
+    await boundedPlayback(backgroundAudio);
     if(version!==musicVersion||!state.sound||document.hidden)return;
-    if(audioContext.state!=='running')throw Error('audio_suspended');
-    const now=audioContext.currentTime;musicMaster.gain.cancelScheduledValues(now);musicMaster.gain.setValueAtTime(Math.max(.0001,musicMaster.gain.value),now);musicMaster.gain.exponentialRampToValueAtTime(.055,now+.5);
-    scheduleMusicPhrase();musicTimer=window.setInterval(scheduleMusicPhrase,3600);$('#music-status').textContent='背景音樂播放中';
-  }catch{if(version===musicVersion)$('#music-status').textContent='音樂尚未啟動，請按「播放音樂」重試。';}
-  finally{clearTimeout(deadline);if(version===musicVersion){musicStarting=false;updateMusicButton();}}
+    if(!musicPlaying())throw Error('audio_paused');
+    $('#music-status').textContent=effectsReady?'音樂與音效已開啟，可按「試聽音效」確認。':'背景音樂播放中；請按「試聽音效」啟用音效。';
+  }catch{
+    if(version===musicVersion){backgroundAudio.pause();$('#music-status').textContent='音樂尚未啟動，請按「開啟聲音」重試。';}
+  }finally{if(version===musicVersion){musicStarting=false;updateMusicButton();}}
 }
 function stopBackgroundMusic(){
-  ++musicVersion;musicStarting=false;if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
-  if(musicMaster&&audioContext){const now=audioContext.currentTime;musicMaster.gain.cancelScheduledValues(now);musicMaster.gain.setValueAtTime(Math.max(.0001,musicMaster.gain.value),now);musicMaster.gain.exponentialRampToValueAtTime(.0001,now+.15);}
-  updateMusicButton();
+  ++musicVersion;++effectVersion;musicStarting=false;effectStarting=false;effectsReady=false;
+  backgroundAudio?.pause();effectAudio?.pause();updateMusicButton();
 }
-function play(type){if(!state.sound)return;try{audioContext||=new (window.AudioContext||window.webkitAudioContext)();void audioContext.resume().catch(()=>{});const now=audioContext.currentTime;const seq=type==='celebration'?[523.25,659.25,783.99,1046.5,783.99,1046.5,1318.5]:type==='water'?[880,660,990]:type==='wind'?[320,240,380]:type==='journal'?[784,1046]:[600,840];seq.forEach((f,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.001,now+i*.12);g.gain.exponentialRampToValueAtTime(.035,now+i*.12+.03);g.gain.exponentialRampToValueAtTime(.001,now+i*.12+.21);o.connect(g);g.connect(audioContext.destination);o.start(now+i*.12);o.stop(now+i*.12+.24);});}catch{}}
+async function play(type,fromGesture=false){
+  if(!state.sound||document.hidden)return;
+  if(!fromGesture&&!effectsReady){if(!effectStarting)$('#music-status').textContent='請按「試聽音效」啟用操作提示聲。';return;}
+  ensureAudio();const version=++effectVersion;effectStarting=true;
+  try{
+    const name=['open','water','celebration','wind','journal'].includes(type)?type:'open';
+    effectAudio.pause();effectAudio.src=audioURL(name);
+    await boundedPlayback(effectAudio);
+    if(version!==effectVersion||!state.sound||document.hidden)return;
+    effectsReady=true;
+    if(fromGesture)$('#music-status').textContent=musicPlaying()?'音樂與音效已開啟。':'音效已開啟；音樂尚未播放。';
+  }catch{
+    if(version===effectVersion){effectsReady=false;effectAudio.pause();$('#music-status').textContent='音效尚未啟動，請按「試聽音效」重試。';}
+  }finally{if(version===effectVersion)effectStarting=false;}
+}
 async function markRead(date=today()){if(state.writeBusy||record(date))return;if(date===today()&&state.scriptureReadDate!==date){showStatus('請先滑到完整經文最下方，再按讀完。');return;}const b=$('#mark-read');state.writeBusy=true;b.disabled=true;b.textContent='正在記錄讀經…';$('#mark-late').disabled=true;showStatus('正在記錄讀經…');try{const out=await api('mark_read',{readingDate:date});state.records=out.records||state.records;if(!record(date))state.records=[...state.records,{reading_date:date,completion_type:out.completion_type,watered_at:null}];state.pendingWaterDate=date;state.view='personal';renderView();showStatus(out.completion_type==='on_time'?'📖 讀經完成！小樹已解鎖澆水，來照顧它吧 🌱':'✓ 補讀完成！來到樹下澆水吧 🌱');requestAnimationFrame(()=>scrollToSection($('.tree-card')));}catch(e){showStatus(e.message)}finally{state.writeBusy=false;renderView();}}
 function waterTarget(){const pending=state.pendingWaterDate&&record(state.pendingWaterDate);if(pending&&!pending.watered_at)return pending;const current=record();if(current&&!current.watered_at)return current;return [...state.records].reverse().find(r=>r.completion_type==='makeup'&&!r.watered_at)||null;}
 function populateMakeupDates(){const select=$('#late-date');if(!select)return;const previous=select.value;const start=state.participant?.reading_start_date||'2026-10-01';const dates=[];for(let offset=1;offset<=7;offset++){const d=new Date(Date.parse(`${today()}T12:00:00Z`)-offset*86400000).toISOString().slice(0,10);if(d>=start&&!record(d))dates.push(d);}select.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=dates.length?'選擇未讀日期':'目前沒有可補讀日期';select.append(placeholder);dates.forEach(d=>{const option=document.createElement('option');option.value=d;option.textContent=fmt(d);select.append(option)});if(dates.includes(previous))select.value=previous;}
@@ -135,13 +167,15 @@ async function liveWeather(){try{const r=await fetch('https://api.open-meteo.com
 async function signIn(){if(!window.liff?.isLoggedIn()){$('#line-login-gate').hidden=false;showStatus('LINE 驗證尚未完成，請回到 LINE 群組重新開啟專用連結。','#login-status');return;}state.idToken=window.liff.getIDToken()||'';if(!state.idToken){$('#line-login-gate').hidden=false;$('#login-member').disabled=true;showStatus('LINE 登入資訊不完整，請重新從同工群組的測試連結開啟。','#login-status');return;}try{await refresh();}catch(e){$('#line-login-gate').hidden=false;if(e.code==='join_required'){$('#login-member').disabled=false;$('#login-member-id').textContent='LINE 身分已確認';showStatus('已確認 LINE 身分，輸入同工邀請碼加入測試。','#login-status');}else{$('#login-member').disabled=true;showStatus(`${e.message} 請確認網路後重新整理。`,'#login-status');}}}
 async function join(){const b=$('#login-member');b.disabled=true;try{const result=await api('join',{inviteCode:$('#invite-code').value.trim()});state.participant=result.participant;await refresh();}catch(e){showStatus(e.message,'#login-status');}finally{b.disabled=false;}}
 function setup(){
-  updateMusicButton();$('#music-status').textContent=state.sound?'點一下頁面，讓音樂陪你讀經。':'音樂已暫停';
-  const resumeMusic=event=>{if(event?.target?.closest?.('#sound-toggle'))return;if(state.sound)void startBackgroundMusic();};
-  ['pointerdown','touchend','click','keydown'].forEach(name=>document.addEventListener(name,resumeMusic,{capture:true,passive:name==='touchend'}));
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){stopBackgroundMusic();void audioContext?.suspend();}else if(state.sound)void startBackgroundMusic();});
-  window.addEventListener('pagehide',()=>{stopBackgroundMusic();void audioContext?.suspend();});
-  window.addEventListener('pageshow',()=>{restoreTreeScroll();if(state.sound&&audioContext)void startBackgroundMusic();});
-  $('#sound-toggle').onclick=()=>{if(musicPlaying()){state.sound=false;stopBackgroundMusic();$('#music-status').textContent='音樂已暫停';}else{state.sound=true;void startBackgroundMusic();}rememberMusic();};
+  updateMusicButton();$('#music-status').textContent=state.sound?'按「開啟聲音」，讓音樂與音效陪你讀經。':'音樂與音效已關閉';
+  const resumeMusic=event=>{if(!event.isTrusted||event.target?.closest?.('#sound-toggle,#test-sound'))return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(state.sound)void startBackgroundMusic();};
+  ['click','keydown'].forEach(name=>document.addEventListener(name,resumeMusic,{capture:true}));
+  const pauseForBackground=()=>{stopBackgroundMusic();if(state.sound)$('#music-status').textContent='聲音已暫停，點一下頁面即可恢復。';};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseForBackground();});
+  window.addEventListener('pagehide',pauseForBackground);
+  window.addEventListener('pageshow',restoreTreeScroll);
+  $('#sound-toggle').onclick=()=>{if(musicPlaying()){state.sound=false;stopBackgroundMusic();$('#music-status').textContent='音樂與音效已關閉';}else{state.sound=true;void startBackgroundMusic();}rememberMusic();};
+  $('#test-sound')?.addEventListener('click',()=>{state.sound=true;rememberMusic();ensureAudio();void play('open',true);void startBackgroundMusic();});
   document.querySelectorAll('.tree-view-button').forEach(button=>button.addEventListener('click',async()=>{
     if(state.writeBusy){showStatus('目前正在儲存，請稍候再切換。','#view-status');return;}const requested=button.dataset.treeView,previous=state.view,request=++viewRequest;
     const controls=$('.tree-view-switch');controls.setAttribute('aria-busy','true');showStatus(requested==='personal'?'返回個人生命樹…':'正在載入花園…','#view-status');

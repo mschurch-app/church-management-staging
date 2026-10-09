@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage2';
+import {db} from './admin-db.mjs?v=20261009-stage3';
 import {listGroups} from './group-management.mjs?v=20261003-access-guard1';
 import {listAttendance,listAttendanceMembers,saveAttendance} from './attendance-management.mjs?v=20261003-access-guard1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';

@@ -51,3 +51,20 @@ container.append(entry);
 執行 `tests/phase2/` 的功能定義、介面與對比測試，以及第一階段核心回歸；新功能另外列出其資料操作和恢復情境。更新依賴版本與 Service Worker，不清除使用者登入。
 
 Chrome 模擬資料與 viewport 檢查用於回歸；iPhone 17、LINE 內開啟、已安裝 App 返回、Mac Safari、文字放大與安全區域需另附實機證據。此框架不代表原生 iOS App，也不代表整個產品已達 99%。
+
+## 業務工作區（第三階段）
+
+`app-workflow.mjs`／`app-workflow.css` 提供目前步驟、下一步、未儲存保護、控制鎖定及審核浮窗。適用後台工作流程；公開會友服務依其既有版型接入必要能力。
+
+- `workflowSummary` 只呈現業務處理器提供的狀態，不以網路結束推測成功。
+- `lockControls` 保留原本 disabled 狀態，完成後還原；重新建立的控制須由業務狀態同步，不可將唯讀控制一律啟用。
+- `draftGuard` 追蹤表單，切換前確認；已實際儲存、確定放棄或替換內容時才清除。每個工作區共用一個 guard，避免舊表單仍觸發離頁提示。
+- `reviewDialog` 使用原生 dialog，具明確影響說明、選填／必填原因、Escape 取消、焦點還原與背景捲動鎖定。
+- 清單選取按鈕使用 secondary 語意，與儲存／發布等主要操作區分，並核對實際 computed style，避免既有高 specificity 樣式覆蓋。
+- 寫入與隨後讀取分別記錄結果。已收到寫入成功卻讀取失敗，或連線中斷結果不明，鎖住再次寫入，提供只讀的重新載入動線。
+- 工作區使用 `data-action-feedback="off"`，由自身 status 顯示實際結果，避免通用網路推測回饋覆蓋審核或儲存結果。
+
+第三階段接入四頁：`website-maintenance.html`、`weekly-bulletin-review.html`、`daily-devotional-admin.html`、`service-signup-admin.html`。新業務頁須另外驗收自己的 API、角色、上傳／發布與失敗情境。
+
+共用樣式載入：iOS 補充樣式插入既有 `data-app-consistency` link 前面；不可移動或移除已載入的共用 stylesheet，以免重新載入期間短暫失去 token／表頭規則。
+`apiResult` 驗證業務 API 的明確 `ok: true` 回應；僅 HTTP 2xx 不視為完成。缺少確認結果時先重新讀取，不自動重送。

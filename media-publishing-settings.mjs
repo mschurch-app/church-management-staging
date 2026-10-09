@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage2';
+import {db} from './admin-db.mjs?v=20261009-stage3';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/media-publishing-settings',q=new URLSearchParams(location.search),church=q.get('church')||'M+',$=s=>document.querySelector(s);
 const fields={sermon_analysis_enabled:'#sermon-analysis',youtube_captions_enabled:'#youtube-captions',instagram_sermon_enabled:'#instagram-sermon',instagram_weekly_reel_enabled:'#instagram-weekly',instagram_weekday_reel_enabled:'#instagram-weekday',instagram_holiday_reel_enabled:'#instagram-holiday'};

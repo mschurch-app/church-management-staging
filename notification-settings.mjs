@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage2';
+import {db} from './admin-db.mjs?v=20261009-stage3';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261009-stage1';
 const $=s=>document.querySelector(s),church=new URLSearchParams(location.search).get('church'),knownGroups={'M+':[{name:'M+ 青年教會群組',id:'C03123f04238ce22b4798a285ad26e775'}],SHiNE:[]};
 const labels={binding_review:['會友綁定申請','有人提出綁定時通知審核同工'],newcomer_care_reminders:['新朋友關懷提醒','24 小時提醒與逾期提醒'],newcomer_created:['新朋友登記','LINE 或同工新增新朋友'],task_assigned:['工作指派','同工收到新的協作工作'],task_accepted:['工作接受','工作建立者收到接受通知'],calendar_participant:['共同參與行程','新增共同參與行程'],school_daily_report:['課輔每日報告','每日課輔出席與輔導報告'],line_group_summary:['群組討論日報','每日群組討論摘要'],sunday_service_card:['主日服事圖卡','每週主日服事圖卡'],sermon_social_review:['講道 IG 內容審核','邵鈺庭初審後，再交由牧師、師母確認發出']};

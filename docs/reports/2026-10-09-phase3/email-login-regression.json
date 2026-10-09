@@ -1,0 +1,54 @@
+{
+  "syntheticCredentials": true,
+  "checks": [
+    {
+      "name": "personal metadata cannot impersonate a verified LINE link",
+      "status": "passed"
+    },
+    {
+      "name": "Email identity accepts a server-verified canonical LINE link",
+      "status": "passed"
+    },
+    {
+      "name": "capability service failure is recoverable and fails closed",
+      "status": "passed"
+    },
+    {
+      "name": "verified LINE link does not grant unauthorized church access",
+      "status": "passed"
+    },
+    {
+      "name": "Email password login with approved LINE alias reaches dashboard",
+      "status": "passed"
+    },
+    {
+      "name": "Email login without approved LINE alias opens binding page",
+      "status": "passed"
+    },
+    {
+      "name": "reopened Email session with approved alias resumes dashboard",
+      "status": "passed"
+    },
+    {
+      "name": "Email login without grants stays recoverable and unlocks button",
+      "status": "passed"
+    },
+    {
+      "name": "Email login capability outage keeps page usable",
+      "status": "passed"
+    },
+    {
+      "name": "binding page recognizes an existing approved canonical alias",
+      "status": "passed"
+    },
+    {
+      "name": "binding page capability outage offers explicit retry",
+      "status": "passed"
+    },
+    {
+      "name": "Email and binding scenarios have no uncaught browser errors",
+      "status": "passed"
+    }
+  ],
+  "errors": []
+}

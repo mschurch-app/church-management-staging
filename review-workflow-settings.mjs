@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage2';
+import {db} from './admin-db.mjs?v=20261009-stage3';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261009-stage1';
 const $=s=>document.querySelector(s),church=new URLSearchParams(location.search).get('church')||'M+',status=$('#status'),root=$('#workflows');
 const el=(tag,text='',cls='')=>{const node=document.createElement(tag);node.textContent=text;node.className=cls;return node;};

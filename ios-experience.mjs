@@ -3,8 +3,12 @@ if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
   const version='20261009-stage2';
   const stylesheet=document.createElement('link');
-  stylesheet.rel='stylesheet';stylesheet.href=new URL(`./ios-experience.css?v=${version}`,import.meta.url).href;document.head.append(stylesheet);
-  let consistency=document.querySelector('link[data-app-consistency]');if(!consistency){consistency=document.createElement('link');consistency.rel='stylesheet';consistency.dataset.appConsistency='1';consistency.href=new URL('./app-consistency.css?v=20261009-stage2',import.meta.url).href;}document.head.append(consistency);
+  stylesheet.rel='stylesheet';stylesheet.href=new URL(`./ios-experience.css?v=${version}`,import.meta.url).href;
+  const consistency=document.querySelector('link[data-app-consistency]');
+  // Keep the loaded shared stylesheet attached: moving it can temporarily drop
+  // its imported tokens and header rules while the browser reloads the sheet.
+  if(consistency)document.head.insertBefore(stylesheet,consistency);
+  else{const shared=document.createElement('link');shared.rel='stylesheet';shared.dataset.appConsistency='1';shared.href=new URL('./app-consistency.css?v=20261009-stage2',import.meta.url).href;document.head.append(stylesheet,shared);}
   document.documentElement.classList.add('church-ios');
   if(/iPhone|iPad|iPod/.test(navigator.userAgent)||navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)document.documentElement.classList.add('church-ios-device');
   const meta=(name,content)=>{let node=document.head.querySelector(`meta[name="${name}"]`);if(!node){node=document.createElement('meta');node.name=name;document.head.append(node);}node.content=content;};

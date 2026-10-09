@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage2';
+import {db} from './admin-db.mjs?v=20261009-stage3';
 import {loadChurchCustomizations,saveChurchCustomizations,makeDragSorter} from './church-customizations.mjs?v=20261009-stage2';
 import {getOptions,GROUPS} from './welcome-options.mjs';
 import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20260924-custom2';

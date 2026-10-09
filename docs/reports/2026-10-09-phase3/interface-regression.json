@@ -1,0 +1,210 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "owner sees all four settings groups",
+      "status": "passed"
+    },
+    {
+      "name": "review and notification settings have explicit entries",
+      "status": "passed"
+    },
+    {
+      "name": "settings links retain the selected church",
+      "status": "passed"
+    },
+    {
+      "name": "review search finds initial and final review settings",
+      "status": "passed"
+    },
+    {
+      "name": "IG search finds publishing settings",
+      "status": "passed"
+    },
+    {
+      "name": "public address search remains visible and counts correctly",
+      "status": "passed"
+    },
+    {
+      "name": "empty search state recovers by clearing input",
+      "status": "passed"
+    },
+    {
+      "name": "failed save preserves input and unlocks retry",
+      "status": "passed"
+    },
+    {
+      "name": "retry reports actual save and reload success",
+      "status": "passed"
+    },
+    {
+      "name": "owner settings have consistent 44px minimum control targets",
+      "status": "passed"
+    },
+    {
+      "name": "settings geometry and header at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "settings geometry and header at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "settings geometry and header at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "settings geometry and header at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "settings geometry and header at 1920px",
+      "status": "passed"
+    },
+    {
+      "name": "desktop settings use sidebar and a two-column tool area",
+      "status": "passed"
+    },
+    {
+      "name": "notification coworker sees only their review group",
+      "status": "passed"
+    },
+    {
+      "name": "facilities coworker sees only assigned facility settings",
+      "status": "passed"
+    },
+    {
+      "name": "service leader cannot see general settings tools",
+      "status": "passed"
+    },
+    {
+      "name": "read-only access keeps public fields and save disabled",
+      "status": "passed"
+    },
+    {
+      "name": "SHiNE tools exclude M+ subtitle library and preserve scope",
+      "status": "passed"
+    },
+    {
+      "name": "unavailable capabilities show a recoverable load error",
+      "status": "passed"
+    },
+    {
+      "name": "initialization retry safely rebuilds settings and form",
+      "status": "passed"
+    },
+    {
+      "name": "home starts with three assigned favorites",
+      "status": "passed"
+    },
+    {
+      "name": "remove badges are hidden outside editing",
+      "status": "passed"
+    },
+    {
+      "name": "function links contain no nested interactive controls",
+      "status": "passed"
+    },
+    {
+      "name": "mobile favorites preserve three columns and 62px icons",
+      "status": "passed"
+    },
+    {
+      "name": "moving a long press cancels edit mode",
+      "status": "passed"
+    },
+    {
+      "name": "stationary long press enters edit mode",
+      "status": "passed"
+    },
+    {
+      "name": "favorite removal returns student entry to folder without navigation",
+      "status": "passed"
+    },
+    {
+      "name": "folder add button has at least 44px hit area",
+      "status": "passed"
+    },
+    {
+      "name": "adding from folder restores exactly one favorite without navigating",
+      "status": "passed"
+    },
+    {
+      "name": "same function has identical SVG and palette in folder and favorites",
+      "status": "passed"
+    },
+    {
+      "name": "Mac keyboard can reorder a favorite and announce position",
+      "status": "passed"
+    },
+    {
+      "name": "editing does not navigate or show a navigation loader",
+      "status": "passed"
+    },
+    {
+      "name": "cancelled touch drag clears dragging feedback",
+      "status": "passed"
+    },
+    {
+      "name": "Escape finishes sorting and restores edit button focus",
+      "status": "passed"
+    },
+    {
+      "name": "favorite order persists after reloading the home",
+      "status": "passed"
+    },
+    {
+      "name": "all allowed functions appear once in favorites or folder",
+      "status": "passed"
+    },
+    {
+      "name": "every native folder icon uses its canonical palette",
+      "status": "passed"
+    },
+    {
+      "name": "old names are searchable across favorites and folder",
+      "status": "passed"
+    },
+    {
+      "name": "removing all favorites preserves an empty saved preference",
+      "status": "passed"
+    },
+    {
+      "name": "empty favorites can restore assigned defaults",
+      "status": "passed"
+    },
+    {
+      "name": "home geometry at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "home geometry at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "home geometry at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "home geometry at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "home geometry at 1920px",
+      "status": "passed"
+    },
+    {
+      "name": "no uncaught page errors in phase two workflows",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "mockedWrites": [
+    "church_public_settings",
+    "church_public_settings"
+  ],
+  "environment": {
+    "browser": "Chrome/150.0.7871.125",
+    "kind": "Chrome viewport simulation; real iPhone/Safari not covered"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "isolated": true,
+  "synthetic_accounts_only": true,
+  "checks": [
+    {
+      "name": "migration loads in isolated PostgreSQL",
+      "status": "passed"
+    },
+    {
+      "name": "same names remain separate before verified linkage",
+      "status": "passed"
+    },
+    {
+      "name": "LINE approval persists exact source and copies ministry scopes",
+      "status": "passed"
+    },
+    {
+      "name": "member association follows only the approved LINE subject",
+      "status": "passed"
+    },
+    {
+      "name": "approval retry is idempotent",
+      "status": "passed"
+    },
+    {
+      "name": "cannot relink an identity to another person",
+      "status": "passed"
+    },
+    {
+      "name": "verified linked row contains both Auth IDs",
+      "status": "passed"
+    },
+    {
+      "name": "same-name unlinked person remains visible",
+      "status": "passed"
+    },
+    {
+      "name": "Email canonical account recognizes its owner-approved LINE alias",
+      "status": "passed"
+    },
+    {
+      "name": "unlinked same-name account cannot inherit another LINE identity",
+      "status": "passed"
+    },
+    {
+      "name": "active owner capability is derived from protected records",
+      "status": "passed"
+    },
+    {
+      "name": "one transaction saves complete bundle for both identities",
+      "status": "passed"
+    },
+    {
+      "name": "bundle repeated with same request returns original receipt",
+      "status": "passed"
+    },
+    {
+      "name": "request ID cannot be reused with altered data",
+      "status": "passed"
+    },
+    {
+      "name": "stale version cannot overwrite recent update",
+      "status": "passed"
+    },
+    {
+      "name": "failure after profile and grants writes rolls whole transaction back",
+      "status": "passed"
+    },
+    {
+      "name": "triggered coworker profile also rolls back on failure",
+      "status": "passed"
+    },
+    {
+      "name": "rollback retains every previous profile, permission, home and scope",
+      "status": "passed"
+    },
+    {
+      "name": "cross-church grant injection is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "feature operation cannot exceed granted feature",
+      "status": "passed"
+    },
+    {
+      "name": "ministry scopes require scheduling permission",
+      "status": "passed"
+    },
+    {
+      "name": "enabled account requires at least one grant",
+      "status": "passed"
+    },
+    {
+      "name": "missing or null input fields fail closed",
+      "status": "passed"
+    },
+    {
+      "name": "legacy profile endpoint synchronizes only verified aliases",
+      "status": "passed"
+    },
+    {
+      "name": "reviewer list deduplicates only verified identity and keeps same-name peer",
+      "status": "passed"
+    },
+    {
+      "name": "initial and final cannot select two identities of same person",
+      "status": "passed"
+    },
+    {
+      "name": "reviewers must have correct church membership",
+      "status": "passed"
+    },
+    {
+      "name": "non-owner cannot list admin account details",
+      "status": "passed"
+    },
+    {
+      "name": "non-owner cannot save account settings",
+      "status": "passed"
+    },
+    {
+      "name": "cross-church manager cannot read workflows",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous cannot call admin RPC",
+      "status": "passed"
+    },
+    {
+      "name": "authenticated clients cannot read mapping, receipts or audit tables",
+      "status": "passed"
+    },
+    {
+      "name": "owner privileges cannot be removed",
+      "status": "passed"
+    },
+    {
+      "name": "revoked owner session cannot edit accounts",
+      "status": "passed"
+    },
+    {
+      "name": "disabled account can clear scopes and permissions atomically",
+      "status": "passed"
+    },
+    {
+      "name": "disabled canonical account loses LINE administrative capability",
+      "status": "passed"
+    },
+    {
+      "name": "disabled former workflow manager cannot save with stale feature permission",
+      "status": "passed"
+    },
+    {
+      "name": "revocation removes every verified admin identity in one transaction",
+      "status": "passed"
+    },
+    {
+      "name": "repeated removal is safe",
+      "status": "passed"
+    },
+    {
+      "name": "revocation preserves Auth identities and member records",
+      "status": "passed"
+    },
+    {
+      "name": "canonical link remains available after administrative revocation",
+      "status": "passed"
+    },
+    {
+      "name": "revoked administrative account cannot regain access through retained LINE link",
+      "status": "passed"
+    },
+    {
+      "name": "disabled owner is no longer reported as owner",
+      "status": "passed"
+    }
+  ]
+}

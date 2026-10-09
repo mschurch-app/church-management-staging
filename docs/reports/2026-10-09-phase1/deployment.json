@@ -1,0 +1,104 @@
+{
+  "frontendCommit": "c1ed6cc1eab910e1cf5f5b30e9214e09ae06bd46",
+  "frontendVersion": "20261009-stage1",
+  "checkedAt": "2026-10-09T03:44:31.128Z",
+  "origin": "https://mscos.mchurch.online",
+  "allMatched": true,
+  "assets": [
+    {
+      "file": "admin-access.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "17d6b1dbfa26af8cce187942b6883aed956fa559398ab39714d89fed701e5a34",
+      "hostedSha256": "17d6b1dbfa26af8cce187942b6883aed956fa559398ab39714d89fed701e5a34"
+    },
+    {
+      "file": "admin-accounts-ui.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "992500d4efd9424f61d67371e707133ee9887b291bd9a96fc6c30eb49745fa3e",
+      "hostedSha256": "992500d4efd9424f61d67371e707133ee9887b291bd9a96fc6c30eb49745fa3e"
+    },
+    {
+      "file": "admin-accounts-management.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "007becc9738617cb0f6424efd7acc8d64815bb548fb677d4c61eceab7a606fcb",
+      "hostedSha256": "007becc9738617cb0f6424efd7acc8d64815bb548fb677d4c61eceab7a606fcb"
+    },
+    {
+      "file": "admin-accounts.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "171c40bfacae73dc7313b113c74e33796c52b665e118dda1c77b653101731b53",
+      "hostedSha256": "171c40bfacae73dc7313b113c74e33796c52b665e118dda1c77b653101731b53"
+    },
+    {
+      "file": "admin-login-v2.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "c748a628cac74885485a07571f78c9d49e842b412d92066ab86830169b45f650",
+      "hostedSha256": "c748a628cac74885485a07571f78c9d49e842b412d92066ab86830169b45f650"
+    },
+    {
+      "file": "admin-line-link.html",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "9bdec9ee3dc815f3983bedb29a191406ee2680154dc7a2e9b8038328c27734da",
+      "hostedSha256": "9bdec9ee3dc815f3983bedb29a191406ee2680154dc7a2e9b8038328c27734da"
+    },
+    {
+      "file": "admin-line-link.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "9c80e9bda1ab5e801d90a308420322aadedb76c637b83971bd943235c01fdf42",
+      "hostedSha256": "9c80e9bda1ab5e801d90a308420322aadedb76c637b83971bd943235c01fdf42"
+    },
+    {
+      "file": "app-line-auth.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "a8aa2a93fa8f30a39c33b2e55f6aa2838ec5418f562825e0408862b0567ae9dd",
+      "hostedSha256": "a8aa2a93fa8f30a39c33b2e55f6aa2838ec5418f562825e0408862b0567ae9dd"
+    },
+    {
+      "file": "daily-devotional.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7d12288034071d58fa302ef8f40e6344c3d69a1c0a5382df46987fefc80372b6",
+      "hostedSha256": "7d12288034071d58fa302ef8f40e6344c3d69a1c0a5382df46987fefc80372b6"
+    },
+    {
+      "file": "service-signup.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "78bf9252f912e1670d9110818ea8b83fa0ee0f5f45e566795e89555d5be8950d",
+      "hostedSha256": "78bf9252f912e1670d9110818ea8b83fa0ee0f5f45e566795e89555d5be8950d"
+    },
+    {
+      "file": "review-workflow-settings.mjs",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "080346196a63c3efda6b34ba8c9fad628fa3169ab8d26f6436989029c8518c3a",
+      "hostedSha256": "080346196a63c3efda6b34ba8c9fad628fa3169ab8d26f6436989029c8518c3a"
+    },
+    {
+      "file": "church-os-sw.js",
+      "status": 200,
+      "match": true,
+      "expectedSha256": "7e9c9712c3e7a9d69d1ece809ac2d00a24df1c2b6d9e1ccb0ef0e37d37c62c01",
+      "hostedSha256": "7e9c9712c3e7a9d69d1ece809ac2d00a24df1c2b6d9e1ccb0ef0e37d37c62c01"
+    }
+  ],
+  "backend": {
+    "lineMemberVersion": 26,
+    "verifyJwt": false,
+    "migrations": [
+      "verified_accounts_atomic_save",
+      "account_audit_foreign_key_indexes",
+      "canonical_line_login_capabilities"
+    ]
+  },
+  "fullDeviceAcceptance": "pending",
+  "overall99PercentClaimed": false
+}

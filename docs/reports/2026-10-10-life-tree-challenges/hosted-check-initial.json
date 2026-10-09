@@ -1,0 +1,39 @@
+{
+  "checked_at_utc": "2026-10-09T22:29:32.402244+00:00",
+  "pr": 44,
+  "resources": [
+    {
+      "path": "tree-reading-october-test.html",
+      "expected_sha256": "6e5ed197c9cea7629a9def5b91b9e44cb1463d79c029831b5b2318e77d28cbd2",
+      "status": 200,
+      "bytes": 12878,
+      "actual_sha256": "a67cc1c13698350f548166543d469db0110472e1704836e0af1c062324b3fa5b",
+      "matches": false
+    },
+    {
+      "path": "tree-reading-october-test.mjs",
+      "expected_sha256": "fdb900bfc7d97af6ac555f52a92c6d06c6198617cf27d2ea015ca1b29233d027",
+      "status": 200,
+      "bytes": 39861,
+      "actual_sha256": "3bc774ddb78d57fe2a23cd7f2cf0a9fced5989c0bcabec076d4c749ac60fc075",
+      "matches": false
+    },
+    {
+      "path": "tree-reading-october-art.mjs",
+      "expected_sha256": "5b1cd043f83e6825a129b96e5074f0e8774a3d5c10fbf4e3031169d60b0a1eef",
+      "status": 200,
+      "bytes": 17182,
+      "actual_sha256": "da90605473a6e64d239b4496a978cc5f770952be8eaeb7d8e59d9728cc00508b",
+      "matches": false
+    },
+    {
+      "path": "tree-reading-october-journey.css",
+      "expected_sha256": "993d79fd56d5d763c8160849dfe1c8f3a57291da907245b5708078b94012ed44",
+      "status": 200,
+      "bytes": 7622,
+      "actual_sha256": "4e6830ed229845689d1641080c89a1f972a42fdd20e894a0e19646aab245c725",
+      "matches": false
+    }
+  ],
+  "all_match": false
+}

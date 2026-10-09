@@ -23,6 +23,6 @@ Build、Lint、Typecheck未執行（根目錄無相應指令）。Mac Safari及i
 
 ## 發布與回復
 
-功能分支 `codex/life-tree-challenge-signals` 經PR合併main後，由既有GitHub Pages發布；發布後逐檔比對HTML、主模組、SVG模組及CSS的SHA-256。發布證據與Git資訊補記於本目錄與當日codex-log。
+功能分支 `codex/life-tree-challenge-signals` 的 `e96d703` 已push，PR #44 已合併main為 `6d8e4f210d8e98cebd3eb18edb6d90745ebe5939`，由既有GitHub Pages發布。2026-10-10 06:30:11（台北）HTML、主模組、SVG模組及CSS共四項HTTP 200且SHA-256逐檔符合來源，見 `hosted-check.json`。06:29:32首次讀到尚未更新的舊版，證據保留於 `hosted-check-initial.json`，未算作通過。
 
 回復方式為revert本次功能PR，不需資料庫操作。

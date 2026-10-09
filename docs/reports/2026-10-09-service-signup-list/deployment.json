@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-09T05:46:31.459Z",
+  "checks": [
+    {
+      "file": "service-signup.html",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "service-signup.css",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "service-signup.mjs",
+      "status": 200,
+      "match": true
+    }
+  ]
+}

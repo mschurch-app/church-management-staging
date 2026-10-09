@@ -1,0 +1,156 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "existing registrations show member name in list header and hide wizard",
+      "status": "passed"
+    },
+    {
+      "name": "LINE nickname is never used in the registrant header",
+      "status": "passed"
+    },
+    {
+      "name": "reload returns to completed list",
+      "status": "passed"
+    },
+    {
+      "name": "declining add confirmation leaves list intact",
+      "status": "passed"
+    },
+    {
+      "name": "confirmed add opens clean form with verified member name",
+      "status": "passed"
+    },
+    {
+      "name": "form can return to list without changing registrations",
+      "status": "passed"
+    },
+    {
+      "name": "declining delete performs no mutation",
+      "status": "passed"
+    },
+    {
+      "name": "delete then decline reselection keeps list closed and remaining row",
+      "status": "passed"
+    },
+    {
+      "name": "deleting final row can remain on named empty list",
+      "status": "passed"
+    },
+    {
+      "name": "empty list can reopen wizard explicitly",
+      "status": "passed"
+    },
+    {
+      "name": "delete then accept reselection opens the wizard",
+      "status": "passed"
+    },
+    {
+      "name": "declining modify retains original row and list",
+      "status": "passed"
+    },
+    {
+      "name": "modify uses one confirmation and opens wizard after successful cancellation",
+      "status": "passed"
+    },
+    {
+      "name": "failed modification preserves original list and does not open wizard",
+      "status": "passed"
+    },
+    {
+      "name": "failed operation releases busy guard for retry",
+      "status": "passed"
+    },
+    {
+      "name": "successful delete with failed refresh blocks duplicate writes and retains recovery",
+      "status": "passed"
+    },
+    {
+      "name": "refresh retries content only and restores remaining row",
+      "status": "passed"
+    },
+    {
+      "name": "first registration starts with mandatory name and ministry selection",
+      "status": "passed"
+    },
+    {
+      "name": "guided multi-role dates still prohibit two services on the same Sunday",
+      "status": "passed"
+    },
+    {
+      "name": "batch completion shows named list and closes upper form",
+      "status": "passed"
+    },
+    {
+      "name": "waitlisted completion keeps queue status on list",
+      "status": "passed"
+    },
+    {
+      "name": "failed submit retains selected name and dates and enables retry",
+      "status": "passed"
+    },
+    {
+      "name": "submission can succeed after previous failure",
+      "status": "passed"
+    },
+    {
+      "name": "saved submission with failed refresh prevents resubmitting batch",
+      "status": "passed"
+    },
+    {
+      "name": "in-season cancellation remains a review request and retains original row",
+      "status": "passed"
+    },
+    {
+      "name": "in-season modification preserves request and leader review workflow",
+      "status": "passed"
+    },
+    {
+      "name": "offered place acceptance remains available from list",
+      "status": "passed"
+    },
+    {
+      "name": "rapid repeated modify clicks issue one cancellation",
+      "status": "passed"
+    },
+    {
+      "name": "list layout and touch targets at 375px",
+      "status": "passed"
+    },
+    {
+      "name": "list layout and touch targets at 390px",
+      "status": "passed"
+    },
+    {
+      "name": "list layout and touch targets at 430px",
+      "status": "passed"
+    },
+    {
+      "name": "list layout and touch targets at 1280px",
+      "status": "passed"
+    },
+    {
+      "name": "list layout and touch targets at 1440px",
+      "status": "passed"
+    },
+    {
+      "name": "list text and buttons meet 4.5:1 contrast",
+      "status": "passed"
+    },
+    {
+      "name": "name header escapes markup",
+      "status": "passed"
+    },
+    {
+      "name": "no unexpected dialogs or uncaught browser errors",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "environment": {
+    "browser": "Chrome/150.0.7871.125",
+    "data": "synthetic fixtures; all remote requests intercepted; no production writes",
+    "devices": "Chrome viewport simulation, real iPhone / Mac Safari not covered",
+    "origin": "https://mscos.mchurch.online"
+  }
+}

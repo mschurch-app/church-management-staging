@@ -1,3 +1,4 @@
+import './app-runtime.mjs?v=20261009-stage4';
 import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
@@ -8,7 +9,7 @@ if(!window.__churchIosExperience){
   // Keep the loaded shared stylesheet attached: moving it can temporarily drop
   // its imported tokens and header rules while the browser reloads the sheet.
   if(consistency)document.head.insertBefore(stylesheet,consistency);
-  else{const shared=document.createElement('link');shared.rel='stylesheet';shared.dataset.appConsistency='1';shared.href=new URL('./app-consistency.css?v=20261009-stage2',import.meta.url).href;document.head.append(stylesheet,shared);}
+  else{const shared=document.createElement('link');shared.rel='stylesheet';shared.dataset.appConsistency='1';shared.href=new URL('./app-consistency.css?v=20261009-stage4',import.meta.url).href;document.head.append(stylesheet,shared);}
   document.documentElement.classList.add('church-ios');
   if(/iPhone|iPad|iPod/.test(navigator.userAgent)||navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)document.documentElement.classList.add('church-ios-device');
   const meta=(name,content)=>{let node=document.head.querySelector(`meta[name="${name}"]`);if(!node){node=document.createElement('meta');node.name=name;document.head.append(node);}node.content=content;};
@@ -21,9 +22,7 @@ if(!window.__churchIosExperience){
   const install=()=>{upgrade();new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1)upgrade(node.parentElement||node);}).observe(document.body,{childList:true,subtree:true});};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 
-  let pressed=null,dirty=false;
-  document.addEventListener('input',event=>{if(event.target.closest('form'))dirty=true;},{passive:true});
-  document.addEventListener('submit',()=>{dirty=false;},true);
+  let pressed=null;
   document.addEventListener('pointerdown',event=>{const target=event.target.closest('button,a,.dashboard-card,.app-hub-card,.member-card');if(!target||target.matches(':disabled'))return;pressed=target;target.classList.add('ios-pressed');},{passive:true});
   for(const type of ['pointerup','pointercancel','pointerleave'])document.addEventListener(type,()=>{pressed?.classList.remove('ios-pressed');pressed=null;},{passive:true});
   const transition=document.createElement('div');transition.className='ios-page-transition';transition.setAttribute('aria-hidden','true');
@@ -33,7 +32,8 @@ if(!window.__churchIosExperience){
   window.addEventListener('pageshow',()=>transition.classList.remove('is-loading'));
   if(window.visualViewport){const resize=()=>{const inset=Math.max(0,innerHeight-window.visualViewport.height-window.visualViewport.offsetTop);document.documentElement.style.setProperty('--ios-keyboard-inset',`${inset}px`);document.documentElement.classList.toggle('ios-keyboard-open',inset>100);};window.visualViewport.addEventListener('resize',resize);window.visualViewport.addEventListener('scroll',resize);resize();}
   let edgeStart=null,edgeHint;
-  document.addEventListener('touchstart',event=>{const touch=event.touches[0];if(event.touches.length!==1||touch.clientX>22||dirty||document.querySelector('dialog[open],[role=dialog]:not([hidden])')||event.target.closest('[role=dialog],dialog,input,textarea,select,[contenteditable],.app-hub-grid,.module-bar'))return;edgeStart={x:touch.clientX,y:touch.clientY};},{passive:true});
-  document.addEventListener('touchmove',event=>{if(!edgeStart)return;const touch=event.touches[0],dx=touch.clientX-edgeStart.x,dy=Math.abs(touch.clientY-edgeStart.y);if(dx<18||dy>70)return;if(!edgeHint){edgeHint=document.createElement('div');edgeHint.className='ios-back-hint';edgeHint.textContent='‹';document.body.append(edgeHint);}edgeHint.style.setProperty('--back-progress',Math.min(1,dx/110));edgeHint.classList.add('show');},{passive:true});
-  document.addEventListener('touchend',event=>{if(!edgeStart)return;const touch=event.changedTouches[0],goBack=touch.clientX-edgeStart.x>95&&Math.abs(touch.clientY-edgeStart.y)<70;edgeStart=null;edgeHint?.classList.remove('show');if(goBack&&history.length>1)history.back();},{passive:true});
+  document.addEventListener('touchstart',event=>{edgeStart=null;const touch=event.touches[0];if(event.touches.length!==1||touch.clientX>22||document.querySelector('[data-unsaved-changes="true"],[aria-busy="true"]')||document.querySelector('dialog[open],[role=dialog]:not([hidden])')||event.target.closest('[role=dialog],dialog,input,textarea,select,[contenteditable],.app-hub-grid,.module-bar'))return;edgeStart={x:touch.clientX,y:touch.clientY};},{passive:true});
+  document.addEventListener('touchmove',event=>{if(!edgeStart)return;if(event.touches.length!==1){edgeStart=null;edgeHint?.classList.remove('show');return;}const touch=event.touches[0],dx=touch.clientX-edgeStart.x,dy=Math.abs(touch.clientY-edgeStart.y);if(dx<18||dy>70)return;if(!edgeHint){edgeHint=document.createElement('div');edgeHint.className='ios-back-hint';edgeHint.textContent='‹';document.body.append(edgeHint);}edgeHint.style.setProperty('--back-progress',Math.min(1,dx/110));edgeHint.classList.add('show');},{passive:true});
+  document.addEventListener('touchcancel',()=>{edgeStart=null;edgeHint?.classList.remove('show');},{passive:true});
+  document.addEventListener('touchend',event=>{if(!edgeStart||!event.changedTouches.length)return;const touch=event.changedTouches[0],goBack=!document.querySelector('[data-unsaved-changes="true"],[aria-busy="true"]')&&touch.clientX-edgeStart.x>95&&Math.abs(touch.clientY-edgeStart.y)<70;edgeStart=null;edgeHint?.classList.remove('show');if(goBack&&history.length>1)history.back();},{passive:true});
 }

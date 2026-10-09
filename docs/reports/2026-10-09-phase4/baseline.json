@@ -1,0 +1,96 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "api_mode": "isolated_synthetic",
+  "metrics": [
+    {
+      "file": "admin-dashboard.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 46,
+        "bytes": 620057
+      },
+      "large": {
+        "header": 164,
+        "overflow": false,
+        "titleHeight": 25.609375,
+        "titleScroll": 26
+      }
+    },
+    {
+      "file": "church-settings.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 33,
+        "bytes": 495104
+      },
+      "large": {
+        "header": 164,
+        "overflow": false,
+        "titleHeight": 25.609375,
+        "titleScroll": 26
+      }
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 31,
+        "bytes": 510137
+      },
+      "large": {
+        "header": 164,
+        "overflow": false,
+        "titleHeight": 25.609375,
+        "titleScroll": 26
+      }
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 30,
+        "bytes": 502614
+      },
+      "large": {
+        "header": 164,
+        "overflow": false,
+        "titleHeight": 25.609375,
+        "titleScroll": 26
+      }
+    },
+    {
+      "file": "website-maintenance.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 32,
+        "bytes": 538949
+      },
+      "large": {
+        "header": 164,
+        "overflow": false,
+        "titleHeight": 51.21875,
+        "titleScroll": 51
+      }
+    },
+    {
+      "file": "service-signup-admin.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 34,
+        "bytes": 527040
+      },
+      "large": {
+        "header": 164,
+        "overflow": false,
+        "titleHeight": 25.609375,
+        "titleScroll": 26
+      }
+    }
+  ]
+}

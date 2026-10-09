@@ -14,7 +14,11 @@
     "phase2:contrast": "node phase2/contrast.mjs",
     "phase2:signup": "node phase2/service-signup-list.mjs",
     "phase2:signup-db": "node phase2/service-signup-journey-db.mjs",
-    "phase3:browser": "node phase3/browser.mjs"
+    "phase3:browser": "node phase3/browser.mjs",
+    "serve": "node serve.mjs",
+    "phase4:worker": "node phase4/worker.mjs",
+    "phase4:browser": "node phase4/browser.mjs",
+    "quality:gate": "node quality-gate.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",

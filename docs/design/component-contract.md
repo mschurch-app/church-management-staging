@@ -68,3 +68,18 @@ Chrome 模擬資料與 viewport 檢查用於回歸；iPhone 17、LINE 內開啟�
 
 共用樣式載入：iOS 補充樣式插入既有 `data-app-consistency` link 前面；不可移動或移除已載入的共用 stylesheet，以免重新載入期間短暫失去 token／表頭規則。
 `apiResult` 驗證業務 API 的明確 `ok: true` 回應；僅 HTTP 2xx 不視為完成。缺少確認結果時先重新讀取，不自動重送。
+
+## 裝置恢復與版本更新（第四階段）
+
+`ios-experience.mjs` 接入 `app-runtime.mjs`，共用鍵盤略過導覽、放大文字偵測、底部導覽留白、連線提示及手勢保護。不要另建會自動清除登入或重送資料的恢復處理器。
+
+- 表單 input／change 設定 `data-unsaved-changes="true"`；reset 或業務明確確認儲存後才清除。第三階段工作區由 `draftGuard.clear()` 清除；不得以 submit 或任何 HTTP 結束推定已儲存。
+- 非同步操作期間在穩定容器設 `aria-busy="true"`，完成後還原。更新、下拉與返回手勢據此保護進行中的操作；其他頁面接入時須核對自己的忙碌狀態。
+- `refreshApp()` 先檢查連線、忙碌與未儲存資料；使用者確認後發送 `church:discard-drafts`，由 guard 同步清除，避免同一次重新載入問兩次。
+- `watchAppRegistration()` 只提供明確更新按鈕。Worker 安裝後等待，收到 `CHURCH_ACTIVATE_UPDATE` 才接管。更新期間若又輸入、開始操作或切到背景，完成後仍等使用者再按更新。
+- HTML 導航、OAuth callback 與一次性登入返回網址不寫入 App 快取；業務 API 與 POST 不離線排隊。離線恢復頁於原網址顯示，再次開啟仍回原頁，保留連線與登入的分別。
+- 文字放大時表頭可長高；正常字體維持 164 CSS px。底部留白依實際 dock 高度計算。新增固定底列須納入同一個量測契約。
+- 通知僅當前項目可聚焦；聚焦、懸停、浮窗、背景與減少動態效果均暫停輪播。不要讓輪播用 live region 每三秒打斷閱讀。
+- 網站預覽在 disclosure 打開後才設定 iframe src；審核圖片使用 lazy／async，效能改善仍以實測記錄為準。
+
+發布前執行 `tests/quality-gate.mjs`，保留失敗與修正紀錄。版本變更需同步直接及間接引用，避免同一模組以多個舊 query 載入。詳細操作見 `tests/phase4/README.md`。模擬測試與實機驗收分開記錄。

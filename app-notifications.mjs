@@ -1,10 +1,12 @@
-import {db} from './admin-db.mjs?v=20261009-stage3';
+import {db} from './admin-db.mjs?v=20261009-stage4';
 const el=(tag,text='',cls='')=>{const node=document.createElement(tag);node.textContent=text;node.className=cls;return node;};
 const time=value=>new Intl.DateTimeFormat('zh-TW',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Taipei'}).format(new Date(value));
-let tickerTimer=0,tickerResetTimer=0,pageScrollY=0,pageLocked=false;
+let tickerTimer=0,tickerResetTimer=0,pageScrollY=0,pageLocked=false,tickerState=null,loadSequence=0;
+const tickerAreas=new WeakSet();
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 function lockPage(){if(pageLocked)return;pageLocked=true;pageScrollY=window.scrollY;document.documentElement.classList.add('notification-modal-open');document.body.classList.add('notification-modal-open');document.body.style.top=`-${pageScrollY}px`;}
-function unlockPageWhenClear(){requestAnimationFrame(()=>{if(document.querySelector('dialog.notification-modal[open]'))return;document.documentElement.classList.remove('notification-modal-open');document.body.classList.remove('notification-modal-open');document.body.style.removeProperty('top');if(pageLocked)window.scrollTo(0,pageScrollY);pageLocked=false;});}
-function showModal(dialog){lockPage();dialog.showModal();}
+function unlockPageWhenClear(){requestAnimationFrame(()=>{if(document.querySelector('dialog.notification-modal[open]'))return;document.documentElement.classList.remove('notification-modal-open');document.body.classList.remove('notification-modal-open');document.body.style.removeProperty('top');if(pageLocked)window.scrollTo(0,pageScrollY);pageLocked=false;startTicker();});}
+function showModal(dialog){stopTicker();lockPage();dialog.showModal();}
 const reportHeading=/【\s*今日討論摘要\s*】|[一二三四五][、．.]\s*(?:重點事項|已決定事項|待辦事項(?:（[^）]*）)?|需要追蹤|重要日期與提醒)/g;
 const reportLabel=heading=>{
  if(heading.includes('重點事項'))return '重點事項';
@@ -85,10 +87,18 @@ function showNotificationDetail(item,{onMarked,onClose}={}){
  modal.dialog.addEventListener('close',async()=>{await markPromise;onClose?.();},{once:true});
  showModal(modal.dialog);setTimeout(()=>modal.close.focus(),0);
 }
+function stopTicker(){clearInterval(tickerTimer);clearTimeout(tickerResetTimer);tickerTimer=0;tickerResetTimer=0;if(tickerState)for(const card of tickerState.cards)card.classList.remove('is-leaving');}
+function selectTicker(index){const state=tickerState;if(!state)return;state.active=index;state.cards.forEach((card,i)=>{const active=i===index;card.classList.toggle('is-active',active);card.setAttribute('aria-hidden',String(!active));card.inert=!active;card.tabIndex=active?0:-1;});}
+function startTicker(){
+ stopTicker();const state=tickerState;if(!state||state.cards.length<2||state.hover||state.area.contains(document.activeElement)||document.visibilityState==='hidden'||reduceMotion.matches||document.querySelector('dialog[open]'))return;
+ tickerTimer=setInterval(()=>{if(state.area.contains(document.activeElement)||document.visibilityState==='hidden'||reduceMotion.matches||document.querySelector('dialog[open]')){stopTicker();return;}const current=state.cards[state.active];selectTicker((state.active+1)%state.cards.length);current.classList.add('is-leaving');tickerResetTimer=setTimeout(()=>current.classList.remove('is-leaving'),720);},3000);
+}
+document.addEventListener('visibilitychange',startTicker);reduceMotion.addEventListener('change',startTicker);
+
 export async function loadNotificationCenter(area,badge,bell){
- const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(error||!Array.isArray(data)){area.replaceChildren(el('p','最新通知暫時無法載入。','muted'));return;}
- clearInterval(tickerTimer);clearTimeout(tickerResetTimer);tickerTimer=0;tickerResetTimer=0;
- const unreadItems=data.filter(item=>!item.read_at);let unread=unreadItems.length;const updateBadge=()=>{badge.textContent=String(unread);badge.hidden=!unread;badge.setAttribute('aria-label',unread?`${unread} 則未讀通知`:'沒有未讀通知');};updateBadge();area.replaceChildren();area.classList.add('is-ticker');
+ const sequence=++loadSequence;stopTicker();tickerState=null;const {data,error}=await db.rpc('list_my_app_notifications',{p_limit:30});if(sequence!==loadSequence)return;if(error||!Array.isArray(data)){area.replaceChildren(el('p','最新通知暫時無法載入。','muted'));return;}
+ tickerState=null;
+ const unreadItems=data.filter(item=>!item.read_at);let unread=unreadItems.length;const updateBadge=()=>{if(bell)bell.setAttribute('aria-label',`開啟通知中心，${unread} 則未讀通知`);badge.textContent=String(unread);badge.hidden=!unread;badge.setAttribute('aria-label',unread?`${unread} 則未讀通知`:'沒有未讀通知');};updateBadge();area.replaceChildren();area.classList.add('is-ticker');area.setAttribute('aria-live','off');
  if(bell){bell.disabled=false;bell.onclick=()=>showNotificationHistory(data,{area,badge,bell,updateBadge:()=>{unread=Math.max(0,unread-1);updateBadge();}});}
  if(!unread){area.append(el('p','目前沒有未讀通知。','muted'));return;}
  const track=el('div','','notification-ticker-track');area.append(track);
@@ -96,10 +106,9 @@ export async function loadNotificationCenter(area,badge,bell){
   const card=el('a','','notification-ticker-item');card.href=item.target_url||'#';card.dataset.notificationId=String(item.id);card.setAttribute('aria-label',`${item.title}。${item.body||''}`);
   const copy=el('span','','notification-ticker-copy');copy.append(el('strong',item.title),el('span',String(item.body||'').replace(/\s+/g,' ').trim(),'notification-ticker-body'));
   card.append(copy,el('time',time(item.created_at)),el('b','›','notification-ticker-arrow'));
-  card.onclick=event=>{event.preventDefault();clearInterval(tickerTimer);tickerTimer=0;showNotificationDetail(item,{onMarked:()=>{unread=Math.max(0,unread-1);updateBadge();},onClose:()=>loadNotificationCenter(area,badge,bell)});};
+  card.onclick=event=>{event.preventDefault();stopTicker();showNotificationDetail(item,{onMarked:()=>{unread=Math.max(0,unread-1);updateBadge();},onClose:()=>loadNotificationCenter(area,badge,bell)});};
   track.append(card);
  }
- const cards=[...track.children];let active=0;cards[0].classList.add('is-active');cards.forEach((card,index)=>card.setAttribute('aria-hidden',index?'true':'false'));
- if(cards.length>1)tickerTimer=setInterval(()=>{const current=cards[active],nextIndex=(active+1)%cards.length,next=cards[nextIndex];current.classList.remove('is-active');current.classList.add('is-leaving');current.setAttribute('aria-hidden','true');next.classList.add('is-active');next.setAttribute('aria-hidden','false');tickerResetTimer=setTimeout(()=>current.classList.remove('is-leaving'),720);active=nextIndex;},3000);
+ const cards=[...track.children];tickerState={area,cards,active:0,hover:false};selectTicker(0);area.onmouseenter=()=>{if(tickerState)tickerState.hover=true;stopTicker();};area.onmouseleave=()=>{if(tickerState)tickerState.hover=false;startTicker();};if(!tickerAreas.has(area)){tickerAreas.add(area);area.addEventListener('focusin',stopTicker);area.addEventListener('focusout',()=>queueMicrotask(startTicker));}startTicker();
 }
 export async function createTestNotification(church){const result=await db.rpc('create_my_test_notification',{p_church:church});if(result.error)throw new Error('測試通知未建立。');return result.data;}

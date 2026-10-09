@@ -15,7 +15,7 @@ const browser=await puppeteer.launch({executablePath:process.env.CHROME_EXECUTAB
 const context=await browser.createBrowserContext();
 async function setup(page,{signedIn=true}={}){
  await page.setViewport({width:390,height:844,deviceScaleFactor:1,isMobile:true,hasTouch:true});
- await page.evaluateOnNewDocument((session,signedIn)=>{navigator.serviceWorker?.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));if(signedIn)localStorage.setItem('church-staging-admin-v1',JSON.stringify(session));else localStorage.removeItem('church-staging-admin-v1');},session,signedIn);
+ await page.evaluateOnNewDocument((session,signedIn)=>{navigator.serviceWorker?.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(signedIn)localStorage.setItem('church-staging-admin-v1',JSON.stringify(session));else localStorage.removeItem('church-staging-admin-v1');},session,signedIn);
  await page.setBypassServiceWorker(true);await page.setRequestInterception(true);
  page.on('request',async req=>{
   const url=new URL(req.url());if(url.hostname.endsWith('supabase.co')){
@@ -70,3 +70,6 @@ for(const file of files){
  });results.push({file,...metrics});
 }
 fs.writeFileSync(out+'/contrast-audit.json',JSON.stringify(results,null,2));await browser.close();assert(results.length===files.length);assert(results.every(r=>r.failures.length===0&&!r.headerClipped));console.log(JSON.stringify({pages:results.length,textChecks:results.reduce((n,r)=>n+r.checked,0),failures:results.filter(r=>r.failures.length||r.headerClipped)}));
+
+// All assertions and the evidence write above must finish before this CLI exits.
+process.exit(0);

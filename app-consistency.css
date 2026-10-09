@@ -196,3 +196,36 @@ html body .function-icon[data-ios-symbol="pin"]{--app-icon-foreground:#ef3d45}
 html body .function-icon[data-ios-symbol="printer"]{--app-icon-foreground:#526274}
 
 html body .dashboard-page .notification-unread-count{background:var(--app-accent)!important;color:var(--app-on-accent)!important}
+
+/* Fourth stage: accessible device behavior without changing normal headers. */
+html body .app-skip-link{position:fixed;z-index:2147483646;top:10px;left:12px;transform:translateY(-160%);padding:12px 18px;border:2px solid var(--app-focus);border-radius:12px;background:#fff;color:var(--app-ink);font-weight:750;min-height:44px}
+html body .app-skip-link:focus{transform:none}
+html body .app-text-probe{position:fixed;visibility:hidden;pointer-events:none;width:1rem;height:1rem;top:0;left:0}
+html body.app-has-dock{padding-bottom:calc(var(--app-dock-height,96px) + env(safe-area-inset-bottom,0px) + 32px)!important}
+html body .app-system-banner{position:fixed;z-index:2147483645;bottom:calc(var(--app-dock-height,0px) + env(safe-area-inset-bottom,0px) + 24px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;width:min(560px,calc(100% - 28px));padding:14px 18px;border:1px solid #d9beb3;border-radius:20px;background:#fffdfb;color:#302823;box-shadow:0 14px 45px #30282326;box-sizing:border-box}
+html body .app-system-banner p{margin:0;flex:1;min-width:0;line-height:1.5;color:#302823;font-size:max(14px,.9rem)}
+html body .app-system-banner button{flex-shrink:0;min-width:60px;min-height:44px;margin:0}
+html body .app-pull-refresh{position:fixed;z-index:2147483644;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translate(-50%,-80px);padding:12px 16px;border-radius:999px;background:#214f45;color:#fff;font:700 14px/1.2 var(--app-font-body);box-shadow:0 8px 24px #30282326;opacity:0;transition:transform .18s ease,opacity .18s ease;pointer-events:none}
+html body .app-pull-refresh.visible{opacity:1}html body .app-pull-refresh.ready{background:#a83929}
+html.app-large-text body{font-size:1rem!important}
+html.app-large-text body .member-page>.page-header{height:auto!important;min-height:var(--app-header-height)!important}
+html.app-large-text body .member-page>.page-header h1{display:block;-webkit-line-clamp:unset;font-size:1.3rem!important;line-height:1.25;overflow-wrap:anywhere}
+html.app-large-text body .member-page>.page-header :is(#welcome,#identity,.admin-identity){font-size:.8rem!important;overflow-wrap:anywhere}
+html.app-large-text body .member-page>.page-header .eyebrow{font-size:.6rem!important;overflow-wrap:anywhere}
+html.app-large-text body :is(label,.website-hint,.quick-links-help,.workflow-steps li,.workflow-summary p,.settings-link-copy>span,.function-open :is(strong,h3),.home-icon-main small){font-size:.85rem!important;overflow-wrap:anywhere}
+html.app-large-text body .member-page>.page-header .header-tools{max-width:116px}
+html.app-large-text body .member-page>.page-header :is(button,.secondary){font-size:.6rem!important}
+html.app-large-text body .mobile-app-nav{height:auto;max-height:none}
+html.app-large-text body .mobile-app-nav a{font-size:.7rem;min-width:0;overflow-wrap:anywhere}
+@media(max-width:480px){html body .app-system-banner{align-items:flex-start;flex-wrap:wrap}html body .app-system-banner button{margin-left:auto}}
+
+html.app-large-text body :is(input,select,textarea){font-size:1rem!important;min-width:0}
+html.app-large-text body .member-page :is(h2,.section-heading h2){font-size:1.05rem!important;overflow-wrap:anywhere}
+html.app-large-text body .dashboard-page .app-notification-list{min-height:3.8rem}
+html.app-large-text body .dashboard-page .notification-ticker-copy strong{font-size:.8rem!important;line-height:1.35}
+html.app-large-text body .dashboard-page .notification-ticker-body{font-size:.7rem!important;line-height:1.4}
+html.app-large-text body .dashboard-page .summary-card strong{font-size:1rem!important}
+html.app-large-text body .dashboard-page :is(.summary-card>span,.summary-card-copy>span){font-size:.6rem!important;line-height:1.4}
+html.app-large-text body :is(.notification-detail-body,.notification-history-body){font-size:.85rem!important}
+
+html.app-large-text body .dashboard-page :is(.primary-hub .app-hub-card .function-open strong,.dashboard-card .function-open h3){font-size:.85rem!important;line-height:1.4}

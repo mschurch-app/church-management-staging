@@ -1,0 +1,90 @@
+{
+  "isolated": true,
+  "checks": [
+    {
+      "name": "install precaches recovery and shared runtime without forcing activation",
+      "status": "passed"
+    },
+    {
+      "name": "unknown message cannot activate an update",
+      "status": "passed"
+    },
+    {
+      "name": "explicit update message activates once",
+      "status": "passed"
+    },
+    {
+      "name": "activation removes only previous church cache namespaces",
+      "status": "passed"
+    },
+    {
+      "name": "successful authenticated and callback navigations never enter cache",
+      "status": "passed"
+    },
+    {
+      "name": "offline navigation shows recovery instead of a login screen",
+      "status": "passed"
+    },
+    {
+      "name": "server unavailable navigation uses recovery",
+      "status": "passed"
+    },
+    {
+      "name": "not found navigation keeps actual response",
+      "status": "passed"
+    },
+    {
+      "name": "recovery cache missing still returns a readable response",
+      "status": "passed"
+    },
+    {
+      "name": "POST and external API requests are never handled or queued",
+      "status": "passed"
+    },
+    {
+      "name": "same-origin API data is not cached",
+      "status": "passed"
+    },
+    {
+      "name": "scripts revalidate browser cache and remember fresh assets",
+      "status": "passed"
+    },
+    {
+      "name": "network failure serves previously fetched script",
+      "status": "passed"
+    },
+    {
+      "name": "server failure serves cached script without replacing it",
+      "status": "passed"
+    },
+    {
+      "name": "missing offline script returns an error response",
+      "status": "passed"
+    },
+    {
+      "name": "cache quota failure does not break an online response",
+      "status": "passed"
+    },
+    {
+      "name": "only public asset images use image cache",
+      "status": "passed"
+    },
+    {
+      "name": "notification waits for navigation before focusing a window",
+      "status": "passed"
+    },
+    {
+      "name": "notification external destination falls back to home",
+      "status": "passed"
+    },
+    {
+      "name": "closed notification window opens a replacement",
+      "status": "passed"
+    },
+    {
+      "name": "push payload retains existing notification contract",
+      "status": "passed"
+    }
+  ],
+  "total": 21
+}

@@ -1,9 +1,10 @@
-let installPrompt=null;
-import {db} from './admin-db.mjs?v=20261009-stage3';
+let installPrompt=null,registrationTask=null;
+import {watchAppRegistration} from './app-runtime.mjs?v=20261009-stage4';
+import {db} from './admin-db.mjs?v=20261009-stage4';
 import {VAPID_PUBLIC_KEY} from './app-push-config.mjs';
 const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
-export async function registerChurchApp(){if('serviceWorker'in navigator)try{const registration=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage3',{scope:'/',updateViaCache:'none'});setTimeout(()=>registration.update().catch(()=>{}),1500);}catch{} }
+export async function registerChurchApp(){if(!('serviceWorker'in navigator))return;if(!registrationTask)registrationTask=navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4',{scope:'/',updateViaCache:'none'}).then(registration=>{watchAppRegistration(registration);setTimeout(()=>registration.update().catch(()=>{}),1500);return registration;}).catch(()=>{registrationTask=null;return null;});return registrationTask;}
 const applicationServerKey=value=>{const padding='='.repeat((4-value.length%4)%4),base64=(value+padding).replace(/-/g,'+').replace(/_/g,'/'),raw=atob(base64);return Uint8Array.from([...raw].map(char=>char.charCodeAt(0)));};
 async function connectPush(){const registration=await navigator.serviceWorker.ready;let subscription=await registration.pushManager.getSubscription();if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:applicationServerKey(VAPID_PUBLIC_KEY)});const {data,error}=await db.functions.invoke('app-push',{body:{action:'subscribe',subscription:subscription.toJSON(),user_agent:navigator.userAgent}});if(error||!data?.ok)throw new Error('裝置登記失敗，請稍後再試。');return subscription;}
 export function wireInstallButton(button,status){if(!button)return;if(isStandalone){button.textContent='已安裝在手機';button.disabled=true;return;}button.hidden=false;button.onclick=async()=>{if(installPrompt){installPrompt.prompt();const choice=await installPrompt.userChoice;if(choice.outcome==='accepted'){button.textContent='安裝完成';button.disabled=true;}return;}status.textContent=isIos?'請按 Safari 下方「分享」，再選擇「加入主畫面」。':'請開啟瀏覽器選單，選擇「安裝應用程式」或「加入主畫面」。';};window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;button.hidden=false;});}

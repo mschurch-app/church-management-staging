@@ -1,7 +1,7 @@
-import {db} from './admin-db.mjs?v=20261009-stage3';
+import {db} from './admin-db.mjs?v=20261009-stage4';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 
-import {workflowSummary,apiResult,uncertainWrite,lockControls,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage3';
+import {workflowSummary,apiResult,uncertainWrite,lockControls,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';
 
 const BUCKET='church-website-public-media';
 const REVIEW_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-bulletin-review';
@@ -42,7 +42,10 @@ function syncWorkspace(){
 }
 async function exclusive(task){if(working||needsRefresh||!canAction(access,church,'website_weekly',bulletins.some(row=>row.id===current?.id)?'edit':'create'))return;working=true;const unlock=lockControls(document.querySelector('.member-page'));try{return await task();}catch(error){setStatus(error.message||'操作未完成，請稍後重試。','error');}finally{working=false;unlock();syncWorkspace();}}
 
-function selectWebsiteScope(key){const scope=WEBSITE_SCOPES[key]||WEBSITE_SCOPES.weekly;document.querySelectorAll('[data-scope]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.scope===key)));$('#preview-title').textContent=scope.title;$('#preview-open').href=scope.url;$('#website-preview').src=scope.url;$('#scope-note').innerHTML='<strong>'+scope.title+'：</strong>'+scope.note;$('#weekly-editor-panel').hidden=!scope.editable;}
+function selectWebsiteScope(key){const scope=WEBSITE_SCOPES[key]||WEBSITE_SCOPES.weekly;document.querySelectorAll('[data-scope]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.scope===key)));$('#preview-title').textContent=scope.title;$('#preview-open').href=scope.url;$('#website-preview').dataset.src=scope.url;if(document.querySelector('.website-preview-disclosure').open)loadWebsitePreview();$('#scope-note').innerHTML='<strong>'+scope.title+'：</strong>'+scope.note;$('#weekly-editor-panel').hidden=!scope.editable;}
+function loadWebsitePreview(){const frame=$('#website-preview');if(frame.dataset.src&&frame.getAttribute('src')!==frame.dataset.src)frame.src=frame.dataset.src;}
+document.querySelector('.website-preview-disclosure').addEventListener('toggle',event=>{if(event.target.open)loadWebsitePreview();});
+
 function cleanSections(value){if(!Array.isArray(value))return structuredClone(DEFAULT_SECTIONS);return value.map(section=>({key:String(section.key||crypto.randomUUID()).slice(0,80),title:String(section.title||'').slice(0,100),description:String(section.description||'').slice(0,500),enabled:section.enabled!==false,auto_schedule:Boolean(section.auto_schedule),items:(Array.isArray(section.items)?section.items:[]).slice(0,30).map(item=>({label:String(item.label||'').slice(0,100),body:String(item.body||'').slice(0,10000)}))})).slice(0,30);}
 function publicImage(path){return path?db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl:'';}
 

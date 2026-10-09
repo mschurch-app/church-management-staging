@@ -1,0 +1,535 @@
+{
+  "status": "passed",
+  "catalogUI": {
+    "favorites": [
+      "members",
+      "tree_reading_admin",
+      "school_students"
+    ],
+    "folder": [
+      "members",
+      "newcomer_care",
+      "groups",
+      "prayers",
+      "pastoral_inbox",
+      "attendance",
+      "schedules",
+      "service_signups",
+      "spaces",
+      "inventory",
+      "tree_reading_admin",
+      "website_weekly",
+      "website_group_resources",
+      "pastoral_content",
+      "todays_message",
+      "love_share",
+      "line_preview",
+      "media_publishing",
+      "subtitle_library",
+      "school_students",
+      "heat_camp",
+      "binding_review",
+      "review_workflows",
+      "notification_settings",
+      "customization",
+      "admin_accounts",
+      "church_settings",
+      "system_monitor"
+    ]
+  },
+  "restricted": [
+    "schedules",
+    "service_signups"
+  ],
+  "geometry": [
+    {
+      "file": "admin-accounts.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "同工帳號與權限"
+    },
+    {
+      "file": "admin-dashboard.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "教會 OS"
+    },
+    {
+      "file": "amenities.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 設備管理"
+    },
+    {
+      "file": "attendance.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 出席登記"
+    },
+    {
+      "file": "binding-review.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "LINE 與會友身分確認"
+    },
+    {
+      "file": "church-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 教會設定"
+    },
+    {
+      "file": "customization-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 功能與表單呈現"
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "每日靈修生命樹"
+    },
+    {
+      "file": "group-members.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 小組成員管理"
+    },
+    {
+      "file": "group-resources-management.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "小組教材"
+    },
+    {
+      "file": "groups.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 小組管理"
+    },
+    {
+      "file": "heat-camp-admin.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "熱火籃球營報名"
+    },
+    {
+      "file": "instagram-publishing-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "Instagram 發布設定"
+    },
+    {
+      "file": "inventory.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "物品與借用"
+    },
+    {
+      "file": "love-share-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 把愛傳出去"
+    },
+    {
+      "file": "media-publishing-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "Instagram 與 YouTube 發布"
+    },
+    {
+      "file": "member-audit.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 會友操作日誌"
+    },
+    {
+      "file": "members.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 會友與新朋友名冊"
+    },
+    {
+      "file": "newcomer-care.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 新朋友持續關懷"
+    },
+    {
+      "file": "notification-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 通知設定"
+    },
+    {
+      "file": "pastoral-content.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 牧養圖卡與內容"
+    },
+    {
+      "file": "pastoral-inbox.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 牧養訊息收件匣"
+    },
+    {
+      "file": "prayers.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 代禱與牧養關懷"
+    },
+    {
+      "file": "review-workflow-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "審核流程設定"
+    },
+    {
+      "file": "schedules.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 主日服事安排"
+    },
+    {
+      "file": "sermon-social-review.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "講道內容審核"
+    },
+    {
+      "file": "service-signup-admin.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "主日服事登記"
+    },
+    {
+      "file": "spaces.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 場地與預約"
+    },
+    {
+      "file": "system-monitor.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "系統狀況"
+    },
+    {
+      "file": "todays-message-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "M＋大雅教會 · 給今天的你"
+    },
+    {
+      "file": "tree-reading-admin.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "讀經生命樹管理"
+    },
+    {
+      "file": "website-maintenance.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "主日週報與預告圖"
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "週報發布審核"
+    },
+    {
+      "file": "youtube-settings.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "YouTube 字幕設定"
+    },
+    {
+      "file": "youtube-subtitle-library.html",
+      "header": 164,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "overflow": false,
+      "title": "YouTube 字幕詞庫"
+    }
+  ],
+  "desktop": [
+    {
+      "file": "admin-accounts.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "admin-dashboard.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "amenities.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "attendance.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "binding-review.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "church-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "customization-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "group-members.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "group-resources-management.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "groups.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "heat-camp-admin.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "instagram-publishing-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "inventory.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "love-share-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "media-publishing-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "member-audit.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "members.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "newcomer-care.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "notification-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "pastoral-content.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "pastoral-inbox.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "prayers.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "review-workflow-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "schedules.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "sermon-social-review.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "service-signup-admin.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "spaces.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "system-monitor.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "todays-message-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "tree-reading-admin.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "website-maintenance.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "youtube-settings.html",
+      "header": 164,
+      "overflow": false
+    },
+    {
+      "file": "youtube-subtitle-library.html",
+      "header": 164,
+      "overflow": false
+    }
+  ],
+  "pageErrors": [],
+  "writes": [
+    "mark_app_notification_read",
+    "mark_app_notification_read",
+    "save_review_workflow_setting",
+    "save_review_workflow_setting",
+    "save_admin_account_bundle",
+    "save_admin_account_bundle"
+  ],
+  "htmlFiles": 35,
+  "intercepted": [
+    "/auth/v1/user",
+    "/rest/v1/rpc/list_my_app_notifications",
+    "/rest/v1/rpc/get_my_church_access",
+    "/rest/v1/rpc/get_my_admin_profile",
+    "/rest/v1/rpc/get_my_feature_permissions",
+    "/rest/v1/church_customizations",
+    "/rest/v1/rpc/get_my_home_preferences",
+    "/rest/v1/rpc/get_my_system_monitor_access",
+    "/rest/v1/rpc/get_my_app_capabilities",
+    "/rest/v1/members",
+    "/rest/v1/groups",
+    "/rest/v1/prayers",
+    "/rest/v1/rpc/mark_app_notification_read",
+    "/rest/v1/church_public_settings",
+    "/rest/v1/rpc/get_review_workflow_settings",
+    "/rest/v1/rpc/save_review_workflow_setting",
+    "/rest/v1/rpc/list_admin_accounts_v4",
+    "/rest/v1/rpc/save_admin_account_bundle",
+    "/rest/v1/room_amenities",
+    "/rest/v1/attendance_records",
+    "/rest/v1/rpc/list_binding_requests",
+    "/rest/v1/welcome_form_options",
+    "/rest/v1/member_ministry_options",
+    "/functions/v1/daily-devotional-admin",
+    "/functions/v1/heat-camp-admin",
+    "/functions/v1/instagram-publishing",
+    "/rest/v1/inventory_locations",
+    "/rest/v1/inventory_items",
+    "/rest/v1/inventory_loans",
+    "/rest/v1/share_greeting_cards",
+    "/rest/v1/love_share_scenarios",
+    "/functions/v1/media-publishing-settings",
+    "/rest/v1/member_audit_log",
+    "/rest/v1/rpc/get_member_group_names",
+    "/rest/v1/rpc/list_newcomer_care_cases",
+    "/rest/v1/rpc/get_line_notification_settings",
+    "/rest/v1/rpc/get_notification_channel_routes",
+    "/rest/v1/pastoral_templates",
+    "/rest/v1/spiritual_cards",
+    "/rest/v1/newcomer_journey_steps",
+    "/rest/v1/pastoral_chats",
+    "/rest/v1/service_schedules",
+    "/rest/v1/schedule_role_preferences",
+    "/rest/v1/rpc/get_service_signup_admin",
+    "/rest/v1/rpc/get_service_signup_change_requests",
+    "/rest/v1/rooms",
+    "/rest/v1/room_bookings",
+    "/functions/v1/system-monitor",
+    "/functions/v1/weekly-bulletin-review",
+    "/functions/v1/youtube-oauth",
+    "/functions/v1/subtitle-knowledge-admin",
+    "/rest/v1/website_content_posts",
+    "/functions/v1/tree-reading-admin",
+    "/rest/v1/website_weekly_bulletins",
+    "/rest/v1/rpc/get_website_weekly_data"
+  ]
+}

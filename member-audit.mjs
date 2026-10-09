@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage3';
+import {db} from './admin-db.mjs?v=20261009-stage4';
 import {listMemberAudit} from './member-management.mjs?v=20261003-access-guard1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#audit-list');let limit=50,busy=false;

@@ -1,6 +1,6 @@
-import {db} from './admin-db.mjs?v=20261009-stage3';
+import {db} from './admin-db.mjs?v=20261009-stage4';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
-import {node as el,lockControls,workflowSummary,apiResult,uncertainWrite,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage3';
+import {node as el,lockControls,workflowSummary,apiResult,uncertainWrite,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/daily-devotional-admin';
 const $=selector=>document.querySelector(selector),labels={draft:'草稿',initial_review:'待初審',spouse_review:'待複審',final_review:'待終審',approved:'已核准',returned:'退回修改',archived:'已封存'};

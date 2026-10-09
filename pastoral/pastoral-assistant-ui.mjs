@@ -1,5 +1,5 @@
 import {assistantChurch, buildAppointmentDraft} from './pastoral-assistant-management.mjs?v=20260924-2';
-import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261007-button-recovery1';
+import {authenticateStaff, signOut, staffLineIdToken} from './auth.mjs?v=20261009-stage4';
 import {PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TASKS_ENDPOINT} from './config.mjs?v=20260925-2';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);

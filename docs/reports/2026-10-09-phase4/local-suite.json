@@ -1,0 +1,70 @@
+{
+  "mode": "fixed suite executed in batches; final passing runs only",
+  "origin": "http://127.0.0.1:8769",
+  "apiMode": "isolated_synthetic",
+  "groups": [
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true
+    },
+    {
+      "name": "app-catalog.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase2/definitions.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase1/database.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase1/line-provider.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase2/service-signup-journey-db.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase1/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase2/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase2/service-signup-list.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase3/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase4/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase1/regression.mjs",
+      "passed": true
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true
+    }
+  ],
+  "syntaxFiles": 114,
+  "realIphone": "pending",
+  "realSafari": "pending"
+}

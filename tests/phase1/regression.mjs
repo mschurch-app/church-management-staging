@@ -13,7 +13,7 @@ const browser=await puppeteer.launch({executablePath:process.env.CHROME_EXECUTAB
 const context=await browser.createBrowserContext();
 async function setup(page,{signedIn=true}={}){
  await page.setViewport({width:390,height:844,deviceScaleFactor:1,isMobile:true,hasTouch:true});
- await page.evaluateOnNewDocument((session,signedIn)=>{navigator.serviceWorker?.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));if(signedIn)localStorage.setItem('church-staging-admin-v1',JSON.stringify(session));else localStorage.removeItem('church-staging-admin-v1');},session,signedIn);
+ await page.evaluateOnNewDocument((session,signedIn)=>{navigator.serviceWorker?.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(signedIn)localStorage.setItem('church-staging-admin-v1',JSON.stringify(session));else localStorage.removeItem('church-staging-admin-v1');},session,signedIn);
  await page.setBypassServiceWorker(true);await page.setRequestInterception(true);
  page.on('request',async req=>{
   const url=new URL(req.url());if(url.hostname.endsWith('supabase.co')){

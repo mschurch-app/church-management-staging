@@ -1,0 +1,174 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "api_mode": "isolated_synthetic",
+  "passed": true,
+  "checks": [
+    "admin-dashboard.html normal header and width",
+    "admin-dashboard.html transfer budget",
+    "admin-dashboard.html 200% text mode and no horizontal overflow",
+    "large favorite labels scale with text",
+    "admin-dashboard.html large text contrast",
+    "church-settings.html normal header and width",
+    "church-settings.html transfer budget",
+    "church-settings.html 200% text mode and no horizontal overflow",
+    "church-settings.html large text contrast",
+    "daily-devotional-admin.html normal header and width",
+    "daily-devotional-admin.html transfer budget",
+    "daily-devotional-admin.html 200% text mode and no horizontal overflow",
+    "daily-devotional-admin.html large text contrast",
+    "weekly-bulletin-review.html normal header and width",
+    "weekly-bulletin-review.html transfer budget",
+    "weekly-bulletin-review.html 200% text mode and no horizontal overflow",
+    "weekly-bulletin-review.html large text contrast",
+    "website-maintenance.html normal header and width",
+    "website-maintenance.html transfer budget",
+    "website-maintenance.html 200% text mode and no horizontal overflow",
+    "website-maintenance.html large text contrast",
+    "service-signup-admin.html normal header and width",
+    "service-signup-admin.html transfer budget",
+    "service-signup-admin.html 200% text mode and no horizontal overflow",
+    "service-signup-admin.html large text contrast",
+    "closed website preview defers iframe",
+    "open website preview loads expected source",
+    "only active notification can receive focus",
+    "ticker is not an automatic screen reader announcement",
+    "notification pauses while keyboard focus reads it",
+    "notification rotates after reading ends",
+    "notification pauses in background",
+    "notification pauses for reduced motion",
+    "notification pauses with history modal open",
+    "history modal locks background",
+    "keyboard skip link focuses main heading",
+    "offline status visible without reloading",
+    "offline refresh blocked",
+    "offline status contrast",
+    "online announces retry without resubmitting",
+    "editing marks draft",
+    "cancel refresh keeps draft and session",
+    "reset clears draft",
+    "refresh blocked during an active operation",
+    "new version offers explicit update",
+    "update action touch target",
+    "cancel update preserves draft and does not activate",
+    "accepted update activates exactly once",
+    "typing while update activates prevents reload",
+    "standalone pull indicator is installed",
+    "pull does not hijack input",
+    "pull does not hijack nested scroller",
+    "horizontal gesture does not refresh",
+    "pull shows feedback and cancel hides it",
+    "cancel pull refresh preserves draft",
+    "cancelled edge gesture never navigates",
+    "edge gesture protects unsaved form",
+    "edge gesture protects active operation",
+    "clean edge gesture can navigate back",
+    "explicit refresh reloads with session preserved",
+    "desktop first Tab reaches skip link",
+    "desktop keyboard skip reaches heading",
+    "dock leaves final content unobscured",
+    "real service worker installs and controls browser",
+    "uncached offline navigation keeps requested URL and shows recovery",
+    "offline retry stays recoverable",
+    "offline recovery contrast",
+    "offline auth return offers login without losing URL",
+    "retry opens original resource after network returns",
+    "real updated worker waits for explicit consent",
+    "explicit update activates and reloads",
+    "no business mutations sent",
+    "no unexpected browser errors"
+  ],
+  "metrics": [
+    {
+      "file": "admin-dashboard.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 47,
+        "bytes": 631315
+      },
+      "large": {
+        "header": 312.0625,
+        "overflow": false,
+        "titleSize": 41.6,
+        "mode": true
+      }
+    },
+    {
+      "file": "church-settings.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 34,
+        "bytes": 504727
+      },
+      "large": {
+        "header": 312.0625,
+        "overflow": false,
+        "titleSize": 41.6,
+        "mode": true
+      }
+    },
+    {
+      "file": "daily-devotional-admin.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 32,
+        "bytes": 519907
+      },
+      "large": {
+        "header": 285.1875,
+        "overflow": false,
+        "titleSize": 41.6,
+        "mode": true
+      }
+    },
+    {
+      "file": "weekly-bulletin-review.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 31,
+        "bytes": 512472
+      },
+      "large": {
+        "header": 322.296875,
+        "overflow": false,
+        "titleSize": 41.6,
+        "mode": true
+      }
+    },
+    {
+      "file": "website-maintenance.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 33,
+        "bytes": 549107
+      },
+      "large": {
+        "header": 453.140625,
+        "overflow": false,
+        "titleSize": 41.6,
+        "mode": true
+      }
+    },
+    {
+      "file": "service-signup-admin.html",
+      "normal": {
+        "header": 164,
+        "overflow": false,
+        "resources": 35,
+        "bytes": 536810
+      },
+      "large": {
+        "header": 349.171875,
+        "overflow": false,
+        "titleSize": 41.6,
+        "mode": true
+      }
+    }
+  ],
+  "errors": [],
+  "writes": []
+}

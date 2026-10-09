@@ -26,10 +26,12 @@ export function workflowSummary(target,{title,description,steps=[],active=0}){
 
 export function draftGuard(form,onChange=()=>{}){
   let dirty=false;
-  const mark=()=>{dirty=true;onChange(true);};
+  const mark=()=>{dirty=true;form.dataset.unsavedChanges='true';onChange(true);};
+  const clear=()=>{dirty=false;form.dataset.unsavedChanges='false';onChange(false);};
+  window.addEventListener('church:discard-drafts',clear);
   form.addEventListener('input',mark);form.addEventListener('change',mark);
   window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
-  return{get dirty(){return dirty;},mark,clear(){dirty=false;onChange(false);},canLeave(){return!dirty||confirm('還有尚未儲存的修改。要放棄這些修改並切換嗎？');}};
+  return{get dirty(){return dirty;},mark,clear,canLeave(){return!dirty||confirm('還有尚未儲存的修改。要放棄這些修改並切換嗎？');}};
 }
 
 export function reviewDialog({title,description,label='補充說明（選填）',required=false,confirmLabel='確認',withNote=true}){

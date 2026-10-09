@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage3';
+import {db} from './admin-db.mjs?v=20261009-stage4';
 import {readAccess,chooseChurch,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 
 const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search),editor=$('#editor-dialog'),detail=$('#detail-dialog');

@@ -49,4 +49,4 @@ Mac Safari、真實iPhone 17與LINE內播放／觸控仍待實機驗收；不宣
 
 ## Git及發布
 
-分支 `codex/life-tree-festival-worlds`，起點main `c04eb6aa39ca64a179dbc6671741e257f5cd1d16`。合併與正式URL資源比對由 `release.json` 記錄；本文件建立時仍待發布。
+分支 `codex/life-tree-festival-worlds`，起點main `c04eb6aa39ca64a179dbc6671741e257f5cd1d16`。PR #64已合併main `4872fe4dbf95970a448c23ad3474dfec0263918d`，來源commit `e00e9feb0dee474e5ff1e3009bd5d6b348faa3f6`。15:35:32（台北）正式URL的27項頁面、程式、樣式與音樂資源全部HTTP 200，SHA-256符合來源，詳見 `release.json`。線上Chromium另以402×874驗證六項：整月19顆燈飾、週外無馬槽、樹下操作、澆水動畫完成、週內馬槽及零資料服務寫入，詳見 `live-browser.json`、`live-december-tree.png` 與 `live-christmas-week.png`。驗收／發布紀錄由 `codex/life-tree-festival-release` 文件分支同步。

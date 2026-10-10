@@ -27,8 +27,8 @@ rotation.sql具台北當日、5人、今日5筆、未來0筆及新增15筆檢查
 
 ## 發布與資料
 
-僅October專用svwgfgyxxgbqabosriom的tree-reading-october-test，原v7 ACTIVE、verify_jwt=false與原LINE ID token驗證保持；新版本尚待發布。無schema／migration／RLS／Postgres function／trigger修改。主靈修及舊資料庫未操作；沒有發送App／LINE／Email通知。前端資源無異動。
+僅October專用svwgfgyxxgbqabosriom的tree-reading-october-test，PR #62已合併main（b1961955aee71d1098d04db9e205e1dfe989adc7）；已部署v8 ACTIVE，verify_jwt=false與原LINE ID token驗證保持。14:12:27（台北）讀回source符合Git，部署source重跑23項全過；真實無token請求401及CORS正確（deployment.json、deployed-backend.tap、unauthorized-probe.json）。無schema／migration／RLS／Postgres function／trigger修改。主靈修及舊資料庫未操作；沒有發送App／LINE／Email通知。前端資源無異動。
 
 ## 待辦與回復
 
-先發布日期隔離修復並讀回驗證；待使用者選擇測試起點後，才可新增挑戰並驗證每人四種類、每日5筆及既有紀錄校驗碼不變。回復程式採Git revert／部署先前source，不刪除會員紀錄。未來新增挑戰若需要撤回須另核准精確範圍，不能自動刪除。
+日期隔離修復已發布及讀回驗證；部署後唯讀仍5人／今日5筆、1完成／未來0筆。待使用者選擇測試起點後，才可新增挑戰並驗證每人四種類、每日5筆及既有紀錄校驗碼不變。回復程式採Git revert／部署先前source，不刪除會員紀錄。未來新增挑戰若需要撤回須另核准精確範圍，不能自動刪除。

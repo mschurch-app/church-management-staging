@@ -11,7 +11,7 @@ This is a static browser application plus Supabase services. There is no root `p
 ## Verification
 
 - 十月讀經相關修復必跑 `node --test tests/life-tree/backend.mjs`（Node 22.13以上）。此測試直接執行原Edge Function handler，只有外部身分與DB隔離；前端browser.mjs模擬API回應不能代替後端檢查。部署後可用TREE_FUNCTION_SOURCE指向安全讀回的函式source重跑，確認部署的就是已驗證版本。
-- October後端明確部署至專用專案svwgfgyxxgbqabosriom的tree-reading-october-test，verify_jwt維持false，因函式自行驗證LINE ID token；不可誤改為Supabase JWT或指向主靈修／舊DB。GitHub Pages發布不會部署此函式。修復補讀缺少shiftDate的版本需另記實際部署及source比對結果。
+- October後端明確部署至專用專案svwgfgyxxgbqabosriom的tree-reading-october-test，verify_jwt維持false，因函式自行驗證LINE ID token；不可誤改為Supabase JWT或指向主靈修／舊DB。GitHub Pages發布不會部署此函式。2026-10-10修復補讀缺少shiftDate已部署版本7 ACTIVE，部署讀回source的15項測試皆通過；證據見docs/reports/2026-10-10-life-tree-makeup-backend/。
 
 ### Life-tree garden interaction preview
 

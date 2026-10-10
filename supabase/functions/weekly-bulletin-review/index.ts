@@ -14,6 +14,17 @@ const churchEntity=(church:string)=>church==='M+'?'mplus':'shine';
 const reviewUrl=(church:string,id:string)=>`/weekly-bulletin-review.html?church=${encodeURIComponent(church)}&bulletin=${encodeURIComponent(id)}`;
 const lineReviewUrl=(church:string,id:string)=>`${APP_ORIGIN}${reviewUrl(church,id)}`;
 
+async function syncYoutube(db:ReturnType<typeof adminClient>,authorization:string,id:string,version:number){
+  await db.from('weekly_youtube_publications').upsert({bulletin_id:id,church_id:'M+',bulletin_version:version,status:'pending'},{onConflict:'bulletin_id',ignoreDuplicates:true});
+  try{
+    const response=await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/youtube-oauth`,{method:'POST',headers:{authorization,'content-type':'application/json',origin:APP_ORIGIN},body:JSON.stringify({action:'weekly_sync',church:'M+',bulletinId:id,version}),signal:AbortSignal.timeout(120000)});
+    const result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'sync_failed');
+  }catch(e){
+    const code=e instanceof Error&&/^[a-zA-Z0-9_]+$/.test(e.message)?e.message:'sync_failed';
+    await db.from('weekly_youtube_publications').update({status:'failed',error_code:code,updated_at:new Date().toISOString()}).eq('bulletin_id',id).eq('bulletin_version',version).is('lease_expires_at',null).neq('status','synced');
+  }
+}
+
 function adminClient(){
   const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||Deno.env.get('SUPABASE_SECRET_KEY')||'';
   if(!url||!key)throw new Error('config');
@@ -82,7 +93,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
   }
   if(body.action==='get'){
     if(!profile.reviewer||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
-    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
+    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,youtube_sync_enabled,youtube_video_id,youtube_title,youtube_description,youtube_tags').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(result.error||!result.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
     return json(APP_ORIGIN,{ok:true,bulletin:result.data});
   }
@@ -90,12 +101,14 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
     if(!profile.reviewer||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
     const comment=String(body.comment||'').trim().slice(0,2000);
     if(body.action==='request_changes'&&!comment)return json(APP_ORIGIN,{ok:false,error:'comment_required'},400);
-    const found=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,status,version,submitted_by').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
+    const found=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,status,version,submitted_by,youtube_sync_enabled').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(found.error||!found.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
     if(found.data.status!=='pending_review'||Number(body.version)!==found.data.version)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
     const approved=body.action==='approve',now=new Date().toISOString(),nextStatus=approved?'published':'changes_requested';
     const saved=await db.from('website_weekly_bulletins').update({status:nextStatus,reviewed_by:user.id,reviewed_at:now,review_comment:comment||null,updated_by:user.id,updated_at:now,published_at:approved?now:null}).eq('id',found.data.id).eq('status','pending_review').eq('version',found.data.version).select('id').maybeSingle();
     if(saved.error||!saved.data)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
+    const youtubeQueued=approved&&church==='M+'&&found.data.youtube_sync_enabled===true;
+    if(youtubeQueued)EdgeRuntime.waitUntil(syncYoutube(db,request.headers.get('authorization')||'',found.data.id,found.data.version));
     await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:found.data.id,church_id:church,bulletin_version:found.data.version,action:approved?'approved':'changes_requested',actor_user_id:user.id,comment:comment||null});
     await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now,payload:{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version,review_result:nextStatus,review_comment:comment||null}}).eq('entity_key',churchEntity(church)).eq('status','pending').contains('payload',{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version});
     await notifyEditor(db,church,found.data,approved,comment);
@@ -104,7 +117,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
       const setting=await db.from('media_publishing_settings').select('instagram_weekly_reel_enabled').eq('church_id',church).maybeSingle();
       if(!setting.error&&setting.data?.instagram_weekly_reel_enabled===true){instagramQueued=true;const token=request.headers.get('authorization')||'';EdgeRuntime.waitUntil(fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/instagram-publishing`,{method:'POST',headers:{authorization:token,'content-type':'application/json',origin:APP_ORIGIN},body:JSON.stringify({action:'publish',church,bulletinId:found.data.id})}).catch(()=>undefined));}
     }
-    return json(APP_ORIGIN,{ok:true,status:nextStatus,instagramQueued});
+    return json(APP_ORIGIN,{ok:true,status:nextStatus,instagramQueued,youtubeQueued});
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);
 }

@@ -32,7 +32,7 @@ LINE原生視窗大小由LIFF設定控制，不可用頁面CSS強制改成Full�
 
 ## Git與回復
 
-分支 `codex/life-tree-visible-water-guide`，基於main `6c79278942d309b815a32eaaca58fddc4a1c356f`。發布狀態待記錄。可透過正常revert回復前端；沒有migration或後端發布。
+分支 `codex/life-tree-visible-water-guide`，基於main `6c79278942d309b815a32eaaca58fddc4a1c356f`；功能commit `559994fd28eab4ed889058c60a1f9dee521a763b`已push，PR #54合併main為 `d1d1f2bc246066fccc3bb04678df0f517137bd4f`。12:26:31（台北）正式8項HTML／JS／CSS皆HTTP 200且SHA-256符合來源，見hosted-check.json；12:25:34首次仍為舊版／新模組404，保留hosted-check-initial.json且不計通過。發布證據以codex/life-tree-visible-water-release文件分支同步。可透過正常revert回復前端；沒有migration或後端發布，前端revert不能復原已清除手札。
 
 ## Database
 

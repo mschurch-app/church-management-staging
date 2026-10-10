@@ -1,0 +1,27 @@
+{
+  "checks": [
+    {
+      "name": "Real handler me contract enables own journal without participant.id",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Real handler journal save persists today only, without extra progress",
+      "passed": false,
+      "error": "No element found for selector: #reflection-note"
+    },
+    {
+      "name": "Missing verified participant identity keeps journal locked and offers recovery",
+      "passed": false,
+      "error": "Error: failed to find element matching selector \"#reflection-note\""
+    }
+  ],
+  "errors": [
+    "SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
+    "SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
+    "SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document."
+  ],
+  "passed": 0,
+  "failed": 3,
+  "scope": "Real production handler with isolated LINE/SDK/database; no network or production writes"
+}

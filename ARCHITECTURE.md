@@ -2,6 +2,8 @@
 
 ## Frontend
 
+- October journal drafts and devotional-dismissal preferences are scoped by the actual `participant.line_subject` returned by the LINE-verified October API, not a fabricated `participant.id`. They never authorize backend access. While a makeup date is selected, watering follows that date; other unfinished watering appears separately after it is complete.
+
 - The October entry `tree-reading-october-test.html` now composes its existing authenticated controller with `tree-reading-garden-art.mjs` (pure SVG rendering and the unchanged progress-to-stage rule) and page-scoped `tree-reading-garden.css`. Existing LINE identity, October API, full-chapter loading, makeup dates, audio lifecycle and canonical devotional/journal route are retained. Display counters derive from returned records, challenges and notes; no prototype controller or fake state is imported. The 2027 entry and backend contracts are unchanged.
 
 - `life-tree-garden-preview.html` / `.css` / `.mjs` form an isolated, unconnected garden interaction prototype. They reuse shared design tokens, SVG icons and local life-tree audio; all reading, watering, challenge, collection and journal state stays in memory and resets on reload. The prototype imports no LINE, Supabase, authentication or production data client and does not replace the October or 2027 entry points.

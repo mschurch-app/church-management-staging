@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import {fixture} from './backend-fixture.mjs';
 const {default:puppeteer}=await import(process.env.PUPPETEER_MODULE||'puppeteer-core');
 const root=new URL('../../',import.meta.url).pathname,out=process.env.TREE_TEST_OUTPUT||new URL('./results/',import.meta.url).pathname;
 fs.mkdirSync(out,{recursive:true});
@@ -47,7 +48,12 @@ try{
    if(body.action==='me'&&meDelay)await sleep(meDelay);
    if(body.action===failAction)return request.respond({status:503,contentType:'application/json',headers,body:'{"error":"unavailable"}'});
    let data={};
-   if(body.action==='me')data={participant:{id:'fixture-member',display_name:'測試同工',reading_start_date:'2026-10-01'},records,challenges,notes};
+   if(body.action==='me'){
+    const subject='U'+'a'.repeat(32),own=rows=>rows.map(row=>({...row,line_subject:subject}));
+    const {status,...result}=await fixture({initial:own(records),initialNotes:own(notes),initialChallenges:own(challenges)}).call('me');
+    if(status!==200)throw Error('Production handler me contract failed');
+    data=result;data.participant.display_name='測試同工';
+   }
    if(body.action==='garden'){await sleep(gardenDelay);data={trees:Array.from({length:18},(_,index)=>({display_name:'同工'+(index+1),tree_number:index+1,completed_count:9,on_time_count:8}))};}
    if(body.action==='leaderboard')data={members:[{display_name:'測試同工',on_time_count:9}]};
    if(['mark_read','water_tree','resolve_challenge','journal_save'].includes(body.action))await sleep(writeDelay);

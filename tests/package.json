@@ -20,7 +20,8 @@
     "phase4:browser": "node phase4/browser.mjs",
     "quality:gate": "node quality-gate.mjs",
     "life-tree:browser": "node life-tree/browser.mjs",
-    "life-tree:backend": "node --test life-tree/backend.mjs"
+    "life-tree:backend": "node --test life-tree/backend.mjs",
+    "life-tree:contracts": "node life-tree/contracts.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",

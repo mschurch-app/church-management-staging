@@ -1,0 +1,21 @@
+{
+  "checked_at_utc": "2026-10-10T03:34:34.028086+00:00",
+  "base": "https://mscos.mchurch.online",
+  "results": [
+    {
+      "file": "tree-reading-october-test.html",
+      "status": 200,
+      "expected_sha256": "e0782c359fe164452c67d09b9c3a92b41e26072a95e33dc1e15b0027de17c6ec",
+      "actual_sha256": "e0782c359fe164452c67d09b9c3a92b41e26072a95e33dc1e15b0027de17c6ec",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-test.mjs",
+      "status": 200,
+      "expected_sha256": "a6a4f6a87c535f82324429680e2cd09f18187ec5d82c21f150bdab1bda289a5b",
+      "actual_sha256": "a6a4f6a87c535f82324429680e2cd09f18187ec5d82c21f150bdab1bda289a5b",
+      "matches": true
+    }
+  ],
+  "passed": true
+}

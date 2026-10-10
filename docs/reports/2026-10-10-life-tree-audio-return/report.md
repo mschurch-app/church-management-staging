@@ -25,7 +25,7 @@
 
 ## Git／發布
 
-分支codex/life-tree-audio-return，基於main 19e4d49e。程式與文件一起走PR及既有GitHub Pages發布；正式資源讀回於發布後補記，尚未完成前不可宣稱上線。
+分支codex/life-tree-audio-return，基於main 19e4d49e。Commit 5f3563e04fac37a49d6ff063eeec7690384ee0fe已push；[PR #50](https://github.com/mschurch-app/church-management-staging/pull/50)合併為568bbd5422c83da5c463b016c372f8e99724d97d。2026-10-10 11:34:34（台北）正式HTML及主模組皆HTTP 200，SHA-256與Git來源完全一致，見hosted-check.json。首次11:33:18仍為舊版，保留hosted-check-initial.json且不算通過。發布證據以codex/life-tree-audio-return-release文件分支同步。
 
 ## Database與回復
 

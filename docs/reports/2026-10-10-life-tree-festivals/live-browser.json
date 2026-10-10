@@ -1,0 +1,88 @@
+{
+  "verifiedAt": "2026-10-10T07:36:44.462Z",
+  "browser": "Chrome/150.0.7871.125",
+  "viewport": {
+    "width": 402,
+    "height": 874
+  },
+  "checks": [
+    "December decorated tree and 19 bulbs",
+    "No Nativity outside Christmas week",
+    "Primary mobile controls below tree",
+    "Live watering animation completes",
+    "Christmas week Nativity visible",
+    "No script errors or external/data writes"
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festivals.html?date=2027-12-05",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/app-design-tokens.css?v=20261009-design1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festivals.css?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festival-preview.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festivals.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festival-art.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/app-icons.mjs?v=20261009-stage2",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/app-function-definitions.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/favicon.ico",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festivals.html?date=2027-12-25",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/app-design-tokens.css?v=20261009-design1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festivals.css?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festival-preview.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festivals.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/life-tree-festival-art.mjs?v=20261010-festival1",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/app-icons.mjs?v=20261009-stage2",
+      "method": "GET"
+    },
+    {
+      "url": "https://mscos.mchurch.online/app-function-definitions.mjs?v=20261010-festival1",
+      "method": "GET"
+    }
+  ],
+  "passed": true
+}

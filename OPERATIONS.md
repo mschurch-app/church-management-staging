@@ -10,6 +10,9 @@ This is a static browser application plus Supabase services. There is no root `p
 
 ## Verification
 
+- 十月讀經相關修復必跑 `node --test tests/life-tree/backend.mjs`（Node 22.13以上）。此測試直接執行原Edge Function handler，只有外部身分與DB隔離；前端browser.mjs模擬API回應不能代替後端檢查。部署後可用TREE_FUNCTION_SOURCE指向安全讀回的函式source重跑，確認部署的就是已驗證版本。
+- October後端明確部署至專用專案svwgfgyxxgbqabosriom的tree-reading-october-test，verify_jwt維持false，因函式自行驗證LINE ID token；不可誤改為Supabase JWT或指向主靈修／舊DB。GitHub Pages發布不會部署此函式。修復補讀缺少shiftDate的版本需另記實際部署及source比對結果。
+
 ### Life-tree garden interaction preview
 
 Serve the repository locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/life-tree-garden-preview.html`. This is a standalone prototype, not the production LIFF entry. Use the scenario controls at the bottom to try rain, insects, wind, fallen branches and reset. Reload discards all demonstration progress and journal drafts. No install, login or database configuration is needed. The user approved the connected October implementation on 2026-10-10. Keep this prototype separate: its sample controller must never be imported into the authenticated entry.

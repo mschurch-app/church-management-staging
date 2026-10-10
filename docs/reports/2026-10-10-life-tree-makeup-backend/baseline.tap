@@ -1,0 +1,209 @@
+TAP version 13
+# (node:96174) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Yesterday (10/9) is recorded and watered through the real handler
+not ok 1 - Yesterday (10/9) is recorded and watered through the real handler
+  ---
+  duration_ms: 457.16447
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:78:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:80:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: All seven makeup dates 10/3–10/9 can be recorded and watered
+not ok 2 - All seven makeup dates 10/3–10/9 can be recorded and watered
+  ---
+  duration_ms: 7.72167
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:85:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    2026-10-03 read
+    
+    503 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:89:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Today remains on time and can be watered
+ok 3 - Today remains on time and can be watered
+  ---
+  duration_ms: 15.676865
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-02 causes no writes
+not ok 4 - Invalid/expired/future date 2026-10-02 causes no writes
+  ---
+  duration_ms: 7.213642
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:98:71'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 400
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 400
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:101:51)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Invalid/expired/future date 2026-10-11 causes no writes
+ok 5 - Invalid/expired/future date 2026-10-11 causes no writes
+  ---
+  duration_ms: 8.738692
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-09-30 causes no writes
+ok 6 - Invalid/expired/future date 2026-09-30 causes no writes
+  ---
+  duration_ms: 8.024842
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date bad-date causes no writes
+ok 7 - Invalid/expired/future date bad-date causes no writes
+  ---
+  duration_ms: 13.568138
+  type: 'test'
+  ...
+# Subtest: Participant start date remains enforced
+not ok 8 - Participant start date remains enforced
+  ---
+  duration_ms: 8.98756
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:105:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:108:42)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Duplicate makeup read and water preserve completion and watering timestamps
+not ok 9 - Duplicate makeup read and water preserve completion and watering timestamps
+  ---
+  duration_ms: 6.733857
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:113:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Watering cannot create an unread record or water another person
+not ok 10 - Watering cannot create an unread record or water another person
+  ---
+  duration_ms: 8.314125
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'unavailable'
+    - 'read_first'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'read_first'
+  actual: 'unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:119:45)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Invalid LINE verification cannot read or write
+ok 11 - Invalid LINE verification cannot read or write
+  ---
+  duration_ms: 5.823837
+  type: 'test'
+  ...
+# Subtest: Missing bearer token cannot write
+ok 12 - Missing bearer token cannot write
+  ---
+  duration_ms: 3.123935
+  type: 'test'
+  ...
+# Subtest: Unjoined LINE member cannot write
+ok 13 - Unjoined LINE member cannot write
+  ---
+  duration_ms: 5.557153
+  type: 'test'
+  ...
+# Subtest: Database insert failure remains a failure, with no fabricated completion
+ok 14 - Database insert failure remains a failure, with no fabricated completion
+  ---
+  duration_ms: 5.7198
+  type: 'test'
+  ...
+# Subtest: Database watering failure preserves unread-water state
+not ok 15 - Database watering failure preserves unread-water state
+  ---
+  duration_ms: 12.715315
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:136:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'watered_at')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:138:93)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 8
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1214.58472

@@ -20,6 +20,8 @@
 
 ## October Life Tree test isolation
 
+- 2026-10-10補讀後端修復：只補Edge Function的日期位移程式，沒有schema、migration、RLS、Postgres function、trigger或SQL資料寫入。部署版本／唯讀檢查／測試證據見 `docs/reports/2026-10-10-life-tree-makeup-backend/`；已開啟的原頁重試仍只寫入經LINE驗證的本人日期，禁止為修復而代真人補進度。
+
 - The October LIFF page explicitly uses project `svwgfgyxxgbqabosriom` through `tree-reading-october-test-config.mjs`, separate from the Church OS daily-devotional project `aqanuwilmvdtlzuqlrau`.
 - Dedicated tables: `tree_reading_october_test_participants`, `tree_reading_october_test_progress`, `tree_reading_october_test_challenges`, `tree_reading_october_test_journal`, `tree_reading_october_test_invites`. Verify the actual configured endpoint before operating; never infer a target from another module.
 - Challenges reference participants by LINE subject; `(line_subject, challenge_date)` is unique. Types are worm/wind/typhoon/trouble and status is active/resolved. The Edge Function verifies LINE identity and reads/resolves only that participant's challenges.

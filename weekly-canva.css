@@ -12,5 +12,10 @@
 .canva-preview-grid figcaption{color:var(--app-ink,#332d28);font-weight:700;margin-bottom:10px}
 .bulletin-editor .canva-preview-grid img.reel-preview,.bulletin-editor .canva-preview-grid img.bulletin-image-preview{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;margin:0;border-radius:12px}
 .canva-preview-grid img[hidden]{display:none}
+.bulletin-editor .weekly-image-lock{padding:16px;margin:16px 0;border:1px solid var(--app-border,#e3d9d0);border-radius:16px;background:var(--app-surface,#fff);color:var(--app-ink,#332d28)}
+.bulletin-editor .weekly-image-lock[hidden]{display:none}
+.bulletin-editor .weekly-image-lock p{margin:8px 0;line-height:1.7}
+.bulletin-editor .weekly-image-lock p:empty{display:none}
+.bulletin-editor .weekly-image-lock button{min-height:44px}
 @media(max-width:560px){.weekly-canva{padding:14px}.weekly-canva .canva-actions{display:grid;grid-template-columns:1fr}.weekly-canva .canva-actions button{width:100%}}
 @media(max-width:560px){.canva-preview-grid{grid-template-columns:1fr}}

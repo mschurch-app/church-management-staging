@@ -16,12 +16,13 @@ function drawFrame(ctx,image,data,progress){
 async function loadImage(url){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('reel_image');return createImageBitmap(await response.blob());}
 export function reelSupported(){return typeof VideoEncoder!=='undefined'&&typeof VideoFrame!=='undefined';}
 async function musicBuffer(url,startSeconds=0){if(!url)return null;const raw=await (await fetch(url,{cache:'no-store'})).arrayBuffer(),context=new AudioContext({sampleRate:48000}),decoded=await context.decodeAudioData(raw),frames=48000*DURATION,out=new AudioBuffer({length:frames,numberOfChannels:Math.min(2,decoded.numberOfChannels),sampleRate:48000});for(let channel=0;channel<out.numberOfChannels;channel++){const target=out.getChannelData(channel),source=decoded.getChannelData(channel);for(let i=0;i<frames;i++){const fade=Math.min(1,i/9600,(frames-i)/19200);target[i]=source[(Math.floor(startSeconds*decoded.sampleRate)+i)%source.length]*.24*Math.max(0,fade);}}await context.close();return out;}
-export async function createWeeklyReel({imageUrl,title,subtitle,serviceDate,audioUrl='',audioStart=0}){
+export async function createWeeklyReel({imageUrl,title,subtitle,serviceDate,audioUrl='',audioStart=0,onProgress=()=>{}}){
+  onProgress({phase:'prepare',completed:0,total:FPS*DURATION});
   if(!reelSupported())throw new Error('reel_unsupported');
   if(!await canEncodeVideo('avc',{width:WIDTH,height:HEIGHT,quality:new Quality({bitrate:3_000_000})}))throw new Error('reel_unsupported');
   const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;const ctx=canvas.getContext('2d',{alpha:false}),image=await loadImage(imageUrl),audio=await musicBuffer(audioUrl,audioStart),target=new BufferTarget(),output=new Output({format:new Mp4OutputFormat(),target}),source=new CanvasSource(canvas,{codec:'avc',quality:new Quality({bitrate:3_000_000})});
   output.addVideoTrack(source,{frameRate:FPS});let audioSource=null;if(audio){audioSource=new AudioBufferSource({codec:'aac',bitrate:128000});output.addAudioTrack(audioSource);}await output.start();if(audioSource)await audioSource.add(audio);
   const dateLabel=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',year:'numeric',month:'long',day:'numeric',weekday:'short'}).format(new Date(`${serviceDate}T12:00:00+08:00`));
-  for(let frame=0;frame<FPS*DURATION;frame++){const progress=frame/(FPS*DURATION-1);drawFrame(ctx,image,{title,subtitle,dateLabel},progress);await source.add(frame/FPS,1/FPS);}
-  await output.finalize();image.close();if(!target.buffer)throw new Error('reel_encode');return new Blob([target.buffer],{type:'video/mp4'});
+  for(let frame=0;frame<FPS*DURATION;frame++){const progress=frame/(FPS*DURATION-1);drawFrame(ctx,image,{title,subtitle,dateLabel},progress);await source.add(frame/FPS,1/FPS);onProgress({phase:'frames',completed:frame+1,total:FPS*DURATION});if(frame%6===0)await new Promise(resolve=>setTimeout(resolve,0));}
+  onProgress({phase:'finalize',completed:FPS*DURATION,total:FPS*DURATION});await output.finalize();image.close();if(!target.buffer)throw new Error('reel_encode');return new Blob([target.buffer],{type:'video/mp4'});
 }

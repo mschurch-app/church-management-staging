@@ -1,6 +1,8 @@
 import {db} from './admin-db.mjs?v=20261009-stage4';
-import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261003-access-guard1';
+import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261010-care-orbs1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';
+
+import {createPrayerForm} from './care-prayer-compose.mjs?v=20261010-care-orbs1';
 
 const params=new URLSearchParams(location.search),values=params.getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);
 const requestedState=params.get('state'),currentScope=params.get('scope')==='current',DAY_MS=24*60*60*1000;
@@ -8,6 +10,7 @@ let labels={pending:'待關懷',praying:'守望中',answered:'蒙應允',closed:
 let rows=[],busy=false,generation=0;
 const el=(tag,value='',className='')=>{const node=document.createElement(tag);node.textContent=value;node.className=className;return node;};
 
+function setBusy(value){busy=value;$('#add-prayer').disabled=value;$('#reload').disabled=value;}
 function closeEditor(){generation++;$('#editor').hidden=true;$('#editor').replaceChildren();}
 function formatDate(value){if(!value)return '未記錄';return new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(value));}
 
@@ -17,10 +20,11 @@ function editCare(row){
   for(const [value,label] of Object.entries(labels))state.append(new Option(label,value));state.value=row.status||'pending';category.append(new Option('未分類',''));for(const value of categoryOptions)category.append(new Option(value,value));if(row.category&&!categoryOptions.includes(row.category))category.append(new Option(row.category,row.category));category.value=row.category||'';
   notes.value=row.pastoral_notes||'';notes.maxLength=10000;notes.placeholder='例如：電話關懷紀錄、探訪安排、後續需要留意的事項。';
   const stateWrap=el('label','關懷狀態'),categoryWrap=el('label','代禱分類'),notesWrap=el('label','教牧關懷備註');stateWrap.append(state);categoryWrap.append(category);notesWrap.append(notes);
-  const original=el('div','','prayer-original');original.append(el('strong',(row.author_name||'主內家人')+' · '+(row.title||'代禱事項')),el('p',row.content||''));
-  const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button','儲存關懷紀錄');cancel.type='button';cancel.onclick=closeEditor;actions.append(cancel,save);
-  form.append(el('h2','更新牧養關懷'),el('p','只更新關懷狀態與內部備註，不會傳送任何通知。','muted'),original,stateWrap,categoryWrap,notesWrap,actions);
-  form.onsubmit=async event=>{event.preventDefault();if(busy)return;busy=true;form.querySelectorAll('button,select,textarea').forEach(node=>node.disabled=true);try{await savePrayerCare(db,church,row,{status:state.value,category:category.value,pastoral_notes:notes.value});if(ticket===generation){closeEditor();await load();$('#status').textContent='關懷紀錄已儲存。';}}catch(error){if(ticket===generation){$('#status').textContent=error.message;form.querySelectorAll('button,select,textarea').forEach(node=>node.disabled=false);}}finally{busy=false;}};
+  const prayerTitle=document.createElement('input'),prayerContent=document.createElement('textarea');prayerTitle.value=row.title||'';prayerTitle.maxLength=Math.max(80,prayerTitle.value.length);prayerTitle.required=true;prayerContent.value=row.content||'';prayerContent.maxLength=Math.max(1000,prayerContent.value.length);prayerContent.required=true;const titleWrap=el('label','代禱主題'),contentWrap=el('label',row.is_private?'私密代禱內容':'代禱內容 · 同步 LINE 禱告光環');titleWrap.append(prayerTitle);contentWrap.append(prayerContent);
+  const original=el('div','','prayer-original');original.append(el('strong',row.author_name||'主內家人'));
+  const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button','儲存關懷紀錄');save.type='submit';cancel.type='button';cancel.onclick=closeEditor;actions.append(cancel,save);
+  form.append(el('h2','更新牧養關懷'),el('p','公開代禱內容會同步至 LINE 禱告光環；教牧關懷備註僅供同工查看。','muted'),original,titleWrap,contentWrap,stateWrap,categoryWrap,notesWrap,actions);
+  form.onsubmit=async event=>{event.preventDefault();if(busy)return;setBusy(true);form.querySelectorAll('button,input,select,textarea').forEach(node=>node.disabled=true);try{await savePrayerCare(db,church,row,{status:state.value,category:category.value,pastoral_notes:notes.value,title:prayerTitle.value,content:prayerContent.value});if(ticket===generation){closeEditor();setBusy(false);await load();$('#status').textContent=row.is_private?'私密關懷紀錄已儲存。':'關懷紀錄已儲存，代禱內容已同步 LINE 禱告光環。';}}catch(error){if(ticket===generation){$('#status').textContent=error.message;form.querySelectorAll('button,input,select,textarea').forEach(node=>node.disabled=false);}}finally{setBusy(false);}};
   area.append(form);area.scrollIntoView({behavior:'smooth',block:'start'});state.focus();
 }
 
@@ -53,11 +57,13 @@ function render(){
 }
 
 async function load(){
+  if(busy)return;
   const ticket=++generation;closeEditor();$('#status').textContent='正在確認權限並載入…';
   try{const [result,settings]=await Promise.all([listPrayers(db,church),loadChurchCustomizations(db,church)]);if(ticket+1!==generation)return;rows=result;categoryOptions=catalog(settings,'prayer_categories',[]);const names=catalog(settings,'prayer_statuses',Object.values(labels));['pending','praying','answered','closed'].forEach((key,index)=>{if(names[index])labels[key]=names[index];});const state=$('#state'),chosen=state.value;state.replaceChildren(new Option('全部','all'),...Object.entries(labels).map(([value,label])=>new Option(label,value)));state.value=[...state.options].some(option=>option.value===chosen)?chosen:'all';render();}catch(error){if(ticket+1===generation){rows=[];$('#items').replaceChildren();renderSummary();$('#status').textContent=error.message;}}
 }
 
 $('#title').textContent=(church==='M+'?'M＋大雅教會':church==='SHiNE'?'火樂教會':'')+' · 代禱與牧養關懷';$('#members').href='members.html?church='+encodeURIComponent(church||'');
 if(['pending','praying','answered','closed'].includes(requestedState))$('#state').value=requestedState;
+$('#add-prayer').onclick=()=>{if(busy)return;closeEditor();const area=$('#editor');area.hidden=false;area.append(createPrayerForm({db,church,categories:categoryOptions,onBusy:setBusy,onError:()=>{},onCancel:closeEditor,onSave:async isPrivate=>{setBusy(false);closeEditor();$('#privacy').value=isPrivate?'private':'public';$('#state').value='all';$('#search').value='';await load();$('#status').textContent=isPrivate?'私密代禱已儲存。':'代禱已儲存並加入本堂 LINE 禱告光環。';}}));area.scrollIntoView({behavior:'smooth',block:'start'});area.querySelector('input')?.focus();};
 for(const id of ['search','privacy','state'])$('#'+id).addEventListener(id==='search'?'input':'change',render);$('#reload').onclick=load;
-document.addEventListener('visibilitychange',()=>{if(document.hidden){generation++;rows=[];$('#items').replaceChildren();}else load();});db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){generation++;rows=[];$('#items').replaceChildren();$('#status').textContent='已登出，請重新登入。';}});load();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy&&$('#editor').hidden)load();});db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){closeEditor();generation++;rows=[];$('#items').replaceChildren();$('#status').textContent='已登出，請重新登入。';}});load();

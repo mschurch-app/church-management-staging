@@ -1,0 +1,17 @@
+.weekly-canva{padding:18px;border:1px solid var(--app-border,#e3d9d0);border-radius:18px;background:var(--app-surface,#fff);margin:16px 0}
+.weekly-canva h4{margin:0 0 8px;font-size:1.05rem;color:var(--app-ink,#332d28)}
+.weekly-canva .canva-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.weekly-canva .canva-actions button{width:auto;min-height:44px;margin:0}
+.weekly-canva .canva-templates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}
+.weekly-canva details{border-top:1px solid var(--app-border,#e3d9d0);padding-top:12px;margin-top:14px}
+.weekly-canva summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;color:var(--app-ink,#332d28)}
+.weekly-canva [hidden]{display:none!important}
+.weekly-canva .canva-state{line-height:1.7;overflow-wrap:anywhere;color:var(--app-ink,#332d28);margin:8px 0}
+.canva-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:16px;margin:16px 0}
+.canva-preview-grid figure{margin:0;min-width:0;padding:12px;border:1px solid var(--app-border,#e3d9d0);border-radius:16px;background:var(--app-surface,#fff)}
+.canva-preview-grid figure:has(img[hidden]){display:none}
+.canva-preview-grid figcaption{color:var(--app-ink,#332d28);font-weight:700;margin-bottom:10px}
+.bulletin-editor .canva-preview-grid img.reel-preview,.bulletin-editor .canva-preview-grid img.bulletin-image-preview{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;margin:0;border-radius:12px}
+.canva-preview-grid img[hidden]{display:none}
+@media(max-width:560px){.weekly-canva{padding:14px}.weekly-canva .canva-templates{grid-template-columns:1fr}.weekly-canva .canva-actions{display:grid;grid-template-columns:1fr}.weekly-canva .canva-actions button{width:100%}}
+@media(max-width:560px){.canva-preview-grid{grid-template-columns:1fr}}

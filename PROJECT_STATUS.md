@@ -122,3 +122,5 @@ A cross-page button stability audit was completed on 2026-10-07. Shared mobile f
 ## 2026-10-10 節慶套入同工測試
 
 原十月箴言生命樹入口接上九套節慶背景與配樂，自10/10元旦煙火開始，按年度順序每兩天一套，10/26–27聖誕、10/28恢復原庭園。真實成長、讀經與澆水日期、風雨道具、靈修邀請及單一手札沿用既有服務；不導入預覽假進度或新獎勵寫入。詳見 `docs/reports/2026-10-10-life-tree-seasonal-test/report.md`。正式2027活動自動啟用仍未包含本次，Mac Safari與iPhone／LINE實機待驗收。
+
+節慶測試已發布：PR #66，main `4bde02e`。台北16:44:38正式33項資源均200且符合來源SHA-256；線上頁面五項操作確認通過（身分／API隔離、零真實資料寫入）。原LIFF入口保留，10/10～11元旦煙火，九套各兩天至10/27、10/28回原庭園。證據見docs/reports/2026-10-10-life-tree-seasonal-test/；Mac Safari與iPhone／LINE實機仍待驗收。

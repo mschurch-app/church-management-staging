@@ -1,0 +1,299 @@
+{
+  "checkedAt": "2026-10-10T08:43:41.081719+00:00",
+  "sourceCommit": "53a9addd77132dbe96e6ce8ae8fc339871797165",
+  "scope": "Read-only hosted bytes; no LINE login or database calls",
+  "checks": [
+    {
+      "file": "church-os-sw.js",
+      "url": "https://mscos.mchurch.online/church-os-sw.js?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 3628,
+      "sourceSha256": "4d5e2a57fc7140b0ed84c276eb8b515b2e3a597707c29de505617ca6c194544e",
+      "hostedSha256": "6f4982c0a41c14dace1f32c863439f0ff64febb1546f795068b7e8b47d7b766c",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-october-test.html",
+      "url": "https://mscos.mchurch.online/tree-reading-october-test.html?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 18124,
+      "sourceSha256": "d8bcffea4ce25e2bdb583b7075ddc7d46482fac86168245be3b7605e3831f182",
+      "hostedSha256": "5d9d075d7be8444a95b5410a5aa8503d6d675ae9b5ab484fd37776df3e4ab1f8",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-october-test.mjs",
+      "url": "https://mscos.mchurch.online/tree-reading-october-test.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 53250,
+      "sourceSha256": "2c2b83e885f60493fdcf559aa7b4151b131d9968aa8fa7372e2923c57962a5bd",
+      "hostedSha256": "d99dabb8dce5ff77179badfd2b043febb50fc922e5e463a4696c54f9e685d19b",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-garden.css",
+      "url": "https://mscos.mchurch.online/tree-reading-garden.css?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 15278,
+      "sourceSha256": "37d5c0450e4a7091ba8a4c02357279ba0305b6aa985ab9f83aed604df645e559",
+      "hostedSha256": "7eedd63166b5f1908c01b392fe3e9f20783d73038e4363274c310a7355ddcc98",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-garden-art.mjs",
+      "url": "https://mscos.mchurch.online/tree-reading-garden-art.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 13903,
+      "sourceSha256": "92b332a934c02e97b01cce12851f88158fb4f8911924e01ca955e48b74f4bc08",
+      "hostedSha256": "97ed970ba5ac794443d6e6868148d7034d3e9e23aea59448815800cd03f04d53",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festival-animation.css",
+      "url": "https://mscos.mchurch.online/life-tree-festival-animation.css?v=20261010-season-test1",
+      "error": "HTTP Error 404: Not Found",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festival-test-schedule.mjs",
+      "url": "https://mscos.mchurch.online/life-tree-festival-test-schedule.mjs?v=20261010-season-test1",
+      "error": "HTTP Error 404: Not Found",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festival-art.mjs",
+      "url": "https://mscos.mchurch.online/life-tree-festival-art.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 26279,
+      "sourceSha256": "538e8c33a75bd3d00a0c9c28ea5aba04aa679a22f461662593a70671d0f79833",
+      "hostedSha256": "df16806747fef53d64406b4ed232f795944365b2eefcc04f81f66f2f816dd1dd",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festival-preview.mjs",
+      "url": "https://mscos.mchurch.online/life-tree-festival-preview.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 13940,
+      "sourceSha256": "68c75061511f1ca7938b0fe3b2d412e51cea428cb2eb1940163e4279c12a7675",
+      "hostedSha256": "2a5b0433992f2806b2fb9a9cb77775e425c5d0fcc1b2de34b2343f9a41247ad7",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festivals.html",
+      "url": "https://mscos.mchurch.online/life-tree-festivals.html?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 7077,
+      "sourceSha256": "6ba32ebefd136da3cb4e303703859d66fd40250ed25f19c6dccff517b00568cb",
+      "hostedSha256": "ce5cf103a72219da22d3c1dad567b332972d63aabb410b4f840792b41bc4943f",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festivals.css",
+      "url": "https://mscos.mchurch.online/life-tree-festivals.css?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 25373,
+      "sourceSha256": "e6fceb3843016c34fe918218b0259dbd851018221e1d6905f3eb4515309f8bd7",
+      "hostedSha256": "c050583c572924039dd22fde9d068960074dc448f5fd659843e9a74bc7b2ac2c",
+      "matches": false
+    },
+    {
+      "file": "life-tree-festivals.mjs",
+      "url": "https://mscos.mchurch.online/life-tree-festivals.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 12625,
+      "sourceSha256": "3ba0e26a0febece57c7845e2c566ffae1baf673763aa6c090435db77ea29bccf",
+      "hostedSha256": "1395abae17cc7b69a0f199be76fca7330296a7a8f2c19a191bab02da91032330",
+      "matches": false
+    },
+    {
+      "file": "october-devotional-shell.mjs",
+      "url": "https://mscos.mchurch.online/october-devotional-shell.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 1621,
+      "sourceSha256": "caff1cabcdb154bf803230eb352ff48555ad29a2dbf446ce88e11970576d9754",
+      "hostedSha256": "e59b13cd9cb6171f59ffa82fe10c83ba0b70efe2d6e5b1e625a80ce11d2be4b2",
+      "matches": false
+    },
+    {
+      "file": "admin-accounts-management.mjs",
+      "url": "https://mscos.mchurch.online/admin-accounts-management.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 7480,
+      "sourceSha256": "cfd08843a3f074f5ebdb138c4b090e6de97281e88f307fd5ecdf50e02a74700b",
+      "hostedSha256": "b246b00104b018b3104cba89947050c173694f57c33de38e195411ccf72ae9e3",
+      "matches": false
+    },
+    {
+      "file": "admin-accounts-ui.mjs",
+      "url": "https://mscos.mchurch.online/admin-accounts-ui.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 26226,
+      "sourceSha256": "dbaecada1045fc658ab9cebce645ea59b44e07908efe906d17c1db4ccbc1c0e4",
+      "hostedSha256": "9c045169201b4fc27fb29aa62a19d9950630b7189dea9bd5e459db0f8220f7be",
+      "matches": false
+    },
+    {
+      "file": "app-function-catalog.mjs",
+      "url": "https://mscos.mchurch.online/app-function-catalog.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 2049,
+      "sourceSha256": "b56fee5f5f368c1adb04717d43c60625eb49ba14435298c85e6cb6c61dc0e030",
+      "hostedSha256": "1ccc4a4164cf3ca5998ecbdfd4874526a05f751d4f8fce99f2bde50bc1ec7dd5",
+      "matches": false
+    },
+    {
+      "file": "app-function-definitions.mjs",
+      "url": "https://mscos.mchurch.online/app-function-definitions.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 26788,
+      "sourceSha256": "d98037b3a0883e51234c2673cdd6fb43258df6a4025f552ab5d86b488b42cb86",
+      "hostedSha256": "299b98d5203ac2b5c3567c52e71fa4e2fb63d1215946519e655b2e043c139b33",
+      "matches": false
+    },
+    {
+      "file": "app-icons.mjs",
+      "url": "https://mscos.mchurch.online/app-icons.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 13490,
+      "sourceSha256": "2bcbf2d26930b9c5d0cbf38e548de6c0fdedbfaff1bf7cc7eda5238038b623a1",
+      "hostedSha256": "2bcbf2d26930b9c5d0cbf38e548de6c0fdedbfaff1bf7cc7eda5238038b623a1",
+      "matches": true
+    },
+    {
+      "file": "app-ui.mjs",
+      "url": "https://mscos.mchurch.online/app-ui.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 2070,
+      "sourceSha256": "283f4b02f6b889a72173493c0b607f41f4af951305128fad7e8d330404359de9",
+      "hostedSha256": "283f4b02f6b889a72173493c0b607f41f4af951305128fad7e8d330404359de9",
+      "matches": true
+    },
+    {
+      "file": "church-brand.mjs",
+      "url": "https://mscos.mchurch.online/church-brand.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 9951,
+      "sourceSha256": "eb8ce242bb795ad5e7b465f990f28937317af1dcd691848d38b5e9117460c6f3",
+      "hostedSha256": "eb8ce242bb795ad5e7b465f990f28937317af1dcd691848d38b5e9117460c6f3",
+      "matches": true
+    },
+    {
+      "file": "church-customizations.mjs",
+      "url": "https://mscos.mchurch.online/church-customizations.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 5001,
+      "sourceSha256": "581ad05df0a9f0f726e73bb1e752ddbd4b9b88ffc0378bd397d8794584b8a518",
+      "hostedSha256": "581ad05df0a9f0f726e73bb1e752ddbd4b9b88ffc0378bd397d8794584b8a518",
+      "matches": true
+    },
+    {
+      "file": "dashboard-management.mjs",
+      "url": "https://mscos.mchurch.online/dashboard-management.mjs?v=20261010-season-test1",
+      "status": 200,
+      "bytes": 2974,
+      "sourceSha256": "8b28a42335ecf20b1d639996566cd07398ce1c2ff0abdac0d3b10d9155c18ae0",
+      "hostedSha256": "8b28a42335ecf20b1d639996566cd07398ce1c2ff0abdac0d3b10d9155c18ae0",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-test.html",
+      "url": "https://mscos.mchurch.online/tree-reading-october-test.html",
+      "status": 200,
+      "bytes": 19072,
+      "sourceSha256": "d8bcffea4ce25e2bdb583b7075ddc7d46482fac86168245be3b7605e3831f182",
+      "hostedSha256": "d8bcffea4ce25e2bdb583b7075ddc7d46482fac86168245be3b7605e3831f182",
+      "matches": true
+    },
+    {
+      "file": "life-tree-festivals.html",
+      "url": "https://mscos.mchurch.online/life-tree-festivals.html",
+      "status": 200,
+      "bytes": 7172,
+      "sourceSha256": "6ba32ebefd136da3cb4e303703859d66fd40250ed25f19c6dccff517b00568cb",
+      "hostedSha256": "6ba32ebefd136da3cb4e303703859d66fd40250ed25f19c6dccff517b00568cb",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/newyear.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/newyear.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "875748cc3c430f22987e98e5a5b3132e72f3f4225d0e7b3340620dfbb9a437ae",
+      "hostedSha256": "875748cc3c430f22987e98e5a5b3132e72f3f4225d0e7b3340620dfbb9a437ae",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/spring.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/spring.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "5986c6e57a9616f1d1b8a60d4a0399f4994059a210f6ff7f27b37852ca4c3e63",
+      "hostedSha256": "5986c6e57a9616f1d1b8a60d4a0399f4994059a210f6ff7f27b37852ca4c3e63",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/easter.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/easter.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "48831d193b9902a7d8297d004bfe1f89386613f9aaa33eb03d5c9552019f3dde",
+      "hostedSha256": "48831d193b9902a7d8297d004bfe1f89386613f9aaa33eb03d5c9552019f3dde",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/pentecost.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/pentecost.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "94e03577557c0f8389b9d423f3c7144780a0acaacd56473a6f4528be4836b836",
+      "hostedSha256": "94e03577557c0f8389b9d423f3c7144780a0acaacd56473a6f4528be4836b836",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/dragon.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/dragon.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "833dff8f0e166f00ccab021b4a97204dac331b64baa69d3543741a57d94eebb7",
+      "hostedSha256": "833dff8f0e166f00ccab021b4a97204dac331b64baa69d3543741a57d94eebb7",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/moon.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/moon.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "bff3c4d8f24ceeef85297e5e6b728c0ca44d57db08ad9710d4fac71decae0943",
+      "hostedSha256": "bff3c4d8f24ceeef85297e5e6b728c0ca44d57db08ad9710d4fac71decae0943",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/light.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/light.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "12e6abd824460b1f70fa9f1627064ca3ad8920689e72cdc2787f8c0831a3e20c",
+      "hostedSha256": "12e6abd824460b1f70fa9f1627064ca3ad8920689e72cdc2787f8c0831a3e20c",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/thanksgiving.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/thanksgiving.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "ed98d5144b716169ac9a028345ef295e1fc48a6598bf08b1e92281b7cbff0b7d",
+      "hostedSha256": "ed98d5144b716169ac9a028345ef295e1fc48a6598bf08b1e92281b7cbff0b7d",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/festivals/christmas.wav",
+      "url": "https://mscos.mchurch.online/assets/audio/life-tree/festivals/christmas.wav?v=20261010-audio1",
+      "status": 200,
+      "bytes": 705644,
+      "sourceSha256": "9b5a412971d0c4683e73ef0e8b8302bba8c20e06cf86c28594acf0e66825c121",
+      "hostedSha256": "9b5a412971d0c4683e73ef0e8b8302bba8c20e06cf86c28594acf0e66825c121",
+      "matches": true
+    }
+  ],
+  "passed": false
+}

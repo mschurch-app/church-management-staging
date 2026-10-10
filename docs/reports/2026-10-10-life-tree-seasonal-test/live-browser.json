@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-10T08:45:25.907Z",
+  "scope": "Actual hosted frontend; all LINE/API/weather isolated; no real login, database access or writes; Chromium simulated iPhone viewport, not physical device",
+  "checks": [
+    {
+      "name": "Hosted original October entry renders today festival and actual chapter using isolated identity/data",
+      "passed": true
+    },
+    {
+      "name": "Hosted three-interaction play finishes, ignores duplicates and creates no data writes",
+      "passed": true
+    },
+    {
+      "name": "Hosted phone layout has no horizontal overflow and clear artwork",
+      "passed": true
+    },
+    {
+      "name": "Hosted shared preview retains Christmas lights and Nativity",
+      "passed": true
+    },
+    {
+      "name": "No script errors or unmocked external/database requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "api": [
+    "me"
+  ],
+  "blocked": []
+}

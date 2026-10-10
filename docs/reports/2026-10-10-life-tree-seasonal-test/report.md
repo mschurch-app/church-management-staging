@@ -53,7 +53,7 @@
 
 最終隔離驗收：原入口106項（含九套18日換景及真實澆水後三次互動）、獨立節慶預覽51項、實際處理器契約8項、後端23項全部通過。元旦增補後，最終來源重跑完整品質門檻15組及122個前端語法檢查，單次exit 0；證據見browser.json、preview.json、contracts.json、backend.log、gate.json、syntax.json。初版八套日期檢查96項與先前品質門檻另保留於browser-eight-scenes-date-checks.json及gate-before-newyear.json。
 
-發布資源比對於完成後補入此報告。Mac Safari、iPhone17／LINE實機、實際喇叭發聲仍待同工驗收；不宣稱99%。
+已發布：PR #66合併main `4bde02efba10acd8f7657f599d18eb4eaa3c8e76`；2026-10-10T16:44:38.147634+08:00，33項正式資源均200且SHA-256符合來源（含原入口無query、節慶預覽、九首配樂與共用功能目錄）。見release.json與release-context.json。首次讀回仍有17項舊版，保留release-pending-164341.json；全部匹配後再做線上操作確認。正式託管頁面五項檢查通過：今日元旦與實際箴言章節、三次互動／防重複且無額外API寫入、手機無溢出、聖誕燈與馬槽、無未攔截外部請求或例外。見live-browser.json及hosted-test-entry-402.png；LINE／API／天氣全部隔離，並非實際使用者登入驗收。Mac Safari、iPhone17／LINE實機、實際喇叭發聲仍待同工驗收；不宣稱99%。
 
 
 較早一輪共用補跑：Worker、登入返回、Email登入與對比，最後各項皆通過。並行執行時登入返回的既有取消時序斷言出現一次失敗（auditSaved 1 vs 0），保留失敗摘要；同一gate單獨重跑通過，未改登入程式。見gate-final-components-initial.json、gate-handoff-rerun.json及gate-final-components.json，不將原失敗覆寫為單次全部通過。

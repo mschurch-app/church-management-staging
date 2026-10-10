@@ -1,6 +1,6 @@
 import {createFunctionEntry} from './app-ui.mjs?v=20261009-stage2';
 import {FUNCTION_CATALOG,FUNCTION_GROUPS,availableFunctionKeys,favoriteKeys,FUNCTION_ALIASES,canonicalFunctionKey,matchesFunction,friendlyLabel} from './app-function-catalog.mjs?v=20261009-stage2';
-import {loadNotificationCenter,createTestNotification} from './app-notifications.mjs?v=20261009-stage4';import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261009-stage4';import {db} from './admin-db.mjs?v=20261009-stage4';import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261009-stage2';import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';import {canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
+import {loadNotificationCenter} from './app-notifications.mjs?v=20261009-stage4';import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261010-linked-push1';import {db} from './admin-db.mjs?v=20261009-stage4';import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261009-stage2';import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';import {canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 const preferred=new URLSearchParams(location.search).get('church'),$=s=>document.querySelector(s);let access,church,currentHome,currentSettings={},quickEdit=false,longPressTimer=null,longPressOrigin=null,draggedQuickKey='',pointerDrag=null,suppressQuickClickUntil=0;const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const QUICK_LINKS=FUNCTION_CATALOG;
 function href(file){return file+(file.includes('?')?'&':'?')+'church='+encodeURIComponent(church);}
@@ -76,5 +76,4 @@ async function openSchool(event,destination){
 wireInstallButton($('#install-app'),$('#install-help'));
 wireNotificationButtons($('#enable-notifications'),$('#test-notification'),$('#install-help'));
 loadNotificationCenter($('#notification-list'),$('#notification-count'),$('#notification-history'));
-$('#test-notification').addEventListener('click',async()=>{try{await createTestNotification(church);await loadNotificationCenter($('#notification-list'),$('#notification-count'),$('#notification-history'));}catch(error){$('#install-help').textContent=error.message;}});
 document.querySelector('[data-open-details]')?.addEventListener('click',event=>{const target=document.querySelector(event.currentTarget.getAttribute('href'));if(!target)return;event.preventDefault();target.open=true;target.scrollIntoView({behavior:'smooth',block:'start'});});

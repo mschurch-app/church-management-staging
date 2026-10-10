@@ -5,6 +5,11 @@ const cors={'access-control-allow-origin':'https://mscos.mchurch.online','access
 const headers={...cors,'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
 const json=(status:number,body:unknown)=>new Response(JSON.stringify(body),{status,headers});
 const admin=()=>createClient(Deno.env.get('SUPABASE_URL')||'',Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||Deno.env.get('SUPABASE_SECRET_KEY')||'',{auth:{persistSession:false,autoRefreshToken:false}});
+async function recipientSubscriptions(db:ReturnType<typeof admin>,userId:string){
+  const linked=await db.rpc('get_app_push_recipient_users',{p_user:userId});
+  if(linked.error||!Array.isArray(linked.data)||!linked.data.length)return {data:null,error:new Error('recipient_resolution_failed')};
+  return await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').in('user_id',linked.data).eq('is_active',true);
+}
 
 Deno.serve(async request=>{
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
@@ -23,7 +28,7 @@ Deno.serve(async request=>{
       if(pending.error)return json(503,{ok:false,error:'load_failed'});
       let notifications=0,sent=0;
       for(const item of pending.data||[]){
-        const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',item.user_id).eq('is_active',true);
+        const subscriptions=await recipientSubscriptions(db,item.user_id);
         let delivered=0,lastError=subscriptions.error?'subscription_load_failed':(subscriptions.data||[]).length?'delivery_failed':'no_active_device';
         for(const subscription of subscriptions.data||[])try{await webpush.sendNotification({endpoint:subscription.endpoint,keys:{p256dh:subscription.p256dh,auth:subscription.auth_key}},JSON.stringify({title:item.title,body:item.body,url:item.target_url,tag:item.source_key||item.id}));delivered++;}
         catch(error){const status=Number((error as {statusCode?:number}).statusCode||0);lastError=status?`push_${status}`:'push_failed';if(status===404||status===410)await db.from('app_push_subscriptions').update({is_active:false,updated_at:new Date().toISOString()}).eq('id',subscription.id);}
@@ -64,7 +69,7 @@ Deno.serve(async request=>{
       if(!publicKey||!privateKey){const stored=await db.rpc('get_app_push_vapid_config');if(!stored.error){publicKey=stored.data?.public_key||'';privateKey=stored.data?.private_key||'';subject=stored.data?.subject||subject;}}
       if(!publicKey||!privateKey)return json(503,{ok:false,error:'push_not_configured'});
       webpush.setVapidDetails(subject,publicKey,privateKey);
-      const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',user.id).eq('is_active',true);
+      const subscriptions=await recipientSubscriptions(db,user.id);
       if(subscriptions.error)return json(503,{ok:false,error:'load_failed'});
       let sent=0;
       for(const item of subscriptions.data||[]){

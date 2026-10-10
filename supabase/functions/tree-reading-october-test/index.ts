@@ -8,6 +8,8 @@ const origins=new Set((Deno.env.get('TREE_READING_TEST_ALLOWED_ORIGINS')||'https
 const cors=(origin:string)=>({'access-control-allow-origin':origins.has(origin)?origin:'https://mscos.mchurch.online','access-control-allow-headers':'content-type,authorization','access-control-allow-methods':'POST,OPTIONS','content-type':'application/json; charset=utf-8','cache-control':'no-store','pragma':'no-cache','vary':'Origin','x-content-type-options':'nosniff','referrer-policy':'no-referrer'});
 const reply=(origin:string,data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:cors(origin)});
 const todayTaipei=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+// Calendar arithmetic must be independent of the Edge Runtime's local timezone.
+const shiftDate=(date:string,days:number)=>{const value=new Date(`${date}T12:00:00Z`);value.setUTCDate(value.getUTCDate()+days);return value.toISOString().slice(0,10);};
 const validDate=(value:unknown):value is string=>typeof value==='string'&&/^2026-10-(0[1-9]|[12][0-9]|3[01])$/.test(value);
 const expectedCount=(start:string,today:string)=>today<start?0:Math.floor((Date.parse(`${today}T12:00:00Z`)-Date.parse(`${start}T12:00:00Z`))/86400000)+1;
 

@@ -90,7 +90,8 @@ function syncSound(){
 }
 async function playMusic(){
  if(!state.sound||document.hidden||musicBusy)return;
- const src=new URL('assets/audio/life-tree/festivals/'+state.item.id+'.wav?v=20261010-season-test1',import.meta.url).href;
+ const version=state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
+ const src=new URL('assets/audio/life-tree/festivals/'+state.item.id+'.wav?v='+version,import.meta.url).href;
  if(music.src===src&&!music.paused)return;
  musicBusy=true;const task=++musicTask;music.pause();if(music.src!==src)music.src=src;
  let timeout;

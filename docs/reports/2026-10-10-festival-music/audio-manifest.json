@@ -1,0 +1,53 @@
+{
+  "createdAt": "2026-10-10T09:02:08.653248+00:00",
+  "tracks": {
+    "dragon": {
+      "sha256": "833dff8f0e166f00ccab021b4a97204dac331b64baa69d3543741a57d94eebb7",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "pentecost": {
+      "sha256": "94e03577557c0f8389b9d423f3c7144780a0acaacd56473a6f4528be4836b836",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "spring": {
+      "sha256": "5986c6e57a9616f1d1b8a60d4a0399f4994059a210f6ff7f27b37852ca4c3e63",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "thanksgiving": {
+      "sha256": "ed98d5144b716169ac9a028345ef295e1fc48a6598bf08b1e92281b7cbff0b7d",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "newyear": {
+      "sha256": "e7c38916491e7ea86692e30f8a61a4c825c23f8c5a05e969dbed8984fb68f2d1",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "easter": {
+      "sha256": "48831d193b9902a7d8297d004bfe1f89386613f9aaa33eb03d5c9552019f3dde",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "christmas": {
+      "sha256": "9b5a412971d0c4683e73ef0e8b8302bba8c20e06cf86c28594acf0e66825c121",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "moon": {
+      "sha256": "bff3c4d8f24ceeef85297e5e6b728c0ca44d57db08ad9710d4fac71decae0943",
+      "bytes": 705644,
+      "seconds": 16
+    },
+    "light": {
+      "sha256": "12e6abd824460b1f70fa9f1627064ca3ad8920689e72cdc2787f8c0831a3e20c",
+      "bytes": 705644,
+      "seconds": 16
+    }
+  },
+  "newyearArrangement": "8 original bars at 120 BPM, bell-like lead, plucked chords, bass and soft drums",
+  "otherEightTracks": "unchanged",
+  "auditionCopies": "local conversation artifacts; nine 16-second WAV files"
+}

@@ -44,8 +44,9 @@ export async function mountOctoberJournal(host){
     try{
       await window.liff.init({liffId:OCTOBER_TEST_LIFF_ID});
       if(!window.liff.isInClient()||!window.liff.isLoggedIn()||!(token=window.liff.getIDToken()||''))throw Error('請從LINE的箴言生命樹入口開啟，才能查看自己的手札。');
-      const out=await api('me');if(!out.participant?.id||!Array.isArray(out.notes)||!Array.isArray(out.records))throw Error('手札資料不完整，請重試。');
-      notes=out.notes;draft=`october-devotional-journal:${out.participant.id}:${date}`;
+      const out=await api('me'),subject=out.participant?.line_subject;
+      if(typeof subject!=='string'||!/^U[0-9a-f]{32}$/.test(subject)||!Array.isArray(out.notes)||!Array.isArray(out.records))throw Error('手札資料不完整，請重試。');
+      notes=out.notes;draft=`october-devotional-journal:${subject}:${date}`;
       let savedDraft='';try{savedDraft=sessionStorage.getItem(draft)||'';}catch{}
       $('#reflection-note').value=savedDraft||notes.find(row=>row.reading_date===date)?.note||'';
       canWrite=out.records.some(row=>row.reading_date===date);

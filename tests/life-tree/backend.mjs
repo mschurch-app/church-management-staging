@@ -1,79 +1,21 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import vm from 'node:vm';
-import {stripTypeScriptTypes} from 'node:module';
-import {webcrypto} from 'node:crypto';
 import {test} from 'node:test';
-
-// Execute the production handler, replacing only its external SDK, LINE and DB.
-// No network, credentials, real member identities or production writes are used.
-const file=process.env.TREE_FUNCTION_SOURCE||new URL('../../supabase/functions/tree-reading-october-test/index.ts',import.meta.url);
-const source=fs.readFileSync(file,'utf8');
-const sdkImport="import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';";
-assert.ok(source.includes(sdkImport),'Expected pinned SDK import; review fixture if it changes');
-const code=stripTypeScriptTypes(source.replace(sdkImport,''));
+import {fixture} from './backend-fixture.mjs';
 const subject='U'+'a'.repeat(32),otherSubject='U'+'b'.repeat(32);
-const instant='2026-10-10T05:24:00Z';
 
-function fixture({start='2026-10-01',joined=true,authorized=true,failInsert=false,failUpdate=false,initial=[]}={}){
-  const rows=structuredClone(initial),writes=[];
-  const tables={
-    tree_reading_october_test_participants:joined?[{line_subject:subject,reading_start_date:start,is_admin:false}]:[],
-    tree_reading_october_test_progress:rows,
-  };
-  function from(table){
-    let operation='select',payload,one=false;
-    const filters=[];
-    const query={
-      select(){return query;},order(){return query;},
-      eq(key,value){filters.push(row=>row[key]===value);return query;},
-      is(key,value){filters.push(row=>(row[key]??null)===value);return query;},
-      maybeSingle(){one=true;return query;},single(){one=true;return query;},
-      insert(value){operation='insert';payload=value;return query;},
-      update(value){operation='update';payload=value;return query;},
-      then(resolve,reject){
-        return Promise.resolve().then(()=>{
-          assert.ok(table in tables,'Unexpected DB table '+table);
-          let selected=tables[table].filter(row=>filters.every(filter=>filter(row))),error=null;
-          if(operation==='insert'){
-            writes.push({table,operation,date:payload.reading_date});
-            if(failInsert)error={code:'fixture_failure'};
-            else if(tables[table].some(row=>row.line_subject===payload.line_subject&&row.reading_date===payload.reading_date))error={code:'23505'};
-            else {const row={...payload,completed_at:instant,watered_at:null};tables[table].push(row);selected=[row];}
-          }else if(operation==='update'){
-            writes.push({table,operation,matched:selected.length});
-            if(failUpdate)error={code:'fixture_failure'};
-            else selected.forEach(row=>Object.assign(row,payload));
-          }
-          return {data:structuredClone(one?(selected[0]||null):selected),error};
-        }).then(resolve,reject);
-      },
-    };
-    return query;
-  }
-  let handler;
-  const RealDate=Date;
-  class FrozenDate extends RealDate{
-    constructor(...args){super(...(args.length?args:[instant]));}
-    static now(){return RealDate.parse(instant);}
-  }
-  vm.runInNewContext(code,{
-    Deno:{env:{get:key=>({SUPABASE_URL:'https://isolated.invalid',SUPABASE_SERVICE_ROLE_KEY:'isolated-not-a-credential'}[key])},serve:fn=>{handler=fn;}},
-    createClient:()=>({from}),Date:FrozenDate,Intl,URLSearchParams,Request,Response,AbortSignal,TextEncoder,crypto:webcrypto,
-    fetch:async(url)=>{
-      assert.equal(url,'https://api.line.me/oauth2/v2.1/verify','No real network allowed');
-      return new Response(JSON.stringify(authorized?{iss:'https://access.line.me',aud:'2011645391',exp:Math.floor(Date.parse(instant)/1000)+3600,iat:Math.floor(Date.parse(instant)/1000)-60,sub:subject,name:'Isolated member'}:{error:'invalid_token'}),{status:authorized?200:401});
-    },
-  },{filename:'production-tree-reading-october-test.ts'});
-  async function call(action,date,token='isolated-token'){
-    const response=await handler(new Request('https://isolated.invalid/function',{
-      method:'POST',headers:{origin:'https://mscos.mchurch.online','content-type':'application/json',...(token?{authorization:'Bearer '+token}:{})},
-      body:JSON.stringify({action,readingDate:date,line_subject:otherSubject}),
-    }));
-    return {status:response.status,...await response.json()};
-  }
-  return {call,rows,writes};
-}
+test('Actual me contract identifies participant with line_subject, not an invented id',async()=>{
+  const result=await fixture().call('me');assert.equal(result.status,200);
+  assert.equal(result.participant.line_subject,subject);assert.equal(result.participant.id,undefined);
+  assert.ok(Array.isArray(result.notes));assert.ok(Array.isArray(result.records));
+});
+test('Journal save and me use actual date and return only the verified member notes',async()=>{
+  const f=fixture({initialNotes:[{line_subject:otherSubject,reading_date:'2026-10-10',note:'Other fixture member'}]});
+  await f.call('mark_read','2026-10-10');
+  const saved=await f.call('journal_save','2026-10-10','isolated-token',{note:'Fixture journal'});
+  assert.equal(saved.status,200);assert.equal(saved.note.note,'Fixture journal');
+  const loaded=await f.call('me');assert.equal(loaded.notes.length,1);assert.equal(loaded.notes[0].note,'Fixture journal');
+  assert.equal(f.rows.length,1);assert.equal(f.rows[0].watered_at,null);
+});
 
 test('Yesterday (10/9) is recorded and watered through the real handler',async()=>{
   const f=fixture(),read=await f.call('mark_read','2026-10-09');

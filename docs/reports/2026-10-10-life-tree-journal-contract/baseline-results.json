@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "Real handler me contract enables own journal without participant.id",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Real handler journal save persists today only, without extra progress",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Missing verified participant identity keeps journal locked and offers recovery",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Reading 10/9 never displays unrelated 10/6 watering actions",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "Real 10/9 completion lands at tree and waters only 10/9",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Returning later still exposes explicit 10/6 unfinished watering",
+      "passed": true
+    },
+    {
+      "name": "No uncaught exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "passed": 2,
+  "failed": 5,
+  "scope": "Real production handler with isolated LINE/SDK/database; no network or production writes"
+}

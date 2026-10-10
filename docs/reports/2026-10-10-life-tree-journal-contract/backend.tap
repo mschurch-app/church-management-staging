@@ -1,0 +1,114 @@
+TAP version 13
+# (node:99242) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Actual me contract identifies participant with line_subject, not an invented id
+ok 1 - Actual me contract identifies participant with line_subject, not an invented id
+  ---
+  duration_ms: 478.798153
+  type: 'test'
+  ...
+# Subtest: Journal save and me use actual date and return only the verified member notes
+ok 2 - Journal save and me use actual date and return only the verified member notes
+  ---
+  duration_ms: 149.8808
+  type: 'test'
+  ...
+# Subtest: Yesterday (10/9) is recorded and watered through the real handler
+ok 3 - Yesterday (10/9) is recorded and watered through the real handler
+  ---
+  duration_ms: 29.617977
+  type: 'test'
+  ...
+# Subtest: All seven makeup dates 10/3–10/9 can be recorded and watered
+ok 4 - All seven makeup dates 10/3–10/9 can be recorded and watered
+  ---
+  duration_ms: 86.593128
+  type: 'test'
+  ...
+# Subtest: Today remains on time and can be watered
+ok 5 - Today remains on time and can be watered
+  ---
+  duration_ms: 13.687787
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-02 causes no writes
+ok 6 - Invalid/expired/future date 2026-10-02 causes no writes
+  ---
+  duration_ms: 8.165028
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-11 causes no writes
+ok 7 - Invalid/expired/future date 2026-10-11 causes no writes
+  ---
+  duration_ms: 11.672942
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-09-30 causes no writes
+ok 8 - Invalid/expired/future date 2026-09-30 causes no writes
+  ---
+  duration_ms: 12.230045
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date bad-date causes no writes
+ok 9 - Invalid/expired/future date bad-date causes no writes
+  ---
+  duration_ms: 13.426377
+  type: 'test'
+  ...
+# Subtest: Participant start date remains enforced
+ok 10 - Participant start date remains enforced
+  ---
+  duration_ms: 13.345612
+  type: 'test'
+  ...
+# Subtest: Duplicate makeup read and water preserve completion and watering timestamps
+ok 11 - Duplicate makeup read and water preserve completion and watering timestamps
+  ---
+  duration_ms: 12.262002
+  type: 'test'
+  ...
+# Subtest: Watering cannot create an unread record or water another person
+ok 12 - Watering cannot create an unread record or water another person
+  ---
+  duration_ms: 7.919898
+  type: 'test'
+  ...
+# Subtest: Invalid LINE verification cannot read or write
+ok 13 - Invalid LINE verification cannot read or write
+  ---
+  duration_ms: 3.77891
+  type: 'test'
+  ...
+# Subtest: Missing bearer token cannot write
+ok 14 - Missing bearer token cannot write
+  ---
+  duration_ms: 3.769442
+  type: 'test'
+  ...
+# Subtest: Unjoined LINE member cannot write
+ok 15 - Unjoined LINE member cannot write
+  ---
+  duration_ms: 8.692128
+  type: 'test'
+  ...
+# Subtest: Database insert failure remains a failure, with no fabricated completion
+ok 16 - Database insert failure remains a failure, with no fabricated completion
+  ---
+  duration_ms: 8.5147
+  type: 'test'
+  ...
+# Subtest: Database watering failure preserves unread-water state
+ok 17 - Database watering failure preserves unread-water state
+  ---
+  duration_ms: 13.491765
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1933.191268

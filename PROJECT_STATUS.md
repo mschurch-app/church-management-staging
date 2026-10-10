@@ -2,6 +2,10 @@
 
 Last reviewed: 2026-10-10
 
+## 本人手札與補讀日期對應（2026-10-10）
+
+修正手札及浮動靈修關閉偏好使用不存在的participant.id，改依實際API的本人line_subject驗證及隔離草稿。補讀操作跟隨選讀日期，10/9期間不混入10/6，完成後才以「另有」提醒其他待澆水日。新8項瀏覽器契約與17項後端測試全通過，執行原handler並隔離外部系統；完整82項回歸也全通過；Git與正式發布進行中。沒有資料庫或Edge Function變更。詳見 `docs/reports/2026-10-10-life-tree-journal-contract/report.md`；Mac Safari及iPhone／LINE仍待實機驗收。
+
 ## 十月補讀後端修復（2026-10-10）
 
 查得實際October Edge Function版本6漏定義shiftDate，非當日mark_read及water_tree會拋錯並回503，前端誤以通用連線訊息呈現。新增UTC日曆位移函式，保留原LINE驗證、本人範圍、加入日期、七天期限和重複提交語意。直接執行production handler的15項隔離測試，修正前7項失敗、修正後全通過；補列後端測試為必跑，避免只驗證模擬API成功回應。既有82項瀏覽器回歸亦全通過。PR #58已合併main，專用函式v7已部署ACTIVE；13:34:37讀回source符合Git且15項重跑全過，無憑證HTTP請求回401。詳見 `docs/reports/2026-10-10-life-tree-makeup-backend/report.md`。本項無資料庫結構或SQL資料修改；實際使用者10/9存檔仍需本人重試確認，Mac Safari與iPhone／LINE待實機驗收。

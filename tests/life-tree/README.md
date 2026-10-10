@@ -2,6 +2,10 @@
 
 ## 後端補讀回歸（必跑）
 
+後端fixture集中在 `backend-fixture.mjs`，沿用原handler及投影後的真實欄位，不虛構participant.id。後端17項包含me契約、本人journal_save及me回讀；瀏覽器82項的me也由此handler產生，其餘回應仍依各測試情境隔離。
+
+`npm run life-tree:contracts`（在tests內）或 `node tests/life-tree/contracts.mjs`：8項瀏覽器契約檢查，讀取／儲存／補讀／澆水均實際執行原handler，只有LINE／SDK／DB隔離；驗證真實line_subject、切換帳號草稿隔離、缺身分鎖定及重試、10/9選讀不混10/6、10/9實際記錄和澆水、完成後其他待澆水提示。不連線或寫入真實資料庫。Puppeteer與輸出設定同其他browser測試。
+
 `node --test tests/life-tree/backend.mjs` 或在 tests 內執行 `npm run life-tree:backend`（Node 22.13以上）。直接去除 production TypeScript 的型別後執行原 Edge Function handler，只隔離外部 SDK、LINE驗證及資料庫；不模擬 handler 的成功邏輯、不連線或寫入真實資料庫。`TREE_FUNCTION_SOURCE` 可指定部署讀回的 source 檔，以相同測試驗證實際部署內容。
 
 涵蓋10/9讀經及澆水、七天補讀10/3–10/9、當日讀經、到期／未來／非法日期、加入日期、重複提交保留原紀錄與澆水時間、本人範圍、未驗證／未加入拒絕及資料庫失敗。瀏覽器測試攔截API回應，不能代替此測試；2026-10-10修正前15項有7項失敗，抓到原handler漏定義shiftDate導致補讀503。

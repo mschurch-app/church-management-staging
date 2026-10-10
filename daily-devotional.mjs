@@ -26,7 +26,7 @@ function render(){const item=state.item,completed=state.progress.find(row=>row.d
   if(fromOctoberTree){
     $('#status').textContent='2027 年 1 月 1 日・創世記試閱｜不會儲存完成紀錄，也不計入十月箴言進度。';
     const back=document.createElement('a');back.className='tree-return';back.href='tree-reading-october-test.html#devotional-invitation';back.textContent='返回箴言生命樹';back.addEventListener('click',returnToTree);$('#content').append(back);
-    void import('./october-devotional-journal.mjs?v=20261010-tree-guide1').then(module=>module.mountOctoberJournal($('#october-journal'))).catch(()=>{$('#october-journal').textContent='手札暫時無法載入，請重新整理；靈修內容仍可閱讀。';});
+    void import('./october-devotional-journal.mjs?v=20261010-journal-contract1').then(module=>module.mountOctoberJournal($('#october-journal'))).catch(()=>{$('#october-journal').textContent='手札暫時無法載入，請重新整理；靈修內容仍可閱讀。';});
   }
   if(!state.preview)$('#complete').onclick=complete;
 }

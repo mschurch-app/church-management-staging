@@ -1,0 +1,23 @@
+{
+  "project": "svwgfgyxxgbqabosriom",
+  "function": "tree-reading-october-test",
+  "version": 8,
+  "status": "ACTIVE",
+  "verify_jwt": false,
+  "source_matches_git": true,
+  "verified_at_taipei": "2026-10-10 14:12:27",
+  "deployed_source_backend_tests": {
+    "passed": 23,
+    "failed": 0
+  },
+  "sql_writes": 0,
+  "challenge_rotation_executed": false,
+  "pr": 62,
+  "merge_sha": "b1961955aee71d1098d04db9e205e1dfe989adc7",
+  "post_deploy_inventory": {
+    "participants": 5,
+    "today_count": 5,
+    "today_resolved": 1,
+    "future_count": 0
+  }
+}

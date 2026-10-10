@@ -10,6 +10,12 @@ This is a static browser application plus Supabase services. There is no root `p
 
 ## Verification
 
+### Life-tree garden interaction preview
+
+Serve the repository locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/life-tree-garden-preview.html`. This is a standalone prototype, not the production LIFF entry. Use the scenario controls at the bottom to try rain, insects, wind, fallen branches and reset. Reload discards all demonstration progress and journal drafts. No install, login or database configuration is needed. Do not replace the production entry or merge the preview into its data flow before reviewing the screen and the separate implementation scope.
+
+Run its isolated browser checks using `tests/life-tree/garden-preview.mjs` as documented in the test README. The script writes screenshots and `results.json` to `TREE_TEST_OUTPUT`. Safari and iPhone/LINE validation remain separate.
+
 - Run `git diff --check` before committing.
 - For changed browser modules, use `node --check <file.mjs>` where applicable.
 - For Edge Functions, use the project’s configured Deno/Supabase checks when available.

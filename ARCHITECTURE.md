@@ -2,6 +2,8 @@
 
 ## Frontend
 
+- `life-tree-garden-preview.html` / `.css` / `.mjs` form an isolated, unconnected garden interaction prototype. They reuse shared design tokens, SVG icons and local life-tree audio; all reading, watering, challenge, collection and journal state stays in memory and resets on reload. The prototype imports no LINE, Supabase, authentication or production data client and does not replace the October or 2027 entry points.
+
 - Static HTML, CSS, and browser ES modules served from the repository through GitHub Pages at `mscos.mchurch.online`.
 - `admin-db.mjs` creates the Supabase browser client using the publishable key and persistent authenticated sessions.
 - `admin-access.mjs` loads the signed-in user’s church grants and per-feature action permissions. Pages still need server-side authorization for protected data.

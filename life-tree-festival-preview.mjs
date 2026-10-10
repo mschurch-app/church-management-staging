@@ -1,5 +1,5 @@
 import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261011-spring-joy1';
-import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-joy1';
+import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
 import {applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 
 // Standalone, public visual preview. All actions and collections are memory only.

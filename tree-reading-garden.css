@@ -123,3 +123,5 @@
 .october-journey.garden-connected #festival-play-action svg{width:38px;height:38px;display:block}
 .october-journey.garden-connected #festival-play-action:disabled{opacity:.6;cursor:default}
 .october-journey.garden-connected #festival-play-status{margin:0;font-size:12px;line-height:1.6}
+
+.october-journey.garden-connected #festival-play-action.festival-prerequisite{flex:0 1 auto;width:auto;max-width:65%;padding:10px 14px;min-height:44px;color:#724424;font-size:13px;font-weight:700;line-height:1.5}

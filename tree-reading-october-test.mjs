@@ -1,7 +1,7 @@
-import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261010-daily-scenes1';
-import {festivalTestForDate,FESTIVAL_TEST_SCHEDULE} from './life-tree-festival-test-schedule.mjs?v=20261010-daily-scenes1';
+import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-joy1';
+import {festivalTestForDate} from './life-tree-festival-test-schedule.mjs?v=20261011-spring-joy1';
 import { loadScheduledChapters } from './bible-scripture-loader.mjs?v=20261010-deadline1';
-import { renderLifeTree, growthStage } from './tree-reading-garden-art.mjs?v=20261010-daily-scenes1';
+import { renderLifeTree, growthStage } from './tree-reading-garden-art.mjs?v=20261011-spring-joy1';
 import { createAppIcon } from './app-icons.mjs?v=20261010-playful-care1';
 import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-login-fallback';
 
@@ -85,11 +85,13 @@ function renderFestivalTest(slot){
   $('#festival-test-info').hidden=!slot||state.view!=='personal';
   const controls=$('#festival-play-controls');controls.hidden=!playing||state.view!=='personal';if(playing){const button=$('#festival-play-action');button.disabled=state.writeBusy||festivalPlay.busy||Boolean(gardenEffect)||festivalPlay.hits>=3;button.setAttribute('aria-label',slot.item.action);button.innerHTML=slot.item.id==='light'?festivalEquipment(slot.day):festivalSymbol(slot.item.id);$('#festival-play-status').textContent=festivalPlay.hits>=3?slot.item.complete:`${slot.item.action} · ${festivalPlay.hits} / 3`;$('#tree-art').setAttribute('aria-label',`${slot.item.name}試玩：${slot.item.action}，已完成 ${festivalPlay.hits} / 3。也可以點樹圖互動。`);}
   if(!slot)return;
-  $('#festival-test-label').textContent=`${slot.label} · ${fmt(slot.start)} 試玩`;
-  $('#festival-test-next').textContent=slot.next?`${fmt(slot.next.start)} 換 ${slot.next.label}`:'這一站結束後，回到原本庭園';
-  const devotion=slot.item.days[slot.day-1];$('#festival-test-verse').textContent=`${devotion.title}｜${devotion.reference}｜${devotion.reflection}`;$('#festival-test-chronology').hidden=!slot.item.chronologyNote;$('#festival-test-chronology').textContent=slot.item.chronologyNote||'';
-  const list=$('#festival-test-schedule');if(!list.childElementCount){for(const entry of FESTIVAL_TEST_SCHEDULE){const li=document.createElement('li');li.dataset.scene=entry.key;li.textContent=`${fmt(entry.start)}　${entry.label}`;list.append(li);}}
-  for(const li of list.children){if(li.dataset.scene===slot.key)li.setAttribute('aria-current','date');else li.removeAttribute('aria-current');}
+  const spring=slot.item.id==='spring';
+  $('#festival-test-label').textContent=spring?'春節遊戲｜點福領祝福':`${slot.label}｜遊戲玩法`;
+  $('#festival-game-intro').textContent=spring?'福氣滿滿，讓新春祝福一盞盞亮起！':slot.item.subtitle;
+  const steps=spring?['讀完今日經文，回到小樹澆水。','點圖裡的「福」字紅包，或下方紅包按鈕。','點三次，亮起所有燈籠，迎接祝福驚喜！']:['讀完今日經文，回到小樹澆水。',`${slot.item.action}，也可以點樹圖互動。`,'點三次，看看這個節慶的驚喜！'];
+  const list=$('#festival-game-steps');list.replaceChildren(...steps.map((text,index)=>{const li=document.createElement('li'),number=document.createElement('span');number.className='festival-step-number';number.textContent=String(index+1);li.append(number,document.createTextNode(text));return li;}));
+  $('#festival-game-hint').textContent=festivalPlay.hits>=3?slot.item.complete:activeChallenges().length?'先用樹旁的道具照顧小樹，再來玩節慶遊戲。':playing?'可以開始囉！點一下，讓祝福亮起來。':'澆水完成後，就能開始玩囉！';
+  const devotion=slot.item.days[slot.day-1];$('#festival-test-verse').hidden=spring;$('#festival-test-verse').textContent=spring?'':`${devotion.title}｜${devotion.reference}｜${devotion.reflection}`;
 }
 function actFestival(){const slot=festivalTestForDate(today());if(!slot||!state.participant||state.view!=='personal'||!record()?.watered_at||activeChallenges().length||state.writeBusy||gardenEffect||festivalPlay.busy||festivalPlay.hits>=3)return;const key=festivalPlay.key;festivalPlay.hits++;festivalPlay.busy=true;festivalPlay.phase=festivalPlay.hits===3?'celebrating':'acting';renderTree();void play(festivalPlay.hits===3&&!(slot.item.id==='easter'&&slot.day<8)?'celebration':'open');festivalPlayTimer=setTimeout(()=>{if(festivalPlay.key!==key)return;festivalPlay.busy=false;festivalPlay.phase=festivalPlay.hits===3?'complete':'ready';if(state.participant&&state.view==='personal')renderTree();},matchMedia('(prefers-reduced-motion: reduce)').matches?100:festivalPlay.hits===3?1700:650);}
 function refreshFestivalDate(){if(document.hidden||!state.participant||state.writeBusy||lastFestivalDate===today())return;if(state.view==='personal')renderTree();syncSceneMusic();}
@@ -142,7 +144,7 @@ function updateMusicButton(){
 function createAudio(kind){
   const audio=document.createElement('audio');audio.preload='none';audio.hidden=true;audio.dataset.lifeTreeAudio=kind;audio.setAttribute('playsinline','');document.body.append(audio);return audio;
 }
-function audioURL(name){const version=name==='festivals/newyear'?'20261010-music-joy1':'20261010-audio1';return new URL(`./assets/audio/life-tree/${name}.wav?v=${version}`,import.meta.url).href;}
+function audioURL(name){const version=name==='festivals/spring'?'20261011-spring-joy1':name==='festivals/newyear'?'20261010-music-joy1':'20261010-audio1';return new URL(`./assets/audio/life-tree/${name}.wav?v=${version}`,import.meta.url).href;}
 function ensureAudio(){
   if(!backgroundAudio){
     backgroundAudio=createAudio('music');backgroundAudio.src=audioURL(sceneMusic());backgroundAudio.dataset.track=sceneMusic();backgroundAudio.loop=true;backgroundAudio.volume=.65;

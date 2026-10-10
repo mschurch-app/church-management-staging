@@ -104,6 +104,66 @@ def joyful_newyear():
     return samples
 
 
+def joyful_spring():
+    """Original eight-bar pentatonic dance at 128 BPM, with plucks and festival drums."""
+    beat = 60 / 128
+    samples = [0.] * round(RATE * beat * 32)
+    rng = random.Random(20270206)
+
+    def pluck(midi, when, length, volume, bright=False):
+        hz = frequency(midi)
+        for i in range(round(length * RATE)):
+            t = i / RATE
+            env = min(1., t / .004) * min(1., (length - t) / .02)
+            decay = math.exp(-(9 if bright else 6) * t)
+            tone = (math.sin(2 * math.pi * hz * t)
+                    + .42 * math.sin(4 * math.pi * hz * t) * math.exp(-5 * t)
+                    + .16 * math.sin(6 * math.pi * hz * t) * math.exp(-9 * t))
+            samples[(round(when * RATE) + i) % len(samples)] += volume * env * decay * tone
+
+    phrases = [
+        [72, 76, 79, 79, 81, 79, 76, 74], [76, 79, 84, 81, 79, 76, 74, 72],
+        [74, 76, 79, 81, 84, 81, 79, 76], [79, 76, 74, 72, 74, 76, 79, 79],
+        [81, 84, 86, 84, 81, 79, 76, 79], [84, 81, 79, 76, 79, 81, 84, 81],
+        [79, 81, 84, 86, 84, 81, 79, 76], [79, 76, 74, 76, 74, 72, 67, 71],
+    ]
+    # The final pickup resolves to the opening C when the loop repeats.
+    roots = [48, 48, 45, 45, 53, 53, 43, 43]
+    chords = [(60, 64, 67), (60, 64, 67), (57, 60, 64), (57, 60, 64),
+              (60, 65, 69), (60, 65, 69), (59, 62, 67), (59, 62, 67)]
+    for bar, phrase in enumerate(phrases):
+        start = bar * 4 * beat
+        for step, midi in enumerate(phrase):
+            pluck(midi, start + step * beat / 2, .42, .27 if step % 2 == 0 else .20, True)
+            if step in (2, 6):
+                pluck(midi + 12, start + step * beat / 2, .24, .045, True)
+        for pulse in range(4):
+            when = start + pulse * beat
+            pluck(roots[bar] + (7 if pulse % 2 else 0), when, .30, .15)
+            for offset, midi in enumerate(chords[bar]):
+                pluck(midi, when + beat * .5 + offset * .009, .24, .045)
+            # Low hand drum plus a bright wooden tap on alternating beats.
+            for i in range(round(.18 * RATE)):
+                t = i / RATE
+                drum = math.sin(2 * math.pi * (62 * t + 2 * (1 - math.exp(-35 * t))))
+                samples[(round(when * RATE) + i) % len(samples)] += .12 * drum * min(1., t / .003) * math.exp(-27 * t)
+            if pulse % 2:
+                for i in range(round(.075 * RATE)):
+                    t = i / RATE
+                    tap = math.sin(2 * math.pi * 880 * t) + .35 * math.sin(2 * math.pi * 1370 * t)
+                    samples[(round(when * RATE) + i) % len(samples)] += .055 * tap * min(1., t / .001) * math.exp(-75 * t)
+        for step in range(8):
+            when = start + step * beat / 2
+            previous = 0.
+            for i in range(round(.04 * RATE)):
+                t = i / RATE
+                noise = rng.uniform(-1, 1)
+                shaker = noise - previous
+                previous = noise
+                samples[(round(when * RATE) + i) % len(samples)] += .014 * shaker * min(1., t / .001) * math.exp(-100 * t)
+    return samples
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--only', choices=list(MELODIES), help='Regenerate a single track')
@@ -114,6 +174,8 @@ def main():
             continue
         if name == 'newyear':
             samples = joyful_newyear()
+        elif name == 'spring':
+            samples = joyful_spring()
         else:
             samples = [0.] * (RATE * DURATION)
             for index, midi in enumerate(melody):

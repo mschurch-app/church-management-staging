@@ -1,5 +1,5 @@
-import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261010-daily-scenes1';
-import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261010-daily-scenes1';
+import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261011-spring-joy1';
+import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-joy1';
 import {applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 
 // Standalone, public visual preview. All actions and collections are memory only.
@@ -90,7 +90,7 @@ function syncSound(){
 }
 async function playMusic(){
  if(!state.sound||document.hidden||musicBusy)return;
- const version=state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
+ const version=state.item.id==='spring'?'20261011-spring-joy1':state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
  const track=state.item.musicByDay?.[state.day-1]||state.item.id;
  const src=new URL('assets/audio/life-tree/festivals/'+track+'.wav?v='+version,import.meta.url).href;
  if(music.src===src&&!music.paused)return;

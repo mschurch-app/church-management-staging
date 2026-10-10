@@ -1,4 +1,4 @@
-import {FESTIVALS} from './life-tree-festivals.mjs?v=20261010-daily-scenes1';
+import {FESTIVALS} from './life-tree-festivals.mjs?v=20261011-spring-joy1';
 
 export const FESTIVAL_TEST_START='2026-10-10';
 const DAY=86400000;

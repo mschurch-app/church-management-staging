@@ -4,7 +4,7 @@ import {db} from './admin-db.mjs?v=20261009-stage4';
 import {VAPID_PUBLIC_KEY} from './app-push-config.mjs';
 const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
-export async function registerChurchApp(){if(!('serviceWorker'in navigator))return;if(!registrationTask)registrationTask=navigator.serviceWorker.register('/church-os-sw.js?v=20261011-match-board2',{scope:'/',updateViaCache:'none'}).then(registration=>{watchAppRegistration(registration);setTimeout(()=>registration.update().catch(()=>{}),1500);return registration;}).catch(()=>{registrationTask=null;return null;});return registrationTask;}
+export async function registerChurchApp(){if(!('serviceWorker'in navigator))return;if(!registrationTask)registrationTask=navigator.serviceWorker.register('/church-os-sw.js?v=20261011-spring-joy1',{scope:'/',updateViaCache:'none'}).then(registration=>{watchAppRegistration(registration);setTimeout(()=>registration.update().catch(()=>{}),1500);return registration;}).catch(()=>{registrationTask=null;return null;});return registrationTask;}
 const applicationServerKey=value=>{const padding='='.repeat((4-value.length%4)%4),base64=(value+padding).replace(/-/g,'+').replace(/_/g,'/'),raw=atob(base64);return Uint8Array.from([...raw].map(char=>char.charCodeAt(0)));};
 let pushConnection=null;
 async function connectPush(){

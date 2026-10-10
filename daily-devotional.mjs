@@ -22,10 +22,11 @@ function render(){const item=state.item,completed=state.progress.find(row=>row.d
   <section class="card"><h2>停下來想一想</h2><ol class="questions">${lines(item.reflection_questions).map(value=>`<li>${escape(value)}</li>`).join('')}</ol></section>
   <section class="card"><h2>今天的行動</h2><div class="formatted">${escape(item.life_application)}</div></section>
   <section class="card"><h2>回應禱告</h2><div class="formatted">${escape(item.response_prayer)}</div></section>
-  <section class="card reflection"><h2>我的拾光</h2><textarea id="note" maxlength="1000" placeholder="寫下一句今天的領受，只有你自己看得到。" ${state.preview?'disabled':''}>${escape(completed?.reflection_note||'')}</textarea><button id="complete" class="complete" ${completed||state.preview?'disabled':''}>${state.preview?'預覽模式不儲存':completed?'✓ 今天已完成':'完成今日靈修'}</button><p id="completion-message" class="completion-message" role="status"></p></section>`;
+  ${fromOctoberTree?'<section id="october-journal" class="card reflection october-journal" aria-label="拾光手札"></section>':`<section class="card reflection"><h2>拾光手札</h2><textarea id="note" maxlength="1000" placeholder="寫下今天的亮光或禱告，只有你自己看得到。" ${state.preview?'disabled':''}>${escape(completed?.reflection_note||'')}</textarea><button id="complete" class="complete" ${completed||state.preview?'disabled':''}>${state.preview?'預覽模式不儲存':completed?'✓ 今天已完成':'完成今日靈修'}</button><p id="completion-message" class="completion-message" role="status"></p></section>`}`;
   if(fromOctoberTree){
     $('#status').textContent='2027 年 1 月 1 日・創世記試閱｜不會儲存完成紀錄，也不計入十月箴言進度。';
     const back=document.createElement('a');back.className='tree-return';back.href='tree-reading-october-test.html#devotional-invitation';back.textContent='返回箴言生命樹';back.addEventListener('click',returnToTree);$('#content').append(back);
+    void import('./october-devotional-journal.mjs?v=20261010-tree-guide1').then(module=>module.mountOctoberJournal($('#october-journal'))).catch(()=>{$('#october-journal').textContent='手札暫時無法載入，請重新整理；靈修內容仍可閱讀。';});
   }
   if(!state.preview)$('#complete').onclick=complete;
 }
@@ -42,6 +43,7 @@ function returnToTree(event){
   try{const referrer=new URL(document.referrer);if(referrer.origin===location.origin&&referrer.pathname===new URL('tree-reading-october-test.html',location.href).pathname&&history.length>1){event.preventDefault();history.back();}}catch{}
 }
 async function start(){
+  if(fromOctoberTree&&location.pathname.endsWith('/daily-devotional.html')){location.replace('tree-reading-october-test.html?view=devotional&church=M%2B&preview=1&from=october-tree');return;}
   if(fromOctoberTree){const back=$('.topbar a');back.href='tree-reading-october-test.html#devotional-invitation';back.setAttribute('aria-label','返回箴言生命樹');back.onclick=returnToTree;}
 
   try{

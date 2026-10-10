@@ -1,0 +1,14 @@
+{
+  "checks": [
+    {
+      "name": "Contract harness navigation/bootstrap",
+      "passed": false,
+      "error": "TimeoutError: Navigation timeout of 15000 ms exceeded\n    at new Deferred (file:///private/tmp/church-os-shine-email/tests/node_modules/puppeteer-core/lib/puppeteer/util/Deferred.js:57:34)\n    at Deferred.create (file:///private/tmp/church-os-shine-email/tests/node_modules/puppeteer-core/lib/puppeteer/util/Deferred.js:18:16)\n    at new LifecycleWatcher (file:///private/tmp/church-os-shine-email/tests/node_modules/puppeteer-core/lib/puppeteer/cdp/LifecycleWatcher.js:70:46)\n    at CdpFrame.goto (file:///private/tmp/church-os-shine-email/tests/node_modules/puppeteer-core/lib/puppeteer/cdp/Frame.js:152:29)\n    at CdpFrame.<anonymous> (file:///private/tmp/church-os-shine-email/tests/node_modules/puppeteer-core/lib/puppeteer/util/decorators.js:101:27)\n    at CdpPage.goto (file:///private/tmp/church-os-shine-email/tests/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:582:43)\n    at file:///private/tmp/church-os-shine-email/tests/life-tree/contracts.mjs:52:14"
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "passed": 0,
+  "failed": 1,
+  "scope": "Real production handler with isolated LINE/SDK/database; no network or production writes"
+}

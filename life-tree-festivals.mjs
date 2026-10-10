@@ -2,6 +2,8 @@
 // No identity, database, formal reading progress or award writes in this module.
 const day=(title,reference,reflection,prompt)=>Object.freeze({title,reference,reflection,prompt});
 const raw=[
+ {id:'newyear',name:'元旦',title:'2027 新年快樂',subtitle:'帶著盼望，與神一起走進新的一年。',start:'2027-01-01',end:'2027-01-03',accent:'#7d5930',paper:'#fff5df',sky:['#182846','#4e6381'],ground:['#6a937d','#345d53'],motif:'2027・新年快樂・繽紛煙火',action:'一起放新年煙火',target:'煙火',badge:'新歲蒙恩',complete:'煙火綻放，帶著恩典迎接2027！',days:[
+ day('以恩典開始','詩篇65:11','回顧神的供應，帶著感謝走進新的一年。','新的一年，我想感謝神……'),day('盼望新事','以賽亞書43:18–19','把過往交託給神，帶著盼望留意祂開的新道路。','我願意跟隨神踏出……'),day('每天新的憐憫','耶利米哀歌3:22–23','新年不必一次完成所有事，今天先領受神新鮮的憐憫。','今天我向神交託……')]},
  {id:'spring',name:'農曆春節',title:'恩典滿家',subtitle:'新歲同行，讓祝福慢慢亮起。',start:'2027-02-05',end:'2027-02-11',accent:'#af382f',paper:'#fff1dc',sky:['#fff2d5','#f5d4a7'],ground:['#9caa70','#658650'],motif:'春聯・紅燈籠・迎春花',action:'點亮祝福燈籠',target:'燈籠',badge:'恩典滿家',complete:'七盞燈，一家滿滿的祝福。',days:[
  day('數算恩典','詩篇103:2–5','回頭看看，神的恩惠常藏在平凡的日常裡。','我想感謝的一件事是……'),day('交託新歲','箴言3:5–6','把尚未看清的前路交給神，今天先走祂指引的一步。','新的一年，我想交託……'),day('領受平安','民數記6:24–26','讓神的祝福成為家中的平安，也成為你送給人的問候。','我想為誰祝福？'),day('為家禱告','約書亞記24:15','從自己開始，讓家人感受到服事、關心與愛。','今天我可以為家人做……'),day('新的開始','哥林多後書5:17','在基督裡，你可以帶著盼望迎接新的開始。','我盼望更新的是……'),day('一起同行','希伯來書10:24–25','找一位同行的人，在新的一年彼此提醒、彼此打氣。','我想邀請誰同行？'),day('分享祝福','詩篇65:11','帶著感恩出發，把領受的恩典分享出去。','我想把祝福送給……')]},
  {id:'easter',name:'復活節',title:'晨光甦醒',subtitle:'盼望，從清晨的光裡重新生長。',start:'2027-03-22',end:'2027-03-28',accent:'#736144',paper:'#fff8e9',sky:['#d7e6eb','#fff2d4'],ground:['#b4c78c','#749968'],motif:'空墳墓・十字架・復活晨光',action:'迎接一道盼望晨光',target:'百合',badge:'復活盼望',complete:'晨光照進花園，盼望再次綻放。',days:[
@@ -32,4 +34,4 @@ export const MONSTERS=Object.freeze([
 export function festivalById(id){return FESTIVALS.find(item=>item.id===id)||null;}
 export function festivalForDate(date){return typeof date==='string'&&/^2027-\d{2}-\d{2}$/.test(date)?FESTIVALS.find(item=>date>=item.start&&date<=item.end)||null:null;}
 export function decorationForDate(date){return typeof date==='string'&&/^2027-12-(0[1-9]|[12][0-9]|3[01])$/.test(date)?festivalById('christmas'):null;}
-export function festivalDay(item,date){const value=Date.parse(`${date}T12:00:00Z`);return item&&Number.isFinite(value)?Math.min(7,Math.max(1,Math.floor((value-Date.parse(`${item.start}T12:00:00Z`))/86400000)+1)):1;}
+export function festivalDay(item,date){const value=Date.parse(`${date}T12:00:00Z`);return item&&Number.isFinite(value)?Math.min(item.days.length,Math.max(1,Math.floor((value-Date.parse(`${item.start}T12:00:00Z`))/86400000)+1)):1;}

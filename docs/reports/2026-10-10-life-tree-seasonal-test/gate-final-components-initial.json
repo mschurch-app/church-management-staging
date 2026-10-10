@@ -1,0 +1,31 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "apiMode": "isolated_synthetic",
+  "checks": [
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": false,
+      "seconds": 19,
+      "exitCode": 1
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true,
+      "seconds": 48,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true,
+      "seconds": 88,
+      "exitCode": 0
+    }
+  ],
+  "failures": 1
+}

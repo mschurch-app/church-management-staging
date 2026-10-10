@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,PERMISSION_LABELS,LEGACY_DASHBOARD_MODULES,NAVIGATION_MODULES,LEGACY_FEATURE_FILES,matchesFunction,functionHref,canonicalFunctionKey} from '../../app-function-definitions.mjs?v=20261010-festival1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,PERMISSION_LABELS,LEGACY_DASHBOARD_MODULES,NAVIGATION_MODULES,LEGACY_FEATURE_FILES,matchesFunction,functionHref,canonicalFunctionKey} from '../../app-function-definitions.mjs?v=20261010-season-test1';
 import {ICON_PATHS,iconSymbol} from '../../app-icons.mjs';
 import {availableFunctionKeys,availableSettingsGroups,favoriteKeys} from '../../app-function-catalog.mjs';
 import {HOME_TEMPLATES as adminHome,HOME_MODULES as adminModules,PERMISSIONS} from '../../admin-accounts-management.mjs';

@@ -1,6 +1,6 @@
 import {readAccess,chooseChurch} from './admin-access.mjs?v=20261009-stage1';
-export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261010-festival1';
-import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261010-festival1';
+export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261010-season-test1';
+import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261010-season-test1';
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}
 export async function dashboardHomePreferences(db,church){const [home,features]=await Promise.all([db.rpc('get_my_home_preferences',{p_church:church}),db.rpc('get_my_feature_permissions',{p_church:church})]);const data=home.data||{};return {role_key:data.role_key||'custom',home_modules:Array.isArray(data.home_modules)?data.home_modules:(HOME_TEMPLATES[data.role_key]||HOME_TEMPLATES.custom),feature_permissions:Array.isArray(features.data)?features.data:[]};}
 export async function dashboardCounts(db,church,grants){

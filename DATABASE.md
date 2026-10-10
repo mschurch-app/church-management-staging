@@ -2,7 +2,7 @@
 
 ## Seasonal Life Tree preview boundary (2026-10-10)
 
-The eight festival worlds and full-December Christmas decoration in `life-tree-festivals.html` are presentation-only previews. No schema migration, SQL data mutation, Edge Function deployment, identity request, award write or notification is performed. Preview completion/collections stay in memory; localStorage only stores sound and reduced-motion preferences. Candidate scripture content is static and has not been imported as approved devotionals. Formal seasonal records, idempotent rewards and reviewer configuration remain a later integration milestone.
+The nine festival worlds and full-December Christmas decoration in `life-tree-festivals.html` are presentation-only previews. No schema migration, SQL data mutation, Edge Function deployment, identity request, award write or notification is performed. Preview completion/collections stay in memory; localStorage only stores sound and reduced-motion preferences. Candidate scripture content is static and has not been imported as approved devotionals. Formal seasonal records, idempotent rewards and reviewer configuration remain a later integration milestone.
 
 
 ## Platform and project
@@ -60,3 +60,8 @@ The eight festival worlds and full-December Christmas decoration in `life-tree-f
 - Keep migrations additive and narrowly scoped. Do not delete registration/payment rows or rewrite payment history as part of UI work.
 - Before changing production schema, RLS, grants, functions, or triggers, inspect the migration diff, confirm the intended effect, and capture an appropriate backup or recovery point.
 - Record every database change in the migration and the matching daily work log. Applying a migration is a separate release step from committing it.
+
+
+### 2026-10-10 節慶每兩天換景
+
+本輪僅接入十月同工頁的節慶美術、前端日期表與音樂。讀經、澆水、挑戰、本人手札仍走原專用October API；無SQL、schema、migration、RLS或Edge部署，無真實DB測試寫入，亦未新增徽章／打怪收藏表。18天輪替不改記錄日期及既有完成結果。

@@ -1,3 +1,4 @@
+import {festivalScene} from './life-tree-festival-art.mjs?v=20261010-season-test1';
 import {createAppIcon} from './app-icons.mjs?v=20261010-playful-care1';
 
 // Presentation only: all progress, care and journal records come from the existing API.
@@ -17,7 +18,7 @@ function treeShape(id,stage=2){
     <path d="M342 657q-14-30-34-11 4 24 34 11M457 654q17-28 32-7-7 18-32 7" fill="#68954e"/><path d="m324 651 21 7m129-9-18 7" stroke="#c6dd92" stroke-width="2"/>
   </g>`;
 }
-export function gardenIllustration({id='main',stage=2,challenge='',effect='',mini=false,watered=false,weather='partly-cloudy',dry=false}={}){
+export function gardenIllustration({id='main',stage=2,challenge='',effect='',mini=false,watered=false,weather='partly-cloudy',dry=false,festival=null}={}){
   const storm=challenge==='typhoon',wind=challenge==='wind';
   const clouds=storm?'#68858a':'#fffcdf';
   const leaf=dry?[["#e2d7a0","#b6ae72","#827c4d"],["#d7cc91","#a49b62","#797346"],["#eee3b5","#bfb17b","#8f8458"]]:[["#d4e7a0","#91b267","#527d4e"],["#c7e092","#83aa5c","#426e47"],["#e3ecaf","#a5bc6b","#668b4e"]];
@@ -32,7 +33,7 @@ export function gardenIllustration({id='main',stage=2,challenge='',effect='',min
   if(effect==='worm')fx='<g class="spray-mist" fill="#f4fce6"><circle cx="450" cy="350" r="20" opacity=".8"/><circle cx="475" cy="355" r="30" opacity=".6"/><circle cx="510" cy="334" r="28" opacity=".7"/><path d="m488 300 4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/></g>';
   if(effect==='wind')fx=`<g class="care-reveal" transform="translate(263 520) scale(3.7)">${createAppIconMarkup('tree-support')}</g>`;
   if(effect==='trouble')fx=`<g transform="translate(210 578) scale(3.9)"><g class="broom-action">${createAppIconMarkup('tree-broom')}</g></g>`;
-  return `<svg data-care-scene="${challenge||'none'}" data-stage="${stage}" viewBox="0 0 800 800" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs>
+  const svg=`<svg data-care-scene="${challenge||'none'}" data-stage="${stage}" viewBox="0 0 800 800" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs>
     <linearGradient id="sky-${id}" x2="0" y2="1"><stop stop-color="${storm?'#709095':wind?'#b6cec2':'#edf0d3'}"/><stop offset="1" stop-color="${storm?'#b3c8b9':'#fff1d7'}"/></linearGradient>
     <radialGradient id="sun-${id}"><stop stop-color="#fff6c4"/><stop offset=".45" stop-color="#f4db91" stop-opacity=".7"/><stop offset="1" stop-color="#f4db91" stop-opacity="0"/></radialGradient>
     ${leaf.map((colors,i)=>`<radialGradient id="leaf${i}-${id}" cx=".34" cy=".24" r=".85"><stop stop-color="${colors[0]}"/><stop offset=".55" stop-color="${colors[1]}"/><stop offset="1" stop-color="${colors[2]}"/></radialGradient>`).join('')}
@@ -63,6 +64,14 @@ export function gardenIllustration({id='main',stage=2,challenge='',effect='',min
   <g stroke="#acc18c" stroke-width="3" fill="none"><path d="M0 780q22-40 23-82m10 70 14-51m734 25-8-81"/></g>
   ${challenge==='worm'?'<g class="care-scene-fx" fill="#ddbe69" opacity=".22"><rect width="800" height="800"/><circle cx="343" cy="284" r="13"/><circle cx="480" cy="325" r="10"/><circle cx="399" cy="377" r="12"/></g>':''}${backdrop}${!challenge&&['rain','cold-rain','storm'].includes(weather)?'<g class="live-weather-fx rain-lines" stroke="#89b4bb" stroke-width="4" opacity=".65"><path d="m90 150-12 23m55-23-12 23m55-23-12 23m55-23-12 23"/></g>':''}${watered&&!mini?'<g class="watered-glow" fill="#fff4ba"><path d="m476 204 5 14 14 5-14 5-5 14-5-14-14-5 14-5Z"/><path d="m279 398 4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/></g>':''}${fx}
   </svg>`;
+  if(!festival?.item)return svg;
+  const transform='translate(500 650) scale(1.1) translate(-400 -650)';
+  const extraDefs=svg.slice(svg.indexOf('<defs>')+6,svg.indexOf('</defs>'));
+  const careMarkup=`<g class="care-scene-fx">${storm?'<rect width="1000" height="850" fill="#23374d" opacity=".3"/>':''}<g transform="${transform}">${worm}${trouble}${backdrop}${!challenge&&['rain','cold-rain','storm'].includes(weather)?'<g class="live-weather-fx rain-lines" stroke="#89b4bb" stroke-width="4" opacity=".65"><path d="m90 150-12 23m55-23-12 23m55-23-12 23m55-23-12 23"/></g>':''}${fx}${watered?'<g class="watered-glow" fill="#fff4ba"><path d="m476 204 5 14 14 5-14 5-5 14-5-14-14-5 14-5Z"/></g>':''}</g></g>`;
+  return festivalScene(festival.item,{day:festival.day,progress:festival.progress??(watered?7:3),hits:festival.hits||0,phase:festival.phase||(effect==='water'?'watering':effect?'acting':'idle'),extraDefs,treeMarkup:`<g transform="translate(500 650) scale(${stage===1?1.45:1.1}) translate(-400 -650)">${treeShape(id,stage)}</g>`,treeStage:stage,careMarkup})
+    .replace('<svg class="festival-illustration"',`<svg data-care-scene="${challenge||'none'}" data-stage="${stage}" class="festival-illustration"`)
+    .replace('viewBox="0 0 1000 850"','viewBox="0 0 1000 850" preserveAspectRatio="xMidYMid meet"')
+    .replace('role="img"','aria-hidden="true" focusable="false"');
 }
 function createAppIconMarkup(key){return createAppIcon(key).querySelector('svg').innerHTML;}
 
@@ -71,11 +80,11 @@ export function growthStage(stats,growthMultiplier=12){
   const week=Math.max(1,Math.ceil(Math.max(0,days*Math.max(1,Number(growthMultiplier)||1)-(stats.missedStreak>=3?1:0))/7));
   return week<=3?1:week<=13?2:week<=26?3:week<=39?4:5;
 }
-export function renderLifeTree(person,stats,date,gardenMode=false,weather='partly-cloudy',growthMultiplier=12){
+export function renderLifeTree(person,stats,date,gardenMode=false,weather='partly-cloudy',growthMultiplier=12,festival=null){
   const types=new Set((stats.personalEvents||[]).map(event=>event.type));
   const challenge=['typhoon','wind','worm','trouble'].find(type=>types.has(type))||'';
   const id='garden-'+String(person.id).replace(/[^a-zA-Z0-9_-]/g,'');
-  let svg=gardenIllustration({id,stage:growthStage(stats,growthMultiplier),challenge,mini:gardenMode,weather,dry:Boolean(stats.missedStreak),watered:Boolean(stats.watered),effect:stats.effect||''});
+  let svg=gardenIllustration({id,stage:growthStage(stats,growthMultiplier),challenge,mini:gardenMode,weather,dry:Boolean(stats.missedStreak),watered:Boolean(stats.watered),effect:stats.effect||'',festival});
   // The accessible container announces the real member and status; scene SVG is decorative.
   if(gardenMode)svg=svg.replace('viewBox="0 0 800 800"','viewBox="165 170 470 530"');
   return svg;

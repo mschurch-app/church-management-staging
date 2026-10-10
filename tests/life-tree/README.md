@@ -2,11 +2,11 @@
 
 ## 節慶互動預覽
 
-`npm run life-tree:festivals`（在tests內）或 `node tests/life-tree/festivals.mjs`。八種主題、56天候選內容、整月聖誕裝飾／聖誕週、七種裝備、音樂、重複點擊、取消、收藏、裝置版面與無資料服務請求；使用本機靜態頁、記憶體狀態與Chromium。音樂／減少動態偏好可寫本機，預覽進度不寫入。輸出以TREE_TEST_OUTPUT指定，PUPPETEER_MODULE可覆蓋套件位置。實機驗收另記。
+`npm run life-tree:festivals`（在tests內）或 `node tests/life-tree/festivals.mjs`。九種主題、59天候選內容、整月聖誕裝飾／聖誕週、七種裝備、音樂、重複點擊、取消、收藏、裝置版面與無資料服務請求；使用本機靜態頁、記憶體狀態與Chromium。音樂／減少動態偏好可寫本機，預覽進度不寫入。輸出以TREE_TEST_OUTPUT指定，PUPPETEER_MODULE可覆蓋套件位置。實機驗收另記。
 
 ## 後端補讀回歸（必跑）
 
-後端fixture集中在 `backend-fixture.mjs`，沿用原handler及投影後的真實欄位，不虛構participant.id。後端17項包含me契約、本人journal_save及me回讀；瀏覽器82項的me也由此handler產生，其餘回應仍依各測試情境隔離。
+後端fixture集中在 `backend-fixture.mjs`，沿用原handler及投影後的真實欄位，不虛構participant.id。後端23項包含me契約、本人journal_save及me回讀；瀏覽器106項的me也由此handler產生，其餘回應仍依各測試情境隔離。
 
 `npm run life-tree:contracts`（在tests內）或 `node tests/life-tree/contracts.mjs`：8項瀏覽器契約檢查，讀取／儲存／補讀／澆水均實際執行原handler，只有LINE／SDK／DB隔離；驗證真實line_subject、切換帳號草稿隔離、缺身分鎖定及重試、10/9選讀不混10/6、10/9實際記錄和澆水、完成後其他待澆水提示。不連線或寫入真實資料庫。Puppeteer與輸出設定同其他browser測試。
 
@@ -65,3 +65,11 @@ PUPPETEER_MODULE=/path/to/puppeteer-core/lib/puppeteer/puppeteer-core.js TREE_TE
 ## 接入系統的庭園
 
 `browser.mjs` 驗證原 October 入口的新庭園，保留原有身分、補讀、完整樹圖定位、音樂、四類挑戰、靈修與本人手札回歸。新增原生水壺／流水回饋、鍵盤打招呼不寫進度、五階段依實際API紀錄、手機／Mac首屏同時看見庭園與讀經入口、澆水及照顧不完整回應不得假造成功或星光。獨立預覽不被正式控制器載入。
+
+## 節慶接入與兩天輪替
+
+`browser.mjs` 新增原October入口的2026/10/10–27十八日隔離日期回歸：年度九套順序、首／末日階段、實際箴言章節、既有五階段成長、九首原生WAV配樂／單播放器、未產生資料寫入、19顆聖誕燈與馬槽、10/28回原景、前景跨日換景與忽略預覽query。日期只在隔離瀏覽器的Date wrapper控制，正式程式無日期覆寫或帳號模擬開關。原讀經／澆水／補讀／四類道具／靈修／單一手札／權限失敗回歸繼續執行。另跑 `festivals.mjs`，確認共享動畫及SVG擴充仍相容獨立元旦三天／其餘七天預覽。
+
+節慶試玩另驗證九套在實際今日澆水後才解鎖三次互動，動畫中的合成重複click不加次數、第三次完成後不可再點、光明勇士小怪確實退場；試玩不新增API寫入或變更原讀經章節。小道具44px位於圖外，真實風雨挑戰優先。
+
+契約harness在動態靈修頁不以networkidle0推斷完成，改等待實際表單／錯誤狀態；維持5秒功能斷言，點擊前使用立即捲動與命中檢查。bootstrap失敗明確記為失敗，處理器耗時只作隔離呼叫診斷，不代表真實網路效能。

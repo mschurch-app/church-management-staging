@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="tree-reading-preview.css?v=20261007-green-makeup12">
   <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20261008-date-music-water">
   <link rel="stylesheet" href="tree-reading-october-journey.css?v=20261010-garden-live1">
-  <link rel="stylesheet" href="tree-reading-garden.css?v=20261010-garden-live1">
+  <link rel="stylesheet" href="life-tree-festival-animation.css?v=20261010-season-test1">
+  <link rel="stylesheet" href="tree-reading-garden.css?v=20261010-season-test1">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body class="tree-reading-body october-journey garden-connected">
@@ -68,9 +69,18 @@
           <button class="care-button tree-care-action" id="care-tree" type="button" disabled hidden>💧 澆水照顧生命樹</button>
         </div>
         </div>
+        <div id="festival-play-controls" class="festival-play-controls" hidden><button id="festival-play-action" type="button" aria-label="節慶互動"></button><p id="festival-play-status" role="status" aria-live="polite"></p></div>
         <p id="tree-care-feedback" class="tree-care-feedback" role="status" aria-live="polite"></p>
         <p id="scene-music-label" class="scene-music-label"></p>
         <p id="tree-weather" class="tree-weather" role="status">🌤️ 正在讀取台中市大雅區即時天氣…</p>
+        <details id="festival-test-info" class="festival-test-info" hidden>
+          <summary><span id="festival-test-label"></span></summary>
+          <p id="festival-test-next"></p>
+          <p id="festival-test-verse"></p>
+          <p>澆水後可點樹圖或圖外的小道具試玩三次，看看驚喜；試玩狀態保留到這次頁面關閉，不增加讀經或守護星光。</p>
+          <p>每兩天換一站，依台灣日期自動切換。照常讀箴言、澆水；成長與挑戰依你的實際進度。</p>
+          <ol id="festival-test-schedule" aria-label="節慶試玩日期"></ol>
+        </details>
         <p id="tree-render-error" class="tree-render-error" hidden>生命樹插畫暫時載入失敗，先顯示簡易樹圖。</p>
         <div id="forest-art" class="forest-art" hidden></div>
         <p id="tree-mood" class="tree-mood">小樹正在等今天的活水 ✨</p>
@@ -148,6 +158,6 @@
     <a id="devotional-dock-link" class="devotional-entry" href="tree-reading-october-test.html?view=devotional&amp;church=M%2B&amp;preview=1&amp;from=october-tree">體驗每日靈修 / 與神相遇 <span aria-hidden="true">→</span></a>
     <small>2027 年一月創世記試閱，不計入十月箴言進度</small>
   </section>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261010-journal-contract1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261010-season-test1"></script>
 </body>
 </html>

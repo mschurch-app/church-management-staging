@@ -1,0 +1,31 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "apiMode": "isolated_synthetic",
+  "checks": [
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "app-catalog.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/definitions.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/database.mjs",
+      "passed": true,
+      "seconds": 15,
+      "exitCode": 0
+    }
+  ],
+  "failures": 0
+}

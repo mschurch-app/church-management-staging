@@ -4,7 +4,7 @@
 
 ## 唯一功能來源
 
-`app-function-definitions.mjs` 提供 41 個功能的名稱、說明、路由、分類、搜尋別名與 SVG symbol。`FUNCTION_GROUPS` 為收納分類，`SETTINGS_GROUPS` 為設定的四類。權限名稱、角色建議、可配置首頁 key 與舊導覽亦從這份來源取得。
+`app-function-definitions.mjs` 提供 42 個功能的名稱、說明、路由、分類、搜尋別名與 SVG symbol（2026-10-10新增M+生命樹節慶預覽）。`FUNCTION_GROUPS` 為收納分類，`SETTINGS_GROUPS` 為設定的四類。權限名稱、角色建議、可配置首頁 key 與舊導覽亦從這份來源取得。
 
 `app-function-catalog.mjs` 使用既有 `canOpen`、`canAction` 與當下的堂會、權限、啟用設定、擁有者能力和外部工具指派篩選入口。不要使用常用偏好授予權限；資料存取仍由後端檢查。
 

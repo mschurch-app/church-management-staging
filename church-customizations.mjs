@@ -1,5 +1,5 @@
-export {LEGACY_FEATURE_FILES as FEATURE_FILES} from './app-function-definitions.mjs?v=20261009-stage2';
-import {LEGACY_FEATURE_FILES as FEATURE_FILES} from './app-function-definitions.mjs?v=20261009-stage2';
+export {LEGACY_FEATURE_FILES as FEATURE_FILES} from './app-function-definitions.mjs?v=20261010-festival1';
+import {LEGACY_FEATURE_FILES as FEATURE_FILES} from './app-function-definitions.mjs?v=20261010-festival1';
 
 const cleanText=(value,max=100)=>String(value??'').trim().slice(0,max);
 const uniqueStrings=(values,max=50)=>[...new Set((Array.isArray(values)?values:[]).map(value=>cleanText(value,80)).filter(Boolean))].slice(0,max);

@@ -1,5 +1,9 @@
 # 生命樹讀經與靈修試閱回歸
 
+## 節慶互動預覽
+
+`npm run life-tree:festivals`（在tests內）或 `node tests/life-tree/festivals.mjs`。八種主題、56天候選內容、整月聖誕裝飾／聖誕週、七種裝備、音樂、重複點擊、取消、收藏、裝置版面與無資料服務請求；使用本機靜態頁、記憶體狀態與Chromium。音樂／減少動態偏好可寫本機，預覽進度不寫入。輸出以TREE_TEST_OUTPUT指定，PUPPETEER_MODULE可覆蓋套件位置。實機驗收另記。
+
 ## 後端補讀回歸（必跑）
 
 後端fixture集中在 `backend-fixture.mjs`，沿用原handler及投影後的真實欄位，不虛構participant.id。後端17項包含me契約、本人journal_save及me回讀；瀏覽器82項的me也由此handler產生，其餘回應仍依各測試情境隔離。

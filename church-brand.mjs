@@ -1,4 +1,4 @@
-import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261009-stage2';
+import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261010-festival1';
 import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261009-stage1';
 import './action-feedback.mjs?v=20261009-app-audit2';
 import './ios-experience.mjs?v=20261009-stage4';

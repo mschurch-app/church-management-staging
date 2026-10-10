@@ -22,7 +22,7 @@ WebKit官方說明指出，帶聲媒體的播放須直接由可信任點擊或�
 
 ## Git／發布與回復
 
-分支：`codex/life-tree-clear-artwork`。使用者檢視說明文字後要求預設勾選音效，已納入版本；GitHub提交與發布狀態記錄於當日codex-log。HTML／JS／CSS版本為 `20261010-guide-audio1`。發布仍依既有PR／GitHub Pages流程，不由前端提交觸發資料庫變更。
+分支：`codex/life-tree-clear-artwork`。使用者檢視說明文字後要求預設勾選音效，已納入版本；功能commit `44ff7f6` 已push，PR #46 已合併main為 `1247677ba373371b87afa6142d2e574b2867bc15`；2026-10-10 10:20:08（台北）三項正式資源皆HTTP 200、SHA-256符合來源，見 `hosted-check.json`；10:19:32第一次仍為Pages舊版，證據保留於 `hosted-check-initial.json`，未算通過。發布文件由 `codex/life-tree-guide-release-record` 分支同步。HTML／JS／CSS版本為 `20261010-guide-audio1`。發布仍依既有PR／GitHub Pages流程，不由前端提交觸發資料庫變更。
 
 本項今日無資料庫結構異動，亦無資料修改、migration、RLS、function、trigger或Edge Function部署。同日其他資料匯入詳見當日既有紀錄，不能視為整天沒有資料異動。
 

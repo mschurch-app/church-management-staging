@@ -18,6 +18,13 @@
 - In-season cancellation and adjustment requests use `service_signup_change_requests`. `church_auth.service_signup_final_reviewers` defines the final administrative reviewers; leader access continues to use `service_ministry_scopes`. Request records are private and exposed only through identity-checked RPCs.
 - `review_workflow_settings` centralizes initial/final reviewer selection and App/LINE notification preferences for multi-stage workflows. Direct browser table access is revoked; authenticated management RPCs verify notification-settings permission and reject LINE delivery when a selected account lacks a verified LINE identity.
 
+## October Life Tree test isolation
+
+- The October LIFF page explicitly uses project `svwgfgyxxgbqabosriom` through `tree-reading-october-test-config.mjs`, separate from the Church OS daily-devotional project `aqanuwilmvdtlzuqlrau`.
+- Dedicated tables: `tree_reading_october_test_participants`, `tree_reading_october_test_progress`, `tree_reading_october_test_challenges`, `tree_reading_october_test_journal`, `tree_reading_october_test_invites`. Verify the actual configured endpoint before operating; never infer a target from another module.
+- Challenges reference participants by LINE subject; `(line_subject, challenge_date)` is unique. Types are worm/wind/typhoon/trouble and status is active/resolved. The Edge Function verifies LINE identity and reads/resolves only that participant's challenges.
+- 2026-10-10 authorized one-time test inserted five today's challenges, one per current participant; no existing rows, progress, schema or permissions changed. Audit SQL and aggregate verification are in `docs/reports/2026-10-10-life-tree-challenge-dispatch/`. This does not change future random daily generation or send push notifications.
+
 ## Relationships
 
 - Camp registrations belong to an event and may have payment orders, a receipt profile, and one receipt synchronization record.

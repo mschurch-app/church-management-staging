@@ -8,7 +8,7 @@
   <title>箴言十月讀經｜M+大雅教會同工測試</title>
   <link rel="stylesheet" href="tree-reading-preview.css?v=20261007-green-makeup12">
   <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20261008-date-music-water">
-  <link rel="stylesheet" href="tree-reading-october-journey.css?v=20261010-guide-audio1">
+  <link rel="stylesheet" href="tree-reading-october-journey.css?v=20261010-playful-care1">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body class="tree-reading-body october-journey">
@@ -21,7 +21,7 @@
         <li><strong>讀經</strong><span>打開今日經文，讀到最後，再按「讀完了，前往小樹」。</span></li>
         <li><strong>澆水</strong><span>按「澆水照顧生命樹」，讓今天讀到的話語滋養小樹。</span></li>
         <li><strong>與神相遇</strong><span>澆水後，畫面下方會出現每日靈修入口，陪你繼續默想與禱告。目前提供一月創世記試閱。</span></li>
-        <li><strong>照顧與收藏</strong><span>小樹遇到風雨時，依提示前往照顧；也可以寫下亮光，收藏在拾光手札。</span></li>
+        <li><strong>照顧與收藏</strong><span>小樹遇到風雨時，點樹旁的雨衣、噴瓶、彼此扶持或掃把來照顧。漏讀時，從「補讀」選日期，讀完後再澆水；亮光可以收藏在拾光手札。</span></li>
       </ol>
       <label class="journey-guide-sound" for="journey-guide-audio"><input id="journey-guide-audio" type="checkbox" checked><span><strong>開啟音樂與音效</strong><small>勾選後，按下方按鈕開始播放。之後可用小喇叭隨時開關。</small></span></label>
       <p class="journey-guide-note">會記住這個瀏覽器的選擇；未勾選也可以正常讀經。</p>
@@ -53,7 +53,15 @@
     </section>
 
     <section id="member-view" class="view" hidden>
-      <section class="daily-route" aria-label="今日讀經入口"><div><span id="journey-date">十月箴言</span><strong id="journey-passage">今天，讓神的話滋養你。</strong></div><div class="daily-route-actions"><button id="read-today" class="primary" type="button">開始今日讀經</button></div></section>
+      <section class="daily-route" aria-label="今日讀經入口">
+        <div><span id="journey-date">十月箴言</span><strong id="journey-passage">今天，讓神的話滋養你。</strong></div>
+        <nav class="journey-actions" aria-label="讀經與照顧快捷入口">
+          <button id="read-today" class="primary" type="button"><span>今日讀經</span><small>每天一章</small></button>
+          <button id="go-makeup" class="secondary" type="button"><span>補讀</span><small id="makeup-short-count">確認進度中</small></button>
+          <button id="go-tree-care" class="secondary" type="button"><span>照顧小樹</span><small id="care-short-count">確認狀況中</small></button>
+        </nav>
+        <ol class="journey-steps" aria-label="今日進行步驟"><li id="step-reading">1 讀經</li><li id="step-watering">2 澆水</li><li>3 與神相遇</li></ol>
+      </section>
       <section class="tree-card">
         <div class="tree-head"><div><p class="eyebrow">YOUR TREE · <span id="tree-date-label">OCTOBER JOURNEY</span></p><h2 id="tree-title">你的生命樹</h2><p id="tree-caption">每一棵樹，都有自己的生長節奏。</p></div><div class="tree-head-tools"><span class="health-badge" id="health-badge">🌿 生長中</span><button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="開啟音樂與音效" title="開啟音樂與音效"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4Z"/><g class="sound-waves"><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></g><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button></div></div><p id="music-status" class="music-status" role="status"></p>
         <section id="tree-challenge-notice" class="tree-challenge-notice" hidden aria-labelledby="tree-challenge-title">
@@ -61,8 +69,11 @@
           <button id="go-care-challenges" class="primary" type="button" aria-controls="challenge-section">前往照顧小樹 →</button>
         </section>
         <div id="tree-scene" class="tree-scene">
+          <div id="tree-care-tools" class="tree-care-tools" role="group" aria-label="點選道具照顧小樹" hidden></div>
           <div class="tree-art" id="tree-art" aria-label="依讀經、挑戰和大雅即時天氣呈現的個人生命樹"><span class="tree-loading" role="img" aria-label="生命樹插畫">🌳</span></div>
         </div>
+        <p id="tree-care-feedback" class="tree-care-feedback" role="status" aria-live="polite"></p>
+        <p id="scene-music-label" class="scene-music-label"></p>
         <p id="tree-weather" class="tree-weather" role="status">🌤️ 正在讀取台中市大雅區即時天氣…</p>
         <p id="tree-render-error" class="tree-render-error" hidden>生命樹插畫暫時載入失敗，先顯示簡易樹圖。</p>
         <div id="forest-art" class="forest-art" hidden></div>
@@ -81,15 +92,25 @@
 
 
       <p id="view-status" class="status-line" role="status"></p>
+      <section id="makeup-section" class="section-card makeup-card" aria-labelledby="makeup-heading">
+        <div class="section-heading"><div><p class="eyebrow">把漏掉的養分找回來</p><h2 id="makeup-heading">補讀與待澆水</h2></div><span id="makeup-count" class="date-pill">確認中</span></div>
+        <p id="makeup-summary" class="makeup-summary" role="status"></p>
+        <p class="muted">選一天補讀 → 讀到經文最後 → 回到小樹澆水。可補讀最近 7 天，補讀不計入準時天數。</p>
+        <div class="makeup-picker">
+        <div id="makeup-dates" class="makeup-dates" role="group" aria-label="選擇一天補讀"></div>
+        <label class="late-date-field makeup-other" for="late-date"><span>其他日期</span><select id="late-date" aria-label="選擇未讀日期"><option value="">選日期</option></select></label>
+        </div>
+        <button id="resume-watering" class="secondary" type="button" hidden>繼續完成澆水</button>
+        <p id="makeup-expired" class="muted"></p>
+      </section>
       <section class="reading-card section-card">
         <div class="section-heading"><div><p class="eyebrow" id="reading-eyebrow">TODAY'S READING</p><h2 id="reading-heading">今天的讀經</h2></div><span class="date-pill" id="reading-date"></span></div>
         <div class="reading-placeholder"><span class="book-icon">📖</span><div><strong id="passage-title">箴言 1 章</strong><p id="passage-detail">10 月 1 日開始，每天完整讀一章箴言。</p></div></div>
         <button id="toggle-scripture" class="scripture-toggle" type="button" aria-expanded="false" aria-controls="scripture-text">📖 展開完整經文</button>
         <div id="scripture-text" class="scripture-text" aria-label="完整經文" hidden></div>
         <div id="audio-controls" class="audio-controls" hidden><button id="read-aloud" class="secondary" type="button">🔊 朗讀經文</button><button id="stop-reading" class="text-button" type="button">停止朗讀</button><span>可調整手機音量</span></div>
-        <div id="complete-reading-actions" class="complete-reading-actions" hidden><p id="scripture-read-hint" role="status">請先滑到經文最後，解鎖讀完按鈕。</p><button id="mark-read" class="primary tree-read-action" type="button" disabled>📖 我讀完了，前往小樹</button></div>
+        <div id="complete-reading-actions" class="complete-reading-actions" hidden><p id="scripture-read-hint" role="status">請先滑到經文最後，解鎖讀完按鈕。</p><button id="mark-read" class="primary tree-read-action" type="button" disabled>📖 我讀完了，前往小樹</button><button id="mark-late" class="primary" type="button" disabled hidden>補讀完成，回小樹澆水</button></div>
         <p class="demo-warning">請滑到完整經文最下方，再按「我讀完了」回到小樹澆水。</p>
-        <div class="reading-actions"><label class="late-date-field">補讀日期<select id="late-date" aria-label="選擇未讀日期"><option value="">載入可補讀日期…</option></select></label><button id="mark-late" class="secondary" type="button">補讀完成</button></div>
       </section>
 
       <details class="section-card challenge-card" id="challenge-section"><summary id="challenge-summary">生命中的風雨與守護星光</summary>
@@ -133,6 +154,6 @@
     <a id="devotional-dock-link" class="devotional-entry" href="daily-devotional.html?church=M%2B&amp;preview=1&amp;from=october-tree">體驗每日靈修 / 與神相遇 <span aria-hidden="true">→</span></a>
     <small>2027 年一月創世記試閱，不計入十月箴言進度</small>
   </section>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261010-guide-audio1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261010-playful-care1"></script>
 </body>
 </html>

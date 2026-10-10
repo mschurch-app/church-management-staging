@@ -42,6 +42,18 @@ def main():
         for note in ([130.81, 164.81, 196] if phrase == 0 else [174.61, 220, 261.63]):
             tone(music, note, phrase * 8, 7.8, .16)
     write("reading", music, .38)
+    # Two original context loops. Loaded on demand through the same native player.
+    for name, notes, spacing in [
+        ("storm", [220, 261.63, 329.63, 293.66, 220, 196, 261.63, 220], .85),
+        ("care", [659.25, 783.99, 987.77, 783.99, 880, 659.25, 587.33, 783.99], .45),
+    ]:
+        samples = [0.] * (RATE * 16)
+        for phrase in range(2):
+            for index, note in enumerate(notes):
+                tone(samples, note, phrase * 8 + index * spacing, 1.2 if name == "storm" else .6, .4)
+            for note in ([110, 164.81] if name == "storm" else [130.81, 196, 261.63]):
+                tone(samples, note, phrase * 8, 7.5, .12)
+        write(name, samples, .38)
     effects = {
         "open": [600, 840], "water": [880, 660, 990],
         "celebration": [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5],

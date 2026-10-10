@@ -1,0 +1,32 @@
+{
+  "project": "svwgfgyxxgbqabosriom",
+  "date_taipei": "2026-10-10",
+  "executed_at_taipei": "2026-10-10T11:25:25.427866+08:00",
+  "participants": 5,
+  "before_challenges": 0,
+  "inserted_ids": [
+    60,
+    61,
+    62,
+    63,
+    64
+  ],
+  "inserted_count": 5,
+  "after_challenges": 5,
+  "missing_today": 0,
+  "active_after": 5,
+  "types": {
+    "worm": 2,
+    "wind": 1,
+    "typhoon": 1,
+    "trouble": 1
+  },
+  "unchanged_before_after_digests": {
+    "participants": "66842d2b5b55b3ae35cbe7b5fa4d2ff4",
+    "progress": "03e37328688133122b50b0ff3d4fa25d",
+    "journal": "d4e5199e16b55b300885a811b25f5b9f",
+    "other_date_challenges": "67ee20cc7b4c57b865110961b7c8349f"
+  },
+  "schema_migration_rls_function_trigger_changes": false,
+  "notifications_sent": false
+}

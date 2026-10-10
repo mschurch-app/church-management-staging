@@ -102,7 +102,7 @@ function observeScriptureEnd(date){const marker=$('#scripture-end');if(!marker)r
 function sayScripture(){if(!window.speechSynthesis){showStatus('此瀏覽器不支援朗讀。');return;}const lines=[...$('#scripture-text').querySelectorAll('p')].map(p=>p.textContent.trim()).filter(Boolean);if(!lines.length){showStatus('先展開完整經文再開始朗讀。');return;}speechSynthesis.cancel();let index=0;const next=()=>{if(index>=lines.length){showStatus('朗讀完成，願神的話陪伴你。');return;}const u=new SpeechSynthesisUtterance(lines[index++]);u.lang='zh-TW';u.rate=.86;u.onend=next;speechSynthesis.speak(u);};next();showStatus('正在朗讀經文…');}
 // Reuse native media elements: iOS authorizes each element during a trusted click.
 // Keeping the effect element allows success sounds after asynchronous saves.
-let backgroundAudio=null,effectAudio=null,musicVersion=0,musicStarting=false;
+let backgroundAudio=null,effectAudio=null,musicVersion=0,musicStarting=false,musicStartFromGesture=false;
 let effectVersion=0,effectStarting=false,effectsReady=false,effectsFailed=false;
 function sceneMusic(){const kind=state.view==='personal'?primaryChallenge()?.challenge_type:'';return kind==='typhoon'||kind==='wind'?'storm':kind==='worm'||kind==='trouble'?'care':'reading';}
 function syncSceneMusic(){const wanted=sceneMusic();$('#scene-music-label').textContent=state.sound?`♪ ${wanted==='storm'?'風雨中的陪伴':wanted==='care'?'小樹照顧時間':'安靜讀經時光'}`:'音樂與音效已關閉';if(state.sound&&backgroundAudio&&(!backgroundAudio.paused||musicStarting)&&backgroundAudio.dataset.track!==wanted)void startBackgroundMusic();}
@@ -129,26 +129,28 @@ async function boundedPlayback(audio){
   try{await Promise.race([audio.play(),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(Error('audio_timeout')),6000);})]);}
   finally{clearTimeout(deadline);}
 }
-async function startBackgroundMusic(){
+async function startBackgroundMusic(fromGesture=false){
   if(!state.sound||document.hidden)return;
   ensureAudio();
-  // Both play calls occur before any await in the user gesture, not after a fetch.
-  if(!effectsReady&&!effectStarting)void play('open',true);
-  const track=sceneMusic();if((musicStarting||musicPlaying())&&backgroundAudio.dataset.track===track)return;
+  // A trusted touch can supersede a pending autoplay attempt without waiting for its deadline.
+  const track=sceneMusic(),sameTrack=backgroundAudio.dataset.track===track;
+  if(sameTrack&&musicStarting&&(!fromGesture||musicStartFromGesture))return;
+  if(!effectsReady&&(!effectStarting||fromGesture))void play('open',true);
+  if(sameTrack&&musicPlaying())return;
   const version=++musicVersion;
-  if(backgroundAudio.dataset.track!==track){backgroundAudio.pause();backgroundAudio.src=audioURL(track);backgroundAudio.dataset.track=track;}musicStarting=true;updateMusicButton();$('#music-status').textContent='正在載入音樂與音效…';
+  if(backgroundAudio.dataset.track!==track){backgroundAudio.pause();backgroundAudio.src=audioURL(track);backgroundAudio.dataset.track=track;}musicStarting=true;musicStartFromGesture=fromGesture;updateMusicButton();$('#music-status').textContent='正在載入音樂與音效…';
   try{
     if(backgroundAudio.error)backgroundAudio.load();
     await boundedPlayback(backgroundAudio);
     if(version!==musicVersion||!state.sound||document.hidden)return;
     if(!musicPlaying())throw Error('audio_paused');
     $('#music-status').textContent=effectsReady?'':'音效尚未啟動，請點喇叭重試。';
-  }catch{
-    if(version===musicVersion){backgroundAudio.pause();$('#music-status').textContent='音樂尚未啟動，請點喇叭重試。';}
-  }finally{if(version===musicVersion){musicStarting=false;updateMusicButton();}}
+  }catch(error){
+    if(version===musicVersion){backgroundAudio.pause();$('#music-status').textContent=error.name==='NotAllowedError'?'已記住音效設定，輕觸頁面即可播放。':'音樂尚未啟動，請點喇叭重試。';}
+  }finally{if(version===musicVersion){musicStarting=false;musicStartFromGesture=false;updateMusicButton();}}
 }
 function stopBackgroundMusic(){
-  ++musicVersion;++effectVersion;musicStarting=false;effectStarting=false;effectsReady=false;effectsFailed=false;
+  ++musicVersion;++effectVersion;musicStarting=false;musicStartFromGesture=false;effectStarting=false;effectsReady=false;effectsFailed=false;
   backgroundAudio?.pause();effectAudio?.pause();updateMusicButton();
 }
 async function play(type,fromGesture=false){
@@ -162,8 +164,8 @@ async function play(type,fromGesture=false){
     if(version!==effectVersion||!state.sound||document.hidden)return;
     effectsReady=true;effectsFailed=false;updateMusicButton();
     if(fromGesture)$('#music-status').textContent=musicPlaying()?'':'音效已開啟；音樂尚未播放。';
-  }catch{
-    if(version===effectVersion){effectsReady=false;effectsFailed=true;effectAudio.pause();updateMusicButton();$('#music-status').textContent='音效尚未啟動，請點喇叭重試。';}
+  }catch(error){
+    if(version===effectVersion){effectsReady=false;effectsFailed=error.name!=='NotAllowedError';effectAudio.pause();updateMusicButton();$('#music-status').textContent=error.name==='NotAllowedError'?'已記住音效設定，輕觸頁面即可播放。':'音效尚未啟動，請點喇叭重試。';}
   }finally{if(version===effectVersion)effectStarting=false;}
 }
 async function markRead(date=today()){if(state.writeBusy||record(date))return;if(state.scriptureReadDate!==date){showStatus('請先滑到完整經文最下方，再按讀完。');return;}const b=$(date===today()?'#mark-read':'#mark-late');state.writeBusy=true;b.disabled=true;b.textContent='正在記錄讀經…';$('#mark-late').disabled=true;showStatus('正在記錄讀經…');try{const out=await api('mark_read',{readingDate:date});state.records=out.records||state.records;if(!record(date))state.records=[...state.records,{reading_date:date,completion_type:out.completion_type,watered_at:null}];state.pendingWaterDate=date;state.view='personal';renderView();showStatus(out.completion_type==='on_time'?'📖 讀經完成！小樹已解鎖澆水，來照顧它吧 🌱':'✓ 補讀完成！來到樹下澆水吧 🌱');requestAnimationFrame(()=>scrollToSection($('#tree-action-dock')));}catch(e){showStatus(e.message)}finally{state.writeBusy=false;renderView();}}
@@ -212,16 +214,18 @@ function setup(){
   let guideReturnFocus=null;
   const showGuide=()=>{guideReturnFocus=document.activeElement;$('#journey-guide-audio').checked=guideSeen()?state.sound:true;$('#journey-guide').showModal();$('#journey-guide-title').focus();};
   $('#show-journey-guide').onclick=showGuide;
-  $('#journey-guide-form').onsubmit=event=>{event.preventDefault();if(!$('#journey-guide').open)return;state.sound=$('#journey-guide-audio').checked;rememberMusic();try{localStorage.setItem('october-life-tree-guide-v1','1');}catch{}$('#journey-guide').close();if(state.sound)void startBackgroundMusic();else{stopBackgroundMusic();$('#music-status').textContent='';}const target=guideReturnFocus?.matches('button,a')?guideReturnFocus:state.participant?$('#read-today'):$('#show-journey-guide');target.focus({preventScroll:true});};
+  $('#journey-guide-form').onsubmit=event=>{event.preventDefault();if(!$('#journey-guide').open)return;state.sound=$('#journey-guide-audio').checked;rememberMusic();try{localStorage.setItem('october-life-tree-guide-v1','1');}catch{}$('#journey-guide').close();if(state.sound)void startBackgroundMusic(true);else{stopBackgroundMusic();$('#music-status').textContent='';}const target=guideReturnFocus?.matches('button,a')?guideReturnFocus:state.participant?$('#read-today'):$('#show-journey-guide');target.focus({preventScroll:true});};
   $('#journey-guide').addEventListener('cancel',event=>{if(!guideSeen())event.preventDefault();});
   if(!guideSeen())showGuide();
-  const resumeMusic=event=>{if(!event.isTrusted||$('#journey-guide').open||event.target?.closest?.('#sound-toggle,#show-journey-guide'))return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(state.sound)void startBackgroundMusic();};
-  ['click','keydown'].forEach(name=>document.addEventListener(name,resumeMusic,{capture:true}));
+  const resumeMusic=event=>{if(!event.isTrusted||$('#journey-guide').open||event.target?.closest?.('#sound-toggle,#show-journey-guide'))return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(state.sound)void startBackgroundMusic(true);};
+  ['touchend','click','keydown'].forEach(name=>document.addEventListener(name,resumeMusic,{capture:true,passive:true}));
   const pauseForBackground=()=>{stopBackgroundMusic();if(state.sound)$('#music-status').textContent='聲音已暫停，點一下頁面即可恢復。';};
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseForBackground();});
+  const resumeRememberedMusic=()=>{if(state.sound&&!$('#journey-guide').open)void startBackgroundMusic();};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseForBackground();else resumeRememberedMusic();});
   window.addEventListener('pagehide',pauseForBackground);
-  window.addEventListener('pageshow',restoreTreeScroll);
-  $('#sound-toggle').onclick=()=>{if(musicPlaying()&&!effectsFailed){state.sound=false;stopBackgroundMusic();$('#music-status').textContent='';}else{state.sound=true;void startBackgroundMusic();}rememberMusic();};
+  window.addEventListener('pageshow',()=>{restoreTreeScroll();resumeRememberedMusic();});
+  resumeRememberedMusic();
+  $('#sound-toggle').onclick=()=>{if(musicPlaying()&&!effectsFailed){state.sound=false;stopBackgroundMusic();$('#music-status').textContent='';}else{state.sound=true;void startBackgroundMusic(true);}rememberMusic();};
   document.querySelectorAll('.tree-view-button').forEach(button=>button.addEventListener('click',async()=>{
     if(state.writeBusy){showStatus('目前正在儲存，請稍候再切換。','#view-status');return;}const requested=button.dataset.treeView,previous=state.view,request=++viewRequest;
     const controls=$('.tree-view-switch');controls.setAttribute('aria-busy','true');showStatus(requested==='personal'?'返回個人生命樹…':'正在載入花園…','#view-status');

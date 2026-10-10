@@ -136,7 +136,7 @@ function updateMusicButton(){
 function createAudio(kind){
   const audio=document.createElement('audio');audio.preload='none';audio.hidden=true;audio.dataset.lifeTreeAudio=kind;audio.setAttribute('playsinline','');document.body.append(audio);return audio;
 }
-function audioURL(name){return new URL(`./assets/audio/life-tree/${name}.wav?v=20261010-audio1`,import.meta.url).href;}
+function audioURL(name){const version=name==='festivals/newyear'?'20261010-music-joy1':'20261010-audio1';return new URL(`./assets/audio/life-tree/${name}.wav?v=${version}`,import.meta.url).href;}
 function ensureAudio(){
   if(!backgroundAudio){
     backgroundAudio=createAudio('music');backgroundAudio.src=audioURL(sceneMusic());backgroundAudio.dataset.track=sceneMusic();backgroundAudio.loop=true;backgroundAudio.volume=.65;

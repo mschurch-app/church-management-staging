@@ -169,7 +169,7 @@ export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onAppl
       control.disabled=!!reason;control.append(node('strong',person.name),node('small',reason||`本季 ${draft.workload(person)} 個主日 · 本人有登記此日期與項目`));list.append(control);
     }
     if(!candidates.length)list.append(node('p','尚未有人登記本日此項服事。可先保留缺額，再聯絡同工填寫意願。','match-empty'));
-    const close=button('返回預排','secondary',finish);dialog.append(title,description,list,close);dialog.addEventListener('cancel',event=>{event.preventDefault();finish();});document.body.append(dialog);dialog.showModal();close.focus();
+    const close=button('返回預排','secondary',finish);dialog.append(title,description,list,close);dialog.addEventListener('cancel',event=>{event.preventDefault();finish();});document.body.append(dialog);dialog.showModal();close.focus({preventScroll:true});dialog.scrollTop=0;
   }
   function renderPeople(){
     const list=node('div','','match-people-grid');

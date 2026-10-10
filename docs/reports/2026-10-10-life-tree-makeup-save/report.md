@@ -28,7 +28,7 @@
 
 ## 修改範圍、Git與回復
 
-只改十月頁面的主模組、HTML資源版本20261010-makeup-save1、既有隔離測試及治理文件；CSS、圖示、藝術、音檔、API、登入與權限不變。分支codex/life-tree-makeup-save-state，基於main 75c561e1。GitHub及Pages讀回在完成後補記。
+只改十月頁面的主模組、HTML資源版本20261010-makeup-save1、既有隔離測試及治理文件；CSS、圖示、藝術、音檔、API、登入與權限不變。分支codex/life-tree-makeup-save-state，基於main 75c561e1。Commit 1047d774eeac5b6abd764448f6213286e5c54610已push；[PR #52](https://github.com/mschurch-app/church-management-staging/pull/52)合併main為382c619cd7fc9e89e3500b6ad900027742c10d5a。11:50:11（台北）正式HTML及JS皆HTTP 200且SHA-256符合來源，見hosted-check.json；11:49:19首次仍為舊版，保留hosted-check-initial.json且不算通過。發布證據使用codex/life-tree-makeup-save-release文件分支同步。
 
 回復可revert此PR並走既有Pages發布；沒有DB rollback或刪除使用者資料的需求。
 

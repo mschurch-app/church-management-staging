@@ -1,3 +1,4 @@
+import {createMediaProgress} from './weekly-media-progress.mjs?v=20261010-media-progress1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-canva';
 const ERRORS={
   configuration_required:'請管理員先完成 Canva 連線設定。',connection_required:'Canva 授權已失效，請管理員重新連線。',
@@ -30,6 +31,8 @@ const STAGES={queued:'等候創作',creating:'送出 AI 創作',generating:'Canv
 
 export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
   let settings=null,job=null,pendingId='',pendingRequest=null,connectionWindow=null,continuing=false;
+  const progress=createMediaProgress($('canva-progress'));
+  const progressHistory=()=>`canva:${church}:${getContext().userId||'current'}`;
   const key=()=>`weekly-canva:${getContext().userId}:${church}:${getContext().bulletinId}`;
   const status=text=>{$('canva-state').textContent=text;};
   function savePending(id,request){pendingId=id;pendingRequest=request;try{sessionStorage.setItem(key(),JSON.stringify({id,request}));}catch{};}
@@ -38,6 +41,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     $('canva-resume').hidden=!pendingId;
     $('canva-refresh-images').hidden=!job?.canReexport;
     for(const kind of ['home','ig'])$('canva-edit-'+kind).hidden=!job?.outputs?.[kind]?.designId;
+    if(job&&progress.active)progress.update({label:'Canva 製圖中…',description:Object.entries(job.outputs).map(([kind,o])=>`${kind==='home'?'預告圖':'IG 圖'}：${STAGES[o.stage]||'處理中'}`).join('\n')});
     if(job&&updateStatus){status(job.status==='blocked'?message({code:job.error}):Object.entries(job.outputs).map(([kind,o])=>`${kind==='home'?'預告圖':'IG 圖'}：${STAGES[o.stage]||'處理中'}`).join(' · '));}
   }
   function sync(){
@@ -68,6 +72,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
   async function acceptImages(){
     const context=getContext();
     if(!context.editable||job.bulletinId!==context.bulletinId||!sameInput(job.input,context.input))throw new Error('主日資訊已變更，請依最新內容重新產圖；已完成的 Canva 設計仍可查看。');
+    progress.update({label:'正在帶回 Canva 圖片…',description:'兩張圖片下載完成後，會一起顯示預覽。'});
     const outputs=job.outputs;
     const results=await Promise.all(['home','ig'].map(async kind=>{
       const path=outputs[kind]?.path,prefix=`${church}/weekly/${context.bulletinId}/canva/`;
@@ -78,6 +83,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     }));
     // Publish neither preview until both images have downloaded successfully.
     await onImages({home:results[0],ig:results[1]});
+    progress.finish('兩張圖片已帶入預覽，請確認後儲存週報。');
     status('兩張 Canva 圖片已帶入預覽，請核對主題、經文、講員、日期與直式排版，儲存後送審。');
     onStatus('Canva 預告圖與 IG 圖已完成，請確認預覽並儲存週報。','success');
   }
@@ -90,11 +96,11 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
         if(job?.bulletinId&&job.bulletinId!==context.bulletinId)throw new Error('已切換週報，請回原週報繼續查看製圖結果。');
         const data=await request('advance',{jobId:pendingId});job=data.job;renderJob();
         if(job.status==='ready'){await acceptImages();return;}
-        if(job.status==='blocked'){onStatus(message({code:job.error}),'error');return;}
+        if(job.status==='blocked'){progress.fail(message({code:job.error}));onStatus(message({code:job.error}),'error');return;}
         await sleep(Math.min(30000,Math.max(1500,Number(job.retryAfterMs)||1500)));
       }
-      status('Canva 仍在處理，可按「繼續查詢」接續，不需重新產生。');
-    }catch(error){status(message(error)+' 可按「繼續查詢」確認同一筆工作。');onStatus(message(error),'error');}
+      status('Canva 仍在處理，可按「繼續查詢」接續，不需重新產生。');progress.pause('Canva 尚未完成，按「繼續查詢製圖結果」接續，不需重新生成。');
+    }catch(error){progress.pause(message(error)+' 請繼續查詢同一筆工作。');status(message(error)+' 可按「繼續查詢」確認同一筆工作。');onStatus(message(error),'error');}
     finally{continuing=false;}
   }
   async function generate(reexport=false){
@@ -104,13 +110,14 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     const parent=job?.id,requestId=crypto.randomUUID();
     if(reexport&&(!parent||!sameInput(job.input,context.input)))throw new Error('主日資訊已變更，請重新產圖。');
     const action=reexport?'reexport':'start',payload={requestId,bulletinId:context.bulletinId,input:context.input,...(reexport?{parentJobId:parent}:{aiConsent:true})};
-    savePending(requestId,{action,payload});job=null;renderJob();status(reexport?'正在重新匯出 Canva 設計…':'正在建立本週 Canva 製圖工作…');
+    savePending(requestId,{action,payload});progress.start({history:progressHistory()+(reexport?':export':':generate'),baselineSeconds:reexport?60:180,workId:requestId,label:reexport?'正在匯出 Canva 圖片…':'Canva AI 製圖中…',description:'正在建立本次工作，請稍候。'});job=null;renderJob();status(reexport?'正在重新匯出 Canva 設計…':'正在建立本週 Canva 製圖工作…');
     // start/reexport only create an idempotent database job. They do not create remote designs.
     const data=await request(action,payload);
     job=data.job;status(reexport?'正在匯出已儲存的 Canva 設計，不會再次呼叫 AI 生成。':'Canva AI 正依據本週信息創作兩張全新設計，會使用教會 Canva 帳號的 AI 額度…');await poll();
   }
   async function resume(){
     if(!pendingId)return;
+    progress.start({history:progressHistory()+(pendingRequest?.action==='reexport'?':export':':generate'),baselineSeconds:pendingRequest?.action==='reexport'?60:180,workId:pendingId,label:'正在接續 Canva 製圖…',description:'正在查詢同一筆工作，不會重新生成。'});
     let data;
     try{data=await request('get',{jobId:pendingId});}
     catch(error){
@@ -119,7 +126,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
       data=await request(pendingRequest.action,pendingRequest.payload);
     }
     job=data.job;renderJob();
-    if(job.status==='ready')await acceptImages();else if(job.status==='working')await poll();else onStatus(message({code:job.error}),'error');
+    if(job.status==='ready')await acceptImages();else if(job.status==='working')await poll();else{progress.fail(message({code:job.error}));onStatus(message({code:job.error}),'error');}
   }
   async function authorize(){
     // Open synchronously with the click, before any async work, so Safari allows it.
@@ -128,7 +135,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     try{const result=await request('authorize');const url=new URL(result.authorizationUrl);if(url.origin!=='https://www.canva.com')throw new Error('授權連結不正確。');connectionWindow.location.replace(url.href);status('請在 Canva 視窗完成授權，原本週報輸入會保留。');}
     catch(error){connectionWindow.close();connectionWindow=null;throw error;}
   }
-  const act=fn=>run(async()=>{try{await fn();}catch(error){status(message(error));onStatus(message(error),'error');}});
+  const act=fn=>run(async()=>{try{await fn();}catch(error){if(progress.active)progress.fail(message(error));status(message(error));onStatus(message(error),'error');}finally{if(progress.active)progress.pause($('canva-state').textContent);}});
   $('canva-generate').onclick=()=>act(()=>generate());
   $('canva-resume').onclick=()=>act(resume);
   $('canva-refresh-images').onclick=()=>act(()=>generate(true));
@@ -145,5 +152,5 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     connectionWindow=null;
     act(async()=>{await load();status(event.data.result==='connected'?'Canva 授權已完成，可送出本週 AI 製圖要求。':'Canva 授權未完成，請重新連結。');});
   });
-  return {sync,load,reset(){job=null;const saved=storedPending();pendingId=saved?.id||'';pendingRequest=saved?.request||null;status(pendingId?'這份週報有製圖紀錄，可繼續查詢結果。':'');renderJob();sync();}};
+  return {sync,load,reset(){progress.reset();job=null;const saved=storedPending();pendingId=saved?.id||'';pendingRequest=saved?.request||null;status(pendingId?'這份週報有製圖紀錄，可繼續查詢結果。':'');renderJob();sync();}};
 }

@@ -3,15 +3,17 @@
 <head><link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1"><link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f5f8ef">
+  <meta name="theme-color" content="#f6f4e9">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>箴言十月讀經｜M+大雅教會同工測試</title>
+  <link rel="stylesheet" href="app-design-tokens.css?v=20261010-garden-live1">
   <link rel="stylesheet" href="tree-reading-preview.css?v=20261007-green-makeup12">
   <link rel="stylesheet" href="tree-reading-october-test-weather.css?v=20261008-date-music-water">
-  <link rel="stylesheet" href="tree-reading-october-journey.css?v=20261010-tree-guide1">
+  <link rel="stylesheet" href="tree-reading-october-journey.css?v=20261010-garden-live1">
+  <link rel="stylesheet" href="tree-reading-garden.css?v=20261010-garden-live1">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body class="tree-reading-body october-journey">
+<body class="tree-reading-body october-journey garden-connected">
   <dialog id="journey-guide" class="journey-guide" aria-labelledby="journey-guide-title">
     <form id="journey-guide-form" class="journey-guide-card">
       <p class="eyebrow">M+ 大雅教會 · 生命樹讀經</p>
@@ -32,11 +34,11 @@
   <main class="app-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="回 M+ 大雅教會首頁"><span class="brand-mark">M+</span><span>M+大雅教會<small>生命樹讀經計畫</small></span></a>
-      <div class="topbar-actions"><button id="show-journey-guide" class="secondary guide-link" type="button">使用說明</button><span class="preview-chip">🔒 同工測試</span></div>
+      <div class="topbar-actions"><button id="show-journey-guide" class="secondary guide-link" type="button" aria-label="開啟圖文使用說明"><span data-garden-icon="book" aria-hidden="true"></span></button><span class="preview-chip">🔒 同工測試</span></div>
     </header>
 
     <section class="hero" aria-labelledby="main-title">
-      <div class="hero-copy"><p class="eyebrow">PROVERBS · OCTOBER 2026</p><h1 id="main-title">每天一點養分，<br>長成自己的生命樹。</h1><p>10 月 1 日 — 10 月 31 日｜每天讀一章箴言。</p></div>
+      <div class="hero-copy"><p class="eyebrow">2026 十月 · 箴言生命樹</p><h1 id="main-title">回到你的小小庭園。</h1><p>每天一章箴言，陪小樹一起長大。</p></div>
       <div class="hero-orbit" aria-hidden="true"><span class="sun"></span><span class="bird bird-one">⌁</span><span class="bird bird-two">⌁</span><span class="hill hill-back"></span><span class="hill hill-front"></span></div>
     </section>
 
@@ -54,25 +56,13 @@
     </section>
 
     <section id="member-view" class="view" hidden>
-      <section class="daily-route" aria-label="今日讀經入口">
-        <div><span id="journey-date">十月箴言</span><strong id="journey-passage">今天，讓神的話滋養你。</strong></div>
-        <nav class="journey-actions" aria-label="讀經與照顧快捷入口">
-          <button id="read-today" class="primary" type="button"><span>今日讀經</span><small>每天一章</small></button>
-          <button id="go-makeup" class="secondary" type="button"><span>補讀</span><small id="makeup-short-count">確認進度中</small></button>
-          <button id="go-tree-care" class="secondary" type="button"><span>照顧小樹</span><small id="care-short-count">確認狀況中</small></button>
-        </nav>
-        <ol class="journey-steps" aria-label="今日進行步驟"><li id="step-reading">1 讀經</li><li id="step-watering">2 澆水</li><li>3 與神相遇</li></ol>
-      </section>
+      <div class="garden-workspace">
       <section class="tree-card">
-        <div class="tree-head"><div><p class="eyebrow">YOUR TREE · <span id="tree-date-label">OCTOBER JOURNEY</span></p><h2 id="tree-title">你的生命樹</h2><p id="tree-caption">每一棵樹，都有自己的生長節奏。</p></div><div class="tree-head-tools"><span class="health-badge" id="health-badge">🌿 生長中</span><button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="開啟音樂與音效" title="開啟音樂與音效"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4Z"/><g class="sound-waves"><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></g><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button></div></div><p id="music-status" class="music-status" role="status"></p>
-        <section id="tree-challenge-notice" class="tree-challenge-notice" hidden aria-labelledby="tree-challenge-title">
-          <div role="status" aria-live="polite" aria-atomic="true"><span class="care-notice-label">生命中的風雨 · 待照顧</span><h3 id="tree-challenge-title"></h3><p id="tree-challenge-description"></p></div>
-          <button id="go-care-challenges" class="primary" type="button" aria-controls="challenge-section">前往照顧小樹 →</button>
-        </section>
+        <div class="tree-head"><div><p class="eyebrow">我的庭園 · <span id="tree-date-label">OCTOBER JOURNEY</span></p><h2 id="tree-title">你的生命樹</h2><p id="tree-caption">每一棵樹，都有自己的生長節奏。</p></div><div class="tree-head-tools"><span class="health-badge" id="health-badge">🌿 生長中</span><button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="開啟音樂與音效" title="開啟音樂與音效"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4Z"/><g class="sound-waves"><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></g><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button></div></div><p id="music-status" class="music-status" role="status"></p>
         <div id="tree-water-stage" class="tree-water-stage" role="group" aria-label="生命樹與澆水">
         <div id="tree-scene" class="tree-scene">
           <div id="tree-care-tools" class="tree-care-tools" role="group" aria-label="點選道具照顧小樹" hidden></div>
-          <div class="tree-art" id="tree-art" aria-label="依讀經、挑戰和大雅即時天氣呈現的個人生命樹"><span class="tree-loading" role="img" aria-label="生命樹插畫">🌳</span></div>
+          <div class="tree-art" id="tree-art" role="button" tabindex="0" aria-label="依讀經、挑戰和大雅即時天氣呈現的個人生命樹"><span class="tree-loading" role="img" aria-label="生命樹插畫">🌳</span></div>
         </div>
         <div class="tree-action-dock" id="tree-action-dock" aria-label="生命樹互動操作">
           <button class="care-button tree-care-action" id="care-tree" type="button" disabled hidden>💧 澆水照顧生命樹</button>
@@ -85,9 +75,27 @@
         <div id="forest-art" class="forest-art" hidden></div>
         <p id="tree-mood" class="tree-mood">小樹正在等今天的活水 ✨</p>
         <p id="reading-status" class="status-line tree-action-status" role="status"></p>
-        <div class="tree-stats" id="tree-stats"><div><strong id="stat-on-time">0</strong><span>準時讀經</span></div><div><strong id="stat-late">0</strong><span>補讀完成</span></div><div><strong id="stat-streak">0</strong><span>目前連續</span></div><div><strong id="stat-growth">0%</strong><span>十月旅程</span></div></div>
-        <div class="growth-track" id="growth-track"><span id="growth-fill"></span></div>
       </section>
+
+      <aside class="garden-side" aria-label="今日任務與成長">
+      <section class="daily-route" aria-label="今日讀經入口">
+        <div><span id="journey-date">十月箴言</span><strong id="journey-passage">今天，讓神的話滋養你。</strong></div>
+        <nav class="journey-actions" aria-label="讀經與照顧快捷入口">
+          <button id="read-today" class="primary" type="button"><span>今日讀經</span><small>每天一章</small></button>
+          <button id="go-makeup" class="secondary" type="button"><span>補讀</span><small id="makeup-short-count">確認進度中</small></button>
+          <button id="go-tree-care" class="secondary" type="button"><span>照顧小樹</span><small id="care-short-count">確認狀況中</small></button>
+        </nav>
+        <ol class="journey-steps" aria-label="今日進行步驟"><li id="step-reading">1 讀經</li><li id="step-watering">2 澆水</li><li>3 與神相遇</li></ol>
+      </section>
+      <section class="garden-growth" aria-labelledby="garden-growth-title"><p class="eyebrow">一點一滴，都算數</p><h2 id="garden-growth-title">小樹的成長旅程</h2><p id="garden-growth-copy"></p><ol class="garden-growth-stages" aria-label="生命樹五個成長階段"><li>嫩芽</li><li>小樹</li><li>開花</li><li>結果</li><li>豐盛</li></ol>        <div class="tree-stats" id="tree-stats"><div><strong id="stat-on-time">0</strong><span>準時讀經</span></div><div><strong id="stat-late">0</strong><span>補讀完成</span></div><div><strong id="stat-streak">0</strong><span>目前連續</span></div><div><strong id="stat-growth">0%</strong><span>十月旅程</span></div></div>
+        <div class="growth-track" id="growth-track"><span id="growth-fill"></span></div>
+<p id="garden-stars" class="garden-stars" role="status"></p></section>
+        <section id="tree-challenge-notice" class="tree-challenge-notice" hidden aria-labelledby="tree-challenge-title">
+          <div role="status" aria-live="polite" aria-atomic="true"><span class="care-notice-label">生命中的風雨 · 待照顧</span><h3 id="tree-challenge-title"></h3><p id="tree-challenge-description"></p></div>
+          <button id="go-care-challenges" class="primary" type="button" aria-controls="challenge-section">前往照顧小樹 →</button>
+        </section>
+      </aside>
+      </div>
 
       <div class="identity-strip"><div><strong id="signed-member-name">同工</strong><span id="signed-member-id">LINE 身分已驗證 · 十月測試</span></div><button id="switch-member" class="secondary" type="button">重新整理進度</button></div>
       <p id="progress-status" class="status-line" role="status"></p>
@@ -140,6 +148,6 @@
     <a id="devotional-dock-link" class="devotional-entry" href="tree-reading-october-test.html?view=devotional&amp;church=M%2B&amp;preview=1&amp;from=october-tree">體驗每日靈修 / 與神相遇 <span aria-hidden="true">→</span></a>
     <small>2027 年一月創世記試閱，不計入十月箴言進度</small>
   </section>
-  <script type="module" src="tree-reading-october-test.mjs?v=20261010-tree-guide1"></script>
+  <script type="module" src="tree-reading-october-test.mjs?v=20261010-garden-live1"></script>
 </body>
 </html>

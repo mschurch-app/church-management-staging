@@ -103,19 +103,19 @@
 .october-journey.garden-connected .guide-link .function-icon{display:block;width:22px;height:22px}
 .october-journey.garden-connected :is(.guide-link,[data-guide-icon=book]) svg [fill="#fff"]{fill:#315b49}
 
-/* Two-day seasonal test: title and schedule stay outside the interactive artwork. */
+/* Concise current-scene game instructions stay outside the artwork. */
 .october-journey.garden-connected .tree-scene .tree-art[data-season][data-festival]{aspect-ratio:1000/850;background:#e8edd8}
 .october-journey.garden-connected .festival-test-info{margin:8px 0 0;border:1px solid #dce1cf;border-radius:14px;background:#f7f7ed;padding:0 12px;font-size:12px;color:#3e5c4b}
 .october-journey.garden-connected .festival-test-info[hidden]{display:none}
 .october-journey.garden-connected .festival-test-info summary{min-height:44px;cursor:pointer;align-content:center;font-weight:700;padding:8px 0;line-height:1.7}
 .october-journey.garden-connected .festival-test-info summary small{display:block;color:#52644e;font-size:10px;font-weight:500;margin-left:16px}
 .october-journey.garden-connected .festival-test-info p{font-size:12px;line-height:1.8;margin:8px 0}
-.october-journey.garden-connected .festival-test-info ol{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:0;margin:12px 0}
-.october-journey.garden-connected .festival-test-info li{font-size:11px;padding:5px;border-radius:7px}
-.october-journey.garden-connected .festival-test-info li[aria-current]{background:#e0e9d5;font-weight:700}
+.october-journey.garden-connected .festival-test-info ol{list-style:none;display:grid;gap:9px;padding:0;margin:10px 0}
+.october-journey.garden-connected .festival-test-info li{display:flex;gap:8px;align-items:baseline;font-size:12px;line-height:1.7}
+.october-journey.garden-connected .festival-step-number{flex:0 0 22px;text-align:center;line-height:22px;border-radius:50%;background:#f1e3bc;color:#793d25;font-weight:800}
+.october-journey.garden-connected #festival-game-hint{color:#315b49;font-weight:700}
 .october-journey.garden-connected .festival-scene[data-festival=easter][data-day="7"] .festival-tomb-glow{opacity:1}
 .october-journey.garden-connected .tree-patted .festival-christmas-decor{animation:fest-glow .7s ease-in-out 1}
-@media(max-width:360px){.october-journey.garden-connected .festival-test-info ol{grid-template-columns:1fr}}
 
 .october-journey.garden-connected .festival-play-controls{display:flex;gap:10px;align-items:center;margin:10px 0 0;padding:0 4px;color:#3e5c4b}
 .october-journey.garden-connected .festival-play-controls[hidden]{display:none}

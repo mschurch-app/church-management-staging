@@ -13,3 +13,9 @@
 .festival-scene[data-festival=easter]:is([data-day="6"],[data-day="7"]) :is(.festival-particles,.festival-sky-stars){display:none}
 .festival-scene[data-festival=easter]:not([data-day="8"]) .festival-canopy{animation-duration:12s}
 .festival-scene[data-festival=easter]:not([data-day="8"])[data-phase=acting] .festival-canopy{animation:none}
+
+/* The transform wrapper keeps the Fu envelope anchored while it bobs. */
+.festival-scene[data-festival=spring] .festival-fu-envelope{transform-origin:0 0;animation:fest-fu-float 3s ease-in-out infinite}
+.festival-scene[data-festival=spring]:is([data-phase=acting],[data-phase=celebrating]) .festival-fu-envelope{animation:fest-fu-pop .65s ease-out 1}
+@keyframes fest-fu-float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+@keyframes fest-fu-pop{0%,100%{transform:scale(1)}45%{transform:scale(1.12) rotate(-6deg)}70%{transform:scale(1.05) rotate(4deg)}}

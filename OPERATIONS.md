@@ -35,6 +35,10 @@ Run its isolated browser checks using `tests/life-tree/garden-preview.mjs` as do
 - In `daily-devotional-admin.html`, select the content month. A direct link may use `?church=M%2B&month=2027-02`; the existing authenticated API enforces permissions and receives that month's inclusive date range.
 - Apply the schema migration before the January seed. Confirm scripture version, source, and license in the admin editor before final approval.
 
+## Four-day challenge test
+
+The 2026-10-10 user request remains pending their choice whether to count today as day 1. Do not execute `docs/reports/2026-10-10-life-tree-four-day-challenges/rotation.sql` without that choice. Recheck the October project, date, roster and existing assignments first. The proposed rotation inserts 15 future assignments for the current 5 participants and preserves today’s completions. A repeat same-day round requires a separately reviewed additive mechanism; never reset completed rows or remove the existing unique constraint. Future assignments activate by Taipei calendar date through normal reads; no cron or push notification is required. Daily care is still performed by the member; prior unresolved challenges may remain visible until completed.
+
 ## Deployment
 
 ### Connected Life Tree garden

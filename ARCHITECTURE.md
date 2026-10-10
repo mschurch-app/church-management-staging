@@ -22,6 +22,8 @@
 - The October tree opens a January devotional preview with one journal editor at its end. `october-devotional-journal.mjs` authenticates against the dedicated October LIFF and uses the existing October `me` / `journal_save` API. The preview remains uncounted; journal dates are actual Taipei dates and journal access does not grant access to the Church OS devotional database.
 - October devotional navigation uses `tree-reading-october-test.html?view=devotional&church=M%2B&preview=1&from=october-tree`. `october-devotional-shell.mjs` reuses the existing devotional markup at the configured LIFF endpoint so authentication does not depend on a sibling URL outside LINE's guaranteed initialization scope. Legacy October-preview links redirect to this fixed route; ordinary public previews and member devotional routes retain their existing behavior.
 
+- October challenge garden flags and administration totals include only challenge_date <= the Taipei date. The resolve endpoint rejects future assignments even if their IDs are known; existing owner checks and tool mapping remain enforced. Personal rendering already filters future dates. No scheduled row is automatically resolved.
+
 ## API and authentication
 
 - Browser authentication is Supabase Auth. The app persists the session in local storage and refreshes it when appropriate.

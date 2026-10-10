@@ -1,0 +1,29 @@
+[
+  {
+    "dry_run": {
+      "per_day": [
+        {
+          "count": 5,
+          "challenge_date": "2026-10-10"
+        },
+        {
+          "count": 5,
+          "challenge_date": "2026-10-11"
+        },
+        {
+          "count": 5,
+          "challenge_date": "2026-10-12"
+        },
+        {
+          "count": 5,
+          "challenge_date": "2026-10-13"
+        }
+      ],
+      "read_only": true,
+      "planned_rows": 20,
+      "planned_people": 5,
+      "future_rows_to_insert": 15,
+      "people_with_four_distinct_types": 5
+    }
+  }
+]

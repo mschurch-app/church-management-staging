@@ -12,12 +12,11 @@ const sdkImport="import {createClient} from 'https://esm.sh/@supabase/supabase-j
 assert.ok(source.includes(sdkImport),'Expected pinned SDK import; review fixture if it changes');
 const code=stripTypeScriptTypes(source.replace(sdkImport,''));
 const subject='U'+'a'.repeat(32),otherSubject='U'+'b'.repeat(32);
-const instant='2026-10-10T05:24:00Z';
 
-export function fixture({start='2026-10-01',joined=true,authorized=true,failInsert=false,failUpdate=false,initial=[],initialNotes=[],initialChallenges=[],memberSubject=subject}={}){
+export function fixture({start='2026-10-01',joined=true,authorized=true,failInsert=false,failUpdate=false,initial=[],initialNotes=[],initialChallenges=[],memberSubject=subject,isAdmin=false,instant='2026-10-10T05:24:00Z'}={}){
   const rows=structuredClone(initial),writes=[];
   const tables={
-    tree_reading_october_test_participants:joined?[{line_subject:memberSubject,reading_start_date:start,is_admin:false}]:[],
+    tree_reading_october_test_participants:joined?[{line_subject:memberSubject,reading_start_date:start,is_admin:isAdmin}]:[],
     tree_reading_october_test_progress:rows,
     tree_reading_october_test_journal:structuredClone(initialNotes),
     tree_reading_october_test_challenges:structuredClone(initialChallenges),
@@ -28,6 +27,7 @@ export function fixture({start='2026-10-01',joined=true,authorized=true,failInse
     const query={
       select(value='*'){columns=value;return query;},order(){return query;},
       eq(key,value){filters.push(row=>row[key]===value);return query;},
+      lte(key,value){filters.push(row=>row[key]<=value);return query;},
       is(key,value){filters.push(row=>(row[key]??null)===value);return query;},
       maybeSingle(){one=true;return query;},single(){one=true;return query;},
       insert(value){operation='insert';payload=value;return query;},

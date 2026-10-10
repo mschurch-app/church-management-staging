@@ -2,6 +2,48 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {fixture} from './backend-fixture.mjs';
 const subject='U'+'a'.repeat(32),otherSubject='U'+'b'.repeat(32);
+const challenge=(date,type='worm',id=1,owner=subject)=>({id,line_subject:owner,challenge_date:date,challenge_type:type,status:'active'});
+
+test('Future challenge is hidden from shared garden until its Taipei date',async()=>{
+  const initialChallenges=[challenge('2026-10-11')];
+  const today=await fixture({initialChallenges}).call('garden');
+  assert.equal(today.status,200);assert.equal(today.trees[0].challenge_active,false);
+  const tomorrow=await fixture({initialChallenges,instant:'2026-10-10T16:00:00Z'}).call('garden');
+  assert.equal(tomorrow.status,200);assert.equal(tomorrow.trees[0].challenge_active,true);
+});
+test('Old and current challenges remain visible in the garden',async()=>{
+  for(const date of ['2026-10-09','2026-10-10']){
+    const result=await fixture({initialChallenges:[challenge(date)]}).call('garden');
+    assert.equal(result.status,200);assert.equal(result.trees[0].challenge_active,true);
+  }
+});
+test('Admin overview excludes future challenges from issued and resolved totals',async()=>{
+  const initialChallenges=[challenge('2026-10-10'),challenge('2026-10-11','wind',2),{...challenge('2026-10-12','trouble',3),status:'resolved'}];
+  const result=await fixture({isAdmin:true,initialChallenges}).call('overview');
+  assert.equal(result.status,200);assert.equal(result.challenge_count,1);assert.equal(result.resolved_challenges,0);
+  assert.equal((await fixture({initialChallenges}).call('overview')).status,403);
+});
+test('Future challenges cannot be resolved early, including with the correct tool',async()=>{
+  const f=fixture({initialChallenges:[challenge('2026-10-11')]});
+  const result=await f.call('resolve_challenge',undefined,'isolated-token',{challengeId:1,resolutionAction:'pest'});
+  assert.equal(result.status,400);assert.equal(result.error,'challenge_not_started');assert.equal(f.writes.length,0);
+});
+test('All four tools resolve their own current challenges and preserve other challenges',async()=>{
+  for(const [index,[type,tool]] of Object.entries(Object.entries({worm:'pest',wind:'support',typhoon:'guard',trouble:'repair'}))){
+    const id=Number(index)+1,f=fixture({initialChallenges:[challenge('2026-10-10',type,id),challenge('2026-10-11','worm',99),challenge('2026-10-10','worm',100,otherSubject)]});
+    const result=await f.call('resolve_challenge',undefined,'isolated-token',{challengeId:id,resolutionAction:tool});
+    assert.equal(result.status,200);assert.equal(result.challenges.find(item=>item.id===id).status,'resolved');
+    assert.equal(result.challenges.find(item=>item.id===99).status,'active');assert.equal(result.challenges.some(item=>item.id===100),false);
+    assert.equal(f.writes.length,1);assert.equal(f.writes[0].matched,1);
+  }
+});
+test('Scheduled challenges become actionable exactly at Taipei midnight',async()=>{
+  const initialChallenges=[challenge('2026-10-11')];
+  for(const [instant,status] of [['2026-10-10T15:59:59Z',400],['2026-10-10T16:00:00Z',200]]){
+    const result=await fixture({initialChallenges,instant}).call('resolve_challenge',undefined,'isolated-token',{challengeId:1,resolutionAction:'pest'});
+    assert.equal(result.status,status,instant);
+  }
+});
 
 test('Actual me contract identifies participant with line_subject, not an invented id',async()=>{
   const result=await fixture().call('me');assert.equal(result.status,200);

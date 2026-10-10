@@ -1,0 +1,29 @@
+{
+  "project": "aqanuwilmvdtlzuqlrau",
+  "scope": "Canva account connection and template configuration rollout",
+  "canva_app_distribution": "public_draft",
+  "edge_function": {
+    "name": "weekly-canva",
+    "version": 1,
+    "status": "ACTIVE",
+    "verify_jwt": false,
+    "custom_post_auth": "auth.getUser and weekly bulletin church profile",
+    "readback_matches_source": true
+  },
+  "schema": {
+    "tables": ["weekly_canva_connections", "weekly_canva_oauth_states", "weekly_canva_jobs"],
+    "all_rls_enabled": true,
+    "anon_authenticated_direct_access": false,
+    "lease_rpc_anon_authenticated_execute": false,
+    "service_role_access": true
+  },
+  "secrets": "User reports three values saved; values not read or recorded",
+  "advisors": {
+    "new_info": "Three service-only tables with RLS and no client policies",
+    "new_security_definer_warnings": 0
+  },
+  "pending": ["OAuth by Canva application owner", "Autofill-ready home and IG templates", "Canva public distribution review", "Authorized functional tests", "Mac Safari and iPhone acceptance"],
+  "tests_run": false,
+  "old_databases_written": false,
+  "existing_bulletins_modified": false
+}

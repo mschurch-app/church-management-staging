@@ -38,3 +38,7 @@ verify_jwt = false
 
 [functions.daily-devotional-admin]
 verify_jwt = true
+
+# OAuth callback has no JWT. POST actions validate the user JWT and church rights explicitly.
+[functions.weekly-canva]
+verify_jwt = false

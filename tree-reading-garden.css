@@ -1,0 +1,104 @@
+/* Connected garden presentation. Scoped to the October entry; no shared button overrides. */
+.october-journey.garden-connected{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 85% 10%,#f3e4c4 0,transparent 45%),#f6f4e9;color:#294b40;--forest:#294f43;--line:#dedfce;--paper:#fffdf6;--shadow:0 12px 36px #41583b0c}
+.october-journey.garden-connected .app-shell{width:min(100%,1160px);padding-inline:24px}
+.october-journey.garden-connected .topbar{padding:18px 0;gap:10px}
+.october-journey.garden-connected .brand{font-size:14px;min-height:44px}
+.october-journey.garden-connected .brand-mark{background:#315445;border-radius:15px;box-shadow:0 5px 15px #31544522}
+.october-journey.garden-connected .topbar-actions{display:flex;flex-direction:row;align-items:center;gap:8px}
+.october-journey.garden-connected .guide-link{width:44px;height:44px;padding:10px;border-radius:50%;background:#fffdf5}
+.october-journey.garden-connected .guide-link svg{display:block;width:22px;height:22px}
+.october-journey.garden-connected .preview-chip{font-size:10px;background:#f9f4e6;color:#76633f;border-color:#e5dabe;white-space:nowrap}
+.october-journey.garden-connected .hero,.october-journey.garden-connected:has(#member-view:not([hidden])) .hero{display:block;min-height:0;margin:0 0 22px;overflow:visible;border-radius:0;background:none;box-shadow:none}
+.october-journey.garden-connected .hero-copy,.october-journey.garden-connected:has(#member-view:not([hidden])) .hero-copy{padding:12px 0 0}
+.october-journey.garden-connected .hero h1,.october-journey.garden-connected:has(#member-view:not([hidden])) .hero h1{font-size:clamp(25px,3vw,34px);line-height:1.35;letter-spacing:-.03em}
+.october-journey.garden-connected .hero-copy>p:last-child{margin:8px 0 0;font-size:13px}
+.october-journey.garden-connected .hero-orbit,.october-journey.garden-connected .tabs{display:none}
+.october-journey.garden-connected .garden-workspace{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);align-items:start;gap:24px}
+.october-journey.garden-connected .garden-side{display:grid;gap:16px;min-width:0}
+.october-journey.garden-connected .tree-card{padding:18px;border-radius:28px;background:#fffdf7;min-width:0;border-color:#dce0cf;box-shadow:0 14px 40px #3e56390d}
+.october-journey.garden-connected .tree-head{align-items:center;gap:8px;margin-bottom:10px}
+.october-journey.garden-connected .tree-head h2{font-size:20px;line-height:1.4}
+.october-journey.garden-connected .tree-head .eyebrow{font-size:9px;letter-spacing:.12em;margin-bottom:5px;color:#8c784a}
+.october-journey.garden-connected #tree-caption{display:none}
+.october-journey.garden-connected .tree-head-tools{max-width:none;flex-wrap:nowrap;gap:7px}
+.october-journey.garden-connected .health-badge{font-size:10px;padding:7px 9px;color:#466044;background:#edf2df}
+.october-journey.garden-connected .tree-water-stage .tree-scene{max-width:min(100%,480px,calc(100svh - 160px));border-radius:22px;overflow:hidden;box-shadow:inset 0 0 0 1px #536b3f10}
+.october-journey.garden-connected .tree-scene .tree-art[data-season]{display:block;width:100%;height:auto;min-height:0;aspect-ratio:1;margin:0;border-radius:22px;background:#e4ead0;outline:none;isolation:isolate}
+.october-journey.garden-connected .tree-art svg{display:block;width:100%;height:100%;overflow:hidden;filter:none;transform:none}
+.october-journey.garden-connected .tree-art::before,.october-journey.garden-connected .tree-art::after{display:none}
+.october-journey.garden-connected .tree-water-stage .tree-action-dock{margin:10px auto 0;max-width:480px}
+.october-journey.garden-connected .tree-water-stage .care-button{width:100%;background:linear-gradient(135deg,#4b7357,#2d5947);color:#fffdf1;border:1px solid #315b45;border-radius:17px;box-shadow:0 4px 0 #234536,0 7px 15px #2d59471a;min-height:52px;font-size:15px}
+.october-journey.garden-connected .tree-card .music-status{font-size:11px;margin:6px 0;color:#526c5a;line-height:1.5}
+.october-journey.garden-connected .tree-card .music-status:empty{display:none}
+.october-journey.garden-connected .scene-music-label{font-size:11px;margin:8px 0 4px}
+.october-journey.garden-connected .tree-weather{margin:8px 0 0;padding:7px 0;border:0;background:transparent;font-size:clamp(9px,2.6vw,11px);letter-spacing:-.25px;line-height:1.6;white-space:nowrap}
+.october-journey.garden-connected .tree-mood{margin:8px 0 0;padding:0;border:0;background:transparent;font-size:12px;line-height:1.6;text-align:center}
+.october-journey.garden-connected .tree-action-status:empty{display:none}
+.october-journey.garden-connected .tree-care-feedback{padding:9px 12px;font-size:13px}
+.october-journey.garden-connected .daily-route{display:grid;gap:16px;padding:22px;border-radius:24px;background:#fffdf6;border-color:#dedfce}
+.october-journey.garden-connected #journey-date{font-size:11px;color:#7c7457;letter-spacing:.06em}
+.october-journey.garden-connected #journey-passage{font-size:20px;line-height:1.5;max-width:20em}
+.october-journey.garden-connected .journey-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.october-journey.garden-connected .journey-actions #read-today{grid-column:1/-1;background:linear-gradient(135deg,#557b5a,#2f5746);border-radius:17px;min-height:64px;box-shadow:0 4px 0 #254938;}
+.october-journey.garden-connected .journey-actions .secondary{background:#f5f5e9;border-color:#dce1cf;color:#3c614c;min-height:60px;border-radius:16px}
+.october-journey.garden-connected .journey-actions button span{font-size:15px}
+.october-journey.garden-connected .journey-actions button small{font-size:11px}
+.october-journey.garden-connected .journey-steps{justify-content:space-between;gap:5px;font-size:11px}
+.october-journey.garden-connected .garden-growth{padding:22px;border:1px solid #dedfce;border-radius:24px;background:linear-gradient(135deg,#f0f2df,#fbf5e4)}
+.october-journey.garden-connected .garden-growth h2{font-size:18px;margin:0 0 8px}
+.october-journey.garden-connected #garden-growth-copy{font-size:12px;line-height:1.65;margin:0;color:#56705a}
+.october-journey.garden-connected .garden-growth-stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:0;list-style:none;margin:18px 0;font-size:11px;color:#7c836a}
+.october-journey.garden-connected .garden-growth-stages li{text-align:center;position:relative;padding-top:24px}
+.october-journey.garden-connected .garden-growth-stages li::before{content:'';position:absolute;top:0;left:calc(50% - 8px);width:16px;height:16px;background:#d9dfc5;border:3px solid #edf0df;border-radius:50%;box-shadow:0 0 0 1px #bdc8a7}
+.october-journey.garden-connected .garden-growth-stages li[data-reached=true]::before{background:#55744d;border-color:#dde7c7;box-shadow:0 0 0 1px #799368}
+.october-journey.garden-connected .garden-growth-stages li[aria-current]{font-weight:800;color:#31563f}
+.october-journey.garden-connected .tree-stats{border-color:#d9dfcb}
+.october-journey.garden-connected .tree-stats strong{font-size:18px}
+.october-journey.garden-connected .tree-stats span{font-size:10px;white-space:nowrap}
+.october-journey.garden-connected .garden-stars{margin:12px 0 0;font-size:12px;color:#746034;line-height:1.6}
+.october-journey.garden-connected .tree-challenge-notice{margin:0;border:1px solid #d9b678;border-radius:24px;background:#fff4dc;padding:18px}
+.october-journey.garden-connected .tree-challenge-notice .primary{background:#8c6136;border-radius:14px;font-size:14px;box-shadow:none}
+.october-journey.garden-connected .tree-tool{background:#fffcf0;border-color:#d8c493;box-shadow:0 4px 0 #c8b78d,0 8px 20px #253f3420;border-radius:23px}
+.october-journey.garden-connected .care-tool-success{left:8%;right:8%;top:auto;bottom:5%;display:flex;flex-direction:row;justify-content:center;padding:9px 12px;gap:8px;border-width:1px;border-radius:17px;background:#fffdf3ee;box-shadow:0 5px 20px #244f4320}
+.october-journey.garden-connected .care-tool-success .tree-tool-icon{width:32px;height:32px}
+.october-journey.garden-connected .care-tool-success span:last-child{font-size:12px}
+.october-journey.garden-connected .care-animation{display:none}
+.october-journey.garden-connected .identity-strip{padding:14px 18px;border:1px solid #dedfce;border-radius:20px;background:#fffdf6}
+.october-journey.garden-connected .status-line:empty{display:none}
+.october-journey.garden-connected .tree-view-switch{padding:6px;background:#eeefdf;border:1px solid #dce0cb;border-radius:18px;gap:5px}
+.october-journey.garden-connected .tree-view-button{min-height:44px;border-radius:13px;font-size:12px}
+.october-journey.garden-connected .tree-view-button.active{background:#355e49;color:#fffdf3}
+.october-journey.garden-connected .garden-tree-button{border-radius:20px;background:#f3f3e4;border:1px solid #d9dfc9;overflow:hidden}
+.october-journey.garden-connected .garden-tree{max-width:100%;border-radius:14px}
+.october-journey.garden-connected .devotional-dock{background:#fffdf5;border-color:#d7deca;box-shadow:0 -8px 36px #35563d20;border-radius:26px}
+.october-journey.garden-connected .devotional-entry{background:#315b49;border-radius:18px}
+@media(max-width:800px){
+ .october-journey.garden-connected .app-shell{padding-inline:16px}
+ .october-journey.garden-connected .topbar{padding:12px 0}
+ .october-journey.garden-connected .preview-chip{display:none}
+ .october-journey.garden-connected .hero,.october-journey.garden-connected:has(#member-view:not([hidden])) .hero{margin-bottom:16px}
+ .october-journey.garden-connected .hero-copy,.october-journey.garden-connected:has(#member-view:not([hidden])) .hero-copy{padding-top:4px}
+ .october-journey.garden-connected .hero .eyebrow{font-size:9px;margin-bottom:6px}
+ .october-journey.garden-connected .garden-workspace{grid-template-columns:minmax(0,1fr);gap:16px}
+ .october-journey.garden-connected .tree-card{padding:14px;border-radius:25px}
+ .october-journey.garden-connected .tree-head h2{font-size:18px}
+ .october-journey.garden-connected .tree-head .eyebrow{font-size:8px}
+ .october-journey.garden-connected .daily-route{padding:18px}
+ .october-journey.garden-connected .garden-growth{padding:18px}
+ .october-journey.garden-connected .journey-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .october-journey.garden-connected .journey-actions #read-today{grid-column:auto;min-height:66px}
+ .october-journey.garden-connected .journey-actions button span{font-size:14px}
+ .october-journey.garden-connected .tree-weather{font-size:clamp(9px,2.5vw,11px)}
+}
+@media(max-width:360px){.october-journey.garden-connected .app-shell{padding-inline:12px}.october-journey.garden-connected .tree-card{padding:10px}.october-journey.garden-connected .tree-head h2{font-size:16px}.october-journey.garden-connected .tree-head .eyebrow{letter-spacing:0}.october-journey.garden-connected .health-badge{padding:6px;font-size:9px}.october-journey.garden-connected .journey-actions button span{font-size:12px}}
+.october-journey.garden-connected .tree-crown{transform-origin:400px 640px;animation:garden-sway 6s ease-in-out infinite}.october-journey.garden-connected .tree-butterfly{transform-box:fill-box;transform-origin:center;animation:garden-butterfly 5s ease-in-out infinite}.october-journey.garden-connected .river-glint{animation:garden-river 4s ease-in-out infinite}.october-journey.garden-connected .garden-cloud{animation:garden-cloud 10s ease-in-out infinite}.october-journey.garden-connected .ambient-light{animation:garden-spark 4s ease-in-out infinite}.october-journey.garden-connected .tree-patted .tree-crown{animation:garden-pat .7s ease-in-out}.october-journey.garden-connected .tree-art[data-challenge=wind] .tree-crown{animation:garden-sway 1s ease-in-out infinite}.october-journey.garden-connected .rain-lines{animation:garden-rain .6s linear infinite}.october-journey.garden-connected .water-stream{stroke-dasharray:12 16;animation:garden-water .5s linear infinite}.october-journey.garden-connected .watering-can{transform-origin:180px 430px;animation:garden-pour 2.6s ease-in-out both}.october-journey.garden-connected .water-ripples{transform-box:fill-box;transform-origin:center;animation:garden-ripple 1.1s ease-out infinite}.october-journey.garden-connected .spray-mist{animation:garden-spark .6s ease-in-out infinite}.october-journey.garden-connected .broom-action{transform-origin:280px 660px;animation:garden-sweep .6s ease-in-out infinite}.october-journey.garden-connected .care-reveal{animation:garden-invite .4s ease-out}.october-journey.garden-connected .flower-reveal{transform-box:fill-box;transform-origin:center;animation:garden-flower 1.2s ease-out both}.october-journey.garden-connected .watered-glow{animation:garden-spark 2s ease-in-out infinite}
+@keyframes garden-sway{0%,100%{transform:rotate(-.7deg)}50%{transform:rotate(.8deg)}}@keyframes garden-pat{30%{transform:rotate(-3deg) scale(1.015)}70%{transform:rotate(2deg)}}@keyframes garden-butterfly{0%,100%{transform:translate(0,0) rotate(-8deg)}50%{transform:translate(14px,-18px) rotate(8deg)}}@keyframes garden-river{0%,100%{opacity:.4;transform:translateY(0)}50%{opacity:.9;transform:translateY(4px)}}@keyframes garden-cloud{0%,100%{transform:translateX(0)}50%{transform:translateX(14px)}}@keyframes garden-spark{0%,100%{opacity:.5}50%{opacity:1}}@keyframes garden-tool-enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes garden-invite{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}@keyframes garden-spin{to{transform:rotate(360deg)}}@keyframes garden-rain{to{transform:translate(-18px,30px)}}@keyframes garden-water{to{stroke-dashoffset:-28}}@keyframes garden-pour{0%{transform:translate(-60px,15px) rotate(0);opacity:0}15%{opacity:1}30%,75%{transform:translate(0,0) rotate(-20deg)}100%{transform:translate(-60px,15px);opacity:0}}@keyframes garden-ripple{from{transform:scale(.6);opacity:.9}to{transform:scale(1.4);opacity:0}}@keyframes garden-sweep{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(20deg)}}@keyframes garden-flower{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.october-journey.garden-connected *,.october-journey.garden-connected *:before,.october-journey.garden-connected *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.october-journey.garden-connected .watering-can{opacity:1}.october-journey.garden-connected .flower-reveal{opacity:1}}
+.october-journey.garden-connected .broom-action{transform-origin:12px 20px}
+.october-journey.garden-connected .tree-art[role=button]{cursor:pointer;touch-action:manipulation}
+.october-journey.garden-connected .tree-art[role=button]:focus-visible{outline:3px solid #9f7a3d;outline-offset:-4px}
+/* Collective gardens stay light: only the personal scene needs continuous effects. */
+.october-journey.garden-connected .garden-tree :is(.tree-crown,.tree-butterfly,.river-glint,.garden-cloud,.ambient-light,.rain-lines){animation:none}
+/* Shared book symbol is white for dashboard tiles; adapt its color only on this pale page. */
+.october-journey.garden-connected .guide-link .function-icon{display:block;width:22px;height:22px}
+.october-journey.garden-connected :is(.guide-link,[data-guide-icon=book]) svg [fill="#fff"]{fill:#315b49}

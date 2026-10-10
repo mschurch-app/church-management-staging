@@ -37,3 +37,17 @@ npm run life-tree:browser
 10/6繼續澆水另驗證：320×568、402×600、402×874及1440×900視窗同時看見完整樹圖與圖外澆水按鈕，按鈕未被靈修浮窗遮住；只澆10/6，不改今日紀錄。今日入口重新選回今天，共用同一個生命樹定位。首次說明有三幅自製SVG步驟圖、四個與實際照顧一致的道具圖，保留預設勾選音效、重開說明與鍵盤操作。LIFF視窗Full須在LINE Developers儲存，隔離頁面測試不能驗證LINE端設定。
 
 手札改在每日靈修內單一編輯／翻閱：移除樹頁編輯測試，改驗證專用October身分、未登入不得讀寫、讀經前不可寫、本人歷史、actual date、同專案endpoint、草稿重開、失敗／逾時／不完整回應恢復、重複點擊、普通預覽仍唯讀。十月靈修沿用原tree-reading-october-test.html的固定view路由，SDK mock拒絕十月ID在兄弟daily-devotional.html初始化；舊連結轉入正確路由。快取返回更新手札只讀回一次，正常pageshow不另啟並行刷新。已完成道具的舊節點再次點擊不重送。
+
+## 庭園互動預覽
+
+`garden-preview.mjs` 僅檢查獨立的 `life-tree-garden-preview.html`。沿用同一 Puppeteer runtime 與 Chrome，啟動本機服務、阻擋並記錄任何外部請求；不登入、不連 LINE 或 Supabase，不寫入正式紀錄。
+
+```sh
+PUPPETEER_MODULE=/path/to/puppeteer-core/lib/puppeteer/puppeteer-core.js TREE_TEST_OUTPUT=/tmp/life-tree-garden-preview-results node tests/life-tree/garden-preview.mjs
+```
+
+涵蓋七種尺寸首屏、完整樹圖與澆水鈕定位、讀經／澆水／靈修、手札記憶體草稿、補讀日期、四類道具與單次星光、重複點擊、動畫中重設、音訊拒絕與重試、減少動效、44px 按鈕、缺檔及零外部請求。重新整理清空示範資料，正式頁面及其77項既有回歸未因本次新增頁面而重跑。結果不代表 Safari、iPhone／LINE實機或整體99%驗收。
+
+## 接入系統的庭園
+
+`browser.mjs` 驗證原 October 入口的新庭園，保留原有身分、補讀、完整樹圖定位、音樂、四類挑戰、靈修與本人手札回歸。新增原生水壺／流水回饋、鍵盤打招呼不寫進度、五階段依實際API紀錄、手機／Mac首屏同時看見庭園與讀經入口、澆水及照顧不完整回應不得假造成功或星光。獨立預覽不被正式控制器載入。

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f6f4e9">
+  <title>我的生命樹庭園 · 互動預覽</title>
+  <link rel="stylesheet" href="app-design-tokens.css?v=20261009-design1">
+  <link rel="stylesheet" href="life-tree-garden-preview.css?v=20261010-garden1">
+</head>
+<body class="garden-preview">
+  <a class="skip-link" href="#garden-main">前往生命樹</a>
+  <header class="garden-header">
+    <a class="garden-brand" href="#garden-main" aria-label="M+大雅教會，回到生命樹"><span class="brand-mark">M<span>+</span></span><span>M+ 大雅教會<small>生命樹讀經</small></span></a>
+    <div class="header-tools"><span class="preview-label">互動預覽</span><button type="button" class="icon-button" id="help-button" aria-label="使用說明"><span data-icon="book"></span></button><button type="button" class="icon-button speaker" id="sound-button" aria-label="開啟音樂與音效" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4Z"/><path class="speaker-wave" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="speaker-mute" d="m16 9 5 6m0-6-5 6"/></svg></button></div>
+  </header>
+  <main id="garden-main" tabindex="-1">
+    <div class="garden-intro"><div><p class="eyebrow">每一天，都有新的生長</p><h1>回到你的小小庭園。</h1></div><button type="button" id="growth-button" class="growth-link"><span data-icon="sprout"></span><span>小樹期<small>看看成長</small></span><span aria-hidden="true">↗</span></button></div>
+    <div class="garden-layout">
+      <section class="garden-world" aria-labelledby="world-title">
+        <div class="world-heading"><div><span class="live-dot" aria-hidden="true"></span><h2 id="world-title">我的生命樹</h2></div><span id="world-condition">微風，適合慢慢生長</span></div>
+        <div class="garden-scene" id="garden-scene" data-weather="clear">
+          <div id="garden-art" class="garden-art" role="img" aria-label="溪流與草坡上的生命樹庭園"></div>
+          <button type="button" id="touch-tree" class="touch-tree" aria-label="輕輕碰一下小樹"></button>
+          <div id="care-tools" class="care-tools" role="group" aria-label="照顧小樹的道具" hidden></div>
+          <div id="world-feedback" class="world-feedback" role="status" hidden></div>
+          <div class="scene-caption" aria-hidden="true"><span class="scene-leaf">✦</span> 每一點陪伴，小樹都記得。</div>
+        </div>
+        <div class="world-bottom"><span id="garden-mood"><span aria-hidden="true">✦</span> 小樹在等今天的活水</span><span class="weather-label">大雅 · 晴朗 <span aria-hidden="true">☀</span></span></div>
+        <div id="world-action-slot" class="world-action-slot"></div>
+        <p id="audio-status" class="audio-status" role="status"></p>
+      </section>
+      <aside class="journey-panel" aria-label="今天的庭園旅程">
+        <section class="today-card">
+          <div class="section-kicker"><span>今日的小小旅程</span><span class="date-tag">示範日</span></div>
+          <h2 id="task-title">讓神的話，成為養分。</h2><p id="task-description">讀一段經文，再回來為小樹澆水。</p>
+          <ol class="journey-track" aria-label="今日進度"><li id="step-read" aria-current="step"><span>1</span>讀經</li><li id="step-water"><span>2</span>澆水</li><li id="step-devotional"><span>3</span>與神相遇</li></ol>
+          <div id="today-action-slot"><button type="button" id="primary-action" class="primary-action"><span data-icon="book"></span><span>打開今日讀經<small>箴言 3:5–6 · 閱讀示範</small></span><span aria-hidden="true">→</span></button></div>
+          <p id="action-status" class="action-status" role="status"></p>
+        </section>
+        <section class="growth-card" aria-labelledby="growth-title"><div class="section-kicker"><h2 id="growth-title">一點一滴，長大了</h2><span id="growth-count">6 / 7 天</span></div><div class="growth-meter" role="progressbar" aria-label="下一個成長里程碑（示範）" aria-valuemin="0" aria-valuemax="7" aria-valuenow="6"><span id="growth-fill"></span></div><p id="growth-hint">再一次澆水，迎接第一朵小花。</p><div class="growth-milestones"><span class="reached"><span data-icon="sprout"></span>發芽</span><span class="reached"><span data-icon="tree"></span>小樹</span><span id="flower-milestone"><span data-icon="sparkle"></span>開花</span></div></section>
+        <section id="challenge-hint" class="challenge-hint" hidden aria-labelledby="challenge-title"><span id="challenge-icon"></span><div><h2 id="challenge-title"></h2><p id="challenge-description"></p></div></section>
+        <nav class="garden-navigation" aria-label="庭園功能"><button type="button" id="makeup-button"><span data-icon="calendar"></span><span>補讀養分<small>2 天可補讀</small></span></button><button type="button" id="companions-button"><span data-icon="people"></span><span>同行花園<small>看看彼此的小樹</small></span></button><button type="button" id="collection-button"><span data-icon="sparkle"></span><span>星光收藏<small id="stars-count">已收藏 3 枚</small></span></button></nav>
+      </aside>
+    </div>
+    <details class="preview-controls"><summary>試玩不同的庭園情境 <span aria-hidden="true">＋</span></summary><div class="scenario-buttons" role="group" aria-label="選擇示範情境"><button type="button" data-challenge="typhoon"><span data-icon="tree-raincoat"></span>風雨</button><button type="button" data-challenge="worm"><span data-icon="tree-spray"></span>蟲蟲</button><button type="button" data-challenge="wind"><span data-icon="tree-support"></span>強風</button><button type="button" data-challenge="trouble"><span data-icon="tree-broom"></span>落枝</button><button type="button" id="reset-button">重新試玩</button></div><p>此頁使用示範進度，不會寫入讀經或手札紀錄。</p></details>
+    <footer class="garden-footer">M+ 大雅教會 · 每天讀一點，與神一起成長。</footer>
+  </main>
+  <section id="devotional-invite" class="devotional-invite" aria-labelledby="invite-title" hidden><div><span class="invite-spark" aria-hidden="true">✦</span><div><p id="invite-title">活水已澆灌，繼續與神相遇。</p><button type="button" id="open-devotional">體驗每日靈修 / 與神相遇 <span aria-hidden="true">→</span></button></div><button type="button" id="dismiss-invite" class="icon-button" aria-label="稍後再看，關閉靈修邀請">×</button></div></section>
+  <dialog id="garden-dialog" class="garden-dialog" aria-labelledby="dialog-title"><div class="dialog-heading"><span id="dialog-kicker" class="eyebrow"></span><button type="button" id="close-dialog" class="icon-button" aria-label="關閉">×</button></div><div id="dialog-content"></div></dialog>
+  <noscript><p class="noscript-note">請開啟 JavaScript，才能試玩生命樹庭園。</p></noscript>
+  <script type="module" src="life-tree-garden-preview.mjs?v=20261010-garden1"></script>
+</body>
+</html>

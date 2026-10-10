@@ -10,6 +10,12 @@ This is a static browser application plus Supabase services. There is no root `p
 
 ## Verification
 
+### Life-tree garden interaction preview
+
+Serve the repository locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/life-tree-garden-preview.html`. This is a standalone prototype, not the production LIFF entry. Use the scenario controls at the bottom to try rain, insects, wind, fallen branches and reset. Reload discards all demonstration progress and journal drafts. No install, login or database configuration is needed. The user approved the connected October implementation on 2026-10-10. Keep this prototype separate: its sample controller must never be imported into the authenticated entry.
+
+Run its isolated browser checks using `tests/life-tree/garden-preview.mjs` as documented in the test README. The script writes screenshots and `results.json` to `TREE_TEST_OUTPUT`. Safari and iPhone/LINE validation remain separate.
+
 - Run `git diff --check` before committing.
 - For changed browser modules, use `node --check <file.mjs>` where applicable.
 - For Edge Functions, use the project’s configured Deno/Supabase checks when available.
@@ -25,6 +31,16 @@ This is a static browser application plus Supabase services. There is no root `p
 - Apply the schema migration before the January seed. Confirm scripture version, source, and license in the admin editor before final approval.
 
 ## Deployment
+
+### Connected Life Tree garden
+
+- Existing October entry: `https://liff.line.me/2011645391-9t2SxuSG`. The 2027 LIFF ID remains separate.
+- Publish the entry HTML, controller and its new `tree-reading-garden.css` / `tree-reading-garden-art.mjs` together through main/GitHub Pages. Resource version: `20261010-garden-live1`.
+- Run `tests/life-tree/browser.mjs` with the documented Puppeteer runtime. It intercepts external requests and uses synthetic identity/progress; never point test fixtures at a real database.
+- Read back the hosted HTML/modules/styles and compare SHA-256 with the release source; preserve earlier stale/404 results as pending, not passed.
+- This release needs no migration, RLS or Edge Function deployment. Roll back the reviewed frontend commit through a new revert PR; do not reset history or roll back member records.
+- Verify real Mac Safari and iPhone/LINE separately, including audible music, actual authentication, reading, dated watering, care and devotional return. Native LIFF Full remains a LINE console setting.
+
 
 - Frontend: review and merge the approved change to the repository’s GitHub Pages publishing branch (`main`), then confirm the public page update.
 - Database: inspect migration status and reviewed SQL before applying a migration to the linked Supabase project. Never assume pushing frontend files applies SQL.

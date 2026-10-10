@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 320×568",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 402×874",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 760×900",
+      "passed": true
+    },
+    {
+      "name": "Run failure",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(layout.tree.top<layout.height/2&&layout.tree.bottom<layout.height)\n\n    at file:///private/tmp/church-os-shine-email/tests/life-tree/garden-preview.mjs:22:285"
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "missing": [],
+  "passed": false
+}

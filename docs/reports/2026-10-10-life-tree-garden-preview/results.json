@@ -1,0 +1,136 @@
+{
+  "checks": [
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 320×568",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 402×874",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 760×900",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 1024×768",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 1280×800",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 1440×900",
+      "passed": true
+    },
+    {
+      "name": "Garden is visible in first screen, no horizontal overflow: 1920×1080",
+      "passed": true
+    },
+    {
+      "name": "Healthy tree has no permanent large overlay and no devotional invite before watering",
+      "passed": true
+    },
+    {
+      "name": "Tree responds to a touch",
+      "passed": true
+    },
+    {
+      "name": "Reading returns to complete tree and watering button together",
+      "passed": true
+    },
+    {
+      "name": "Watering animates, ignores repeat clicks, reveals flowers and invites devotional only after completion",
+      "passed": true
+    },
+    {
+      "name": "Devotional has one journal; closing retains draft in memory and Escape restores garden",
+      "passed": true
+    },
+    {
+      "name": "Makeup keeps selected date, marks only that date complete and does not overcount milestone",
+      "passed": true
+    },
+    {
+      "name": "Contextual typhoon tool animates, restores scene and adds exactly one star",
+      "passed": true
+    },
+    {
+      "name": "Contextual worm tool animates, restores scene and adds exactly one star",
+      "passed": true
+    },
+    {
+      "name": "Contextual wind tool animates, restores scene and adds exactly one star",
+      "passed": true
+    },
+    {
+      "name": "Contextual trouble tool animates, restores scene and adds exactly one star",
+      "passed": true
+    },
+    {
+      "name": "growth-button opens and closes with keyboard, without page overflow",
+      "passed": true
+    },
+    {
+      "name": "companions-button opens and closes with keyboard, without page overflow",
+      "passed": true
+    },
+    {
+      "name": "collection-button opens and closes with keyboard, without page overflow",
+      "passed": true
+    },
+    {
+      "name": "help-button opens and closes with keyboard, without page overflow",
+      "passed": true
+    },
+    {
+      "name": "Guide has checked sound default and honors opting out",
+      "passed": true
+    },
+    {
+      "name": "Audio denial gives retry, trusted retry plays and speaker can mute",
+      "passed": true
+    },
+    {
+      "name": "Reset clears demonstration progress and rewards",
+      "passed": true
+    },
+    {
+      "name": "Reset during animation cancels pending reward and restores actionable state",
+      "passed": true
+    },
+    {
+      "name": "Reduced motion completes actions with static scene",
+      "passed": true
+    },
+    {
+      "name": "Reload discards prototype progress and never writes browser storage",
+      "passed": true
+    },
+    {
+      "name": "Visible enabled button hit targets are at least 44×44px",
+      "passed": true
+    },
+    {
+      "name": "Short viewport shows complete tree and watering action: 320×568",
+      "passed": true
+    },
+    {
+      "name": "Short viewport shows complete tree and watering action: 402×600",
+      "passed": true
+    },
+    {
+      "name": "Finishing makeup preserves previously read but unwatered today and resumes its watering action",
+      "passed": true
+    },
+    {
+      "name": "No external API/auth/database requests, browser errors or missing resources",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "missing": [],
+  "passed": true
+}

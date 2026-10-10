@@ -4,7 +4,7 @@
 
 此整合位於 `website-maintenance.html` 的「宣傳圖片」，取用本週信息主題、經文、講員、日期、副標與聚會時間，產生官網橫式圖及 IG／Reel 直式圖。這是現有週報工作區的延伸，沿用 `website_weekly` 權限與原有儲存、審核、發布。
 
-目前是待啟用的實作，尚未部署、未完成 Canva OAuth，未取得實際 Canva 製圖及 Mac／iPhone 操作證據。不要宣稱正式可用或已達 99%。
+2026-10-10 已於正式專案建立 Canva 專用資料表並部署 `weekly-canva` v1；本次前端發布提供帳號連結與模板設定入口。使用者已回報完成 Canva 開發者設定及三筆 Edge secrets 儲存，但尚未由實際帳號完成 OAuth，也未設定兩套模板。此階段供應用擁有者完成開發授權及設定；Canva public 應用審核、實際製圖及 Mac／iPhone 操作仍待完成。不要宣稱完整產圖已可用或已達 99%。
 
 ## Canva 方案與整合資格
 
@@ -84,7 +84,7 @@
 
 ## 發布順序與待驗收
 
-1. 確認 Canva 應用、審核／發布資格、憑證及兩套可填版模板。
+1. 設定 Canva 應用、callback、五項 scopes 與正式 Edge secrets。先由應用擁有者完成開發授權與兩套可填版模板；對外使用前須確認 Canva 審核／發布資格。
 2. 僅於正式專案套用 `20261010121000_weekly_canva.sql`。
 3. 部署 `weekly-canva`，gateway `verify_jwt=false` 只為 OAuth callback；POST 仍逐次驗證使用者及權限。
 4. 發布前端資源。
@@ -97,4 +97,6 @@
    - 權杖過期、並發刷新、重新授權、模板變更與 Canva 限流。
    - 對外官網／IG 預覽及手機實際呈現。
 
-本次未新增或執行測試，只有語法解析及差異格式檢查。資料庫遷移及 Edge Function 尚未部署，沒有寫入舊資料庫或修改現有週報。
+本次未新增或執行測試；實作階段已做語法解析及差異格式檢查。部署僅套用至正式專案 `aqanuwilmvdtlzuqlrau`，未寫入舊資料庫或修改現有週報。管理 API 讀回的 Edge 檔案與提交原始碼一致，資料庫目錄顯示三張表均開啟 RLS，anon／authenticated 無直接存取，兩個租約 RPC 也僅 service_role 可執行。這些是部署設定證據，不等於 OAuth 或製圖功能測試。
+
+安全 Advisors 相較部署前僅增加三筆 `rls_enabled_no_policy` INFO，為刻意僅允許 service_role 存取的三張 Canva 表；沒有新增對 anon／authenticated 開放的 SECURITY DEFINER 警告。既有警告不在此變更範圍。

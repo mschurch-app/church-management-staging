@@ -1,0 +1,56 @@
+{
+  "checked_at_utc": "2026-10-10T03:04:46.609252+00:00",
+  "base": "https://mscos.mchurch.online",
+  "results": [
+    {
+      "file": "tree-reading-october-test.html",
+      "status": 200,
+      "expected_sha256": "9b90f26f78bace77fe633ceaaf92376a4fec3761db2aa952ca5eddcd58c7c122",
+      "actual_sha256": "9b90f26f78bace77fe633ceaaf92376a4fec3761db2aa952ca5eddcd58c7c122",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-test.mjs",
+      "status": 200,
+      "expected_sha256": "0cb9abf30a51a6cbd3b2464c8cc336fdd6330a59f6fde89110fbdf6813b1a102",
+      "actual_sha256": "0cb9abf30a51a6cbd3b2464c8cc336fdd6330a59f6fde89110fbdf6813b1a102",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-art.mjs",
+      "status": 200,
+      "expected_sha256": "a5791b4c9b213e7f050e4e9c09aa7330b0ff5776bfee7fcf499e1e8c9ddf38ec",
+      "actual_sha256": "a5791b4c9b213e7f050e4e9c09aa7330b0ff5776bfee7fcf499e1e8c9ddf38ec",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-journey.css",
+      "status": 200,
+      "expected_sha256": "7b3e80426e53057d7b2d94ea99798a2a1f2514d0e28b881be5ec284875cf33a5",
+      "actual_sha256": "7b3e80426e53057d7b2d94ea99798a2a1f2514d0e28b881be5ec284875cf33a5",
+      "matches": true
+    },
+    {
+      "file": "app-icons.mjs",
+      "status": 200,
+      "expected_sha256": "35b9d04283f49625b2575bfad266168c75c0fb4a84ceda3f58a00f5af8607358",
+      "actual_sha256": "35b9d04283f49625b2575bfad266168c75c0fb4a84ceda3f58a00f5af8607358",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/storm.wav",
+      "status": 200,
+      "expected_sha256": "473e2b905624737a02c4ed43591f91657b5a91c3327d14ac194b728b4d74cefb",
+      "actual_sha256": "473e2b905624737a02c4ed43591f91657b5a91c3327d14ac194b728b4d74cefb",
+      "matches": true
+    },
+    {
+      "file": "assets/audio/life-tree/care.wav",
+      "status": 200,
+      "expected_sha256": "4f1c1a0b5447bf69c55cb5f3b38095ac631e88a978e9ee94582242ce7fa4797f",
+      "actual_sha256": "4f1c1a0b5447bf69c55cb5f3b38095ac631e88a978e9ee94582242ce7fa4797f",
+      "matches": true
+    }
+  ],
+  "passed": true
+}

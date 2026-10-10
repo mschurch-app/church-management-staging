@@ -1,0 +1,52 @@
+{
+  "checked_at_utc": "2026-10-10T03:03:56.318376+00:00",
+  "base": "https://mscos.mchurch.online",
+  "results": [
+    {
+      "file": "tree-reading-october-test.html",
+      "status": 200,
+      "expected_sha256": "9b90f26f78bace77fe633ceaaf92376a4fec3761db2aa952ca5eddcd58c7c122",
+      "actual_sha256": "6cabc0e4b6e32cd8ce8ad8e3426719b28cf6777505b93b61af5a71734b083dc0",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-october-test.mjs",
+      "status": 200,
+      "expected_sha256": "0cb9abf30a51a6cbd3b2464c8cc336fdd6330a59f6fde89110fbdf6813b1a102",
+      "actual_sha256": "78a1d721a1afe490607325f16635ec8ddf9fb12769e07e99e1d07f47cb120e1a",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-october-art.mjs",
+      "status": 200,
+      "expected_sha256": "a5791b4c9b213e7f050e4e9c09aa7330b0ff5776bfee7fcf499e1e8c9ddf38ec",
+      "actual_sha256": "5b1cd043f83e6825a129b96e5074f0e8774a3d5c10fbf4e3031169d60b0a1eef",
+      "matches": false
+    },
+    {
+      "file": "tree-reading-october-journey.css",
+      "status": 200,
+      "expected_sha256": "7b3e80426e53057d7b2d94ea99798a2a1f2514d0e28b881be5ec284875cf33a5",
+      "actual_sha256": "9a44f1103cdd952b23b04e1e2c0e256ed5d3e749fc354802442cc2c581607072",
+      "matches": false
+    },
+    {
+      "file": "app-icons.mjs",
+      "status": 200,
+      "expected_sha256": "35b9d04283f49625b2575bfad266168c75c0fb4a84ceda3f58a00f5af8607358",
+      "actual_sha256": "793248f438c9f4672d620064f536bb31fb1811d5988f1898fdcf69c2fb47ccd4",
+      "matches": false
+    },
+    {
+      "file": "assets/audio/life-tree/storm.wav",
+      "matches": false,
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "file": "assets/audio/life-tree/care.wav",
+      "matches": false,
+      "error": "HTTP Error 404: Not Found"
+    }
+  ],
+  "passed": false
+}

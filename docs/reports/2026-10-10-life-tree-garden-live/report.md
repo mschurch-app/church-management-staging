@@ -39,7 +39,7 @@
 
 ## Git與部署
 
-Branch：`codex/life-tree-garden-preview`；PR #56。整合commit、GitHub同步、合併及正式資源讀回結果於發布完成後補記。目前未宣稱線上已更新。
+整合Branch：`codex/life-tree-garden-preview`；commit `68f84421a543ea4c4d1154f94fb58fe1204b280b` 已push，PR #56已合併main為 `91600b04c05a04d3add240af9eabed393ddca715`。發布證據使用 `codex/life-tree-garden-release` 文件分支。首次13:18:01讀回11/15符合，HTML／主模組仍為舊版、新模組／CSS尚未發布，保留為 `hosted-check-pending-1.json`，不算成功。13:19:08最終15/15全部HTTP 200且SHA-256符合Git來源，見 `hosted-check.json`，確認原入口、庭園模組／CSS、共用依賴、靈修與手札資源已發布。GitHub workflow查詢未返回run，不由該查詢推定部署成功，以實際HTTP與內容雜湊為依據。
 
 ## Database
 

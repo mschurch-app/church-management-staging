@@ -27,7 +27,7 @@ JavaScript／Python語法、git diff及新增文字secret模式掃描通過。Bu
 
 ## Git／發布
 
-分支codex/life-tree-playful-care，從main 5af9549c建立。驗證完成，本次commit包含程式、假資料驗證與截圖。接續依既有PR／GitHub Pages流程發布並讀回比對，合併及正式讀回狀態另補發布紀錄。
+功能分支codex/life-tree-playful-care，從main 5af9549c建立。Commit 385781822352dbd34fd9fe1ef71339e8163f11bb已push，PR #48已合併main為528a8ba3b980f8b9181c412cecf1e4dfda81ae8e。2026-10-10 11:04:46（台北）正式HTML／主模組／art／CSS／icons與兩個新WAV共七項HTTP 200且SHA-256符合Git來源，見hosted-check.json。第一次11:03:56仍為Pages舊版／新音檔404，50秒後全部一致，保留hosted-check-initial.json且不算通過。發布文件使用codex/life-tree-playful-release-record分支同步；本紀錄只補文件，不再修改程式，引用上述56項回歸。
 
 ## Database與回復
 

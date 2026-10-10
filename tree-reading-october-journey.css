@@ -117,3 +117,77 @@
 .october-journey #journey-guide-start{width:100%;min-height:48px;margin:12px 0 0}
 .october-journey .topbar-actions .guide-link{min-height:44px;padding:8px 12px;margin:0;font-size:13px;white-space:nowrap}
 @media(max-width:660px){.october-journey .journey-guide-card{padding:22px 18px}.october-journey .topbar-actions{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.october-journey .topbar-actions .preview-chip{font-size:10px;padding:4px 7px}}
+
+/* Context tools appear only during care. The central tree remains unobstructed. */
+.october-journey .journey-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+.october-journey .journey-actions button{display:grid;align-content:center;gap:5px;min-width:0;min-height:72px;padding:10px 6px;line-height:1.4;border-radius:16px}
+.october-journey .journey-actions button span{font-size:16px;font-weight:800;color:inherit}
+.october-journey .journey-actions button small{font-size:12px;font-weight:600;color:inherit}
+.october-journey .journey-actions .secondary[data-attention="true"]{border-color:#b57b3c;background:#fff3d8;color:#68421d}
+.october-journey .journey-steps{display:flex;gap:14px;padding:0;margin:0;list-style:none;font-size:12px;color:#536b5f}
+.october-journey .journey-steps [data-done="true"]{color:#246046;font-weight:800}
+.october-journey .journey-steps [data-done="true"]::after{content:' ✓'}
+.october-journey .tree-scene .tree-art[data-season]{width:100%;height:auto;min-height:0;aspect-ratio:1;margin:0}
+.october-journey .tree-care-tools{position:absolute;inset:0;z-index:3;pointer-events:none}
+.october-journey .tree-care-tools[hidden]{display:none}
+.october-journey .tree-tool{pointer-events:auto;position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:92px;min-height:100px;padding:8px 4px;border:2px solid #e2bd72;border-radius:25px;background:#fffaf0;color:#654324;box-shadow:0 6px 0 #cba876,0 10px 20px #203a4a25;touch-action:manipulation}
+.october-journey .tree-tool strong{font-size:13px;line-height:1.35;text-wrap:balance}
+.october-journey .tree-tool small{font-size:10px;line-height:1.4}
+.october-journey .tree-tool-icon{display:block;width:48px;height:48px;flex:none}
+.october-journey .tree-tool-icon svg{display:block;width:100%;height:100%}
+.october-journey .tree-tool-typhoon{left:3%;top:15%}
+.october-journey .tree-tool-worm{right:3%;top:15%}
+.october-journey .tree-tool-wind{left:3%;bottom:10%}
+.october-journey .tree-tool-trouble{right:3%;bottom:10%}
+.october-journey .tree-tool:active{transform:translateY(3px);box-shadow:0 3px 0 #cba876}
+.october-journey .tree-tool:disabled{opacity:.75}
+.october-journey .tree-tool:focus-visible{outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 7px #825b27}
+.october-journey .tree-care-feedback{margin:12px 0;padding:12px 14px;border-radius:15px;background:#f0f5e8;color:#36543a;font-size:15px;line-height:1.6}
+.october-journey .tree-care-feedback:empty{display:none}
+.october-journey .scene-music-label{font-size:12px;color:#536b5f;text-align:center;margin:10px 0}
+.october-journey .tree-challenge-notice{padding:12px 14px}
+.october-journey .tree-challenge-notice h3{font-size:18px}
+.october-journey .tree-challenge-notice p{font-size:13px;margin-bottom:8px}
+.october-journey .tree-challenge-notice .primary{min-height:44px}
+.october-journey .care-tool-success{position:absolute;left:21%;right:21%;top:37%;z-index:4;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border:2px solid #d5b36c;border-radius:24px;background:#fffaf1;box-shadow:0 8px 28px #244f4325;pointer-events:none;animation:care-tool-pop .45s ease-out}
+.october-journey .care-tool-success span:last-child{font-size:14px;font-weight:750;color:#36543a;text-align:center}
+.october-journey .care-scene-rain{animation:care-rainfall .8s linear infinite}
+.october-journey .care-scene-wind{animation:care-windpass 2s ease-in-out infinite alternate}
+.october-journey .makeup-card{border-color:#dcc18d;background:#fffaf0;scroll-margin-top:18px}
+.october-journey .makeup-summary{font-size:16px;font-weight:750;line-height:1.6;color:#654324}
+.october-journey .makeup-dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:16px 0}
+.october-journey .makeup-date{display:grid;gap:4px;padding:12px 8px;min-height:70px;border:1px solid #d2bb8c;border-radius:16px;background:#fff;color:#654324}
+.october-journey .makeup-date strong{font-size:17px}
+.october-journey .makeup-date small{font-size:12px}
+.october-journey .makeup-date[aria-pressed="true"]{border:2px solid #a56525;background:#fff0cd}
+.october-journey .makeup-card .late-date-field{display:grid;gap:8px;font-size:13px;color:#654324}
+.october-journey #resume-watering{width:100%;margin-top:14px;min-height:48px}
+.october-journey #makeup-expired:empty{display:none}
+@keyframes care-rainfall{from{transform:translate(8px,-16px)}to{transform:translate(-8px,16px)}}
+@keyframes care-windpass{from{transform:translateX(-12px)}to{transform:translateX(14px)}}
+@keyframes care-tool-pop{from{opacity:0;transform:translateY(12px) scale(.92)}to{opacity:1;transform:none}}
+@media(max-width:660px){
+ .october-journey:has(#member-view:not([hidden])) .hero{display:block;min-height:0;background:none;box-shadow:none}
+ .october-journey:has(#member-view:not([hidden])) .hero-copy{padding:10px 0 8px}
+ .october-journey:has(#member-view:not([hidden])) .hero h1{font-size:24px}
+ .october-journey:has(#member-view:not([hidden])) .hero-orbit{display:none}
+ .october-journey .journey-actions button span{font-size:14px}
+ .october-journey .journey-actions button small{font-size:11px}
+ .october-journey .tree-tool{width:80px;min-height:96px;border-radius:22px}
+ .october-journey .tree-tool-icon{width:42px;height:42px}
+ .october-journey .tree-tool strong{font-size:12px}
+ .october-journey .makeup-dates{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:380px){.october-journey .tree-tool{width:72px;min-height:88px;padding:6px 3px}.october-journey .tree-tool-icon{width:36px;height:36px}.october-journey .tree-tool strong{font-size:11px}}
+
+/* Seven compact date tiles; the eighth cell is the alternative date picker. */
+.october-journey .makeup-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;max-width:420px;margin:16px 0;align-items:stretch}
+.october-journey .makeup-picker .makeup-dates{display:contents}
+.october-journey .makeup-picker .makeup-date{min-width:0;min-height:66px;padding:8px 3px;gap:2px;border-radius:13px}
+.october-journey .makeup-picker .makeup-date strong{font-size:15px}
+.october-journey .makeup-picker .makeup-date small{font-size:11px;white-space:nowrap}
+.october-journey .makeup-picker .makeup-other{min-width:0;gap:3px;align-content:start;font-size:11px;text-align:center}
+.october-journey .makeup-picker .makeup-other span{line-height:19px}
+.october-journey .makeup-picker .makeup-other select{min-width:0;width:100%;height:44px;min-height:44px;padding:0 3px;border-radius:12px;font-size:11px}
+
+.october-journey .tree-weather{font-size:clamp(10px,2.7vw,12px);line-height:1.6;padding-inline:6px;letter-spacing:-.15px}

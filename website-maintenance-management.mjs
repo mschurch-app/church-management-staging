@@ -1,4 +1,4 @@
-import {initWeeklyCanva} from './weekly-canva.mjs?v=20261010-canva1';
+import {initWeeklyCanva} from './weekly-canva.mjs?v=20261010-canva-ai2';
 import {db} from './admin-db.mjs?v=20261009-stage4';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 

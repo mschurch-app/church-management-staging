@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-10",
+  "change": "每週依主日資訊透過 Canva AI 重新創作兩張宣傳圖",
+  "project_id": "aqanuwilmvdtlzuqlrau",
+  "edge_function": "weekly-canva",
+  "edge_version": 2,
+  "edge_status": "ACTIVE",
+  "deployed_source_readback_matches": true,
+  "edge_source_sha256": "18a05e79617ce04d1c1d9b416c1f025a9d598b4604c172e18fc7915d6786a2d1",
+  "schema_changes": false,
+  "asset_version": "20261010-canva-ai2",
+  "functional_tests_run": false,
+  "syntax_and_diff_checks": "passed",
+  "canva_ai_api": "Preview; public integration review/release unavailable while this API is used",
+  "canva_account_ai_eligibility": "not verified through website",
+  "pending": [
+    "正式帳號生成、額度及權限回應",
+    "單頁、中文與兩種尺寸排版",
+    "保存、送審及斷線恢復",
+    "Mac Safari/Chrome 與 iPhone 17 實機"
+  ],
+  "existing_bulletins_modified": false,
+  "old_databases_written": false,
+  "connector_demo_designs": [
+    "DAHXnd-_yBQ",
+    "DAHXnc4l6y0"
+  ],
+  "connector_demo_is_website_e2e_evidence": false
+}

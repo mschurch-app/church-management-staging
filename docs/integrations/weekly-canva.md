@@ -1,102 +1,79 @@
-# 週報後台 Canva 宣傳圖整合
+# 週報後台 Canva AI 宣傳圖整合
 
-## 範圍與狀態
+## 需求與範圍
 
-此整合位於 `website-maintenance.html` 的「宣傳圖片」，取用本週信息主題、經文、講員、日期、副標與聚會時間，產生官網橫式圖及 IG／Reel 直式圖。這是現有週報工作區的延伸，沿用 `website_weekly` 權限與原有儲存、審核、發布。
+2026-10-10 使用者明確要求：每週依主日日期、信息主題、經文出處與講員姓名，透過 Canva AI 創作全新不同的宣傳圖。新工作使用 AI 設計生成，不再要求建立、選擇或填入固定模板。入口仍為 `website-maintenance.html` 的「宣傳圖片」，沿用既有週報編輯權限、儲存、審核及發布。
 
-2026-10-10 已於正式專案建立 Canva 專用資料表並部署 `weekly-canva` v1；本次前端發布提供帳號連結與模板設定入口。使用者已回報完成 Canva 開發者設定及三筆 Edge secrets 儲存，但尚未由實際帳號完成 OAuth，也未設定兩套模板。此階段供應用擁有者完成開發授權及設定；Canva public 應用審核、實際製圖及 Mac／iPhone 操作仍待完成。不要宣稱完整產圖已可用或已達 99%。
+每次按「Canva AI 生成本週全新宣傳圖」建立一筆本週工作，分別創作官網橫式圖與 IG／Reel 直式圖。這是依每週內容操作的製圖入口，沒有排定無人值守的週期任務，也不會因開啟頁面而使用 AI 額度。
 
-## Canva 方案與整合資格
+前一版本採用模板填版，已於 PR #73 上線。使用者其後完成 Canva OAuth，正式資料庫可讀到 M+ 的授權連線。新版保留加密授權及歷史工作；不刪除既有週報、圖片或測試手札。
 
-使用者確認教會使用 Pro／教育／非營利方案。Canva 官方 2026-09-23 公告及現行 Autofill guide 已開放 Pro、教育、非營利、Teams、Enterprise 使用自動填版。這不等同於所有方案都可建立私人整合。
+## Canva AI 開放狀況與限制
 
-- 教會 OS 自有 REST 整合需要另外建立 Canva 開發者應用、啟用 REST APIs，取得 OAuth 用戶端並由教會帳號授權。
-- Public 整合對外提供前須通過 Canva 審核；私人整合目前要求 Enterprise。Pro 的開發驗證不能直接當作已完成正式發布資格。
-- 本對話的 Canva 連接器授權不能複製成網站的存取權杖。
-- 不使用 Preview API：頁面尺寸直接檢查匯出 JPEG，避開仍為 Preview 的設計頁面 API。
-- 本次透過 REST API 填版、匯出；沒有呼叫 Canva AI 自由生圖 API。背景來自已設計的情境模板。任意經文全新背景創作須另確認正式可用的服務及授權。
+官方 REST API 已提供 `POST /v1/generations` 及 `GET /v1/generations/{jobId}`。此介面為 **Preview**：可能無預告變更，使用此介面的 public 整合目前不能通過 Canva 公開發布審核。新版明確標示試行；僅供 Canva 所允許的應用擁有者開發驗證範圍使用，不宣稱已具備對所有同工開放的正式發布資格。
 
-官方參考：
+AI 生成目前支援 `presentation` 與 `doc`，未直接支援任意海報尺寸。因此每種用途各請 Canva AI 創作單頁可編輯設計，確認只有一頁後，透過 Canva Resize 建立 1600×900 與 1080×1920 的副本，最後匯出 JPEG 並檢查實際像素。直式重排、中文正確性及視覺品質仍必須人工預覽；不能用檔案尺寸通過推定排版正確。
 
-- [Autofill guide](https://www.canva.dev/docs/apps/rest-apis/autofill-guide/)
+- AI 生成需要帳號具備 `design_generation` 能力；方案名稱不足以保證團隊已開放。未開放時顯示具體錯誤，不以簡易排版冒充 AI 結果。
+- 尺寸調整需要 `resize` 能力，通常為 premium 方案功能。若未開放，保留已生成的設計供查看。
+- 每筆全新工作會送出兩次 AI 生成要求，依 Canva 計費方式扣用已連線教會帳號的 AI 額度；不假定一次工作固定扣兩點。
+- 查詢既有生成工作、重新匯出相同設計不會再次呼叫 AI 生成；在 Canva 人工使用其他 AI 功能仍依 Canva 規則計費。
+- 額度用完與冷卻期分開處理；不自動重送 AI 生成。
+- 本對話的 Canva 連接器與教會 OS 自有 OAuth 是不同連線。對話中的示範圖不能證明網站的 AI 生成權限或完整流程已通過。
+- 目前未接入 Canva MCP；不需要為本版另開 MCP 開關。
+
+官方依據：
+
+- [Create design generation job](https://www.canva.dev/docs/apps/rest-apis/reference/generations/create-design-generation-job/)
+- [Get design generation job](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-design-generation-job/)
+- [Create design resize job](https://www.canva.dev/docs/apps/rest-apis/reference/resizes/create-design-resize-job/)
+- [Get design resize job](https://www.canva.dev/docs/apps/rest-apis/reference/resizes/get-design-resize-job/)
+- [Get user capabilities](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/)
 - [OAuth authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/)
-- [App quickstart 與 public/private 條件](https://www.canva.dev/docs/apps/quickstart/)
-- [Canva REST API 定義](https://www.canva.dev/sources/connect/api/latest/api.yml)
 
-## 開發者設定
+## 授權與設定
 
-1. 由教會 Canva 帳號建立合適分發方式的應用，啟用 REST APIs，依 Canva 要求啟用 MFA。
-2. 設定 OAuth callback：
-   `https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-canva/callback`
-3. 開啟 scopes：`design:content:read`、`design:content:write`、`design:meta:read`、`brandtemplate:meta:read`、`brandtemplate:content:read`。
-4. 在正式 Supabase 專案 `aqanuwilmvdtlzuqlrau` 的 Edge Function secrets 設定：
-   - `CANVA_CLIENT_ID`
-   - `CANVA_CLIENT_SECRET`
-   - `CANVA_TOKEN_ENCRYPTION_KEY`：至少 32 字元的獨立隨機值。不可隨意變更；變更後既有授權需重連。
-5. 不將 client secret 或 OAuth tokens 放入 HTML、前端模組、Git、操作紀錄或聊天。
-6. 部署前先確認 Canva 分發與審核條件。正式多人使用不能以開發模式繞過 Canva 的審核或方案規則。
+沿用使用者已完成的應用及 secrets，不需重新產生密鑰。
 
-## 模板契約
+- OAuth callback：`https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-canva/callback`
+- 新授權只要求 `design:content:read`、`design:content:write`、`design:meta:read`，用於生成、尺寸調整、匯出與編輯連結。原本包含品牌模板權限的授權已含上述三項，可繼續使用；不強制重連。
+- 正式 Edge secrets：`CANVA_CLIENT_ID`、`CANVA_CLIENT_SECRET`、`CANVA_TOKEN_ENCRYPTION_KEY`。加密金鑰不可任意更換。
+- 本版不增加 `profile:read` 權限，因此不呼叫需要該權限的 capabilities 端點；以實際生成／尺寸調整介面的明確拒絕回應判定功能未開放。連線狀態成功不代表已取得 AI 生成能力。
+- 不將 secret、OAuth tokens 或下載暫時網址放入前端、Git 或聊天。
 
-建立兩個獨立 Canva 品牌模板，分別為 1600×900（16:9）與 1080×1920（9:16）。每個模板以第一頁作為輸出。中文字使用 Canva 內文字圖層，預留長講題及長經文空間。
+## 每週操作
 
-必須透過 Canva 的 Data Autofill 設定把文字圖層標記為下列資料欄位。僅寫上大括號或欄位名稱不代表已設定可填入欄位。
+1. 在原週報工作區填寫主日日期、主題、經文與講員；副標與聚會時間依既有欄位提供。
+2. 按「Canva AI 生成本週全新宣傳圖」。提示清楚說明使用 AI 額度；請求需包含此次 AI 操作標記，舊版填版請求不會意外觸發新 AI 費用。
+3. Canva AI 依本週信息重新發想背景、意象、配色與布局。程式輪替創作方向並避開最近方向，方向只作提示，不是固定模板；AI 隨機結果的美感及差異度須人工確認。
+4. 生成、單頁核對、尺寸調整、匯出與保存分步進行。等待超過本次查詢期限時按「繼續查詢製圖結果」，接續同一筆工作。
+5. 兩圖皆完成、檢查 JPEG 尺寸並下載成功後，才一起帶入原週報預覽。
+6. 核對日期、主題、經文、姓名、中文與直式排版；可開啟 Canva 微調。儲存後回後台按「帶回 Canva 最新圖片」，不重新生成。
+7. 儲存週報，再依既有流程送審。圖片生成不直接發布。
 
-| 欄位 | 類型 | 來源 |
-| --- | --- | --- |
-| TOPIC | text，必填 | 主日信息主題 |
-| SCRIPTURE | text，必填 | 經文出處 |
-| SPEAKER | text，必填 | 講員 |
-| SERVICE_DATE | text，必填 | YYYY-MM-DD |
-| SUBTITLE | text，選填 | 副標 |
-| SERVICE_TIME | text，選填 | 聚會時間 |
-| CHURCH_NAME | text，選填 | 伺服器依堂會指定 |
+新週報尚未儲存時使用前端 UUID；主動放棄並重新建立的週報 UUID 不同。建議先儲存草稿，保留穩定工作入口。
 
-先設定一組「通用」模板，即可啟用製圖。其他可選情境為山與守護、活水與平安、光與盼望、生命與成長、聖靈與更新、道路與信心。管理員可為每種情境另外設定一組橫／直模板。程式依講題、經文關鍵字選用已設定的情境；無符合情境時使用通用模板。
+## 錯誤與恢復
 
-截至本次唯讀查詢，連接器可搜尋到既有 `2026 weekly(42 x 29.7 公分)`；其 dataset 為空，不能當作自動填版模板，也不會修改該週報。
+生成只接受單頁結果。多頁結果保留 Canva 設計供查看，停止自動套用，不偷偷選一頁當成完整成品。生成未開放、額度不足、內容未接受、尺寸調整失敗與匯出失敗均顯示具體提示，原有圖片與輸入保持不變。
 
-## 操作流程
+遠端 POST 前先保存階段。若連線中斷、伺服器錯誤或本地保存失敗，不能證明遠端未建立；封鎖自動重送，提示先查看 Canva。只有明確的未授權／限流拒絕會回復待處理階段，限流至少延後 30 秒再允許遠端操作。輪詢每筆 AI／resize 工作至少間隔 5 秒，匯出至少 3 秒；以伺服器紀錄限制重複查詢。
 
-1. 週報審核管理員在原工作區按「連結 Canva」，在新視窗完成 OAuth。原週報輸入留在原頁。
-2. 如果 Canva 返回視窗沒有自動通知原頁，按「重新確認連線」。
-3. 選擇並儲存兩個通用模板；需要時設定其他情境模板。
-4. 同工填寫主日資訊後按「用 Canva 產生預告圖與 IG 圖」。
-5. 產圖、匯出分步查詢，逾時後按「繼續查詢」接續原工作；不自動重建設計。
-6. 兩張圖片皆成功匯出、驗證尺寸、保存並下載後，才一起帶入預覽。
-7. 需要微調時開啟該設計，在 Canva 儲存後回原頁按「帶回 Canva 最新圖片」。
-8. 儲存週報，再依既有流程送審。產圖不會自動送審或發布。
+已生成但尺寸調整失敗時，可開啟原設計查看。只有兩個最終設計均存在才提供重新匯出；不會把重新匯出變成重新生成 AI。
 
-首次尚未儲存的週報使用前端 UUID；若主動關閉並放棄未儲存週報，無法在重新建立的新 UUID 下直接接續舊工作的預覽。應先儲存週報以保留穩定工作入口。
+## 權限、資料與共用介面
 
-## 權限與恢復
+- 所有 POST 逐次驗證 JWT、目前堂會及 `get_weekly_bulletin_review_profile`；只有原週報編輯同工能製圖，只有原週報審核管理員能連結教會 Canva。
+- 工作限定操作帳號、堂會與週報，已送審／發布狀態禁止更換圖片。
+- 沿用原三張 service_role 專用表及租約 RPC，RLS 與 anon／authenticated 撤權不變；本版無 schema 變更。
+- OAuth PKCE、一次性 state、AES-GCM tokens、刷新租約沿用。沒有擴大前端資料存取權。
+- 匯出後端僅下載 Canva HTTPS 網域、拒絕重新導向、最大 12 MB，驗證 JPEG 與實際像素。永久圖片沿用網站媒體 bucket，兩圖仍走既有 pending blobs 與版本條件儲存。
+- 舊填版工作的 JSON 保留相容讀取／接續；新版不提供新增模板工作入口。
+- 共用管理表頭不變，Canva 區沿用系統字體、語意色、44px 操作與 Mac 雙欄／手機單欄預覽。移除已不適用的模板選擇欄位。
+- HTML、模組、CSS、callback 及 App 快取同步更新至 `20261010-canva-ai2`。
 
-- 所有 POST 由後端驗證 JWT 及目前堂會 `get_weekly_bulletin_review_profile`。
-- 週報編輯同工可製圖；只有既有週報審核管理員可授權 Canva 與保存模板。前端隱藏不構成授權。
-- 新三張表開啟 RLS，撤銷 anon／authenticated 的直接讀寫；只有 service_role 存取。兩個租約 RPC 同樣限 service_role。
-- OAuth 使用 PKCE、不可預測且有期限的一次性 state。state 僅保存雜湊；verifier、access／refresh tokens 以 AES-GCM 加密，並綁定堂會與用途。
-- Refresh token 更新有租約，避免並發消耗輪替權杖。
-- 圖片工作綁定實際操作帳號與堂會，每筆工作使用同一 UUID 作為重試識別。
-- 遠端建立前先保存階段；建立結果不明時阻止靜默重試。若平台中斷發生在遠端建立與本地保存之間，顯示需先查看 Canva 的提示。
-- 匯出網址只在後端短暫使用，不作為網站永久圖片網址。只下載 Canva HTTPS 來源、拒絕重新導向、限制 12 MB，驗證 JPEG 與像素尺寸。
-- 兩張圖仍走原本 `pendingHomeBlob`／`pendingReelBlob` 與週報版本條件保存，既有圖片在新圖完成前保持不變。
-- 新版 HTML、工作區模組、Canva 模組／CSS、callback 模組及 App 快取版本同步。
+## 驗收狀態
 
-## 發布順序與待驗收
+本次未新增或執行功能測試。語法解析、差異格式及正式部署資源讀回只代表提交／部署狀態，不等同於生成、權限與資料流程通過。
 
-1. 設定 Canva 應用、callback、五項 scopes 與正式 Edge secrets。先由應用擁有者完成開發授權與兩套可填版模板；對外使用前須確認 Canva 審核／發布資格。
-2. 僅於正式專案套用 `20261010121000_weekly_canva.sql`。
-3. 部署 `weekly-canva`，gateway `verify_jwt=false` 只為 OAuth callback；POST 仍逐次驗證使用者及權限。
-4. 發布前端資源。
-5. 使用者授權測試後，完成下列驗收；現階段全數待驗收：
-   - Mac Safari／Chrome、iPhone 17 Safari／已安裝 App 的 OAuth、取消、彈出視窗阻擋、返回及輸入保留。
-   - M+／SHiNE 權限、無權限、未登入、不同帳號工作隔離、已送審週報鎖定。
-   - 兩個正確尺寸模板、缺欄位、錯尺寸、長講題、中文斷行與講員資訊。
-   - 產圖、微調後重新匯出、兩圖儲存、送審及原有 Reel 流程。
-   - 慢網路、斷線、重複點擊、建立回應遺失、匯出失敗、圖片下載失敗與原圖保留。
-   - 權杖過期、並發刷新、重新授權、模板變更與 Canva 限流。
-   - 對外官網／IG 預覽及手機實際呈現。
-
-本次未新增或執行測試；實作階段已做語法解析及差異格式檢查。部署僅套用至正式專案 `aqanuwilmvdtlzuqlrau`，未寫入舊資料庫或修改現有週報。管理 API 讀回的 Edge 檔案與提交原始碼一致，資料庫目錄顯示三張表均開啟 RLS，anon／authenticated 無直接存取，兩個租約 RPC 也僅 service_role 可執行。這些是部署設定證據，不等於 OAuth 或製圖功能測試。
-
-安全 Advisors 相較部署前僅增加三筆 `rls_enabled_no_policy` INFO，為刻意僅允許 service_role 存取的三張 Canva 表；沒有新增對 anon／authenticated 開放的 SECURITY DEFINER 警告。既有警告不在此變更範圍。
+以下保持待驗收：正式帳號 AI 介面 eligibility、兩次生成及額度回應、單頁約束、中文校對、Canva Resize 後直式排版、兩圖保存與送審、斷線恢復、OAuth 過期、堂會與帳號隔離、Mac Safari／Chrome、iPhone 17 Safari／已安裝 App。沒有真機證據，不宣稱達到 99%。

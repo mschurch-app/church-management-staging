@@ -1,0 +1,536 @@
+{
+  "environment": "Chromium isolated synthetic LINE/API/Scripture; no external database access; no real-device or audible-output claims",
+  "checks": [
+    {
+      "name": "First visit shows explanation with prechecked sound choice, focused heading and no premature audio",
+      "passed": true
+    },
+    {
+      "name": "First-visit explanation fills phone and desktop viewports and scrolls to reachable start control",
+      "passed": true
+    },
+    {
+      "name": "Prechecked sound starts only on trusted Start click",
+      "passed": true
+    },
+    {
+      "name": "Unchecked choice permits normal use, persists silent preference and does not repeat onboarding",
+      "passed": true
+    },
+    {
+      "name": "Reopened explanation closes with Escape and restores keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Checking sound alone does not play; trusted keyboard Start primes both native players and advances music clock",
+      "passed": true
+    },
+    {
+      "name": "Remembered opt-in attempts autoplay on reload; blocked playback resumes on normal gesture, speaker still mutes",
+      "passed": true
+    },
+    {
+      "name": "Allowed browser policy restores remembered music on entry without pressing any control",
+      "passed": true
+    },
+    {
+      "name": "Trusted touch on ordinary tree text starts both players even when click propagation is suppressed",
+      "passed": true
+    },
+    {
+      "name": "Normal touch supersedes a pending autoplay attempt immediately without waiting six seconds",
+      "passed": true
+    },
+    {
+      "name": "Remembered mute stays silent on reload, page return and ordinary interactions",
+      "passed": true
+    },
+    {
+      "name": "No devotional dock before watering",
+      "passed": true
+    },
+    {
+      "name": "Healthy tree artwork has no overlaid controls; 44px speaker sits in heading at 320/402/1440px",
+      "passed": true
+    },
+    {
+      "name": "Stable three-action navigation exposes missing count, exact date/chapter and honest 7-day expiry",
+      "passed": true
+    },
+    {
+      "name": "Refresh button works and ignores repeat clicks",
+      "passed": true
+    },
+    {
+      "name": "Trusted touch starts native music and primes same effect element; clock advances; mute pauses both",
+      "passed": true
+    },
+    {
+      "name": "Audio failure shows retry without claiming playback",
+      "passed": true
+    },
+    {
+      "name": "Never-resolving media playback times out, stops both channels and restores controls",
+      "passed": true
+    },
+    {
+      "name": "Speaker retry recovers playback and enables effects",
+      "passed": true
+    },
+    {
+      "name": "Effect-only failure reports retry while music continues; retry reuses exactly two media elements",
+      "passed": true
+    },
+    {
+      "name": "Background pauses all audio; visible page retries remembered music through the same players",
+      "passed": true
+    },
+    {
+      "name": "Every shipped WAV decodes with nonzero signal and controlled peak/RMS",
+      "passed": true,
+      "reading": {
+        "duration": 16,
+        "rms": 0.07878850687529529,
+        "peak": 0.3799859583377838
+      },
+      "storm": {
+        "duration": 16,
+        "rms": 0.08409791203098876,
+        "peak": 0.379974365234375
+      },
+      "care": {
+        "duration": 16,
+        "rms": 0.06026710110239843,
+        "peak": 0.379974365234375
+      },
+      "open": {
+        "duration": 0.58,
+        "rms": 0.13775600022333778,
+        "peak": 0.5500046014785767
+      },
+      "celebration": {
+        "duration": 1.28,
+        "rms": 0.1729303461381987,
+        "peak": 0.54998779296875
+      },
+      "water": {
+        "duration": 0.72,
+        "rms": 0.14988838384479874,
+        "peak": 0.5500046014785767
+      },
+      "journal": {
+        "duration": 0.58,
+        "rms": 0.13789810549983342,
+        "peak": 0.54998779296875
+      },
+      "wind": {
+        "duration": 0.72,
+        "rms": 0.1499420886926315,
+        "peak": 0.54998779296875
+      }
+    },
+    {
+      "name": "Today reading requires reaching Scripture end",
+      "passed": true
+    },
+    {
+      "name": "Read request has pending state and duplicate guard",
+      "passed": true
+    },
+    {
+      "name": "Failed watering remains retryable without showing devotional dock or playing celebration sound",
+      "passed": true
+    },
+    {
+      "name": "Watering success unlocks invitation once and plays celebration through the reused, gesture-primed element after API completion",
+      "passed": true
+    },
+    {
+      "name": "Watering success immediately reveals clickable floating invitation",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation fits mobile, short and desktop viewports with 44px controls",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation remains available at tree heading without an upper duplicate entry",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation hides while writing and returns after leaving the input",
+      "passed": true
+    },
+    {
+      "name": "Floating entry and fixed return preserve October progress and draft without repeating the invitation",
+      "passed": true
+    },
+    {
+      "name": "Dismissal survives progress refresh",
+      "passed": true
+    },
+    {
+      "name": "Journal failure retains input; success ignores repeat submissions",
+      "passed": true
+    },
+    {
+      "name": "worm challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+      "passed": true
+    },
+    {
+      "name": "wind challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+      "passed": true
+    },
+    {
+      "name": "typhoon challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+      "passed": true
+    },
+    {
+      "name": "trouble challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+      "passed": true
+    },
+    {
+      "name": "Future and resolved challenges cannot trigger notice, count or altered background",
+      "passed": true
+    },
+    {
+      "name": "Multiple active challenges keep reminder and next scene until all current care is complete",
+      "passed": true
+    },
+    {
+      "name": "Four cute tools surround tree without covering each other at 320/402/1440px",
+      "passed": true
+    },
+    {
+      "name": "Seedling stays visibly enlarged while its gentle sway animation runs",
+      "passed": true
+    },
+    {
+      "name": "Wind tool presents two people shoulder to shoulder with mutual-support label",
+      "passed": true
+    },
+    {
+      "name": "Repeated same-type challenges share one counted tool and resolve one record per click",
+      "passed": true
+    },
+    {
+      "name": "Healthy tree hides context tools and care shortcut gives clear feedback",
+      "passed": true
+    },
+    {
+      "name": "18-person garden uses readable rows without horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Late garden response cannot overwrite a newer personal view",
+      "passed": true
+    },
+    {
+      "name": "Care shortcut cancels a pending garden switch and remains at personal tree",
+      "passed": true
+    },
+    {
+      "name": "Ranking loads on demand",
+      "passed": true
+    },
+    {
+      "name": "320–1920px layouts fit, controls meet 44px and compact makeup grid has 4 dates then 3 plus dropdown",
+      "passed": true
+    },
+    {
+      "name": "Reduced-motion preference stops decorative animations",
+      "passed": true
+    },
+    {
+      "name": "Failed Scripture fetch offers a working retry",
+      "passed": true
+    },
+    {
+      "name": "Scripture deadline clears failed cache and permits retry",
+      "passed": true
+    },
+    {
+      "name": "Makeup reading and watering use selected date without claiming today completion or showing floating invite",
+      "passed": true
+    },
+    {
+      "name": "run",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /正在記錄/. Input:\n\n'正在記錄讀經…'\n\n    at file:///private/tmp/church-os-shine-email/tests/life-tree/browser.mjs:131:997"
+    }
+  ],
+  "errors": [],
+  "calls": [
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "mark_read",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "pest",
+      "challenge": "fixture-worm"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "pest",
+      "challenge": "fixture-worm"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "support",
+      "challenge": "fixture-wind"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "support",
+      "challenge": "fixture-wind"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "guard",
+      "challenge": "fixture-typhoon"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "guard",
+      "challenge": "fixture-typhoon"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "repair",
+      "challenge": "fixture-trouble"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "repair",
+      "challenge": "fixture-trouble"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "support",
+      "challenge": "multi-wind"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "pest",
+      "challenge": "multi-worm"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "pest",
+      "challenge": "worm-a"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "resolution": "pest",
+      "challenge": "worm-b"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "garden",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "garden",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "garden",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "leaderboard",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "mark_read",
+      "date": "2026-10-09",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-09",
+      "endpoint": "/functions/v1/tree-reading-october-test"
+    }
+  ]
+}

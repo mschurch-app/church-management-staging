@@ -8,7 +8,7 @@
 
 `node --test tests/life-tree/backend.mjs` 或在 tests 內執行 `npm run life-tree:backend`（Node 22.13以上）。直接去除 production TypeScript 的型別後執行原 Edge Function handler，只隔離外部 SDK、LINE驗證及資料庫；不模擬 handler 的成功邏輯、不連線或寫入真實資料庫。`TREE_FUNCTION_SOURCE` 可指定部署讀回的 source 檔，以相同測試驗證實際部署內容。
 
-涵蓋10/9讀經及澆水、七天補讀10/3–10/9、當日讀經、到期／未來／非法日期、加入日期、重複提交保留原紀錄與澆水時間、本人範圍、未驗證／未加入拒絕及資料庫失敗。瀏覽器測試攔截API回應，不能代替此測試；2026-10-10修正前15項有7項失敗，抓到原handler漏定義shiftDate導致補讀503。
+另涵蓋未來挑戰不提前影響共同花園／管理統計、未到期不能完成、台北午夜到期及四種道具本人範圍。涵蓋10/9讀經及澆水、七天補讀10/3–10/9、當日讀經、到期／未來／非法日期、加入日期、重複提交保留原紀錄與澆水時間、本人範圍、未驗證／未加入拒絕及資料庫失敗。瀏覽器測試攔截API回應，不能代替此測試；2026-10-10修正前15項有7項失敗，抓到原handler漏定義shiftDate導致補讀503。
 
 使用 `tests/package.json` 鎖定的 puppeteer-core。安裝及執行：
 

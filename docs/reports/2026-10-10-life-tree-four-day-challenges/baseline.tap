@@ -1,0 +1,214 @@
+TAP version 13
+# (node:2008) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Future challenge is hidden from shared garden until its Taipei date
+not ok 1 - Future challenge is hidden from shared garden until its Taipei date
+  ---
+  duration_ms: 135.367343
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:10:41)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Old and current challenges remain visible in the garden
+ok 2 - Old and current challenges remain visible in the garden
+  ---
+  duration_ms: 14.060075
+  type: 'test'
+  ...
+# Subtest: Admin overview excludes future challenges from issued and resolved totals
+not ok 3 - Admin overview excludes future challenges from issued and resolved totals
+  ---
+  duration_ms: 38.919737
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    3 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 3
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:23:42)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Future challenges cannot be resolved early, including with the correct tool
+not ok 4 - Future challenges cannot be resolved early, including with the correct tool
+  ---
+  duration_ms: 9.874207
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    200 !== 400
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 400
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:29:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: All four tools resolve their own current challenges and preserve other challenges
+ok 5 - All four tools resolve their own current challenges and preserve other challenges
+  ---
+  duration_ms: 21.038847
+  type: 'test'
+  ...
+# Subtest: Scheduled challenges become actionable exactly at Taipei midnight
+not ok 6 - Scheduled challenges become actionable exactly at Taipei midnight
+  ---
+  duration_ms: 5.835003
+  type: 'test'
+  location: '/private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    2026-10-10T15:59:59Z
+    
+    200 !== 400
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 400
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/tmp/church-os-shine-email/tests/life-tree/backend.mjs:44:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Actual me contract identifies participant with line_subject, not an invented id
+ok 7 - Actual me contract identifies participant with line_subject, not an invented id
+  ---
+  duration_ms: 18.370005
+  type: 'test'
+  ...
+# Subtest: Journal save and me use actual date and return only the verified member notes
+ok 8 - Journal save and me use actual date and return only the verified member notes
+  ---
+  duration_ms: 11.94318
+  type: 'test'
+  ...
+# Subtest: Yesterday (10/9) is recorded and watered through the real handler
+ok 9 - Yesterday (10/9) is recorded and watered through the real handler
+  ---
+  duration_ms: 7.837125
+  type: 'test'
+  ...
+# Subtest: All seven makeup dates 10/3–10/9 can be recorded and watered
+ok 10 - All seven makeup dates 10/3–10/9 can be recorded and watered
+  ---
+  duration_ms: 41.043367
+  type: 'test'
+  ...
+# Subtest: Today remains on time and can be watered
+ok 11 - Today remains on time and can be watered
+  ---
+  duration_ms: 7.47968
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-02 causes no writes
+ok 12 - Invalid/expired/future date 2026-10-02 causes no writes
+  ---
+  duration_ms: 5.550618
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-11 causes no writes
+ok 13 - Invalid/expired/future date 2026-10-11 causes no writes
+  ---
+  duration_ms: 6.04814
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-09-30 causes no writes
+ok 14 - Invalid/expired/future date 2026-09-30 causes no writes
+  ---
+  duration_ms: 9.675405
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date bad-date causes no writes
+ok 15 - Invalid/expired/future date bad-date causes no writes
+  ---
+  duration_ms: 6.071397
+  type: 'test'
+  ...
+# Subtest: Participant start date remains enforced
+ok 16 - Participant start date remains enforced
+  ---
+  duration_ms: 8.079915
+  type: 'test'
+  ...
+# Subtest: Duplicate makeup read and water preserve completion and watering timestamps
+ok 17 - Duplicate makeup read and water preserve completion and watering timestamps
+  ---
+  duration_ms: 13.162398
+  type: 'test'
+  ...
+# Subtest: Watering cannot create an unread record or water another person
+ok 18 - Watering cannot create an unread record or water another person
+  ---
+  duration_ms: 4.120308
+  type: 'test'
+  ...
+# Subtest: Invalid LINE verification cannot read or write
+ok 19 - Invalid LINE verification cannot read or write
+  ---
+  duration_ms: 3.185982
+  type: 'test'
+  ...
+# Subtest: Missing bearer token cannot write
+ok 20 - Missing bearer token cannot write
+  ---
+  duration_ms: 2.222047
+  type: 'test'
+  ...
+# Subtest: Unjoined LINE member cannot write
+ok 21 - Unjoined LINE member cannot write
+  ---
+  duration_ms: 3.381612
+  type: 'test'
+  ...
+# Subtest: Database insert failure remains a failure, with no fabricated completion
+ok 22 - Database insert failure remains a failure, with no fabricated completion
+  ---
+  duration_ms: 3.69653
+  type: 'test'
+  ...
+# Subtest: Database watering failure preserves unread-water state
+ok 23 - Database watering failure preserves unread-water state
+  ---
+  duration_ms: 5.299037
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 19
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 813.459902

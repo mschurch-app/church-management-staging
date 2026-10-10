@@ -126,8 +126,9 @@ Deno.serve(async request=>{
     if(action==='resolve_challenge'){
       const id=Number(body.challengeId),resolutionAction=typeof body.resolutionAction==='string'?body.resolutionAction:'';
       if(!Number.isSafeInteger(id))return reply(origin,{ok:false,error:'invalid_action'},400);
-      const existing=await db.from('tree_reading_october_test_challenges').select('id,challenge_type,status').eq('id',id).eq('line_subject',identity.subject).maybeSingle();
+      const existing=await db.from('tree_reading_october_test_challenges').select('id,challenge_date,challenge_type,status').eq('id',id).eq('line_subject',identity.subject).maybeSingle();
       if(existing.error||!existing.data)return reply(origin,{ok:false,error:'challenge_not_found'},404);
+      if(existing.data.challenge_date>today)return reply(origin,{ok:false,error:'challenge_not_started'},400);
       const expected=SOLUTIONS[existing.data.challenge_type];
       if(existing.data.status!=='active'||resolutionAction!==expected)return reply(origin,{ok:false,error:'resolution_invalid'},400);
       const resolved=await db.from('tree_reading_october_test_challenges').update({status:'resolved',resolution_action:resolutionAction,resolved_at:new Date().toISOString()}).eq('id',id).eq('line_subject',identity.subject).eq('status','active').select('id').maybeSingle();
@@ -153,7 +154,7 @@ Deno.serve(async request=>{
     if(action==='garden'){
       const people=await db.from('tree_reading_october_test_participants').select('line_subject,display_name,reading_start_date').order('joined_at');
       const progress=await db.from('tree_reading_october_test_progress').select('line_subject,reading_date,completion_type');
-      const events=await db.from('tree_reading_october_test_challenges').select('line_subject,status,challenge_type');
+      const events=await db.from('tree_reading_october_test_challenges').select('line_subject,status,challenge_type').lte('challenge_date',today);
       if(people.error||progress.error||events.error)return reply(origin,{ok:false,error:'unavailable'},503);
       // Staff test participants explicitly share display names and reading-day totals in the garden.
       // LINE subjects remain server-side and are never included in the response.
@@ -167,7 +168,7 @@ Deno.serve(async request=>{
       if(people.error)return reply(origin,{ok:false,error:'unavailable'},503);
       const all=await db.from('tree_reading_october_test_progress').select('line_subject,reading_date');
       if(all.error)return reply(origin,{ok:false,error:'unavailable'},503);
-      const events=await db.from('tree_reading_october_test_challenges').select('status');
+      const events=await db.from('tree_reading_october_test_challenges').select('status').lte('challenge_date',today);
       if(events.error)return reply(origin,{ok:false,error:'unavailable'},503);
       const members=(people.data||[]).map(person=>({display_name:person.display_name,reading_start_date:person.reading_start_date,completed_count:(all.data||[]).filter(item=>item.line_subject===person.line_subject).length,expected_count:expectedCount(person.reading_start_date,today)}));
       return reply(origin,{ok:true,members,challenge_count:(events.data||[]).length,resolved_challenges:(events.data||[]).filter(item=>item.status==='resolved').length});

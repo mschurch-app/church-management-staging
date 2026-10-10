@@ -1,0 +1,150 @@
+TAP version 13
+# (node:2153) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Future challenge is hidden from shared garden until its Taipei date
+ok 1 - Future challenge is hidden from shared garden until its Taipei date
+  ---
+  duration_ms: 140.585502
+  type: 'test'
+  ...
+# Subtest: Old and current challenges remain visible in the garden
+ok 2 - Old and current challenges remain visible in the garden
+  ---
+  duration_ms: 13.765413
+  type: 'test'
+  ...
+# Subtest: Admin overview excludes future challenges from issued and resolved totals
+ok 3 - Admin overview excludes future challenges from issued and resolved totals
+  ---
+  duration_ms: 35.215973
+  type: 'test'
+  ...
+# Subtest: Future challenges cannot be resolved early, including with the correct tool
+ok 4 - Future challenges cannot be resolved early, including with the correct tool
+  ---
+  duration_ms: 6.472305
+  type: 'test'
+  ...
+# Subtest: All four tools resolve their own current challenges and preserve other challenges
+ok 5 - All four tools resolve their own current challenges and preserve other challenges
+  ---
+  duration_ms: 24.429597
+  type: 'test'
+  ...
+# Subtest: Scheduled challenges become actionable exactly at Taipei midnight
+ok 6 - Scheduled challenges become actionable exactly at Taipei midnight
+  ---
+  duration_ms: 10.078975
+  type: 'test'
+  ...
+# Subtest: Actual me contract identifies participant with line_subject, not an invented id
+ok 7 - Actual me contract identifies participant with line_subject, not an invented id
+  ---
+  duration_ms: 19.315145
+  type: 'test'
+  ...
+# Subtest: Journal save and me use actual date and return only the verified member notes
+ok 8 - Journal save and me use actual date and return only the verified member notes
+  ---
+  duration_ms: 12.217893
+  type: 'test'
+  ...
+# Subtest: Yesterday (10/9) is recorded and watered through the real handler
+ok 9 - Yesterday (10/9) is recorded and watered through the real handler
+  ---
+  duration_ms: 8.528135
+  type: 'test'
+  ...
+# Subtest: All seven makeup dates 10/3–10/9 can be recorded and watered
+ok 10 - All seven makeup dates 10/3–10/9 can be recorded and watered
+  ---
+  duration_ms: 49.449732
+  type: 'test'
+  ...
+# Subtest: Today remains on time and can be watered
+ok 11 - Today remains on time and can be watered
+  ---
+  duration_ms: 6.898952
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-02 causes no writes
+ok 12 - Invalid/expired/future date 2026-10-02 causes no writes
+  ---
+  duration_ms: 7.260162
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-10-11 causes no writes
+ok 13 - Invalid/expired/future date 2026-10-11 causes no writes
+  ---
+  duration_ms: 7.653243
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date 2026-09-30 causes no writes
+ok 14 - Invalid/expired/future date 2026-09-30 causes no writes
+  ---
+  duration_ms: 5.518795
+  type: 'test'
+  ...
+# Subtest: Invalid/expired/future date bad-date causes no writes
+ok 15 - Invalid/expired/future date bad-date causes no writes
+  ---
+  duration_ms: 4.892805
+  type: 'test'
+  ...
+# Subtest: Participant start date remains enforced
+ok 16 - Participant start date remains enforced
+  ---
+  duration_ms: 11.368495
+  type: 'test'
+  ...
+# Subtest: Duplicate makeup read and water preserve completion and watering timestamps
+ok 17 - Duplicate makeup read and water preserve completion and watering timestamps
+  ---
+  duration_ms: 17.136223
+  type: 'test'
+  ...
+# Subtest: Watering cannot create an unread record or water another person
+ok 18 - Watering cannot create an unread record or water another person
+  ---
+  duration_ms: 4.028568
+  type: 'test'
+  ...
+# Subtest: Invalid LINE verification cannot read or write
+ok 19 - Invalid LINE verification cannot read or write
+  ---
+  duration_ms: 4.199813
+  type: 'test'
+  ...
+# Subtest: Missing bearer token cannot write
+ok 20 - Missing bearer token cannot write
+  ---
+  duration_ms: 2.85777
+  type: 'test'
+  ...
+# Subtest: Unjoined LINE member cannot write
+ok 21 - Unjoined LINE member cannot write
+  ---
+  duration_ms: 3.579667
+  type: 'test'
+  ...
+# Subtest: Database insert failure remains a failure, with no fabricated completion
+ok 22 - Database insert failure remains a failure, with no fabricated completion
+  ---
+  duration_ms: 3.886413
+  type: 'test'
+  ...
+# Subtest: Database watering failure preserves unread-water state
+ok 23 - Database watering failure preserves unread-water state
+  ---
+  duration_ms: 7.12012
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 849.35952

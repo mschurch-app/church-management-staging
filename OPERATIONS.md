@@ -79,3 +79,9 @@ October date guards deployed as v8 ACTIVE on 2026-10-10 at 14:12 Taipei; source 
 - Export unavailable: verify `heat_camp` export permission; large exports must be narrowed with filters.
 - App notification appears in the notification center but the phone does not alert: confirm the user has an active `app_push_subscriptions` row, inspect the notification's `push_sent_at` / `push_last_error`, and verify the `church-os-app-push-delivery` cron job and `app-push` Edge Function are active.
 - Do not use real personal information in test logs or screenshots.
+
+## 十月節慶輪替測試
+
+原同工入口 `https://liff.line.me/2011645391-9t2SxuSG`，不更換LIFF ID／endpoint或要求重新綁定。2026/10/10–27，每兩個台北日曆日依序元旦煙火、春節、復活節、聖靈降臨節、端午、中秋、光明勇士、感恩節、聖誕節；10/28回原景。日期表只在 `life-tree-festival-test-schedule.mjs`，無Cron／自動通知、無新資料表。若將來調整起日，更新版本與固定日期回歸後循PR發布。
+
+改動HTML／控制器／共享SVG／動畫／CSS一起發布，版本 `20261010-season-test1`。樹圖下展開節慶日期可看本輪安排；資料儲存仍使用專用十月API。不得將 `life-tree-festival-preview.mjs` 的假進度接入此入口。正式2027與其他專案需另外接入，不推定本次已自動同步。

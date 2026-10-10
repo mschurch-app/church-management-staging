@@ -1,0 +1,69 @@
+{
+  "checks": [
+    {
+      "name": "Real handler me contract enables own journal without participant.id",
+      "passed": true
+    },
+    {
+      "name": "Real handler journal save persists today only, without extra progress",
+      "passed": true
+    },
+    {
+      "name": "Same-browser account switch cannot reveal another member draft or notes",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Missing verified participant identity keeps journal locked and offers recovery",
+      "passed": false,
+      "error": "Error: failed to find element matching selector \"#reflection-note\""
+    },
+    {
+      "name": "Reading 10/9 never displays unrelated 10/6 watering actions",
+      "passed": true
+    },
+    {
+      "name": "Real 10/9 completion lands at tree and waters only 10/9",
+      "passed": false,
+      "error": "Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Returning later still exposes explicit 10/6 unfinished watering",
+      "passed": false,
+      "error": "The input did not match the regular expression /另有.*10\\/6/. Input:\n\n'💧 10/9 已讀完，繼續澆水'\n"
+    },
+    {
+      "name": "No uncaught exceptions",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"Cannot read properties of null (reading 'disabled')\"\n+ ]\n- []\n"
+    }
+  ],
+  "errors": [
+    "Cannot read properties of null (reading 'disabled')"
+  ],
+  "requests": [
+    {
+      "action": "me",
+      "handlerMilliseconds": 101
+    },
+    {
+      "action": "journal_save",
+      "handlerMilliseconds": 8
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 5
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 6
+    },
+    {
+      "action": "mark_read",
+      "handlerMilliseconds": 12
+    }
+  ],
+  "passed": 3,
+  "failed": 5,
+  "scope": "Real production handler with isolated LINE/SDK/database; no network or production writes"
+}

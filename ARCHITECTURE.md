@@ -2,7 +2,7 @@
 
 ## Seasonal Life Tree previews (2026-10-10)
 
-`life-tree-festivals.mjs` provides eight 2027 festival windows, 56 candidate reflections and a separate December 1–31 Christmas decoration selector. `life-tree-festival-art.mjs` renders original layered SVG; `life-tree-festival-preview.mjs` controls isolated in-memory watering, three-tap interaction, collection and native audio. No production controller imports the preview state. The real 2027 entry remains a separate integration milestone. Shared function metadata exposes the M+ preview in content settings through existing tree-reading permissions, with no new configurable-home key. The shared definitions version and Worker shell are updated together; existing business APIs and authentication contracts are unchanged.
+`life-tree-festivals.mjs` provides nine 2027 festival windows, 59 candidate reflections and a separate December 1–31 Christmas decoration selector. `life-tree-festival-art.mjs` renders original layered SVG; `life-tree-festival-preview.mjs` controls isolated in-memory watering, three-tap interaction, collection and native audio. No production controller imports the preview state. The real 2027 entry remains a separate integration milestone. Shared function metadata exposes the M+ preview in content settings through existing tree-reading permissions, with no new configurable-home key. The shared definitions version and Worker shell are updated together; existing business APIs and authentication contracts are unchanged.
 
 
 ## Frontend
@@ -58,3 +58,7 @@
 - `supabase/functions/`: Edge Functions.
 - `supabase/migrations/`: ordered database migration history.
 - `docs/`: workflow and operational documentation.
+
+### 十月節慶換景（2026-10-10）
+
+`life-tree-festival-test-schedule.mjs` 回傳有限兩天一期場景及各套內容的首／末日（元旦三天、其餘七天）。October controller依真實Asia/Taipei日期選景，`tree-reading-garden-art.mjs` 將原五階段樹形與道具圖層交給純 `festivalScene` 組合。背景與共用動畫不持有身分或進度，原API仍為唯一讀經／澆水／挑戰／手札來源。已開啟頁面的60秒本機日期檢查不查資料庫、不寄訊，背景不執行、忙碌時延後；collective花園保留原繪製模式。

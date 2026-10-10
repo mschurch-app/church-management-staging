@@ -1,4 +1,4 @@
-import {FUNCTION_CATALOG,FUNCTION_ALIASES} from './app-function-definitions.mjs?v=20261010-festival1';
+import {FUNCTION_CATALOG,FUNCTION_ALIASES} from './app-function-definitions.mjs?v=20261010-season-test1';
 export const ICON_PATHS=Object.freeze({
   "tree-raincoat": '<path d="M8 8C6 2 18 2 16 8l5 5-3 4-3-2v7H9v-7l-3 2-3-4Z" fill="#ffd45b" stroke="#a76828" stroke-width="1.2" stroke-linejoin="round"/><path d="M9 8q3 3 6 0M12 11v10" fill="none" stroke="#a76828" stroke-width="1.2"/><circle cx="10.4" cy="6.5" r=".65" fill="#664927"/><circle cx="13.6" cy="6.5" r=".65" fill="#664927"/><path d="M10.5 17h-1m5 0h-1" stroke="#fff6ce" stroke-width="2"/>',
   "tree-spray": '<path d="M7 4h8v3h-3l-1 4H7l1-5Z" fill="#e9855c" stroke="#93472f" stroke-width="1.2"/><path d="M8 10h4q3 3 3 6v4q0 2-2 2H6q-2 0-2-2v-4q0-3 4-6Z" fill="#a5d9c1" stroke="#376d59" stroke-width="1.2"/><rect x="6" y="14" width="7" height="5" rx="2" fill="#fff9df"/><path d="m18 4 3-1m-3 4h4m-4 2 3 2" stroke="#6baeb5" stroke-width="1.5" stroke-linecap="round"/><path d="M8 16h3" stroke="#376d59" stroke-width="1.5"/>',

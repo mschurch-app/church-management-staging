@@ -1,0 +1,102 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "apiMode": "isolated_synthetic",
+  "checks": [
+    {
+      "name": "frontend syntax",
+      "files": 122,
+      "passed": true
+    },
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "app-catalog.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/definitions.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/database.mjs",
+      "passed": true,
+      "seconds": 19,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/line-provider.mjs",
+      "passed": true,
+      "seconds": 2,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/service-signup-journey-db.mjs",
+      "passed": true,
+      "seconds": 15,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/browser.mjs",
+      "passed": true,
+      "seconds": 64,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": true,
+      "seconds": 16,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true,
+      "seconds": 28,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/browser.mjs",
+      "passed": true,
+      "seconds": 57,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/service-signup-list.mjs",
+      "passed": true,
+      "seconds": 65,
+      "exitCode": 0
+    },
+    {
+      "name": "phase3/browser.mjs",
+      "passed": true,
+      "seconds": 142,
+      "exitCode": 0
+    },
+    {
+      "name": "phase4/browser.mjs",
+      "passed": true,
+      "seconds": 64,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/regression.mjs",
+      "passed": true,
+      "seconds": 183,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true,
+      "seconds": 84,
+      "exitCode": 0
+    }
+  ],
+  "failures": 0
+}

@@ -1,6 +1,8 @@
 // Render the existing devotional page at the original LIFF endpoint. LINE only
 // guarantees initialization at that endpoint or beneath its URL path.
 export async function openOctoberDevotional(){
+  // Let the original document finish before replacing its body and styles.
+  if(document.readyState==='loading')await new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
   try{
     const response=await fetch('daily-devotional.html',{cache:'no-store',signal:AbortSignal.timeout(15000)});
     if(!response.ok)throw Error('devotional_shell_unavailable');

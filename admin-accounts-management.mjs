@@ -1,6 +1,6 @@
 import {readAccess} from './admin-access.mjs?v=20261009-stage1';
-export {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261010-festival1';
-import {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES} from './app-function-definitions.mjs?v=20261010-festival1';
+export {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261010-season-test1';
+import {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES} from './app-function-definitions.mjs?v=20261010-season-test1';
 async function signedIn(db){await readAccess(db);}
 export function permissionsForRole(role){return [...(ROLE_TEMPLATES[role]?.permissions||[])];}
 export async function listAdminAccounts(db){await signedIn(db);const {data,error}=await db.rpc('list_admin_accounts_v4');if(error||!Array.isArray(data))throw new Error(String(error?.message||'').includes('not_owner')?'只有已啟用的專案擁有者可以管理帳號。':'無法載入同工帳號，請重新整理後再試。');return data.map(row=>({...row,invitation_state:row.invitation_state||'active',linked_user_ids:row.linked_user_ids||[]}));}

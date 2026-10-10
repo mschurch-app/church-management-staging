@@ -1,0 +1,32 @@
+{
+  "scope": "Final shared-component checks; full 15-suite gate is separate and predates final three-interaction addition",
+  "initialFailed": 1,
+  "checks": [
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": true,
+      "seconds": 17,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true,
+      "seconds": 48,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true,
+      "seconds": 88,
+      "exitCode": 0
+    }
+  ],
+  "failures": 0,
+  "notes": "One cancellation-timing assertion failed in the concurrent run; isolated rerun through the same gate passed. No auth production changes."
+}

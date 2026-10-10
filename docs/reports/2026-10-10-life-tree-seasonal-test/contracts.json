@@ -1,0 +1,82 @@
+{
+  "checks": [
+    {
+      "name": "Real handler me contract enables own journal without participant.id",
+      "passed": true
+    },
+    {
+      "name": "Real handler journal save persists today only, without extra progress",
+      "passed": true
+    },
+    {
+      "name": "Same-browser account switch cannot reveal another member draft or notes",
+      "passed": true
+    },
+    {
+      "name": "Missing verified participant identity keeps journal locked and offers recovery",
+      "passed": true
+    },
+    {
+      "name": "Reading 10/9 never displays unrelated 10/6 watering actions",
+      "passed": true
+    },
+    {
+      "name": "Real 10/9 completion lands at tree and waters only 10/9",
+      "passed": true
+    },
+    {
+      "name": "Returning later still exposes explicit 10/6 unfinished watering",
+      "passed": true
+    },
+    {
+      "name": "No uncaught exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "action": "me",
+      "handlerMilliseconds": 89
+    },
+    {
+      "action": "journal_save",
+      "handlerMilliseconds": 8
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 5
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 4
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 4
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 4
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 5
+    },
+    {
+      "action": "mark_read",
+      "handlerMilliseconds": 3
+    },
+    {
+      "action": "water_tree",
+      "handlerMilliseconds": 3
+    },
+    {
+      "action": "me",
+      "handlerMilliseconds": 3
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "scope": "Real production handler with isolated LINE/SDK/database; no network or production writes"
+}

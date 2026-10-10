@@ -1,0 +1,7 @@
+{
+  "checks": [],
+  "errors": [],
+  "passed": 0,
+  "failed": 0,
+  "scope": "Real production handler with isolated LINE/SDK/database; no network or production writes"
+}

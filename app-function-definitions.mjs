@@ -236,7 +236,7 @@ export const FUNCTION_CATALOG=freezeTree({
     "file": "life-tree-festivals.html",
     "icon": "🌳",
     "title": "生命樹節慶預覽",
-    "description": "八種節慶場景與七天互動試玩",
+    "description": "九種節慶場景與每日互動試玩",
     "key": "life_tree_festivals",
     "group": "media",
     "symbol": "tree",

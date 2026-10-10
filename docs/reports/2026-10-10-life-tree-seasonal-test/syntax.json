@@ -1,0 +1,9 @@
+{
+  "scope": "Final nine-world source; quality-gate checks every frontend JavaScript module",
+  "source": "tests/phase4/results/gate/2026-10-10T08-30-22-718Z/summary.json",
+  "check": {
+    "name": "frontend syntax",
+    "files": 122,
+    "passed": true
+  }
+}

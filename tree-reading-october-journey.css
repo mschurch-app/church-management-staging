@@ -17,7 +17,6 @@
 .october-journey .reading-placeholder strong{font-size:17px}
 .october-journey .tree-weather{font-size:12px;color:#46624f}
 .october-journey .tree-action-dock{grid-template-columns:minmax(0,1fr) auto;align-items:center}
-.october-journey .sound-toggle{min-width:112px;margin:0;font-size:13px}
 .october-journey .music-status{min-height:0;margin:7px 0;color:#536b5f;font-size:13px;text-align:center}
 .october-journey .music-status:empty{display:none}
 .october-journey :is(.reading-card,.tree-card){scroll-margin-top:18px}
@@ -79,19 +78,10 @@
 @media(max-width:660px){
  .october-journey .daily-route-actions{width:100%;gap:8px}
  .october-journey .daily-route-actions .primary{width:auto;flex:1}
- .october-journey .daily-route-actions .sound-toggle{flex:none;min-width:100px;padding-inline:10px}
 }
 
-.october-journey .daily-route>.sound-feedback{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.october-journey .sound-feedback .music-status{width:auto;flex:1;min-width:160px}
-.october-journey #test-sound{width:auto;margin:0;min-height:44px;flex:none}
 .october-journey .tree-scene{position:relative;isolation:isolate;max-width:480px;margin-inline:auto}
 .october-journey .tree-scene .tree-art{position:relative;z-index:0}
-.october-journey .tree-scene-tools{position:absolute;inset:12px 12px auto;z-index:2;display:grid;grid-template-columns:minmax(90px,.8fr) minmax(0,1.4fr);gap:8px;align-items:stretch}
-.october-journey .tree-scene-tools :is(.sound-toggle,.devotional-entry){display:flex;align-items:center;justify-content:center;min-width:0;min-height:58px;width:100%;margin:0;padding:8px 10px;border:1px solid #d3dfcc;border-radius:16px;background:#fffefa;color:#244f43;font-size:14px;font-weight:750;line-height:1.4;text-align:center;text-decoration:none;box-shadow:0 4px 14px #294c3510}
-.october-journey .tree-scene-tools .devotional-entry{flex-direction:column}
-.october-journey .tree-scene-tools .devotional-entry span{font-size:13px}
-.october-journey .tree-preview-note{font-size:12px;line-height:1.6;color:#536b5f;text-align:center;margin:8px 0}
 .october-journey .tree-challenge-notice{padding:16px;margin:0 0 14px;border:1px solid #bc7040;border-radius:18px;background:#fff2df;color:#56341d;box-shadow:0 5px 18px #9c572014}
 .october-journey .tree-challenge-notice[hidden]{display:none}
 .october-journey .care-notice-label{display:block;font-size:12px;font-weight:750;color:#75431e}
@@ -102,3 +92,28 @@
 .october-journey .challenge-card{scroll-margin-top:18px}
 .october-journey .challenge-item:focus-visible{outline:3px solid #b14d28;outline-offset:4px}
 .october-journey .tree-card[data-needs-care="true"] .health-badge{background:#fff2df;color:#75431e;border:1px solid #bc7040}
+
+.october-journey .tree-head-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;flex:none}
+.october-journey .tree-head-tools .sound-toggle{display:grid;place-items:center;width:44px;min-width:44px;height:44px;min-height:44px;padding:0;margin:0;border:1px solid #d3dfcc;border-radius:50%;color:#244f43;background:#f5f8ef}
+.october-journey .sound-toggle[data-enabled="true"] .sound-muted,.october-journey .sound-toggle[data-enabled="false"] .sound-waves{display:none}
+.october-journey .sound-toggle[data-loading="true"] svg{opacity:.45}
+.october-journey .tree-head-tools .health-badge{margin:0}
+.october-journey .tree-card>.music-status{text-align:left;font-size:12px;margin:8px 0}
+@media(max-width:660px){.october-journey .tree-head-tools{max-width:120px}}
+.october-journey .journey-guide{box-sizing:border-box;width:100%;max-width:none;height:100%;height:100dvh;max-height:none;margin:0;padding:24px 18px;padding:max(24px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));border:0;background:#f5f8ef;color:#244f43;overflow-y:auto;overscroll-behavior:contain}
+.october-journey .journey-guide::backdrop{background:#f5f8ef}
+.october-journey:has(.journey-guide[open]){overflow:hidden}
+.october-journey .journey-guide-card{box-sizing:border-box;max-width:620px;margin:0 auto;padding:28px;border:1px solid #d3dfcc;border-radius:28px;background:#fffdf8;box-shadow:0 12px 40px #244f4310}
+.october-journey .journey-guide h2{font-size:clamp(28px,5vw,40px);line-height:1.3;margin:12px 0 18px}
+.october-journey #journey-guide-title:focus{outline:none}
+.october-journey .journey-guide-steps{list-style:none;counter-reset:journey;padding:0;margin:24px 0}
+.october-journey .journey-guide-steps li{counter-increment:journey;position:relative;padding:0 0 18px 44px;font-size:15px;line-height:1.7}
+.october-journey .journey-guide-steps li::before{content:counter(journey);position:absolute;left:0;top:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eaf2e8;color:#244f43;font-weight:750}
+.october-journey .journey-guide-steps strong,.october-journey .journey-guide-steps span{display:block}
+.october-journey .journey-guide-sound{display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #d3dfcc;border-radius:18px;background:#f5f8ef;cursor:pointer}
+.october-journey .journey-guide-sound input{appearance:auto;width:24px;min-width:24px;height:24px;min-height:24px;padding:0;margin:0;accent-color:#244f43}
+.october-journey .journey-guide-sound small{display:block;margin-top:6px;font-size:13px;line-height:1.6;color:#52675e}
+.october-journey .journey-guide-note{font-size:12px;line-height:1.7;color:#52675e}
+.october-journey #journey-guide-start{width:100%;min-height:48px;margin:12px 0 0}
+.october-journey .topbar-actions .guide-link{min-height:44px;padding:8px 12px;margin:0;font-size:13px;white-space:nowrap}
+@media(max-width:660px){.october-journey .journey-guide-card{padding:22px 18px}.october-journey .topbar-actions{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.october-journey .topbar-actions .preview-chip{font-size:10px;padding:4px 7px}}

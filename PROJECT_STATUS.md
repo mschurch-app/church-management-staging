@@ -4,7 +4,7 @@ Last reviewed: 2026-10-10
 
 ## 本人手札與補讀日期對應（2026-10-10）
 
-修正手札及浮動靈修關閉偏好使用不存在的participant.id，改依實際API的本人line_subject驗證及隔離草稿。補讀操作跟隨選讀日期，10/9期間不混入10/6，完成後才以「另有」提醒其他待澆水日。新8項瀏覽器契約與17項後端測試全通過，執行原handler並隔離外部系統；完整82項回歸也全通過；Git與正式發布進行中。沒有資料庫或Edge Function變更。詳見 `docs/reports/2026-10-10-life-tree-journal-contract/report.md`；Mac Safari及iPhone／LINE仍待實機驗收。
+修正手札及浮動靈修關閉偏好使用不存在的participant.id，改依實際API的本人line_subject驗證及隔離草稿。補讀操作跟隨選讀日期，10/9期間不混入10/6，完成後才以「另有」提醒其他待澆水日。新8項瀏覽器契約與17項後端測試全通過，執行原handler並隔離外部系統；完整82項回歸也全通過。PR #60已合併main，13:59:03正式15項資源均HTTP 200且來源SHA-256一致。沒有資料庫或Edge Function變更。詳見 `docs/reports/2026-10-10-life-tree-journal-contract/report.md`；Mac Safari及iPhone／LINE仍待實機驗收。
 
 ## 十月補讀後端修復（2026-10-10）
 

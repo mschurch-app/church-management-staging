@@ -27,7 +27,7 @@ October實際me回傳participant.line_subject，沒有participant.id。手札卻
 | 契約瀏覽器最終 | 8項全部通過，增加跨帳號草稿隔離檢查；contract-results.json及兩張合成截圖 |
 | 原handler後端 | 17項全通過，backend.tap |
 | 完整隔離瀏覽器 | 82項全通過，browser-results.json；me來自原handler |
-| JavaScript語法、git diff | 已通過；異動檔secret pattern檢查交付前執行 |
+| JavaScript語法、git diff | 通過；24份異動檔完成secret pattern與人工差異檢查，沒有加入secret |
 | Lint | 未執行 |
 | Typecheck | 未執行，Node去型別不是Deno型別檢查 |
 | Build | 未執行，靜態前端無root build腳本 |
@@ -37,7 +37,7 @@ October實際me回傳participant.line_subject，沒有participant.id。手札卻
 
 ## Git與發布
 
-修復分支codex/life-tree-journal-contract-fix，基於origin/main 89431f68439dbd57157e60d707328ccb8ee2740d。Commit、push、PR及正式HTTP讀回比對尚待完成後補結果。
+修復分支codex/life-tree-journal-contract-fix，基於origin/main 89431f68439dbd57157e60d707328ccb8ee2740d。Commit 68641060f6241d024c90e96146e492c6e93eb4b3已push，PR #60已合併main為526bc93d1ed42ee7da606a1089e91e589c9c7f51。發布證據使用codex/life-tree-journal-contract-release文件分支。13:58:03首次正式HTTP讀回9/15來源符合，六份修改檔仍舊版，保留hosted-check-pending-1.json，不當作成功。13:59:03最終15/15全部HTTP 200且SHA-256符合來源，hosted-check.json，確認原入口與手札依賴已發布。
 
 ## Database
 
@@ -45,4 +45,4 @@ October實際me回傳participant.line_subject，沒有participant.id。手札卻
 
 ## 風險與下一步
 
-發布後重新開啟原October LIFF，驗收本人手札可輸入、收藏、再次開啟仍保留，與10/9讀完回樹澆水、10/6額外提醒。若回復使用新revert PR恢復前端，不回滾或刪除會員資料。舊已開頁需重新整理才能取得修正，不能只重試舊journal module。
+發布後重新開啟原October LIFF，驗收本人手札可輸入、收藏、再次開啟仍保留，與10/9讀完回樹澆水、10/6額外提醒。若回復使用新revert PR恢復前端，不回滾或刪除會員資料。舊已開頁需重新整理才能取得修正，不能只重試舊journal module。使用者後續詢問姓名／LINE驗證／重新整理整張卡片是否必要，已建議改小型更新按鈕並收起技術資訊；本次僅提出建議，尚未實作該布局變更。

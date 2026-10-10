@@ -3,6 +3,9 @@ import { renderLifeTree } from './tree-reading-october-art.mjs?v=20261010-challe
 import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-login-fallback';
 
 const $ = (selector) => document.querySelector(selector);
+function guideSeen(){try{return localStorage.getItem('october-life-tree-guide-v1')==='1';}catch{return false;}}
+function musicPreference(){try{return guideSeen()&&localStorage.getItem('lifeTreeSound')==='on';}catch{return false;}}
+function rememberMusic(){try{localStorage.setItem('lifeTreeSound',state.sound?'on':'off');}catch{}}
 const state = { idToken:'', participant:null, records:[], challenges:[], notes:[], leaderboard:[], garden:[], admin:false, view:'personal', passage:null, sound:musicPreference(),writeBusy:false, journalIndex:0, loadedScriptureDate:'',pendingWaterDate:'' };
 let scriptureEndObserver=null, scriptureRequest=0, viewRequest=0;
 let dismissedDevotionalKey='';
@@ -13,15 +16,12 @@ function syncDevotionalDock(){
   const key=devotionalDockKey();let dismissed=Boolean(key&&dismissedDevotionalKey===key);try{dismissed||=Boolean(key&&sessionStorage.getItem(key)==='1');}catch{}
   const available=Boolean(state.participant&&record()?.watered_at&&!dismissed);
   const editing=document.activeElement?.matches('input,textarea,select,[contenteditable="true"]');
-  const upper=$('#devotional-preview-link').getBoundingClientRect(),upperVisible=upper.height>0&&upper.top>=0&&upper.bottom<=innerHeight;
-  $('#devotional-dock').hidden=!available||Boolean(editing)||upperVisible;document.body.classList.toggle('has-devotional-dock',available);measureDevotionalDock();
+  $('#devotional-dock').hidden=!available||Boolean(editing);document.body.classList.toggle('has-devotional-dock',available);measureDevotionalDock();
 }
-function musicPreference(){try{return localStorage.getItem('lifeTreeSound')!=='off';}catch{return true;}}
 function restoreTreeScroll(){if(!state.participant)return;try{const value=sessionStorage.getItem('october-tree-return-scroll');if(value!==null){sessionStorage.removeItem('october-tree-return-scroll');requestAnimationFrame(()=>window.scrollTo({top:Number(value)||0,behavior:'instant'}));}}catch{}}
 function draftKey(){return state.participant?.id?`october-tree-draft:${state.participant.id}`:'';}
-function rememberMusic(){try{localStorage.setItem('lifeTreeSound',state.sound?'on':'off');}catch{}}
 function scrollToSection(node){if(!node)return;node.tabIndex=-1;node.focus({preventScroll:true});node.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
-function renderInvitation(){const visible=Boolean(record()?.watered_at);$('#devotional-invitation').hidden=false;$('#devotional-invitation-title').textContent=visible?'讀經與澆水已完成 · 2027 年一月創世記試閱':'2027 年一月創世記試閱';syncDevotionalDock();$('#journey-date').textContent=`${fmt(today())} · 箴言 ${chapterDay(today())} 章`;$('#journey-passage').textContent=visible?'活水已澆灌，讓神的話繼續陪伴。':record()?'讀經完成，回到小樹澆水。':'今天，讓神的話滋養你。';$('#read-today').textContent=visible?'重讀今日經文':record()?'回到小樹澆水':'開始今日讀經';}
+function renderInvitation(){const visible=Boolean(record()?.watered_at);syncDevotionalDock();$('#journey-date').textContent=`${fmt(today())} · 箴言 ${chapterDay(today())} 章`;$('#journey-passage').textContent=visible?'活水已澆灌，讓神的話繼續陪伴。':record()?'讀經完成，回到小樹澆水。':'今天，讓神的話滋養你。';$('#read-today').textContent=visible?'重讀今日經文':record()?'回到小樹澆水':'開始今日讀經';}
 
 const today = () => {const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const part=(type)=>parts.find((item)=>item.type===type)?.value||'';return `${part('year')}-${part('month')}-${part('day')}`;};
 const fmt = (date) => `${Number(date.slice(5,7))}/${Number(date.slice(8,10))}`;
@@ -87,9 +87,13 @@ function sayScripture(){if(!window.speechSynthesis){showStatus('此瀏覽器不�
 // Reuse native media elements: iOS authorizes each element during a trusted click.
 // Keeping the effect element allows success sounds after asynchronous saves.
 let backgroundAudio=null,effectAudio=null,musicVersion=0,musicStarting=false;
-let effectVersion=0,effectStarting=false,effectsReady=false;
+let effectVersion=0,effectStarting=false,effectsReady=false,effectsFailed=false;
 function musicPlaying(){return Boolean(state.sound&&backgroundAudio&&!backgroundAudio.paused&&!backgroundAudio.error&&backgroundAudio.readyState>=2);}
-function updateMusicButton(){const button=$('#sound-toggle');button.textContent=musicStarting?'正在開啟聲音…':musicPlaying()?'關閉聲音':'開啟聲音';button.setAttribute('aria-pressed',String(musicPlaying()));button.disabled=musicStarting;}
+function updateMusicButton(){
+  const button=$('#sound-toggle'),playing=musicPlaying();
+  const label=musicStarting?'正在開啟聲音':effectsFailed?'重新啟用音效':playing?'關閉音樂與音效':state.sound?'聲音已開啟，點一下開始播放':'開啟音樂與音效';
+  button.setAttribute('aria-label',label);button.title=label;button.setAttribute('aria-pressed',String(playing));button.dataset.enabled=String(state.sound);button.dataset.loading=String(musicStarting);button.disabled=musicStarting;
+}
 function createAudio(kind){
   const audio=document.createElement('audio');audio.preload='none';audio.hidden=true;audio.dataset.lifeTreeAudio=kind;audio.setAttribute('playsinline','');document.body.append(audio);return audio;
 }
@@ -98,7 +102,7 @@ function ensureAudio(){
   if(!backgroundAudio){
     backgroundAudio=createAudio('music');backgroundAudio.src=audioURL('reading');backgroundAudio.loop=true;backgroundAudio.volume=.65;
     ['playing','pause','ended'].forEach(name=>backgroundAudio.addEventListener(name,updateMusicButton));
-    backgroundAudio.addEventListener('error',()=>{updateMusicButton();if(state.sound)$('#music-status').textContent='音樂載入失敗，請按「開啟聲音」重試。';});
+    backgroundAudio.addEventListener('error',()=>{updateMusicButton();if(state.sound)$('#music-status').textContent='音樂載入失敗，請點喇叭重試。';});
   }
   if(!effectAudio){effectAudio=createAudio('effect');effectAudio.volume=.85;}
 }
@@ -119,28 +123,28 @@ async function startBackgroundMusic(){
     await boundedPlayback(backgroundAudio);
     if(version!==musicVersion||!state.sound||document.hidden)return;
     if(!musicPlaying())throw Error('audio_paused');
-    $('#music-status').textContent=effectsReady?'音樂與音效已開啟，可按「試聽音效」確認。':'背景音樂播放中；請按「試聽音效」啟用音效。';
+    $('#music-status').textContent=effectsReady?'':'音效尚未啟動，請點喇叭重試。';
   }catch{
-    if(version===musicVersion){backgroundAudio.pause();$('#music-status').textContent='音樂尚未啟動，請按「開啟聲音」重試。';}
+    if(version===musicVersion){backgroundAudio.pause();$('#music-status').textContent='音樂尚未啟動，請點喇叭重試。';}
   }finally{if(version===musicVersion){musicStarting=false;updateMusicButton();}}
 }
 function stopBackgroundMusic(){
-  ++musicVersion;++effectVersion;musicStarting=false;effectStarting=false;effectsReady=false;
+  ++musicVersion;++effectVersion;musicStarting=false;effectStarting=false;effectsReady=false;effectsFailed=false;
   backgroundAudio?.pause();effectAudio?.pause();updateMusicButton();
 }
 async function play(type,fromGesture=false){
   if(!state.sound||document.hidden)return;
-  if(!fromGesture&&!effectsReady){if(!effectStarting)$('#music-status').textContent='請按「試聽音效」啟用操作提示聲。';return;}
+  if(!fromGesture&&!effectsReady){if(!effectStarting)$('#music-status').textContent='請點喇叭啟用操作提示聲。';return;}
   ensureAudio();const version=++effectVersion;effectStarting=true;
   try{
     const name=['open','water','celebration','wind','journal'].includes(type)?type:'open';
     effectAudio.pause();effectAudio.src=audioURL(name);
     await boundedPlayback(effectAudio);
     if(version!==effectVersion||!state.sound||document.hidden)return;
-    effectsReady=true;
-    if(fromGesture)$('#music-status').textContent=musicPlaying()?'音樂與音效已開啟。':'音效已開啟；音樂尚未播放。';
+    effectsReady=true;effectsFailed=false;updateMusicButton();
+    if(fromGesture)$('#music-status').textContent=musicPlaying()?'':'音效已開啟；音樂尚未播放。';
   }catch{
-    if(version===effectVersion){effectsReady=false;effectAudio.pause();$('#music-status').textContent='音效尚未啟動，請按「試聽音效」重試。';}
+    if(version===effectVersion){effectsReady=false;effectsFailed=true;effectAudio.pause();updateMusicButton();$('#music-status').textContent='音效尚未啟動，請點喇叭重試。';}
   }finally{if(version===effectVersion)effectStarting=false;}
 }
 async function markRead(date=today()){if(state.writeBusy||record(date))return;if(date===today()&&state.scriptureReadDate!==date){showStatus('請先滑到完整經文最下方，再按讀完。');return;}const b=$('#mark-read');state.writeBusy=true;b.disabled=true;b.textContent='正在記錄讀經…';$('#mark-late').disabled=true;showStatus('正在記錄讀經…');try{const out=await api('mark_read',{readingDate:date});state.records=out.records||state.records;if(!record(date))state.records=[...state.records,{reading_date:date,completion_type:out.completion_type,watered_at:null}];state.pendingWaterDate=date;state.view='personal';renderView();showStatus(out.completion_type==='on_time'?'📖 讀經完成！小樹已解鎖澆水，來照顧它吧 🌱':'✓ 補讀完成！來到樹下澆水吧 🌱');requestAnimationFrame(()=>scrollToSection($('.tree-card')));}catch(e){showStatus(e.message)}finally{state.writeBusy=false;renderView();}}
@@ -177,15 +181,20 @@ async function liveWeather(){try{const r=await fetch('https://api.open-meteo.com
 async function signIn(){if(!window.liff?.isLoggedIn()){$('#line-login-gate').hidden=false;showStatus('LINE 驗證尚未完成，請回到 LINE 群組重新開啟專用連結。','#login-status');return;}state.idToken=window.liff.getIDToken()||'';if(!state.idToken){$('#line-login-gate').hidden=false;$('#login-member').disabled=true;showStatus('LINE 登入資訊不完整，請重新從同工群組的測試連結開啟。','#login-status');return;}try{await refresh();}catch(e){$('#line-login-gate').hidden=false;if(e.code==='join_required'){$('#login-member').disabled=false;$('#login-member-id').textContent='LINE 身分已確認';showStatus('已確認 LINE 身分，輸入同工邀請碼加入測試。','#login-status');}else{$('#login-member').disabled=true;showStatus(`${e.message} 請確認網路後重新整理。`,'#login-status');}}}
 async function join(){const b=$('#login-member');b.disabled=true;try{const result=await api('join',{inviteCode:$('#invite-code').value.trim()});state.participant=result.participant;await refresh();}catch(e){showStatus(e.message,'#login-status');}finally{b.disabled=false;}}
 function setup(){
-  updateMusicButton();$('#music-status').textContent=state.sound?'按「開啟聲音」，讓音樂與音效陪你讀經。':'音樂與音效已關閉';
-  const resumeMusic=event=>{if(!event.isTrusted||event.target?.closest?.('#sound-toggle,#test-sound'))return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(state.sound)void startBackgroundMusic();};
+  updateMusicButton();$('#music-status').textContent='';
+  let guideReturnFocus=null;
+  const showGuide=()=>{guideReturnFocus=document.activeElement;$('#journey-guide-audio').checked=guideSeen()?state.sound:true;$('#journey-guide').showModal();$('#journey-guide-title').focus();};
+  $('#show-journey-guide').onclick=showGuide;
+  $('#journey-guide-form').onsubmit=event=>{event.preventDefault();if(!$('#journey-guide').open)return;state.sound=$('#journey-guide-audio').checked;rememberMusic();try{localStorage.setItem('october-life-tree-guide-v1','1');}catch{}$('#journey-guide').close();if(state.sound)void startBackgroundMusic();else{stopBackgroundMusic();$('#music-status').textContent='';}const target=guideReturnFocus?.matches('button,a')?guideReturnFocus:state.participant?$('#read-today'):$('#show-journey-guide');target.focus({preventScroll:true});};
+  $('#journey-guide').addEventListener('cancel',event=>{if(!guideSeen())event.preventDefault();});
+  if(!guideSeen())showGuide();
+  const resumeMusic=event=>{if(!event.isTrusted||$('#journey-guide').open||event.target?.closest?.('#sound-toggle,#show-journey-guide'))return;if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(state.sound)void startBackgroundMusic();};
   ['click','keydown'].forEach(name=>document.addEventListener(name,resumeMusic,{capture:true}));
   const pauseForBackground=()=>{stopBackgroundMusic();if(state.sound)$('#music-status').textContent='聲音已暫停，點一下頁面即可恢復。';};
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseForBackground();});
   window.addEventListener('pagehide',pauseForBackground);
   window.addEventListener('pageshow',restoreTreeScroll);
-  $('#sound-toggle').onclick=()=>{if(musicPlaying()){state.sound=false;stopBackgroundMusic();$('#music-status').textContent='音樂與音效已關閉';}else{state.sound=true;void startBackgroundMusic();}rememberMusic();};
-  $('#test-sound')?.addEventListener('click',()=>{state.sound=true;rememberMusic();ensureAudio();void play('open',true);void startBackgroundMusic();});
+  $('#sound-toggle').onclick=()=>{if(musicPlaying()&&!effectsFailed){state.sound=false;stopBackgroundMusic();$('#music-status').textContent='';}else{state.sound=true;void startBackgroundMusic();}rememberMusic();};
   document.querySelectorAll('.tree-view-button').forEach(button=>button.addEventListener('click',async()=>{
     if(state.writeBusy){showStatus('目前正在儲存，請稍候再切換。','#view-status');return;}const requested=button.dataset.treeView,previous=state.view,request=++viewRequest;
     const controls=$('.tree-view-switch');controls.setAttribute('aria-busy','true');showStatus(requested==='personal'?'返回個人生命樹…':'正在載入花園…','#view-status');
@@ -201,7 +210,6 @@ function setup(){
   $('#dismiss-devotional-dock').onclick=()=>{dismissDevotionalDock();const tree=$('.tree-card');tree.tabIndex=-1;tree.focus({preventScroll:true});};
   document.addEventListener('focusin',syncDevotionalDock);document.addEventListener('focusout',()=>requestAnimationFrame(syncDevotionalDock));
   new ResizeObserver(measureDevotionalDock).observe($('#devotional-dock'));
-  new IntersectionObserver(syncDevotionalDock,{threshold:[0,1]}).observe($('#devotional-preview-link'));
   $('#go-care-challenges')?.addEventListener('click',()=>{const section=$('#challenge-section');section.open=true;const target=$('#active-challenges .challenge-item:not(.resolved)')||section;scrollToSection(target);});
   $('#login-member').onclick=join;$('#mark-read').onclick=()=>markRead();$('#care-tree').onclick=water;
   $('#toggle-scripture').onclick=()=>$('#scripture-text').hidden?loadScripture(state.loadedScriptureDate||''):(()=>{++scriptureRequest;scriptureEndObserver?.disconnect();$('#scripture-text').hidden=true;$('#complete-reading-actions').hidden=true;$('#audio-controls').hidden=true;$('#toggle-scripture').setAttribute('aria-expanded','false');$('#toggle-scripture').textContent='📖 展開完整經文';window.speechSynthesis?.cancel();})();

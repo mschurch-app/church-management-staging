@@ -46,7 +46,7 @@ Mac Safari、iPhone 17、LINE內實際音量與觸控尚未驗收。Chromium尺�
 
 ## Git與發布
 
-Branch：`codex/life-tree-garden-preview`，基於 `origin/main` `250bfce02bf09a92443a0a1eb850c8d9bdf680c6`。Commit／Push／PR待完成驗證後記錄。未合併main、未正式部署。
+Branch：`codex/life-tree-garden-preview`，基於 `origin/main` `250bfce02bf09a92443a0a1eb850c8d9bdf680c6`。功能Commit：`c402126a4d2fb87c7633bb622afdcb00a76ec977`，已push。草稿[PR #56](https://github.com/mschurch-app/church-management-staging/pull/56)已建立，未合併main、未正式部署；本報告的Git結果再以同分支文件commit同步。新增差異已人工檢視，git diff檢查與private-key／token／JWT／connection-string模式掃描通過。
 
 ## 下一步
 

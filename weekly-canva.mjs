@@ -49,7 +49,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     $('canva-connect').disabled=context.busy||!settings?.configured;
     $('canva-check-connection').disabled=context.busy;
     for(const kind of ['home','ig'])$('canva-edit-'+kind).disabled=context.busy||!context.editable;
-    $('canva-connection').textContent=!settings?'Canva 連線狀態尚未確認':!settings.configured?'Canva 尚未完成連線設定，請管理員協助。':!settings.connected?'請先連結教會的 Canva 帳號。':'Canva 已連線，可送出本週 AI 製圖要求。';
+    $('canva-connection').textContent=!settings?'Canva 連線狀態尚未確認':!settings.configured?'Canva 尚未完成連線設定，請管理員協助。':!settings.connected?'請先連結教會的 Canva 帳號。':context.editable?'Canva 已連線，可送出本週 AI 製圖要求。':'Canva 已連線；這份週報目前僅供檢視，恢復編輯後才能製圖。';
     $('canva-connect').textContent=settings?.connected?'重新連結 Canva':'連結 Canva';
     renderJob(false);
   }

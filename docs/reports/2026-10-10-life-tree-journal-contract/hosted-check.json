@@ -1,0 +1,112 @@
+{
+  "checked_at_utc": "2026-10-10T05:59:03.520790+00:00",
+  "base": "https://mscos.mchurch.online",
+  "results": [
+    {
+      "file": "tree-reading-october-test.html",
+      "status": 200,
+      "expected_sha256": "5d9d075d7be8444a95b5410a5aa8503d6d675ae9b5ab484fd37776df3e4ab1f8",
+      "actual_sha256": "5d9d075d7be8444a95b5410a5aa8503d6d675ae9b5ab484fd37776df3e4ab1f8",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-test.mjs",
+      "status": 200,
+      "expected_sha256": "d99dabb8dce5ff77179badfd2b043febb50fc922e5e463a4696c54f9e685d19b",
+      "actual_sha256": "d99dabb8dce5ff77179badfd2b043febb50fc922e5e463a4696c54f9e685d19b",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-garden-art.mjs",
+      "status": 200,
+      "expected_sha256": "97ed970ba5ac794443d6e6868148d7034d3e9e23aea59448815800cd03f04d53",
+      "actual_sha256": "97ed970ba5ac794443d6e6868148d7034d3e9e23aea59448815800cd03f04d53",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-garden.css",
+      "status": 200,
+      "expected_sha256": "7eedd63166b5f1908c01b392fe3e9f20783d73038e4363274c310a7355ddcc98",
+      "actual_sha256": "7eedd63166b5f1908c01b392fe3e9f20783d73038e4363274c310a7355ddcc98",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-journey.css",
+      "status": 200,
+      "expected_sha256": "f62da3931d69d2af7de8dd2ff8cd4bfdbebbdd7ea8884b3c07db54a75557961a",
+      "actual_sha256": "f62da3931d69d2af7de8dd2ff8cd4bfdbebbdd7ea8884b3c07db54a75557961a",
+      "matches": true
+    },
+    {
+      "file": "app-design-tokens.css",
+      "status": 200,
+      "expected_sha256": "edc94c8df0b24377dfbb88de1dd331d4f5c28ecdd06a9cca98b92f36f8bac180",
+      "actual_sha256": "edc94c8df0b24377dfbb88de1dd331d4f5c28ecdd06a9cca98b92f36f8bac180",
+      "matches": true
+    },
+    {
+      "file": "app-icons.mjs",
+      "status": 200,
+      "expected_sha256": "35b9d04283f49625b2575bfad266168c75c0fb4a84ceda3f58a00f5af8607358",
+      "actual_sha256": "35b9d04283f49625b2575bfad266168c75c0fb4a84ceda3f58a00f5af8607358",
+      "matches": true
+    },
+    {
+      "file": "app-function-definitions.mjs",
+      "status": 200,
+      "expected_sha256": "65771282be396f6e4b0a308652535c60d20d0f385b5dc5c3b50bf7d0d41f0269",
+      "actual_sha256": "65771282be396f6e4b0a308652535c60d20d0f385b5dc5c3b50bf7d0d41f0269",
+      "matches": true
+    },
+    {
+      "file": "tree-reading-october-test-config.mjs",
+      "status": 200,
+      "expected_sha256": "056f2c45494bd3c203addca5eedd1664e3e81e8da89bc2ff04bdc49e05981723",
+      "actual_sha256": "056f2c45494bd3c203addca5eedd1664e3e81e8da89bc2ff04bdc49e05981723",
+      "matches": true
+    },
+    {
+      "file": "bible-scripture-loader.mjs",
+      "status": 200,
+      "expected_sha256": "236aaafa88e8ccf7957c8bbc51761babf9f8c2796dc48aaaeb68558753ec08e5",
+      "actual_sha256": "236aaafa88e8ccf7957c8bbc51761babf9f8c2796dc48aaaeb68558753ec08e5",
+      "matches": true
+    },
+    {
+      "file": "daily-devotional.html",
+      "status": 200,
+      "expected_sha256": "b9ef76198dc712f5d36310725edc11ea84f69f3a62881fd20f3520121b572eee",
+      "actual_sha256": "b9ef76198dc712f5d36310725edc11ea84f69f3a62881fd20f3520121b572eee",
+      "matches": true
+    },
+    {
+      "file": "daily-devotional.mjs",
+      "status": 200,
+      "expected_sha256": "7e595834bbd139117c30d593f602ec3bf01ee1e207be358caa0e12bed9262466",
+      "actual_sha256": "7e595834bbd139117c30d593f602ec3bf01ee1e207be358caa0e12bed9262466",
+      "matches": true
+    },
+    {
+      "file": "daily-devotional.css",
+      "status": 200,
+      "expected_sha256": "50d0498c13088aa5b1404748f0bee05616b0e5ccc31d12a95466263cccc7d307",
+      "actual_sha256": "50d0498c13088aa5b1404748f0bee05616b0e5ccc31d12a95466263cccc7d307",
+      "matches": true
+    },
+    {
+      "file": "october-devotional-shell.mjs",
+      "status": 200,
+      "expected_sha256": "e59b13cd9cb6171f59ffa82fe10c83ba0b70efe2d6e5b1e625a80ce11d2be4b2",
+      "actual_sha256": "e59b13cd9cb6171f59ffa82fe10c83ba0b70efe2d6e5b1e625a80ce11d2be4b2",
+      "matches": true
+    },
+    {
+      "file": "october-devotional-journal.mjs",
+      "status": 200,
+      "expected_sha256": "8b2b2f2ec26cca35a2f3d7daa6a44c209ede1a1739be2b455052d88aa5983a23",
+      "actual_sha256": "8b2b2f2ec26cca35a2f3d7daa6a44c209ede1a1739be2b455052d88aa5983a23",
+      "matches": true
+    }
+  ],
+  "passed": true
+}

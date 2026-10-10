@@ -1,0 +1,176 @@
+{
+  "at": "2026-10-10T09:25:46.368460+00:00",
+  "origin": "https://mscos.mchurch.online",
+  "matched": 24,
+  "total": 24,
+  "resources": [
+    {
+      "resource": "tree-reading-october-test.html?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "fccb7d71d48d3de1e4aceaddcfd659a157fc0e5e2822431fa64df9eedd38f88d",
+      "expected": "fccb7d71d48d3de1e4aceaddcfd659a157fc0e5e2822431fa64df9eedd38f88d",
+      "matched": true
+    },
+    {
+      "resource": "tree-reading-october-test.mjs?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "e3178236d9ba650c4e788561ff25f10b4cc3ac300d9c6e648f65001629e55e7d",
+      "expected": "e3178236d9ba650c4e788561ff25f10b4cc3ac300d9c6e648f65001629e55e7d",
+      "matched": true
+    },
+    {
+      "resource": "tree-reading-garden-art.mjs?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "ed77f04bab0fe20f81af59327fe396ade68c9008f3b59225d123aad4b07021ba",
+      "expected": "ed77f04bab0fe20f81af59327fe396ade68c9008f3b59225d123aad4b07021ba",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festivals.html?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "545f29647525d36b2e6bfb996050aaf6522e4e0c65e3cdd112990f0985ca40af",
+      "expected": "545f29647525d36b2e6bfb996050aaf6522e4e0c65e3cdd112990f0985ca40af",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festival-preview.mjs?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "6fdb995d1fede261aa4bd7b464bbf4c1f8b1bbbf947700f9c6f302e1f125c0f7",
+      "expected": "6fdb995d1fede261aa4bd7b464bbf4c1f8b1bbbf947700f9c6f302e1f125c0f7",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festivals.mjs?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "045c525240ba8a27e815f17a33aa5e4bd2ba498d3937137c02534977e6268ed6",
+      "expected": "045c525240ba8a27e815f17a33aa5e4bd2ba498d3937137c02534977e6268ed6",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festival-art.mjs?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "4f5dd2d92a142d3768710edf2cc01d617ee88ae105149558e8d6eaf0441b3e95",
+      "expected": "4f5dd2d92a142d3768710edf2cc01d617ee88ae105149558e8d6eaf0441b3e95",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festival-test-schedule.mjs?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "dbe83719f747d58e9b6b541d738b622683cb8e2a2ed29a2bfdf716b84206c1e7",
+      "expected": "dbe83719f747d58e9b6b541d738b622683cb8e2a2ed29a2bfdf716b84206c1e7",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festivals.css?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "a136c3b6169957bfa8cada10df95fb23810300605c4b59da7415b8bb43935406",
+      "expected": "a136c3b6169957bfa8cada10df95fb23810300605c4b59da7415b8bb43935406",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festival-animation.css?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "94844a83de0c4021b4fe874a0d136205495d9985873d88fdb0c113ed8028cf59",
+      "expected": "94844a83de0c4021b4fe874a0d136205495d9985873d88fdb0c113ed8028cf59",
+      "matched": true
+    },
+    {
+      "resource": "church-os-sw.js?v=20261010-daily-scenes1",
+      "status": 200,
+      "sha256": "71b0d11fb7449ce7a209044b2e520ffb08b6b70b04cfbafc6d3fef3be5deb880",
+      "expected": "71b0d11fb7449ce7a209044b2e520ffb08b6b70b04cfbafc6d3fef3be5deb880",
+      "matched": true
+    },
+    {
+      "resource": "tree-reading-october-test.html",
+      "status": 200,
+      "sha256": "fccb7d71d48d3de1e4aceaddcfd659a157fc0e5e2822431fa64df9eedd38f88d",
+      "expected": "fccb7d71d48d3de1e4aceaddcfd659a157fc0e5e2822431fa64df9eedd38f88d",
+      "matched": true
+    },
+    {
+      "resource": "life-tree-festivals.html",
+      "status": 200,
+      "sha256": "545f29647525d36b2e6bfb996050aaf6522e4e0c65e3cdd112990f0985ca40af",
+      "expected": "545f29647525d36b2e6bfb996050aaf6522e4e0c65e3cdd112990f0985ca40af",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/passion.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "8568bd8ae5e0ecc3ec178a2a643dc98e60ecb023b02c2adaa7602d60e88d583a",
+      "expected": "8568bd8ae5e0ecc3ec178a2a643dc98e60ecb023b02c2adaa7602d60e88d583a",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/dragon.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "833dff8f0e166f00ccab021b4a97204dac331b64baa69d3543741a57d94eebb7",
+      "expected": "833dff8f0e166f00ccab021b4a97204dac331b64baa69d3543741a57d94eebb7",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/pentecost.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "94e03577557c0f8389b9d423f3c7144780a0acaacd56473a6f4528be4836b836",
+      "expected": "94e03577557c0f8389b9d423f3c7144780a0acaacd56473a6f4528be4836b836",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/spring.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "5986c6e57a9616f1d1b8a60d4a0399f4994059a210f6ff7f27b37852ca4c3e63",
+      "expected": "5986c6e57a9616f1d1b8a60d4a0399f4994059a210f6ff7f27b37852ca4c3e63",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/thanksgiving.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "ed98d5144b716169ac9a028345ef295e1fc48a6598bf08b1e92281b7cbff0b7d",
+      "expected": "ed98d5144b716169ac9a028345ef295e1fc48a6598bf08b1e92281b7cbff0b7d",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/newyear.wav?v=20261010-music-joy1",
+      "status": 200,
+      "sha256": "e7c38916491e7ea86692e30f8a61a4c825c23f8c5a05e969dbed8984fb68f2d1",
+      "expected": "e7c38916491e7ea86692e30f8a61a4c825c23f8c5a05e969dbed8984fb68f2d1",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/easter.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "48831d193b9902a7d8297d004bfe1f89386613f9aaa33eb03d5c9552019f3dde",
+      "expected": "48831d193b9902a7d8297d004bfe1f89386613f9aaa33eb03d5c9552019f3dde",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/christmas.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "9b5a412971d0c4683e73ef0e8b8302bba8c20e06cf86c28594acf0e66825c121",
+      "expected": "9b5a412971d0c4683e73ef0e8b8302bba8c20e06cf86c28594acf0e66825c121",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/anniversary.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "6e8290444cebc5dfe8c71939f4b873929713e02c30c89c4db763023bd1ae5cff",
+      "expected": "6e8290444cebc5dfe8c71939f4b873929713e02c30c89c4db763023bd1ae5cff",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/moon.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "bff3c4d8f24ceeef85297e5e6b728c0ca44d57db08ad9710d4fac71decae0943",
+      "expected": "bff3c4d8f24ceeef85297e5e6b728c0ca44d57db08ad9710d4fac71decae0943",
+      "matched": true
+    },
+    {
+      "resource": "assets/audio/life-tree/festivals/light.wav?v=20261010-audio1",
+      "status": 200,
+      "sha256": "12e6abd824460b1f70fa9f1627064ca3ad8920689e72cdc2787f8c0831a3e20c",
+      "expected": "12e6abd824460b1f70fa9f1627064ca3ad8920689e72cdc2787f8c0831a3e20c",
+      "matched": true
+    }
+  ]
+}

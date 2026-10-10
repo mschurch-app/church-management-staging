@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-10T05:34:37.016465+00:00",
+  "project": "svwgfgyxxgbqabosriom",
+  "function": "tree-reading-october-test",
+  "previous_version": 6,
+  "version": 7,
+  "status": "ACTIVE",
+  "verify_jwt": false,
+  "custom_line_verification": true,
+  "source_sha256": "cdaa72fbe2cdca149dbae6d8976109d5b8a5dafa6d005046fe68807001c6ef4c",
+  "source_matches_mcp_readback": true,
+  "deployed_handler_tests_passed": 15,
+  "deployed_handler_tests_failed": 0,
+  "production_authenticated_write_test": "not_performed",
+  "database_schema_or_sql_writes": false
+}

@@ -25,12 +25,12 @@
 
 ## Git與部署
 
-修復分支codex/life-tree-makeup-backend-fix，基於origin/main 065ee7692b312c5b6a94994578410cf6e30a256b。Commit、PR、實際函式部署版本與讀回驗證待完成後記錄。
+修復分支codex/life-tree-makeup-backend-fix，基於origin/main 065ee7692b312c5b6a94994578410cf6e30a256b。修復commit 76885ebd2dc881723c198c7aabb1d34fc0df4cb7已push，PR #58已合併main為92bbde691aa7994f067d043d085d4fa320e5b016。專用同名函式已部署版本7 ACTIVE，verify_jwt維持false且原LINE驗證不變。13:34:37（台北）讀回source逐字符合修復來源，SHA-256 cdaa72fbe2cdca149dbae6d8976109d5b8a5dafa6d005046fe68807001c6ef4c。直接對讀回source再跑15項全部通過（deployed-v7.tap）。無token的真實HTTP請求回401 login_required，正確CORS（hosted-auth-check.json）。發布證據由codex/life-tree-makeup-backend-release文件分支同步。
 
 ## Database
 
-本項今日無資料庫結構異動。只唯讀檢查專用專案svwgfgyxxgbqabosriom的constraint及服務日誌；沒有SQL寫入、schema、migration、RLS、Postgres function或trigger修改，不代使用者補紀錄。Edge Function程式修正與部署另列，不把它當成無後端變動。未操作主靈修專案或舊資料庫。
+本項今日無資料庫結構異動。只唯讀檢查專用專案svwgfgyxxgbqabosriom的constraint及服務日誌；部署後唯讀確認5位參與者、43筆讀經，completion_type及日期constraint、本人與日期唯一鍵、參與者外鍵維持。沒有SQL寫入、schema、migration、RLS、Postgres function或trigger修改，不代使用者補紀錄。這不是個別使用者成功存檔的證明。Edge Function程式修正與部署另列，不把它當成無後端變動。未操作主靈修專案或舊資料庫。
 
 ## 回復與後續
 
-回復可用已保存於Git的版本6程式重新部署原函式，不需任何資料刪除；但會恢復補讀失敗，應優先前進修正。實際部署後讀回完整source比對並重跑相同15項，確認版本與LINE驗證設定；僅以無憑證請求檢查未授權仍被拒絕，不模擬或取得真實LINE token、不替真人寫入資料。由使用者原頁點重試，確認10/9記錄後再澆水。
+回復可用已保存於Git的版本6程式重新部署原函式，不需任何資料刪除；但會恢復補讀失敗，應優先前進修正。已讀回完整source比對並重跑相同15項，確認版本與LINE驗證設定；只用無憑證請求檢查未授權仍被拒絕，不模擬或取得真實LINE token、不替真人寫入資料。由使用者原頁點重試，確認10/9記錄後再澆水。

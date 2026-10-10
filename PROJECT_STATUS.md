@@ -4,7 +4,7 @@ Last reviewed: 2026-10-10
 
 ## 十月補讀後端修復（2026-10-10）
 
-查得實際October Edge Function版本6漏定義shiftDate，非當日mark_read及water_tree會拋錯並回503，前端誤以通用連線訊息呈現。新增UTC日曆位移函式，保留原LINE驗證、本人範圍、加入日期、七天期限和重複提交語意。直接執行production handler的15項隔離測試，修正前7項失敗、修正後全通過；補列後端測試為必跑，避免只驗證模擬API成功回應。既有82項瀏覽器回歸亦全通過；Git與實際函式部署驗證進行中，詳見 `docs/reports/2026-10-10-life-tree-makeup-backend/report.md`。本項無資料庫結構或SQL資料修改；實際使用者10/9存檔仍需本人重試確認。
+查得實際October Edge Function版本6漏定義shiftDate，非當日mark_read及water_tree會拋錯並回503，前端誤以通用連線訊息呈現。新增UTC日曆位移函式，保留原LINE驗證、本人範圍、加入日期、七天期限和重複提交語意。直接執行production handler的15項隔離測試，修正前7項失敗、修正後全通過；補列後端測試為必跑，避免只驗證模擬API成功回應。既有82項瀏覽器回歸亦全通過。PR #58已合併main，專用函式v7已部署ACTIVE；13:34:37讀回source符合Git且15項重跑全過，無憑證HTTP請求回401。詳見 `docs/reports/2026-10-10-life-tree-makeup-backend/report.md`。本項無資料庫結構或SQL資料修改；實際使用者10/9存檔仍需本人重試確認，Mac Safari與iPhone／LINE待實機驗收。
 
 ## 生命樹庭園整合（2026-10-10）
 

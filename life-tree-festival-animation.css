@@ -7,3 +7,9 @@
 @keyframes fest-firework{0%,18%{opacity:0;transform:scale(.1)}24%{opacity:1;transform:scale(.35)}55%{opacity:.85;transform:scale(1.35)}80%,100%{opacity:0;transform:scale(1.55) translateY(15px)}}@keyframes fest-rocket{0%{opacity:0;transform:translateY(90px)}12%{opacity:.8}23%{opacity:0;transform:translateY(0)}24%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.festival-scene *{animation:none!important;transition:none!important}}
 .festival-scene[data-background=true] *{animation-play-state:paused!important}
+
+/* Holy Week uses quiet light rather than victory bursts on the journey to Easter. */
+.festival-scene[data-festival=easter]:not([data-day="8"]) :is(.festival-celebration,.festival-dawn-rays){display:none}
+.festival-scene[data-festival=easter]:is([data-day="6"],[data-day="7"]) :is(.festival-particles,.festival-sky-stars){display:none}
+.festival-scene[data-festival=easter]:not([data-day="8"]) .festival-canopy{animation-duration:12s}
+.festival-scene[data-festival=easter]:not([data-day="8"])[data-phase=acting] .festival-canopy{animation:none}

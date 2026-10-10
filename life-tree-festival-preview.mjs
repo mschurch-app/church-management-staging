@@ -1,5 +1,5 @@
-import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261010-season-test1';
-import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261010-season-test1';
+import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261010-daily-scenes1';
+import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261010-daily-scenes1';
 import {applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 
 // Standalone, public visual preview. All actions and collections are memory only.
@@ -14,7 +14,7 @@ const state={item:initial,day:Math.round(Math.max(1,Math.min(initial.days.length
 let timers=new Set(),toastTimer,musicTask=0,musicBusy=false;
 let soundWanted=state.sound;
 const music=new Audio(),effect=new Audio();music.loop=true;music.volume=.27;effect.volume=.5;music.preload='none';effect.preload='none';
-const spots={newyear:[81,24],spring:[81,25],easter:[26,71],pentecost:[53,78],dragon:[76,73],moon:[23,79],light:[21,69],thanksgiving:[52,80],christmas:[79,18]};
+const spots={newyear:[81,24],spring:[81,25],anniversary:[81,75],easter:[26,71],pentecost:[53,78],dragon:[76,73],moon:[23,79],light:[21,69],thanksgiving:[52,80],christmas:[79,18]};
 const currentKey=()=>state.item.id+':'+state.day;
 let decorationOnly=initial.id==='christmas'&&Boolean(decorationForDate(params.get('date')))&&!festivalForDate(params.get('date'));
 const count=id=>[...state.completed].filter(key=>key.startsWith(id+':')).length;
@@ -44,12 +44,12 @@ function renderControls(){
 function render(){
  const item=state.item,content=item.days[state.day-1];document.body.dataset.festival=item.id;$('scene').dataset.festival=item.id;
  document.body.style.setProperty('--fest-accent',item.accent);document.body.style.setProperty('--fest-paper',item.paper);
- $('kicker').textContent=item.name+' · '+item.subtitle;$('title').textContent=item.title;
+ $('kicker').textContent=item.name+' · '+item.subtitle;$('title').textContent=item.id==='easter'?content.title:item.title;$('chronology-note').hidden=!item.chronologyNote;$('chronology-note').textContent=item.chronologyNote||'';
  $('motif').textContent=decorationOnly?'十二月的小樹・聖誕燈串・彩球與星星':item.motif;$('period').textContent=decorationOnly?'12/01 — 12/31 · 聖誕佈置':item.start.slice(5).replace('-','/')+' — '+item.end.slice(5).replace('-','/');
  $('day-label').textContent='第 '+state.day+' 天';$('task-title').textContent=item.action;$('description').textContent='每天一點不同，'+item.days.length+'天慢慢走完這個季節。';
  $('day-title').textContent=content.title;$('ref').textContent=content.reference;$('reflection').textContent=content.reflection;$('journal-prompt').textContent=content.prompt;
  $('decoration-note').hidden=item.id!=='christmas';$('monster-card').hidden=item.id!=='light';
- $('monster-name').textContent=MONSTERS[state.day-1].name;$('equipment').textContent='今日裝備：'+MONSTERS[state.day-1].tool;$('equipment-art').innerHTML=festivalEquipment(state.day);
+ $('monster-name').textContent=(MONSTERS[state.day-1]||MONSTERS[0]).name;$('equipment').textContent='今日裝備：'+(MONSTERS[state.day-1]||MONSTERS[0]).tool;$('equipment-art').innerHTML=festivalEquipment(state.day);
  const [x,y]=spots[item.id];$('hotspot').style.setProperty('--hot-x',x+'%');$('hotspot').style.setProperty('--hot-y',y+'%');
  $('chapters').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.festival===item.id)));
  renderArt();renderControls();
@@ -62,7 +62,7 @@ function select(id,day=1){
  render();if(state.sound)playMusic();
 }
 function celebrate(){
- state.completed.add(currentKey());state.phase='celebrating';renderArt();renderControls();playEffect('celebration');
+ state.completed.add(currentKey());state.phase='celebrating';renderArt();renderControls();playEffect(state.item.id==='easter'&&state.day<8?'open':'celebration');
  feedback(count(state.item.id)===state.item.days.length?state.item.complete+' 已收藏「'+state.item.badge+'」。':'今天的場景亮起來了！選下一天，繼續看看花園。');
  toast(count(state.item.id)===state.item.days.length?'已收藏 · '+state.item.badge:'今天的小小驚喜，完成！');
  wait(1700,()=>{state.phase='complete';renderArt();renderControls();});
@@ -76,7 +76,7 @@ function act(){
   wait(1250,()=>{state.phase='ready';renderArt();renderControls();feedback('澆水完成！點點發光的'+state.item.target+'，或按下方按鈕。');toast('澆水完成，來看看節慶驚喜！');});return;
  }
  state.hits++;state.phase='acting';renderArt();renderControls();playEffect('open');
- feedback(state.item.id==='light'?MONSTERS[state.day-1].tool+'發出光芒 · '+state.hits+' / 3':state.item.target+'有了回應 · '+state.hits+' / 3');
+ feedback(state.item.id==='light'?(MONSTERS[state.day-1]||MONSTERS[0]).tool+'發出光芒 · '+state.hits+' / 3':state.item.target+'有了回應 · '+state.hits+' / 3');
  wait(700,()=>{if(state.hits>=3)celebrate();else{state.phase='ready';renderArt();renderControls();}});
 }
 function greet(){
@@ -91,7 +91,8 @@ function syncSound(){
 async function playMusic(){
  if(!state.sound||document.hidden||musicBusy)return;
  const version=state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
- const src=new URL('assets/audio/life-tree/festivals/'+state.item.id+'.wav?v='+version,import.meta.url).href;
+ const track=state.item.musicByDay?.[state.day-1]||state.item.id;
+ const src=new URL('assets/audio/life-tree/festivals/'+track+'.wav?v='+version,import.meta.url).href;
  if(music.src===src&&!music.paused)return;
  musicBusy=true;const task=++musicTask;music.pause();if(music.src!==src)music.src=src;
  let timeout;
@@ -117,7 +118,7 @@ function resumeMusic(event){if(!event.isTrusted||event.target.closest?.('#festiv
 document.addEventListener('pointerdown',resumeMusic,{passive:true});document.addEventListener('keydown',resumeMusic);
 
 for(const item of FESTIVALS){const button=document.createElement('button');button.type='button';button.className='festival-chapter';button.dataset.festival=item.id;button.setAttribute('aria-pressed',String(item===initial));button.innerHTML=festivalSymbol(item.id)+'<span>'+item.name+'<small>'+item.title+'</small></span>';button.addEventListener('click',()=>select(item.id));$('chapters').append(button);}
-for(let day=1;day<=7;day++){const button=document.createElement('button');button.type='button';button.className='festival-day';button.dataset.day=day;button.textContent=String(day);button.setAttribute('aria-label','試看第'+day+'天');button.addEventListener('click',()=>select(state.item.id,day));$('days').append(button);}
+for(let day=1;day<=Math.max(...FESTIVALS.map(item=>item.days.length));day++){const button=document.createElement('button');button.type='button';button.className='festival-day';button.dataset.day=day;button.textContent=String(day);button.setAttribute('aria-label','試看第'+day+'天');button.addEventListener('click',()=>select(state.item.id,day));$('days').append(button);}
 document.querySelectorAll('[data-icon]').forEach(node=>applyAppIcon(node,node.dataset.icon));
 $('action').addEventListener('click',act);$('hotspot').addEventListener('click',act);$('pat').addEventListener('click',greet);$('greet').addEventListener('click',greet);
 $('replay').addEventListener('click',()=>{cancel();state.phase='idle';state.hits=0;render();feedback('從澆水開始重看；完成紀念不會重複增加。');});

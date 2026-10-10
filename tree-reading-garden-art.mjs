@@ -1,4 +1,4 @@
-import {festivalScene} from './life-tree-festival-art.mjs?v=20261010-season-test1';
+import {festivalScene} from './life-tree-festival-art.mjs?v=20261010-daily-scenes1';
 import {createAppIcon} from './app-icons.mjs?v=20261010-playful-care1';
 
 // Presentation only: all progress, care and journal records come from the existing API.

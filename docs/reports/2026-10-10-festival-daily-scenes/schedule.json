@@ -1,0 +1,121 @@
+[
+  {
+    "date": "2026-10-10",
+    "label": "元旦",
+    "festival": "newyear",
+    "day": 1,
+    "key": "newyear:1"
+  },
+  {
+    "date": "2026-10-11",
+    "label": "農曆春節",
+    "festival": "spring",
+    "day": 7,
+    "key": "spring:7"
+  },
+  {
+    "date": "2026-10-12",
+    "label": "16週年慶",
+    "festival": "anniversary",
+    "day": 7,
+    "key": "anniversary:7"
+  },
+  {
+    "date": "2026-10-13",
+    "label": "棕樹主日・榮耀進城",
+    "festival": "easter",
+    "day": 1,
+    "key": "easter:1"
+  },
+  {
+    "date": "2026-10-14",
+    "label": "潔淨聖殿・禱告的殿",
+    "festival": "easter",
+    "day": 2,
+    "key": "easter:2"
+  },
+  {
+    "date": "2026-10-15",
+    "label": "聖殿教導・最大的誡命",
+    "festival": "easter",
+    "day": 3,
+    "key": "easter:3"
+  },
+  {
+    "date": "2026-10-16",
+    "label": "出賣的約定・心的選擇",
+    "festival": "easter",
+    "day": 4,
+    "key": "easter:4"
+  },
+  {
+    "date": "2026-10-17",
+    "label": "最後晚餐・客西馬尼禱告",
+    "festival": "easter",
+    "day": 5,
+    "key": "easter:5"
+  },
+  {
+    "date": "2026-10-18",
+    "label": "受難日・十字架上的愛",
+    "festival": "easter",
+    "day": 6,
+    "key": "easter:6"
+  },
+  {
+    "date": "2026-10-19",
+    "label": "安息日・靜候晨光",
+    "festival": "easter",
+    "day": 7,
+    "key": "easter:7"
+  },
+  {
+    "date": "2026-10-20",
+    "label": "復活主日・祂已復活",
+    "festival": "easter",
+    "day": 8,
+    "key": "easter:8"
+  },
+  {
+    "date": "2026-10-21",
+    "label": "聖靈降臨節",
+    "festival": "pentecost",
+    "day": 7,
+    "key": "pentecost:7"
+  },
+  {
+    "date": "2026-10-22",
+    "label": "端午節",
+    "festival": "dragon",
+    "day": 7,
+    "key": "dragon:7"
+  },
+  {
+    "date": "2026-10-23",
+    "label": "中秋節",
+    "festival": "moon",
+    "day": 7,
+    "key": "moon:7"
+  },
+  {
+    "date": "2026-10-24",
+    "label": "光明勇士",
+    "festival": "light",
+    "day": 7,
+    "key": "light:7"
+  },
+  {
+    "date": "2026-10-25",
+    "label": "感恩節",
+    "festival": "thanksgiving",
+    "day": 7,
+    "key": "thanksgiving:7"
+  },
+  {
+    "date": "2026-10-26",
+    "label": "聖誕節",
+    "festival": "christmas",
+    "day": 7,
+    "key": "christmas:7"
+  }
+]

@@ -1,7 +1,7 @@
-import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261010-season-test1';
-import {festivalTestForDate,FESTIVAL_TEST_SCHEDULE} from './life-tree-festival-test-schedule.mjs?v=20261010-season-test1';
+import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261010-daily-scenes1';
+import {festivalTestForDate,FESTIVAL_TEST_SCHEDULE} from './life-tree-festival-test-schedule.mjs?v=20261010-daily-scenes1';
 import { loadScheduledChapters } from './bible-scripture-loader.mjs?v=20261010-deadline1';
-import { renderLifeTree, growthStage } from './tree-reading-garden-art.mjs?v=20261010-season-test1';
+import { renderLifeTree, growthStage } from './tree-reading-garden-art.mjs?v=20261010-daily-scenes1';
 import { createAppIcon } from './app-icons.mjs?v=20261010-playful-care1';
 import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-login-fallback';
 
@@ -85,13 +85,13 @@ function renderFestivalTest(slot){
   $('#festival-test-info').hidden=!slot||state.view!=='personal';
   const controls=$('#festival-play-controls');controls.hidden=!playing||state.view!=='personal';if(playing){const button=$('#festival-play-action');button.disabled=state.writeBusy||festivalPlay.busy||Boolean(gardenEffect)||festivalPlay.hits>=3;button.setAttribute('aria-label',slot.item.action);button.innerHTML=slot.item.id==='light'?festivalEquipment(slot.day):festivalSymbol(slot.item.id);$('#festival-play-status').textContent=festivalPlay.hits>=3?slot.item.complete:`${slot.item.action} · ${festivalPlay.hits} / 3`;$('#tree-art').setAttribute('aria-label',`${slot.item.name}試玩：${slot.item.action}，已完成 ${festivalPlay.hits} / 3。也可以點樹圖互動。`);}
   if(!slot)return;
-  $('#festival-test-label').textContent=`${slot.item.name} · ${fmt(slot.start)}–${fmt(slot.end)} 試玩`;
-  $('#festival-test-next').textContent=slot.next?`${fmt(slot.next.start)} 換 ${slot.next.item.name}`:'這一站結束後，回到原本庭園';
-  const devotion=slot.item.days[slot.day-1];$('#festival-test-verse').textContent=`${devotion.reference}｜${devotion.reflection}`;
-  const list=$('#festival-test-schedule');if(!list.childElementCount){for(const entry of FESTIVAL_TEST_SCHEDULE){const li=document.createElement('li');li.dataset.festival=entry.item.id;li.textContent=`${fmt(entry.start)}–${fmt(entry.end)}　${entry.item.name}`;list.append(li);}}
-  for(const li of list.children){if(li.dataset.festival===slot.item.id)li.setAttribute('aria-current','date');else li.removeAttribute('aria-current');}
+  $('#festival-test-label').textContent=`${slot.label} · ${fmt(slot.start)} 試玩`;
+  $('#festival-test-next').textContent=slot.next?`${fmt(slot.next.start)} 換 ${slot.next.label}`:'這一站結束後，回到原本庭園';
+  const devotion=slot.item.days[slot.day-1];$('#festival-test-verse').textContent=`${devotion.title}｜${devotion.reference}｜${devotion.reflection}`;$('#festival-test-chronology').hidden=!slot.item.chronologyNote;$('#festival-test-chronology').textContent=slot.item.chronologyNote||'';
+  const list=$('#festival-test-schedule');if(!list.childElementCount){for(const entry of FESTIVAL_TEST_SCHEDULE){const li=document.createElement('li');li.dataset.scene=entry.key;li.textContent=`${fmt(entry.start)}　${entry.label}`;list.append(li);}}
+  for(const li of list.children){if(li.dataset.scene===slot.key)li.setAttribute('aria-current','date');else li.removeAttribute('aria-current');}
 }
-function actFestival(){const slot=festivalTestForDate(today());if(!slot||!state.participant||state.view!=='personal'||!record()?.watered_at||activeChallenges().length||state.writeBusy||gardenEffect||festivalPlay.busy||festivalPlay.hits>=3)return;const key=festivalPlay.key;festivalPlay.hits++;festivalPlay.busy=true;festivalPlay.phase=festivalPlay.hits===3?'celebrating':'acting';renderTree();void play(festivalPlay.hits===3?'celebration':'open');festivalPlayTimer=setTimeout(()=>{if(festivalPlay.key!==key)return;festivalPlay.busy=false;festivalPlay.phase=festivalPlay.hits===3?'complete':'ready';if(state.participant&&state.view==='personal')renderTree();},matchMedia('(prefers-reduced-motion: reduce)').matches?100:festivalPlay.hits===3?1700:650);}
+function actFestival(){const slot=festivalTestForDate(today());if(!slot||!state.participant||state.view!=='personal'||!record()?.watered_at||activeChallenges().length||state.writeBusy||gardenEffect||festivalPlay.busy||festivalPlay.hits>=3)return;const key=festivalPlay.key;festivalPlay.hits++;festivalPlay.busy=true;festivalPlay.phase=festivalPlay.hits===3?'celebrating':'acting';renderTree();void play(festivalPlay.hits===3&&!(slot.item.id==='easter'&&slot.day<8)?'celebration':'open');festivalPlayTimer=setTimeout(()=>{if(festivalPlay.key!==key)return;festivalPlay.busy=false;festivalPlay.phase=festivalPlay.hits===3?'complete':'ready';if(state.participant&&state.view==='personal')renderTree();},matchMedia('(prefers-reduced-motion: reduce)').matches?100:festivalPlay.hits===3?1700:650);}
 function refreshFestivalDate(){if(document.hidden||!state.participant||state.writeBusy||lastFestivalDate===today())return;if(state.view==='personal')renderTree();syncSceneMusic();}
 function renderTree(){const stats=progressStats(),active=primaryChallenge();const art=$('#tree-art');art.dataset.challenge=active?.challenge_type||'none';$('.tree-card').dataset.needsCare=String(Boolean(active));art.setAttribute('aria-label',active?`生命樹有 ${activeChallenges().length} 項待照顧的挑戰`:'生命樹，目前沒有待照顧的風雨。輕點小樹打招呼');art.dataset.weather=weather.mood;art.dataset.season=season();art.dataset.health=stats.missedStreak>=3?'wilted':stats.missedStreak?'yellow':'healthy';stats.watered=Boolean(record()?.watered_at);stats.effect=gardenEffect;const festival=festivalTestForDate(today());if(festival)art.dataset.festival=festival.item.id;else delete art.dataset.festival;renderFestivalTest(festival);art.innerHTML=renderLifeTree({id:'oct',name:state.participant?.display_name||'同工'},stats,today(),false,weather.mood,12,festival?{...festival,phase:$('#tree-scene').dataset.phase,progress:record()?.watered_at?Math.ceil(festivalPlay.hits/3*7):3,hits:festivalPlay.hits}:null);$('.tree-card')?.setAttribute('data-weather',weather.mood);$('#tree-date-label').textContent=today()<'2026-10-01'?'COMING SOON · OCT 01':`十月 · ${fmt(today())}`;$('#tree-title').textContent=`${state.participant?.display_name||'同工'}的生命樹`;if(!state.readingContextDate)setReadingContext(today());
   const status=active?`${labels[active.challenge_type]?.title||'生命中的挑戰'} · 請幫小樹一起面對`:missedMessage(stats.missedStreak)||(state.records.length?'葉片翠綠，正在穩穩成長。':'小樹正在等候第一道活水 ✨');$('#tree-mood').textContent=status;
@@ -124,7 +124,13 @@ function sayScripture(){if(!window.speechSynthesis){showStatus('此瀏覽器不�
 // Keeping the effect element allows success sounds after asynchronous saves.
 let backgroundAudio=null,effectAudio=null,musicVersion=0,musicStarting=false,musicStartFromGesture=false;
 let effectVersion=0,effectStarting=false,effectsReady=false,effectsFailed=false;
-function sceneMusic(){const kind=state.view==='personal'?primaryChallenge()?.challenge_type:'';return kind==='typhoon'||kind==='wind'?'storm':kind==='worm'||kind==='trouble'?'care':state.view==='personal'&&festivalTestForDate(today())?`festivals/${festivalTestForDate(today()).item.id}`:'reading';}
+function sceneMusic(){
+ const personal=state.view==='personal',kind=personal?primaryChallenge()?.challenge_type:'';
+ if(kind==='typhoon'||kind==='wind')return 'storm';
+ if(kind==='worm'||kind==='trouble')return 'care';
+ const slot=personal?festivalTestForDate(today()):null;
+ return slot?`festivals/${slot.item.musicByDay?.[slot.day-1]||slot.item.id}`:'reading';
+}
 function sceneMusicLabel(wanted){return wanted==='storm'?'風雨中的陪伴':wanted==='care'?'小樹照顧時間':wanted.startsWith('festivals/')?`${festivalTestForDate(today())?.item.name||'節慶'}花園配樂`:'安靜讀經時光';}
 function syncSceneMusic(){const wanted=sceneMusic();$('#scene-music-label').textContent=state.sound?`♪ ${sceneMusicLabel(wanted)}`:'音樂與音效已關閉';if(state.sound&&backgroundAudio&&(!backgroundAudio.paused||musicStarting)&&backgroundAudio.dataset.track!==wanted)void startBackgroundMusic();}
 function musicPlaying(){return Boolean(state.sound&&backgroundAudio&&!backgroundAudio.paused&&!backgroundAudio.error&&backgroundAudio.readyState>=2);}

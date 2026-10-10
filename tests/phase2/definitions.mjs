@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,PERMISSION_LABELS,LEGACY_DASHBOARD_MODULES,NAVIGATION_MODULES,LEGACY_FEATURE_FILES,matchesFunction,functionHref,canonicalFunctionKey} from '../../app-function-definitions.mjs?v=20261009-stage2';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,PERMISSION_LABELS,LEGACY_DASHBOARD_MODULES,NAVIGATION_MODULES,LEGACY_FEATURE_FILES,matchesFunction,functionHref,canonicalFunctionKey} from '../../app-function-definitions.mjs?v=20261010-festival1';
 import {ICON_PATHS,iconSymbol} from '../../app-icons.mjs';
 import {availableFunctionKeys,availableSettingsGroups,favoriteKeys} from '../../app-function-catalog.mjs';
 import {HOME_TEMPLATES as adminHome,HOME_MODULES as adminModules,PERMISSIONS} from '../../admin-accounts-management.mjs';
 import {HOME_TEMPLATES as dashboardHome,MODULES} from '../../dashboard-management.mjs';
 const checks=[];function test(name,fn){fn();checks.push({name,status:'passed'});console.log('PASS',name);}
 const permissions=Object.keys(PERMISSION_LABELS),access={grants:permissions.map(permission=>({church_id:'M+',permission})),featurePermissions:[]},home={is_owner:true,system_monitor_access:true,home_modules:Object.keys(FUNCTION_CATALOG)};
-test('all 41 functions belong to exactly one category',()=>{const grouped=FUNCTION_GROUPS.flatMap(group=>group.keys);assert.equal(grouped.length,41);assert.equal(new Set(grouped).size,41);assert.deepEqual(new Set(grouped),new Set(Object.keys(FUNCTION_CATALOG)));});
+test('all 42 functions belong to exactly one category',()=>{const grouped=FUNCTION_GROUPS.flatMap(group=>group.keys);assert.equal(grouped.length,42);assert.equal(new Set(grouped).size,42);assert.deepEqual(new Set(grouped),new Set(Object.keys(FUNCTION_CATALOG)));});
 test('every function has a known SVG and stable metadata',()=>{for(const [key,item]of Object.entries(FUNCTION_CATALOG)){assert.equal(item.key,key);assert(ICON_PATHS[item.symbol]);assert.equal(iconSymbol(key),item.symbol);assert(item.title&&item.file&&item.group);}});
 test('all internal function destinations exist',()=>{for(const item of Object.values(FUNCTION_CATALOG)){if(item.file.startsWith('https://'))continue;assert(fs.existsSync(new URL('../../'+item.file,import.meta.url)),item.file);}});
 test('settings contain unique functions in four groups',()=>{assert.equal(SETTINGS_GROUPS.length,4);const keys=SETTINGS_GROUPS.flatMap(group=>group.keys);assert.equal(new Set(keys).size,keys.length);for(const group of SETTINGS_GROUPS)for(const key of group.keys)assert.equal(FUNCTION_CATALOG[key].settingsGroup,group.key);});

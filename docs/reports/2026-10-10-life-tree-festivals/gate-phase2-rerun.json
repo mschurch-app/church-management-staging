@@ -1,0 +1,13 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "apiMode": "isolated_synthetic",
+  "checks": [
+    {
+      "name": "phase2/browser.mjs",
+      "passed": true,
+      "seconds": 73,
+      "exitCode": 0
+    }
+  ],
+  "failures": 0
+}

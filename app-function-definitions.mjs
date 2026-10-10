@@ -230,6 +230,21 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "daily-devotional",
     "settingsGroup": "content"
   },
+  "life_tree_festivals": {
+    "permission": "tree_reading_admin",
+    "church": "M+",
+    "file": "life-tree-festivals.html",
+    "icon": "🌳",
+    "title": "生命樹節慶預覽",
+    "description": "八種節慶場景與七天互動試玩",
+    "key": "life_tree_festivals",
+    "group": "media",
+    "symbol": "tree",
+    "configurableHome": false,
+    "searchTerms": ["節慶", "生命樹", "聖誕燈", "感恩節", "光明勇士"],
+    "settingsId": "life-tree-festivals",
+    "settingsGroup": "content"
+  },
   "binding_review": {
     "permission": "binding_review",
     "file": "binding-review.html",
@@ -601,6 +616,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "note": "靈修、週報、教材與社群內容",
     "keys": [
       "tree_reading_admin",
+      "life_tree_festivals",
       "website_weekly",
       "website_group_resources",
       "pastoral_content",
@@ -681,6 +697,7 @@ export const SETTINGS_GROUPS=freezeTree([
       "website_weekly",
       "website_group_resources",
       "tree_reading_admin",
+      "life_tree_festivals",
       "pastoral_content",
       "todays_message",
       "love_share",

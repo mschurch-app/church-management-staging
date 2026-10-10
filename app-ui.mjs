@@ -1,4 +1,4 @@
-import {FUNCTION_CATALOG,functionHref} from './app-function-definitions.mjs?v=20261009-stage2';
+import {FUNCTION_CATALOG,functionHref} from './app-function-definitions.mjs?v=20261010-festival1';
 import {createAppIcon} from './app-icons.mjs?v=20261009-stage2';
 
 export function element(tag,text='',className=''){const node=document.createElement(tag);node.textContent=text;node.className=className;return node;}

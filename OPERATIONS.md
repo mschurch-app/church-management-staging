@@ -1,5 +1,10 @@
 # Operations
 
+## Seasonal Life Tree preview (2026-10-10)
+
+Open `/life-tree-festivals.html?festival=christmas` for Christmas week, or `?date=2027-12-05` for the full-December decorated tree outside that week. All eight worlds and seven days can be previewed without sign-in. Settings and tools exposes the preview under content/publication for existing M+ tree administrators. There are no operational database writes or messages. Run `npm run life-tree:festivals` from tests for isolated interaction/calendar/audio regression, plus the standard quality gate for shared metadata and Worker changes. The December calendar is 2027-specific. Formal 2027 activation and content approval are not implied by this static preview deployment. Evidence and deployment hashes: `docs/reports/2026-10-10-life-tree-festivals/`.
+
+
 ## Local development
 
 This is a static browser application plus Supabase services. There is no root `package.json` or repository-defined npm script at the time of review.

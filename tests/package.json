@@ -21,7 +21,8 @@
     "quality:gate": "node quality-gate.mjs",
     "life-tree:browser": "node life-tree/browser.mjs",
     "life-tree:backend": "node --test life-tree/backend.mjs",
-    "life-tree:contracts": "node life-tree/contracts.mjs"
+    "life-tree:contracts": "node life-tree/contracts.mjs",
+    "life-tree:festivals": "node life-tree/festivals.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",

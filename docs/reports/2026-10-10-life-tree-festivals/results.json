@@ -1,0 +1,196 @@
+{
+  "checks": [
+    {
+      "name": "Eight distinct festival calendars and all 56 candidate scripture/reflection/prompt sets",
+      "passed": true
+    },
+    {
+      "name": "Christmas decoration applies every December day, with the activity week separately selected",
+      "passed": true
+    },
+    {
+      "name": "Preview settings use existing M+ tree permission; no new grant or home allowlist change",
+      "passed": true
+    },
+    {
+      "name": "Seven monsters have seven distinct equipment illustrations",
+      "passed": true
+    },
+    {
+      "name": "All eight original seasonal music loops contain audible PCM without clipping",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 320×568",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 402×874",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 760×900",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 1024×768",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 1280×800",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 1440×900",
+      "passed": true
+    },
+    {
+      "name": "No page overflow and Christmas renders: 1920×1080",
+      "passed": true
+    },
+    {
+      "name": "All visible enabled controls have at least 44×44px hit targets",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 農曆春節",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 復活節",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 聖靈降臨節",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 端午節",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 中秋節",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 光明勇士",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 感恩節",
+      "passed": true
+    },
+    {
+      "name": "Mobile world, original motifs and candidate content: 聖誕節",
+      "passed": true
+    },
+    {
+      "name": "Christmas tree has 19 animated bulbs, baubles, bow, top star and gifts; week includes manger",
+      "passed": true
+    },
+    {
+      "name": "Tree pat animates and announces Christmas greeting",
+      "passed": true
+    },
+    {
+      "name": "Watering and three interactions animate, ignore duplicates and finish without hanging",
+      "passed": true
+    },
+    {
+      "name": "Switching world during watering cancels old action and does not apply completion to another world",
+      "passed": true
+    },
+    {
+      "name": "Manual reduced motion stops animations",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 農曆春節",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 復活節",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 聖靈降臨節",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 端午節",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 中秋節",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 光明勇士",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 感恩節",
+      "passed": true
+    },
+    {
+      "name": "All seven days complete and collect exactly once: 聖誕節",
+      "passed": true
+    },
+    {
+      "name": "Replay preserves earned badges and never duplicates a collection",
+      "passed": true
+    },
+    {
+      "name": "Collection modal locks background, Escape closes and restores focus",
+      "passed": true
+    },
+    {
+      "name": "December outside Christmas week shows decorated tree without premature Nativity scene",
+      "passed": true
+    },
+    {
+      "name": "Christmas week automatically includes the Nativity scene",
+      "passed": true
+    },
+    {
+      "name": "Fractional preview day is safely normalized",
+      "passed": true
+    },
+    {
+      "name": "Holy Saturday has closed stone; resurrection scene follows calendar day seven, not a game reward",
+      "passed": true
+    },
+    {
+      "name": "Autoplay denial gives recoverable speaker retry and trusted click resumes native audio",
+      "passed": true
+    },
+    {
+      "name": "Music switches with world; speaker mutes",
+      "passed": true
+    },
+    {
+      "name": "System reduced-motion setting stops Christmas light animation",
+      "passed": true
+    },
+    {
+      "name": "Reload clears all preview progress; browser stores only sound/motion preferences",
+      "passed": true
+    },
+    {
+      "name": "Returning from page cache during an animation restores an actionable state",
+      "passed": true
+    },
+    {
+      "name": "Audio timeout leaves controls usable; remembered preference resumes on an ordinary trusted tap",
+      "passed": true
+    },
+    {
+      "name": "No script errors, external/auth/database calls or missing resources",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "missing": [],
+  "passed": true
+}

@@ -1,5 +1,10 @@
 # Database
 
+## Seasonal Life Tree preview boundary (2026-10-10)
+
+The eight festival worlds and full-December Christmas decoration in `life-tree-festivals.html` are presentation-only previews. No schema migration, SQL data mutation, Edge Function deployment, identity request, award write or notification is performed. Preview completion/collections stay in memory; localStorage only stores sound and reduced-motion preferences. Candidate scripture content is static and has not been imported as approved devotionals. Formal seasonal records, idempotent rewards and reviewer configuration remain a later integration milestone.
+
+
 ## Platform and project
 
 - Database: Supabase Postgres.

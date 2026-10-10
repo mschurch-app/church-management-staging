@@ -1,0 +1,119 @@
+{
+  "origin": "http://127.0.0.1:8769",
+  "apiMode": "isolated_synthetic",
+  "note": "Latest result per suite; the full run exited 1 for the old count assertion, corrected and rerun through the same quality gate. Raw failures retained.",
+  "checks": [
+    {
+      "name": "frontend syntax",
+      "files": 121,
+      "passed": true,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "app-catalog.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase2/definitions.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase1/database.mjs",
+      "passed": true,
+      "seconds": 6,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase1/line-provider.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase2/service-signup-journey-db.mjs",
+      "passed": true,
+      "seconds": 5,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase1/browser.mjs",
+      "passed": true,
+      "seconds": 20,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": true,
+      "seconds": 17,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true,
+      "seconds": 48,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase2/browser.mjs",
+      "passed": true,
+      "seconds": 73,
+      "exitCode": 0,
+      "evidence": "gate-phase2-rerun.json"
+    },
+    {
+      "name": "phase2/service-signup-list.mjs",
+      "passed": true,
+      "seconds": 56,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase3/browser.mjs",
+      "passed": true,
+      "seconds": 134,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase4/browser.mjs",
+      "passed": true,
+      "seconds": 74,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase1/regression.mjs",
+      "passed": true,
+      "seconds": 101,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true,
+      "seconds": 67,
+      "exitCode": 0,
+      "evidence": "gate-with-dependencies.json"
+    }
+  ],
+  "failures": 0
+}

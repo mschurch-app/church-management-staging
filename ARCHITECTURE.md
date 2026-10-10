@@ -1,5 +1,10 @@
 # Architecture
 
+## Seasonal Life Tree previews (2026-10-10)
+
+`life-tree-festivals.mjs` provides eight 2027 festival windows, 56 candidate reflections and a separate December 1–31 Christmas decoration selector. `life-tree-festival-art.mjs` renders original layered SVG; `life-tree-festival-preview.mjs` controls isolated in-memory watering, three-tap interaction, collection and native audio. No production controller imports the preview state. The real 2027 entry remains a separate integration milestone. Shared function metadata exposes the M+ preview in content settings through existing tree-reading permissions, with no new configurable-home key. The shared definitions version and Worker shell are updated together; existing business APIs and authentication contracts are unchanged.
+
+
 ## Frontend
 
 - October journal drafts and devotional-dismissal preferences are scoped by the actual `participant.line_subject` returned by the LINE-verified October API, not a fabricated `participant.id`. They never authorize backend access. While a makeup date is selected, watering follows that date; other unfinished watering appears separately after it is complete.

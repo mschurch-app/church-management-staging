@@ -13,6 +13,8 @@
 - Supabase Edge Functions handle server-side operations and integrations. Camp registration and payment processing are in `supabase/functions/heat-camp-registration/`.
 - The `heat-camp-admin` Edge Function verifies the user token and calls service-only database RPCs for filtered lists, exports, detail access, and permission-gated edits. The database RPCs enforce the feature grant and write audit entries; payment and bank fields remain read-only.
 - The 2027 devotional MVP uses `daily_devotionals`, `daily_devotional_progress`, and `daily_devotional_reviews`. Member access goes through the LINE identity-verified `line-member` Edge Function; administrator editing and review use the authenticated `daily-devotional-admin` Edge Function. No devotional table is exposed directly to browser roles.
+- The October tree opens a January devotional preview with one journal editor at its end. `october-devotional-journal.mjs` authenticates against the dedicated October LIFF and uses the existing October `me` / `journal_save` API. The preview remains uncounted; journal dates are actual Taipei dates and journal access does not grant access to the Church OS devotional database.
+- October devotional navigation uses `tree-reading-october-test.html?view=devotional&church=M%2B&preview=1&from=october-tree`. `october-devotional-shell.mjs` reuses the existing devotional markup at the configured LIFF endpoint so authentication does not depend on a sibling URL outside LINE's guaranteed initialization scope. Legacy October-preview links redirect to this fixed route; ordinary public previews and member devotional routes retain their existing behavior.
 
 ## API and authentication
 

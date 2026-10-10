@@ -1,0 +1,429 @@
+{
+  "environment": "Chromium isolated synthetic LINE/API/Scripture; no external database access; no real-device or audible-output claims",
+  "checks": [
+    {
+      "name": "First visit shows explanation with prechecked sound choice, focused heading and no premature audio",
+      "passed": true
+    },
+    {
+      "name": "First-visit explanation fills phone and desktop viewports and scrolls to reachable start control",
+      "passed": true
+    },
+    {
+      "name": "Visual explanation has three illustrated steps and four matching care tools",
+      "passed": true
+    },
+    {
+      "name": "Prechecked sound starts only on trusted Start click",
+      "passed": true
+    },
+    {
+      "name": "Unchecked choice permits normal use, persists silent preference and does not repeat onboarding",
+      "passed": true
+    },
+    {
+      "name": "Reopened explanation closes with Escape and restores keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Checking sound alone does not play; trusted keyboard Start primes both native players and advances music clock",
+      "passed": true
+    },
+    {
+      "name": "Remembered opt-in attempts autoplay on reload; blocked playback resumes on normal gesture, speaker still mutes",
+      "passed": true
+    },
+    {
+      "name": "Allowed browser policy restores remembered music on entry without pressing any control",
+      "passed": true
+    },
+    {
+      "name": "Trusted touch on ordinary tree text starts both players even when click propagation is suppressed",
+      "passed": true
+    },
+    {
+      "name": "Normal touch supersedes a pending autoplay attempt immediately without waiting six seconds",
+      "passed": true
+    },
+    {
+      "name": "Remembered mute stays silent on reload, page return and ordinary interactions",
+      "passed": true
+    },
+    {
+      "name": "No devotional dock before watering",
+      "passed": true
+    },
+    {
+      "name": "Healthy tree artwork has no overlaid controls; 44px speaker sits in heading at 320/402/1440px",
+      "passed": true
+    },
+    {
+      "name": "Stable three-action navigation exposes missing count, exact date/chapter and honest 7-day expiry",
+      "passed": true
+    },
+    {
+      "name": "Refresh button works and ignores repeat clicks",
+      "passed": true
+    },
+    {
+      "name": "Trusted touch starts native music and primes same effect element; clock advances; mute pauses both",
+      "passed": true
+    },
+    {
+      "name": "Audio failure shows retry without claiming playback",
+      "passed": true
+    },
+    {
+      "name": "Never-resolving media playback times out, stops both channels and restores controls",
+      "passed": true
+    },
+    {
+      "name": "Speaker retry recovers playback and enables effects",
+      "passed": true
+    },
+    {
+      "name": "Effect-only failure reports retry while music continues; retry reuses exactly two media elements",
+      "passed": true
+    },
+    {
+      "name": "Background pauses all audio; visible page retries remembered music through the same players",
+      "passed": true
+    },
+    {
+      "name": "Every shipped WAV decodes with nonzero signal and controlled peak/RMS",
+      "passed": true,
+      "reading": {
+        "duration": 16,
+        "rms": 0.07878850687529529,
+        "peak": 0.3799859583377838
+      },
+      "storm": {
+        "duration": 16,
+        "rms": 0.08409791203098876,
+        "peak": 0.379974365234375
+      },
+      "care": {
+        "duration": 16,
+        "rms": 0.06026710110239843,
+        "peak": 0.379974365234375
+      },
+      "open": {
+        "duration": 0.58,
+        "rms": 0.13775600022333778,
+        "peak": 0.5500046014785767
+      },
+      "celebration": {
+        "duration": 1.28,
+        "rms": 0.1729303461381987,
+        "peak": 0.54998779296875
+      },
+      "water": {
+        "duration": 0.72,
+        "rms": 0.14988838384479874,
+        "peak": 0.5500046014785767
+      },
+      "journal": {
+        "duration": 0.58,
+        "rms": 0.13789810549983342,
+        "peak": 0.54998779296875
+      },
+      "wind": {
+        "duration": 0.72,
+        "rms": 0.1499420886926315,
+        "peak": 0.54998779296875
+      }
+    },
+    {
+      "name": "Today reading requires reaching Scripture end",
+      "passed": true
+    },
+    {
+      "name": "Read request has pending state and duplicate guard",
+      "passed": true
+    },
+    {
+      "name": "Failed watering remains retryable without showing devotional dock or playing celebration sound",
+      "passed": true
+    },
+    {
+      "name": "Watering success unlocks invitation once and plays celebration through the reused, gesture-primed element after API completion",
+      "passed": true
+    },
+    {
+      "name": "Watering success immediately reveals clickable floating invitation",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation fits mobile, short and desktop viewports with 44px controls",
+      "passed": true
+    },
+    {
+      "name": "Floating invitation remains available at tree heading without an upper duplicate entry",
+      "passed": true
+    },
+    {
+      "name": "Tree has no duplicate journal editor",
+      "passed": true
+    },
+    {
+      "name": "Devotional owns single authenticated October journal with actual date, isolated endpoint and no progress writes",
+      "passed": true
+    },
+    {
+      "name": "Return from devotional keeps October progress and removes duplicate invitation",
+      "passed": true
+    },
+    {
+      "name": "Single devotional journal restores its private draft after leaving and reopening",
+      "passed": true
+    },
+    {
+      "name": "Journal failure retains input, success ignores duplicate clicks and writes actual October date only",
+      "passed": true
+    },
+    {
+      "name": "Saved journal is viewable inside devotional history",
+      "passed": true
+    },
+    {
+      "name": "Incomplete journal response cannot claim successful collection",
+      "passed": true
+    },
+    {
+      "name": "Timed-out journal save preserves draft and restores controls",
+      "passed": true
+    },
+    {
+      "name": "No LINE identity cannot read or write journal; preview content stays available",
+      "passed": true
+    },
+    {
+      "name": "Journal loading failure offers working retry without enabling unauthenticated writes",
+      "passed": true
+    },
+    {
+      "name": "Reading prerequisite preserved; earlier journal remains readable",
+      "passed": true
+    },
+    {
+      "name": "Dismissal survives progress refresh",
+      "passed": true
+    },
+    {
+      "name": "run",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n2 !== 1\n\n    at file:///private/tmp/church-os-shine-email/tests/life-tree/browser.mjs:128:404"
+    }
+  ],
+  "errors": [],
+  "calls": [
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "mark_read",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "water_tree",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "journal_save",
+      "date": "2026-10-10",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "me",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co",
+      "resolution": "pest",
+      "challenge": "fixture-worm"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co",
+      "resolution": "pest",
+      "challenge": "fixture-worm"
+    },
+    {
+      "action": "resolve_challenge",
+      "endpoint": "/functions/v1/tree-reading-october-test",
+      "project": "svwgfgyxxgbqabosriom.supabase.co",
+      "resolution": "pest",
+      "challenge": "fixture-worm"
+    }
+  ]
+}

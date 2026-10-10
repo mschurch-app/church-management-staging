@@ -33,11 +33,15 @@ This is a static browser application plus Supabase services. There is no root `p
 
 ## Rollback
 
+- Before clearing even test journals, capture a recoverable, access-controlled snapshot of the exact rows and verify restoration is possible. Keep personal note text and credentials out of Git and reports. Authorization to delete does not itself provide a recovery copy. Record the approved scope, count, dates, checksums and retention policy; do not infer backup availability from the SQL connector working.
+
 - Frontend: revert the reviewed Git commit and publish the resulting version through the normal GitHub Pages workflow.
 - Edge Function: redeploy the last known-good function version from Git.
 - Database: prefer a forward corrective migration. A migration that changes permissions or function behavior must have a reviewed reversal plan; do not drop or truncate production data to roll back.
 
 ## Troubleshooting
+
+- LIFF生命樹只開半截：在LINE Developers對應Channel的LIFF設定把Size設成Full並按Update，關閉舊頁再重開原LIFF連結。正式生命樹與十月同工測試是不同LIFF：正式 `2011645391-l63wfeP0`，十月 `2011645391-9t2SxuSG`（以各頁實際config為準）。不要替換既有ID、endpoint或登入路由。頁面CSS及GitHub發布不能修改LINE原生視窗大小；截圖中Full已勾選而Update尚在，不代表已儲存。沒有安全管理連線時由Channel管理員操作，不收集帳密或Token。
 
 - Login/access denied: refresh the session and verify the account is active and has the required church and feature grant.
 - Edge Function unavailable: check function deployment, Supabase project linkage, CORS origin, and required server-side secrets without printing secret values.

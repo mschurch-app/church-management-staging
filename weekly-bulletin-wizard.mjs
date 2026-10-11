@@ -2,7 +2,7 @@ const $=selector=>document.querySelector(selector);
 const params=new URLSearchParams(location.search);
 const step=Math.max(1,Math.min(4,Number(params.get('workflow_step'))||1));
 const currentId=params.get('bulletin')||'';
-const labels=['日期與草稿','週報文字','三款圖卡','預覽送審'];
+const labels=['日期與草稿','週報文字','社群媒體','預覽送審'];
 const $id=id=>document.getElementById(id);
 const setText=(node,text)=>{if(node)node.textContent=text;};
 let operating=false;
@@ -12,7 +12,7 @@ function syncButtons(root,c){
   root.querySelectorAll('.wizard-current-page input,.wizard-current-page textarea,.wizard-current-page select').forEach(node=>node.disabled=locked||(step>1&&!state.editable));
   $id('wizard-back').disabled=locked||step===1;
   $id('wizard-next').disabled=locked||(step>1&&!state.editable)||(step===3&&!root.querySelector('[name="canva-design"]:checked'));
-  root.querySelectorAll('[data-wizard-save]').forEach(node=>node.disabled=locked||!state.editable);
+  root.querySelectorAll('[data-wizard-save],#wizard-apply-media').forEach(node=>node.disabled=locked||!state.editable);
 }
 async function operate(root,c,task){
   if(operating||c.state().working||c.state().needsRefresh)return;
@@ -101,7 +101,7 @@ function makeStepOne(root,c){
 }
 function moveTextContent(root){
   const page=root.querySelector('.wizard-current-page'),form=$id('bulletin-form'),grid=form.querySelector('.website-form-grid');
-  page.innerHTML='<div class="wizard-page-heading"><span>STEP 02</span><h3>整理本週週報文字</h3><p>填好主日資訊與週報內容，按下一步會先儲存成草稿。</p></div><div class="wizard-text-group" id="wizard-text-fields"></div><div class="wizard-content-group" id="wizard-schedule"></div><div class="wizard-content-group" id="wizard-sections"></div><details class="wizard-more"><summary>IG Reel、YouTube 與發布設定</summary><div id="wizard-media-settings"></div></details><p id="wizard-message" class="wizard-message" role="status"></p>';
+  page.innerHTML='<div class="wizard-page-heading"><span>STEP 02</span><h3>整理本週週報文字</h3><p>填好主日資訊與週報內容，按下一步會先儲存成草稿。</p></div><div class="wizard-text-group" id="wizard-text-fields"></div><div class="wizard-content-group" id="wizard-schedule"></div><div class="wizard-content-group" id="wizard-sections"></div><p id="wizard-message" class="wizard-message" role="status"></p>';
   const text=page.querySelector('#wizard-text-fields');
   for(const id of ['bulletin-title','sermon-topic','bulletin-subtitle','sermon-scripture','sermon-speaker','service-time']){
     const node=$id(id);if(!node)continue;const label=node.closest('label');if(label)text.append(label);else text.append(node);
@@ -111,9 +111,6 @@ function moveTextContent(root){
   moveOut($id('schedule-preview'),page.querySelector('#wizard-schedule'));
   moveOut($id('sections'),page.querySelector('#wizard-sections'));
   const heading=$id('weekly-content');if(heading){const desc=heading.nextElementSibling;if(desc)page.querySelector('#wizard-sections').prepend(desc);heading.remove();}
-  moveOut($id('reel-panel'),page.querySelector('#wizard-media-settings'));
-  moveOut($id('weekly-youtube'),page.querySelector('#wizard-media-settings'));
-  const reelCaption=$id('reel-caption')?.closest('label');if(reelCaption)page.querySelector('#wizard-media-settings').append(reelCaption);
   if(grid)grid.hidden=true;
 }
 function makeStepTwo(root,c){
@@ -135,7 +132,16 @@ function makeStepTwo(root,c){
 }
 function makeStepThree(root,c){
   const page=root.querySelector('.wizard-current-page'),form=$id('bulletin-form'),grid=form.querySelector('.website-form-grid');
-  page.innerHTML='<div class="wizard-page-heading"><span>STEP 03</span><h3>產生三款圖卡，挑選最合適的一款</h3><p>每款都會包含官網橫圖和 IG 直圖。生成期間可查看進度。</p></div><div class="wizard-card" id="wizard-canva"></div><div class="wizard-image-preview"><h4>本週圖卡</h4><div class="canva-preview-grid"></div></div><label class="wizard-caption"><span>Instagram 貼文文字（可修改）</span><textarea id="wizard-caption" maxlength="2200" rows="7"></textarea><small>文字會一起儲存在週報草稿中，最後一步可再次核對。</small></label>';
+  page.innerHTML='<div class="wizard-page-heading"><span>STEP 03</span><h3>準備本週社群媒體</h3><p>在這一頁完成預告圖、Instagram 與 YouTube 設定，再到下一頁統一預覽。</p></div><section class="wizard-social-heading"><span>01 · 預告圖</span><h4>產生三款設計，挑選本週圖卡</h4><p>每款包含官網橫圖與 IG 直圖，製作期間可查看進度。</p></section><div class="wizard-card" id="wizard-canva"></div><div class="wizard-image-preview"><h4>本週圖卡</h4><div class="canva-preview-grid"></div></div><div class="wizard-social-actions"><button id="wizard-apply-media" type="button" class="wizard-secondary">套用圖卡並儲存</button><span id="wizard-media-state" role="status" aria-live="polite"></span></div><section class="wizard-social-heading" id="wizard-ig-heading"><span>02 · Instagram</span><h4>貼文文字、Reel 與發布設定</h4><p>選好圖卡後，可在這裡編輯貼文、加入音樂與製作影片。</p></section><label class="wizard-caption"><span>Instagram 貼文文字（可修改）</span><textarea id="wizard-caption" maxlength="2200" rows="7"></textarea><small>文字會一起儲存在週報草稿中，最後一步可再次核對。</small></label><div id="wizard-instagram"></div><section class="wizard-social-heading" id="wizard-youtube-heading"><span>03 · YouTube</span><h4>主日直播資訊與同步設定</h4><p>核對直播場次與內容，核准後再依開關設定同步。</p></section><div id="wizard-youtube"></div>';
+  const originalCaption=$id('reel-caption')?.closest('label');
+  if(originalCaption)moveOut(originalCaption,$id('wizard-original-fields'));
+  moveOut($id('reel-panel'),page.querySelector('#wizard-instagram'));
+  moveOut($id('weekly-youtube'),page.querySelector('#wizard-youtube'));
+  if(params.get('church')!=='M+'){
+    page.querySelector('#wizard-ig-heading').querySelector('h4').textContent='Instagram 貼文文字';
+    page.querySelector('#wizard-ig-heading').querySelector('p').textContent='核對圖卡與貼文文字，最後一步可再次預覽。';
+    page.querySelector('#wizard-youtube-heading').hidden=true;page.querySelector('#wizard-youtube').hidden=true;
+  }
   const canva=grid?.querySelector('#weekly-canva');
   if(canva)page.querySelector('#wizard-canva').append(canva);
   const promo=grid?.querySelector('#promo-state');if(promo)page.querySelector('#wizard-canva').append(promo);
@@ -150,14 +156,24 @@ function makeStepThree(root,c){
   const options=document.createElement('div');options.id='canva-options';options.className='canva-options';options.hidden=true;options.addEventListener('change',event=>{if(event.target?.matches('input[name="canva-design"]'))nextButton.disabled=false;});$id('canva-state')?.after(options);
   const caption=$id('wizard-caption');caption.value=editCaption(c)||captionText(c);caption.oninput=()=>{if($id('reel-caption'))$id('reel-caption').value=caption.value;};
   root.querySelector('#wizard-back').onclick=()=>saveAndGo(root,c,2);
-  root.querySelector('#wizard-next').textContent='套用所選圖卡並繼續 →';
+  async function persistMedia(){
+    const selected=root.querySelector('input[name="canva-design"]:checked');
+    if(!selected)throw new Error('請完成 Canva 製圖，並選擇一款設計。');
+    if(selected.value!=='saved'&&!await c.useCanvaOption(Number(selected.value)))throw new Error('圖卡尚未套用，請再試一次。');
+    if($id('reel-caption'))$id('reel-caption').value=caption.value.trim();
+    if(!await c.save())throw new Error($id('status').textContent||'社群媒體設定尚未保存，請留在此頁重試。');
+    let keep=root.querySelector('input[name="canva-design"][value="saved"]');
+    if(!keep){const label=document.createElement('label');label.className='wizard-consent';label.innerHTML='<input type="radio" name="canva-design" value="saved"><span>保留已儲存的本週圖卡</span>';page.querySelector('.wizard-image-preview').prepend(label);keep=label.querySelector('input');}
+    keep.checked=true;caption.value=editCaption(c);
+    setText($id('wizard-media-state'),'圖卡與社群媒體設定已儲存。');
+  }
+  $id('wizard-apply-media').onclick=()=>operate(root,c,persistMedia);
+  const generateReel=$id('generate-reel'),generateReelAction=generateReel?.onclick;
+  if(generateReelAction)generateReel.onclick=()=>operate(root,c,async()=>{await persistMedia();await generateReelAction();});
+  root.querySelector('#wizard-next').textContent='儲存並前往預覽 →';
   root.querySelector('#wizard-next').onclick=()=>operate(root,c,async()=>{
     try{
-      const selected=root.querySelector('input[name="canva-design"]:checked');
-      if(!selected)throw new Error('請完成 Canva 製圖，並選擇一款設計。');
-      if(selected.value!=='saved'&&!await c.useCanvaOption(Number(selected.value)))throw new Error('圖卡尚未套用，請再試一次。');
-      if($id('reel-caption'))$id('reel-caption').value=caption.value.trim();
-      const ok=await c.save();if(!ok)throw new Error($id('status').textContent||'圖卡尚未保存，請留在此頁重新嘗試。');
+      await persistMedia();
       setPage(4,currentRow(c).id);
     }catch(error){setText($id('wizard-message'),error.message||'圖卡尚未完成，請稍後再試。');}
   });
@@ -180,10 +196,18 @@ function renderPreview(c,root){
   for(const [label,id] of [['官網橫式圖','image-preview'],['Instagram 直式圖','reel-cover-preview']]){const fig=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');caption.textContent=label;const source=$id(id);if(source?.src)img.src=source.src;img.alt=label;fig.append(img,caption);art.append(fig);}
   section.append(art);
   const caption=document.createElement('section');caption.className='wizard-review-caption';const h=document.createElement('h4');h.textContent='Instagram 貼文文字';const p=document.createElement('p');p.textContent=editCaption(c);caption.append(h,p);section.append(caption);
+  if(params.get('church')==='M+'){
+    const settings=document.createElement('section');settings.className='wizard-review-caption';
+    const heading=document.createElement('h4');heading.textContent='社群媒體發布設定';settings.append(heading);
+    for(const [label,enabled] of [['Instagram Reel',$id('reel-enabled')?.checked],['YouTube 直播資訊',$id('youtube-enabled')?.checked]]){const p=document.createElement('p');p.textContent=label+'｜'+(enabled?'核准後同步發布':'未啟用同步');settings.append(p);}
+    const reel=$id('reel-preview');if(reel?.getAttribute('src')){const video=document.createElement('video');video.src=reel.src;video.controls=true;video.playsInline=true;video.preload='metadata';video.className='wizard-review-video';settings.append(video);}
+    if($id('youtube-enabled')?.checked){const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent='YouTube 標題、說明與標籤';pre.textContent=$id('youtube-preview')?.textContent||'';details.append(summary,pre);settings.append(details);}
+    section.append(settings);
+  }
 }
 function makeStepFour(root,c){
   const page=root.querySelector('.wizard-current-page');
-  page.innerHTML='<div class="wizard-page-heading"><span>STEP 04</span><h3>整體預覽，確認後送審</h3><p>請核對主日內容、服事安排、官網與 IG 圖卡，以及 Instagram 文字。</p></div><div class="wizard-review-sheet" id="wizard-preview-content"></div><div class="wizard-review-note">只有按下「送交審核」並確認後，系統才會通知審核同工。</div><p id="wizard-message" class="wizard-message" role="status"></p>';
+  page.innerHTML='<div class="wizard-page-heading"><span>STEP 04</span><h3>整體預覽，確認後送審</h3><p>請核對主日內容、服事安排、官網與 IG 圖卡、Instagram 文字，以及社群媒體發布設定。</p></div><div class="wizard-review-sheet" id="wizard-preview-content"></div><div class="wizard-review-note">只有按下「送交審核」並確認後，系統才會通知審核同工。</div><p id="wizard-message" class="wizard-message" role="status"></p>';
   renderPreview(c,root);
   moveOut($id('submit-progress'),page);moveOut($id('submit-state'),page);
   root.querySelector('#wizard-back').onclick=()=>saveAndGo(root,c,3);

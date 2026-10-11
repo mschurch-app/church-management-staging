@@ -1,0 +1,165 @@
+TAP version 13
+# (node:19874) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recent report rejects GET and unauthorized POST
+ok 1 - recent report rejects GET and unauthorized POST
+  ---
+  duration_ms: 113.876773
+  type: 'test'
+  ...
+# Subtest: missing aggregate website row is unavailable and not zero
+ok 2 - missing aggregate website row is unavailable and not zero
+  ---
+  duration_ms: 5.970457
+  type: 'test'
+  ...
+# Subtest: explicit measured zero is retained
+ok 3 - explicit measured zero is retained
+  ---
+  duration_ms: 1.66613
+  type: 'test'
+  ...
+# Subtest: aggregate malformed values and invalid property fail
+ok 4 - aggregate malformed values and invalid property fail
+  ---
+  duration_ms: 2.303412
+  type: 'test'
+  ...
+# Subtest: empty YouTube aggregate is unavailable and not zero
+ok 5 - empty YouTube aggregate is unavailable and not zero
+  ---
+  duration_ms: 2.116152
+  type: 'test'
+  ...
+# Subtest: YouTube aggregate declares actual latest data date
+ok 6 - YouTube aggregate declares actual latest data date
+  ---
+  duration_ms: 5.137097
+  type: 'test'
+  ...
+# Subtest: calendar crosses month and year correctly
+ok 7 - calendar crosses month and year correctly
+  ---
+  duration_ms: 9.324507
+  type: 'test'
+  ...
+# Subtest: empty website response never becomes 0 visitors
+ok 8 - empty website response never becomes 0 visitors
+  ---
+  duration_ms: 1.24362
+  type: 'test'
+  ...
+# Subtest: mature website gap is flagged separately from delay
+ok 9 - mature website gap is flagged separately from delay
+  ---
+  duration_ms: 0.439322
+  type: 'test'
+  ...
+# Subtest: actual explicit zero remains a valid measured zero
+ok 10 - actual explicit zero remains a valid measured zero
+  ---
+  duration_ms: 1.240997
+  type: 'test'
+  ...
+# Subtest: malformed and missing metrics fail instead of silently becoming zero
+ok 11 - malformed and missing metrics fail instead of silently becoming zero
+  ---
+  duration_ms: 1.850225
+  type: 'test'
+  ...
+# Subtest: property timezone mismatch cannot label another timezone as Taipei day
+ok 12 - property timezone mismatch cannot label another timezone as Taipei day
+  ---
+  duration_ms: 0.988477
+  type: 'test'
+  ...
+# Subtest: YouTube delayed data retains actual data date
+ok 13 - YouTube delayed data retains actual data date
+  ---
+  duration_ms: 1.083967
+  type: 'test'
+  ...
+# Subtest: historical reports never use future data as fallback
+ok 14 - historical reports never use future data as fallback
+  ---
+  duration_ms: 0.44996
+  type: 'test'
+  ...
+# Subtest: notification uses real line breaks and does not invent Instagram interactions
+ok 15 - notification uses real line breaks and does not invent Instagram interactions
+  ---
+  duration_ms: 1.894267
+  type: 'test'
+  ...
+# Subtest: API errors remain errors
+ok 16 - API errors remain errors
+  ---
+  duration_ms: 1.235402
+  type: 'test'
+  ...
+# (node:19875) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# traffic_report_failed upstream_failed
+# Subtest: GET rejected without data access
+ok 17 - GET rejected without data access
+  ---
+  duration_ms: 93.838162
+  type: 'test'
+  ...
+# Subtest: unauthorized call cannot modify reports or send notifications
+ok 18 - unauthorized call cannot modify reports or send notifications
+  ---
+  duration_ms: 2.007118
+  type: 'test'
+  ...
+# Subtest: invalid action rejected
+ok 19 - invalid action rejected
+  ---
+  duration_ms: 5.190045
+  type: 'test'
+  ...
+# Subtest: silent repair never creates a notification or calls delivery
+ok 20 - silent repair never creates a notification or calls delivery
+  ---
+  duration_ms: 7.073675
+  type: 'test'
+  ...
+# Subtest: database failure returns failure instead of successful report
+ok 21 - database failure returns failure instead of successful report
+  ---
+  duration_ms: 3.483047
+  type: 'test'
+  ...
+# Subtest: repair writes actual historical YouTube counts and leaves missing website values absent
+ok 22 - repair writes actual historical YouTube counts and leaves missing website values absent
+  ---
+  duration_ms: 36.693945
+  type: 'test'
+  ...
+# Subtest: cron retry updates existing notification without sending duplicate push
+ok 23 - cron retry updates existing notification without sending duplicate push
+  ---
+  duration_ms: 8.735617
+  type: 'test'
+  ...
+# Subtest: upstream failure notification distinguishes failure from zero and delay
+ok 24 - upstream failure notification distinguishes failure from zero and delay
+  ---
+  duration_ms: 0.682637
+  type: 'test'
+  ...
+# Subtest: upstream errors cannot leak token-bearing URLs into reports
+ok 25 - upstream errors cannot leak token-bearing URLs into reports
+  ---
+  duration_ms: 13.630567
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 730.217213

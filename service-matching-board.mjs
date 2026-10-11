@@ -8,11 +8,11 @@ const personKey=person=>String(person.member_id||`name:${person.name.trim()}`);
 const groupRole=role=>/^singer_[123]$/.test(role)?'singer':/^welcome_[12]$/.test(role)?'welcome':role;
 const dayNumber=date=>Date.parse(`${date}T12:00:00+08:00`)/86400000;
 
-// The draft only contains original registration IDs. Nothing is written while editing.
+// Registered and manually coordinated people stay in memory until the draft is applied.
 export function createMatchingDraft({slots,context,roleTargets,labels}){
   const scheduleByDate=new Map((context.schedules||[]).map(row=>[row.service_date,row.assignments||{}]));
   const blocked=new Set((context.blocked_registration_ids||[]).map(String));
-  const selected=new Set(),members=new Map(),groups=new Map();
+  const selected=new Set(),members=new Map(),groups=new Map();let manualCounter=0;
   const entries=slots.filter(slot=>roleTargets[slot.role_key]).map(slot=>{
     const role=groupRole(slot.role_key),target=roleTargets[slot.role_key];
     const entry={...slot,target,role,existing:names(scheduleByDate.get(slot.service_date)?.[target]),candidates:(slot.registrations||[]).filter(p=>['registered','confirmed'].includes(p.status))};
@@ -30,11 +30,12 @@ export function createMatchingDraft({slots,context,roleTargets,labels}){
   }
   const candidateById=new Map(entries.flatMap(entry=>entry.candidates.map(person=>[String(person.id),{person,entry}])));
   const chosen=entry=>entry.candidates.filter(person=>selected.has(String(person.id)));
-  const memberDates=key=>new Set([...members.get(key).formalDates,...[...selected].filter(id=>personKey(candidateById.get(id).person)===key).map(id=>candidateById.get(id).entry.service_date)]);
-  const workload=person=>memberDates(personKey(person)).size;
+  const memberDates=key=>new Set([...(members.get(key)?.formalDates||[]),...[...selected].filter(id=>personKey(candidateById.get(id).person)===key).map(id=>candidateById.get(id).entry.service_date)]);
+  const workload=person=>new Set([...memberDates(personKey(person)),...(person.formal_dates||[])]).size;
   const overlaps=(person,entry,exceptId=null)=>{
-    if(blocked.has(String(person.id)))return true;
-    return [...selected].some(id=>id!==exceptId&&candidateById.get(id).entry.service_date===entry.service_date&&personKey(candidateById.get(id).person)===personKey(person));
+    if(blocked.has(String(person.id))||person.same_day_conflict)return true;
+    if((context.schedules||[]).some(row=>row.service_date===entry.service_date&&Object.entries(row.assignments||{}).some(([target,value])=>target!==entry.target&&names(value).includes(person.name.trim()))))return true;
+    return [...selected].some(id=>id!==exceptId&&candidateById.get(id).entry.service_date===entry.service_date&&(personKey(candidateById.get(id).person)===personKey(person)||candidateById.get(id).person.name.trim()===person.name.trim()));
   };
   const restriction=(person,entry,exceptId=null)=>{
     if(entry.existing.length)return entry.existing.includes(person.name.trim())?'已在正式班表':'此名額已有正式安排';
@@ -59,7 +60,7 @@ export function createMatchingDraft({slots,context,roleTargets,labels}){
     const result=[];
     for(const group of groups.values()){
       const state=groupStats(group);
-      if(state.gaps)result.push({group,kind:'gap',title:`${group.label}還缺 ${state.gaps} 位`,detail:group.entries.some(e=>e.candidates.some(p=>!selected.has(String(p.id))&&!restriction(p,e)))?'有可安排的意願，請挑選人選。':'目前沒有可直接代入的人選，可先保留缺額並聯絡同工。'});
+      if(state.gaps)result.push({group,kind:'gap',title:`${group.label}還缺 ${state.gaps} 位`,detail:group.entries.some(e=>e.candidates.some(p=>!selected.has(String(p.id))&&!restriction(p,e)))?'有可安排的意願，請挑選人選。':'可搜尋會友姓名，或填入名冊外同工的完整姓名。'});
       const conflicts=group.entries.flatMap(e=>e.candidates.filter(p=>!selected.has(String(p.id))&&!e.existing.includes(p.name.trim())&&(e.existing.length||overlaps(p,e))).map(p=>p.name));
       if(conflicts.length)result.push({group,kind:'conflict',title:`${[...new Set(conflicts)].join('、')}需要協調`,detail:'已有正式安排或同日其他服事；原安排已保留。'});
       if(group.entries.some(e=>e.existing.length>e.capacity))result.push({group,kind:'conflict',title:`${group.label}正式安排超過目前名額`,detail:'請到正式班表確認名額與人員；這裡會保留原安排。'});
@@ -67,11 +68,24 @@ export function createMatchingDraft({slots,context,roleTargets,labels}){
   };
   return{entries,groups:[...groups.values()].sort((a,b)=>a.date.localeCompare(b.date)||['media','worship','welcome','children'].indexOf(a.ministry)-['media','worship','welcome','children'].indexOf(b.ministry)||Object.keys(roleTargets).indexOf(a.entries[0].role_key)-Object.keys(roleTargets).indexOf(b.entries[0].role_key)),members,selected,chosen,memberDates,workload,rank,restriction,stats,groupStats,issues,
     choose(person,entry,replacing=null){const reason=restriction(person,entry,replacing);if(reason)return reason;if(replacing)selected.delete(replacing);selected.add(String(person.id));return '';},
+    addManual(person,entry,replacing=null){
+      const name=String(person.name||'').trim();if(!name||name.length>80||/[、,，;；\n\r\t]/u.test(name))return '請填寫一位同工的完整姓名，最多 80 字，不使用分隔符號。';
+      const registration=person.member_id?entry.registrations.find(p=>String(p.member_id)===String(person.member_id)):null;
+      if(registration){if(['waitlisted','offered'].includes(registration.status))return '這位同工正在候補／待回覆，請先完成遞補。';if(['registered','confirmed'].includes(registration.status))return this.choose(registration,entry,replacing);}
+      const candidate={...person,name,id:`manual:${++manualCounter}`,manual:true,status:'manual'};
+      const error=restriction(candidate,entry,replacing);if(error)return error;
+      const key=personKey(candidate);if(!members.has(key))members.set(key,{key,name,member_id:candidate.member_id,registrations:[],formalDates:new Set(candidate.formal_dates||[])});
+      const member=members.get(key);for(const date of candidate.formal_dates||[])member.formalDates.add(date);
+      for(const [date,assignments] of scheduleByDate)if(Object.values(assignments).some(value=>names(value).includes(name)))member.formalDates.add(date);
+      entry.candidates.push(candidate);member.registrations.push({person:candidate,entry});candidateById.set(candidate.id,{person:candidate,entry});
+      if(replacing)selected.delete(replacing);selected.add(candidate.id);return '';
+    },
+    submission(){return {registrations:[...selected].filter(id=>!candidateById.get(id).person.manual),manual:[...selected].filter(id=>candidateById.get(id).person.manual).map(id=>{const {person,entry}=candidateById.get(id);return {slot_id:entry.id,member_id:person.member_id||null,name:person.name};})};},
     remove(id){selected.delete(String(id));}
   };
 }
 
-export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onApply,onChange,isLocked=()=>false}){
+export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onApply,onChange,searchMembers,isLocked=()=>false}){
   root.replaceChildren();root.classList.add('matching-board');
   let view='sundays',month='',ministry='',selectedDate='',attentionOnly=false,revision=0;
   const head=node('header','','match-head'),intro=node('div'),close=button('收起預排','secondary',()=>onClose());
@@ -89,7 +103,7 @@ export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onAppl
   const content=node('div','','match-content'),live=node('p','','match-live');live.setAttribute('role','status');live.setAttribute('aria-live','polite');
   const footer=node('footer','','match-footer'),footerCopy=node('div'),apply=button('確認預排','primary',async()=>{
     if(isLocked()||!draft.selected.size)return;
-    const current=revision,ids=[...draft.selected];await onApply(ids,()=>current===revision);
+    const current=revision;await onApply(draft.submission(),()=>current===revision);
   });
   footerCopy.append(node('strong','','match-apply-count'),node('small','預排尚未儲存；已排定的人員會保留。'));footer.append(footerCopy,apply);
   root.append(head,summary,nav,filters,live,content,footer);
@@ -138,7 +152,7 @@ export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onAppl
       for(const name of entry.existing){const row=node('div','','match-person match-formal');row.append(node('strong',name),badge('正式安排'));card.append(row);}
       for(const person of draft.chosen(entry)){
         const row=node('div','','match-person'),copy=node('div'),change=button('換人','secondary',()=>showCandidates(group,String(person.id))),remove=button('暫留空缺','secondary',()=>{draft.remove(person.id);changed(`${group.label}已暫留空缺，尚未更動正式班表。`,group.key);});
-        copy.append(node('strong',person.name),node('small',`建議 · 本季 ${draft.workload(person)} 個主日`));row.append(copy,change,remove);card.append(row);
+        copy.append(node('strong',person.name),node('small',`${person.manual?'手動安排':'建議'} · 本季 ${draft.workload(person)} 個主日`));row.append(copy,change,remove);card.append(row);
       }
     }
     if(state.gaps){const empty=node('div',`還缺 ${state.gaps} 位`,'match-gap');empty.append(button('安排人選','secondary',()=>showCandidates(group)));card.append(empty);}
@@ -148,28 +162,64 @@ export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onAppl
     if(waiting)rationale.append(node('p',`${waiting} 位候補／待回覆：完成遞補確認後才可配對。`));
     for(const person of group.entries.flatMap(e=>draft.chosen(e))){
       const dates=[...draft.memberDates(personKey(person))].sort(),consecutive=dates.some(date=>date!==group.date&&Math.abs(dayNumber(date)-dayNumber(group.date))===7);
-      rationale.append(node('p',`${person.name}：有登記本日${group.label}，本季安排 ${dates.length} 個主日${consecutive?'，含相鄰兩週，請留意服事量':''}。`));
+      rationale.append(node('p',`${person.name}：${person.manual?'由同工協調安排':'有登記本日'+group.label}，本季安排 ${dates.length} 個主日${consecutive?'，含相鄰兩週，請留意服事量':''}。`));
     }
     card.append(rationale);return card;
   }
   function showCandidates(group,replacing=null){
     if(isLocked())return;
-    // Native dialog provides keyboard focus trapping and Escape support in Safari.
     const dialog=node('dialog','','match-picker'),title=node('h2',`${group.label} · ${shortDate(group.date)}`);title.id='match-picker-title';dialog.setAttribute('aria-labelledby',title.id);
-    const description=node('p',replacing?'選擇同一名額的其他已登記人選。':'選擇有登記本日服事的人選；顯示本季已排主日數。','match-muted'),list=node('div','','match-candidate-list');
+    const description=node('p','輸入姓名中的任一個字搜尋；也能填入名冊外同工的完整姓名。選好後先加入預排。','match-muted');
+    const input=document.createElement('input');input.type='search';input.id='match-person-name';input.placeholder='輸入姓名，例如：庭';input.maxLength=80;input.autocomplete='off';input.enterKeyHint='search';input.setAttribute('aria-controls','match-name-results');input.setAttribute('aria-describedby','match-name-help');
+    const label=field('姓名',input),hint=node('p','打一個字就會列出包含該字的會友，繼續輸入可縮小範圍。','match-muted');hint.id='match-name-help';
+    const resultStatus=node('p','','match-search-status');resultStatus.setAttribute('role','status');resultStatus.setAttribute('aria-live','polite');
+    const list=node('div','','match-candidate-list');list.id='match-name-results';
+    const external=button('','primary match-external-name',()=>assign({name:input.value.trim(),member_id:null}));external.hidden=true;
     const replacementEntry=replacing?draft.entries.find(e=>draft.chosen(e).some(p=>String(p.id)===replacing)):null;
     const candidates=group.entries.flatMap(entry=>entry.registrations.filter(person=>['registered','confirmed','waitlisted','offered'].includes(person.status)).map(person=>({entry,person}))).sort((a,b)=>draft.rank(a.person,b.person));
-    const focus=document.activeElement,previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
-    const finish=()=>{dialog.close();dialog.remove();document.body.style.overflow=previousOverflow;if(focus?.isConnected)focus.focus({preventScroll:true});else root.querySelector(`[data-focus="${group.key}"]`)?.focus({preventScroll:true});};
-    for(const {entry,person} of candidates){
-      let reason=['waitlisted','offered'].includes(person.status)?'候補／待回覆，請先完成遞補':draft.restriction(person,entry,replacing);
-      if(draft.selected.has(String(person.id)))reason='目前建議人選';
-      if(replacementEntry&&entry!==replacementEntry)reason='不同登記名額：請先暫留空缺，再於本項安排人選';
-      const control=button('', 'match-candidate secondary',()=>{const error=draft.choose(person,entry,replacing);if(error){description.textContent=error;return;}finish();changed(`已將${person.name}排入${shortDate(group.date)}${group.label}，尚未儲存。`,group.key);});
-      control.disabled=!!reason;control.append(node('strong',person.name),node('small',reason||`本季 ${draft.workload(person)} 個主日 · 本人有登記此日期與項目`));list.append(control);
+    const focus=document.activeElement,previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';let request=0,timer,disposed=false;
+    const finish=()=>{disposed=true;request++;clearTimeout(timer);dialog.close();dialog.remove();document.body.style.overflow=previousOverflow;if(focus?.isConnected)focus.focus({preventScroll:true});else root.querySelector(`[data-focus="${group.key}"]`)?.focus({preventScroll:true});};
+    function entryFor(person){
+      if(replacementEntry)return replacementEntry;
+      const registered=group.entries.find(entry=>entry.registrations.some(p=>String(p.member_id)===String(person.member_id)&&['registered','confirmed'].includes(p.status))&&!entry.existing.length&&draft.chosen(entry).length<entry.capacity);
+      return registered||group.entries.find(entry=>!draft.restriction(person,entry,replacing))||group.entries[0];
     }
-    if(!candidates.length)list.append(node('p','尚未有人登記本日此項服事。可先保留缺額，再聯絡同工填寫意願。','match-empty'));
-    const close=button('返回預排','secondary',finish);dialog.append(title,description,list,close);dialog.addEventListener('cancel',event=>{event.preventDefault();finish();});document.body.append(dialog);dialog.showModal();close.focus({preventScroll:true});dialog.scrollTop=0;
+    function assign(person,entry=entryFor(person)){
+      if(isLocked()||disposed)return;
+      const error=person.manual===false?draft.choose(person,entry,replacing):draft.addManual(person,entry,replacing);
+      if(error){resultStatus.textContent=error;return;}finish();changed(`已將${person.name}排入${shortDate(group.date)}${group.label}，尚未儲存。`,group.key);
+    }
+    function showRegistered(query){
+      let count=0;for(const {entry,person} of candidates.filter(({person})=>!query||person.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()))){
+        let reason=['waitlisted','offered'].includes(person.status)?'候補／待回覆，請先完成遞補':draft.restriction(person,entry,replacing);
+        if(draft.selected.has(String(person.id)))reason='目前預排人選';if(replacementEntry&&entry!==replacementEntry)reason='不同登記名額，請選擇本名額人選';
+        const control=button('','match-candidate secondary',()=>assign({...person,manual:false},entry));control.disabled=Boolean(reason);
+        control.append(node('strong',person.name),node('small',reason||`有登記本日服事 · 本季 ${draft.workload(person)} 個主日`));list.append(control);count++;
+      }return count;
+    }
+    async function search(){
+      const query=input.value.trim(),current=++request;external.hidden=true;list.replaceChildren();list.setAttribute('aria-busy','true');
+      if(!query){list.setAttribute('aria-busy','false');const count=showRegistered('');resultStatus.textContent=count?'已登記本日服事的人選':'尚無人登記，輸入姓名即可搜尋或手動安排。';return;}
+      resultStatus.textContent='正在搜尋姓名…';const registeredCount=showRegistered(query);
+      try{
+        const result=await searchMembers((replacementEntry||group.entries[0]).id,query);if(disposed||current!==request)return;
+        const found=(result.members||[]).map(person=>({...person,id:`lookup:${person.id}`,member_id:person.id}));let count=registeredCount;
+        for(const person of found){
+          if(candidates.some(c=>String(c.person.member_id)===String(person.member_id)))continue;
+          const entry=entryFor(person),reason=draft.restriction(person,entry,replacing);
+          const control=button('','match-candidate secondary',()=>assign(person,entry));control.disabled=Boolean(reason);
+          control.append(node('strong',person.name),node('small',reason||`${person.group_name||'會友名冊'} · 本季 ${draft.workload(person)} 個主日 · 手動安排`));list.append(control);count++;
+        }
+        resultStatus.textContent=count?`找到 ${count} 位${result.has_more?'以上，請多輸入幾個字縮小範圍':''}。`:'名冊沒有符合的人，可確認完整姓名後手動安排。';
+        const exact=found.some(person=>person.name.trim().toLocaleLowerCase()===query.toLocaleLowerCase())||candidates.some(({person})=>person.name.trim().toLocaleLowerCase()===query.toLocaleLowerCase());
+        external.hidden=exact;external.textContent=`安排名冊外同工「${query}」`;external.disabled=!query||/[、,，;；\n\r\t]/u.test(query);
+      }catch{if(disposed||current!==request)return;resultStatus.textContent='姓名搜尋暫時無法載入，已保留輸入。';list.append(button('重試搜尋','secondary',search));}
+      finally{if(!disposed&&current===request)list.setAttribute('aria-busy','false');}
+    }
+    function scheduleSearch(){request++;clearTimeout(timer);external.hidden=true;list.replaceChildren();list.setAttribute('aria-busy','true');resultStatus.textContent=input.value.trim()?'正在搜尋姓名…':'';timer=setTimeout(search,180);}
+    input.addEventListener('input',event=>{if(!event.isComposing)scheduleSearch();});input.addEventListener('compositionstart',()=>{request++;clearTimeout(timer);external.hidden=true;list.replaceChildren();});input.addEventListener('compositionend',scheduleSearch);
+    input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.isComposing){event.preventDefault();clearTimeout(timer);void search();}});
+    const close=button('返回預排','secondary',finish);dialog.append(title,description,label,hint,resultStatus,list,external,close);dialog.addEventListener('cancel',event=>{event.preventDefault();finish();});document.body.append(dialog);dialog.showModal();input.focus({preventScroll:true});dialog.scrollTop=0;void search();
   }
   function renderPeople(){
     const list=node('div','','match-people-grid');
@@ -177,13 +227,13 @@ export function mountMatchingBoard(root,{draft,seasonTitle,labels,onClose,onAppl
     for(const member of members){
       const dates=[...draft.memberDates(member.key)].sort(),consecutive=dates.some((date,index)=>index>0&&dayNumber(date)-dayNumber(dates[index-1])===7),card=node('article','','match-member');
       const header=node('header');header.append(node('h3',member.name),badge(`${dates.length} 個主日`,consecutive?'warning':''));card.append(header);
-      card.append(node('p',consecutive?'有相鄰兩週的安排，可再協調服事量。':dates.length?'安排分布可於各主日查看。':'有填寫意願，目前尚未安排。','match-muted'));
+      card.append(node('p',consecutive?'有相鄰兩週的安排，可再協調服事量。':dates.length?'安排分布可於各主日查看。':'目前尚未排入班表。','match-muted'));
       const chips=node('div','','match-date-chips');for(const date of dates)chips.append(badge(shortDate(date)));if(!dates.length)chips.append(badge('尚未排入','warning'));card.append(chips);
       const details=node('details','','match-rationale');details.append(node('summary','查看意願與安排'));
-      for(const {person,entry} of member.registrations){const group=draft.groups.find(g=>g.entries.includes(entry)),assigned=draft.selected.has(String(person.id))||entry.existing.includes(person.name.trim());details.append(node('p',`${shortDate(entry.service_date)} · ${group.label} · ${assigned?'已安排':['waitlisted','offered'].includes(person.status)?'候補／待回覆':'有登記意願'}`));}card.append(details);list.append(card);
+      for(const {person,entry} of member.registrations){const group=draft.groups.find(g=>g.entries.includes(entry)),assigned=draft.selected.has(String(person.id))||entry.existing.includes(person.name.trim());details.append(node('p',`${shortDate(entry.service_date)} · ${group.label} · ${assigned?(person.manual?'手動預排':'已安排'):person.manual?'手動預排已移除':['waitlisted','offered'].includes(person.status)?'候補／待回覆':'有登記意願'}`));}card.append(details);list.append(card);
     }
-    content.append(list);if(!members.length)content.append(node('p','目前沒有符合的登記同工。','match-empty'));
-    content.prepend(node('p','服事量以可查看的正式安排與本次預排計算，同一天計為一個主日。','match-muted'));
+    content.append(list);if(!members.length)content.append(node('p','目前沒有符合的同工。','match-empty'));
+    content.prepend(node('p','服事量依正式安排與本次預排計算，同一天計為一個主日。','match-muted'));
   }
   function renderIssues(issues){
     const filtered=issues.filter(issue=>visible(issue.group));

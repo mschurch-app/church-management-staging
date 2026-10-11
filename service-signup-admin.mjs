@@ -1,5 +1,5 @@
 import {db,SUPABASE_URL} from './admin-db.mjs?v=20261009-stage4';
-import {createMatchingDraft,mountMatchingBoard} from './service-matching-board.mjs?v=20261011-match-board2';
+import {createMatchingDraft,mountMatchingBoard} from './service-matching-board.mjs?v=20261011-match-names1';
 
 import {lockControls,workflowSummary,apiResult,uncertainWrite,reviewDialog,draftGuard} from './app-workflow.mjs?v=20261009-stage4';
 
@@ -100,17 +100,18 @@ async function openSmartMatch(button){
     const season=payload.seasons.find(item=>item.id===seasonId);if(!season)throw new Error('此季度已變更，請重新載入。');
     const draft=createMatchingDraft({slots:payload.slots.filter(slot=>slot.season_id===seasonId),context,roleTargets,labels});
     render();
-    matchingBoard=mountMatchingBoard(smartPanel,{draft,seasonTitle:season.title,labels,isLocked:()=>busy||recovery,onChange:()=>matchGuard.mark(),onClose:leaveMatchingBoard,onApply:async(ids,isCurrent)=>{
+    matchingBoard=mountMatchingBoard(smartPanel,{draft,seasonTitle:season.title,labels,isLocked:()=>busy||recovery,onChange:()=>matchGuard.mark(),searchMembers:(slot,query)=>rpc('get_service_signup_member_candidates',{p_church:church,p_slot:slot,p_query:query}),onClose:leaveMatchingBoard,onApply:async(submission,isCurrent)=>{
+      const {registrations:ids,manual}=submission,total=ids.length+manual.length;
       if(busy||recovery)return;
-      if(ids.length>300){message('單次可套用 300 筆，請先保留部分缺額，分次確認。','error');return;}
-      const dates=new Set(draft.entries.filter(entry=>entry.candidates.some(person=>ids.includes(String(person.id)))).map(entry=>entry.service_date));
-      const accepted=await reviewDialog({title:'確認這份服事預排？',description:`將 ${dates.size} 個主日、${ids.length} 筆人選寫入正式班表，並確認其登記。已有安排的人員會保留；期間若有人調整班表，系統會重新檢查並略過衝突。`,withNote:false,confirmLabel:'確認套用正式班表'});
+      if(total>300){message('單次可套用 300 筆，請先保留部分缺額，分次確認。','error');return;}
+      const dates=new Set(draft.entries.filter(entry=>draft.chosen(entry).length).map(entry=>entry.service_date));
+      const accepted=await reviewDialog({title:'確認這份服事預排？',description:`將 ${dates.size} 個主日、${total} 筆人選寫入正式班表${manual.length?`（含 ${manual.length} 筆手動安排）`:''}；已登記者同步確認登記。已有安排的人員會保留；期間若有人調整班表，系統會重新檢查並略過衝突。`,withNote:false,confirmLabel:'確認套用正式班表'});
       if(accepted===null||active!==seasonId||!isCurrent()||busy||recovery)return;
       await operation(async()=>{
-        const result=await rpc('service_signup_apply_smart_match',{p_church:church,p_season:seasonId,p_registrations:ids});
+        const result=await rpc('service_signup_apply_match_draft',{p_church:church,p_season:seasonId,p_registrations:ids,p_manual:manual});
         clearMatchingBoard();
         const skipped=result.skipped||0;
-        return `已代入 ${result.applied||0} 筆服事安排。${skipped?`另有 ${skipped} 筆因班表變更、同日衝突或名額已滿未代入，請重新產生預排確認。`:'可到「正式班表」查看。'}`;
+        return `已代入 ${result.applied||0} 筆服事安排。${skipped?`另有 ${skipped} 筆因班表變更、同日衝突、候補待回覆或名額已滿未代入，請重新產生預排確認。`:'可到「正式班表」查看。'}`;
       });
     }});
     if(draft.selected.size)matchGuard.mark();
@@ -126,7 +127,7 @@ function updateFilters(){const filter=$('#service-date-filter'),value=filter.val
 async function operation(write,success='設定已儲存。'){
   if(busy||recovery)return;busy=true;const unlock=lockControls($('.signup-admin'));message('正在儲存，請稍候…');let committed=false;
   try{const text=await write();committed=true;await load();message(typeof text==='string'?text:success,'success');}
-  catch(error){if(committed||uncertainWrite(error)){recovery=true;$('.workflow-toolbar').hidden=false;render();renderChangeRequests();$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{if(control.id!=='service-reload')control.disabled=true;});message(committed?'操作已完成，但最新資料暫時無法載入。請重新載入確認結果。':'連線中斷，尚無法確認是否完成。請重新載入確認結果，再進行操作。','error');}else message(String(error.message||'').includes('registration_unavailable')?'登記資料已變更。請收起預排並重新載入，再產生建議。':String(error.message||'').includes('forbidden')?'沒有此項操作權限。':String(error.message||'').includes('unique')?'這一季已經建立，請重新載入查看。':'操作未完成，畫面保留原設定。請稍後重試。','error');}
+  catch(error){if(committed||uncertainWrite(error)){recovery=true;$('.workflow-toolbar').hidden=false;render();renderChangeRequests();$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{if(control.id!=='service-reload')control.disabled=true;});message(committed?'操作已完成，但最新資料暫時無法載入。請重新載入確認結果。':'連線中斷，尚無法確認是否完成。請重新載入確認結果，再進行操作。','error');}else message(String(error.message||'').includes('ambiguous_member_name')?'有同名會友，請從搜尋結果選擇正確人選。':String(error.message||'').includes('invalid_name')?'請填寫一位同工的完整姓名，最多 80 字。':String(error.message||'').includes('registration_unavailable')?'登記資料已變更。請收起預排並重新載入，再產生建議。':String(error.message||'').includes('forbidden')?'沒有此項操作權限。':String(error.message||'').includes('unique')?'這一季已經建立，請重新載入查看。':'操作未完成，畫面保留原設定。請稍後重試。','error');}
   finally{busy=false;unlock();if(recovery)$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{control.disabled=control.id!=='service-reload';});}
 }
 async function saveSlot(slot,capacity,button,nextOpen=slot.is_open){

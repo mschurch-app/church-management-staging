@@ -1,0 +1,57 @@
+{
+  "reports": [
+    {
+      "date": "2026-10-05",
+      "website_status": "ok",
+      "website_missing": false,
+      "youtube_views": 61,
+      "youtube_status": "ok"
+    },
+    {
+      "date": "2026-10-06",
+      "website_status": "no_reported_data",
+      "website_missing": true,
+      "youtube_views": 25,
+      "youtube_status": "ok"
+    },
+    {
+      "date": "2026-10-07",
+      "website_status": "no_reported_data",
+      "website_missing": true,
+      "youtube_views": 21,
+      "youtube_status": "ok"
+    },
+    {
+      "date": "2026-10-08",
+      "website_status": "no_reported_data",
+      "website_missing": true,
+      "youtube_views": 36,
+      "youtube_status": "ok"
+    },
+    {
+      "date": "2026-10-09",
+      "website_status": "awaiting_data",
+      "website_missing": true,
+      "youtube_views": null,
+      "youtube_status": "awaiting_data"
+    },
+    {
+      "date": "2026-10-10",
+      "website_status": "awaiting_data",
+      "website_missing": true,
+      "youtube_views": null,
+      "youtube_status": "awaiting_data"
+    },
+    {
+      "date": "2026-10-11",
+      "website_status": "awaiting_data",
+      "website_missing": true,
+      "youtube_views": null,
+      "youtube_status": "awaiting_data"
+    }
+  ],
+  "notification_count_unchanged": true,
+  "read_states_preserved": true,
+  "all_real_newlines": true,
+  "latest_body": "2026-10-11｜網站與社群流量\n\n🌐 網站｜尚未取得當日資料，不能判定為 0 人。\n最近有資料：2026-10-05，1 位訪客・1 次瀏覽。\n▶️ YouTube｜當日資料尚未就緒。\n最近有資料：2026-10-08，36 次觀看・5.0 小時觀看。\n📱 Instagram｜觸及 7 人・互動資料尚未提供\n\n💡 資料說明\n網站連續多日未回傳資料，需檢查追蹤設定；不能以此認定無人造訪。\n各平台更新時間不同；YouTube 依平台日期統計。系統每天重查最近 7 天並修正通知內容。\nFacebook 洞察尚待連結。"
+}

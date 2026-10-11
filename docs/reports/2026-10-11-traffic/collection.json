@@ -1,0 +1,17 @@
+{
+  "requests": [
+    {
+      "host": "www.google-analytics.com",
+      "path": "/g/collect",
+      "measurement_id": "G-VPZZCKQ41B",
+      "event": "page_view"
+    }
+  ],
+  "errors": [
+    "www.google-analytics.com:net::ERR_ABORTED"
+  ],
+  "response_status": 204,
+  "tags": [
+    "https://www.googletagmanager.com/gtag/js?id=G-VPZZCKQ41B"
+  ]
+}

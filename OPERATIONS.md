@@ -85,3 +85,17 @@ October date guards deployed as v8 ACTIVE on 2026-10-10 at 14:12 Taipei; source 
 原同工入口 `https://liff.line.me/2011645391-9t2SxuSG`，不更換LIFF ID／endpoint或要求重新綁定。2026/10/10–27，每兩個台北日曆日依序元旦煙火、春節、復活節、聖靈降臨節、端午、中秋、光明勇士、感恩節、聖誕節；10/28回原景。日期表只在 `life-tree-festival-test-schedule.mjs`，無Cron／自動通知、無新資料表。若將來調整起日，更新版本與固定日期回歸後循PR發布。
 
 改動HTML／控制器／共享SVG／動畫／CSS一起發布，版本 `20261010-season-test1`。樹圖下展開節慶日期可看本輪安排；資料儲存仍使用專用十月API。不得將 `life-tree-festival-preview.mjs` 的假進度接入此入口。正式2027與其他專案需另外接入，不推定本次已自動同步。
+# 每日流量報告修正（2026-10-11）
+
+正式 `daily-traffic-report` v16 與 `recent-traffic-report` v13 已更新；沿用既有 Vault cron 驗證、每日台北時間 21:00 排程、堂會及收件人設定。原本的正式來源保存在 commit `61c15bac21589556861723e7742a6bb181a3dd4f`，供必要時回復。沒有修改資料表、登入、網站追蹤 ID 或 App 共用資源。
+
+- Google 回應沒有日期資料列時，標示 `awaiting_data` 或 `no_reported_data`，數值留空；只有實際資料列明確回傳 0 才呈現 0。讀取失敗與待更新分開，保留最後已取得的資料。
+- 每次查最近 14 天的逐日資料，修正最近 7 天既有報告與通知。YouTube 註明平台資料日期，當天未就緒時顯示最近有資料的日期。Instagram 沒有回傳的互動指標不再預設為 0。
+- 通知使用真正換行；修正已送出的通知保留 ID 與已讀狀態。`POST {"action":"refresh"}` 只修正既有報告與通知，不新增通知、不推送。正常排程只有成功建立當日通知的執行者才推送，重試避免重複推送。推送失敗仍需另行查驗推送服務。
+- `recent-traffic-report` 從設定讀取 GA property，提供受同一 cron 驗證保護的 `diagnostics` 動作，只回傳彙整資料與公開設定，不回傳 OAuth token。所有讀取有期限，錯誤碼過濾避免將帶 token 的網址寫入報表。
+
+驗證：25 項 Node 自動檢查通過；正式兩端點未授權 POST 均回應 401。正式靜默修正 7 份報告與 7 則通知，通知總數、ID、已讀狀態均保持；逐一回查換行與缺值，來源檔案與部署檔案一致。正式 YouTube 10/5–10/8 回補觀看次數為 61、25、21、36；10/9–10/11 仍缺資料，不補造數字。證據位於 `docs/reports/2026-10-11-traffic/`。
+
+尚待確認：GA Data API 回傳最近 30 天 19 位 activeUsers、55 sessions、247 次瀏覽，逐日資料最後到 10/5，10/6 起未回傳資料列。官網目前 `G-VPZZCKQ41B` 有送出 `page_view`，Google collect 回應 204；同次觀察也有一筆 ERR_ABORTED，接收回應不等同資料已納入正確 property。Google Analytics Admin API 診斷回應 SERVICE_DISABLED；Data API 本身可以正常查詢，不能將 Admin API 停用當成沒有流量的原因。已請管理員提供資料串流評估 ID 與網址，以核對 property 對應、追蹤篩選及蒐集狀態；目前不宣稱追蹤缺口已排除，也不能還原未蒐集的歷史瀏覽。教會 OS 的使用不能直接當作官網流量。
+
+本次未變更介面版型，Mac Chrome 僅查驗公開首頁追蹤傳送；沒有 iPhone 17 或 Safari 的本次實機驗收證據，不宣稱整體 99% 達標。

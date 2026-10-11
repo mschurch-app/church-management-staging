@@ -7,10 +7,10 @@ export function journeySummary(data,year){
 }
 export function journeyEncouragement(summary){
   if(!summary)return '每一份願意都很珍貴。年度紀錄暫時無法載入，請稍後再查看。';
-  if(summary.completed)return `謝謝你這一年 ${summary.completed} 次的擺上。每一次服事，都讓教會多一份溫暖。`;
+  if(summary.completed)return `謝謝你這一年 ${summary.completed} 次的擺上。每一次服事，都是領受恩典、祝福家人的足跡。`;
   if(summary.registered)return `你已為這一年預備 ${summary.registered} 次服事登記。謝謝你願意踏出這一步，一起成為祝福。`;
   if(summary.waiting)return '謝謝你願意成為候補，這一份願意同樣珍貴。';
-  return '服事從一份願意開始。謝謝你，讓我們一起留下美好的足跡。';
+  return '有份服事，是恩典，也是榮耀。讓我們用神所賜的恩賜，一起留下美好的足跡。';
 }
 export function journeyCard(data,year){
   const summary=journeySummary(data,year),years=[...new Set([Number(year),...(data.service_journey?.years||[]).map(item=>Number(item.year))])].filter(item=>Number.isInteger(item)&&item>=2026&&item<=2100).sort((a,b)=>b-a);

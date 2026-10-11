@@ -1,4 +1,4 @@
-"""Original deterministic seasonal loops. Writes only the festivals subdirectory."""
+"""Deterministic seasonal arrangements. Writes only the festivals subdirectory."""
 from pathlib import Path
 import math
 import struct
@@ -164,6 +164,63 @@ def joyful_spring():
     return samples
 
 
+def birthday_anniversary():
+    """Happy Birthday melody, in C, with a gentle piano and music-box arrangement."""
+    # Four familiar six-beat phrases, including the dotted pickup: 24 beats.
+    melody = [
+        (67, .75), (67, .25), (69, 1), (67, 1), (72, 1), (71, 2),
+        (67, .75), (67, .25), (69, 1), (67, 1), (74, 1), (72, 2),
+        (67, .75), (67, .25), (79, 1), (76, 1), (72, 1), (71, 1), (69, 1),
+        (77, .75), (77, .25), (76, 1), (72, 1), (74, 1), (72, 2),
+    ]
+    beat = 60 / 90
+    samples = [0.] * round(RATE * beat * sum(length for _, length in melody))
+
+    def piano(midi, when, length, volume, bell=False):
+        hz = frequency(midi)
+        for i in range(round(length * RATE)):
+            t = i / RATE
+            envelope = min(1., t / .008) * min(1., (length - t) / .06)
+            if bell:
+                tone = (math.sin(2 * math.pi * hz * t) * math.exp(-5 * t)
+                        + .20 * math.sin(4 * math.pi * hz * t) * math.exp(-9 * t))
+            else:
+                tone = (math.sin(2 * math.pi * hz * t)
+                        + .25 * math.sin(4 * math.pi * hz * t) * math.exp(-2 * t)
+                        + .09 * math.sin(6 * math.pi * hz * t) * math.exp(-4 * t)) * math.exp(-2.8 * t)
+            samples[(round(when * RATE) + i) % len(samples)] += volume * envelope * tone
+
+    position = 0.
+    for midi, beats in melody:
+        length = beats * beat * .93
+        piano(midi, position * beat, length, .34)
+        piano(midi + 12, position * beat, min(length, .65), .035, True)
+        position += beats
+
+    # Light waltz accompaniment leaves the recognizable tune in the foreground.
+    harmonies = [
+        (0, 1, (43, 59, 62, 67)), (1, 3, (48, 60, 64, 67)),
+        (4, 3, (43, 59, 62, 67)), (7, 3, (43, 59, 62, 67)),
+        (10, 3, (48, 60, 64, 67)), (13, 3, (48, 60, 64, 67)),
+        (16, 1, (43, 59, 62, 67)), (17, 2, (41, 57, 60, 65)),
+        (19, 2, (48, 60, 64, 67)), (21, 1, (43, 59, 62, 67)),
+        (22, 2, (48, 60, 64, 67)),
+    ]
+    for when, beats, (bass, *chord) in harmonies:
+        piano(bass, when * beat, min(beats * beat * .88, 1.1), .10)
+        for pulse in range(beats):
+            for index, midi in enumerate(chord):
+                piano(midi, (when + pulse) * beat + index * .009, .34, .035)
+
+    # A short, quiet room tail wraps with the loop instead of a hard ending.
+    dry = samples[:]
+    for delay, mix in ((.07, .12), (.14, .06)):
+        offset = round(delay * RATE)
+        for i, value in enumerate(dry):
+            samples[(i + offset) % len(samples)] += value * mix
+    return samples
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--only', choices=list(MELODIES), help='Regenerate a single track')
@@ -176,6 +233,8 @@ def main():
             samples = joyful_newyear()
         elif name == 'spring':
             samples = joyful_spring()
+        elif name == 'anniversary':
+            samples = birthday_anniversary()
         else:
             samples = [0.] * (RATE * DURATION)
             for index, midi in enumerate(melody):

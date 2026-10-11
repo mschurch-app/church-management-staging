@@ -90,7 +90,7 @@ function syncSound(){
 }
 async function playMusic(){
  if(!state.sound||document.hidden||musicBusy)return;
- const version=state.item.id==='spring'?'20261011-spring-joy1':state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
+ const version=state.item.id==='anniversary'?'20261012-birthday1':state.item.id==='spring'?'20261011-spring-joy1':state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
  const track=state.item.musicByDay?.[state.day-1]||state.item.id;
  const src=new URL('assets/audio/life-tree/festivals/'+track+'.wav?v='+version,import.meta.url).href;
  if(music.src===src&&!music.paused)return;
@@ -99,7 +99,7 @@ async function playMusic(){
  try{
   await Promise.race([music.play(),new Promise((_,reject)=>timeout=setTimeout(()=>reject(new Error('audio timeout')),6000))]);
   if(task!==musicTask)return;if(!state.sound||document.hidden){music.pause();return;}
-  $('audio-status').textContent='正在播放「'+state.item.name+'」的花園音樂。';
+  $('audio-status').textContent=state.item.id==='anniversary'?'正在播放〈生日快樂〉週年慶配樂。':'正在播放「'+state.item.name+'」的花園音樂。';
  }catch{
   if(task!==musicTask)return;music.pause();state.sound=false;syncSound();
   $('audio-status').textContent='音樂還沒開始，點一下上方喇叭就能重試。';

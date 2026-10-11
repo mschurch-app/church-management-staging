@@ -1,6 +1,6 @@
 # 生命樹節慶音樂
 
-十一首原創、可循環的短曲，由 `scripts/generate_life_tree_festival_audio.py` 確定性產生；沒有外部錄音或第三方曲目。春節曲為15秒，其餘每首16秒；22,050Hz、單聲道16bit PCM，峰值0.35，檔案約689KiB。
+十一首可循環的短曲（十首原創及〈生日快樂〉的自製演奏編曲），由 `scripts/generate_life_tree_festival_audio.py` 確定性產生；音訊均由程式合成，沒有使用外部錄音。春節曲為15秒，其餘每首16秒；22,050Hz、單聲道16bit PCM，峰值0.35，檔案約689KiB。
 
 | 曲目 | 情境 |
 | --- | --- |
@@ -18,7 +18,9 @@
 
 2026-10-10依使用者試聽回饋，元旦改為8小節、120 BPM的歡樂編曲。其餘八首保留原曲供逐首試聽。可用`python3 scripts/generate_life_tree_festival_audio.py --only newyear`只重製元旦，不改其他節慶。
 
-- anniversary：16週年恩典同行；溫暖的鋼琴與鐘琴音色。
+- anniversary：16週年恩典同行；〈生日快樂〉旋律，90 BPM、3/4拍，鋼琴與鐘琴的16秒循環編曲。
 - passion：受難週安靜默想；復活主日切回 easter 晨光配樂。
 
 2026-10-11：春節改為8小節、128 BPM的原創歡樂編曲，15秒循環；可用 `python3 scripts/generate_life_tree_festival_audio.py --only spring` 單獨重製。
+
+2026-10-12：依使用者指定，週年慶改為熟悉的〈生日快樂〉旋律；保留四句完整旋律、附點起拍與結尾長音。可用 `python3 scripts/generate_life_tree_festival_audio.py --only anniversary` 單獨重製。讀經入口與節慶預覽各自更新模組及音訊版本；Worker 對腳本採網路優先且不快取音訊，本次不需更動全域 Worker。

@@ -1,0 +1,784 @@
+{
+  "environment": "Chromium isolated synthetic LINE/API/Scripture; no external database access; no real-device or audible-output claims",
+  "preview": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "Ten distinct festival calendars and all 67 candidate scripture/reflection/prompt sets",
+        "passed": true
+      },
+      {
+        "name": "Christmas decoration applies every December day, with the activity week separately selected",
+        "passed": true
+      },
+      {
+        "name": "Preview settings use existing M+ tree permission; no new grant or home allowlist change",
+        "passed": true
+      },
+      {
+        "name": "Seven monsters have seven distinct equipment illustrations",
+        "passed": true
+      },
+      {
+        "name": "All ten seasonal music loops contain audible PCM without clipping",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 320×568",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 402×874",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 760×900",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 1024×768",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 1280×800",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 1440×900",
+        "passed": true
+      },
+      {
+        "name": "No page overflow and Christmas renders: 1920×1080",
+        "passed": true
+      },
+      {
+        "name": "All visible enabled controls have at least 44×44px hit targets",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 元旦",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 農曆春節",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 16週年慶",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 聖靈降臨節",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 端午節",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 中秋節",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 光明勇士",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 感恩節",
+        "passed": true
+      },
+      {
+        "name": "Mobile world, original motifs and candidate content: 聖誕節",
+        "passed": true
+      },
+      {
+        "name": "Christmas tree has 19 animated bulbs, baubles, bow, top star and gifts; week includes manger",
+        "passed": true
+      },
+      {
+        "name": "Tree pat animates and announces Christmas greeting",
+        "passed": true
+      },
+      {
+        "name": "Watering and three interactions animate, ignore duplicates and finish without hanging",
+        "passed": true
+      },
+      {
+        "name": "Switching world during watering cancels old action and does not apply completion to another world",
+        "passed": true
+      },
+      {
+        "name": "Manual reduced motion stops animations",
+        "passed": true
+      },
+      {
+        "name": "All 3 days complete and collect exactly once: 元旦",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 農曆春節",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 16週年慶",
+        "passed": true
+      },
+      {
+        "name": "All 8 days complete and collect exactly once: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 聖靈降臨節",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 端午節",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 中秋節",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 光明勇士",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 感恩節",
+        "passed": true
+      },
+      {
+        "name": "All 7 days complete and collect exactly once: 聖誕節",
+        "passed": true
+      },
+      {
+        "name": "Replay preserves earned badges and never duplicates a collection",
+        "passed": true
+      },
+      {
+        "name": "Collection modal locks background, Escape closes and restores focus",
+        "passed": true
+      },
+      {
+        "name": "New Year covers January 1–3 with three preview days, fireworks and 2027 greeting",
+        "passed": true
+      },
+      {
+        "name": "New Year fireworks respect reduced motion without hiding the greeting",
+        "passed": true
+      },
+      {
+        "name": "December outside Christmas week shows decorated tree without premature Nativity scene",
+        "passed": true
+      },
+      {
+        "name": "Christmas week automatically includes the Nativity scene",
+        "passed": true
+      },
+      {
+        "name": "Fractional preview day is safely normalized",
+        "passed": true
+      },
+      {
+        "name": "Eight distinct Holy Week events with matching daily scripture and mobile screenshots",
+        "passed": true
+      },
+      {
+        "name": "Holy Saturday has closed stone; resurrection scene follows calendar day eight, not a game reward",
+        "passed": true
+      },
+      {
+        "name": "Autoplay denial gives recoverable speaker retry and trusted click resumes native audio",
+        "passed": true
+      },
+      {
+        "name": "Anniversary preview plays the versioned 16-second Happy Birthday instrumental loop",
+        "passed": true
+      },
+      {
+        "name": "Music switches with world; speaker mutes",
+        "passed": true
+      },
+      {
+        "name": "System reduced-motion setting stops Christmas light animation",
+        "passed": true
+      },
+      {
+        "name": "Reload clears all preview progress; browser stores only sound/motion preferences",
+        "passed": true
+      },
+      {
+        "name": "Returning from page cache during an animation restores an actionable state",
+        "passed": true
+      },
+      {
+        "name": "Audio timeout leaves controls usable; remembered preference resumes on an ordinary trusted tap",
+        "passed": true
+      },
+      {
+        "name": "No script errors, external/auth/database calls or missing resources",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "external": [],
+    "missing": []
+  },
+  "integrated_entry": {
+    "execution": "Earlier checks passed in full run; remaining checks rerun with same isolated harness after correcting stale date, CTA and heading assumptions. Not claiming a single uninterrupted full-suite pass.",
+    "earlier_passed_checks": [
+      {
+        "name": "First visit shows explanation with prechecked sound choice, focused heading and no premature audio",
+        "passed": true
+      },
+      {
+        "name": "First-visit explanation fills phone and desktop viewports and scrolls to reachable start control",
+        "passed": true
+      },
+      {
+        "name": "Visual explanation has three illustrated steps and four matching care tools",
+        "passed": true
+      },
+      {
+        "name": "Prechecked sound starts only on trusted Start click",
+        "passed": true
+      },
+      {
+        "name": "Unchecked choice permits normal use, persists silent preference and does not repeat onboarding",
+        "passed": true
+      },
+      {
+        "name": "Reopened explanation closes with Escape and restores keyboard focus",
+        "passed": true
+      },
+      {
+        "name": "Checking sound alone does not play; trusted keyboard Start primes both native players and advances music clock",
+        "passed": true
+      },
+      {
+        "name": "Remembered opt-in attempts autoplay on reload; blocked playback resumes on normal gesture, speaker still mutes",
+        "passed": true
+      },
+      {
+        "name": "Allowed browser policy restores remembered music on entry without pressing any control",
+        "passed": true
+      },
+      {
+        "name": "Trusted touch on ordinary tree text starts both players even when click propagation is suppressed",
+        "passed": true
+      },
+      {
+        "name": "Normal touch supersedes a pending autoplay attempt immediately without waiting six seconds",
+        "passed": true
+      },
+      {
+        "name": "Remembered mute stays silent on reload, page return and ordinary interactions",
+        "passed": true
+      },
+      {
+        "name": "No devotional dock before watering",
+        "passed": true
+      },
+      {
+        "name": "Healthy tree artwork has no overlaid controls; 44px speaker sits in heading at 320/402/1440px",
+        "passed": true
+      },
+      {
+        "name": "Stable three-action navigation exposes missing count, exact date/chapter and honest 7-day expiry",
+        "passed": true
+      },
+      {
+        "name": "Refresh button works and ignores repeat clicks",
+        "passed": true
+      },
+      {
+        "name": "Trusted touch starts native music and primes same effect element; clock advances; mute pauses both",
+        "passed": true
+      },
+      {
+        "name": "Audio failure shows retry without claiming playback",
+        "passed": true
+      },
+      {
+        "name": "Never-resolving media playback times out, stops both channels and restores controls",
+        "passed": true
+      },
+      {
+        "name": "Speaker retry recovers playback and enables effects",
+        "passed": true
+      },
+      {
+        "name": "Effect-only failure reports retry while music continues; retry reuses exactly two media elements",
+        "passed": true
+      },
+      {
+        "name": "Background pauses all audio; visible page retries remembered music through the same players",
+        "passed": true
+      },
+      {
+        "name": "Every shipped WAV decodes with nonzero signal and controlled peak/RMS",
+        "passed": true,
+        "reading": {
+          "duration": 16,
+          "rms": 0.07878850687529529,
+          "peak": 0.3799859583377838
+        },
+        "storm": {
+          "duration": 16,
+          "rms": 0.08409791203098876,
+          "peak": 0.379974365234375
+        },
+        "care": {
+          "duration": 16,
+          "rms": 0.06026710110239843,
+          "peak": 0.379974365234375
+        },
+        "open": {
+          "duration": 0.58,
+          "rms": 0.13775600022333778,
+          "peak": 0.5500046014785767
+        },
+        "celebration": {
+          "duration": 1.28,
+          "rms": 0.1729303461381987,
+          "peak": 0.54998779296875
+        },
+        "water": {
+          "duration": 0.72,
+          "rms": 0.14988838384479874,
+          "peak": 0.5500046014785767
+        },
+        "journal": {
+          "duration": 0.58,
+          "rms": 0.13789810549983342,
+          "peak": 0.54998779296875
+        },
+        "wind": {
+          "duration": 0.72,
+          "rms": 0.1499420886926315,
+          "peak": 0.54998779296875
+        }
+      },
+      {
+        "name": "Today reading requires reaching Scripture end",
+        "passed": true
+      },
+      {
+        "name": "Read request has pending state and duplicate guard",
+        "passed": true
+      },
+      {
+        "name": "Failed watering remains retryable without showing devotional dock or playing watering sound",
+        "passed": true
+      },
+      {
+        "name": "Watering success unlocks invitation once and plays watering animation and sound through the reused, gesture-primed element after API completion",
+        "passed": true
+      },
+      {
+        "name": "Watering success immediately reveals clickable floating invitation",
+        "passed": true
+      },
+      {
+        "name": "Floating invitation fits mobile, short and desktop viewports with 44px controls",
+        "passed": true
+      },
+      {
+        "name": "Floating invitation remains available at tree heading without an upper duplicate entry",
+        "passed": true
+      },
+      {
+        "name": "Tree has no duplicate journal editor",
+        "passed": true
+      },
+      {
+        "name": "Devotional owns single authenticated October journal with actual date, isolated endpoint and no progress writes",
+        "passed": true
+      },
+      {
+        "name": "Return from devotional keeps October progress and removes duplicate invitation",
+        "passed": true
+      },
+      {
+        "name": "Single devotional journal restores its private draft after leaving and reopening",
+        "passed": true
+      },
+      {
+        "name": "Journal failure retains input, success ignores duplicate clicks and writes actual October date only",
+        "passed": true
+      },
+      {
+        "name": "Saved journal is viewable inside devotional history",
+        "passed": true
+      },
+      {
+        "name": "Incomplete journal response cannot claim successful collection",
+        "passed": true
+      },
+      {
+        "name": "Timed-out journal save preserves draft and restores controls",
+        "passed": true
+      },
+      {
+        "name": "No LINE identity cannot read or write journal; preview content stays available",
+        "passed": true
+      },
+      {
+        "name": "Journal loading failure offers working retry without enabling unauthenticated writes",
+        "passed": true
+      },
+      {
+        "name": "Reading prerequisite preserved; earlier journal remains readable",
+        "passed": true
+      },
+      {
+        "name": "Dismissal survives progress refresh",
+        "passed": true
+      },
+      {
+        "name": "Only cached return refreshes saved journal once; normal load and repeated return do not race",
+        "passed": true
+      },
+      {
+        "name": "worm challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+        "passed": true
+      },
+      {
+        "name": "wind challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+        "passed": true
+      },
+      {
+        "name": "typhoon challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+        "passed": true
+      },
+      {
+        "name": "trouble challenge: visible notice and distinctive scene; keyboard CTA; failure retains prompt; one success restores background",
+        "passed": true
+      },
+      {
+        "name": "Future and resolved challenges cannot trigger notice, count or altered background",
+        "passed": true
+      },
+      {
+        "name": "Multiple active challenges keep reminder and next scene until all current care is complete",
+        "passed": true
+      },
+      {
+        "name": "Four cute tools surround tree without covering each other at 320/402/1440px",
+        "passed": true
+      },
+      {
+        "name": "Seedling stays visibly enlarged while its gentle sway animation runs",
+        "passed": true
+      },
+      {
+        "name": "Wind tool presents two people shoulder to shoulder with mutual-support label",
+        "passed": true
+      },
+      {
+        "name": "Repeated same-type challenges share one counted tool and resolve one record per click",
+        "passed": true
+      },
+      {
+        "name": "Healthy tree hides context tools and care shortcut gives clear feedback",
+        "passed": true
+      },
+      {
+        "name": "18-person garden uses readable rows without horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "Late garden response cannot overwrite a newer personal view",
+        "passed": true
+      },
+      {
+        "name": "Care shortcut cancels a pending garden switch and remains at personal tree",
+        "passed": true
+      },
+      {
+        "name": "Ranking loads on demand",
+        "passed": true
+      },
+      {
+        "name": "320–1920px layouts fit, controls meet 44px and compact makeup grid has 4 dates then 3 plus dropdown",
+        "passed": true
+      },
+      {
+        "name": "Reduced-motion preference stops decorative animations",
+        "passed": true
+      },
+      {
+        "name": "Failed Scripture fetch offers a working retry",
+        "passed": true
+      },
+      {
+        "name": "Scripture deadline clears failed cache and permits retry",
+        "passed": true
+      },
+      {
+        "name": "Makeup reading and watering use selected date without claiming today completion or showing floating invite",
+        "passed": true
+      },
+      {
+        "name": "Makeup completion cannot retain the pending save label",
+        "passed": true
+      },
+      {
+        "name": "Today already watered plus makeup: pending resets, cleared selector still navigates, dock stays clear, no duplicate writes",
+        "passed": true
+      },
+      {
+        "name": "Failed makeup save restores local retry feedback and selected date; retry succeeds once",
+        "passed": true
+      },
+      {
+        "name": "Incomplete response cannot invent success; progress refresh confirms stored date and clears stale error without writing again",
+        "passed": true
+      },
+      {
+        "name": "Timed-out makeup save releases busy state; a late committed request can be retried without losing progress",
+        "passed": true
+      },
+      {
+        "name": "Refresh failure restores controls and displays recovery",
+        "passed": true
+      },
+      {
+        "name": "Ordinary devotional preview keeps existing member-menu return and ignores arbitrary destinations",
+        "passed": true
+      },
+      {
+        "name": "Direct preview entry has a working fixed tree return",
+        "passed": true
+      },
+      {
+        "name": "Yesterday on-time reading without water has a dated resume path; success cannot mark today watered",
+        "passed": true
+      },
+      {
+        "name": "10/6 resume shows entire tree and external watering button in short/full mobile and desktop viewports; waters only 10/6",
+        "passed": true
+      },
+      {
+        "name": "Today return reselects today and shares the visible tree landing",
+        "passed": true
+      },
+      {
+        "name": "Expired watering cannot expose a button that backend would reject",
+        "passed": true
+      },
+      {
+        "name": "Blocked preference storage cannot prevent closing explanation or using reading progress",
+        "passed": true
+      },
+      {
+        "name": "Keyboard tree greeting on a non-festival date is decorative and cannot write progress",
+        "passed": true
+      },
+      {
+        "name": "Five garden growth stages follow existing progress multiplier; no demo progress imported",
+        "passed": true
+      }
+    ],
+    "remaining_checks": [
+      {
+        "name": "Keyboard tree greeting on a non-festival date is decorative and cannot write progress",
+        "passed": true
+      },
+      {
+        "name": "Five garden growth stages follow existing progress multiplier; no demo progress imported",
+        "passed": true
+      },
+      {
+        "name": "Non-festival garden and today reading are both visible on first screen at phone and Mac sizes",
+        "passed": true
+      },
+      {
+        "name": "Incomplete watering response cannot invent animation or invitation; refresh confirms saved record",
+        "passed": true
+      },
+      {
+        "name": "Incomplete care response preserves retry and star count; refresh confirms actual resolved challenge",
+        "passed": true
+      },
+      {
+        "name": "Finite annual-order daily scene rotation: October 10–26 inclusive, no rotation outside the test window",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 元旦",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 元旦",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 農曆春節",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 農曆春節",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 16週年慶",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 16週年慶",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 受難與復活",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 聖靈降臨節",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 聖靈降臨節",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 端午節",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 端午節",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 中秋節",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 中秋節",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 光明勇士",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 光明勇士",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 感恩節",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 感恩節",
+        "passed": true
+      },
+      {
+        "name": "Actual entry rotates daily with real growth, reading chapter, theme audio and clear artwork: 聖誕節",
+        "passed": true
+      },
+      {
+        "name": "Real watering unlocks three animated interactions; duplicate clicks cannot add hits or write awards: 聖誕節",
+        "passed": true
+      },
+      {
+        "name": "All seventeen test dates preserve records and create no reading, water, care or journal writes",
+        "passed": true
+      },
+      {
+        "name": "Integrated Christmas has nineteen animated bulbs, ornaments, bow, star and Nativity at phone/Mac sizes",
+        "passed": true
+      },
+      {
+        "name": "October 27 automatically restores original tree without resetting progress",
+        "passed": true
+      },
+      {
+        "name": "Foreground return updates the scene to the current date without a write or reopening the page",
+        "passed": true
+      },
+      {
+        "name": "Preview URL arguments cannot override the actual test date or festival schedule",
+        "passed": true
+      },
+      {
+        "name": "No uncaught browser exceptions",
+        "passed": true
+      }
+    ],
+    "initial_interruption": [
+      {
+        "name": "run",
+        "passed": false,
+        "error": "AssertionError [ERR_ASSERTION]: {\"width\":320,\"height\":874,\"r\":{\"top\":1056.875,\"bottom\":1122.875},\"t\":{\"top\":254.25,\"bottom\":487.140625},\"overflow\":false}\n    at file:///private/tmp/church-traffic-20261011/repo/tests/life-tree/browser.mjs:178:576"
+      }
+    ],
+    "errors": []
+  },
+  "iPhone17": "pending physical-device audible acceptance",
+  "MacSafari": "pending physical-device audible acceptance"
+}

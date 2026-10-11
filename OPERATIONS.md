@@ -99,3 +99,12 @@ October date guards deployed as v8 ACTIVE on 2026-10-10 at 14:12 Taipei; source 
 尚待確認：GA Data API 回傳最近 30 天 19 位 activeUsers、55 sessions、247 次瀏覽，逐日資料最後到 10/5，10/6 起未回傳資料列。官網目前 `G-VPZZCKQ41B` 有送出 `page_view`，Google collect 回應 204；同次觀察也有一筆 ERR_ABORTED，接收回應不等同資料已納入正確 property。Google Analytics Admin API 診斷回應 SERVICE_DISABLED；Data API 本身可以正常查詢，不能將 Admin API 停用當成沒有流量的原因。已請管理員提供資料串流評估 ID 與網址，以核對 property 對應、追蹤篩選及蒐集狀態；目前不宣稱追蹤缺口已排除，也不能還原未蒐集的歷史瀏覽。教會 OS 的使用不能直接當作官網流量。
 
 本次未變更介面版型，Mac Chrome 僅查驗公開首頁追蹤傳送；沒有 iPhone 17 或 Safari 的本次實機驗收證據，不宣稱整體 99% 達標。
+
+
+## 小樹週年慶配樂（2026-10-12）
+
+依使用者指定，週年慶配樂換成〈生日快樂〉的自製鋼琴與鐘琴演奏編曲；90 BPM、3/4 拍、16 秒循環，音訊峰值維持 0.35。產生器的 `--only anniversary` 只更新該首，其他十首音訊不變。十月讀經入口與獨立節慶預覽的模組／音訊版本均更新為 `20261012-birthday1`。Worker 對腳本採網路優先，音訊不經 Worker 快取；沒有變更全域 Worker、登入、資料庫或排程。
+
+使用者另指定棕樹主日採傳統〈和散那，和散那，和散那歸於至高神〉純演奏版、受難日採〈維亞多勒羅莎〉純演奏版。目前尚無可用音檔，這兩日的既有配樂與對應保持原狀，不能將既有 `passion.wav` 宣稱為上述曲目。待音檔到位，分別接入受難週第 1 日及第 6 日；同時更新十月輪替入口和獨立預覽，不改閱讀／澆水進度。
+
+驗證證據與限制記錄於 `docs/reports/2026-10-12-anniversary-music/`。Chrome 以隔離 API 與模擬 LINE 身分檢查；缺少 iPhone 17 和 Mac Safari 實機試聽，不宣稱已完成實機驗收或整體 99% 達標。

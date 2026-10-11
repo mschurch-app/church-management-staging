@@ -2,7 +2,7 @@ const $=selector=>document.querySelector(selector);
 const params=new URLSearchParams(location.search);
 const step=Math.max(1,Math.min(4,Number(params.get('workflow_step'))||1));
 const currentId=params.get('bulletin')||'';
-const labels=['日期與草稿','週報文字','社群媒體','預覽送審'];
+const labels=['日期草稿','週報文字','社群媒體','預覽送審'];
 const $id=id=>document.getElementById(id);
 const setText=(node,text)=>{if(node)node.textContent=text;};
 let operating=false;
@@ -36,7 +36,7 @@ function setPage(step,id){
 function buildShell(){
   const root=document.createElement('section');
   root.id='weekly-wizard';
-  root.innerHTML='<header class="wizard-top"><div class="wizard-kicker">SUNDAY BULLETIN · 教會週報</div><h2>一步一步完成主日週報</h2><p>每頁完成一件事；草稿會先儲存，最後確認後才送審。</p><p id="wizard-date-context" class="wizard-date-context"></p><div class="wizard-progress" aria-label="週報製作進度"></div></header><section class="wizard-current-page"></section><footer class="wizard-footer"><button id="wizard-back" type="button" class="wizard-secondary">上一步</button><span id="wizard-feedback" role="status" aria-live="polite"></span><button id="wizard-next" type="button" class="wizard-primary">下一步</button></footer>';
+  root.innerHTML='<header class="wizard-top"><div class="wizard-title-row"><div><div class="wizard-kicker">教會週報</div><h2>主日週報</h2></div><p id="wizard-date-context" class="wizard-date-context"></p></div><nav class="wizard-progress" aria-label="週報製作進度"></nav></header><section class="wizard-current-page"></section><footer class="wizard-footer"><button id="wizard-back" type="button" class="wizard-secondary">上一步</button><span id="wizard-feedback" role="status" aria-live="polite"></span><button id="wizard-next" type="button" class="wizard-primary">下一步</button></footer>';
   root.querySelector('.wizard-progress').innerHTML=labels.map((label,index)=>'<button type="button" class="wizard-progress-step" data-progress="'+(index+1)+'"><i>'+(index+1)+'</i><b>'+label+'</b></button>').join('<span class="wizard-progress-line" aria-hidden="true"></span>');
   return root;
 }
@@ -236,7 +236,7 @@ async function boot(){
     form.querySelector('#editor-title').hidden=true;$id('draft-state').hidden=true;form.querySelector('.workflow-section-nav').hidden=true;
     $id('weekly-actions').hidden=true;form.prepend(root);$id('weekly-editor-panel').classList.add('wizard-active');
     progress(root);setText($id('wizard-date-context'),step===1?'':(currentRow(c).service_date||''));
-    root.querySelector('.wizard-kicker').textContent=(params.get('church')==='M+'?'M+大雅教會':'火樂教會')+' · SUNDAY BULLETIN';
+    root.querySelector('.wizard-kicker').textContent=(params.get('church')==='M+'?'M+大雅教會':'火樂教會')+' · 週報製作';
     $id('page-title').textContent=labels[step-1]+' · '+(params.get('church')==='M+'?'M+大雅教會':'火樂教會');$id('page-description').textContent='第 '+step+' 步，共 4 步。完成此頁後可儲存並前往下一頁。';
     if(step===1)makeStepOne(root,c);
     else if(step===2)makeStepTwo(root,c);

@@ -125,3 +125,6 @@
 .october-journey.garden-connected #festival-play-status{margin:0;font-size:12px;line-height:1.6}
 
 .october-journey.garden-connected #festival-play-action.festival-prerequisite{flex:0 1 auto;width:auto;max-width:65%;padding:10px 14px;min-height:44px;color:#724424;font-size:13px;font-weight:700;line-height:1.5}
+
+/* Reading entry labels use solid text on the warm garden canvas. */
+.october-journey.garden-connected :is(.eyebrow,.identity-preview-id,footer,.brand small,.hero-copy>p:not(.eyebrow),.tree-mood,.garden-growth-stages li,.tree-view-button:not(.active),.date-pill,.challenge-count,.empty-note,.privacy-note){color:#536247}

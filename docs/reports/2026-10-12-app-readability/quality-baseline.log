@@ -1,0 +1,94 @@
+START phase1/browser.mjs
+PASS verified Email/LINE accounts appear as one editable row
+PASS lost server response restores save button and preserves input
+PASS retry reuses request ID and succeeds without a second change
+PASS administrative coordinator scope remains selectable and exclusive
+PASS revocation removes the one combined card and both principals
+PASS daily devotional accepts access-token-only LINE session
+PASS devotional network failure keeps credentials and offers retry
+PASS devotional retry recovers in same page
+PASS service signup network failure avoids LINE redirect loop
+PUBLIC UI FAIL The expression evaluated to a falsy value:
+
+  assert((await page.$eval('#app',n=>n.textContent)).includes('尚未'))
+
+
+FAIL phase1/browser.mjs
+START phase2/service-signup-list.mjs
+PASS existing registrations show member name in list header and hide wizard
+PASS LINE nickname is never used in the registrant header
+PASS reload returns to completed list
+PASS Grace Footprints displays selected-year cumulative and prepared counts
+PASS finish opens next steps and homepage return guidance without writing
+PASS completion page returns directly to own editable list
+PASS declining add confirmation leaves list intact
+PASS confirmed add opens clean form with verified member name
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(await page.$('.service-journey'))
+
+    at file:///private/tmp/church-readability-20261012/original/tests/phase2/service-signup-list.mjs:108:75
+    at async test (file:///private/tmp/church-readability-20261012/original/tests/phase2/service-signup-list.mjs:97:30)
+    at async file:///private/tmp/church-readability-20261012/original/tests/phase2/service-signup-list.mjs:108:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: null,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.3
+
+FAIL phase2/service-signup-list.mjs
+START phase3/browser.mjs
+PASS iOS setup preserves loaded shared stylesheet and header rules
+PASS devotional master detail shows workflow and one selected article
+PASS devotional February month shows 28 dates with correct end date and no write
+PASS devotional unimported month has clear empty state
+PASS devotional month failure clears stale records and retries selected month
+PASS devotional search and status filter do not write
+PASS devotional editing uses labeled groups and protects dirty switch
+PASS devotional dirty month switch cancellation preserves editor and month
+PASS unsaved devotional cannot be reviewed over edited values
+PASS failed devotional save keeps input and permits retry
+PASS rapid devotional save sends once and restores selected content
+PASS devotional saved but refresh failed locks writes until readonly reload
+PASS devotional return requires note and reviewer stage limits actions
+PASS devotional initial load failure has retry
+PASS devotional view permission does not grant content edits or review
+PASS devotional final publication requires confirmation
+PASS weekly reviewer search and required return comment
+PASS late weekly read cannot replace new selection
+PASS weekly reviewer protects unsubmitted comments
+PASS publication confirmation traps background and restores focus on cancel
+PASS weekly failed decision retains comment and unlocks both decisions
+PASS weekly saved decision refresh failure blocks duplicates and reload only reads
+PASS weekly reviewer permission is required
+PASS service manager scopes and status filters guide work
+PASS failed service open toggle restores original display and model
+PASS failed service capacity restores original value and allows retry
+PASS invalid service capacity never writes
+PASS confirmed service refresh failure has safe reload without second confirmation
+PASS service decline confirmation cancellation never releases place
+PASS service change review uses labeled note dialog and requires return reason
+file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/ElementHandle.js:496
+                    throw new Error(`Error: failed to find element matching selector "${selector}"`);
+                          ^
+
+Error: Error: failed to find element matching selector ".smart-actions button:last-child"
+    at CdpElementHandle.$eval (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/ElementHandle.js:496:27)
+    at async CdpFrame.$eval (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:469:20)
+    at async CdpPage.$eval (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:462:20)
+    at async click (file:///private/tmp/church-readability-20261012/original/tests/phase3/browser.mjs:71:32)
+    at async file:///private/tmp/church-readability-20261012/original/tests/phase3/browser.mjs:112:256
+    at async test (file:///private/tmp/church-readability-20261012/original/tests/phase3/browser.mjs:74:30)
+    at async file:///private/tmp/church-readability-20261012/original/tests/phase3/browser.mjs:112:43
+
+Node.js v22.23.3
+
+FAIL phase3/browser.mjs

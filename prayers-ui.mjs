@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage4';
+import {db} from './admin-db.mjs?v=20261012-readable2';
 import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261010-care-orbs1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';
 

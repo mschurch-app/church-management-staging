@@ -33,3 +33,12 @@
 
 /* Church-specific branding on blessing cards */
 .love-card-brand{position:absolute;top:13px;left:50%;display:flex;align-items:center;justify-content:center;width:78%;transform:translateX(-50%)}.love-card-brand img{width:auto;height:25px;max-width:118px;object-fit:contain;filter:drop-shadow(0 2px 5px #0005)}.love-card-church-name{position:absolute!important;top:auto!important;left:12px;bottom:12px!important;max-width:45%;font-size:8px!important;font-weight:800;letter-spacing:.08em;text-align:left;text-shadow:0 1px 5px #000}.love-canvas[data-card-church="SHiNE"] .love-card-brand img{height:28px;max-width:128px}
+
+/* Keep preview selection, prayer labels and artwork copy readable in both churches. */
+.preview-workspace .form-chip.active,.preview-workspace .category-scroll button.active{background:#923423;color:#fff}
+.preview-workspace .calendar-tile{background:linear-gradient(145deg,#a83929,#853b28)}
+.preview-workspace .love-frame{background:#182821a6;color:#fff;border-radius:12px}
+.preview-workspace .love-frame em{opacity:1}
+.preview-workspace .inspiration>span{color:#65574f}
+.preview-workspace :is(.prayer-wall-head p,.prayer-name,.prayer-reactions,.prayer-reactions b,.prayer-reactions em,.prayer-legend,.prayer-compose span,.prayer-compose b){color:#51443b}
+.preview-workspace .prayer-wall-stats strong{color:#813222}

@@ -3,3 +3,7 @@
 @media(min-width:1200px){.stage-rail{display:grid;grid-template-columns:repeat(5,1fr);overflow:visible}.stage-card{min-width:0}.section-head>small{display:none}}
 @media(max-width:359px){.hero{padding-right:16px;padding-left:16px}.hero h1{font-size:46px}.tree-visual{min-height:380px}.countdown b{font-size:22px}.feature-grid{grid-template-columns:1fr}.feature-card{min-height:132px}.stage-card{flex-basis:230px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ambient i,.leaf-cluster,.tree-sparks circle,.tree-orbit{animation:none!important}.reveal{opacity:1;transform:none;transition:none}}
+
+.tree-reading-body .brand strong{color:#3d503c}.tree-reading-body .eyebrow{color:#80682f}.tree-reading-body .stage-number{color:#63705a}.tree-reading-body .feature-card small{color:#765b2c}.tree-reading-body .declaration-year,.tree-reading-body .declaration .home-message b{color:#fff3c9}
+
+.tree-reading-body :is(.preview-badge,.eyebrow){color:#6e5828}

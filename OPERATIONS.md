@@ -117,3 +117,11 @@ October date guards deployed as v8 ACTIVE on 2026-10-10 at 14:12 Taipei; source 
 `inventory.html` 在共用樣式之後載入限定的 `inventory.css`；CSS 與控制器版本為 `20261012-readable1`。未改共用主題、登入、權限、堂會篩選、資料庫、數量計算或借還契約。Worker 對 CSS／模組使用網路優先、HTML 使用網路讀取，本次不更改全域 Worker。
 
 檢查使用合成登入與物品 API，所有編輯失敗與重試只寫入測試記憶體，不接觸正式庫存。證據位於 `docs/reports/2026-10-12-inventory-readability/`，可重跑 `tests/inventory/browser.mjs`。Mac Chrome 的手機尺寸模擬與桌面檢查不等於 iPhone 17 或 Safari 實機驗收；兩者仍待驗收，不宣稱整體 99%。
+
+## 教會 OS 全頁可讀性（2026-10-12）
+
+共用主要按鈕規則改為尊重 `data-app-control` 用途；清單／設定分頁採白底深字，特殊場景保留自身樣式。深色公開內容區使用 `data-app-surface="dark"`。修正登入、首頁摘要／通知、教材、設定、新朋友、協作側欄、週報步驟、LINE 預覽、代禱牆、每日靈修及生命樹相關文字對比。沒有變更 Auth、權限、資料表或正式業務資料。
+
+CSS、控制器及直接／間接引用統一 `20261012-readable2`，Worker namespace 同步更新；更新仍由使用者明確操作後啟用，沒有強制接管。新增用途請沿用 `docs/design/component-contract.md`，檢查有資料、已選取與懸停狀態。
+
+68 個 HTML 入口、214 次手機／桌面狀態、8,949 次文字量測均完成合併補驗，0 項已驗文字對比失敗／橫向溢出；不是全業務通過率。物品21項、庭園32項及Worker21項回歸通過。完整證據、既有品質測試未通過項與 Safari／iPhone 實機限制見 `docs/reports/2026-10-12-app-readability/`；不宣稱整體99%達標。

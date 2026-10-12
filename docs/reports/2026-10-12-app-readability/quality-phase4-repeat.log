@@ -1,0 +1,89 @@
+START phase4/browser.mjs
+PASS admin-dashboard.html normal header and width
+PASS admin-dashboard.html transfer budget
+PASS admin-dashboard.html 200% text mode and no horizontal overflow
+PASS large favorite labels scale with text
+PASS admin-dashboard.html large text contrast
+PASS church-settings.html normal header and width
+PASS church-settings.html transfer budget
+PASS church-settings.html 200% text mode and no horizontal overflow
+PASS church-settings.html large text contrast
+PASS daily-devotional-admin.html normal header and width
+PASS daily-devotional-admin.html transfer budget
+PASS daily-devotional-admin.html 200% text mode and no horizontal overflow
+PASS daily-devotional-admin.html large text contrast
+PASS weekly-bulletin-review.html normal header and width
+PASS weekly-bulletin-review.html transfer budget
+PASS weekly-bulletin-review.html 200% text mode and no horizontal overflow
+PASS weekly-bulletin-review.html large text contrast
+PASS website-maintenance.html normal header and width
+PASS website-maintenance.html transfer budget
+PASS website-maintenance.html 200% text mode and no horizontal overflow
+PASS website-maintenance.html large text contrast
+PASS service-signup-admin.html normal header and width
+PASS service-signup-admin.html transfer budget
+PASS service-signup-admin.html 200% text mode and no horizontal overflow
+PASS service-signup-admin.html large text contrast
+PASS closed website preview defers iframe
+PASS open website preview loads expected source
+PASS only active notification can receive focus
+PASS ticker is not an automatic screen reader announcement
+PASS notification pauses while keyboard focus reads it
+PASS notification rotates after reading ends
+PASS notification pauses in background
+PASS notification pauses for reduced motion
+PASS notification pauses with history modal open
+PASS history modal locks background
+PASS keyboard skip link focuses main heading
+PASS offline status visible without reloading
+PASS offline refresh blocked
+PASS offline status contrast
+PASS online announces retry without resubmitting
+PASS editing marks draft
+PASS cancel refresh keeps draft and session
+PASS reset clears draft
+PASS refresh blocked during an active operation
+PASS new version offers explicit update
+PASS update action touch target
+PASS cancel update preserves draft and does not activate
+PASS accepted update activates exactly once
+PASS typing while update activates prevents reload
+PASS standalone pull indicator is installed
+PASS pull does not hijack input
+PASS pull does not hijack nested scroller
+PASS horizontal gesture does not refresh
+PASS pull shows feedback and cancel hides it
+PASS cancel pull refresh preserves draft
+PASS cancelled edge gesture never navigates
+PASS edge gesture protects unsaved form
+PASS edge gesture protects active operation
+PASS clean edge gesture can navigate back
+PASS explicit refresh reloads with session preserved
+PASS desktop first Tab reaches skip link
+PASS desktop keyboard skip reaches heading
+PASS dock leaves final content unobscured
+PASS real service worker installs and controls browser
+PASS uncached offline navigation keeps requested URL and shows recovery
+PASS offline retry stays recoverable
+PASS offline recovery contrast
+PASS offline auth return offers login without losing URL
+PASS retry opens original resource after network returns
+PASS real updated worker waits for explicit consent
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit update activates and reloads
+    at ok (file:///private/tmp/church-traffic-20261011/repo/tests/phase4/browser.mjs:74:37)
+    at file:///private/tmp/church-traffic-20261011/repo/tests/phase4/browser.mjs:165:2 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.3
+
+FAIL phase4/browser.mjs

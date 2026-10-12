@@ -1,3 +1,4 @@
+import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-hosanna1';
 import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
 import {festivalTestForDate} from './life-tree-festival-test-schedule.mjs?v=20261011-spring-joy1';
 import { loadScheduledChapters } from './bible-scripture-loader.mjs?v=20261010-deadline1';
@@ -155,9 +156,9 @@ function sceneMusic(){
  if(kind==='typhoon'||kind==='wind')return 'storm';
  if(kind==='worm'||kind==='trouble')return 'care';
  const slot=personal?festivalTestForDate(today()):null;
- return slot?`festivals/${slot.item.musicByDay?.[slot.day-1]||slot.item.id}`:'reading';
+ return slot?`festivals/${slot.item.id==='easter'&&slot.day===1?'palm-sunday':slot.item.musicByDay?.[slot.day-1]||slot.item.id}`:'reading';
 }
-function sceneMusicLabel(wanted){return wanted==='festivals/anniversary'?'生日快樂・週年慶配樂':wanted==='storm'?'風雨中的陪伴':wanted==='care'?'小樹照顧時間':wanted.startsWith('festivals/')?`${festivalTestForDate(today())?.item.name||'節慶'}花園配樂`:'安靜讀經時光';}
+function sceneMusicLabel(wanted){return wanted==='festivals/palm-sunday'?'和撒那・棕樹主日配樂':wanted==='festivals/anniversary'?'生日快樂・週年慶配樂':wanted==='storm'?'風雨中的陪伴':wanted==='care'?'小樹照顧時間':wanted.startsWith('festivals/')?`${festivalTestForDate(today())?.item.name||'節慶'}花園配樂`:'安靜讀經時光';}
 function syncSceneMusic(){const wanted=sceneMusic();$('#scene-music-label').textContent=state.sound?`♪ ${sceneMusicLabel(wanted)}`:'音樂與音效已關閉';if(state.sound&&backgroundAudio&&(!backgroundAudio.paused||musicStarting)&&backgroundAudio.dataset.track!==wanted)void startBackgroundMusic();}
 function musicPlaying(){return Boolean(state.sound&&backgroundAudio&&!backgroundAudio.paused&&!backgroundAudio.error&&backgroundAudio.readyState>=2);}
 function updateMusicButton(){
@@ -168,7 +169,7 @@ function updateMusicButton(){
 function createAudio(kind){
   const audio=document.createElement('audio');audio.preload='none';audio.hidden=true;audio.dataset.lifeTreeAudio=kind;audio.setAttribute('playsinline','');document.body.append(audio);return audio;
 }
-function audioURL(name){const version=name==='festivals/anniversary'?'20261012-birthday1':name==='festivals/spring'?'20261011-spring-joy1':name==='festivals/newyear'?'20261010-music-joy1':'20261010-audio1';return new URL(`./assets/audio/life-tree/${name}.wav?v=${version}`,import.meta.url).href;}
+function audioURL(name){if(name==='festivals/palm-sunday')return festivalMusicURL({id:'easter',day:1});const version=name==='festivals/anniversary'?'20261012-birthday1':name==='festivals/spring'?'20261011-spring-joy1':name==='festivals/newyear'?'20261010-music-joy1':'20261010-audio1';return new URL(`./assets/audio/life-tree/${name}.wav?v=${version}`,import.meta.url).href;}
 function ensureAudio(){
   if(!backgroundAudio){
     backgroundAudio=createAudio('music');backgroundAudio.src=audioURL(sceneMusic());backgroundAudio.dataset.track=sceneMusic();backgroundAudio.loop=true;backgroundAudio.volume=.65;

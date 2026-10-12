@@ -1,3 +1,4 @@
+import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-hosanna1';
 import {loadScheduledChapters} from '../../bible-scripture-loader.mjs';
 import {mountGardenScene} from './tree-game-scenes.mjs?v=20261012-scenes1';
 import {iconMarkup} from '../../app-icons.mjs';
@@ -81,9 +82,10 @@ export function themeAudio(mode,s,audio){
  if(!MEMBER_MODE)return;
  activeAudio=audio;activePrefs=s;activeMode=mode;
  const music=memberData?.theme?.music||'';
+ const source=music?festivalMusicURL(memberData.theme):'';
  audio.configure({music:s.music&&(!music||mode!=='garden'),effects:s.sound,musicVolume:s.musicVolume,effectsVolume:s.effectsVolume});
- if(music&&currentTheme!==music){track?.pause();track=new Audio(`../../assets/audio/life-tree/festivals/${music}.wav`);track.loop=true;track.preload='none';currentTheme=music;}
- if(track){track.volume=s.musicVolume*.6;if(s.music&&mode==='garden'&&!document.hidden)void track.play().catch(()=>{$('#audio-status').textContent='點一下開始播放節慶音樂。';});else track.pause();}
+ if(source&&currentTheme!==source){track?.pause();track=new Audio(source);track.loop=true;track.preload='none';currentTheme=source;}
+ if(track){track.volume=s.musicVolume*.6;if(music&&s.music&&mode==='garden'&&!document.hidden)void track.play().catch(()=>{$('#audio-status').textContent='點一下開始播放節慶音樂。';});else track.pause();}
 }
 export function stopThemeAudio(){track?.pause();}
 export function cancelReading(){readingGeneration++;observer?.disconnect();}

@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-12",
+  "change": "Use supplied Because He Lives instrumental on Easter Sunday only",
+  "test_scene_date": "2026-10-20",
+  "scene": "easter-8",
+  "source_title": "因祂活著 [ 純音樂 cover｜歌詞 ］Because He Lives",
+  "asset": "assets/audio/life-tree/festivals/because-he-lives-easter.mp3",
+  "asset_sha256": "081e5f03fffe358520e27801a8cc5a6264c183bd34204dddc98ffacd685b66cd",
+  "bytes": 2455248,
+  "estimated_duration_seconds": 150.543673,
+  "source_bytes_preserved": true,
+  "scope": [
+    "member garden",
+    "October coworker game",
+    "standalone demo",
+    "legacy October devotional",
+    "festival preview"
+  ],
+  "backend_changed": false,
+  "reading_schedule_changed": false,
+  "functional_tests_run": false,
+  "acceptance": {
+    "iphone17_line_playback": "pending",
+    "mac_safari_playback": "pending",
+    "mac_chrome_playback": "pending",
+    "mute_background_battle_return": "pending"
+  },
+  "quality_target_99_percent": "not_claimed",
+  "checks": {
+    "audio_metadata": "MP3, 44.1kHz stereo, approximately 128kbps",
+    "source_identity": "byte-for-byte copy",
+    "modified_javascript_syntax": "passed",
+    "generated_preview_syntax": "passed",
+    "git_diff_check": "passed"
+  }
+}

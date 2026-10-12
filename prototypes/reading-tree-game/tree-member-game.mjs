@@ -1,5 +1,5 @@
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
-import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-goodfriday1';
+import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-easter1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-member1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
@@ -113,7 +113,7 @@ function saveMessage(message) { announce(message); }
 function sound(kind) { audio.effect(kind); }
 function setAudioMode(mode) {
   themeAudio(mode,state,audio); audio.setMode(mode);
-  $('#audio-mode').textContent = { garden: memberData?.theme?.id==='easter'&&Number(memberData.theme.day)===1?'和撒那 · 棕樹主日':memberData?.theme?.id==='easter'&&Number(memberData.theme.day)===6?'微亞多勒羅沙 · 受難日':'花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
+  $('#audio-mode').textContent = { garden: memberData?.theme?.id==='easter'&&Number(memberData.theme.day)===1?'和撒那 · 棕樹主日':memberData?.theme?.id==='easter'&&Number(memberData.theme.day)===6?'微亞多勒羅沙 · 受難日':memberData?.theme?.id==='easter'&&Number(memberData.theme.day)===8?'因祂活著 · 復活主日':'花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
   document.body.dataset.audioMode = mode;
 }
 function syncAudioScene() {

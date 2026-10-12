@@ -73,6 +73,41 @@
       transform: translateY(-1px);
     }
 
+    /* Option state must remain visible above shared primary-action styling.
+       Scope to this form and use the actual accessible selection state. */
+    #formSection button.pill-btn[aria-pressed] {
+      min-height: 44px;
+      background: var(--app-surface, #fff) !important;
+      color: var(--app-ink, #302823) !important;
+      border-color: var(--app-border, #dfd5cd) !important;
+      box-shadow: none !important;
+      transform: none;
+    }
+    #formSection button.pill-btn[aria-pressed]::before {
+      content: '';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 16px;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid currentColor;
+      border-radius: 50%;
+      font-size: 11px;
+      line-height: 1;
+    }
+    #formSection button.pill-btn[aria-pressed="true"] {
+      background: linear-gradient(135deg, var(--app-accent, #a83929), var(--app-accent-end, #b7412e)) !important;
+      color: var(--app-on-accent, #fff) !important;
+      border-color: var(--app-accent, #a83929) !important;
+    }
+    #formSection button.pill-btn[aria-pressed="true"]::before { content: '\2713'; }
+    #formSection button.pill-btn:focus-visible {
+      outline: 3px solid var(--app-focus, #1669c9);
+      outline-offset: 3px;
+    }
+    #formSection button.pill-btn:active:not(:disabled) { transform: scale(0.96); }
+
     .btn-submit {
       background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
       color: #ffffff;
@@ -205,7 +240,8 @@
           <!-- 8. 今天想感受的 -->
           <div class="space-y-2">
             <label class="font-black text-stone-700 block text-xs">8. 今天來到這裡，最想感受的是什麼？(可多選)</label>
-            <div class="flex flex-wrap gap-2" id="groupFeelings">
+            <p id="feelingsSelectionHint" class="text-xs text-stone-500">可多選，再點一次即可取消；有勾號表示已選取。</p>
+            <div class="flex flex-wrap gap-2" id="groupFeelings" aria-describedby="feelingsSelectionHint">
               <div class="pill-btn active">🌿 讓心靈放鬆充電</div>
               <div class="pill-btn active">🎶 聽聽溫暖的音樂</div>
               <div class="pill-btn">🤝 認識聊得來的朋友</div>
@@ -217,7 +253,8 @@
           <!-- 9. 平常生活休閒興趣 -->
           <div class="space-y-2">
             <label class="font-black text-stone-700 block text-xs">9. 平常的生活興趣與休閒？(可多選)</label>
-            <div class="flex flex-wrap gap-2" id="groupInterests">
+            <p id="interestsSelectionHint" class="text-xs text-stone-500">可多選，再點一次即可取消；有勾號表示已選取。</p>
+            <div class="flex flex-wrap gap-2" id="groupInterests" aria-describedby="interestsSelectionHint">
               <div class="pill-btn">☕ 咖啡品嚐與手作</div>
               <div class="pill-btn active">🎸 音樂欣賞與彈唱</div>
               <div class="pill-btn">💼 職場交流與成長</div>

@@ -101,7 +101,7 @@ Deno.serve(async request=>{
     if(!lookup.data)return reply(origin,{ok:false,error:'join_required'},404);
     const participant=lookup.data;
     if(action==='garden_game'){
-      try{return reply(origin,await octoberGarden(db,participant,body,today));}
+      try{return reply(origin,await octoberGarden(db,participant,body,today,match[1]));}
       catch(e){const message=e instanceof Error?e.message:'';const known=['invalid_action','invalid_request','test_closed','date_not_allowed','read_first','invalid_note','wrong_gear','stale_event','item_unavailable','already_full','rest_needed','mp_needed','join_required','conflict','invite_invalid','team_already_joined','care_limit','care_forbidden','invalid_message','mission_unavailable','mission_wrong','mission_answer_first'];return reply(origin,{ok:false,error:known.includes(message)?message:'unavailable'},message==='conflict'?409:known.includes(message)?400:503);}
     }
     if(action==='me'){

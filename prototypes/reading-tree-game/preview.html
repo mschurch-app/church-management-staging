@@ -145,7 +145,7 @@
 </style>
   <link rel="preload" href="assets/garden-dawn.png" as="image">
   <link rel="preload" href="assets/garden-atlas.png" as="image">
-  <link rel="preload" href="assets/garden-avatars.png" as="image">
+  <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
 </head>
 <body class="garden-game">
@@ -511,9 +511,9 @@ let today = taipeiDay();
 const STORAGE = 'mplus-tree-game-demo-v1';
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const ATLAS = 'assets/garden-atlas.png';
-const AVATAR_ATLAS = 'assets/garden-avatars.png';
+const AVATAR_ATLAS = 'assets/garden-avatars-v2.png';
 const AVATARS = ['male', 'female'].flatMap((gender, row) => Array.from({ length: 3 }, (_, column) => ({
-  id: `${gender}-${column + 1}`, gender, name: `${gender === 'male' ? '男生' : '女生'}外型 ${column + 1}`,
+  id: `${gender}-${column + 1}`, gender, name: `${gender === 'male' ? '男生' : '女生'}・${['森林綠', '晴空藍', '暖莓紅'][column]}`,
   rect: [column * 408, row * 642.5, 408, 642.5],
 })));
 function avatarSprite(id) {

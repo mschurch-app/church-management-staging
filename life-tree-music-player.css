@@ -1,0 +1,13 @@
+/* Shared feedback for streamed garden music; never blocks game controls. */
+.scene-music-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;margin:12px 0;border:1px solid #d7ddc9;border-radius:16px;background:#f3f5e9;color:#36523e;font:500 13px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.scene-music-notice[hidden],.scene-music-notice button[hidden],.scene-music-detail[hidden]{display:none!important}
+.scene-music-notice>span{display:flex;align-items:center;gap:9px}
+.scene-music-notice button{flex-shrink:0;min-height:44px;padding:8px 13px;border:1px solid #98aa8d;border-radius:12px;color:#254b36;background:#fffdf4;font:inherit;cursor:pointer}
+.scene-music-notice button:focus-visible{outline:3px solid #9b793c;outline-offset:3px}
+.scene-music-detail{color:#36523e;font:500 13px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.scene-music-notice[data-state=loading]>span:before,.scene-music-detail[data-state=loading]:before{content:"";display:inline-block;flex:0 0 16px;width:16px;height:16px;box-sizing:border-box;border:2px solid #b7c4ad;border-top-color:#365f42;border-radius:50%;animation:scene-music-spin .85s linear infinite}
+.scene-music-detail[data-state=loading]:before{margin-right:8px;vertical-align:-3px}
+#sound[data-music-state=loading],#festival-sound[data-music-state=loading],#sound-toggle[aria-busy=true]{position:relative}
+#sound[data-music-state=loading]:after,#festival-sound[data-music-state=loading]:after,#sound-toggle[aria-busy=true]:after{content:"";position:absolute;width:17px;height:17px;right:-2px;top:-2px;box-sizing:border-box;border:3px solid #dce4d1;border-top-color:#365f42;border-radius:50%;background:#fffdf4;animation:scene-music-spin .85s linear infinite}
+@keyframes scene-music-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.scene-music-notice[data-state=loading]>span:before,.scene-music-detail[data-state=loading]:before,#sound[data-music-state=loading]:after,#festival-sound[data-music-state=loading]:after,#sound-toggle[aria-busy=true]:after{animation:none}}

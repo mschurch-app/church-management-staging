@@ -1,4 +1,4 @@
-import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-easter1';
+import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-musicload1';
 import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
 import {festivalTestForDate} from './life-tree-festival-test-schedule.mjs?v=20261011-spring-joy1';
 import { loadScheduledChapters } from './bible-scripture-loader.mjs?v=20261010-deadline1';
@@ -164,7 +164,7 @@ function musicPlaying(){return Boolean(state.sound&&backgroundAudio&&!background
 function updateMusicButton(){
   const button=$('#sound-toggle'),playing=musicPlaying();
   const label=musicStarting?'正在開啟聲音':effectsFailed?'重新啟用音效':playing?'關閉音樂與音效':state.sound?'聲音已開啟，點一下開始播放':'開啟音樂與音效';
-  button.setAttribute('aria-label',label);button.title=label;button.setAttribute('aria-pressed',String(playing));button.dataset.enabled=String(state.sound);button.dataset.loading=String(musicStarting);button.disabled=musicStarting;const wanted=sceneMusic();$('#scene-music-label').textContent=state.sound?`♪ ${sceneMusicLabel(wanted)}`:'音樂與音效已關閉';
+  button.setAttribute('aria-label',label);button.title=label;button.setAttribute('aria-pressed',String(playing));button.dataset.enabled=String(state.sound);button.dataset.loading=String(musicStarting);button.setAttribute('aria-busy',String(musicStarting));button.disabled=musicStarting;const wanted=sceneMusic();$('#scene-music-label').textContent=state.sound?`♪ ${sceneMusicLabel(wanted)}`:'音樂與音效已關閉';
 }
 function createAudio(kind){
   const audio=document.createElement('audio');audio.preload='none';audio.hidden=true;audio.dataset.lifeTreeAudio=kind;audio.setAttribute('playsinline','');document.body.append(audio);return audio;

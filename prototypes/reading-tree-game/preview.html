@@ -278,7 +278,10 @@
  .garden-game .quest-dialog .quest-copy{grid-area:copy;min-height:0}
 }
 </style><style>/* Scoped to garden decoration controls; preserve shared game colors and buttons. */
-.garden-game .garden-workspace{min-width:0}
+/* The member column uses align-items:start. Explicit width prevents the new
+   wrapper shrinking to its toolbar content, especially with inline-size containment. */
+.garden-game .game-layout>.garden-workspace{width:100%;max-width:100%;min-width:0;align-self:stretch}
+.garden-game .garden-workspace>.garden-scene{width:100%;max-width:100%}
 .garden-game .garden-decoration>.placed-decoration{display:block;pointer-events:auto;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;width:48px;height:55px;min-width:44px;min-height:44px;margin:0;padding:3px;border:0;border-radius:14px;background:transparent;cursor:grab;transition:box-shadow .18s,background .18s}
 .garden-game .garden-decoration>.placed-decoration>span{display:block;width:100%;height:100%;pointer-events:none}
 .garden-game .garden-decoration>.placed-decoration :is(img,svg){width:100%;height:100%;object-fit:contain;pointer-events:none}

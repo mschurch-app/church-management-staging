@@ -14,7 +14,7 @@ if (legacy) {
   previous.hidden = true;
   previous.before(status);
   try {
-    const response = await fetch(new URL('member.html?v=20261012-drag1', game), {
+    const response = await fetch(new URL('member.html?v=20261012-width1', game), {
       cache: 'no-store', signal: AbortSignal.timeout(15000),
     });
     if (!response.ok) throw Error('game_unavailable');

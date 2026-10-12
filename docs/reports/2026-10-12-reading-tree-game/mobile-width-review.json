@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-12",
+  "change": "Restore full-width garden workspace after direct-arrangement wrapper regression",
+  "evidence": "User supplied iPhone LINE screenshot showing a narrow garden with unused right-side space.",
+  "cause": "The new workspace flex item inherited cross-axis start alignment. Its automatic width could shrink to toolbar content while the contained scene used inline-size containment and percentage width.",
+  "fix": "Give the workspace width:100%, max-width:100%, min-width:0 and align-self:stretch; explicitly size its scene to the workspace.",
+  "scope": [
+    "member garden",
+    "October Proverbs coworker entry",
+    "standalone preview"
+  ],
+  "resource_version": "20261012-width1",
+  "checks": {
+    "entry_javascript_syntax": "passed",
+    "git_diff_check": "passed"
+  },
+  "backend_changed": false,
+  "functional_tests_run": false,
+  "acceptance": {
+    "iphone_line_before": "failed in user screenshot",
+    "iphone17_line_after": "pending",
+    "mac_safari": "pending",
+    "mac_chrome": "pending"
+  },
+  "quality_target_99_percent": "not_claimed"
+}

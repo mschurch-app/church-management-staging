@@ -15,3 +15,6 @@
 .devotional-app .journal-history article p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8}
 .devotional-app .journal-retry{display:block;min-height:44px;margin-top:12px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit}
 .devotional-app .october-journal :is(button,summary,textarea):focus-visible{outline:3px solid #b14d28;outline-offset:3px}
+
+/* Preserve readable small text on the cream canvas and dark reading header. */
+:root{--muted:#536247}.devotional-app .hero{background:linear-gradient(140deg,#174f43,#215f4d)}.devotional-app .hero .reference,.devotional-app .reading-grid div{background:#214e42}.devotional-app .reading-grid small{opacity:1}

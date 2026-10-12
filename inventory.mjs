@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage4';
+import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,chooseChurch,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 import {iconMarkup} from './app-icons.mjs?v=20261009-stage2';
 

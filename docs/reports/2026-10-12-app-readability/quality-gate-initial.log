@@ -1,0 +1,256 @@
+SYNTAX 132 PASS
+START phase4/worker.mjs
+PASS phase4/worker.mjs
+START app-catalog.mjs
+PASS app-catalog.mjs
+START phase2/definitions.mjs
+PASS phase2/definitions.mjs
+START phase1/database.mjs
+PASS phase1/database.mjs
+START phase1/line-provider.mjs
+PASS phase1/line-provider.mjs
+START phase2/service-signup-journey-db.mjs
+PASS phase2/service-signup-journey-db.mjs
+START phase1/browser.mjs
+PASS verified Email/LINE accounts appear as one editable row
+PASS lost server response restores save button and preserves input
+PASS retry reuses request ID and succeeds without a second change
+PASS administrative coordinator scope remains selectable and exclusive
+PASS revocation removes the one combined card and both principals
+PASS daily devotional accepts access-token-only LINE session
+PASS devotional network failure keeps credentials and offers retry
+PASS devotional retry recovers in same page
+PASS service signup network failure avoids LINE redirect loop
+PUBLIC UI FAIL The expression evaluated to a falsy value:
+
+  assert((await page.$eval('#app',n=>n.textContent)).includes('尚未'))
+
+
+FAIL phase1/browser.mjs
+START phase1/handoff.mjs
+PASS phase1/handoff.mjs
+START phase1/email-login.mjs
+PASS phase1/email-login.mjs
+START phase2/browser.mjs
+PASS phase2/browser.mjs
+START phase2/service-signup-list.mjs
+PASS existing registrations show member name in list header and hide wizard
+PASS LINE nickname is never used in the registrant header
+PASS reload returns to completed list
+PASS Grace Footprints displays selected-year cumulative and prepared counts
+PASS finish opens next steps and homepage return guidance without writing
+PASS completion page returns directly to own editable list
+PASS declining add confirmation leaves list intact
+PASS confirmed add opens clean form with verified member name
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(await page.$('.service-journey'))
+
+    at file:///private/tmp/church-traffic-20261011/repo/tests/phase2/service-signup-list.mjs:108:75
+    at async test (file:///private/tmp/church-traffic-20261011/repo/tests/phase2/service-signup-list.mjs:97:30)
+    at async file:///private/tmp/church-traffic-20261011/repo/tests/phase2/service-signup-list.mjs:108:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: null,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.3
+
+FAIL phase2/service-signup-list.mjs
+START phase3/browser.mjs
+PASS iOS setup preserves loaded shared stylesheet and header rules
+PASS devotional master detail shows workflow and one selected article
+PASS devotional February month shows 28 dates with correct end date and no write
+PASS devotional unimported month has clear empty state
+PASS devotional month failure clears stale records and retries selected month
+PASS devotional search and status filter do not write
+PASS devotional editing uses labeled groups and protects dirty switch
+PASS devotional dirty month switch cancellation preserves editor and month
+PASS unsaved devotional cannot be reviewed over edited values
+PASS failed devotional save keeps input and permits retry
+PASS rapid devotional save sends once and restores selected content
+PASS devotional saved but refresh failed locks writes until readonly reload
+PASS devotional return requires note and reviewer stage limits actions
+PASS devotional initial load failure has retry
+PASS devotional view permission does not grant content edits or review
+PASS devotional final publication requires confirmation
+PASS weekly reviewer search and required return comment
+PASS late weekly read cannot replace new selection
+PASS weekly reviewer protects unsubmitted comments
+PASS publication confirmation traps background and restores focus on cancel
+PASS weekly failed decision retains comment and unlocks both decisions
+PASS weekly saved decision refresh failure blocks duplicates and reload only reads
+PASS weekly reviewer permission is required
+PASS service manager scopes and status filters guide work
+PASS failed service open toggle restores original display and model
+PASS failed service capacity restores original value and allows retry
+PASS invalid service capacity never writes
+PASS confirmed service refresh failure has safe reload without second confirmation
+PASS service decline confirmation cancellation never releases place
+PASS service change review uses labeled note dialog and requires return reason
+file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/ElementHandle.js:496
+                    throw new Error(`Error: failed to find element matching selector "${selector}"`);
+                          ^
+
+Error: Error: failed to find element matching selector ".smart-actions button:last-child"
+    at CdpElementHandle.$eval (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/ElementHandle.js:496:27)
+    at async CdpFrame.$eval (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:469:20)
+    at async CdpPage.$eval (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:462:20)
+    at async click (file:///private/tmp/church-traffic-20261011/repo/tests/phase3/browser.mjs:71:32)
+    at async file:///private/tmp/church-traffic-20261011/repo/tests/phase3/browser.mjs:112:256
+    at async test (file:///private/tmp/church-traffic-20261011/repo/tests/phase3/browser.mjs:74:30)
+    at async file:///private/tmp/church-traffic-20261011/repo/tests/phase3/browser.mjs:112:43
+
+Node.js v22.23.3
+
+FAIL phase3/browser.mjs
+START phase4/browser.mjs
+PASS admin-dashboard.html normal header and width
+PASS admin-dashboard.html transfer budget
+PASS admin-dashboard.html 200% text mode and no horizontal overflow
+PASS large favorite labels scale with text
+PASS admin-dashboard.html large text contrast
+PASS church-settings.html normal header and width
+PASS church-settings.html transfer budget
+PASS church-settings.html 200% text mode and no horizontal overflow
+PASS church-settings.html large text contrast
+PASS daily-devotional-admin.html normal header and width
+PASS daily-devotional-admin.html transfer budget
+PASS daily-devotional-admin.html 200% text mode and no horizontal overflow
+PASS daily-devotional-admin.html large text contrast
+PASS weekly-bulletin-review.html normal header and width
+PASS weekly-bulletin-review.html transfer budget
+PASS weekly-bulletin-review.html 200% text mode and no horizontal overflow
+PASS weekly-bulletin-review.html large text contrast
+PASS website-maintenance.html normal header and width
+PASS website-maintenance.html transfer budget
+PASS website-maintenance.html 200% text mode and no horizontal overflow
+PASS website-maintenance.html large text contrast
+PASS service-signup-admin.html normal header and width
+PASS service-signup-admin.html transfer budget
+PASS service-signup-admin.html 200% text mode and no horizontal overflow
+PASS service-signup-admin.html large text contrast
+PASS closed website preview defers iframe
+PASS open website preview loads expected source
+PASS only active notification can receive focus
+PASS ticker is not an automatic screen reader announcement
+PASS notification pauses while keyboard focus reads it
+PASS notification rotates after reading ends
+PASS notification pauses in background
+PASS notification pauses for reduced motion
+PASS notification pauses with history modal open
+PASS history modal locks background
+PASS keyboard skip link focuses main heading
+PASS offline status visible without reloading
+PASS offline refresh blocked
+PASS offline status contrast
+PASS online announces retry without resubmitting
+PASS editing marks draft
+PASS cancel refresh keeps draft and session
+PASS reset clears draft
+PASS refresh blocked during an active operation
+PASS new version offers explicit update
+PASS update action touch target
+PASS cancel update preserves draft and does not activate
+PASS accepted update activates exactly once
+PASS typing while update activates prevents reload
+PASS standalone pull indicator is installed
+PASS pull does not hijack input
+PASS pull does not hijack nested scroller
+PASS horizontal gesture does not refresh
+PASS pull shows feedback and cancel hides it
+PASS cancel pull refresh preserves draft
+PASS cancelled edge gesture never navigates
+PASS edge gesture protects unsaved form
+PASS edge gesture protects active operation
+PASS clean edge gesture can navigate back
+PASS explicit refresh reloads with session preserved
+PASS desktop first Tab reaches skip link
+PASS desktop keyboard skip reaches heading
+PASS dock leaves final content unobscured
+PASS real service worker installs and controls browser
+PASS uncached offline navigation keeps requested URL and shows recovery
+PASS offline retry stays recoverable
+PASS offline recovery contrast
+PASS offline auth return offers login without losing URL
+PASS retry opens original resource after network returns
+PASS real updated worker waits for explicit consent
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit update activates and reloads
+    at ok (file:///private/tmp/church-traffic-20261011/repo/tests/phase4/browser.mjs:74:37)
+    at file:///private/tmp/church-traffic-20261011/repo/tests/phase4/browser.mjs:165:2 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.3
+
+FAIL phase4/browser.mjs
+START phase1/regression.mjs
+DASHBOARD_LOADED  [
+  '/auth/v1/user',
+  '/auth/v1/user',
+  '/rest/v1/rpc/list_my_app_notifications',
+  '/rest/v1/rpc/list_my_app_notifications',
+  '/rest/v1/rpc/get_my_church_access',
+  '/rest/v1/rpc/get_my_church_access',
+  '/rest/v1/rpc/get_my_admin_profile',
+  '/rest/v1/rpc/get_my_admin_profile',
+  '/rest/v1/rpc/get_my_feature_permissions',
+  '/rest/v1/rpc/get_my_feature_permissions',
+  '/rest/v1/church_customizations',
+  '/rest/v1/church_customizations',
+  '/rest/v1/church_customizations',
+  '/rest/v1/church_customizations',
+  '/rest/v1/rpc/get_my_home_preferences',
+  '/rest/v1/rpc/get_my_home_preferences',
+  '/rest/v1/rpc/get_my_feature_permissions',
+  '/rest/v1/rpc/get_my_feature_permissions',
+  '/rest/v1/rpc/get_my_system_monitor_access',
+  '/rest/v1/rpc/get_my_system_monitor_access',
+  '/rest/v1/rpc/get_my_app_capabilities',
+  '/rest/v1/rpc/get_my_app_capabilities',
+  '/rest/v1/members',
+  '/rest/v1/members',
+  '/rest/v1/groups',
+  '/rest/v1/groups',
+  '/rest/v1/prayers',
+  '/rest/v1/prayers'
+]
+file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/common/QueryHandler.js:211
+                const waitForSelectorError = new (error instanceof TimeoutError ? TimeoutError : Error)(`Waiting for selector \`${selector}\` failed`);
+                                             ^
+
+TimeoutError: Waiting for selector `.notification-history-dialog[open]` failed
+    at CSSQueryHandler.waitFor (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/common/QueryHandler.js:211:46)
+    at async CdpFrame.waitForSelector (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:546:21)
+    at async CdpPage.waitForSelector (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:1477:20)
+    at async file:///private/tmp/church-traffic-20261011/repo/tests/phase1/regression.mjs:56:163 {
+  cause: TimeoutError: Waiting failed: 30000ms exceeded
+      at new WaitTask (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/common/WaitTask.js:46:34)
+      at IsolatedWorld.waitForFunction (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Realm.js:49:26)
+      at CSSQueryHandler.waitFor (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/common/QueryHandler.js:176:95)
+      at async CdpFrame.waitForSelector (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:546:21)
+      at async CdpPage.waitForSelector (file:///private/tmp/church-app-audit/tests/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:1477:20)
+      at async file:///private/tmp/church-traffic-20261011/repo/tests/phase1/regression.mjs:56:163
+}
+
+Node.js v22.23.3
+
+FAIL phase1/regression.mjs
+START phase2/contrast.mjs
+PASS phase2/contrast.mjs

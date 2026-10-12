@@ -1,0 +1,15 @@
+{
+  "entries": 68,
+  "views": 206,
+  "textChecks": 8669,
+  "failedViews": 0,
+  "overflowViews": 0,
+  "standardHeaderViews": 94,
+  "headerFailures": 0,
+  "viewports": [
+    390,
+    1440
+  ],
+  "environment": "Mac Chrome headless, isolated API and LINE fixtures; not Safari/iPhone hardware",
+  "baseline": "72f3f10f02a0f8959aec780a1c849194caf1e2cd"
+}

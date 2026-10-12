@@ -2,7 +2,7 @@ import {programAssignment} from './weekly-program-autofill.mjs?v=20261012-schedu
 import {initWeeklyYoutube} from './weekly-youtube.mjs?v=20261010-youtube1';
 import {initWeeklyCanva} from './weekly-canva.mjs?v=20261011-options1';
 import {createMediaProgress} from './weekly-media-progress.mjs?v=20261010-media-progress1';
-import {db} from './admin-db.mjs?v=20261009-stage4';
+import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 
 import {workflowSummary,apiResult,uncertainWrite,lockControls,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';

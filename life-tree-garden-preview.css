@@ -10,3 +10,11 @@
 @media(max-width:360px){.garden-preview .garden-header{padding-left:12px;padding-right:12px}.garden-preview .garden-intro h1{font-size:21px}.garden-preview .garden-brand small{display:none}.garden-preview .header-tools{gap:3px}.garden-preview .preview-label{padding:2px 5px}.garden-preview .garden-world{padding:7px}.garden-preview .world-heading{font-size:9px}.garden-preview .world-heading h2{font-size:12px}.garden-preview .world-bottom{flex-wrap:wrap;gap:4px}.garden-preview .scene-caption{font-size:9px}.garden-preview .primary-action{padding:13px}.garden-preview .journey-track{font-size:10px}.garden-preview .mini-garden{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.garden-preview *,.garden-preview *:before,.garden-preview *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.garden-preview .watering-can{opacity:1}.garden-preview .flower-reveal{opacity:1}}
 .garden-preview .broom-action{transform-origin:12px 20px}
+
+/* Small labels remain readable on cream and green surfaces. */
+.garden-preview{--garden-muted:#536247}
+.garden-preview :is(.eyebrow,.date-tag,.journey-track,.growth-milestones,.garden-footer){color:#536247}
+.garden-preview .growth-card{color:#3d5638}
+.garden-preview .brand-mark>span{color:#fff2cf}
+
+.garden-preview .growth-card :is(h2,span){color:#3d5638}

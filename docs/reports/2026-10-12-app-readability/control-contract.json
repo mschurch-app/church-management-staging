@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "width": 390,
+      "state": "default",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "state": "hover",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "state": "selected-hover",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "state": "selected",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "state": "default",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "state": "hover",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "state": "selected-hover",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "state": "selected",
+      "passed": true
+    }
+  ]
+}

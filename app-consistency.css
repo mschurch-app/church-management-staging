@@ -8,8 +8,8 @@ html body :is(.muted,.footnote,.settings-link-copy>span,.reviewer-state,.module-
 html body :is(h1,h2,h3,h4,legend,label,.home-module-group h4){color:var(--app-ink)}
 html body :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select){background-color:#fff;color:var(--app-ink);border-color:var(--app-border);font-size:max(16px,1em)}
 html body :is(input,textarea)::placeholder{color:#76675e;opacity:1}
-html body button:not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):not(.home-library-item):not(.quick-link-remove):not(.notification-bell):not(.notification-ticker):not(.tab-button):not(.content-tab):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item):not(.scope-card){background:linear-gradient(135deg,var(--app-accent),var(--app-accent-end))!important;color:#fff!important}
-html body button:not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-bell):not(.notification-ticker):not(.tab-button):not(.content-tab):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item):not(.scope-card) :is(small,strong,span){color:inherit!important}
+html body button:not([data-app-control]):not(.secondary):not(.danger):not(.ghost-button):not(.home-icon-remove):not(.home-library-item):not(.quick-link-remove):not(.notification-bell):not(.notification-ticker):not(.tab-button):not(.content-tab):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item):not(.scope-card){background:linear-gradient(135deg,var(--app-accent),var(--app-accent-end))!important;color:#fff!important}
+html body button:not([data-app-control]):not(.secondary):not(.danger):not(.home-library-item):not(.home-icon-remove):not(.quick-link-remove):not(.notification-bell):not(.notification-ticker):not(.tab-button):not(.content-tab):not(.notification-history-item):not(.notification-ticker-bell-wrap):not(.notification-ticker-item):not(.scope-card) :is(small,strong,span){color:inherit!important}
 html body :is(button.secondary,a.secondary,.ghost-button){background:#fff!important;color:#923423!important;border:1px solid #d9beb3!important}
 html body :is(button.danger,a.danger){background:#fff1ee!important;color:#9a271c!important;border-color:#d6a59c!important}
 html body :is(button,a.secondary,.editor-actions a){min-height:44px}
@@ -229,3 +229,16 @@ html.app-large-text body .dashboard-page :is(.summary-card>span,.summary-card-co
 html.app-large-text body :is(.notification-detail-body,.notification-history-body){font-size:.85rem!important}
 
 html.app-large-text body .dashboard-page :is(.primary-hub .app-hub-card .function-open strong,.dashboard-card .function-open h3){font-size:.85rem!important;line-height:1.4}
+
+/* Navigation/list controls opt out of primary-action colors explicitly.
+   Keep selected and hover surfaces paired with readable text. */
+html body button[data-app-control="surface"]{background:var(--app-surface)!important;color:var(--app-ink)!important;border:1px solid var(--app-border)!important;box-shadow:none!important}
+html body button[data-app-control="surface"]:hover{background:var(--app-surface-muted)!important;color:var(--app-ink)!important;transform:none}
+html body button[data-app-control="surface"]:is(.active,.current,[aria-selected="true"],[aria-pressed="true"]){background:#fff0e6!important;color:#813222!important;border-color:#b5684f!important}
+html body button[data-app-control="surface"]:is(.active,.current,[aria-selected="true"],[aria-pressed="true"]):hover{background:#f9e4d7!important}
+html body button[data-app-control="surface"] :is(strong,span,small){color:inherit}
+
+html body .custom-panel :is(.custom-heading p,.integrated-divider p){color:var(--app-secondary)!important}
+html body .dashboard-page .notification-ticker-item time{color:var(--app-secondary)!important}
+
+html body .dashboard-page .summary-card-copy small{color:var(--app-secondary)!important}

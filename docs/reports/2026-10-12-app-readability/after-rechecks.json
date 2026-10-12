@@ -1,0 +1,1642 @@
+[
+  {
+    "file": "customization-settings.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 130,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(255, 240, 230)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 390,
+    "state": "tab-form",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 81,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(249, 228, 215)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 390,
+    "state": "tab-catalogs",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(249, 228, 215)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增服事恩賜",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 390,
+    "state": "tab-features",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 136,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(249, 228, 215)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "inventory.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/inventory.html?church=M%2B",
+    "errors": [],
+    "checked": 41,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "M+ 大雅教會清冊已載入。",
+    "controls": [
+      {
+        "class": "secondary current",
+        "text": "M+ 大雅教會",
+        "background": "rgb(168, 57, 41)",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "課輔班",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(101, 87, 79)"
+      },
+      {
+        "class": "",
+        "text": "＋ 登記物品",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "＋ 建立位置",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "列印清冊",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "inventory-card secondary",
+        "text": "尚無照片測試長名稱物品其他可用 4 / 4 根這是物品說明位置 · 一樓儲藏室",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "編輯",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      }
+    ]
+  },
+  {
+    "file": "inventory.html",
+    "width": 390,
+    "state": "item-detail",
+    "url": "http://127.0.0.1:61047/inventory.html?church=M%2B",
+    "errors": [],
+    "checked": 69,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "M+ 大雅教會清冊已載入。",
+    "controls": [
+      {
+        "class": "secondary current",
+        "text": "M+ 大雅教會",
+        "background": "rgb(168, 57, 41)",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "課輔班",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(101, 87, 79)"
+      },
+      {
+        "class": "",
+        "text": "＋ 登記物品",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "＋ 建立位置",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "列印清冊",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "inventory-card secondary",
+        "text": "尚無照片測試長名稱物品其他可用 4 / 4 根這是物品說明位置 · 一樓儲藏室",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "編輯",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "dialog-x",
+        "text": "×",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "編輯資料",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "修正數量",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "借出",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "列印",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      }
+    ]
+  },
+  {
+    "file": "login-recovery.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/admin-login-v2.html?recovered=1791783533160",
+    "errors": [],
+    "checked": 11,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "新版登入程式已就緒。",
+    "controls": [
+      {
+        "class": "line-login-button",
+        "text": "使用 LINE 登入 →",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "進入教會 OS →",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "newcomer.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 139,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(255, 240, 230)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 1440,
+    "state": "tab-form",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 81,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(249, 228, 215)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 1440,
+    "state": "tab-catalogs",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(249, 228, 215)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增選項",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "remove-option secondary",
+        "text": "×",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "catalog-add",
+        "text": "＋ 新增服事恩賜",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "customization-settings.html",
+    "width": 1440,
+    "state": "tab-features",
+    "url": "http://127.0.0.1:61047/customization-settings.html?church=M%2B",
+    "errors": [],
+    "checked": 139,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "兩個堂會的功能設定已載入，可直接勾選分配。",
+    "controls": [
+      {
+        "class": "active",
+        "role": "surface",
+        "text": "功能呈現",
+        "background": "rgb(249, 228, 215)",
+        "color": "rgb(129, 50, 34)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "迎新表單",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "",
+        "role": "surface",
+        "text": "會友與牧養選項",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "drag-handle secondary",
+        "text": "☰",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "放棄變更",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "",
+        "text": "✓ 儲存堂會設定",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "inventory.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/inventory.html?church=M%2B",
+    "errors": [],
+    "checked": 41,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "M+ 大雅教會清冊已載入。",
+    "controls": [
+      {
+        "class": "secondary current",
+        "text": "M+ 大雅教會",
+        "background": "rgb(168, 57, 41)",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "課輔班",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(101, 87, 79)"
+      },
+      {
+        "class": "",
+        "text": "＋ 登記物品",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "＋ 建立位置",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "列印清冊",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "inventory-card secondary",
+        "text": "尚無照片測試長名稱物品其他可用 4 / 4 根這是物品說明位置 · 一樓儲藏室",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "編輯",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      }
+    ]
+  },
+  {
+    "file": "inventory.html",
+    "width": 1440,
+    "state": "item-detail",
+    "url": "http://127.0.0.1:61047/inventory.html?church=M%2B",
+    "errors": [],
+    "checked": 69,
+    "failures": [],
+    "header": 164,
+    "headerClipped": false,
+    "overflow": false,
+    "status": "M+ 大雅教會清冊已載入。",
+    "controls": [
+      {
+        "class": "secondary current",
+        "text": "M+ 大雅教會",
+        "background": "rgb(168, 57, 41)",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "課輔班",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(101, 87, 79)"
+      },
+      {
+        "class": "",
+        "text": "＋ 登記物品",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "＋ 建立位置",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "列印清冊",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "inventory-card secondary",
+        "text": "尚無照片測試長名稱物品其他可用 4 / 4 根這是物品說明位置 · 一樓儲藏室",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "secondary",
+        "text": "編輯",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      },
+      {
+        "class": "dialog-x",
+        "text": "×",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "編輯資料",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "修正數量",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "借出",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "secondary",
+        "text": "列印",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(146, 52, 35)"
+      }
+    ]
+  },
+  {
+    "file": "login-recovery.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/admin-login-v2.html?recovered=1791783554838",
+    "errors": [],
+    "checked": 11,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "新版登入程式已就緒。",
+    "controls": [
+      {
+        "class": "line-login-button",
+        "text": "使用 LINE 登入 →",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "",
+        "text": "進入教會 OS →",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ]
+  },
+  {
+    "file": "newcomer.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61047/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  }
+]

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261009-stage4';
+import {db} from './admin-db.mjs?v=20261012-readable2';
 import {listAmenities,saveAmenity,setAmenityActive} from './space-management.mjs';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);

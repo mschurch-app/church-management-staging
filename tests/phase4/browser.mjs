@@ -141,12 +141,14 @@ try{
  ok('explicit refresh reloads with session preserved',await page.evaluate(()=>localStorage.getItem('church-staging-admin-v1'))===authBefore);
  await page.setViewport({width:1440,height:900});await goto('admin-dashboard.html');await page.keyboard.press('Tab');ok('desktop first Tab reaches skip link',await page.evaluate(()=>document.activeElement.matches('.app-skip-link')));await page.keyboard.press('Enter');ok('desktop keyboard skip reaches heading',await page.evaluate(()=>document.activeElement.tagName==='H2'));
  await page.setViewport({width:390,height:844,isMobile:true,hasTouch:true});await goto('admin-dashboard.html');await page.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'}));ok('dock leaves final content unobscured',await page.evaluate(()=>document.querySelector('.footnote').getBoundingClientRect().bottom<=document.querySelector('.mobile-app-nav').getBoundingClientRect().top));
- // Real browser service worker, isolated profile; no application APIs are involved.
- const swPage=await browser.newPage();await swPage.goto(base+'/app-offline.html',{waitUntil:'networkidle0'});
+ // Isolate the update probe from the business tab's automatic canonical registration.
+ // Both tabs otherwise replace the same worker registration with competing URLs.
+ const swContext=await browser.createBrowserContext();
+ const swPage=await swContext.newPage();await swPage.goto(base+'/app-offline.html',{waitUntil:'networkidle0'});
  await swPage.evaluate(async()=>{await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4',{scope:'/'});await navigator.serviceWorker.ready;});
  await swPage.waitForFunction(()=>navigator.serviceWorker.controller!==null);
  ok('real service worker installs and controls browser');
- const workerTarget=browser.targets().find(target=>target.type()==='service_worker'&&target.url().startsWith(base+'/church-os-sw.js'));
+ const workerTarget=swContext.targets().find(target=>target.type()==='service_worker'&&target.url().startsWith(base+'/church-os-sw.js'));
  const workerCDP=await workerTarget.createCDPSession();await workerCDP.send('Network.enable');await workerCDP.send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await swPage.setOfflineMode(true);await swPage.goto(base+'/apple-ui.css?offline-probe=1',{waitUntil:'networkidle0'});
  ok('uncached offline navigation keeps requested URL and shows recovery',swPage.url().includes('apple-ui.css?offline-probe=1')&&await swPage.$('#retry'));
@@ -163,7 +165,7 @@ try{
  ok('real updated worker waits for explicit consent',await swPage.evaluate(async()=>!!(await navigator.serviceWorker.getRegistration()).waiting));
  await Promise.all([swPage.waitForNavigation({waitUntil:'networkidle0'}),swPage.click('.app-system-banner button')]);
  ok('explicit update activates and reloads',await swPage.evaluate(()=>navigator.serviceWorker.controller.scriptURL.includes('update-probe')));
- await swPage.close();
+ await swContext.close();
  ok('no business mutations sent',writes.length===0);ok('no unexpected browser errors',errors.length===0);
  passed=true;
 }finally{fs.writeFileSync(out+'browser.json',JSON.stringify({origin:base,api_mode:'isolated_synthetic',passed,checks,metrics,errors,writes},null,2));await browser.close();}

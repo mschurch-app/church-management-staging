@@ -1,4 +1,4 @@
-import {db,SUPABASE_URL} from './admin-db.mjs?v=20261009-stage4';
+import {db,SUPABASE_URL} from './admin-db.mjs?v=20261012-readable2';
 import {createMatchingDraft,mountMatchingBoard} from './service-matching-board.mjs?v=20261011-match-names1';
 
 import {lockControls,workflowSummary,apiResult,uncertainWrite,reviewDialog,draftGuard} from './app-workflow.mjs?v=20261009-stage4';

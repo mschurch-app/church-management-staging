@@ -1,0 +1,22 @@
+PASS install precaches recovery and shared runtime without forcing activation
+PASS unknown message cannot activate an update
+PASS explicit update message activates once
+PASS activation removes only previous church cache namespaces
+PASS successful authenticated and callback navigations never enter cache
+PASS offline navigation shows recovery instead of a login screen
+PASS server unavailable navigation uses recovery
+PASS not found navigation keeps actual response
+PASS recovery cache missing still returns a readable response
+PASS POST and external API requests are never handled or queued
+PASS same-origin API data is not cached
+PASS scripts revalidate browser cache and remember fresh assets
+PASS network failure serves previously fetched script
+PASS server failure serves cached script without replacing it
+PASS missing offline script returns an error response
+PASS cache quota failure does not break an online response
+PASS only public asset images use image cache
+PASS notification waits for navigation before focusing a window
+PASS notification external destination falls back to home
+PASS closed notification window opens a replacement
+PASS push payload retains existing notification contract
+TOTAL 21

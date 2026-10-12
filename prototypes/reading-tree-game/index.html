@@ -12,7 +12,7 @@
   <link rel="preload" href="assets/garden-atlas.png" as="image">
   <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
-<link rel="stylesheet" href="../../life-tree-festival-animation.css?v=20261012-member1"></head>
+<link rel="stylesheet" href="tree-game-scenes.css?v=20261012-scenes1"></head>
 <body class="garden-game">
   <noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
   <a class="skip-link" href="#garden">前往我的花園</a>
@@ -22,6 +22,7 @@
   </header>
   <main>
     <div class="page-heading"><div><p class="eyebrow">MY LITTLE GARDEN</p><h1>每天一點活水，<br class="mobile-break">長成自己的光。</h1><p class="subtitle">因為有你，這座花園更美好。</p></div><p class="demo-note">這裡可以放心體驗。<br>示範進度保存在這台裝置。</p></div>
+    <section id="festival-preview" class="festival-preview-card"><p class="eyebrow">同工預覽 · 不影響正式會員紀錄</p><h2>看看節慶裡的小小花園</h2><label for="demo-festival">場景與配樂<select id="demo-festival"></select></label><label for="demo-holy-day" hidden>受難週的每日場景<select id="demo-holy-day"><option value="1">棕樹主日</option><option value="2">潔淨聖殿</option><option value="3">聖殿教導</option><option value="4">心的選擇</option><option value="5">最後晚餐</option><option value="6">受難日</option><option value="7">安息日</option><option value="8">復活主日</option></select></label><p id="demo-festival-status" class="status" role="status"></p></section>
     <div class="game-layout">
       <section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
         <div id="demo-festival-layer" class="demo-festival-layer" aria-hidden="true"></div><div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
@@ -56,7 +57,7 @@
         <button id="equipment-open" class="equipment-teaser" type="button" aria-haspopup="dialog"><span id="teaser-sword"></span><span><small>神所賜的全副軍裝</small><strong>打開你的裝備包</strong><em>取出、穿戴，帶著真理出發 →</em></span></button>
       </aside>
     </div>
-    <section class="festival-preview-card"><p class="eyebrow">同工預覽 · 不影響正式會員紀錄</p><h2>看看節慶裡的小小花園</h2><label for="demo-festival">場景與配樂<select id="demo-festival"></select></label><label for="demo-holy-day" hidden>受難週的每日場景<select id="demo-holy-day"><option value="1">棕樹主日</option><option value="2">潔淨聖殿</option><option value="3">聖殿教導</option><option value="4">心的選擇</option><option value="5">最後晚餐</option><option value="6">受難日</option><option value="7">安息日</option><option value="8">復活主日</option></select></label><p id="demo-festival-status" class="status" role="status"></p></section><section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">每件軍裝，都有它的使命</p><h2>看懂事件，帶著合適的裝備出發。</h2><p>六種事件需要六件不同的軍裝。選錯會有叉叉與提示，選對後還要實際使用。</p></div><button id="quick-sword" class="secondary" type="button">體驗六種事件 →</button></section>
+    <section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">每件軍裝，都有它的使命</p><h2>看懂事件，帶著合適的裝備出發。</h2><p>六種事件需要六件不同的軍裝。選錯會有叉叉與提示，選對後還要實際使用。</p></div><button id="quick-sword" class="secondary" type="button">體驗六種事件 →</button></section>
     <p class="scope-note">此版本提供花園、升級與裝備互動示範。全副軍裝可借用體驗；示範 XP 不用於教會禮品兌換。</p>
     <div class="demo-tools"><button type="button" id="boss-preview" class="secondary">體驗 Boss 三階段挑戰</button><p>約 10% 機率遇到 Boss，需要換用三件軍裝。此體驗不加分。</p></div>
   </main>
@@ -103,6 +104,6 @@
   <dialog id="journal-dialog" class="text-dialog" aria-labelledby="journal-title"><form id="journal-form"><div class="dialog-heading"><div><p class="eyebrow">A MOMENT TO KEEP</p><h2 id="journal-title">珍藏今天的拾光</h2></div><button type="button" class="icon-button" data-close="journal-dialog" data-icon="close" aria-label="關閉手札"></button></div><label for="journal-note">今天觸動你的一句話<textarea id="journal-note" maxlength="500" rows="5" placeholder="今天，神的話讓我想到……"></textarea></label><p class="muted">選填、私人收藏；修改同一天的內容不會重複增加 XP。</p><p id="journal-status" class="status" role="status"></p><button class="primary" type="submit">珍藏這份拾光</button></form></dialog>
   <dialog id="journey-dialog" class="text-dialog" aria-labelledby="journey-title"><div class="dialog-heading"><h2 id="journey-title">小樹的成長旅程</h2><button type="button" class="icon-button" data-close="journey-dialog" data-icon="close" aria-label="關閉成長旅程"></button></div><ol id="journey-list" class="journey-list"></ol><p class="muted">經驗永久累積，達到門檻立即成長。休息幾天，小樹也會保留你的努力。</p></dialog>
   <dialog id="gift-dialog" class="text-dialog" aria-labelledby="gift-title"><div class="dialog-heading"><h2 id="gift-title">恩典小舖</h2><button type="button" class="icon-button" data-close="gift-dialog" data-icon="close" aria-label="關閉恩典小舖"></button></div><p>禮品、庫存與主日領取流程正在規劃中。</p><p class="muted">遊戲體驗版先讓你照顧小樹、收藏與使用裝備。正式點數會與小樹 XP 分開，領禮品也保留小樹等級。</p></dialog>
-  <script type="module" src="tree-garden-game.mjs?v=20261012-game7"></script>
+  <script type="module" src="tree-garden-game.mjs?v=20261012-scenes1"></script>
 </body>
 </html>

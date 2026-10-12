@@ -1,0 +1,55 @@
+/* Game-only scene composition. Full environment art replaces legacy SVG posters. */
+.garden-game .garden-scene[data-scene]{height:clamp(600px,66vw,780px);min-height:0;aspect-ratio:auto;background-position:center;container-type:inline-size}
+.garden-game .garden-scene[data-scene] :is(.member-festival,.demo-festival-layer){position:absolute;inset:0;overflow:hidden;background:transparent;pointer-events:none;z-index:0}
+.garden-game .garden-environment{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .6s ease;user-select:none}
+.garden-game .garden-environment.is-ready{opacity:1}
+.garden-game .garden-scene[data-scene]:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,#142d2426,transparent 22%,transparent 72%,#14291e99 100%)}
+.garden-game .garden-scene[data-scene] .tree-object{top:auto;bottom:25%;left:19%;width:55%;height:45%;transform-origin:50% 93%;filter:drop-shadow(0 5px 4px #293d292a)}
+.garden-game .garden-scene[data-scene] .tree-object[data-art="sapling"]{top:auto;bottom:25%;left:25%;width:42%;height:34%}
+.garden-game .garden-scene[data-scene] .tree-object[data-level="4"]{left:17%;width:59%}
+.garden-game .garden-scene[data-scene] .tree-shadow{top:auto;bottom:24%;left:25%;width:43%;height:4%;background:#19352180;filter:blur(10px)}
+.garden-game .garden-scene[data-scene] .guardian{left:69%;top:auto;bottom:21%;width:18%;height:25%;filter:drop-shadow(0 5px 3px #14261d44)}
+.garden-game .garden-scene[data-scene] .guardian:before{content:"";position:absolute;left:10%;right:10%;bottom:1%;height:5%;background:#20392480;filter:blur(5px);border-radius:50%;z-index:-1}
+.garden-game .garden-scene[data-scene] .scene-top{left:20px;right:20px;top:20px;flex-wrap:wrap;align-items:start}
+.garden-game .garden-scene[data-scene] .scene-tag{min-height:36px;display:flex;align-items:center;padding:8px 13px;background:#fffdf0e8;color:#344c3b;border:1px solid #ffffff6b;box-shadow:0 3px 12px #203a2920;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px}
+.garden-game .garden-scene[data-scene] .scene-bottom{bottom:20px;left:22px;right:18px;gap:20px;color:#fff9df}
+.garden-game .garden-scene[data-scene] .scene-bottom p{color:#fff9df;text-shadow:0 1px 4px #182c20;line-height:1.7}
+.garden-game .garden-scene[data-scene] .scene-bag{flex:none;min-width:78px;min-height:88px;color:#fff9df;text-shadow:0 1px 4px #182c20}
+.garden-game .garden-scene[data-scene] .battle-entry{min-height:44px;background:#fff6d8ed;color:#354635;border-color:#fff6c8a6;box-shadow:0 4px 14px #182c2033;font-size:12px}
+.garden-game .garden-scene[data-scene] .garden-event-marker{left:4%;top:auto;bottom:27%;width:94px;height:104px;gap:7px;min-width:44px;min-height:44px}
+.garden-game .garden-scene[data-scene] .garden-event-marker .event-symbol{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle,#fff9dff2,#e9dcaecc);border-color:#fff3cbab;box-shadow:0 0 22px #ffe8a966,0 5px 12px #32402c33}
+.garden-game .garden-scene[data-scene] .garden-event-marker .event-symbol svg{width:28px;height:28px}
+.garden-game .garden-scene[data-scene] .garden-event-marker strong{max-width:110px;white-space:normal;font-size:11px;line-height:1.5;text-align:center;padding:5px 8px;background:#243c32e8;color:#fff6df;border-color:#f9e5b347;box-shadow:0 4px 12px #17332530}
+.garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss{width:112px;height:136px;bottom:25%}
+.garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss .event-shadow{width:92px;height:92px}
+.garden-game .garden-scene[data-scene] .scene-light{opacity:.24;mix-blend-mode:screen}
+.garden-game .garden-scene[data-scene-mood="night"] .scene-light{opacity:.12}
+.garden-game .garden-scene[data-scene-mood="night"] :is(.tree-object,.guardian,.garden-decoration){filter:brightness(.79) saturate(.8) drop-shadow(0 0 5px #a7c4e225)}
+.garden-game .garden-scene[data-scene-mood="solemn"] :is(.tree-object,.guardian,.garden-decoration){filter:brightness(.78) saturate(.65)}
+.garden-game .garden-scene[data-scene-mood="solemn"] .scene-light{opacity:.08}
+.garden-game .garden-atmosphere{position:absolute;inset:0;pointer-events:none}
+.garden-game .garden-atmosphere i{position:absolute;left:calc(8% + var(--mote)*16%);top:calc(37% + var(--mote)*7%);width:3px;height:3px;border-radius:50%;background:#fff4c9;box-shadow:0 0 8px 2px #f4df9b66;opacity:.45;animation:scene-mote 8s ease-in-out infinite;animation-delay:calc(var(--mote)*-1.3s)}
+.garden-game .garden-scene[data-scene-mood="solemn"] .garden-atmosphere{display:none}
+.garden-game .scene-retry{min-height:44px;padding:8px 12px;border:1px solid #e9dfbe;border-radius:12px;background:#fff9e9;color:#394c3c;font:inherit;font-size:12px;pointer-events:auto}
+.garden-game .garden-scene[data-scene] :is(button,a):focus-visible{outline:3px solid #fff3bf;outline-offset:4px}
+@keyframes scene-mote{0%,100%{transform:translate(0,0);opacity:.15}50%{transform:translate(6px,-14px);opacity:.6}}
+@media(max-width:800px){
+ .garden-game .garden-scene[data-scene]{height:clamp(470px,132vw,630px);min-height:0;position:relative;top:auto;border-radius:26px}
+ .garden-game .garden-scene[data-scene] .tree-object{left:16%;width:59%;height:43%;bottom:25%}
+ .garden-game .garden-scene[data-scene] .tree-object[data-art="sapling"]{left:25%;width:42%;height:32%;bottom:25%}
+ .garden-game .garden-scene[data-scene] .tree-object[data-level="4"]{left:14%;width:63%}
+ .garden-game .garden-scene[data-scene] .guardian{left:69%;width:20%;height:24%;bottom:21%}
+ .garden-game .garden-scene[data-scene] .scene-top{top:15px;left:14px;right:14px;gap:7px}
+ .garden-game .garden-scene[data-scene] .scene-tag{font-size:11px;min-height:34px;padding:7px 11px}
+ .garden-game .garden-scene[data-scene] .scene-bottom{left:16px;right:12px;bottom:16px;gap:10px}
+ .garden-game .garden-scene[data-scene] .scene-bottom>div{max-width:72%}
+ .garden-game .garden-scene[data-scene] .scene-bottom p{font-size:12px}
+ .garden-game .garden-scene[data-scene] .battle-entry{font-size:11px;padding:9px 11px}
+ .garden-game .garden-scene[data-scene] .garden-event-marker{left:2%;bottom:29%;width:84px;height:96px}
+ .garden-game .garden-scene[data-scene] .garden-event-marker strong{font-size:10px}
+ .garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss{width:96px;height:120px;bottom:27%}
+ .garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss .event-shadow{width:80px;height:80px}
+}
+@media(prefers-reduced-motion:reduce){.garden-game .garden-environment{transition:none}.garden-game .garden-atmosphere i{animation:none;opacity:.3}}
+
+.garden-game .quest-stage{background-image:var(--garden-environment,url("assets/garden-dawn.png"))}

@@ -1,0 +1,604 @@
+<!-- Generated local preview: index.html + CSS + modules; keep assets/ beside this file. -->
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3e9">
+  <meta name="robots" content="noindex,nofollow">
+  <title>讀經小樹｜花園與全副軍裝</title>
+  <style id="shared-design">/* Shared design tokens for Church OS. Keep semantic colors paired with surfaces. */
+:root {
+  --app-font-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC",sans-serif;
+  --app-font-heading:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang TC","Noto Sans TC",sans-serif;
+  --app-ink:#302823;
+  --app-secondary:#65574f;
+  --app-accent:#a83929;
+  --app-accent-end:#b7412e;
+  --app-on-accent:#fff;
+  --app-surface:#fff;
+  --app-surface-muted:#faf8f6;
+  --app-border:#dfd5cd;
+  --app-focus:#1669c9;
+  --app-success:#245c3b;
+  --app-success-surface:#eaf5ee;
+  --app-warning:#71481c;
+  --app-warning-surface:#fff0d9;
+  --app-error:#96291e;
+  --app-error-surface:#fff1ee;
+  --app-link:#165b9c;
+  --app-link-surface:#e9f2ff;
+  --app-radius-field:14px;
+  --app-radius-card:22px;
+  --app-radius-sheet:28px;
+  --app-space-1:4px;
+  --app-space-2:8px;
+  --app-space-3:12px;
+  --app-space-4:16px;
+  --app-space-6:24px;
+  --app-space-8:32px;
+  --app-control-size:44px;
+  --app-header-height:164px;
+  --app-motion-fast:140ms;
+  --app-motion-medium:220ms;
+  --app-shadow:0 6px 24px rgba(48,40,35,.045);
+  --app-icon-default:#667180;
+  --app-icon-people:linear-gradient(155deg,#43b5ff,#087af5 64%,#0663cf);
+  --app-icon-sprout:linear-gradient(155deg,#64dc7d,#21b85a 62%,#159642);
+  --app-icon-tree:linear-gradient(155deg,#5bd5bb,#12a889 66%,#0d8772);
+  --app-icon-student:linear-gradient(180deg,#fff,#f3f1ff);
+  --app-icon-globe:radial-gradient(circle at 36% 32%,#75dcff 0 8%,#1597f4 42%,#0865cc 100%);
+  --app-icon-bell:linear-gradient(155deg,#ff7568,#ef3e48 66%,#cb2434);
+  --app-icon-link:linear-gradient(155deg,#59da8b,#22b55c 66%,#109242);
+  --app-icon-gear:radial-gradient(circle at 50% 44%,#cdd1d6 0 20%,#8d949d 21% 54%,#626973 55% 100%);
+  --app-icon-book:linear-gradient(155deg,#ffb44f,#f07925 68%,#d85413);
+  --app-icon-box:linear-gradient(155deg,#dba06b,#a96b38 70%,#87502a);
+  --app-icon-calendar:linear-gradient(180deg,#ff4f5e 0 28%,#fff 28% 100%);
+  --app-icon-check:linear-gradient(155deg,#53c7ff,#247cec 70%,#155fc9);
+  --app-icon-heart:linear-gradient(155deg,#ff7f9d,#ed3f74 68%,#cf245c);
+  --app-icon-chat:linear-gradient(155deg,#62dc72,#22b64c 68%,#139137);
+  --app-icon-pin:linear-gradient(180deg,#fff,#f7f7f7);
+  --app-icon-camera:radial-gradient(circle at 50% 50%,#6bd9ff 0 12%,#6d63e8 34%,#222837 64%,#10131b 100%);
+  --app-icon-target:linear-gradient(155deg,#ffac48,#f06b22 68%,#d34b15);
+  --app-icon-trophy:linear-gradient(155deg,#ffd85a,#f0ad1f 68%,#d68a0b);
+  --app-icon-clipboard:linear-gradient(155deg,#64cbd0,#26959e 68%,#15757f);
+  --app-icon-chart:linear-gradient(155deg,#63c7ff,#356ddd 68%,#2452b8);
+  --app-icon-printer:linear-gradient(180deg,#fff,#eff2f5);
+  --app-icon-sparkle:linear-gradient(155deg,#b17cff,#7452d8 68%,#5135ae);
+  --app-icon-play:linear-gradient(155deg,#ff6d8f,#eb365f 68%,#c82049);
+  --app-icon-bolt:linear-gradient(155deg,#ffcf4d,#f39a1d 68%,#d8760a);
+  --app-icon-alert:linear-gradient(155deg,#ff6964,#eb353e 68%,#c92330);
+  --app-icon-clock:linear-gradient(155deg,#ffb14a,#ef7722 68%,#d25412);
+  --app-icon-sliders:linear-gradient(155deg,#6cc4db,#357f9c 68%,#245e79);
+  --app-icon-church:linear-gradient(155deg,#61cfc2,#168e88 68%,#0b6d6a);
+}
+</style>
+  <style>.garden-game{--game-ink:#203d31;--game-muted:#66736b;--game-green:#315d48;--game-moss:#e8eddd;--game-gold:#c9a35a;--game-border:#e1e5d7;--game-paper:#fffef8;--game-shadow:0 16px 50px #283f2d0e;margin:0;background:#f5f3e9;color:var(--game-ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;-webkit-font-smoothing:antialiased;color-scheme:light}
+.garden-game *{box-sizing:border-box}.garden-game [hidden]{display:none!important}.garden-game button,.garden-game a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}.garden-game button{font:inherit;color:inherit;cursor:pointer}.garden-game button:disabled{cursor:default;opacity:.55}.garden-game button:focus-visible,.garden-game a:focus-visible,.garden-game textarea:focus-visible{outline:3px solid #9b793c;outline-offset:4px}.garden-game button:active:not(:disabled){transform:translateY(1px)}.garden-game h1,.garden-game h2,.garden-game h3,.garden-game p{margin:0}.garden-game a{color:inherit}.garden-game svg{display:block}.garden-game .skip-link{position:fixed;top:-80px;left:16px;z-index:50;background:white;padding:12px}.garden-game .skip-link:focus{top:16px}
+.game-header{max-width:1392px;padding:28px 36px 20px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:16px}.game-brand{display:flex;align-items:center;gap:13px;text-decoration:none;font-weight:750;font-size:20px;letter-spacing:.03em}.game-brand small{display:block;font-size:11px;letter-spacing:.15em;font-weight:450;color:var(--game-muted)}.brand-symbol{font-family:Georgia,serif;font-size:32px;font-weight:500;line-height:1}.brand-symbol span{font-size:24px;color:#a38142;vertical-align:top}.header-tools{display:flex;gap:14px;align-items:center}.preview-label{font-size:12px;color:#63745e;border:1px solid #dce1d0;padding:4px 11px;border-radius:20px}.garden-game .icon-button{width:44px;height:44px;display:grid;place-items:center;background:#fffdf6;border:1px solid #dce1d1;border-radius:50%;flex-shrink:0}.icon-button svg{width:20px;height:20px}.garden-game main{max-width:1392px;padding:16px 36px 120px;margin:auto}.page-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin:12px 0 30px}.garden-game .eyebrow{font-size:10px;letter-spacing:.19em;font-weight:750;color:#7d8068;line-height:1.6}.page-heading h1{font-size:clamp(28px,3.3vw,42px);line-height:1.35;letter-spacing:-.035em;font-weight:650;margin:8px 0}.subtitle{color:var(--game-muted);font-size:15px}.demo-note{font-size:11px;color:#74796e;text-align:right;line-height:1.8}.mobile-break{display:none}.game-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:24px;align-items:stretch}
+.garden-scene{position:relative;min-height:670px;overflow:hidden;border:1px solid #d9dfc9;border-radius:30px;background:#82965b url('assets/garden-dawn.png') center/cover;isolation:isolate;box-shadow:var(--game-shadow)}.garden-scene:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#143c2220,transparent 24%,transparent 65%,#16372378);z-index:1;pointer-events:none}.scene-top{position:absolute;top:22px;left:22px;right:22px;display:flex;justify-content:space-between;z-index:8;gap:10px}.scene-tag{color:#233a2b;background:#fffef5db;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 12px;font-size:11px;border:1px solid #ffffff9e;border-radius:30px;box-shadow:0 3px 14px #18371d0c}.scene-light{position:absolute;inset:-30%;background:conic-gradient(from 190deg at 78% 0%,transparent 0deg,#ffefbb36 9deg,transparent 18deg,#ffefa525 27deg,transparent 40deg);opacity:.65;animation:game-rays 14s ease-in-out infinite alternate;pointer-events:none;z-index:3}.tree-shadow{position:absolute;width:44%;height:5%;border-radius:50%;background:#18382066;filter:blur(13px);top:70%;left:21%;z-index:2}.tree-object{position:absolute;left:17%;top:28%;width:56%;height:44%;z-index:4;transform-origin:50% 93%;animation:game-tree-breathe 7s ease-in-out infinite;transition:filter .5s}.tree-object[data-art="sapling"]{width:43%;left:22%;top:35%;height:36%}.tree-object[data-level="1"]{transform:scale(.65)}.tree-object[data-level="4"]{width:61%;left:14%}.tree-object[data-level="6"],.tree-object[data-level="7"]{filter:drop-shadow(0 0 17px #f7db7270)}.tree-object.is-growing{animation:game-grow 1.8s cubic-bezier(.2,.7,.3,1) both}.game-sprite{width:100%;height:100%;overflow:hidden;filter:drop-shadow(0 8px 5px #17322123)}.guardian{position:absolute;left:64%;top:52%;width:20%;height:27%;z-index:5;transform-origin:50% 90%;animation:game-guardian-breathe 5s ease-in-out infinite}.guardian>div:first-child{width:100%;height:100%}.guardian-gear{position:absolute;inset:0;pointer-events:none}.guardian-slot{position:absolute;filter:drop-shadow(0 2px 2px #12312350)}.slot-sword{width:38%;height:64%;left:77%;top:12%;transform:rotate(12deg)}.slot-shield{width:56%;height:55%;left:-21%;top:29%}.slot-belt{width:46%;height:17%;left:34%;top:50%}.slot-breastplate{width:48%;height:32%;left:32%;top:30%}.slot-boots{width:57%;height:26%;left:28%;top:76%}.slot-helmet{width:47%;height:29%;left:40%;top:-1%}.slot-breastplate .game-sprite{filter:drop-shadow(0 2px 3px #6d592b35)}.scene-bottom{position:absolute;bottom:25px;left:24px;right:24px;z-index:9;display:flex;align-items:end;justify-content:space-between;gap:12px}.scene-bottom p{color:#fffdf0;text-shadow:0 2px 9px #102e22;font-size:14px;max-width:55%;letter-spacing:.04em}.garden-game .scene-bag{position:relative;display:flex;flex-direction:column;align-items:center;border:0;background:transparent;color:#fff9dc;min-width:100px;padding:0;text-shadow:0 2px 4px #183322;font-size:11px}.scene-bag>span:first-child{display:block;width:108px;height:100px;transition:transform .3s;filter:drop-shadow(0 7px 6px #142a2077)}.scene-bag:hover>span:first-child{transform:translateY(-5px) rotate(-3deg)}.scene-bag i{position:absolute;right:5px;top:9px;background:#f0d08a;color:#3a432e;border:2px solid #fff7d9;font-size:10px;font-style:normal;border-radius:50%;height:22px;width:22px;text-shadow:none;line-height:18px}.garden-decoration{position:absolute;inset:0;pointer-events:none;z-index:6}.placed-decoration{position:absolute;width:48px;height:55px;filter:drop-shadow(0 3px 4px #19312655);color:#ffe898}.placed-decoration svg{width:100%;height:100%}.placed-lamp{filter:drop-shadow(0 0 13px #ffe09b)}.placed-bird{animation:game-bird 7s ease-in-out infinite}.fireflies{position:absolute;inset:0;z-index:6;pointer-events:none}.fireflies i{position:absolute;width:3px;height:3px;background:#fff2b1;border-radius:50%;box-shadow:0 0 10px 3px #f9ec9277;animation:game-firefly 6s ease-in-out infinite}.water-rain{position:absolute;left:28%;top:25%;width:32%;height:45%;opacity:0;pointer-events:none;z-index:7}.water-rain:before,.water-rain:after{content:"";position:absolute;width:6px;height:13px;border-radius:70% 30% 60% 40%;background:#e2fbff;box-shadow:26px -60px 0 #a9e4f2,-36px -26px 0 #d2f4ff,64px -10px 0 #9adaef,85px -70px 0 #d7faff,40px -110px 0 #a5dce8;left:30%;top:20%}.water-rain:after{left:52%;animation-delay:.5s!important}.garden-scene[data-phase="watering"] .water-rain{opacity:1}.garden-scene[data-phase="watering"] .water-rain:before,.garden-scene[data-phase="watering"] .water-rain:after{animation:game-water 1s ease-in infinite}.garden-scene[data-phase="watering"] .tree-object{filter:drop-shadow(0 0 14px #d7efc2)}.asset-error{position:absolute;inset:15px;z-index:20;background:#fffef6ef;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding:20px}
+.garden-sidebar{display:flex;flex-direction:column;gap:18px}.growth-card,.today-card{border:1px solid var(--game-border);background:var(--game-paper);border-radius:24px;padding:25px;box-shadow:var(--game-shadow)}.section-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.garden-game .quiet-button{border:0;background:none;padding:10px 0;min-height:44px;color:#587359;font-size:12px;text-decoration:none}.growth-title{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.growth-title h2{font-size:25px;font-weight:650;letter-spacing:-.04em}.small-leaf{width:17px;height:28px;background:linear-gradient(135deg,#adbd6a,#54764c);border-radius:85% 0 85% 0;transform:rotate(24deg)}.xp-total{display:flex;align-items:baseline;gap:10px;margin:15px 0 12px!important}.xp-total strong{font-size:42px;line-height:1.2;font-weight:550;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.xp-total>span{font-size:12px;color:var(--game-muted)}.xp-track{height:9px;background:#e7ebdc;border-radius:20px;overflow:hidden}.xp-track>span{display:block;height:100%;width:80%;background:linear-gradient(90deg,#748e51,#b6c781);border-radius:20px;transition:width .9s cubic-bezier(.16,.7,.3,1)}.xp-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--game-muted);margin-top:8px}.xp-labels strong{color:#5a744a}.next-growth{font-size:13px;color:#486341;margin-top:14px!important}.growth-footer{display:flex;justify-content:space-between;font-size:11px;color:#75816e;margin-top:20px;padding-top:15px;border-top:1px solid #e8ebdf}.today-card{flex:1}.today-card h2{font-size:20px;font-weight:650;margin:7px 0!important}.garden-game .muted{color:var(--game-muted);font-size:13px}.garden-game .primary,.garden-game .secondary{border-radius:14px;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;text-decoration:none;transition:background .2s,box-shadow .2s;font-weight:550}.garden-game .primary{background:var(--game-green);color:#fffef3;border:1px solid #315d48;box-shadow:0 5px 13px #315d4814}.garden-game .primary:hover:not(:disabled){background:#244936;box-shadow:0 6px 17px #315d4820}.garden-game .secondary{background:#f5f6ec;border:1px solid #dde3d0;color:#415c3c}.primary svg,.secondary svg{width:21px;height:21px;flex-shrink:0}.action-reading{width:100%;margin-top:22px;justify-content:flex-start!important;text-align:left}.action-reading .button-icon{margin-right:3px}.action-reading small{display:block;font-size:10px;opacity:.75;font-weight:400;letter-spacing:.02em;margin-top:3px}.action-reading strong{font-size:11px;margin-left:auto;white-space:nowrap;color:#dfecc9}.care-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}.care-actions button{font-size:12px;padding:10px!important;gap:8px!important}.care-actions button>span:first-child svg{width:21px;height:21px}.care-actions small{display:block;font-size:10px;color:#7b876e}.garden-game .status{font-size:11px;color:#6d7c65;min-height:18px;margin-top:13px;line-height:1.7}.equipment-teaser{display:flex;align-items:center;gap:8px;background:linear-gradient(115deg,#e9eddf,#f4eedb);border:1px solid #d9dfc8;border-radius:22px;text-align:left;padding:13px 16px;min-height:99px;overflow:hidden}.equipment-teaser>span:first-child{width:58px;height:80px;transform:rotate(15deg);flex-shrink:0;filter:drop-shadow(0 0 10px #ecd89466)}.equipment-teaser small{font-size:10px;color:#788368;display:block;letter-spacing:.05em}.equipment-teaser strong{display:block;font-size:16px;font-weight:650}.equipment-teaser em{display:block;font-size:11px;font-style:normal;color:#6b7d5c;margin-top:3px}.walk-card{display:flex;align-items:center;gap:21px;border-top:1px solid #dce0d0;border-bottom:1px solid #dce0d0;margin-top:30px;padding:27px 10px}.walk-card>span{width:43px;height:43px;flex-shrink:0;color:#b09555}.walk-card h2{font-size:19px;font-weight:600;margin:4px 0 6px}.walk-card p:not(.eyebrow){font-size:12px;color:#73806a}.walk-card button{margin-left:auto;white-space:nowrap;font-size:12px}.scope-note{font-size:11px;color:#7b8172;margin:21px 0!important;text-align:center}.game-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:4px;background:#fffef5ef;border:1px solid #dfdfc9;box-shadow:0 10px 45px #283e3022;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:6px;border-radius:23px;z-index:25}.game-nav a,.game-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;border:0;background:transparent;padding:9px 28px;min-width:100px;min-height:54px;font-size:10px;color:#76806c;border-radius:17px}.game-nav a[aria-current="page"]{background:#e7edda;color:#3c5936}.game-nav svg{width:21px;height:21px}.toast{position:fixed;bottom:110px;left:50%;transform:translate(-50%,12px);background:#244734f2;color:#fffbe7;z-index:80;padding:13px 23px;max-width:calc(100% - 32px);width:max-content;border:1px solid #ffffff2b;border-radius:18px;box-shadow:0 8px 25px #2335242f;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;font-size:13px;text-align:center}.toast.visible{opacity:1;transform:translate(-50%,0)}
+.garden-game dialog{color:var(--game-ink);background:#fffdf3;border:1px solid #dddcc5;border-radius:28px;box-shadow:0 25px 100px #0c26164d;padding:26px;width:calc(100% - 32px);max-height:calc(100dvh - 40px);overflow:auto;overscroll-behavior:contain}.garden-game dialog::backdrop{background:#102b24a6;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}.garden-game dialog[open]{animation:game-dialog-enter .3s ease-out}.dialog-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.dialog-heading h2{font-size:24px;letter-spacing:-.03em;font-weight:650;margin:3px 0}.dialog-heading .icon-button{background:#f5f3e7}.bag-dialog{max-width:850px}.bag-intro{display:flex;align-items:center;gap:17px;margin:12px 0 13px}.bag-opening{width:95px;height:93px;flex-shrink:0;transform-origin:50% 95%}.bag-opening.is-opening{animation:game-bag-open .65s cubic-bezier(.2,.75,.3,1) both}.bag-intro>p{font-size:13px;max-width:450px}.bag-intro small{display:block;font-size:11px;color:#7a806e;margin-top:7px}.inventory-tabs{display:flex;gap:9px;border-bottom:1px solid #e1e3d4;padding-bottom:14px;margin-bottom:19px}.inventory-tabs button{border:1px solid #dfe4d1;background:#f7f7ed;min-height:44px;padding:9px 16px;border-radius:13px;font-size:12px}.inventory-tabs button[aria-pressed="true"]{background:#375c45;color:#fffce9;border-color:#375c45}.inventory-tabs span{font-size:10px;margin-left:4px;opacity:.75}.inventory-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:23px}.inventory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-content:start}.inventory button{position:relative;border:1px solid #d7ddc7;background:linear-gradient(140deg,#f4f3e4,#e4e8d8);box-shadow:inset 0 1px 0 #ffffffa6;border-radius:18px;display:flex;flex-direction:column;align-items:center;padding:12px 5px 10px;min-height:137px;overflow:hidden}.inventory button[aria-pressed="true"]{border-color:#967740;box-shadow:0 0 0 2px #bf9c592b,inset 0 1px 0 #ffffffa6;background:radial-gradient(ellipse at 50% 35%,#fff7d5,#e9ead5 80%)}.inventory button>.item-sprite{width:83px;height:85px;transition:transform .25s}.inventory button:hover>.item-sprite{transform:translateY(-4px)}.inventory button>strong{font-size:11px;font-weight:600;margin-top:8px}.inventory button>small{font-size:9px;color:#718063;margin-top:2px}.inventory button.is-equipped:after{content:"已穿戴";position:absolute;right:5px;top:5px;font-size:8px;background:#4b6949;color:#fffdec;padding:2px 5px;border-radius:5px}.item-detail{text-align:center;border-left:1px solid #e4e5d4;padding:0 14px 8px 24px}.detail-plinth{height:172px;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 70%,#eee6bc90,transparent 60%)}.detail-art{width:155px;height:160px;z-index:2;animation:game-item-float 4s ease-in-out infinite}.detail-art.is-taking{animation:game-take-out .65s cubic-bezier(.2,.75,.3,1)}.item-halo{position:absolute;width:120px;height:16px;background:#a89c4740;filter:blur(10px);border-radius:50%;bottom:0}.item-detail h3{font-size:23px;font-weight:650;margin:4px 0 7px}.item-type{font-size:10px;letter-spacing:.1em;color:#9b8347;margin-top:12px!important}.item-detail>p:not(.item-type){font-size:12px;line-height:1.8;color:#6d785f}.item-reference{margin:7px 0!important}.item-unlock{font-size:10px!important;border-top:1px solid #e5e5d3;padding-top:11px;margin-top:11px!important}.item-actions{display:flex;flex-direction:column;gap:8px;margin-top:15px}.item-actions button{width:100%;font-size:12px}.item-actions button svg{width:17px;height:17px}.decoration-icon{width:100%;height:100%;color:#708b52;display:grid;place-items:center}.decoration-icon svg{width:75%;height:75%}
+.quest-dialog{max-width:620px}.quest-stage{position:relative;height:290px;background:#70864e url('assets/garden-dawn.png') center 55%/cover;border-radius:20px;overflow:hidden;isolation:isolate;margin-top:20px;touch-action:pan-y}.quest-stage:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,transparent,#17362645);z-index:1;pointer-events:none}.quest-gear{position:absolute;width:165px;height:240px;left:calc(50% - 82px);top:20px;z-index:6;transform-origin:50% 83%;filter:drop-shadow(0 0 15px #fff0ac88);transition:filter .3s}.quest-stage[data-phase="entering"] .quest-gear{animation:game-draw .75s cubic-bezier(.2,.7,.3,1) both}.quest-stage[data-phase="acting"][data-item="sword"] .quest-gear{animation:game-sword-swing .95s cubic-bezier(.4,0,.2,1) both}.quest-stage[data-phase="returning"] .quest-gear{animation:game-sheathe .55s ease-in both}.quest-fog{position:absolute;inset:0;z-index:3;pointer-events:none;transition:opacity 1.1s,transform 1.1s}.quest-fog i{position:absolute;width:80%;height:85%;border-radius:50%;filter:blur(22px);background:radial-gradient(ellipse,#2a243bc7,#26283c80 50%,transparent 70%);top:0;left:10%;animation:game-fog 9s ease-in-out infinite alternate}.quest-fog i:nth-child(2){top:17%;left:-12%;animation-delay:-3s}.quest-fog i:nth-child(3){left:40%;top:-20%;animation-delay:-6s}.quest-stage[data-phase="complete"] .quest-fog{opacity:0;transform:translateY(-45px) scale(1.4)}.sword-trail{position:absolute;width:240px;height:195px;border-top:11px solid #fff6cf;border-radius:50%;top:65px;left:calc(50% - 120px);z-index:7;opacity:0;filter:drop-shadow(0 0 12px #ffe48b);transform:rotate(-35deg);pointer-events:none}.quest-stage[data-phase="acting"][data-item="sword"] .sword-trail{animation:game-sword-trail 1s ease-out both}.quest-sparks{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;background:radial-gradient(circle at 27% 32%,#fff8bf 0 2px,transparent 3px),radial-gradient(circle at 70% 47%,#fff8bf 0 3px,transparent 4px),radial-gradient(circle at 39% 68%,#fff8bf 0 2px,transparent 3px),radial-gradient(circle at 63% 22%,#fff8bf 0 2px,transparent 3px)}.quest-stage[data-phase="complete"] .quest-sparks{animation:game-spark-bloom 1.7s ease-out both}.quest-counter{position:absolute;left:15px;bottom:15px;z-index:10;color:#f9f7e7;background:#274530cb;border:1px solid #dce3a72b;padding:4px 11px;font-size:10px;border-radius:20px}.quest-copy{padding:19px 2px 0}.quest-copy>p:first-child{font-size:14px;font-weight:550}.quest-verse{font-size:13px;color:#667951;margin-top:11px!important;line-height:1.9}.quest-copy>.primary{width:100%;margin-top:16px}.quest-copy>.quiet-button{display:block;margin:6px auto 0;min-height:48px;font-size:13px}.quest-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.quest-options:empty{margin:0}.quest-options button{background:#f3f5e7;border:1px solid #dbe1c8;border-radius:12px;min-height:44px;padding:10px 14px;font-size:12px;flex:1 1 auto}.quest-options button[aria-pressed="true"]{background:#dfe8cb;border-color:#7d965f;color:#35532d}.quest-shield-wave{position:absolute;inset:45px 70px;border:3px solid #faedb5;border-radius:50%;opacity:0;z-index:9;pointer-events:none;filter:drop-shadow(0 0 10px #fbdf84)}.quest-stage[data-phase="acting"][data-item="shield"] .quest-shield-wave{animation:game-shield-pulse .8s ease-out}.quest-stage[data-phase="acting"][data-item="shield"] .quest-gear{animation:game-shield-hit .7s ease-out}.quest-special{position:absolute;inset:0;z-index:7;pointer-events:none}.quest-arrow{position:absolute;top:50%;left:-30%;width:45%;height:3px;background:linear-gradient(90deg,transparent,#fbc77b,#fff7ca);transform:rotate(-20deg);box-shadow:0 0 12px #ffa14f;opacity:0}.quest-arrow:after{content:"";position:absolute;right:-6px;top:-4px;border-left:9px solid #f9d98c;border-top:5px solid transparent;border-bottom:5px solid transparent}.quest-stage[data-phase="acting"] .quest-arrow{animation:game-arrow .7s ease-in both}.armor-mist{position:absolute;left:calc(50% - 95px);top:45px;width:190px;height:190px;mix-blend-mode:multiply;background:radial-gradient(ellipse,#403d4eaa,#484a5666 55%,transparent 72%);filter:blur(12px);transition:opacity .4s;pointer-events:none}.quest-special .trail-flower{position:absolute;color:#ffedb2;width:45px;height:45px;opacity:0;transform:scale(.3);transition:opacity .4s,transform .5s}.quest-special .trail-flower.visible{opacity:1;transform:scale(1)}.puzzle-glow{position:absolute;inset:35px;border:2px solid #f0d89d;border-radius:50%;opacity:0;box-shadow:inset 0 0 40px #f4da7b50,0 0 25px #f0d67a40;transition:opacity .7s}.quest-stage[data-phase="complete"] .puzzle-glow{opacity:1}
+.text-dialog{max-width:510px}.text-dialog .scripture{font-size:22px;line-height:2;margin:24px 0;color:#345438;letter-spacing:.04em}.text-dialog>.muted{margin:12px 0}.text-dialog>.primary,.text-dialog form>.primary{width:100%;margin-top:20px}.text-dialog>.secondary{margin-top:10px}.text-dialog label{display:block;margin:20px 0 8px;font-size:13px}.text-dialog textarea{width:100%;resize:vertical;min-height:140px;background:#fffef8;border:1px solid #d6ddc4;border-radius:14px;margin-top:8px;padding:14px;font:inherit;color:var(--game-ink);font-size:16px;line-height:1.8}.journey-list{list-style:none;padding:0;margin:24px 0}.journey-list li{position:relative;display:flex;align-items:center;gap:15px;padding:14px 0;border-bottom:1px solid #e4e7d9}.journey-list li>span:first-child{width:44px;height:44px;display:grid;place-items:center;background:#e9eddb;border-radius:50%;font-size:13px;color:#69834f}.journey-list li.is-current>span:first-child{background:#3f6044;color:#fff4d2}.journey-list li strong{display:block;font-size:14px}.journey-list li small{display:block;color:#7c856f;font-size:11px}.journey-list li em{font-style:normal;margin-left:auto;font-size:10px;color:#6b8350}.body-dialog-open{overflow:hidden}.garden-game .growth-celebration{position:fixed;inset:0;z-index:95;display:grid;place-items:center;pointer-events:none;background:radial-gradient(ellipse,#f6eac952,transparent 68%);animation:game-celebration 2.8s both}.growth-celebration>div{background:#fffbedf5;border:1px solid #d5c38d;border-radius:25px;padding:28px 42px;text-align:center;box-shadow:0 15px 60px #3d4d2633}.growth-celebration strong{display:block;font-size:25px;color:#3f5c32}.growth-celebration span{font-size:13px;color:#7a845f}
+@keyframes game-tree-breathe{0%,100%{rotate:-.5deg;translate:0 0}50%{rotate:.5deg;translate:0 -3px}}@keyframes game-guardian-breathe{0%,100%{translate:0 0}50%{translate:0 -2px}}@keyframes game-rays{from{opacity:.4;rotate:-2deg}to{opacity:.8;rotate:2deg}}@keyframes game-firefly{0%,100%{opacity:0;translate:0 6px}40%,70%{opacity:.85}80%{translate:8px -22px}}@keyframes game-water{from{translate:0 -10px;opacity:0}30%{opacity:1}to{translate:0 135px;opacity:0}}@keyframes game-grow{0%{scale:.86;filter:brightness(1)}40%{scale:1.08;filter:brightness(1.3) drop-shadow(0 0 20px #ffeab0)}100%{scale:1;filter:brightness(1)}}@keyframes game-item-float{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -5px;rotate:2deg}}@keyframes game-dialog-enter{from{opacity:0;translate:0 14px;scale:.98}to{opacity:1;translate:0 0;scale:1}}@keyframes game-bag-open{0%{rotate:-7deg;scale:.85}50%{rotate:3deg;scale:1.04}100%{rotate:0;scale:1}}@keyframes game-take-out{0%{scale:.35;translate:-100px 65px;opacity:0}65%{scale:1.08;translate:0 -8px;opacity:1}100%{scale:1;translate:0 0;opacity:1}}@keyframes game-draw{from{translate:0 190px;rotate:-22deg;scale:.65;opacity:0}70%{translate:0 -8px;rotate:4deg;scale:1;opacity:1}to{translate:0 0;rotate:0;scale:1;opacity:1}}@keyframes game-sword-swing{0%{rotate:0;translate:0 0}20%{rotate:-55deg;translate:-20px -12px}56%{rotate:80deg;translate:28px 15px}78%{rotate:20deg;translate:7px 1px}100%{rotate:0;translate:0 0}}@keyframes game-sword-trail{0%,18%{opacity:0;rotate:-65deg;scale:.7}38%{opacity:1;rotate:15deg;scale:1}70%{opacity:.7;rotate:75deg;scale:1.15}100%{opacity:0;rotate:100deg;scale:1.3}}@keyframes game-sheathe{to{translate:0 170px;scale:.55;rotate:15deg;opacity:0}}@keyframes game-fog{from{translate:-8px -4px;scale:1}to{translate:12px 8px;scale:1.1}}@keyframes game-spark-bloom{0%{opacity:0;scale:.65}20%{opacity:1}to{opacity:0;scale:1.3;translate:0 -20px}}@keyframes game-shield-pulse{0%{opacity:1;scale:.5}100%{opacity:0;scale:1.3}}@keyframes game-shield-hit{0%{scale:1;rotate:0}35%{scale:1.15;rotate:-8deg}70%{scale:1;rotate:4deg}100%{scale:1;rotate:0}}@keyframes game-arrow{0%{opacity:1;translate:0 0}70%{opacity:1;translate:210% -12px}100%{opacity:0;translate:210% -12px;scale:.4}}@keyframes game-bird{0%,70%,100%{translate:0 0;rotate:0}80%{translate:8px -14px;rotate:-8deg}90%{translate:-5px -6px;rotate:6deg}}@keyframes game-celebration{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
+@media(min-width:1500px){.garden-scene{min-height:720px}}@media(max-width:1000px){.game-header{padding:22px 24px}.garden-game main{padding:10px 24px 120px}.game-layout{grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr);gap:18px}.garden-scene{min-height:650px}.growth-card,.today-card{padding:21px}.scene-bottom p{font-size:12px}.walk-card{gap:15px}}
+@media(max-width:720px){.game-header{padding:20px 20px 10px}.game-brand{font-size:17px;gap:9px}.brand-symbol{font-size:28px}.game-brand small{font-size:9px}.header-tools{gap:8px}.preview-label{font-size:10px;padding:4px 8px}.garden-game main{padding:14px 16px 115px}.page-heading{margin:8px 5px 23px;display:block}.page-heading h1{font-size:29px;line-height:1.4;margin:7px 0 9px}.mobile-break{display:block}.subtitle{font-size:12px}.demo-note{font-size:10px;text-align:left;margin-top:11px!important}.demo-note br{display:none}.game-layout{display:flex;flex-direction:column;gap:17px}.garden-scene{min-height:0;height:auto;aspect-ratio:1/.97;border-radius:25px;background-position:46% 50%}.scene-top{top:15px;left:15px;right:15px}.scene-tag{font-size:10px;padding:5px 9px}.tree-object{top:24%;height:48%;left:12%;width:62%}.tree-object[data-art="sapling"]{top:32%;height:40%;left:20%;width:45%}.guardian{top:51%;left:65%;height:29%;width:22%}.tree-shadow{top:71%;left:20%;width:48%}.scene-bottom{bottom:15px;left:17px;right:13px}.scene-bottom p{font-size:11px;max-width:65%}.scene-bag>span:first-child{width:73px;height:69px}.garden-game .scene-bag{min-width:74px;font-size:9px}.scene-bag i{right:0;top:3px;width:19px;height:19px;line-height:15px}.garden-sidebar{gap:15px}.growth-card,.today-card{padding:22px;border-radius:23px}.growth-title h2{font-size:23px}.growth-title{margin-top:6px}.xp-total{margin:10px 0 12px!important}.xp-total strong{font-size:36px}.growth-footer{margin-top:14px;padding-top:12px}.equipment-teaser{min-height:90px}.walk-card{flex-wrap:wrap;padding:23px 5px;gap:14px;margin-top:25px}.walk-card>span{width:31px;height:31px}.walk-card>div{flex:1}.walk-card h2{font-size:16px}.walk-card p:not(.eyebrow){font-size:11px}.walk-card button{margin-left:45px;font-size:11px;min-height:44px}.scope-note{font-size:10px}.game-nav{bottom:max(12px,env(safe-area-inset-bottom));width:calc(100% - 36px);max-width:400px;gap:2px;justify-content:space-around}.game-nav a,.game-nav button{padding:7px 20px;min-width:0;flex:1;min-height:52px}.toast{bottom:calc(100px + env(safe-area-inset-bottom));font-size:12px}.garden-game dialog{padding:20px;border-radius:25px;width:calc(100% - 24px);max-height:calc(100dvh - 24px)}.dialog-heading h2{font-size:22px}.bag-intro{gap:9px;margin:8px 0 12px}.bag-opening{width:65px;height:70px}.bag-intro>p{font-size:11px}.bag-intro small{font-size:9px}.inventory-layout{display:flex;flex-direction:column;gap:15px}.inventory{gap:8px}.inventory button{min-height:108px;padding:8px 3px}.inventory button>.item-sprite{width:62px;height:62px}.inventory button>strong{font-size:10px;margin-top:5px}.inventory button>small{font-size:8px}.item-detail{border-left:0;border-top:1px solid #e4e5d4;padding:13px 4px 0}.detail-plinth{height:115px}.detail-art{width:100px;height:110px}.item-detail h3{font-size:21px}.item-type{margin-top:9px!important}.item-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item-actions .primary:only-child{grid-column:1/-1}.inventory-tabs{margin-bottom:13px;padding-bottom:13px}.inventory-tabs button{font-size:11px;padding:9px 14px}.quest-stage{height:260px;margin-top:15px}.quest-gear{height:215px;width:148px;left:calc(50% - 74px);top:18px}.quest-copy{padding:16px 0 0}.quest-copy>p:first-child{font-size:13px}.quest-verse{font-size:12px}.quest-dialog .dialog-heading h2{font-size:20px}.placed-decoration{width:36px;height:39px}.growth-celebration>div{padding:24px 28px}.growth-celebration strong{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.garden-game *,.garden-game *:before,.garden-game *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.garden-game .toast.visible{opacity:1}.garden-game .quest-stage[data-phase="complete"] .quest-sparks{opacity:1}.garden-game .quest-stage[data-phase="complete"] .quest-fog{opacity:0}.garden-game .quest-stage[data-phase="acting"] .quest-shield-wave{opacity:1}.garden-game .growth-celebration{opacity:1}.garden-game .scene-light{opacity:.3}.garden-game .water-rain{display:none}}
+
+/* Daily encounters use their own scene layer; UI remains legible above it. */
+.garden-game .scene-bottom>div{flex:1;min-width:0;max-width:75%}.garden-game .scene-bottom p{max-width:100%;margin:0 0 8px;font-size:13px;line-height:1.6}.garden-game .battle-entry{min-height:44px;padding:9px 14px;border:1px solid #e8ddb37a;border-radius:13px;background:#fff8dfed;color:#364731;font-size:12px;font-weight:600;text-align:left;box-shadow:0 3px 14px #1e322b25}.battle-entry:active{transform:scale(.98)}.garden-enemies{position:absolute;inset:0;z-index:7;pointer-events:none}.garden-game .shadow-enemy{position:absolute;left:12%;top:55%;width:100px;height:100px;min-width:44px;min-height:44px;padding:0;border:0;background:transparent;pointer-events:auto;filter:drop-shadow(0 7px 8px #211b3c60);animation:game-shadow-hover 4s ease-in-out infinite;isolation:isolate}.shadow-enemy>span,.shadow-art{display:block;width:100%;height:100%;background:url('assets/garden-shadows.png') 0 0/300% 100% no-repeat;background-position:calc(var(--shadow-index,0)*50%) 0}.garden-game .shadow-enemy-1{left:47%;top:67%;width:86px;height:86px;animation-delay:-1.4s}.garden-game .shadow-enemy-2{left:7%;top:35%;width:77px;height:77px;animation-delay:-2.8s}.garden-game .shadow-boss{left:8%;top:48%;width:148px;height:148px;filter:drop-shadow(0 0 15px #8560a9a1)}.shadow-boss:before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse,#8056ae50,transparent 70%);z-index:-1;animation:game-boss-aura 2.5s ease-in-out infinite alternate}.shadow-boss strong,.quest-boss strong{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);background:#352d49ec;color:#fff2c8;border:1px solid #cfb48185;border-radius:8px;padding:4px 9px;font-size:10px;font-weight:600;white-space:nowrap}.boss-hp{display:block;position:absolute;bottom:-15px;left:18%;width:64%;height:7px;border:1px solid #e3c48d7a;border-radius:8px;background:#33263c;overflow:hidden}.boss-hp>span{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#a869ac,#e1b27c);transition:width .4s}.battle-status{display:inline-block;margin-top:12px!important;border:1px solid #e3dfc8;border-radius:9px;padding:5px 9px;background:#f4f0dd;color:#63552f;font-size:11px}.demo-tools{text-align:center;margin:12px 0 20px}.demo-tools button{font-size:12px}.demo-tools p{font-size:11px;color:#66736b;margin-top:8px}.quest-stage[data-item="sword"] .quest-gear{left:15%;width:130px;z-index:8}.quest-enemy{position:absolute;width:160px;height:160px;top:55px;right:8%;filter:drop-shadow(0 5px 10px #241d3b77);animation:game-shadow-hover 3s ease-in-out infinite}.quest-boss{width:205px;height:205px;top:18px;right:6%;filter:drop-shadow(0 0 20px #a36bcb99)}.quest-boss strong{bottom:7px}.quest-boss .boss-hp{bottom:-5px}.quest-stage[data-phase="acting"][data-item="sword"] .quest-enemy{animation:game-enemy-hit .95s ease-out both}.quest-stage[data-phase="acting"].boss-quest .quest-enemy{animation:game-boss-hit .95s ease-out both}.quest-stage.boss-quest{box-shadow:inset 0 0 75px #5b347eaa}.quest-stage[data-phase="complete"].boss-quest{box-shadow:inset 0 0 50px #ffeb9a55;transition:box-shadow 1s}.game-paused *,.game-paused *:before,.game-paused *:after{animation-play-state:paused!important}
+@keyframes game-shadow-hover{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -9px;rotate:2deg}}@keyframes game-boss-aura{to{opacity:.5;scale:1.15}}@keyframes game-enemy-hit{0%,30%{opacity:1}45%{filter:brightness(2);translate:10px 0}100%{opacity:0;translate:20px -18px;scale:1.2}}@keyframes game-boss-hit{0%,30%{translate:0 0}45%{filter:brightness(2.2);translate:10px 0}55%{translate:-6px 0}65%{translate:4px 0}100%{translate:0 0}}
+@media(max-width:720px){.garden-game .shadow-enemy{width:74px;height:74px;left:8%;top:48%}.garden-game .shadow-enemy-1{width:65px;height:65px;left:46%;top:63%}.garden-game .shadow-enemy-2{width:63px;height:63px;left:5%;top:28%}.garden-game .shadow-boss{width:104px;height:104px;top:43%;left:5%}.shadow-boss strong{font-size:9px;padding:3px 6px}.garden-game .scene-bottom>div{max-width:76%}.garden-game .scene-bottom p{font-size:11px}.garden-game .battle-entry{font-size:10px;padding:7px 9px;line-height:1.5}.quest-stage[data-item="sword"] .quest-gear{left:7%;width:110px}.quest-enemy{width:140px;height:140px;right:5%;top:45px}.quest-boss{width:168px;height:168px;top:25px;right:1%}.quest-boss strong{font-size:9px}.demo-tools p{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.garden-game .shadow-enemy,.garden-game .quest-enemy,.shadow-boss:before{animation:none!important}.garden-game .boss-hp>span{transition:none}}
+</style>
+  <link rel="preload" href="assets/garden-dawn.png" as="image">
+  <link rel="preload" href="assets/garden-atlas.png" as="image">
+</head>
+<body class="garden-game">
+  <noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
+  <a class="skip-link" href="#garden">前往我的花園</a>
+  <header class="game-header">
+    <a class="game-brand" href="#garden"><span class="brand-symbol">M<span>+</span></span><span>讀經小樹<small>與神同行的每一天</small></span></a>
+    <div class="header-tools"><span class="preview-label">遊戲體驗版</span><button type="button" id="sound" class="icon-button" aria-label="開啟音效" aria-pressed="false"></button></div>
+  </header>
+  <main>
+    <div class="page-heading"><div><p class="eyebrow">MY LITTLE GARDEN</p><h1>每天一點活水，<br class="mobile-break">長成自己的光。</h1><p class="subtitle">因為有你，這座花園更美好。</p></div><p class="demo-note">這裡可以放心體驗。<br>示範進度保存在這台裝置。</p></div>
+    <div class="game-layout">
+      <section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
+        <div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
+        <div class="scene-top"><span class="scene-tag">我的小小庭園</span><span id="scene-day" class="scene-tag"></span></div>
+        <div class="tree-shadow" aria-hidden="true"></div>
+        <div id="tree-object" class="tree-object" role="img" aria-label="嫩葉階段的生命樹"></div>
+        <div class="guardian" id="guardian" aria-label="花園守護者"><div id="guardian-base"></div><div id="guardian-gear" class="guardian-gear"></div></div>
+        <div class="garden-decoration" id="garden-decoration" aria-hidden="true"></div>
+        <div class="garden-enemies" id="garden-enemies" aria-label="花園中的小黑影"></div>
+        <div class="water-rain" aria-hidden="true"></div>
+        <div class="scene-bottom"><div><p id="scene-caption">小樹記得每一份陪伴。</p><button id="defend-garden" class="battle-entry" type="button">取出寶劍，守護花園 · +10 XP</button></div><button id="scene-bag" class="scene-bag" type="button" aria-haspopup="dialog"><span id="bag-object"></span><span>打開裝備包</span><i aria-hidden="true">6</i></button></div>
+        <div id="asset-error" class="asset-error" hidden><p>花園素材暫時沒有載入，請重試。</p><button id="retry-assets" type="button" class="primary">重新載入素材</button></div>
+      </section>
+      <aside class="garden-sidebar">
+        <section class="growth-card" aria-labelledby="growth-title">
+          <div class="section-top"><span class="eyebrow">每一點成長，都看得見</span><button id="journey-open" class="quiet-button" type="button" aria-haspopup="dialog">成長旅程 ↗</button></div>
+          <div class="growth-title"><h2 id="growth-title">Lv.2 嫩葉</h2><span class="small-leaf" aria-hidden="true"></span></div>
+          <p class="xp-total"><strong id="xp-total">220</strong><span>累積經驗 XP</span></p>
+          <div class="xp-track" id="xp-track" role="progressbar" aria-label="本級成長進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><span id="xp-fill"></span></div>
+          <div class="xp-labels"><span id="xp-stage">本級 120／150 XP</span><strong id="xp-percent">80%</strong></div>
+          <p class="next-growth" id="next-growth">再累積 30 XP，小樹就會長大。</p>
+          <div class="growth-footer"><span id="reading-days">已同行 7 天</span><span id="reading-streak">連續 7 天</span></div>
+        </section>
+        <section class="today-card" aria-labelledby="today-title">
+          <p class="eyebrow">TODAY'S LITTLE STEPS</p><h2 id="today-title">今天，為生命澆點水。</h2>
+          <p class="muted">守護花園，再用神的話滋養生命。</p>
+          <p id="battle-status" class="battle-status">今日守護 · 首次完成 +10 XP</p>
+          <button id="read-open" class="primary action-reading" type="button"><span class="button-icon" data-icon="book"></span><span>開始今日讀經<small>試讀 · 以弗所書 6:17</small></span><strong>+20 XP</strong></button>
+          <div class="care-actions"><button id="water" class="secondary" type="button" disabled><span data-icon="water"></span><span>澆水 <small>+5 XP</small></span></button><button id="journal-open" class="secondary" type="button" disabled><span data-icon="journal"></span><span>拾光手札 <small>選填 · +5 XP</small></span></button></div>
+          <p id="daily-status" class="status" role="status">先完成讀經，再回來照顧小樹。</p>
+        </section>
+        <button id="equipment-open" class="equipment-teaser" type="button" aria-haspopup="dialog"><span id="teaser-sword"></span><span><small>神所賜的全副軍裝</small><strong>打開你的裝備包</strong><em>取出、穿戴，帶著真理出發 →</em></span></button>
+      </aside>
+    </div>
+    <section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">今天的小小邀請</p><h2>把一句神的話，帶進生活裡。</h2><p>打開裝備包，用寶劍守護花園，再讀經澆水；或種下一朵花，收藏今天的美好。</p></div><button id="quick-sword" class="secondary" type="button">體驗聖靈寶劍 →</button></section>
+    <p class="scope-note">此版本提供花園、升級與裝備互動示範。全副軍裝可借用體驗；示範 XP 不用於教會禮品兌換。</p>
+    <div class="demo-tools"><button type="button" id="boss-preview" class="secondary">預覽稀有 Boss 造型</button><p>正式遭遇約 10% 機率，獎勵為普通守護的 3 倍。此預覽不加分。</p></div>
+  </main>
+  <nav class="game-nav" aria-label="花園導覽"><a href="#garden" aria-current="page"><span data-icon="leaf"></span>小樹</a><button id="nav-bag" type="button" aria-haspopup="dialog"><span data-icon="bag"></span>裝備包</button><button id="gift-open" type="button" aria-haspopup="dialog"><span data-icon="gift"></span>恩典小舖</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="bag-dialog" class="bag-dialog" aria-labelledby="bag-title">
+    <div class="dialog-heading"><div><p class="eyebrow">YOUR ADVENTURE PACK</p><h2 id="bag-title">我的裝備包</h2></div><button type="button" class="icon-button close-dialog" aria-label="關閉裝備包" data-close="bag-dialog" data-icon="close"></button></div>
+    <div class="bag-intro"><div class="bag-opening" id="bag-opening"></div><p>每件寶物，都陪你把神的話帶進生活。<small>體驗版可借用所有軍裝，正式取得條件會另外顯示。</small></p></div>
+    <div class="inventory-tabs" role="group" aria-label="寶物分類"><button id="armor-tab" type="button" aria-pressed="true">全副軍裝 <span>6</span></button><button id="garden-tab" type="button" aria-pressed="false">花園寶物 <span>5</span></button></div>
+    <div class="inventory-layout"><div id="inventory" class="inventory" aria-label="裝備列表"></div><section class="item-detail" id="item-detail" aria-label="裝備詳情"><div class="detail-plinth"><div id="detail-art" class="detail-art"></div><span class="item-halo"></span></div><p class="item-type" id="item-type"></p><h3 id="item-name"></h3><p id="item-copy"></p><p class="item-reference" id="item-reference"></p><p class="item-unlock" id="item-unlock"></p><div id="item-actions" class="item-actions"></div></section></div>
+  </dialog>
+  <dialog id="quest-dialog" class="quest-dialog" aria-labelledby="quest-title">
+    <div class="dialog-heading"><div><p class="eyebrow">WALK IN THE WORD</p><h2 id="quest-title">讓真理點亮前路</h2></div><button type="button" class="icon-button close-dialog" data-close="quest-dialog" aria-label="離開關卡" data-icon="close"></button></div>
+    <div id="quest-stage" class="quest-stage" data-phase="ready"><div class="quest-fog" aria-hidden="true"><i></i><i></i><i></i></div><div id="quest-gear" class="quest-gear"></div><div class="sword-trail" aria-hidden="true"></div><div class="quest-sparks" aria-hidden="true"></div><div class="quest-shield-wave" aria-hidden="true"></div><div id="quest-special" class="quest-special"></div><span id="quest-counter" class="quest-counter">準備出發</span></div>
+    <div class="quest-copy"><p id="quest-scenario"></p><p id="quest-verse" class="quest-verse"></p><p id="quest-hint" class="status" role="status"></p><div id="quest-options" class="quest-options"></div><button type="button" id="quest-action" class="primary"></button><button type="button" id="quest-return" class="quiet-button" hidden>收回裝備，回到花園 →</button></div>
+  </dialog>
+  <dialog id="reading-dialog" class="text-dialog" aria-labelledby="reading-title"><div class="dialog-heading"><div><p class="eyebrow">今日試讀</p><h2 id="reading-title">以弗所書 6:17</h2></div><button type="button" class="icon-button" data-close="reading-dialog" data-icon="close" aria-label="關閉讀經"></button></div><p class="scripture">並戴上救恩的頭盔，拿著聖靈的寶劍，就是神的道。</p><p class="muted">慢慢讀，也可以聽。今天有哪一句話陪伴你？</p><button type="button" class="secondary" id="read-aloud"><span data-icon="sound"></span>聆聽這段經文</button><button type="button" id="read-complete" class="primary">我讀完了，回到小樹 · +20 XP</button><p class="status">這是遊戲示範的試讀片段；正式版沿用教會的完整讀經計畫。</p></dialog>
+  <dialog id="journal-dialog" class="text-dialog" aria-labelledby="journal-title"><form id="journal-form"><div class="dialog-heading"><div><p class="eyebrow">A MOMENT TO KEEP</p><h2 id="journal-title">珍藏今天的拾光</h2></div><button type="button" class="icon-button" data-close="journal-dialog" data-icon="close" aria-label="關閉手札"></button></div><label for="journal-note">今天觸動你的一句話<textarea id="journal-note" maxlength="500" rows="5" placeholder="今天，神的話讓我想到……"></textarea></label><p class="muted">選填、私人收藏；修改同一天的內容不會重複增加 XP。</p><p id="journal-status" class="status" role="status"></p><button class="primary" type="submit">珍藏這份拾光</button></form></dialog>
+  <dialog id="journey-dialog" class="text-dialog" aria-labelledby="journey-title"><div class="dialog-heading"><h2 id="journey-title">小樹的成長旅程</h2><button type="button" class="icon-button" data-close="journey-dialog" data-icon="close" aria-label="關閉成長旅程"></button></div><ol id="journey-list" class="journey-list"></ol><p class="muted">經驗永久累積，達到門檻立即成長。休息幾天，小樹也會保留你的努力。</p></dialog>
+  <dialog id="gift-dialog" class="text-dialog" aria-labelledby="gift-title"><div class="dialog-heading"><h2 id="gift-title">恩典小舖</h2><button type="button" class="icon-button" data-close="gift-dialog" data-icon="close" aria-label="關閉恩典小舖"></button></div><p>禮品、庫存與主日領取流程正在規劃中。</p><p class="muted">遊戲體驗版先讓你照顧小樹、收藏與使用裝備。正式點數會與小樹 XP 分開，領禮品也保留小樹等級。</p></dialog>
+  <script type="module">
+// XP is derived from saved, unique reading dates; it is never a gift balance.
+const LEVELS = Object.freeze([
+  { level: 1, xp: 0, name: '種子與新芽', art: 'sapling' },
+  { level: 2, xp: 100, name: '嫩葉', art: 'sapling' },
+  { level: 3, xp: 250, name: '小樹', art: 'tree' },
+  { level: 4, xp: 500, name: '枝葉舒展', art: 'tree' },
+  { level: 5, xp: 900, name: '初花', art: 'bloom' },
+  { level: 6, xp: 1500, name: '祝福果實', art: 'bloom' },
+  { level: 7, xp: 2400, name: '生命之光', art: 'bloom' },
+]);
+const DAY = 86400000;
+const ordinal = value => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return null;
+  const date = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(date) && new Date(date).toISOString().slice(0, 10) === value ? date / DAY : null;
+};
+function dateAtOffset(date, offset) {
+  const day = ordinal(date);
+  if (day === null) throw new TypeError('日期格式不正確');
+  return new Date((day + offset) * DAY).toISOString().slice(0, 10);
+}
+function levelForXP(value) {
+  const xp = Math.max(0, Math.floor(Number(value) || 0));
+  const index = LEVELS.findLastIndex(item => xp >= item.xp);
+  const current = LEVELS[Math.max(0, index)], next = LEVELS[index + 1] || null;
+  return { xp, current, next, remaining: next ? next.xp - xp : 0,
+    fraction: next ? (xp - current.xp) / (next.xp - current.xp) : 1 };
+}
+function readingProgress({ records = [], notes = [], battles = [], startDate, today }) {
+  const first = ordinal(startDate), last = ordinal(today), dates = new Map();
+  for (const record of records) {
+    const day = ordinal(record.reading_date);
+    if (first === null || last === null || day === null || day < first || day > last) continue;
+    if (!['on_time', 'makeup'].includes(record.completion_type)) continue;
+    const previous = dates.get(record.reading_date);
+    dates.set(record.reading_date, { ...record,
+      completion_type: previous?.completion_type === 'on_time' ? 'on_time' : record.completion_type,
+      watered_at: record.watered_at || previous?.watered_at || null });
+  }
+  const noteDates = new Set(notes.filter(note => dates.has(note.reading_date) && String(note.note || '').trim()).map(note => note.reading_date));
+  const weeks = new Map();
+  for (const date of dates.keys()) {
+    const week = Math.floor((ordinal(date) - first) / 7);
+    weeks.set(week, (weeks.get(week) || 0) + 1);
+  }
+  const battleDates = new Map();
+  for (const battle of battles) {
+    const date = typeof battle === 'string' ? battle : battle?.reading_date;
+    const value = ordinal(date);
+    if (value === null || first === null || last === null || value < first || value > last) continue;
+    // Normal encounter 10 XP, rare boss encounter 30 XP. At most one award/date.
+    const award = typeof battle === 'object' && battle?.kind === 'boss' ? 30 : 10;
+    battleDates.set(date, Math.max(battleDates.get(date) || 0, award));
+  }
+  const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: dates.size * 20, water: [...dates.values()].filter(r => r.watered_at).length * 5,
+    journal: noteDates.size * 5, weekly: [...weeks.values()].filter(count => count >= 5).length * 30 };
+  let day = dates.get(today)?.completion_type === 'on_time' ? today : dateAtOffset(today, -1), streak = 0;
+  while (dates.get(day)?.completion_type === 'on_time') { streak++; day = dateAtOffset(day, -1); }
+  return { ...levelForXP(Object.values(breakdown).reduce((sum, n) => sum + n, 0)),
+    days: dates.size, streak, breakdown, todayRecord: dates.get(today), todayNote: noteDates.has(today) };
+}
+
+
+const $ = selector => document.querySelector(selector);
+function taipeiDay() {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  return ['year', 'month', 'day'].map(type => parts.find(part => part.type === type).value).join('-');
+}
+let today = taipeiDay();
+const STORAGE = 'mplus-tree-game-demo-v1';
+const motion = matchMedia('(prefers-reduced-motion: reduce)');
+const ATLAS = 'assets/garden-atlas.png';
+const rects = {
+  sapling: [50, 50, 262, 310], tree: [380, 0, 320, 360], bloom: [703, 0, 420, 360],
+  guardian: [1132, 0, 245, 367], bag: [28, 395, 300, 313], openBag: [389, 372, 304, 338],
+  sword: [820, 355, 170, 375], shield: [1130, 370, 265, 352], belt: [22, 820, 320, 185],
+  breastplate: [370, 720, 325, 360], boots: [728, 758, 351, 284], helmet: [1123, 720, 278, 359],
+};
+const equipment = [
+  { id: 'belt', name: '真理腰帶', days: 3, copy: '把真理繫在心上。練習辨認謊言，選擇誠實的行動。', title: '把真理繫在心上', scenario: '做錯事時，我很怕被責備，想把事情藏起來。', reminder: '今天，讓真理幫助我站穩。', action: '扣上真理腰帶', options: ['誠實承認，尋求幫助', '用另一個謊言藏起來'], correct: 0 },
+  { id: 'breastplate', name: '公義護心鏡', days: 5, copy: '擦亮護心鏡，在生活裡選擇誠實、公平與憐憫。', title: '擦亮護心鏡，守護我的心', scenario: '用手指慢慢擦開灰霧，讓護心鏡重新發光。也可以點下方按鈕。', reminder: '今天，我願意公平對待身邊的人。', action: '擦亮一部分', options: [] },
+  { id: 'boots', name: '平安福音的鞋', days: 7, copy: '沿著祝福的小徑，走向需要關心的人。', title: '走一條祝福的路', scenario: '有人今天感到孤單。讓我們帶著一句祝福，走近他。', reminder: '今天，我願意主動關心一個人。', action: '往前一步', options: [] },
+  { id: 'shield', name: '信心盾牌', days: 10, copy: '倚靠神站穩，舉起盾牌抵擋試探的火箭。', title: '站穩，別怕', scenario: '火箭正在靠近。點按盾牌，或按下「舉起盾牌」守護花園。', reminder: '遇到困難，我可以倚靠神，也可以尋求幫助。', action: '舉起盾牌', options: [] },
+  { id: 'helmet', name: '救恩頭盔', days: 14, copy: '一片一片拼出盼望，記得神的拯救。', title: '記得我的盼望', scenario: '依序點選三片盼望拼圖，讓救恩頭盔亮起。', reminder: '今天，帶著神所賜的盼望出發。', action: '點亮下一片', options: ['神的拯救', '神的慈愛', '在主裡有盼望'] },
+  { id: 'sword', name: '聖靈寶劍', days: 21, copy: '拿起神的話。揮出經文之光，驅散花園裡的黑霧。', title: '讓真理點亮前路', scenario: '花園裡出現小黑影。從裝備包取出寶劍，讓經文之光照亮前路。', reminder: '寶劍所指的是神的話。把今天的話，帶進生活裡。', action: '揮出經文之光', options: [] },
+];
+const decorations = [
+  { id: 'flower', name: '祝福小花', copy: '種在小樹旁，讓花園多一份美好。', days: 1 },
+  { id: 'lamp', name: '暖光小燈', copy: '把一盞溫暖的小燈，放在小樹旁。', days: 3 },
+  { id: 'bird', name: '同行小鳥', copy: '讓小鳥停在樹旁，陪你慢慢長大。', days: 7 },
+  { id: 'fountain', name: '活水噴泉', copy: '讓花園多一處活水，收藏每天的滋養。', days: 14 },
+  { id: 'fruit', name: '祝福果實', copy: '把祝福果實掛在樹上，記得一路的恩典。', days: 30 },
+];
+const iconPaths = {
+  leaf: '<path d="M20 3C9 2 3 6 4 13c1 7 10 7 13 1 2-4 2-8 3-11Z"/><path d="m3 21 11-12"/>',
+  book: '<path d="M12 5C8 3 4 3 2 5v15c3-2 6-2 10 0 4-2 7-2 10 0V5c-3-2-7-2-10 0Zm0 0v15"/>',
+  water: '<path d="M12 2c-3 5-7 9-7 13a7 7 0 0 0 14 0c0-4-4-8-7-13Z"/><path d="M8 15a4 4 0 0 0 4 4"/>',
+  journal: '<path d="M5 3h13v18H5ZM8 3v18m3-13h4m-4 4h4m-4 4h3"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 1v2m0 18v2M1 12h2m18 0h2M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/>',
+  bag: '<path d="M6 8V6a6 6 0 0 1 12 0v2M6 8h12l2 12H4Zm2 5h8v7M9 8v2m6-2v2"/>',
+  gift: '<path d="M3 8h18v5H3Zm2 5v9h14v-9M12 8v14"/><path d="M12 8C3 8 6-2 12 8Zm0 0c9 0 6-10 0 0Z"/>',
+  close: '<path d="m6 6 12 12M6 18 18 6"/>',
+  sound: '<path d="m11 4-5 4H3v8h3l5 4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',
+  mute: '<path d="m11 4-5 4H3v8h3l5 4Zm5 5 6 6m0-6-6 6"/>',
+  flower: '<path d="M12 10C3-4-3 10 8 12-3 17 8 27 12 16c4 11 15 1 4-4 11-2 5-16-4-2Z" fill="#e5b09d" stroke="#d18c77"/><circle cx="12" cy="12" r="3" fill="#f3d688"/><path d="M12 17v7" stroke="#6e8c50"/>',
+  lamp: '<path d="M8 6h8l2 12H6Zm4-5v5m-4 15h8M12 18v3" fill="#e9c873" stroke="#8f793f"/><path d="M11 10h2v5h-2" stroke="#fff9d8"/>',
+  bird: '<path d="M3 15c1-8 13-7 14-2l5 1-5 3c-3 5-9 3-14-2Z" fill="#a7c3b0" stroke="#5d806e"/><path d="m8 13 5 3-4 1"/><circle cx="15" cy="13" r=".8" fill="#314738"/>',
+  fountain: '<path d="M3 18h18l-3 4H6Zm9 0V6m0 8C5-1 3 9 4 12m8 2C19-1 21 9 20 12" stroke="#9ad4d5"/><path d="M9 6h6M6 18h12" stroke="#b5af86"/>',
+  fruit: '<path d="M12 7C1 2 1 20 10 22c2-1 2-1 4 0 9-2 9-20-2-15Z" fill="#ddb36c" stroke="#ad8a46"/><path d="M12 8V2c5-1 6 2 0 3" stroke="#688b51"/><path d="M7 11v4" stroke="#fff1bd"/>',
+};
+const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name] || iconPaths.leaf}</svg>`;
+let spriteSequence = 0;
+function sprite(id) {
+  const rect = rects[id] || rects.sword;
+  const clip = `garden-sprite-${++spriteSequence}`;
+  return `<svg class="game-sprite" viewBox="${rect.join(' ')}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${ATLAS}" width="1448" height="1086" clip-path="url(#${clip})"/></svg>`;
+}
+const itemArt = item => rects[item.id] ? sprite(item.id) : `<span class="decoration-icon">${icon(item.id)}</span>`;
+const hasBattle = date => state.battles.some(battle => (typeof battle === 'string' ? battle : battle?.reading_date) === date);
+const battleReward = () => state.encounters[today]?.boss ? 30 : 10;
+function seed() {
+  const startDate = dateAtOffset(today, -7);
+  return { version: 1, startDate, records: Array.from({ length: 7 }, (_, i) => ({ reading_date: dateAtOffset(startDate, i), completion_type: 'on_time', watered_at: 'demo' })),
+    notes: Array.from({ length: 3 }, (_, i) => ({ reading_date: dateAtOffset(startDate, i), note: '示範拾光：謝謝神今天的陪伴。' })),
+    battles: [], encounters: {}, equipped: [], placed: [], sound: false };
+}
+function readState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE));
+    if (saved?.version === 1 && /^\d{4}-\d{2}-\d{2}$/.test(saved.startDate) && ['records', 'notes', 'battles', 'equipped', 'placed'].every(k => Array.isArray(saved[k]))) {
+      return { ...saved, records: saved.records.filter(r => r && typeof r === 'object'), notes: saved.notes.filter(n => n && typeof n === 'object'),
+        equipped: saved.equipped.filter(id => equipment.some(item => item.id === id)), placed: saved.placed.filter(id => decorations.some(item => item.id === id)),
+        encounters: saved.encounters && typeof saved.encounters === 'object' ? saved.encounters : {}, sound: saved.sound === true };
+    }
+  } catch { /* Private browsing can still use the page in memory. */ }
+  return seed();
+}
+let state = readState(), category = 'armor', selected = 'sword', busy = false, quest = null, questEpoch = 0, toastTimer, sceneTimer;
+let storageAvailable = true, previousXP = null, audioContext;
+const dialogOpeners = new Map();
+function persist() {
+  try { localStorage.setItem(STORAGE, JSON.stringify(state)); storageAvailable = true; }
+  catch { storageAvailable = false; }
+}
+function announce(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').classList.add('visible'); toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 3300); }
+function saveMessage(message) { announce(storageAvailable ? message : `${message}；此瀏覽器目前只保留本次開啟的進度。`); }
+function sound(kind) {
+  if (!state.sound) return;
+  try {
+    audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+    void audioContext.resume();
+    const notes = kind === 'sword' ? [330, 660, 988] : kind === 'level' ? [523, 659, 784, 1047] : kind === 'water' ? [1047, 784, 1175] : [392, 523];
+    const at = audioContext.currentTime;
+    notes.forEach((frequency, index) => {
+      const oscillator = audioContext.createOscillator(), gain = audioContext.createGain(), start = at + index * .09;
+      oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(.0001, start); gain.gain.exponentialRampToValueAtTime(.04, start + .025); gain.gain.exponentialRampToValueAtTime(.0001, start + .25);
+      oscillator.connect(gain); gain.connect(audioContext.destination); oscillator.start(start); oscillator.stop(start + .27);
+      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+    });
+  } catch { /* Visual feedback is always available without sound. */ }
+}
+function openDialog(id, opener = document.activeElement) {
+  const dialog = document.getElementById(id);
+  dialogOpeners.set(id, opener);
+  if (!dialog.open) dialog.showModal();
+  document.body.classList.add('body-dialog-open');
+  dialog.querySelector('button:not(:disabled), textarea')?.focus({ preventScroll: true });
+}
+function closeDialog(id) {
+  const dialog = document.getElementById(id);
+  if (id === 'quest-dialog') { questEpoch++; quest = null; }
+  if (id === 'reading-dialog') window.speechSynthesis?.cancel();
+  dialog.close();
+  if (!document.querySelector('dialog[open]')) document.body.classList.remove('body-dialog-open');
+  const opener = dialogOpeners.get(id);
+  if (opener?.isConnected && !opener.disabled) opener.focus({ preventScroll: true });
+}
+function progress() { return readingProgress({ ...state, today }); }
+function updateProgress() {
+  const p = progress(), old = previousXP === null ? null : LEVELS.filter(level => level.xp <= previousXP).at(-1);
+  $('#growth-title').textContent = `Lv.${p.current.level} ${p.current.name}`;
+  $('#xp-total').textContent = p.xp.toLocaleString('zh-TW');
+  $('#xp-fill').style.width = `${Math.round(p.fraction * 100)}%`;
+  $('#xp-track').setAttribute('aria-valuenow', String(Math.round(p.fraction * 100)));
+  $('#xp-track').setAttribute('aria-valuetext', p.next ? `累積 ${p.xp} XP，距離${p.next.name}還差 ${p.remaining} XP` : '已達目前最高階段，經驗持續累積');
+  $('#xp-percent').textContent = `${Math.round(p.fraction * 100)}%`;
+  $('#xp-stage').textContent = p.next ? `本級 ${p.xp - p.current.xp}／${p.next.xp - p.current.xp} XP` : '已達目前最高階段';
+  $('#next-growth').textContent = p.next ? `再累積 ${p.remaining} XP，就會長成「${p.next.name}」。` : '經驗持續累積，與小樹一起同行。';
+  $('#reading-days').textContent = `已同行 ${p.days} 天`; $('#reading-streak').textContent = `連續 ${p.streak} 天`;
+  const tree = $('#tree-object');
+  if (tree.dataset.art !== p.current.art) { tree.innerHTML = sprite(p.current.art); tree.dataset.art = p.current.art; }
+  tree.dataset.level = String(p.current.level); tree.setAttribute('aria-label', `Lv.${p.current.level} ${p.current.name}，累積 ${p.xp} XP 的生命樹`);
+  $('#water').disabled = !p.todayRecord || !!p.todayRecord.watered_at || busy;
+  $('#journal-open').disabled = !p.todayRecord || busy;
+  $('#read-open').querySelector('span:nth-child(2)').innerHTML = `${p.todayRecord ? '再讀一次今日經文' : '開始今日讀經'}<small>試讀 · 以弗所書 6:17</small>`;
+  $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
+  $('#water').querySelector('span:nth-child(2)').innerHTML = p.todayRecord?.watered_at ? '已澆水<small>今天的活水已送達</small>' : '澆水 <small>+5 XP</small>';
+  $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '可以先守護花園，再開始今天的讀經。';
+  $('#battle-status').textContent = hasBattle(today) ? `今日守護已完成 · +${battleReward()} XP 已收藏` : state.encounters[today]?.boss ? '稀有 Boss 出現 · 完成守護 +30 XP' : '今日守護 · 首次完成 +10 XP';
+  $('#journey-list').replaceChildren(...LEVELS.map(level => {
+    const row = document.createElement('li'); row.classList.toggle('is-current', level.level === p.current.level);
+    row.innerHTML = `<span>${level.level}</span><div><strong>${level.name}</strong><small>累積 ${level.xp.toLocaleString()} XP</small></div><em>${level.level === p.current.level ? '目前階段' : level.xp <= p.xp ? '已達成' : '等待成長'}</em>`;
+    return row;
+  }));
+  if (old && p.current.level > old.level) {
+    tree.classList.remove('is-growing'); requestAnimationFrame(() => tree.classList.add('is-growing'));
+    const celebration = document.createElement('div'); celebration.className = 'growth-celebration';
+    celebration.innerHTML = `<div><strong>小樹長大了！</strong><span>Lv.${p.current.level} ${p.current.name} · 累積 ${p.xp} XP</span></div>`;
+    document.body.append(celebration); sound('level'); setTimeout(() => celebration.remove(), motion.matches ? 1800 : 2800);
+  }
+  previousXP = p.xp;
+}
+function ensureEncounter() {
+  const entry = state.encounters[today];
+  if (!entry || !Number.isInteger(entry.count) || entry.count < 1 || entry.count > 3) {
+    const roll = crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
+    const boss = roll < .1;
+    state.encounters[today] = { boss, count: boss ? 3 : 1 + Math.floor(Math.random() * 3), defeated: 0 }; persist();
+  }
+  state.encounters[today].defeated = hasBattle(today) ? state.encounters[today].count : Math.min(state.encounters[today].count, Math.max(0, Math.floor(Number(state.encounters[today].defeated) || 0)));
+}
+function renderEncounter() {
+  const encounter = state.encounters[today], remaining = encounter.count - encounter.defeated, container = $('#garden-enemies');
+  container.replaceChildren();
+  for (let i = 0; i < (encounter.boss && remaining ? 1 : remaining); i++) {
+    const button = document.createElement('button'); button.type = 'button'; button.className = `shadow-enemy shadow-enemy-${i}${encounter.boss ? ' shadow-boss' : ''}`;
+    button.setAttribute('aria-label', encounter.boss ? `稀有黑影 Boss，還有 ${remaining} 格生命，完成獲得 30 XP` : `小黑影 ${i + 1}，打開裝備包取出寶劍`);
+    button.innerHTML = `<span style="--shadow-index:${encounter.boss ? 1 : i % 3}" aria-hidden="true"></span>`;
+    if (encounter.boss) { const label = document.createElement('strong'); label.textContent = '稀有 Boss · 3 倍 XP'; const hp = document.createElement('i'); hp.className = 'boss-hp'; hp.innerHTML = `<span style="width:${remaining / encounter.count * 100}%"></span>`; button.append(label, hp); }
+    button.addEventListener('click', () => openBag('sword')); container.append(button);
+  }
+  $('#defend-garden').hidden = remaining <= 0;
+  $('#defend-garden').textContent = encounter.boss ? '迎戰稀有 Boss · +30 XP' : '取出寶劍，守護花園 · +10 XP';
+  $('#scene-caption').textContent = remaining ? encounter.boss ? '稀有黑影 Boss 出現了！一起守護花園。' : `${remaining} 隻小黑影出現了，拿起神的話守護花園。` : '花園重新明亮，謝謝你的守護。';
+}
+function renderGuardian() {
+  $('#guardian-base').innerHTML = sprite('guardian');
+  $('#guardian-gear').innerHTML = state.equipped.map(id => `<span class="guardian-slot slot-${id}">${sprite(id)}</span>`).join('');
+  $('#guardian').setAttribute('aria-label', `花園守護者${state.equipped.length ? '，已穿戴' + state.equipped.map(id => equipment.find(item => item.id === id).name).join('、') : '，尚未穿戴軍裝'}`);
+}
+function renderDecorations() {
+  const positions = { flower: [26, 79], lamp: [17, 66], bird: [50, 40], fountain: [82, 73], fruit: [39, 41] };
+  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${positions[id][0]}%;top:${positions[id][1]}%">${icon(id)}</span>`).join('');
+}
+function renderInventory() {
+  const items = category === 'armor' ? equipment : decorations;
+  $('#armor-tab').setAttribute('aria-pressed', String(category === 'armor')); $('#garden-tab').setAttribute('aria-pressed', String(category === 'garden'));
+  if (!items.some(item => item.id === selected)) selected = items[0].id;
+  $('#inventory').replaceChildren(...items.map(item => {
+    const button = document.createElement('button'); button.type = 'button'; button.dataset.item = item.id;
+    button.setAttribute('aria-pressed', String(selected === item.id)); button.classList.toggle('is-equipped', state.equipped.includes(item.id));
+    button.innerHTML = `<span class="item-sprite">${itemArt(item)}</span><strong>${item.name}</strong><small>${state.equipped.includes(item.id) ? '已穿戴' : '可借用體驗'}</small>`;
+    button.onclick = () => { selected = item.id; renderInventory(); $('#inventory').querySelector(`[data-item="${item.id}"]`)?.focus({ preventScroll: true }); sound('pick'); };
+    return button;
+  }));
+  const item = items.find(item => item.id === selected), p = progress();
+  $('#detail-art').innerHTML = itemArt(item); $('#detail-art').classList.remove('is-taking'); requestAnimationFrame(() => $('#detail-art').classList.add('is-taking'));
+  $('#item-type').textContent = category === 'armor' ? '全副軍裝 · 體驗借用' : '花園寶物 · 體驗借用';
+  $('#item-name').textContent = item.name; $('#item-copy').textContent = item.copy;
+  $('#item-reference').textContent = category === 'armor' ? '以弗所書 6:10–18' : '讓每一份陪伴，都留在花園裡。';
+  $('#item-unlock').textContent = `正式收藏提案：累積 ${item.days} 個讀經日期。${p.days < item.days ? `以示範紀錄計，還差 ${item.days - p.days} 天。` : '示範讀經天數已達條件。'}`;
+  $('#item-actions').replaceChildren();
+  if (category === 'armor') {
+    const equip = document.createElement('button'); equip.type = 'button'; equip.className = 'secondary';
+    equip.textContent = state.equipped.includes(item.id) ? '收回這件軍裝' : '穿戴到守護者';
+    equip.onclick = () => { state.equipped = state.equipped.includes(item.id) ? state.equipped.filter(id => id !== item.id) : [...state.equipped, item.id]; persist(); renderGuardian(); renderInventory(); saveMessage(state.equipped.includes(item.id) ? `${item.name}已穿戴` : `${item.name}已收回裝備包`); };
+    const use = document.createElement('button'); use.type = 'button'; use.className = 'primary';
+    const active = item.id === 'sword' && state.encounters[today].defeated < state.encounters[today].count;
+    use.textContent = active ? '取出寶劍，守護花園' : '取出裝備，開始體驗'; use.onclick = () => openQuest(item, active);
+    $('#item-actions').append(equip, use);
+  } else {
+    const place = document.createElement('button'); place.type = 'button'; place.className = 'primary'; place.textContent = state.placed.includes(item.id) ? '收回裝備包' : '放進我的花園';
+    place.onclick = () => { state.placed = state.placed.includes(item.id) ? state.placed.filter(id => id !== item.id) : [...state.placed, item.id]; persist(); renderDecorations(); renderInventory(); saveMessage(state.placed.includes(item.id) ? `${item.name}已放進花園` : `${item.name}已收回`); };
+    $('#item-actions').append(place);
+  }
+}
+function openBag(item = selected) {
+  category = equipment.some(gear => gear.id === item) ? 'armor' : 'garden'; selected = item;
+  $('#bag-opening').innerHTML = sprite('bag'); $('#bag-opening').classList.remove('is-opening');
+  renderInventory(); openDialog('bag-dialog'); sound('bag');
+  requestAnimationFrame(() => { $('#bag-opening').classList.add('is-opening'); });
+  setTimeout(() => { if ($('#bag-dialog').open) $('#bag-opening').innerHTML = sprite('openBag'); }, motion.matches ? 0 : 220);
+}
+function openQuest(item, encounter = false, bossPreview = false) {
+  quest = { item, encounter, boss: bossPreview || (encounter && state.encounters[today].boss), hits: 0, total: encounter ? state.encounters[today].count - state.encounters[today].defeated : item.id === 'belt' ? 1 : 3, selected: false, busy: false, complete: false, epoch: ++questEpoch };
+  $('#quest-title').textContent = item.title; $('#quest-scenario').textContent = item.scenario;
+  $('#quest-verse').textContent = item.id === 'sword' ? '聖靈的寶劍，就是神的道。——以弗所書 6:17' : item.reminder;
+  $('#quest-gear').innerHTML = sprite(item.id); $('#quest-stage').dataset.item = item.id; $('#quest-stage').dataset.phase = 'entering';
+  $('#quest-special').innerHTML = item.id === 'breastplate' ? '<div class="armor-mist"></div>' : item.id === 'shield' ? '<div class="quest-arrow"></div>' : item.id === 'helmet' ? '<div class="puzzle-glow"></div>' : item.id === 'boots' ? [0, 1, 2].map(i => `<span class="trail-flower" style="left:${20 + i * 23}%;top:${76 - i * 20}%">${icon('flower')}</span>`).join('') : '';
+  $('#quest-options').replaceChildren();
+  item.options.forEach((label, index) => {
+    const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.setAttribute('aria-pressed', 'false');
+    button.onclick = () => {
+      if (!quest || quest.item.id !== item.id || quest.busy || quest.complete) return;
+      if (item.id === 'helmet') {
+        if (index !== quest.hits) { $('#quest-hint').textContent = '從左邊第一片開始，依序點亮三份盼望。'; return; }
+        void actQuest(); return;
+      }
+      if (index !== item.correct) { $('#quest-hint').textContent = '再想一想：什麼行動能幫助我們誠實面對？'; return; }
+      quest.selected = true; button.setAttribute('aria-pressed', 'true'); $('#quest-hint').textContent = '願意誠實面對，現在把真理繫在心上。'; $('#quest-action').disabled = false;
+    };
+    $('#quest-options').append(button);
+  });
+  $('#quest-action').textContent = item.action;
+  $('#quest-return').disabled = false; $('#quest-gear').style.filter = '';
+  $('#quest-action').disabled = item.id === 'belt'; $('#quest-action').hidden = false;
+  $('#quest-return').hidden = true; $('#quest-counter').textContent = quest.boss ? `稀有 Boss · 生命 ${quest.total}／3${bossPreview ? ' · 造型預覽' : ' · 3 倍 XP'}` : encounter ? `花園守護 · ${quest.total} 隻小黑影` : `裝備體驗 · 0／${quest.total}`;
+  $('#quest-hint').textContent = encounter ? `完成今日首次守護，即可獲得 ${battleReward()} XP，再去讀經澆水。` : item.id === 'belt' ? '先選擇一個願意實踐的行動。' : '點按按鈕就能操作；也可以直接點圖中的裝備。';
+  if (bossPreview) $('#quest-hint').textContent = 'Boss 造型預覽：攻擊三次驅散黑影。預覽不發放 XP，也不影響今日遭遇。';
+  $('#quest-stage').classList.toggle('boss-quest', !!quest.boss);
+  if (item.id === 'sword') renderQuestEnemies();
+  openDialog('quest-dialog');
+  const epoch = quest.epoch; setTimeout(() => { if (quest?.epoch === epoch && !quest.busy && !quest.complete) $('#quest-stage').dataset.phase = 'ready'; }, motion.matches ? 0 : 750);
+}
+function renderQuestEnemies() {
+  if (!quest || quest.item.id !== 'sword') return;
+  const left = quest.total - quest.hits;
+  $('#quest-special').innerHTML = left ? `<div class="quest-enemy${quest.boss ? ' quest-boss' : ''}"><span class="shadow-art" style="--shadow-index:${quest.boss ? 1 : quest.hits % 3}"></span>${quest.boss ? `<strong>稀有黑影 Boss</strong><i class="boss-hp"><span style="width:${left / 3 * 100}%"></span></i>` : ''}</div>` : '';
+}
+const pause = ms => new Promise(resolve => setTimeout(resolve, motion.matches ? Math.min(120, ms) : ms));
+async function actQuest() {
+  const current = quest;
+  if (!current || current.busy || current.complete || (current.item.id === 'belt' && !current.selected)) return;
+  current.busy = true; $('#quest-action').disabled = true; $('#quest-stage').dataset.phase = 'acting'; sound(current.item.id === 'sword' ? 'sword' : 'pick');
+  await pause(current.item.id === 'sword' ? 950 : 650);
+  if (quest?.epoch !== current.epoch) return;
+  current.hits++;
+  if (current.encounter) { state.encounters[today].defeated++; persist(); renderEncounter(); }
+  if (current.item.id === 'sword') renderQuestEnemies();
+  if (current.item.id === 'breastplate') $('#quest-special .armor-mist').style.opacity = String(1 - current.hits / current.total);
+  if (current.item.id === 'boots') $('#quest-special').children[current.hits - 1]?.classList.add('visible');
+  if (current.item.id === 'helmet') { $('#quest-options').children[current.hits - 1]?.setAttribute('aria-pressed', 'true'); $('#quest-gear').style.filter = `drop-shadow(0 0 ${current.hits * 10}px #fff1a8)`; }
+  $('#quest-counter').textContent = current.boss ? `Boss 生命 ${current.total - current.hits}／3 · ${current.encounter ? '完成 +30 XP' : '造型預覽'}` : `${current.encounter ? '已驅散' : '已完成'} ${current.hits}／${current.total}`;
+  if (current.hits >= current.total) {
+    current.complete = true; $('#quest-stage').dataset.phase = 'complete'; $('#quest-action').hidden = true; $('#quest-return').hidden = false;
+    if (current.encounter && !hasBattle(today)) {
+      state.battles.push({ reading_date: today, kind: state.encounters[today].boss ? 'boss' : 'normal' }); persist(); updateProgress(); renderEncounter();
+      $('#quest-hint').textContent = `今日守護完成！+${battleReward()} XP 已加入小樹經驗。接著讀經，再回來澆水。`;
+      saveMessage(`${state.encounters[today].boss ? '稀有 Boss 已驅散！' : '花園重新明亮！'}每日守護 +${battleReward()} XP`);
+    } else $('#quest-hint').textContent = `${current.item.reminder} 裝備體驗可重玩，不重複加分。`;
+    $('#quest-return').focus({ preventScroll: true }); sound('level');
+  } else { $('#quest-stage').dataset.phase = 'ready'; $('#quest-action').disabled = false; $('#quest-hint').textContent = `完成 ${current.hits} 次，再 ${current.total - current.hits} 次就完成了。`; }
+  current.busy = false;
+}
+async function returnEquipment() {
+  const current = quest;
+  if (!current || current.busy) return;
+  current.busy = true; $('#quest-return').disabled = true; $('#quest-stage').dataset.phase = 'returning'; sound('bag');
+  await pause(550);
+  if (quest?.epoch !== current.epoch) return;
+  closeDialog('quest-dialog'); if ($('#bag-dialog').open) closeDialog('bag-dialog');
+  $('#quest-return').disabled = false; $('#scene-bag').focus({ preventScroll: true });
+  $('#garden').scrollIntoView({ behavior: motion.matches ? 'auto' : 'smooth', block: 'center' });
+  if (current.encounter) $('#read-open').focus({ preventScroll: true });
+}
+function markRead() {
+  if (!state.records.some(record => record.reading_date === today)) {
+    state.records.push({ reading_date: today, completion_type: 'on_time', watered_at: null }); persist(); updateProgress(); saveMessage('讀經完成 · +20 XP，回來為小樹澆水吧'); sound('pick');
+  } else announce('今天的讀經已記錄，重讀不重複加分。');
+  closeDialog('reading-dialog'); $('#water').focus({ preventScroll: true });
+}
+function water() {
+  const record = state.records.find(record => record.reading_date === today);
+  if (!record || record.watered_at || busy) return;
+  busy = true; record.watered_at = new Date().toISOString(); persist(); updateProgress(); sound('water');
+  $('#garden').dataset.phase = 'watering'; saveMessage('活水送達 · +5 XP，謝謝你今天的陪伴');
+  clearTimeout(sceneTimer); sceneTimer = setTimeout(() => { busy = false; $('#garden').dataset.phase = 'idle'; updateProgress(); }, motion.matches ? 200 : 2300);
+}
+function saveJournal(event) {
+  event.preventDefault(); if (!progress().todayRecord) return;
+  const note = $('#journal-note').value.trim();
+  if (!note) { $('#journal-status').textContent = '寫下一句想收藏的亮光，再按下珍藏。'; $('#journal-note').focus(); return; }
+  const existing = state.notes.find(item => item.reading_date === today);
+  if (existing) existing.note = note; else state.notes.push({ reading_date: today, note });
+  persist(); updateProgress(); closeDialog('journal-dialog'); saveMessage(existing ? '今天的拾光已更新，經驗值保留。' : '拾光已珍藏 · +5 XP'); sound('pick');
+}
+async function loadAssets() {
+  const assets = ['assets/garden-dawn.png', ATLAS, 'assets/garden-shadows.png'];
+  const results = await Promise.allSettled(assets.map(src => new Promise((resolve, reject) => {
+    const image = new Image(), timer = setTimeout(() => { image.onload = null; image.onerror = null; reject(new Error(src)); }, 15000);
+    image.onload = () => { clearTimeout(timer); resolve(src); }; image.onerror = () => { clearTimeout(timer); reject(new Error(src)); }; image.src = src;
+  })));
+  $('#asset-error').hidden = results.every(result => result.status === 'fulfilled');
+}
+document.querySelectorAll('[data-icon]').forEach(node => { node.innerHTML = icon(node.dataset.icon); });
+$('#bag-object').innerHTML = sprite('bag'); $('#teaser-sword').innerHTML = sprite('sword');
+$('#scene-day').textContent = new Intl.DateTimeFormat('zh-TW', { timeZone: 'Asia/Taipei', month: 'long', day: 'numeric' }).format(new Date());
+for (let i = 0; i < 16; i++) { const dot = document.createElement('i'); dot.style.cssText = `left:${12 + Math.random() * 75}%;top:${25 + Math.random() * 55}%;animation-delay:${-Math.random() * 7}s`; $('#fireflies').append(dot); }
+document.querySelectorAll('[data-close]').forEach(button => button.onclick = () => closeDialog(button.dataset.close));
+document.querySelectorAll('dialog').forEach(dialog => {
+  dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog.id); });
+  dialog.addEventListener('click', event => { if (event.target !== dialog) return; const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closeDialog(dialog.id); });
+});
+['scene-bag', 'equipment-open', 'nav-bag', 'defend-garden'].forEach(id => { document.getElementById(id).onclick = () => openBag('sword'); });
+$('#quick-sword').onclick = () => openBag('sword');
+$('#boss-preview').onclick = () => openQuest(equipment.find(item => item.id === 'sword'), false, true);
+$('#armor-tab').onclick = () => { category = 'armor'; selected = 'sword'; renderInventory(); };
+$('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; renderInventory(); };
+$('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();
+$('#read-open').onclick = () => { $('#read-complete').textContent = progress().todayRecord ? '回到小樹' : '我讀完了，回到小樹 · +20 XP'; openDialog('reading-dialog'); };
+$('#read-complete').onclick = markRead; $('#water').onclick = water;
+$('#journal-open').onclick = () => { $('#journal-note').value = state.notes.find(note => note.reading_date === today)?.note || ''; $('#journal-status').textContent = ''; openDialog('journal-dialog'); $('#journal-note').focus(); };
+$('#journal-form').onsubmit = saveJournal; $('#journey-open').onclick = () => openDialog('journey-dialog'); $('#gift-open').onclick = () => openDialog('gift-dialog');
+$('#read-aloud').onclick = () => {
+  if (!window.speechSynthesis) { announce('這個瀏覽器目前無法朗讀，仍可以閱讀經文。'); return; }
+  speechSynthesis.cancel(); const text = new SpeechSynthesisUtterance($('.scripture').textContent); text.lang = 'zh-TW'; text.rate = .85; text.onerror = () => announce('朗讀暫時無法播放，可以稍後再試。'); speechSynthesis.speak(text);
+};
+function renderSound() { $('#sound').innerHTML = icon(state.sound ? 'sound' : 'mute'); $('#sound').setAttribute('aria-pressed', String(state.sound)); $('#sound').setAttribute('aria-label', state.sound ? '關閉音效' : '開啟音效'); }
+$('#sound').onclick = () => { state.sound = !state.sound; persist(); renderSound(); if (state.sound) sound('pick'); };
+$('#retry-assets').onclick = () => { $('#retry-assets').disabled = true; void loadAssets().finally(() => { $('#retry-assets').disabled = false; }); };
+let gesture = null;
+$('#quest-stage').addEventListener('pointerdown', event => {
+  if (!quest || quest.busy || quest.complete) return;
+  gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0 };
+  if (['breastplate', 'sword'].includes(quest.item.id)) $('#quest-stage').setPointerCapture(event.pointerId);
+});
+$('#quest-stage').addEventListener('pointermove', event => {
+  if (!gesture || gesture.id !== event.pointerId || !quest || quest.busy) return;
+  gesture.distance += Math.hypot(event.clientX - gesture.x, event.clientY - gesture.y); gesture.x = event.clientX; gesture.y = event.clientY;
+  if (quest.item.id === 'breastplate' && gesture.distance > 70) { gesture.distance = 0; void actQuest(); }
+});
+$('#quest-stage').addEventListener('pointerup', event => {
+  if (!gesture || gesture.id !== event.pointerId) return;
+  const distance = gesture.distance; gesture = null;
+  if (quest && (quest.item.id === 'sword' || quest.item.id === 'shield') && distance < 2000) void actQuest();
+});
+$('#quest-stage').addEventListener('pointercancel', () => { gesture = null; });
+function refreshDay() {
+  const nextDay = taipeiDay();
+  if (nextDay === today || document.querySelector('dialog[open]') || busy) return;
+  today = nextDay; ensureEncounter(); persist(); renderEncounter(); updateProgress();
+  $('#scene-day').textContent = new Intl.DateTimeFormat('zh-TW', { timeZone: 'Asia/Taipei', month: 'long', day: 'numeric' }).format(new Date());
+  announce('新的一天開始了，一起照顧小樹吧。');
+}
+document.addEventListener('visibilitychange', () => { document.body.classList.toggle('game-paused', document.hidden); if (document.hidden) window.speechSynthesis?.cancel(); else refreshDay(); });
+setInterval(refreshDay, 60000);
+ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderSound(); updateProgress(); void loadAssets();
+
+</script>
+</body>
+</html>

@@ -164,6 +164,7 @@ export class GardenAudio {
       case 'belt': this.hiss(at, .05, 2500, .2); phrase([60, 67], 'pluck', .16); break;
       case 'breastplate': this.hiss(at, .26, 2300, .09); phrase([72, 79], 'bell', .35); break;
       case 'boots': this.drum(at, .1); this.drum(at + .19, .075); this.chirp(at + .28); break;
+      case 'bird': this.chirp(at); this.chirp(at + .24, this.fxBus, .06); break;
       case 'helmet': phrase([72, 76, 79], 'bell', .6); break;
       case 'water': [0, 1, 2, 3, 4, 5].forEach(i => this.tone(80 + i % 3 * 5, at + i * .09, .24, 'sine', .1)); this.hiss(at, .65, 3500, .045); break;
       case 'xp': phrase([72, 79, 84], 'bell', .45); break;

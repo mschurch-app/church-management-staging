@@ -142,12 +142,14 @@
 @keyframes game-decoration-arrive{0%{scale:.5;opacity:0;filter:drop-shadow(0 0 0 #f5df8e)}35%{scale:1.15;opacity:1;filter:drop-shadow(0 0 14px #ffefaa)}65%{scale:.97}100%{scale:1;opacity:1}}
 @media(max-width:720px){.garden-game .placed-bird{width:48px;height:48px}}
 @media(prefers-reduced-motion:reduce){.placed-decoration.just-placed{animation:none}}
+
+.garden-game .festival-preview-card{background:var(--game-paper);border:1px solid var(--game-border);border-radius:24px;padding:24px;margin:24px 0;display:flex;flex-wrap:wrap;align-items:center;gap:20px}.garden-game .festival-preview-card .eyebrow,.garden-game .festival-preview-card h2,.garden-game .festival-preview-card .status{flex-basis:100%}.garden-game .festival-preview-card label{font-size:13px;flex:1;min-width:200px}.garden-game .festival-preview-card select{display:block;width:100%;font:inherit;min-height:48px;color:var(--game-ink);background:#f7f7ee;border:1px solid var(--game-border);border-radius:12px;padding:10px;margin-top:8px}.garden-game .demo-festival-layer{position:absolute;inset:0;z-index:0;pointer-events:none}.garden-game .demo-festival-layer svg{width:100%;height:100%;object-fit:cover}.garden-game .demo-festival-layer:not(:empty):not([data-theme=birthday]){background:#f0f0df}.garden-game .birthday-garden{position:absolute;left:7%;top:16%;width:22%;text-align:center;color:#315740}.garden-game .birthday-garden svg{width:100%;height:auto;filter:drop-shadow(0 7px 7px #8b75533b)}.garden-game .birthday-garden strong{font-size:13px}
 </style>
   <link rel="preload" href="assets/garden-dawn.png" as="image">
   <link rel="preload" href="assets/garden-atlas.png" as="image">
   <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
-</head>
+<link rel="stylesheet" href="../../life-tree-festival-animation.css?v=20261012-member1"></head>
 <body class="garden-game">
   <noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
   <a class="skip-link" href="#garden">前往我的花園</a>
@@ -159,7 +161,7 @@
     <div class="page-heading"><div><p class="eyebrow">MY LITTLE GARDEN</p><h1>每天一點活水，<br class="mobile-break">長成自己的光。</h1><p class="subtitle">因為有你，這座花園更美好。</p></div><p class="demo-note">這裡可以放心體驗。<br>示範進度保存在這台裝置。</p></div>
     <div class="game-layout">
       <section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
-        <div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
+        <div id="demo-festival-layer" class="demo-festival-layer" aria-hidden="true"></div><div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
         <div class="scene-top"><span class="scene-tag">我的小小庭園</span><span id="scene-day" class="scene-tag"></span></div>
         <div class="tree-shadow" aria-hidden="true"></div>
         <div id="tree-object" class="tree-object" role="img" aria-label="嫩葉階段的生命樹"></div>
@@ -191,7 +193,7 @@
         <button id="equipment-open" class="equipment-teaser" type="button" aria-haspopup="dialog"><span id="teaser-sword"></span><span><small>神所賜的全副軍裝</small><strong>打開你的裝備包</strong><em>取出、穿戴，帶著真理出發 →</em></span></button>
       </aside>
     </div>
-    <section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">每件軍裝，都有它的使命</p><h2>看懂事件，帶著合適的裝備出發。</h2><p>六種事件需要六件不同的軍裝。選錯會有叉叉與提示，選對後還要實際使用。</p></div><button id="quick-sword" class="secondary" type="button">體驗六種事件 →</button></section>
+    <section class="festival-preview-card"><p class="eyebrow">同工預覽 · 不影響正式會員紀錄</p><h2>看看節慶裡的小小花園</h2><label for="demo-festival">場景與配樂<select id="demo-festival"></select></label><label for="demo-holy-day" hidden>受難週的每日場景<select id="demo-holy-day"><option value="1">棕樹主日</option><option value="2">潔淨聖殿</option><option value="3">聖殿教導</option><option value="4">心的選擇</option><option value="5">最後晚餐</option><option value="6">受難日</option><option value="7">安息日</option><option value="8">復活主日</option></select></label><p id="demo-festival-status" class="status" role="status"></p></section><section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">每件軍裝，都有它的使命</p><h2>看懂事件，帶著合適的裝備出發。</h2><p>六種事件需要六件不同的軍裝。選錯會有叉叉與提示，選對後還要實際使用。</p></div><button id="quick-sword" class="secondary" type="button">體驗六種事件 →</button></section>
     <p class="scope-note">此版本提供花園、升級與裝備互動示範。全副軍裝可借用體驗；示範 XP 不用於教會禮品兌換。</p>
     <div class="demo-tools"><button type="button" id="boss-preview" class="secondary">體驗 Boss 三階段挑戰</button><p>約 10% 機率遇到 Boss，需要換用三件軍裝。此體驗不加分。</p></div>
   </main>
@@ -226,7 +228,7 @@
   <dialog id="bag-dialog" class="bag-dialog" aria-labelledby="bag-title">
     <div class="dialog-heading"><div><p class="eyebrow">YOUR ADVENTURE PACK</p><h2 id="bag-title">我的裝備包</h2></div><button type="button" class="icon-button close-dialog" aria-label="關閉裝備包" data-close="bag-dialog" data-icon="close"></button></div>
     <div class="bag-intro"><div class="bag-opening" id="bag-opening"></div><p>每件寶物，都陪你把神的話帶進生活。<small>體驗版可借用所有軍裝，正式取得條件會另外顯示。</small></p></div>
-    <div class="inventory-tabs" role="group" aria-label="寶物分類"><button id="armor-tab" type="button" aria-pressed="true">全副軍裝 <span>6</span></button><button id="garden-tab" type="button" aria-pressed="false">花園寶物 <span>5</span></button></div>
+    <div class="inventory-tabs" role="group" aria-label="寶物分類"><button id="armor-tab" type="button" aria-pressed="true">全副軍裝 <span>6</span></button><button id="garden-tab" type="button" aria-pressed="false">花園寶物 <span>17</span></button></div>
     <div class="inventory-layout"><div id="inventory" class="inventory" aria-label="裝備列表"></div><section class="item-detail" id="item-detail" aria-label="裝備詳情"><div class="detail-plinth"><div id="detail-art" class="detail-art"></div><span class="item-halo"></span></div><p class="item-type" id="item-type"></p><h3 id="item-name"></h3><p id="item-copy"></p><p class="item-reference" id="item-reference"></p><p class="item-unlock" id="item-unlock"></p><div id="item-actions" class="item-actions"></div></section></div>
   </dialog>
   <dialog id="quest-dialog" class="quest-dialog" aria-labelledby="quest-title">
@@ -239,6 +241,45 @@
   <dialog id="journey-dialog" class="text-dialog" aria-labelledby="journey-title"><div class="dialog-heading"><h2 id="journey-title">小樹的成長旅程</h2><button type="button" class="icon-button" data-close="journey-dialog" data-icon="close" aria-label="關閉成長旅程"></button></div><ol id="journey-list" class="journey-list"></ol><p class="muted">經驗永久累積，達到門檻立即成長。休息幾天，小樹也會保留你的努力。</p></dialog>
   <dialog id="gift-dialog" class="text-dialog" aria-labelledby="gift-title"><div class="dialog-heading"><h2 id="gift-title">恩典小舖</h2><button type="button" class="icon-button" data-close="gift-dialog" data-icon="close" aria-label="關閉恩典小舖"></button></div><p>禮品、庫存與主日領取流程正在規劃中。</p><p class="muted">遊戲體驗版先讓你照顧小樹、收藏與使用裝備。正式點數會與小樹 XP 分開，領禮品也保留小樹等級。</p></dialog>
   <script type="module">
+import {FESTIVALS,festivalById} from '../../life-tree-festivals.mjs';
+import {festivalScene} from '../../life-tree-festival-art.mjs';
+const FESTIVAL_ITEMS = [
+ ['fireworks','跨年煙火','newyear'],['redpacket','春節紅包','spring'],['cake','生日蛋糕','birthday'],
+ ['donkey','棕樹主日小驢','easter'],['bread','聖餅','easter'],['chalice','聖杯','easter'],['cross','十字架','easter'],['egg','復活蛋','easter'],
+ ['dumpling','端午粽子','dragon'],['mooncake','中秋月餅','moon'],['turkey','感恩火雞','thanksgiving'],['reindeer','聖誕麋鹿','christmas'],
+].map(([id,name,festival])=>({id,name,festival,copy:'在對應節期完成讀經，收藏這份同行的紀念。放進花園後，盼望 MP +10。',days:0}));
+const shapes={
+ fireworks:'<g stroke="#e6b95f" stroke-width="4" stroke-linecap="round">'+Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<path d="M${60+Math.cos(a)*18} ${44+Math.sin(a)*18}l${Math.cos(a)*22} ${Math.sin(a)*22}"/>`;}).join('')+'</g><path d="M60 84V60" stroke="#b7ceb0" stroke-width="3"/><path d="m38 106 7-30h31l7 30" fill="#b8665e"/><path d="m47 88 26 8m-28 4 28-15" stroke="#e4bd6e" stroke-width="3"/>',
+ redpacket:'<rect x="22" y="12" width="76" height="100" rx="12" fill="#b93f3b" stroke="#e7bd6b" stroke-width="3"/><path d="m25 19 35 28 35-28m-52 50 17-17 17 17-17 17Z" fill="none" stroke="#edca81" stroke-width="2"/><text x="60" y="83" text-anchor="middle" fill="#ffe5a7" font-family="system-ui,sans-serif" font-size="39" font-weight="700">福</text>',
+ cake:'<ellipse cx="60" cy="103" rx="47" ry="9" fill="#e4d5c4"/><path d="M22 57h76v41q-38 15-76 0Z" fill="#dca79e"/><ellipse cx="60" cy="57" rx="38" ry="12" fill="#fff2d6"/><path d="M23 62q6 19 13 0 6 19 14 1 6 20 14 0 7 17 14 0 10 17 19-1" fill="#fff2d6"/><path d="M45 51V30m15 20V20m15 31V30" stroke="#92b0a0" stroke-width="6"/><g fill="#e6b65e"><path d="M45 28q-10-8 0-18 10 10 0 18M60 18q-10-8 0-18 10 10 0 18M75 28q-10-8 0-18 10 10 0 18"/></g>',
+ donkey:'<ellipse cx="55" cy="70" rx="32" ry="23" fill="#a9aaa0"/><path d="m31 83-6 24m44-24 6 24M78 65q-5-35 18-35l10 16-12 25" fill="#a9aaa0" stroke="#777f75" stroke-width="5" stroke-linecap="round"/><path d="m86 31-6-24m15 23 7-25" stroke="#92988b" stroke-width="9" stroke-linecap="round"/><path d="M35 52h34v25H35Z" fill="#b66e66"/><circle cx="96" cy="44" r="3" fill="#344b3f"/><path d="M23 62q-15 0-10 16" stroke="#777f75" stroke-width="4" fill="none"/>',
+ bread:'<ellipse cx="60" cy="94" rx="47" ry="9" fill="#e8ddbf"/><path d="M18 81q-2-48 40-51 42-3 44 43 2 24-45 21-35 2-39-13" fill="#d9ae6d" stroke="#a98657" stroke-width="3"/><path d="m35 47 13 22m9-27 10 23m10-18 9 18" stroke="#fff0ce" stroke-width="5" stroke-linecap="round"/>',
+ chalice:'<path d="M29 20h62q3 47-31 47T29 20M60 67v30m-24 8h48l-10-10H46Z" fill="#ceac64" stroke="#9f834a" stroke-width="3"/><ellipse cx="60" cy="23" rx="28" ry="6" fill="#9e5b66"/><path d="M38 34q0 18 15 23" stroke="#f4dfac" stroke-width="4" fill="none" stroke-linecap="round"/>',
+ cross:'<path d="M49 12h22v29h29v22H71v47H49V63H20V41h29Z" fill="#ae845b" stroke="#886747" stroke-width="3"/><path d="M29 47h64M56 19v82" stroke="#dfc394" stroke-width="3" fill="none"/><path d="M31 57q29 25 58 0l-8 20-17-4-17 4Z" fill="#f5e7cb"/>',
+ egg:'<path d="M27 76C18 44 42 8 60 8s42 36 33 68c-8 36-58 36-66 0" fill="#cfbbd6" stroke="#ac93b7" stroke-width="3"/><path d="m28 49 10 10 11-10 11 10 11-10 11 10 10-10M28 79h64" fill="none" stroke="#fff0ca" stroke-width="5"/><g fill="#d98e91"><circle cx="44" cy="33" r="4"/><circle cx="76" cy="33" r="4"/><circle cx="47" cy="93" r="4"/><circle cx="72" cy="93" r="4"/></g>',
+ dumpling:'<path d="m58 15 44 75q-39 27-83 0Z" fill="#82a27b" stroke="#537b5a" stroke-width="3" stroke-linejoin="round"/><path d="m58 15 5 82m39-7L58 15M22 89l42-41m-30 56 55-33" fill="none" stroke="#c5d1a2" stroke-width="3"/><path d="m56 72-11-15q-8-8-12 2-2 10 23 13 19-17 26-9 7 11-26 9m1 1-14 32m14-32 10 33" fill="none" stroke="#eadbb0" stroke-width="3"/>',
+ mooncake:'<path d="M21 52h78v36q-39 30-78 0Z" fill="#ba884d"/><ellipse cx="60" cy="53" rx="44" ry="29" fill="#dbb473" stroke="#b28c55" stroke-width="3"/><ellipse cx="60" cy="53" rx="32" ry="20" fill="none" stroke="#efcf92" stroke-width="3"/><path d="m47 47 13-11 13 11v17H47Z" fill="none" stroke="#ac8249" stroke-width="3"/><path d="M60 43v20m-9-10h18" stroke="#ac8249" stroke-width="3"/>',
+ turkey:'<g stroke="#a97a57" stroke-width="3">'+[[-33,-14,-28],[-20,-30,-12],[0,-38,0],[20,-30,12],[33,-14,28]].map(([x,y,a])=>`<ellipse cx="${60+x}" cy="${58+y}" rx="14" ry="32" transform="rotate(${a} ${60+x} ${58+y})" fill="#c9a06c"/>`).join('')+'</g><ellipse cx="60" cy="77" rx="27" ry="25" fill="#ad7956"/><circle cx="61" cy="53" r="17" fill="#b98661"/><path d="m73 54 14 7-15 6" fill="#d7ae60"/><circle cx="67" cy="49" r="3" fill="#2b4436"/><path d="M75 64q11 21-1 18" fill="#b95f5c"/><path d="m48 100-6 11m30-11 6 11" stroke="#a97a57" stroke-width="4"/>',
+ reindeer:'<path d="m37 41-9-22m2 7-12-2m11-2-1-14m55 33 9-22m-2 7 12-2m-11-2 1-14" fill="none" stroke="#947653" stroke-width="5" stroke-linecap="round"/><path d="M28 49q-18-18-18 1 2 15 21 7m61-8q18-18 18 1-2 15-21 7" fill="#ba9970"/><path d="M28 49q32-27 64 0l-9 36q-23 27-46 0Z" fill="#c5a278"/><circle cx="43" cy="60" r="4" fill="#334a3c"/><circle cx="77" cy="60" r="4" fill="#334a3c"/><ellipse cx="60" cy="82" rx="13" ry="10" fill="#b95f59"/><path d="M39 99q21 14 42 0" stroke="#799985" stroke-width="10" fill="none"/>',
+};
+const collectibleArt=id=>shapes[id]?`<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="110" rx="38" ry="5" fill="#294431" opacity=".12"/>${shapes[id]}</svg>`:'';
+let current='garden',day=1,track=null,trackKey='',prefs=null,player=null,mode='garden';
+function previewThemeAudio(nextMode,state,audio){
+ mode=nextMode;prefs=state;player=audio;const item=festivalById(current),music=current==='birthday'?'anniversary':item?.musicByDay?.[day-1]||current;
+ const themed=current!=='garden';audio.configure({music:state.music&&(!themed||mode!=='garden'),effects:state.sound,musicVolume:state.musicVolume,effectsVolume:state.effectsVolume});
+ if(themed&&trackKey!==music){track?.pause();track=new Audio(`../../assets/audio/life-tree/festivals/${music}.wav`);track.loop=true;trackKey=music;}
+ if(track){track.volume=state.musicVolume*.6;if(themed&&mode==='garden'&&state.music&&!document.hidden)void track.play().catch(()=>{});else track.pause();}
+}
+function setupFestivalPreview(onChange){
+ const selector=document.querySelector('#demo-festival'),days=document.querySelector('#demo-holy-day'),layer=document.querySelector('#demo-festival-layer');if(!selector)return;
+ const choices=[['garden','平日花園'],...FESTIVALS.map(f=>[f.id,f.name]),['birthday','生日 · 生日快樂歌']];
+ selector.replaceChildren(...choices.map(([id,name])=>{const option=document.createElement('option');option.value=id;option.textContent=name;return option;}));
+ function render(){current=selector.value;day=Number(days.value)||1;days.parentElement.hidden=current!=='easter';const item=festivalById(current);layer.innerHTML=current==='birthday'?`<div class="birthday-garden">${collectibleArt('cake')}<strong>生日快樂，願你蒙恩！</strong></div>`:item?festivalScene(item,{day,treeMarkup:'',progress:7}):'';layer.dataset.theme=current;document.querySelector('#demo-festival-status').textContent=current==='garden'?'平日原創花園配樂':`${choices.find(c=>c[0]===current)?.[1]} · 切換音樂需先開啟音樂設定`;onChange();}
+ selector.onchange=render;days.onchange=render;
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)track?.pause();else if(prefs&&player)previewThemeAudio(mode,prefs,player);});
+ document.addEventListener('click',e=>{if(e.isTrusted&&prefs&&player)previewThemeAudio(mode,prefs,player);},{capture:true});
+ render();
+}
 // XP is derived from saved, unique reading dates; it is never a gift balance.
 const LEVELS = Object.freeze([
   { level: 1, xp: 0, name: '種子與新芽', art: 'sapling' },
@@ -293,7 +334,7 @@ function readingProgress({ records = [], notes = [], battles = [], startDate, to
     const award = typeof battle === 'object' && battle?.kind === 'boss' ? 30 : 10;
     battleDates.set(date, Math.max(battleDates.get(date) || 0, award));
   }
-  const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: dates.size * 20, water: [...dates.values()].filter(r => r.watered_at).length * 5,
+  const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: [...dates.values()].reduce((sum,r)=>sum+(r.boosted===true?40:20),0), water: [...dates.values()].filter(r => r.watered_at).length * 5,
     journal: noteDates.size * 5, weekly: [...weeks.values()].filter(count => count >= 5).length * 30 };
   let day = dates.get(today)?.completion_type === 'on_time' ? today : dateAtOffset(today, -1), streak = 0;
   while (dates.get(day)?.completion_type === 'on_time') { streak++; day = dateAtOffset(day, -1); }
@@ -542,6 +583,7 @@ const decorations = [
   { id: 'bird', name: '同行小鳥', copy: '讓小鳥停在樹旁，陪你慢慢長大。', days: 7 },
   { id: 'fountain', name: '活水噴泉', copy: '讓花園多一處活水，收藏每天的滋養。', days: 14 },
   { id: 'fruit', name: '祝福果實', copy: '把祝福果實掛在樹上，記得一路的恩典。', days: 30 },
+  ...FESTIVAL_ITEMS,
 ];
 const iconPaths = {
   leaf: '<path d="M20 3C9 2 3 6 4 13c1 7 10 7 13 1 2-4 2-8 3-11Z"/><path d="m3 21 11-12"/>',
@@ -572,7 +614,7 @@ function sprite(id) {
   const clip = `garden-sprite-${++spriteSequence}`;
   return `<svg class="game-sprite" viewBox="${rect.join(' ')}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${ATLAS}" width="1448" height="1086" clip-path="url(#${clip})"/></svg>`;
 }
-const decorationArt = id => id === 'bird' ? '<img class="bird-art" src="assets/garden-bird.svg" alt="" width="120" height="120">' : icon(id);
+const decorationArt = id => collectibleArt(id) || (id === 'bird' ? '<img class="bird-art" src="assets/garden-bird.svg" alt="" width="120" height="120">' : icon(id));
 const itemArt = item => rects[item.id] ? sprite(item.id) : `<span class="decoration-icon">${decorationArt(item.id)}</span>`;
 const hasBattle = date => state.battles.some(battle => (typeof battle === 'string' ? battle : battle?.reading_date) === date);
 const battleReward = () => state.encounters[today]?.boss ? 30 : 10;
@@ -608,7 +650,7 @@ function announce(message) { clearTimeout(toastTimer); $('#toast').textContent =
 function saveMessage(message) { announce(storageAvailable ? message : `${message}；此瀏覽器目前只保留本次開啟的進度。`); }
 function sound(kind) { audio.effect(kind); }
 function setAudioMode(mode) {
-  audio.setMode(mode);
+  audio.setMode(mode);previewThemeAudio(mode,state,audio);
   $('#audio-mode').textContent = { garden: '花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
   document.body.dataset.audioMode = mode;
 }
@@ -779,7 +821,7 @@ function openAvatar() {
 }
 function renderDecorations() {
   const positions = { flower: [26, 79], lamp: [17, 66], bird: [50, 40], fountain: [82, 73], fruit: [39, 41] };
-  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${positions[id][0]}%;top:${positions[id][1]}%">${decorationArt(id)}</span>`).join('');
+  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${(positions[id]||[15+(decorations.findIndex(v=>v.id===id)%5)*15,50+Math.floor(decorations.findIndex(v=>v.id===id)/5)*9])[0]}%;top:${(positions[id]||[15+(decorations.findIndex(v=>v.id===id)%5)*15,50+Math.floor(decorations.findIndex(v=>v.id===id)/5)*9])[1]}%">${decorationArt(id)}</span>`).join('');
 }
 function renderInventory() {
   const items = category === 'armor' ? equipment : decorations;
@@ -1005,7 +1047,7 @@ function renderSound() {
   $('#music-volume').value = String(Math.round(state.musicVolume * 100)); $('#effects-volume').value = String(Math.round(state.effectsVolume * 100));
   $('#music-output').value = `${Math.round(state.musicVolume * 100)}%`; $('#effects-output').value = `${Math.round(state.effectsVolume * 100)}%`;
   $('#music-volume').disabled = !state.music; $('#effects-volume').disabled = !state.sound; $('#effects-preview').disabled = !state.sound;
-  audio.configure({ music: state.music, effects: state.sound, musicVolume: state.musicVolume, effectsVolume: state.effectsVolume });
+  audio.configure({ music: state.music, effects: state.sound, musicVolume: state.musicVolume, effectsVolume: state.effectsVolume });previewThemeAudio(document.body.dataset.audioMode||'garden',state,audio);
 }
 $('#sound').onclick = () => { renderSound(); openDialog('audio-dialog'); };
 for (const id of ['music-enabled', 'effects-enabled', 'music-volume', 'effects-volume']) {
@@ -1061,7 +1103,7 @@ document.addEventListener('visibilitychange', () => {
 });
 setInterval(refreshDay, 60000);
 ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderEventLibrary(); renderSound(); updateProgress(); void loadAssets();
-setAudioMode('garden');
+setupFestivalPreview(syncAudioScene);setAudioMode('garden');
 if (!state.avatarId) openAvatar();
 </script>
 </body>

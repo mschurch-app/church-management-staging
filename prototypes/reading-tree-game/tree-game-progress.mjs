@@ -52,7 +52,7 @@ export function readingProgress({ records = [], notes = [], battles = [], startD
     const award = typeof battle === 'object' && battle?.kind === 'boss' ? 30 : 10;
     battleDates.set(date, Math.max(battleDates.get(date) || 0, award));
   }
-  const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: dates.size * 20, water: [...dates.values()].filter(r => r.watered_at).length * 5,
+  const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: [...dates.values()].reduce((sum,r)=>sum+(r.boosted===true?40:20),0), water: [...dates.values()].filter(r => r.watered_at).length * 5,
     journal: noteDates.size * 5, weekly: [...weeks.values()].filter(count => count >= 5).length * 30 };
   let day = dates.get(today)?.completion_type === 'on_time' ? today : dateAtOffset(today, -1), streak = 0;
   while (dates.get(day)?.completion_type === 'on_time') { streak++; day = dateAtOffset(day, -1); }

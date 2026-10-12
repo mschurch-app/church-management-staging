@@ -3,6 +3,7 @@
 export class GardenAudio {
   constructor(onStatus = () => {}) {
     this.onStatus = onStatus; this.mode = 'garden'; this.prefs = {}; this.nodes = new Set();
+    this.victoryPlayed = false; this.victoryUntil = 0;
     this.hidden = false; this.ducked = false; this.timer = null; this.step = 0; this.nextAt = 0;
   }
   configure(prefs) {
@@ -51,13 +52,22 @@ export class GardenAudio {
     this.report();
   }
   setMode(mode) {
-    if (mode === this.mode) return;
-    this.mode = mode; this.stopScore(); this.step = 0; this.startScore();
-    if (mode === 'victory' && this.prefs.music && this.context?.state === 'running') {
-      const at = this.context.currentTime + .03;
-      [60, 64, 67, 72, 76, 79, 84].forEach((note, i) => this.tone(note, at + i * .13, .8, 'bell', .17, this.musicBus));
-      [48, 55, 60, 64].forEach(note => this.tone(note, at + .8, 2, 'pad', .07, this.musicBus));
-    }
+    if (mode === this.mode) { this.startScore(); return; }
+    this.mode = mode; this.stopScore(); this.step = 0;
+    this.victoryPlayed = false;
+    this.victoryUntil = mode === 'victory' ? performance.now() + 3000 : 0;
+    this.startScore();
+  }
+  playVictory() {
+    if (this.mode !== 'victory' || this.victoryPlayed || this.hidden || !this.prefs.music || this.context?.state !== 'running') return;
+    const remaining = (this.victoryUntil - performance.now()) / 1000;
+    if (remaining < .25) return;
+    this.victoryPlayed = true;
+    const at = this.context.currentTime + .03, scale = Math.min(1, remaining / 2.85);
+    // A clear major-key fanfare, kept within the three-second celebration.
+    [60, 64, 67, 72, 76, 79, 84].forEach((note, i) => this.tone(note, at + i * .16 * scale, .85 * scale, 'bell', .24, this.musicBus));
+    [48, 55, 60, 64].forEach(note => this.tone(note, at + .85 * scale, 1.9 * scale, 'pad', .11, this.musicBus));
+    [72, 76, 79].forEach(note => this.tone(note, at + 1.35 * scale, 1.1 * scale, 'string', .1, this.musicBus));
   }
   retire(entry) {
     this.nodes.delete(entry);
@@ -72,6 +82,7 @@ export class GardenAudio {
     for (const entry of [...this.nodes]) if (entry.bus === this.musicBus) this.retire(entry);
   }
   startScore() {
+    if (this.mode === 'victory') { this.playVictory(); return; }
     if (this.timer || this.hidden || !this.prefs.music || this.context?.state !== 'running' || this.mode === 'victory') return;
     this.nextAt = this.context.currentTime + .05;
     this.schedule(); this.timer = setInterval(() => this.schedule(), 90);

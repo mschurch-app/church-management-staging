@@ -1,8 +1,9 @@
+import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
 import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-scenes1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-member1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
-import { GardenAudio } from './tree-game-audio.mjs?v=20261012-october-game1';
+import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';
 import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261012-october-game1';
 
 const $ = selector => document.querySelector(selector);
@@ -87,6 +88,14 @@ const audio = new GardenAudio(message => { $('#audio-status').textContent = mess
 const dialogOpeners = new Map();
 let remoteBusy=false,readingDay=today;
 const pendingCommands=new Map();
+const arrangement=setupGardenArrangement({
+ layer:$('#garden-decoration'),toolbar:$('#garden-arrangement'),isSaving:()=>remoteBusy,
+ getPlacement:key=>state.placed[Number(key)],
+ savePlacement:async move=>{
+  if(state.placed[Number(move.key)]?.id!==move.id)throw Error('小物已更新，請重新選取。');
+  await change('move',{index:Number(move.key),x:move.x,y:move.y});
+ },
+});
 const octoberCombat=createOctoberCombat({getState:()=>state,getQuest:()=>quest,send:change,isSaving:()=>remoteBusy,renderAvatar:()=>avatarSprite(state.avatarId),sound});
 function persist(){savePreferences(state);}
 async function change(action,payload={}){
@@ -95,7 +104,7 @@ async function change(action,payload={}){
  const key=JSON.stringify([action,payload]),requestId=pendingCommands.get(key)||crypto.randomUUID();pendingCommands.set(key,requestId);
  try{const result=await memberAPI(action,{...payload,requestId});const prefs=preferences();state={...memberData.state,...prefs};today=memberData.today;pendingCommands.delete(key);updateProgress();renderGuardian();renderDecorations();renderMember(state);return result;}
  catch(e){announce(e.message);throw e;}
- finally{remoteBusy=false;document.body.setAttribute('aria-busy','false');}
+ finally{remoteBusy=false;document.body.setAttribute('aria-busy','false');arrangement.refresh();}
 }
 async function attempt(work){try{await work();}catch(e){announce(e.message);}}
 async function refreshMember(){try{await change('me');announce('雲端進度已重新整理。');}catch{}}
@@ -103,7 +112,7 @@ function announce(message) { clearTimeout(toastTimer); $('#toast').textContent =
 function saveMessage(message) { announce(message); }
 function sound(kind) { audio.effect(kind); }
 function setAudioMode(mode) {
-  audio.setMode(mode); themeAudio(mode,state,audio);
+  themeAudio(mode,state,audio); audio.setMode(mode);
   $('#audio-mode').textContent = { garden: '花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
   document.body.dataset.audioMode = mode;
 }
@@ -265,8 +274,11 @@ function openAvatar() {
   $('#avatar-audio-label').hidden = !!state.avatarId; renderAvatarChoices(); openDialog('avatar-dialog');
 }
 function renderDecorations(){
+ const focused=document.activeElement?.closest('#garden-decoration [data-placement-index]')?.dataset.placementIndex;
  const groups=new Map();state.placed.forEach((item,index)=>{const old=groups.get(item.id);groups.set(item.id,{...item,index,count:(old?.count||0)+1});});
- $('#garden-decoration').innerHTML=[...groups.values()].map(item=>`<span class="placed-decoration placed-${item.id}" style="left:${item.x}%;top:${item.y}%">${decorationArt(item.id)}${item.count>1?`<small>×${item.count}</small>`:''}</span>`).join('');
+ $('#garden-decoration').innerHTML=[...groups.values()].map(item=>`<button type="button" class="placed-decoration placed-${item.id}" data-placement-index="${item.index}" data-item-name="${itemName(item.id)}" aria-label="移動${itemName(item.id)}${item.count>1?`，收藏 ${item.count} 件`:''}" aria-pressed="false" style="left:${item.x}%;top:${item.y}%"><span aria-hidden="true">${decorationArt(item.id)}${item.count>1?`<small>×${item.count}</small>`:''}</span></button>`).join('');
+ arrangement.refresh();
+ if(focused!==undefined)$('#garden-decoration').querySelector(`[data-placement-index="${focused}"]`)?.focus({preventScroll:true});
 }
 function renderInventory() {
   const items = category === 'armor' ? equipment : decorations.filter(item=>state.inventory[item.id]?.count);
@@ -427,7 +439,7 @@ function celebrateAndReturn(current) {
   $('.quest-copy').scrollTop = 0;
   gardenReturnTimer = setTimeout(() => {
     if (quest?.epoch === current.epoch && current.complete && $('#quest-dialog').open) returnToGarden(current);
-  }, 2000);
+  }, 3000);
 }
 async function returnEquipment() {
   const current = quest;
@@ -560,7 +572,8 @@ setAudioMode('garden');
 setupMemberControls({send:change,getState:()=>state,openDialog,announce,refresh:refreshMember});
 if (!state.avatarId) openAvatar();
 
-$('#garden-arrange').onclick=()=>{
+$('#garden-arrange').onclick=()=>arrangement.focusFirst();
+$('#garden-collection').onclick=()=>{
  const select=$('#arrange-item');select.replaceChildren();const latest=new Map();state.placed.forEach((item,index)=>latest.set(item.id,index));
  for(const [id,index] of latest){const option=document.createElement('option');option.value=String(index);option.textContent=itemName(id);select.append(option);}
  const choose=()=>{const item=state.placed[Number(select.value)];if(item){$('#arrange-x').value=item.x;$('#arrange-y').value=item.y;}$('#arrange-save').disabled=!item;};select.onchange=choose;choose();renderMember(state);openDialog('arrange-dialog');
@@ -569,9 +582,9 @@ $('#arrange-save').onclick=()=>void attempt(async()=>{const button=$('#arrange-s
 
 let polling=false;
 async function refreshQuietly(){
- if(polling||document.hidden||remoteBusy||document.querySelector('dialog[open]')||taipeiDay()!==today)return;
- polling=true;try{await memberAPI('me');if(!remoteBusy&&!document.querySelector('dialog[open]')){state={...memberData.state,...preferences()};today=memberData.today;updateProgress();renderGuardian();renderDecorations();}}catch{/* Keep the last confirmed view; the refresh button remains available. */}finally{polling=false;}
+ if(polling||document.hidden||remoteBusy||arrangement.busy||document.querySelector('dialog[open]')||taipeiDay()!==today)return;
+ polling=true;try{await memberAPI('me');if(!remoteBusy&&!arrangement.busy&&!document.querySelector('dialog[open]')){state={...memberData.state,...preferences()};today=memberData.today;updateProgress();renderGuardian();renderDecorations();}}catch{/* Keep the last confirmed view; the refresh button remains available. */}finally{polling=false;}
 }
 setInterval(()=>void refreshQuietly(),60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refreshQuietly();});
-window.addEventListener('beforeunload',event=>{const note=$('#journal-note').value.trim(),saved=state.notes.find(n=>n.reading_date===today)?.note||'';if(note&&note!==saved){event.preventDefault();event.returnValue='';}});
+window.addEventListener('beforeunload',event=>{const note=$('#journal-note').value.trim(),saved=state.notes.find(n=>n.reading_date===today)?.note||'';if(arrangement.busy||(note&&note!==saved)){event.preventDefault();event.returnValue='';}});

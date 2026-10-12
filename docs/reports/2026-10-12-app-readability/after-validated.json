@@ -15726,34 +15726,6 @@
     "source": "after-rechecks.json"
   },
   {
-    "file": "newcomer.html",
-    "width": 390,
-    "state": "initial",
-    "url": "http://127.0.0.1:61047/newcomer.html?church=M%2B",
-    "errors": [],
-    "checked": 4,
-    "failures": [],
-    "headerClipped": false,
-    "overflow": false,
-    "status": "",
-    "controls": [],
-    "source": "after-rechecks.json"
-  },
-  {
-    "file": "shine-newcomer.html",
-    "width": 390,
-    "state": "initial",
-    "url": "http://127.0.0.1:61047/newcomer.html?church=SHiNE",
-    "errors": [],
-    "checked": 4,
-    "failures": [],
-    "headerClipped": false,
-    "overflow": false,
-    "status": "",
-    "controls": [],
-    "source": "after-rechecks.json"
-  },
-  {
     "file": "customization-settings.html",
     "width": 1440,
     "state": "initial",
@@ -16556,9 +16528,9 @@
   },
   {
     "file": "newcomer.html",
-    "width": 1440,
+    "width": 390,
     "state": "initial",
-    "url": "http://127.0.0.1:61047/newcomer.html?church=M%2B",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=M%2B",
     "errors": [],
     "checked": 4,
     "failures": [],
@@ -16566,13 +16538,41 @@
     "overflow": false,
     "status": "",
     "controls": [],
-    "source": "after-rechecks.json"
+    "source": "after-integration.json"
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [],
+    "source": "after-integration.json"
+  },
+  {
+    "file": "newcomer.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [],
+    "source": "after-integration.json"
   },
   {
     "file": "shine-newcomer.html",
     "width": 1440,
     "state": "initial",
-    "url": "http://127.0.0.1:61047/newcomer.html?church=SHiNE",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=SHiNE",
     "errors": [],
     "checked": 4,
     "failures": [],
@@ -16580,6 +16580,6 @@
     "overflow": false,
     "status": "",
     "controls": [],
-    "source": "after-rechecks.json"
+    "source": "after-integration.json"
   }
 ]

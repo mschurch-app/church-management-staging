@@ -11,5 +11,6 @@
     1440
   ],
   "environment": "Mac Chrome headless, isolated API and LINE fixtures; not Safari/iPhone hardware",
-  "baseline": "72f3f10f02a0f8959aec780a1c849194caf1e2cd"
+  "baseline": "72f3f10f02a0f8959aec780a1c849194caf1e2cd",
+  "integratedUpstream": "fb08821c1a724c483ca182b97e242f2d795006ce"
 }

@@ -54,3 +54,5 @@
 本次為可讀性與靜態資源更新；回復時應整批回復共用 CSS、用途標記與資源版本，避免混用。`candidate-assets.json` 記錄修正檔案雜湊。
 
 Mac Chrome 自動化與截圖已執行；Mac Safari、iPhone 17 主畫面 App、Safari、LINE 的本次實機操作與顯示仍待驗收。沒有據此宣稱全系統 99% 或所有核心流程全部通過。
+
+發布前整合遠端 `fb08821` 的新朋友選項狀態改進，兩堂會、兩尺寸再驗 4 次畫面，0 項失敗；紀錄於 `after-integration.json`，已合併入最終摘要。

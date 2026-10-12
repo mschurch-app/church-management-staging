@@ -1,0 +1,54 @@
+[
+  {
+    "file": "newcomer.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 390,
+    "state": "initial",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  },
+  {
+    "file": "newcomer.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 1440,
+    "state": "initial",
+    "url": "http://127.0.0.1:61211/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 4,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": []
+  }
+]

@@ -1,7 +1,10 @@
-// Shared media selection. Holy Week day one has its own user-provided recording.
+// Shared media selection for user-provided Holy Week recordings.
 // Keep calendar/reading plans and the server's theme identifiers unchanged.
 export function festivalMusicURL(theme = {}, version = '20261012-hosanna1') {
-  const palmSunday = theme.id === 'easter' && Number(theme.day) === 1;
-  const file = palmSunday ? 'hosanna-palm-sunday.mp3' : `${theme.music || theme.id}.wav`;
-  return new URL(`assets/audio/life-tree/festivals/${file}?v=${palmSunday ? '20261012-hosanna1' : version}`, import.meta.url).href;
+  const day = theme.id === 'easter' ? Number(theme.day) : 0;
+  const recording = day === 1
+    ? ['hosanna-palm-sunday.mp3', '20261012-hosanna1']
+    : day === 6 ? ['via-dolorosa-good-friday.mp3', '20261012-goodfriday1'] : null;
+  const [file, mediaVersion] = recording || [`${theme.music || theme.id}.wav`, version];
+  return new URL(`assets/audio/life-tree/festivals/${file}?v=${mediaVersion}`, import.meta.url).href;
 }

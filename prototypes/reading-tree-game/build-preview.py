@@ -11,7 +11,7 @@ html = re.sub(r'<link rel="stylesheet" href="tree-garden-game\.css\?v=[^"]+">',
 html = re.sub(r'<link rel="stylesheet" href="tree-game-scenes\.css\?v=[^"]+">', lambda _: '<style>' + (root / 'tree-game-scenes.css').read_text() + '</style>', html)
 html = re.sub(r'<link rel="stylesheet" href="tree-game-battle\.css\?v=[^"]+">', lambda _: '<style>' + (root / 'tree-game-battle.css').read_text() + '</style>', html)
 html = re.sub(r'<link rel="stylesheet" href="tree-game-arrange\.css\?v=[^"]+">', lambda _: '<style>' + (root / 'tree-game-arrange.css').read_text() + '</style>', html)
-parts = ["import {FESTIVALS,festivalById} from '../../life-tree-festivals.mjs';", "import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-hosanna1';"]
+parts = ["import {FESTIVALS,festivalById} from '../../life-tree-festivals.mjs';", "import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-goodfriday1';"]
 for name in ('tree-game-collectibles.mjs', 'tree-game-scenes.mjs', 'tree-game-festival-preview.mjs', 'tree-game-progress.mjs', 'tree-game-events.mjs', 'tree-game-audio.mjs', 'tree-game-arrange.mjs', 'tree-garden-game.mjs'):
     code = (root / name).read_text()
     code = '\n'.join(line for line in code.splitlines() if not line.startswith('import '))

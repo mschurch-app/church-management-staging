@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-12",
+  "change": "Use supplied Via Dolorosa accompaniment for Good Friday only",
+  "test_scene_date": "2026-10-18",
+  "scene": "easter-6",
+  "source_title": "微亞多勒羅沙--現代詩歌伴唱音樂(繁體字幕版)",
+  "asset": "assets/audio/life-tree/festivals/via-dolorosa-good-friday.mp3",
+  "asset_sha256": "b15dfa54274b1cc8e96e3465c496117e156e0ef81ed6ff0f1628fad89569b425",
+  "bytes": 4238848,
+  "estimated_duration_seconds": 262.765714,
+  "source_bytes_preserved": true,
+  "scope": [
+    "member garden",
+    "October coworker game",
+    "standalone demo",
+    "legacy October devotional",
+    "festival preview"
+  ],
+  "backend_changed": false,
+  "reading_schedule_changed": false,
+  "functional_tests_run": false,
+  "acceptance": {
+    "iphone17_line_playback": "pending",
+    "mac_safari_playback": "pending",
+    "mac_chrome_playback": "pending",
+    "mute_background_battle_return": "pending"
+  },
+  "quality_target_99_percent": "not_claimed",
+  "checks": {
+    "audio_metadata": "MP3, 44.1kHz stereo, approximately 128kbps",
+    "source_identity": "byte-for-byte copy",
+    "modified_javascript_syntax": "passed",
+    "generated_preview_syntax": "passed",
+    "git_diff_check": "passed"
+  }
+}

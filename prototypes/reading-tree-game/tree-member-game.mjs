@@ -159,6 +159,14 @@ function updateProgress() {
   if (tree.dataset.art !== p.current.art) { tree.innerHTML = sprite(p.current.art); tree.dataset.art = p.current.art; }
   tree.dataset.level = String(p.current.level); tree.setAttribute('aria-label', `Lv.${p.current.level} ${p.current.name}，累積 ${p.xp} XP 的生命樹`);
   $('#water').disabled = !p.todayRecord || !!p.todayRecord.watered_at || busy;
+  const waterDone=!!p.todayRecord?.watered_at,waterReady=!!p.todayRecord&&!waterDone;
+  $('#garden-care').dataset.step=waterDone?'complete':waterReady?'ready':'unread';
+  $('#garden-care').setAttribute('aria-busy',String(busy));
+  $('#garden-care-title').textContent=waterDone?'今天的活水已送達':waterReady?'讀經完成，接著澆水':'讀經後，為小樹澆水';
+  $('#garden-care-status').textContent=busy?'正在保存這份活水，請稍候…':waterDone?'讀經與澆水都已保存，小樹都記得。':waterReady?'為今天的陪伴再添一點活水。':'完成今天的經文，就能送出活水。';
+  $('#garden-water').disabled=!waterReady||busy;
+  $('#garden-water-label').textContent=busy?'正在澆水…':waterDone?'今天已澆水':waterReady?'為小樹澆水':'讀經後開放';
+  $('#garden-water-reward').textContent=waterDone?'已保存 · 每天一次':'+5 XP · 盼望 MP +10';
   $('#journal-open').disabled = !p.todayRecord || busy;
   $('#read-open').querySelector('span:nth-child(2)').innerHTML = `${p.todayRecord ? '再讀一次今日經文' : '開始今日讀經'}<small>試讀 · 以弗所書 6:17</small>`;
   $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
@@ -455,13 +463,21 @@ window.addEventListener('pageshow', event => { if (event.persisted && quest?.com
 async function markRead(){
  if($('#read-complete').disabled)return;
  const alreadyRead=state.records.some(r=>r.reading_date===readingDay);$('#read-complete').disabled=true;
- try{await change('read',{day:readingDay});closeDialog('reading-dialog');saveMessage(alreadyRead?'這一天的讀經已保存；重讀不重複加分或補充。':'讀經已保存，信心 HP +40、盼望 MP +20。');sound('pick');if(readingDay!==today){openDialog('makeup-dialog');$('#makeup-status').textContent='補讀已保存，可以為這一天補澆水。';}else if(!alreadyRead&&state.dailyGrace?.[today]){const item=state.dailyGrace[today];$('#daily-grace-art').innerHTML=decorationArt(item);$('#daily-grace-name').textContent=itemName(item);$('#daily-grace-count').textContent=`${graceEffects[item]}。已收進裝備包，目前有 ${state.inventory[item]?.count||0} 份；使用後扣除一份。明天讀經完成，再收集一件。`;openDialog('daily-grace-dialog');sound('xp');}else $('#water').focus({preventScroll:true});}
+ try{await change('read',{day:readingDay});closeDialog('reading-dialog');saveMessage(alreadyRead?'這一天的讀經已保存；重讀不重複加分或補充。':'讀經已保存，信心 HP +40、盼望 MP +20。');sound('pick');if(readingDay!==today){openDialog('makeup-dialog');$('#makeup-status').textContent='補讀已保存，可以為這一天補澆水。';}else if(!alreadyRead&&state.dailyGrace?.[today]){const item=state.dailyGrace[today];$('#daily-grace-art').innerHTML=decorationArt(item);$('#daily-grace-name').textContent=itemName(item);$('#daily-grace-count').textContent=`${graceEffects[item]}。已收進裝備包，目前有 ${state.inventory[item]?.count||0} 份；使用後扣除一份。明天讀經完成，再收集一件。`;openDialog('daily-grace-dialog');sound('xp');}else returnToWatering();}
  catch(e){$('#reading-load-status').textContent=e.message;$('#read-complete').disabled=false;}
+}
+function returnToWatering(){
+ if(document.querySelector('dialog[open]'))return;
+ updateProgress();
+ const target=$('#garden-water').disabled?$('#garden-care'):$('#garden-water');
+ target.focus({preventScroll:true});
+ $('#garden-care').scrollIntoView({behavior:motion.matches?'auto':'smooth',block:'end'});
 }
 async function water(day=today){
  const record=state.records.find(r=>r.reading_date===day);if(!record||record.watered_at||remoteBusy)return;
  const waterBoost=document.body.dataset.octoberTest==='true'&&state.buffs.care>0;
- busy=true;try{await change('water',{day});sound('water');$('#garden').dataset.phase='watering';saveMessage(waterBoost?'活水送達 · +5 XP，MP +10；噴泉祝福額外補充 HP、MP 各 10。':'活水送達 · +5 XP，盼望 MP +10');setTimeout(()=>{$('#garden').dataset.phase='idle';},motion.matches?200:2300);}catch{}finally{busy=false;updateProgress();}
+ let failure='';busy=true;updateProgress();
+ try{await change('water',{day});if(day===today){$('#garden').focus({preventScroll:true});$('#garden').scrollIntoView({behavior:motion.matches?'auto':'smooth',block:'center'});}sound('water');$('#garden').dataset.phase='watering';saveMessage(waterBoost?'活水送達 · +5 XP，MP +10；噴泉祝福額外補充 HP、MP 各 10。':'活水送達 · +5 XP，盼望 MP +10');setTimeout(()=>{$('#garden').dataset.phase='idle';},motion.matches?200:2300);}catch(e){failure=e.message;}finally{busy=false;updateProgress();if(failure)$(day===today?'#garden-care-status':'#makeup-status').textContent=failure;}
 }
 async function saveJournal(event){
  event.preventDefault();if(!progress().todayRecord)return;const note=$('#journal-note').value.trim();if(!note){$('#journal-status').textContent='寫下一句想收藏的亮光，再按下珍藏。';return;}
@@ -495,12 +511,13 @@ $('#armor-tab').onclick = () => { category = 'armor'; selected = 'sword'; render
 $('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; renderInventory(); };
 $('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();
 $('#read-open').onclick=()=>openReading(today);
-$('#read-complete').onclick=()=>void markRead();$('#water').onclick=()=>void water();
+$('#read-complete').onclick=()=>void markRead();$('#water').onclick=()=>void water();$('#garden-water').onclick=()=>void water();
 $('#makeup-read').onclick=()=>{const day=$('#makeup-date').value;if(day<$('#makeup-date').min||day>today){$('#makeup-status').textContent='請選擇可補讀的日期。';return;}closeDialog('makeup-dialog');openReading(day);};
 $('#makeup-water').onclick=()=>void water($('#makeup-date').value);
 $('#journal-open').onclick = () => { $('#journal-note').value = state.notes.find(note => note.reading_date === today)?.note || ''; $('#journal-status').textContent = ''; openDialog('journal-dialog'); $('#journal-note').focus(); };
 $('#journal-form').onsubmit = saveJournal; $('#journey-open').onclick = () => openDialog('journey-dialog'); $('#gift-open').onclick = () => openDialog('gift-dialog');
-$('#daily-grace-garden').onclick=()=>{closeDialog('daily-grace-dialog');$('#garden').scrollIntoView({behavior:motion.matches?'auto':'smooth',block:'center'});$('#water').focus({preventScroll:true});};
+$('#daily-grace-garden').onclick=()=>closeDialog('daily-grace-dialog');
+$('#daily-grace-dialog').addEventListener('close',returnToWatering);
 $('#daily-grace-bag').onclick=()=>{selected=state.dailyGrace?.[today]||'flower';category='garden';closeDialog('daily-grace-dialog');openBag();};
 $('#read-aloud').onclick = () => {
   if (!window.speechSynthesis) { announce('這個瀏覽器目前無法朗讀，仍可以閱讀經文。'); return; }

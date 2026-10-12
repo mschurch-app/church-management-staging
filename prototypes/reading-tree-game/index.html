@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3e9">
+  <meta name="robots" content="noindex,nofollow">
+  <title>讀經小樹｜花園與全副軍裝</title>
+  <link rel="stylesheet" href="assets/app-design-tokens.css" id="shared-design">
+  <link rel="stylesheet" href="tree-garden-game.css?v=20261012-game2">
+  <link rel="preload" href="assets/garden-dawn.png" as="image">
+  <link rel="preload" href="assets/garden-atlas.png" as="image">
+</head>
+<body class="garden-game">
+  <noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
+  <a class="skip-link" href="#garden">前往我的花園</a>
+  <header class="game-header">
+    <a class="game-brand" href="#garden"><span class="brand-symbol">M<span>+</span></span><span>讀經小樹<small>與神同行的每一天</small></span></a>
+    <div class="header-tools"><span class="preview-label">遊戲體驗版</span><button type="button" id="sound" class="icon-button" aria-label="開啟音效" aria-pressed="false"></button></div>
+  </header>
+  <main>
+    <div class="page-heading"><div><p class="eyebrow">MY LITTLE GARDEN</p><h1>每天一點活水，<br class="mobile-break">長成自己的光。</h1><p class="subtitle">因為有你，這座花園更美好。</p></div><p class="demo-note">這裡可以放心體驗。<br>示範進度保存在這台裝置。</p></div>
+    <div class="game-layout">
+      <section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
+        <div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
+        <div class="scene-top"><span class="scene-tag">我的小小庭園</span><span id="scene-day" class="scene-tag"></span></div>
+        <div class="tree-shadow" aria-hidden="true"></div>
+        <div id="tree-object" class="tree-object" role="img" aria-label="嫩葉階段的生命樹"></div>
+        <div class="guardian" id="guardian" aria-label="花園守護者"><div id="guardian-base"></div><div id="guardian-gear" class="guardian-gear"></div></div>
+        <div class="garden-decoration" id="garden-decoration" aria-hidden="true"></div>
+        <div class="garden-enemies" id="garden-enemies" aria-label="花園中的小黑影"></div>
+        <div class="water-rain" aria-hidden="true"></div>
+        <div class="scene-bottom"><div><p id="scene-caption">小樹記得每一份陪伴。</p><button id="defend-garden" class="battle-entry" type="button">取出寶劍，守護花園 · +10 XP</button></div><button id="scene-bag" class="scene-bag" type="button" aria-haspopup="dialog"><span id="bag-object"></span><span>打開裝備包</span><i aria-hidden="true">6</i></button></div>
+        <div id="asset-error" class="asset-error" hidden><p>花園素材暫時沒有載入，請重試。</p><button id="retry-assets" type="button" class="primary">重新載入素材</button></div>
+      </section>
+      <aside class="garden-sidebar">
+        <section class="growth-card" aria-labelledby="growth-title">
+          <div class="section-top"><span class="eyebrow">每一點成長，都看得見</span><button id="journey-open" class="quiet-button" type="button" aria-haspopup="dialog">成長旅程 ↗</button></div>
+          <div class="growth-title"><h2 id="growth-title">Lv.2 嫩葉</h2><span class="small-leaf" aria-hidden="true"></span></div>
+          <p class="xp-total"><strong id="xp-total">220</strong><span>累積經驗 XP</span></p>
+          <div class="xp-track" id="xp-track" role="progressbar" aria-label="本級成長進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><span id="xp-fill"></span></div>
+          <div class="xp-labels"><span id="xp-stage">本級 120／150 XP</span><strong id="xp-percent">80%</strong></div>
+          <p class="next-growth" id="next-growth">再累積 30 XP，小樹就會長大。</p>
+          <div class="growth-footer"><span id="reading-days">已同行 7 天</span><span id="reading-streak">連續 7 天</span></div>
+        </section>
+        <section class="today-card" aria-labelledby="today-title">
+          <p class="eyebrow">TODAY'S LITTLE STEPS</p><h2 id="today-title">今天，為生命澆點水。</h2>
+          <p class="muted">守護花園，再用神的話滋養生命。</p>
+          <p id="battle-status" class="battle-status">今日守護 · 首次完成 +10 XP</p>
+          <button id="read-open" class="primary action-reading" type="button"><span class="button-icon" data-icon="book"></span><span>開始今日讀經<small>試讀 · 以弗所書 6:17</small></span><strong>+20 XP</strong></button>
+          <div class="care-actions"><button id="water" class="secondary" type="button" disabled><span data-icon="water"></span><span>澆水 <small>+5 XP</small></span></button><button id="journal-open" class="secondary" type="button" disabled><span data-icon="journal"></span><span>拾光手札 <small>選填 · +5 XP</small></span></button></div>
+          <p id="daily-status" class="status" role="status">先完成讀經，再回來照顧小樹。</p>
+        </section>
+        <button id="equipment-open" class="equipment-teaser" type="button" aria-haspopup="dialog"><span id="teaser-sword"></span><span><small>神所賜的全副軍裝</small><strong>打開你的裝備包</strong><em>取出、穿戴，帶著真理出發 →</em></span></button>
+      </aside>
+    </div>
+    <section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">今天的小小邀請</p><h2>把一句神的話，帶進生活裡。</h2><p>打開裝備包，用寶劍守護花園，再讀經澆水；或種下一朵花，收藏今天的美好。</p></div><button id="quick-sword" class="secondary" type="button">體驗聖靈寶劍 →</button></section>
+    <p class="scope-note">此版本提供花園、升級與裝備互動示範。全副軍裝可借用體驗；示範 XP 不用於教會禮品兌換。</p>
+    <div class="demo-tools"><button type="button" id="boss-preview" class="secondary">預覽稀有 Boss 造型</button><p>正式遭遇約 10% 機率，獎勵為普通守護的 3 倍。此預覽不加分。</p></div>
+  </main>
+  <nav class="game-nav" aria-label="花園導覽"><a href="#garden" aria-current="page"><span data-icon="leaf"></span>小樹</a><button id="nav-bag" type="button" aria-haspopup="dialog"><span data-icon="bag"></span>裝備包</button><button id="gift-open" type="button" aria-haspopup="dialog"><span data-icon="gift"></span>恩典小舖</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="bag-dialog" class="bag-dialog" aria-labelledby="bag-title">
+    <div class="dialog-heading"><div><p class="eyebrow">YOUR ADVENTURE PACK</p><h2 id="bag-title">我的裝備包</h2></div><button type="button" class="icon-button close-dialog" aria-label="關閉裝備包" data-close="bag-dialog" data-icon="close"></button></div>
+    <div class="bag-intro"><div class="bag-opening" id="bag-opening"></div><p>每件寶物，都陪你把神的話帶進生活。<small>體驗版可借用所有軍裝，正式取得條件會另外顯示。</small></p></div>
+    <div class="inventory-tabs" role="group" aria-label="寶物分類"><button id="armor-tab" type="button" aria-pressed="true">全副軍裝 <span>6</span></button><button id="garden-tab" type="button" aria-pressed="false">花園寶物 <span>5</span></button></div>
+    <div class="inventory-layout"><div id="inventory" class="inventory" aria-label="裝備列表"></div><section class="item-detail" id="item-detail" aria-label="裝備詳情"><div class="detail-plinth"><div id="detail-art" class="detail-art"></div><span class="item-halo"></span></div><p class="item-type" id="item-type"></p><h3 id="item-name"></h3><p id="item-copy"></p><p class="item-reference" id="item-reference"></p><p class="item-unlock" id="item-unlock"></p><div id="item-actions" class="item-actions"></div></section></div>
+  </dialog>
+  <dialog id="quest-dialog" class="quest-dialog" aria-labelledby="quest-title">
+    <div class="dialog-heading"><div><p class="eyebrow">WALK IN THE WORD</p><h2 id="quest-title">讓真理點亮前路</h2></div><button type="button" class="icon-button close-dialog" data-close="quest-dialog" aria-label="離開關卡" data-icon="close"></button></div>
+    <div id="quest-stage" class="quest-stage" data-phase="ready"><div class="quest-fog" aria-hidden="true"><i></i><i></i><i></i></div><div id="quest-gear" class="quest-gear"></div><div class="sword-trail" aria-hidden="true"></div><div class="quest-sparks" aria-hidden="true"></div><div class="quest-shield-wave" aria-hidden="true"></div><div id="quest-special" class="quest-special"></div><span id="quest-counter" class="quest-counter">準備出發</span></div>
+    <div class="quest-copy"><p id="quest-scenario"></p><p id="quest-verse" class="quest-verse"></p><p id="quest-hint" class="status" role="status"></p><div id="quest-options" class="quest-options"></div><button type="button" id="quest-action" class="primary"></button><button type="button" id="quest-return" class="quiet-button" hidden>收回裝備，回到花園 →</button></div>
+  </dialog>
+  <dialog id="reading-dialog" class="text-dialog" aria-labelledby="reading-title"><div class="dialog-heading"><div><p class="eyebrow">今日試讀</p><h2 id="reading-title">以弗所書 6:17</h2></div><button type="button" class="icon-button" data-close="reading-dialog" data-icon="close" aria-label="關閉讀經"></button></div><p class="scripture">並戴上救恩的頭盔，拿著聖靈的寶劍，就是神的道。</p><p class="muted">慢慢讀，也可以聽。今天有哪一句話陪伴你？</p><button type="button" class="secondary" id="read-aloud"><span data-icon="sound"></span>聆聽這段經文</button><button type="button" id="read-complete" class="primary">我讀完了，回到小樹 · +20 XP</button><p class="status">這是遊戲示範的試讀片段；正式版沿用教會的完整讀經計畫。</p></dialog>
+  <dialog id="journal-dialog" class="text-dialog" aria-labelledby="journal-title"><form id="journal-form"><div class="dialog-heading"><div><p class="eyebrow">A MOMENT TO KEEP</p><h2 id="journal-title">珍藏今天的拾光</h2></div><button type="button" class="icon-button" data-close="journal-dialog" data-icon="close" aria-label="關閉手札"></button></div><label for="journal-note">今天觸動你的一句話<textarea id="journal-note" maxlength="500" rows="5" placeholder="今天，神的話讓我想到……"></textarea></label><p class="muted">選填、私人收藏；修改同一天的內容不會重複增加 XP。</p><p id="journal-status" class="status" role="status"></p><button class="primary" type="submit">珍藏這份拾光</button></form></dialog>
+  <dialog id="journey-dialog" class="text-dialog" aria-labelledby="journey-title"><div class="dialog-heading"><h2 id="journey-title">小樹的成長旅程</h2><button type="button" class="icon-button" data-close="journey-dialog" data-icon="close" aria-label="關閉成長旅程"></button></div><ol id="journey-list" class="journey-list"></ol><p class="muted">經驗永久累積，達到門檻立即成長。休息幾天，小樹也會保留你的努力。</p></dialog>
+  <dialog id="gift-dialog" class="text-dialog" aria-labelledby="gift-title"><div class="dialog-heading"><h2 id="gift-title">恩典小舖</h2><button type="button" class="icon-button" data-close="gift-dialog" data-icon="close" aria-label="關閉恩典小舖"></button></div><p>禮品、庫存與主日領取流程正在規劃中。</p><p class="muted">遊戲體驗版先讓你照顧小樹、收藏與使用裝備。正式點數會與小樹 XP 分開，領禮品也保留小樹等級。</p></dialog>
+  <script type="module" src="tree-garden-game.mjs?v=20261012-game2"></script>
+</body>
+</html>

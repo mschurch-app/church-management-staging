@@ -8,13 +8,30 @@ const OCTOBER_API='https://svwgfgyxxgbqabosriom.supabase.co/functions/v1/tree-re
 const OCTOBER_LIFF='2011645391-9t2SxuSG';
 const OCTOBER_MODE=document.body.dataset.octoberTest==='true';
 export const MEMBER_MODE=document.body.dataset.memberGarden==='true';
+const TEAM_UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const TEAM_INVITE_KEY='mplus-october-team-invite';
+function urlTeamInvite(){
+ const params=new URLSearchParams(location.search);
+ const direct=params.get('team');if(TEAM_UUID.test(direct||''))return direct.toLowerCase();
+ // LINE may carry the query in liff.state before its second redirect.
+ try{const nested=new URL(params.get('liff.state')||'',location.origin).searchParams.get('team');if(TEAM_UUID.test(nested||''))return nested.toLowerCase();}catch{}
+ return '';
+}
+let pendingInvite=urlTeamInvite();
+if(OCTOBER_MODE){try{if(pendingInvite)sessionStorage.setItem(TEAM_INVITE_KEY,pendingInvite);else{const saved=sessionStorage.getItem(TEAM_INVITE_KEY);if(TEAM_UUID.test(saved||''))pendingInvite=saved.toLowerCase();}}catch{}}
+function clearTeamInvite(){
+ pendingInvite='';if(OCTOBER_MODE){try{sessionStorage.removeItem(TEAM_INVITE_KEY);}catch{}}
+ const url=new URL(location.href);url.searchParams.delete('team');
+ try{const nested=new URL(url.searchParams.get('liff.state')||'',location.origin);if(nested.searchParams.has('team')){nested.searchParams.delete('team');if(nested.search)url.searchParams.set('liff.state',nested.pathname+nested.search);else url.searchParams.delete('liff.state');}}catch{}
+ try{history.replaceState(history.state,'',url.href);}catch{}
+}
 export let memberData=null;
 let readingGeneration=0;let token='',observer=null,activeAudio=null,activePrefs=null,activeMode='garden';
 const $=s=>document.querySelector(s);
 const themePlayer=new SceneMusicPlayer();
 const messages={login_required:'登入已到期，請重新從 LINE 開啟。',binding_required:'請先完成教會會友身分綁定，再回來開啟小樹。',conflict:'另一個畫面剛更新進度，請先重新整理再繼續。',unavailable:'連線暫時沒有完成，請先重新整理確認進度。',already_full:'目前已經補滿了，先把寶物留在裝備包吧。',item_unavailable:'這件小物還在收集中，累積讀經就能再取得。',rest_needed:'先回到花園休息，讀經或收到關懷可補充信心 HP。',mp_needed:'盼望 MP 不夠了，先讀經、澆水、寫手札或領取關懷。',group_required:'目前尚未編入小組，請同工協助設定後再組隊。',invite_invalid:'邀請已過期，或與你目前所屬的小組不同。',care_limit:'今天的關懷已送滿，或這位家人已收到三份關懷。',care_forbidden:'這位家人目前不在你的同行小組。',date_not_allowed:'只能完成今日或最近七天內可補讀的日期。',read_first:'先完成這一天的讀經，再澆水或寫手札。',stale_event:'事件進度已更新，請回花園開啟目前的事件。',content_empty:'這一天的教會讀經內容尚未發布，請稍後再來。'};
-if(OCTOBER_MODE){messages.rest_needed='先回花園歇一歇，讀經或祝福小花能補充信心 HP。';messages.mp_needed='先讀經、澆水、寫手札，或使用暖光小燈補充盼望 MP。';}
-function entryURL(){if(OCTOBER_MODE)return `https://liff.line.me/${OCTOBER_LIFF}`;const url=new URL('../../line-member.html',location.href);url.searchParams.set('church','M+');url.searchParams.set('feature','tree');const invite=new URLSearchParams(location.search).get('team');if(/^[0-9a-f-]{36}$/.test(invite||''))url.searchParams.set('team',invite);return url.href;}
+if(OCTOBER_MODE){messages.rest_needed='先回花園歇一歇，讀經、祝福小花或同工的關懷能補充信心 HP。';messages.mp_needed='先讀經、澆水、寫手札，或收到同工關懷，補充盼望 MP。';messages.invite_invalid='這份組隊邀請已失效，請邀請你的同工重新分享連結。';messages.team_already_joined='你已在另一個隊伍。請先離開目前隊伍，再接受這份邀請。';messages.care_forbidden='這位同工目前不在你的測試隊伍，請重新整理隊伍。';messages.invalid_message='鼓勵的話請保持在 120 字內。';}
+function entryURL(){const url=OCTOBER_MODE?new URL(`https://liff.line.me/${OCTOBER_LIFF}`):new URL('../../line-member.html',location.href);if(!OCTOBER_MODE){url.searchParams.set('church','M+');url.searchParams.set('feature','tree');}if(pendingInvite)url.searchParams.set('team',pendingInvite);return url.href;}
 export async function memberAPI(action,extra={}){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
  try{const r=await fetch(OCTOBER_MODE?OCTOBER_API:API,{method:'POST',cache:'no-store',credentials:'omit',signal:controller.signal,headers:{'content-type':'application/json',...(OCTOBER_MODE?{authorization:`Bearer ${token}`}:{})},body:JSON.stringify(OCTOBER_MODE?{...extra,action:'garden_game',command:action}:{action,idToken:token,...extra})});const data=await r.json().catch(()=>({}));if(!r.ok||data.ok!==true){const e=new Error(messages[data.error]||({join_required:'請輸入原本的同工邀請碼，加入箴言讀經測試。',test_closed:'十月箴言測試已結束，原有紀錄仍保留。'}[data.error])||'暫時無法完成，請重新整理後再試。');e.code=data.error;throw e;}if(data.state&&(!memberData||data.version>=memberData.version))memberData=data;return data;
@@ -27,6 +44,7 @@ export async function initMember(){
   $('#reading-load-status').textContent='每天一章箴言，讀到最後即可完成；最近七天可補讀。';
   $('#member-login-status').textContent='正在確認同工測試 LINE 身分…';$('#member-login-link').href=entryURL();$('#member-login-link').textContent='從原本的 LINE 測試連結開啟';
   const info=document.createElement('p');info.className='muted';info.textContent='沿用同工測試身分與邀請碼，資料保存在原十月測試環境。';$('#member-gate').append(info);
+  if(pendingInvite){const notice=document.createElement('p');notice.className='muted';notice.textContent='你收到一份同工組隊邀請。須先具備同工測試資格；組隊連結不能取代原本的同工邀請碼。登入後再由你確認加入。';$('#member-gate').append(notice);}
   const oldLink=$('#member-gate a.secondary');oldLink.href=new URL('../../tree-reading-october-test.html?legacy=1',document.baseURI).href;oldLink.textContent='原版讀經與紀錄';
   const links=document.createElement('nav');links.className='october-reading-links';links.setAttribute('aria-label','箴言讀經計畫');
   for(const [label,query] of [['原版讀經與紀錄','?legacy=1'],['每日靈修試閱','?view=devotional&church=M%2B&preview=1&from=october-tree']]){const a=document.createElement('a');a.className='quiet-button';a.href=new URL('../../tree-reading-october-test.html'+query,document.baseURI).href;a.textContent=label;links.append(a);}
@@ -53,7 +71,7 @@ export function renderMember(s){
  $('#member-name').textContent=memberData.profile.name;$('#combat-life').textContent=`信心 HP ${s.life.hp}／100 · 盼望 MP ${s.life.mp}／100`;
  for(const kind of ['hp','mp']){$(`#life-${kind}`).value=s.life[kind];$(`#life-${kind}-value`).textContent=`${s.life[kind]}／100`;}
  $('#buff-status').textContent=s.buffs.reading?`已收藏 ${s.buffs.reading} 次讀經雙倍：20 → 40 XP`:'每天讀經補充信心 HP +40、盼望 MP +20。';
- $('#care-boost').textContent=OCTOBER_MODE?(s.buffs.care?`活水祝福 ${s.buffs.care} 次：下次澆水，HP、MP 各多補 10`:'澆水與拾光手札各補充 MP +10。'):s.buffs.care?`活水祝福 ${s.buffs.care} 次：下次收到關懷再補 HP、MP 各 10`:'澆水與拾光手札各補充 MP +10。';
+ $('#care-boost').textContent=OCTOBER_MODE?(s.buffs.care?`活水祝福 ${s.buffs.care} 次：下次澆水，HP、MP 各多補 10；同工關懷補 HP +10、MP +15。`:'澆水與拾光手札各補 MP +10；同工關懷補 HP +10、MP +15。'):s.buffs.care?`活水祝福 ${s.buffs.care} 次：下次收到關懷再補 HP、MP 各 10`:'澆水與拾光手札各補充 MP +10。';
  $('#rest-notice').hidden=s.life.hp>0;if(OCTOBER_MODE)$('#rest-notice').textContent='先在花園歇一歇，讀經或祝福小花能補充信心。你的等級、收藏和事件進度都會保留。';
  const daily=document.createElement('p'),reward=s.dailyGrace?.[memberData.today];daily.textContent=reward?`今天已獲得：${itemName(reward)}。明天讀經完成，再收集一件。`:'完成今天的讀經，隨機獲得一件恩典小物；每天一次，補讀不額外發放。';
  $('#next-collectibles').replaceChildren(daily,...['flower','lamp','bird','fountain','fruit'].map(id=>{const p=document.createElement('p');p.textContent=`${itemName(id)} · 背包 ${s.inventory[id]?.count||0} 份`;return p;}));
@@ -93,21 +111,57 @@ export function stopThemeAudio(){themePlayer.pause();}
 export function cancelReading(){readingGeneration++;observer?.disconnect();}
 export function duckTheme(value){themePlayer.duck(value);}
 export function setupMemberControls({send,getState,openDialog,announce,refresh}){
- $('#team-open').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">${iconMarkup('people')}</svg><span>我的同行小組</span>`;
- const show=async(action='team',extra={})=>{openDialog('team-dialog');$('#team-status').textContent='正在連接同行小組…';try{const r=await send(action,extra);renderTeam(r.team);$('#team-status').textContent=action==='join'?'已加入，一起陪伴彼此成長。':'';}catch(e){$('#team-status').textContent=e.message;}};
+ const teamLabel=OCTOBER_MODE?'同工組隊':'我的同行小組';
+ $('#team-open').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">${iconMarkup('people')}</svg><span>${teamLabel}</span>`;
+ if(OCTOBER_MODE){$('#team-title').textContent='同工同行小隊';$('#team-invite').textContent='邀請同工組隊';$('#team-leave').textContent='離開目前隊伍';$('#team-invite-url').setAttribute('aria-label','同工組隊連結，可複製分享');}
+ const teamRefresh=document.createElement('button');teamRefresh.id='team-refresh';teamRefresh.type='button';teamRefresh.className='quiet-button';teamRefresh.textContent='更新隊伍與關懷';$('#team-list').before(teamRefresh);
+ let teamBusy=false,confirmedTeam=null;
+ const setTeamBusy=value=>{teamBusy=value;$('#team-dialog').setAttribute('aria-busy',String(value));$('#team-dialog').querySelectorAll('.team-actions button,#team-list button,#team-refresh').forEach(button=>{button.disabled=value||button.dataset.unavailable==='true';});};
+ const show=async(action='team',extra={})=>{
+  if(teamBusy)return;openDialog('team-dialog');setTeamBusy(true);$('#team-status').textContent='正在連接同行隊伍…';
+  try{const r=await send(action,extra);if(action==='join')clearTeamInvite();if(action==='leave'){$('#team-invite-url').value='';$('#team-invite-url').hidden=true;}renderTeam(r.team);$('#team-status').textContent=action==='join'?'已加入，一起陪伴彼此成長。':action==='leave'?'已離開隊伍。讀經與花園進度都保留。':'';}
+  catch(e){if(action==='join'&&e.code==='invite_invalid'){clearTeamInvite();renderTeam(confirmedTeam);}$('#team-status').textContent=e.message;}finally{setTeamBusy(false);}
+ };
  function renderTeam(team){
-  $('#team-name').textContent=team.group_name||'還沒有編入小組';$('#team-privacy').textContent=team.enabled?'已加入同行；同組家人會看到你的姓名，可以送你關懷。手札保持私人。':'加入後，同組家人會看到你的姓名並互送關懷，手札不分享。';
-  $('#team-leave').hidden=!team.enabled;$('#team-join').hidden=team.enabled||!new URLSearchParams(location.search).get('team');
-  $('#team-list').replaceChildren(...team.members.map(person=>{const card=document.createElement('div');card.className='team-person';const name=document.createElement('strong');name.textContent=person.name+(person.self?'（你）':'');const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=person.self?'一起同行':person.sent_today?'今天已送關懷':'送一份關懷 ♥';button.disabled=person.self||person.sent_today;button.onclick=async()=>{const note=$('#care-message').value;button.disabled=true;try{await send('care',{recipient:person.id,message:note});$('#team-status').textContent='關懷已送達，為家人補充 HP +10、MP +15。';await show();}catch(e){$('#team-status').textContent=e.message;button.disabled=false;}};card.append(name,button);return card;}));
-  $('#received-care').replaceChildren(...team.received.map(c=>{const p=document.createElement('p');p.textContent=`${c.name} 送來關懷${c.message?'：'+c.message:' ♥'}`;return p;}));
+  team=team||{enabled:false,members:[],received:[]};
+  confirmedTeam=team;
+  $('#team-name').textContent=team.enabled?team.group_name:OCTOBER_MODE?'邀請熟悉的同工，一起測試彼此關懷':'還沒有編入小組';
+  $('#team-privacy').textContent=OCTOBER_MODE?(team.enabled?'這是同工測試隊伍。隊友會看到你的姓名，可互送關懷；手札保持私人。':'只有已加入箴言同工測試的人才能接受邀請。加入後隊友會看到姓名，手札不分享。'):(team.enabled?'已加入同行；同組家人會看到你的姓名，可以送你關懷。手札保持私人。':'加入後，同組家人會看到你的姓名並互送關懷，手札不分享。');
+  if(pendingInvite)$('#team-privacy').textContent+=team.enabled?' 你另有一份組隊邀請；若屬不同隊伍，須先離開目前隊伍。':' 你收到一份組隊邀請，按「接受邀請」即可加入。';
+  $('#team-leave').hidden=!team.enabled;$('#team-join').hidden=!pendingInvite;$('#team-invite').hidden=!!pendingInvite&&!team.enabled;
+  $('#care-message').closest('label').hidden=!team.enabled;
+  const members=Array.isArray(team.members)?team.members:[];
+  $('#team-list').replaceChildren(...members.map(person=>{
+   const card=document.createElement('div');card.className='team-person';const name=document.createElement('strong');name.textContent=person.name+(person.self?'（你）':'');
+   const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=person.self?'一起同行':person.sent_today?'今天已送關懷':'送一份關懷 ♥';button.dataset.unavailable=String(person.self||person.sent_today);button.disabled=teamBusy||person.self||person.sent_today;
+   button.onclick=async()=>{
+    if(teamBusy)return;const note=$('#care-message').value;setTeamBusy(true);$('#team-status').textContent='正在送出這份關懷…';
+    try{const r=await send('care',{recipient:person.id,message:note});renderTeam(r.team);const care=r.care;$('#team-status').textContent=care?.already_sent?'今天已向這位同工送過關懷，不會重複補充。':care?`關懷已送達，補充信心 HP +${care.hp_delta}、盼望 MP +${care.mp_delta}（最高 100）。`:'關懷已送達，為家人補充 HP +10、MP +15。';}
+    catch(e){$('#team-status').textContent=e.message;}finally{setTeamBusy(false);}
+   };card.append(name,button);return card;
+  }));
+  if(OCTOBER_MODE&&team.enabled&&members.length===1){const p=document.createElement('p');p.className='muted';p.textContent='隊伍已準備好。把邀請連結傳給另一位同工，對方接受後，就能互送關懷。';$('#team-list').append(p);}
+  $('#received-care').replaceChildren(...(team.received||[]).map(c=>{const p=document.createElement('p');p.textContent=`${c.name} 送來關懷${c.message?'：'+c.message:' ♥'}`;return p;}));
  }
- $('#team-open').onclick=()=>{if(OCTOBER_MODE){openDialog('team-dialog');$('#team-name').textContent='同工箴言測試';$('#team-privacy').textContent='這裡沿用十月隔離測試身分。正式的小組邀請與彼此關懷，請從會友花園使用。';document.querySelector('#team-dialog .team-actions').hidden=true;$('#care-message').closest('label').hidden=true;$('#team-invite-url').hidden=true;$('#team-list').replaceChildren();$('#received-care').replaceChildren();const a=document.createElement('a');a.className='primary';a.href=new URL('../../line-member.html?church=M%2B&feature=tree',document.baseURI).href;a.textContent='開啟正式會友花園';$('#team-status').replaceChildren(a);return;}void show();};
- $('#team-join').onclick=()=>void show('join',{token:new URLSearchParams(location.search).get('team')});
+ $('#team-open').onclick=()=>void show();
+ teamRefresh.onclick=()=>void show();
+ $('#team-join').onclick=()=>void show('join',{token:pendingInvite});
  $('#team-leave').onclick=()=>void show('leave');
- $('#team-invite').onclick=async()=>{try{const r=await send('invite'),url=new URL('member.html',location.href);url.searchParams.set('team',r.team.invite);$('#team-invite-url').value=url.href;$('#team-invite-url').hidden=false;renderTeam(r.team);if(navigator.share){try{await navigator.share({title:'一起照顧生命樹',text:'因為有你，這個家更美好。一起讀經、彼此關懷。',url:url.href});return;}catch(e){if(e.name==='AbortError')return;}}await navigator.clipboard.writeText(url.href);$('#team-status').textContent='邀請連結已複製，貼到小組群組即可。七天內有效。';}catch(e){$('#team-status').textContent=$('#team-invite-url').value?'可長按上方連結複製分享。':e.message;}};
+ $('#team-invite').onclick=async()=>{
+  if(teamBusy)return;setTeamBusy(true);$('#team-invite-url').value='';$('#team-invite-url').hidden=true;$('#team-status').textContent='正在準備組隊邀請…';
+  try{
+   const r=await send('invite');if(!TEAM_UUID.test(r.team?.invite||''))throw Error('邀請連結暫時未能產生，請再試一次。');
+   const url=OCTOBER_MODE?new URL(`https://liff.line.me/${OCTOBER_LIFF}`):new URL('member.html',location.href);url.searchParams.set('team',r.team.invite);$('#team-invite-url').value=url.href;$('#team-invite-url').hidden=false;renderTeam(r.team);
+   const expires=OCTOBER_MODE?'七天內有效，最晚十月底到期；產生新連結會使你上一份連結失效。':'七天內有效。';
+   $('#team-status').textContent=`邀請已準備好，可長按上方連結複製。${expires}`;
+   if(navigator.share){try{await navigator.share({title:OCTOBER_MODE?'同工箴言讀經 · 一起組隊':'一起照顧生命樹',text:OCTOBER_MODE?'邀請已加入同工測試的你，一起讀經、彼此關懷。':'因為有你，這個家更美好。一起讀經、彼此關懷。',url:url.href});return;}catch(e){if(e.name==='AbortError')return;}}
+   await navigator.clipboard.writeText(url.href);$('#team-status').textContent=`邀請連結已複製，貼到${OCTOBER_MODE?'同工':'小組'}群組即可。${expires}`;
+  }catch(e){$('#team-status').textContent=$('#team-invite-url').value?'可長按上方連結複製分享。':e.message;}finally{setTeamBusy(false);}
+ };
  $('#member-refresh').onclick=()=>void refresh();
  $('#makeup-open').onclick=()=>{const input=$('#makeup-date'),s=getState();input.max=memberData.today;input.min=[s.startDate,new Date(Date.parse(memberData.today+'T12:00:00Z')-7*864e5).toISOString().slice(0,10)].sort().at(-1);input.value=memberData.today;openDialog('makeup-dialog');};
  document.addEventListener('click',e=>{if(e.isTrusted&&activeAudio&&activePrefs){themeAudio(activeMode,activePrefs,activeAudio);themePlayer.gesture(Boolean(e.target.closest?.('#audio-start')));}},{capture:true});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopThemeAudio();else if(activeAudio&&activePrefs)themeAudio(activeMode,activePrefs,activeAudio);});
- const invite=new URLSearchParams(location.search).get('team');if(!OCTOBER_MODE&&/^[0-9a-f-]{36}$/.test(invite||''))void show();
+ const offerInvite=()=>{if(pendingInvite&&!document.querySelector('dialog[open]'))void show();};
+ if(pendingInvite){if(!getState().avatarId)$('#avatar-dialog').addEventListener('close',offerInvite,{once:true});queueMicrotask(offerInvite);}
 }

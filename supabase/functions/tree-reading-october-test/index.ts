@@ -102,7 +102,7 @@ Deno.serve(async request=>{
     const participant=lookup.data;
     if(action==='garden_game'){
       try{return reply(origin,await octoberGarden(db,participant,body,today));}
-      catch(e){const message=e instanceof Error?e.message:'';const known=['invalid_action','invalid_request','test_closed','date_not_allowed','read_first','invalid_note','wrong_gear','stale_event','item_unavailable','already_full','rest_needed','mp_needed','join_required','conflict'];return reply(origin,{ok:false,error:known.includes(message)?message:'unavailable'},message==='conflict'?409:known.includes(message)?400:503);}
+      catch(e){const message=e instanceof Error?e.message:'';const known=['invalid_action','invalid_request','test_closed','date_not_allowed','read_first','invalid_note','wrong_gear','stale_event','item_unavailable','already_full','rest_needed','mp_needed','join_required','conflict','invite_invalid','team_already_joined','care_limit','care_forbidden','invalid_message'];return reply(origin,{ok:false,error:known.includes(message)?message:'unavailable'},message==='conflict'?409:known.includes(message)?400:503);}
     }
     if(action==='me'){
       await dailyChallenges(db,today);

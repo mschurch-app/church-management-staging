@@ -1,4 +1,5 @@
-import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-easter1';
+import {SceneMusicPlayer} from '../../life-tree-music-player.mjs?v=20261012-musicload1';
+import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-musicload1';
 import {loadScheduledChapters} from '../../bible-scripture-loader.mjs';
 import {mountGardenScene} from './tree-game-scenes.mjs?v=20261012-scenes1';
 import {iconMarkup} from '../../app-icons.mjs';
@@ -8,8 +9,9 @@ const OCTOBER_LIFF='2011645391-9t2SxuSG';
 const OCTOBER_MODE=document.body.dataset.octoberTest==='true';
 export const MEMBER_MODE=document.body.dataset.memberGarden==='true';
 export let memberData=null;
-let readingGeneration=0;let token='',observer=null,track=null,currentTheme='',activeAudio=null,activePrefs=null,activeMode='garden';
+let readingGeneration=0;let token='',observer=null,activeAudio=null,activePrefs=null,activeMode='garden';
 const $=s=>document.querySelector(s);
+const themePlayer=new SceneMusicPlayer();
 const messages={login_required:'登入已到期，請重新從 LINE 開啟。',binding_required:'請先完成教會會友身分綁定，再回來開啟小樹。',conflict:'另一個畫面剛更新進度，請先重新整理再繼續。',unavailable:'連線暫時沒有完成，請先重新整理確認進度。',already_full:'目前已經補滿了，先把寶物留在裝備包吧。',item_unavailable:'這件小物還在收集中，累積讀經就能再取得。',rest_needed:'先回到花園休息，讀經或收到關懷可補充信心 HP。',mp_needed:'盼望 MP 不夠了，先讀經、澆水、寫手札或領取關懷。',group_required:'目前尚未編入小組，請同工協助設定後再組隊。',invite_invalid:'邀請已過期，或與你目前所屬的小組不同。',care_limit:'今天的關懷已送滿，或這位家人已收到三份關懷。',care_forbidden:'這位家人目前不在你的同行小組。',date_not_allowed:'只能完成今日或最近七天內可補讀的日期。',read_first:'先完成這一天的讀經，再澆水或寫手札。',stale_event:'事件進度已更新，請回花園開啟目前的事件。',content_empty:'這一天的教會讀經內容尚未發布，請稍後再來。'};
 if(OCTOBER_MODE){messages.rest_needed='先回花園歇一歇，讀經或祝福小花能補充信心 HP。';messages.mp_needed='先讀經、澆水、寫手札，或使用暖光小燈補充盼望 MP。';}
 function entryURL(){if(OCTOBER_MODE)return `https://liff.line.me/${OCTOBER_LIFF}`;const url=new URL('../../line-member.html',location.href);url.searchParams.set('church','M+');url.searchParams.set('feature','tree');const invite=new URLSearchParams(location.search).get('team');if(/^[0-9a-f-]{36}$/.test(invite||''))url.searchParams.set('team',invite);return url.href;}
@@ -84,12 +86,12 @@ export function themeAudio(mode,s,audio){
  const music=memberData?.theme?.music||'';
  const source=music?festivalMusicURL(memberData.theme):'';
  audio.configure({music:s.music&&(!music||mode!=='garden'),effects:s.sound,musicVolume:s.musicVolume,effectsVolume:s.effectsVolume});
- if(source&&currentTheme!==source){track?.pause();track=new Audio(source);track.loop=true;track.preload='none';currentTheme=source;}
- if(track){track.volume=s.musicVolume*.6;if(music&&s.music&&mode==='garden'&&!document.hidden)void track.play().catch(()=>{$('#audio-status').textContent='點一下開始播放節慶音樂。';});else track.pause();}
+ themePlayer.sync(source,!!music&&s.music&&mode==='garden',s.musicVolume*.6);
+ if(navigator.userActivation?.isActive)themePlayer.gesture();
 }
-export function stopThemeAudio(){track?.pause();}
+export function stopThemeAudio(){themePlayer.pause();}
 export function cancelReading(){readingGeneration++;observer?.disconnect();}
-export function duckTheme(value){if(track&&activePrefs)track.volume=activePrefs.musicVolume*(value?.08:.6);}
+export function duckTheme(value){themePlayer.duck(value);}
 export function setupMemberControls({send,getState,openDialog,announce,refresh}){
  $('#team-open').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">${iconMarkup('people')}</svg><span>我的同行小組</span>`;
  const show=async(action='team',extra={})=>{openDialog('team-dialog');$('#team-status').textContent='正在連接同行小組…';try{const r=await send(action,extra);renderTeam(r.team);$('#team-status').textContent=action==='join'?'已加入，一起陪伴彼此成長。':'';}catch(e){$('#team-status').textContent=e.message;}};
@@ -105,7 +107,7 @@ export function setupMemberControls({send,getState,openDialog,announce,refresh})
  $('#team-invite').onclick=async()=>{try{const r=await send('invite'),url=new URL('member.html',location.href);url.searchParams.set('team',r.team.invite);$('#team-invite-url').value=url.href;$('#team-invite-url').hidden=false;renderTeam(r.team);if(navigator.share){try{await navigator.share({title:'一起照顧生命樹',text:'因為有你，這個家更美好。一起讀經、彼此關懷。',url:url.href});return;}catch(e){if(e.name==='AbortError')return;}}await navigator.clipboard.writeText(url.href);$('#team-status').textContent='邀請連結已複製，貼到小組群組即可。七天內有效。';}catch(e){$('#team-status').textContent=$('#team-invite-url').value?'可長按上方連結複製分享。':e.message;}};
  $('#member-refresh').onclick=()=>void refresh();
  $('#makeup-open').onclick=()=>{const input=$('#makeup-date'),s=getState();input.max=memberData.today;input.min=[s.startDate,new Date(Date.parse(memberData.today+'T12:00:00Z')-7*864e5).toISOString().slice(0,10)].sort().at(-1);input.value=memberData.today;openDialog('makeup-dialog');};
- document.addEventListener('click',e=>{if(e.isTrusted&&activeAudio&&activePrefs)themeAudio(activeMode,activePrefs,activeAudio);},{capture:true});
+ document.addEventListener('click',e=>{if(e.isTrusted&&activeAudio&&activePrefs){themeAudio(activeMode,activePrefs,activeAudio);themePlayer.gesture(Boolean(e.target.closest?.('#audio-start')));}},{capture:true});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopThemeAudio();else if(activeAudio&&activePrefs)themeAudio(activeMode,activePrefs,activeAudio);});
  const invite=new URLSearchParams(location.search).get('team');if(!OCTOBER_MODE&&/^[0-9a-f-]{36}$/.test(invite||''))void show();
 }

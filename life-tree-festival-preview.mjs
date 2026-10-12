@@ -1,4 +1,5 @@
-import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-easter1';
+import {SceneMusicPlayer} from './life-tree-music-player.mjs?v=20261012-musicload1';
+import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-musicload1';
 import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261011-spring-joy1';
 import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
 import {applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
@@ -12,9 +13,10 @@ const preference=(key,fallback)=>{try{return localStorage.getItem(key)??fallback
 const remember=(key,value)=>{try{localStorage.setItem(key,value);}catch{}};
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const state={item:initial,day:Math.round(Math.max(1,Math.min(initial.days.length,Number(params.get('day'))|| (dated?festivalDay(dated,params.get('date')):1)))),phase:'idle',hits:0,completed:new Set(),sound:preference('lifeTreeSound','off')==='on',motion:preference('lifeTreeFestivalMotion','normal'),version:0};
-let timers=new Set(),toastTimer,musicTask=0,musicBusy=false;
+let timers=new Set(),toastTimer;
+const sceneMusic=new SceneMusicPlayer();
 let soundWanted=state.sound;
-const music=new Audio(),effect=new Audio();music.loop=true;music.volume=.27;effect.volume=.5;music.preload='none';effect.preload='none';
+const effect=new Audio();effect.volume=.5;effect.preload='none';
 const spots={newyear:[81,24],spring:[81,25],anniversary:[81,75],easter:[26,71],pentecost:[53,78],dragon:[76,73],moon:[23,79],light:[21,69],thanksgiving:[52,80],christmas:[79,18]};
 const currentKey=()=>state.item.id+':'+state.day;
 let decorationOnly=initial.id==='christmas'&&Boolean(decorationForDate(params.get('date')))&&!festivalForDate(params.get('date'));
@@ -85,37 +87,27 @@ function greet(){
  toast(state.item.id==='christmas'?'聖誕燈亮一亮，小樹也向你說平安！':'葉子搖搖，小樹很高興見到你！');playEffect('open');wait(1100,()=>$('scene').classList.remove('is-patted'));
 }
 
-// Native audio: no AudioContext required; retryable deadline, user preference only.
+// Streamed music has visible loading and a GainNode fade on iPhone.
 function syncSound(){
  $('sound').setAttribute('aria-pressed',String(state.sound));$('sound').setAttribute('aria-label',state.sound?'關閉音樂與音效':'開啟音樂與音效');
 }
-async function playMusic(){
- if(!state.sound||document.hidden||musicBusy)return;
+function playMusic(retry=false){
  const version=state.item.id==='anniversary'?'20261012-birthday1':state.item.id==='spring'?'20261011-spring-joy1':state.item.id==='newyear'?'20261010-music-joy1':'20261010-season-test1';
  const track=state.item.musicByDay?.[state.day-1]||state.item.id;
  const src=festivalMusicURL({id:state.item.id,day:state.day,music:track},version);
- if(music.src===src&&!music.paused)return;
- musicBusy=true;const task=++musicTask;music.pause();if(music.src!==src)music.src=src;
- let timeout;
- try{
-  await Promise.race([music.play(),new Promise((_,reject)=>timeout=setTimeout(()=>reject(new Error('audio timeout')),6000))]);
-  if(task!==musicTask)return;if(!state.sound||document.hidden){music.pause();return;}
-  $('audio-status').textContent=state.item.id==='easter'&&state.day===1?'正在播放〈和撒那〉棕樹主日伴奏。':state.item.id==='easter'&&state.day===6?'正在播放〈微亞多勒羅沙〉受難日伴奏。':state.item.id==='easter'&&state.day===8?'正在播放〈因祂活著〉復活主日純音樂。':state.item.id==='anniversary'?'正在播放〈生日快樂〉週年慶配樂。':'正在播放「'+state.item.name+'」的花園音樂。';
- }catch{
-  if(task!==musicTask)return;music.pause();state.sound=false;syncSound();
-  $('audio-status').textContent='音樂還沒開始，點一下上方喇叭就能重試。';
- }finally{clearTimeout(timeout);if(task===musicTask)musicBusy=false;}
+ sceneMusic.sync(src,state.sound,.27);
+ if(navigator.userActivation?.isActive)sceneMusic.gesture(retry);
 }
-function stopMusic(){musicTask++;musicBusy=false;music.pause();effect.pause();}
+function stopMusic(){sceneMusic.pause();effect.pause();}
 function playEffect(name){
  if(!state.sound||document.hidden)return;effect.pause();effect.src=new URL('assets/audio/life-tree/'+name+'.wav',import.meta.url).href;
  const promise=effect.play();promise?.catch(()=>{});
 }
-$('sound').addEventListener('click',()=>{state.sound=!state.sound;soundWanted=state.sound;remember('lifeTreeSound',state.sound?'on':'off');syncSound();if(state.sound)playMusic();else{stopMusic();$('audio-status').textContent='聲音已關閉。';}});
+$('sound').addEventListener('click',()=>{state.sound=!state.sound;soundWanted=state.sound;remember('lifeTreeSound',state.sound?'on':'off');syncSound();if(state.sound)playMusic(true);else{stopMusic();$('audio-status').textContent='聲音已關閉。';}});
 function syncMotion(){document.body.dataset.motion=(!moving()?'reduced':'normal');$('motion').setAttribute('aria-pressed',String(!moving()));$('motion').setAttribute('aria-label',moving()?'減少動態效果':'恢復動態效果');}
 $('motion').addEventListener('click',()=>{state.motion=state.motion==='reduced'?'normal':'reduced';remember('lifeTreeFestivalMotion',state.motion);syncMotion();toast(moving()?'動畫已開啟。':'已減少動態，仍可完成所有互動。');});reduced.addEventListener('change',syncMotion);
 document.addEventListener('visibilitychange',()=>{document.body.dataset.background=String(document.hidden);if(document.hidden)stopMusic();else if(state.sound)playMusic();});
-function resumeMusic(event){if(!event.isTrusted||event.target.closest?.('#festival-sound')||event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(soundWanted&&music.paused){state.sound=true;syncSound();playMusic();}}
+function resumeMusic(event){if(!event.isTrusted||event.target.closest?.('#festival-sound')||event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(soundWanted&&sceneMusic.paused){state.sound=true;syncSound();playMusic();sceneMusic.gesture();}}
 document.addEventListener('pointerdown',resumeMusic,{passive:true});document.addEventListener('keydown',resumeMusic);
 
 for(const item of FESTIVALS){const button=document.createElement('button');button.type='button';button.className='festival-chapter';button.dataset.festival=item.id;button.setAttribute('aria-pressed',String(item===initial));button.innerHTML=festivalSymbol(item.id)+'<span>'+item.name+'<small>'+item.title+'</small></span>';button.addEventListener('click',()=>select(item.id));$('chapters').append(button);}

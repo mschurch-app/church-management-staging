@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-12",
+  "change": "Compress supplied music; visible loading, fade-in, timeout and manual retry",
+  "compression": [
+    {
+      "file": "hosanna-palm-sunday.m4a",
+      "original_bytes": 3223717,
+      "compressed_bytes": 1574378,
+      "reduction_percent": 51.2,
+      "atoms": [
+        {
+          "type": "ftyp",
+          "offset": 0,
+          "size": 28
+        },
+        {
+          "type": "moov",
+          "offset": 28,
+          "size": 27011
+        },
+        {
+          "type": "free",
+          "offset": 27039,
+          "size": 1625
+        },
+        {
+          "type": "mdat",
+          "offset": 28664,
+          "size": 1545714
+        }
+      ],
+      "sha256": "9c9d5962c6efb4c259f8bf3572565adb277198a5bf843593aa81ae98195a47e6"
+    },
+    {
+      "file": "via-dolorosa-good-friday.m4a",
+      "original_bytes": 4238848,
+      "compressed_bytes": 2107775,
+      "reduction_percent": 50.3,
+      "atoms": [
+        {
+          "type": "ftyp",
+          "offset": 0,
+          "size": 28
+        },
+        {
+          "type": "moov",
+          "offset": 28,
+          "size": 35719
+        },
+        {
+          "type": "free",
+          "offset": 35747,
+          "size": 1109
+        },
+        {
+          "type": "mdat",
+          "offset": 36856,
+          "size": 2070919
+        }
+      ],
+      "sha256": "e270868b9c5edf682bec9a13550653e44cd11864110b6378882f3dcbf5959456"
+    },
+    {
+      "file": "because-he-lives-easter.m4a",
+      "original_bytes": 2455248,
+      "compressed_bytes": 1202629,
+      "reduction_percent": 51.0,
+      "atoms": [
+        {
+          "type": "ftyp",
+          "offset": 0,
+          "size": 28
+        },
+        {
+          "type": "moov",
+          "offset": 28,
+          "size": 20815
+        },
+        {
+          "type": "free",
+          "offset": 20843,
+          "size": 3725
+        },
+        {
+          "type": "mdat",
+          "offset": 24568,
+          "size": 1178061
+        }
+      ],
+      "sha256": "b05ded2d98626223868290e649ea2499292f474d248e57948b5004c26deb7894"
+    }
+  ],
+  "source_mp3_files_retained": true,
+  "backend_changed": false,
+  "reading_schedule_changed": false,
+  "player_scope": [
+    "member garden",
+    "October coworker game",
+    "standalone game",
+    "festival preview"
+  ],
+  "legacy_devotional_scope": [
+    "compressed tracks",
+    "existing bounded playback",
+    "speaker loading spinner"
+  ],
+  "loading_deadline_ms": 12000,
+  "fade_in_seconds": 1.6,
+  "volume_control": "Web Audio GainNode",
+  "functional_tests_run": false,
+  "acceptance": {
+    "mac_safari": "pending",
+    "mac_chrome": "pending",
+    "iphone17_line": "pending",
+    "slow_network_timeout_and_retry": "pending",
+    "mute_background_battle_return": "pending"
+  },
+  "quality_target_99_percent": "not_claimed",
+  "loading_speed_measured": false,
+  "checks": {
+    "modified_javascript_syntax": "passed",
+    "generated_preview_syntax": "passed",
+    "git_diff_whitespace": "passed",
+    "audio_metadata": "AAC stereo approximately 64kbps, 32kHz",
+    "streaming_index_before_media_data": true
+  }
+}

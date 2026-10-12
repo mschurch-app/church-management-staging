@@ -102,10 +102,12 @@ Deno.serve(async request=>{
     ]);
     if(boundName.error||bulletins.error||schedules.error)return respond(origin,{ok:false,error:'unavailable'},503);
     const memberName=String(boundName.data||'').trim();
+    let memberBound=!!memberName;
+    if(!memberBound){const binding=await db.rpc('service_signup_member_view',{p_church:church,p_channel:Deno.env.get('LINE_LOGIN_CHANNEL_ID')||'2011645391',p_subject:identity.id});if(binding.error)return respond(origin,{ok:false,error:'unavailable'},503);memberBound=binding.data?.binding_status==='approved';}
     const published=new Set((bulletins.data||[]).map(row=>row.service_date));
     const roleKeys=['speaker','worship_leader','presider','prayer','guitar','bass','drums','tech_sound','tech_video','usher1','usher2','sunday_school','sunday_school_ta'];
     const listed=(date:string)=>{const row=(schedules.data||[]).find(item=>String(item.service_date).replaceAll('/','-')===date);if(!row||!memberName)return false;const values=[...roleKeys.map(key=>row[key]),...Object.values(row.custom_assignments||{})];return values.some(value=>typeof value==='string'&&value.split(/[、,，／/;；\n]+/).some(name=>name.trim()===memberName));};
-    const service={date:sunday,memberBound:!!memberName,scheduled:published.has(sunday)&&listed(sunday),completedDates:serviceDates.filter(date=>date<today&&published.has(date)&&listed(date)),source:'published_bulletin_and_bound_member_name'};
+    const service={date:sunday,memberBound,nameMatched:!!memberName,scheduled:published.has(sunday)&&listed(sunday),completedDates:serviceDates.filter(date=>date<today&&published.has(date)&&listed(date)),source:'published_bulletin_and_bound_member_name'};
     return respond(origin,{ok:true,evidence:{share:shares.count||0,prayer:prayerComments,prayerCreate:prayers.count||0},service});
   }
 

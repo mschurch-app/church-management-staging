@@ -183,8 +183,8 @@ function renderPersonalMission(){
  const service=memberData?.weeklyService;
  const lastCompleted=Object.keys(state.weeklyServiceMissions||{}).sort().at(-1);
  $('#weekly-service-status').textContent=!memberData?.missionEvidenceAvailable?'正在連接服事紀錄；稍後重新整理。':service?.scheduled?`${service.date} 已列入已公布的主日週報服事表；主日日期過後完成這週任務。`:lastCompleted?`${lastCompleted} 的主日服事任務已完成 · +30 XP。本週 ${service?.date||''} 尚未有已公布的服事安排。`:`${service?.date||'本週'} 尚未有已公布的服事安排。因為有你，這個家更美好。`;
- $('#weekly-service-binding-note').textContent=service?.memberBound?'系統以已綁定的會友姓名核對週報；LINE 暱稱不同也沒關係。':'若 LINE 名稱與服事表姓名不同，請先到「新朋友」選單完成 LINE 會友綁定；同工確認後再回來更新進度。';
- $('#weekly-service-bind').hidden=!!service?.memberBound;
+ $('#weekly-service-binding-note').textContent=!memberData?.missionEvidenceAvailable?'暫時無法確認綁定狀態，請稍後重新整理。':service?.nameMatched?'系統以已綁定的會友姓名核對週報；LINE 暱稱不同也沒關係。':service?.memberBound?'LINE 已綁定，但名冊有同名會友，請同工協助核對服事安排。':'若 LINE 名稱與服事表姓名不同，請先到「新朋友」選單完成 LINE 會友綁定；同工確認後再回來更新進度。';
+ $('#weekly-service-bind').hidden=!memberData?.missionEvidenceAvailable||!!service?.memberBound;
  if(!data?.active&&!data?.offer)return;
  const mission=data.active||data.offer,active=!!data.active,complete=!!mission.completedAt;
  $('#personal-mission-title').textContent=personalLabels[mission.kind]||'今日任務';

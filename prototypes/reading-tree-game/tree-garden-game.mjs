@@ -100,7 +100,7 @@ function readState() {
   return seed();
 }
 let state = readState(), category = 'armor', selected = 'sword', busy = false, quest = null, questEpoch = 0, eventContext = null, eventSelection = null, toastTimer, sceneTimer;
-let storageAvailable = true, previousXP = null, avatarGender = null, avatarChoice = null, victoryTimer;
+let storageAvailable = true, previousXP = null, avatarGender = null, avatarChoice = null, victoryTimer, gardenReturnTimer, bossPracticeNext = null;
 const audio = new GardenAudio(message => { $('#audio-status').textContent = message; });
 const dialogOpeners = new Map();
 function persist() {
@@ -132,7 +132,7 @@ function openDialog(id, opener = document.activeElement) {
 }
 function closeDialog(id) {
   const dialog = document.getElementById(id);
-  if (id === 'quest-dialog') { questEpoch++; quest = null; }
+  if (id === 'quest-dialog') { clearTimeout(gardenReturnTimer); questEpoch++; quest = null; }
   if (id === 'event-dialog') { eventContext = null; eventSelection = null; }
   if (id === 'reading-dialog') { window.speechSynthesis?.cancel(); audio.duck(false); }
   dialog.close();
@@ -338,6 +338,8 @@ function openBag(item = selected) {
   setTimeout(() => { if ($('#bag-dialog').open) $('#bag-opening').innerHTML = sprite('openBag'); }, motion.matches ? 0 : 220);
 }
 function openQuest(item, context) {
+  clearTimeout(gardenReturnTimer);
+  $('#battle-celebration').hidden = true;
   // Event selection is required for both daily challenges and practice.
   if (!context || eventById(context.id)?.gear !== item.id) return;
   const encounter = !context.practice;
@@ -376,7 +378,7 @@ function openQuest(item, context) {
   if (item.id === 'helmet') $('#quest-hint').textContent += ' 依序點亮三片盼望。';
   $('#quest-stage').classList.toggle('boss-quest', !!quest.boss);
   if (item.id === 'sword') renderQuestEnemies();
-  openDialog('quest-dialog'); syncAudioScene(); sound('enter'); sound('draw');
+  openDialog('quest-dialog'); $('#quest-dialog').scrollTop = 0; $('.quest-copy').scrollTop = 0; $('.quest-context').open = false; syncAudioScene(); sound('enter'); sound('draw');
   const epoch = quest.epoch; setTimeout(() => { if (quest?.epoch === epoch && !quest.busy && !quest.complete) $('#quest-stage').dataset.phase = 'ready'; }, motion.matches ? 0 : 750);
 }
 function renderQuestEnemies() {
@@ -414,38 +416,54 @@ async function actQuest() {
         saveMessage(`六種事件完成！每日守護 +${battleReward()} XP`);
       } else {
         persist(); renderEncounter();
-        $('#quest-hint').textContent = `${event.result} 已完成 ${state.encounters[today].stage}／6 個事件，收回裝備再迎接下一個挑戰。`;
-        $('#quest-return').textContent = '收回裝備，查看下一個事件 →';
+        $('#quest-hint').textContent = `${event.result} 已完成 ${state.encounters[today].stage}／6 個事件，稍後回到花園，再選擇下一個事件。`;
       }
     } else {
       const next = current.event.sequence && current.event.index + 1 < current.event.sequence.length;
       $('#quest-hint').textContent = `${event.result} ${next ? 'Boss 還有下一個挑戰，需要重新選擇裝備。' : '事件體驗完成，不發放 XP。'}`;
-      if (next) $('#quest-return').textContent = '收回裝備，迎接 Boss 下一階段 →';
     }
+    $('#quest-return').textContent = '立即回到花園';
     $('#quest-return').focus({ preventScroll: true }); celebrateAudio(); sound('xp');
   } else {
     $('#quest-stage').dataset.phase = 'ready'; $('#quest-action').disabled = false;
     $('#quest-hint').textContent = `完成 ${current.hits} 次，再 ${current.total - current.hits} 次就完成這個事件。`;
   }
   current.busy = false;
+  if (current.complete) celebrateAndReturn(current);
+}
+function returnToGarden(current) {
+  if (quest?.epoch !== current.epoch) return;
+  clearTimeout(gardenReturnTimer);
+  if (current.complete && current.event.sequence) {
+    const index = current.event.index + 1;
+    bossPracticeNext = index < current.event.sequence.length ? { ...current.event, index, id: current.event.sequence[index] } : null;
+    $('#boss-preview').textContent = bossPracticeNext ? `繼續 Boss 體驗 · ${index + 1}／3` : '體驗 Boss 三階段挑戰';
+  }
+  closeDialog('quest-dialog');
+  ['event-dialog', 'bag-dialog', 'event-library-dialog'].forEach(id => { if (document.getElementById(id).open) closeDialog(id); });
+  $('#quest-return').disabled = false;
+  $('#garden').focus({ preventScroll: true });
+  $('#garden').scrollIntoView({ behavior: motion.matches ? 'auto' : 'smooth', block: 'center' });
+}
+function celebrateAndReturn(current) {
+  clearTimeout(gardenReturnTimer);
+  $('#battle-celebration').hidden = false;
+  $('.quest-copy').scrollTop = 0;
+  gardenReturnTimer = setTimeout(() => {
+    if (quest?.epoch === current.epoch && current.complete && $('#quest-dialog').open) returnToGarden(current);
+  }, 2000);
 }
 async function returnEquipment() {
   const current = quest;
   if (!current || current.busy) return;
+  if (current.complete) { returnToGarden(current); return; }
   current.busy = true; $('#quest-return').disabled = true; $('#quest-stage').dataset.phase = 'returning'; sound('bag');
   await pause(550);
   if (quest?.epoch !== current.epoch) return;
-  closeDialog('quest-dialog');
-  ['event-dialog', 'bag-dialog', 'event-library-dialog'].forEach(id => { if (document.getElementById(id).open) closeDialog(id); });
-  $('#quest-return').disabled = false;
-  if (current.complete && current.encounter && dailyEvent()) { openEvent(dailyEvent()); return; }
-  if (current.complete && current.event.sequence && current.event.index + 1 < current.event.sequence.length) {
-    const index = current.event.index + 1;
-    openEvent({ ...current.event, index, id: current.event.sequence[index] }); return;
-  }
-  $('#garden').scrollIntoView({ behavior: motion.matches ? 'auto' : 'smooth', block: 'center' });
-  $(current.encounter ? '#read-open' : '#scene-bag').focus({ preventScroll: true });
+  returnToGarden(current);
 }
+window.addEventListener('pagehide', () => clearTimeout(gardenReturnTimer));
+window.addEventListener('pageshow', event => { if (event.persisted && quest?.complete && $('#quest-dialog').open) celebrateAndReturn(quest); });
 function markRead() {
   if (!state.records.some(record => record.reading_date === today)) {
     state.records.push({ reading_date: today, completion_type: 'on_time', watered_at: null }); persist(); updateProgress(); saveMessage('讀經完成 · +20 XP，回來為小樹澆水吧'); sound('pick');
@@ -488,7 +506,7 @@ document.querySelectorAll('dialog').forEach(dialog => {
 $('#defend-garden').onclick = () => openEvent();
 $('#quick-sword').onclick = () => openDialog('event-library-dialog');
 $('#event-use').onclick = beginEventQuest;
-$('#boss-preview').onclick = () => { const sequence = shuffled(['faith', 'hope', 'word']); openEvent({ id: sequence[0], index: 0, practice: true, boss: true, sequence }); };
+$('#boss-preview').onclick = () => { if (bossPracticeNext) { openEvent({ ...bossPracticeNext }); return; } const sequence = shuffled(['faith', 'hope', 'word']); openEvent({ id: sequence[0], index: 0, practice: true, boss: true, sequence }); };
 $('#armor-tab').onclick = () => { category = 'armor'; selected = 'sword'; renderInventory(); };
 $('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; renderInventory(); };
 $('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();

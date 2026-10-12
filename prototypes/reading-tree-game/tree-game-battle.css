@@ -1,0 +1,73 @@
+/* Keep the battlefield and its controls visible; only the supporting copy scrolls. */
+.garden-game .quest-dialog[open]{display:flex;flex-direction:column;gap:10px;width:calc(100% - 24px);max-width:680px;height:min(820px,calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));padding:18px;overflow:hidden}
+.garden-game .quest-dialog>.dialog-heading{flex:none;gap:12px}
+.garden-game .quest-dialog .dialog-heading h2{font-size:22px;line-height:1.3}
+.garden-game .quest-dialog .dialog-heading .eyebrow{font-size:10px;margin-bottom:4px}
+.garden-game .quest-dialog .quest-stage{flex:1 1 260px;min-height:140px;max-height:330px;height:auto;margin:0;border-radius:20px}
+.garden-game .quest-dialog .quest-gear{top:8%;height:82%;width:38%;left:31%}
+.garden-game .quest-dialog .quest-stage[data-item="sword"] .quest-gear{left:12%;width:28%;height:82%}
+.garden-game .quest-dialog .quest-enemy{height:68%;width:32%;right:9%;top:14%}
+.garden-game .quest-dialog .quest-boss{height:80%;width:38%;right:5%;top:7%}
+.garden-game .quest-dialog .quest-boss-presence{width:24%;height:60%;right:7%;top:12%}
+.garden-game .quest-dialog .quest-counter{left:12px;bottom:10px;font-size:11px;max-width:calc(100% - 24px)}
+.garden-game .quest-dialog .battle-status-strip{flex:none}
+.garden-game .quest-dialog .combat-life{margin:0!important;font-size:12px;line-height:1.6;text-align:center;font-variant-numeric:tabular-nums}
+.garden-game[data-october-test] .quest-dialog .incoming-hud{padding:7px 10px;margin:5px 0 0;border-radius:12px}
+.garden-game[data-october-test] .quest-dialog .incoming-hud>div{font-size:11px;gap:6px}
+.garden-game[data-october-test] .quest-dialog .incoming-countdown{font-size:13px}
+.garden-game[data-october-test] .quest-dialog .incoming-hud progress{height:5px;margin:5px 0}
+.garden-game[data-october-test] .quest-dialog .incoming-guide{display:none}
+.garden-game[data-october-test] .quest-dialog .incoming-status{font-size:11px;line-height:1.5;min-height:0;max-height:3em;overflow:auto;margin-top:3px;font-weight:500}
+.garden-game[data-october-test] .quest-dialog .incoming-shadow{width:22%;height:38%;right:7%;top:10%}
+.garden-game[data-october-test] .quest-dialog .incoming-defender{width:19%;height:65%;left:10%;bottom:9%}
+.garden-game[data-october-test] .quest-dialog .incoming-impact{height:24%;width:auto;aspect-ratio:1}
+.garden-game .quest-dialog .quest-controls{flex:none;padding:10px;background:#f0f2e5;border:1px solid #dbe2cd;border-radius:17px;box-shadow:0 3px 12px #283c2510}
+.garden-game .quest-dialog .quest-options{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.garden-game .quest-dialog .quest-options:empty{display:none}
+.garden-game .quest-dialog .quest-options button{min-width:44px;min-height:44px;flex:1 1 80px;padding:7px 9px;font-size:12px;line-height:1.45}
+.garden-game .quest-dialog .quest-buttons{display:flex;align-items:stretch;gap:8px}
+.garden-game .quest-dialog #quest-action{flex:1.4;min-width:0;min-height:52px;width:auto;margin:0;padding:10px 14px;font-size:15px;font-weight:650;line-height:1.5;box-shadow:0 4px 12px #315d4820}
+.garden-game .quest-dialog #quest-return{flex:.8;min-width:44px;min-height:44px;margin:0;padding:8px 10px;border:1px solid #c9d3b8;border-radius:12px;background:#fffef7;font-size:12px;line-height:1.5}
+.garden-game .quest-dialog .quest-copy{flex:0 1 115px;min-height:48px;padding:0 3px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.garden-game .quest-dialog #quest-hint{font-size:12px;line-height:1.65;margin:0 0 7px!important}
+.garden-game .quest-dialog .quest-context summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:7px;font-size:12px;color:#526249}
+.garden-game .quest-dialog .quest-context summary:before{content:"＋";font-size:16px}
+.garden-game .quest-dialog .quest-context[open] summary:before{content:"−"}
+.garden-game .quest-dialog .quest-context p{font-size:12px;line-height:1.8;margin:6px 0!important}
+.garden-game .quest-dialog .quest-copy :focus-visible,.garden-game .quest-dialog .quest-controls :focus-visible{outline:3px solid #a78848;outline-offset:2px}
+.garden-game .battle-celebration{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:18px;background:radial-gradient(ellipse,#fff6c6e8,#f4e4a354 55%,#182e2026);text-align:center;color:#354b2e;text-shadow:0 1px 8px #fff9df;pointer-events:none;animation:battle-celebrate .4s ease-out both}
+.garden-game .battle-celebration>span{font-size:45px;line-height:1;color:#a17b28}
+.garden-game .battle-celebration strong{font-size:28px;font-weight:750;letter-spacing:.08em}
+.garden-game .battle-celebration small{font-size:12px}
+@keyframes battle-celebrate{from{opacity:0;scale:.97}to{opacity:1;scale:1}}
+@media(max-width:720px){
+ .garden-game .quest-dialog[open]{padding:14px;gap:8px;border-radius:24px}
+ .garden-game .quest-dialog .dialog-heading h2{font-size:19px}
+ .garden-game .quest-dialog .quest-stage{min-height:120px;flex-basis:230px}
+ .garden-game .quest-dialog .quest-copy{flex-basis:90px}
+ .garden-game .quest-dialog .quest-controls{padding:8px}
+ .garden-game .quest-dialog #quest-action{font-size:14px;min-height:50px}
+ .garden-game .quest-dialog #quest-return{font-size:11px}
+}
+@media(max-height:600px){
+ .garden-game .quest-dialog[open]{padding:10px;gap:5px;height:calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-height:calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
+ .garden-game .quest-dialog .dialog-heading .eyebrow{display:none}
+ .garden-game .quest-dialog .dialog-heading h2{font-size:17px}
+ .garden-game .quest-dialog .quest-stage{min-height:80px;flex-basis:150px}
+ .garden-game .quest-dialog .quest-copy{min-height:32px;flex-basis:60px}
+ .garden-game .quest-dialog .quest-controls{padding:6px}
+ .garden-game .quest-dialog .quest-options button{padding:5px 7px;font-size:11px}
+ .garden-game .quest-dialog #quest-action{min-height:44px;font-size:13px}
+ .garden-game[data-october-test] .quest-dialog .incoming-status{max-height:1.5em}
+}
+@media(prefers-reduced-motion:reduce){.garden-game .battle-celebration{animation:none}}
+.garden-game[data-october-test] .quest-dialog .incoming-layer[data-boss="true"] .incoming-shadow{width:28%;height:50%}
+@media(max-width:720px){.garden-game .battle-celebration{padding:12px;gap:5px}.garden-game .battle-celebration>span{font-size:32px}.garden-game .battle-celebration strong{font-size:24px}}
+@media(max-height:420px) and (min-width:560px){
+ .garden-game .quest-dialog[open]{display:grid;max-width:960px;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"heading heading" "stage status" "stage controls" "stage copy";column-gap:12px}
+ .garden-game .quest-dialog>.dialog-heading{grid-area:heading}
+ .garden-game .quest-dialog .quest-stage{grid-area:stage;height:100%;max-height:none;min-height:0}
+ .garden-game .quest-dialog .battle-status-strip{grid-area:status}
+ .garden-game .quest-dialog .quest-controls{grid-area:controls}
+ .garden-game .quest-dialog .quest-copy{grid-area:copy;min-height:0}
+}

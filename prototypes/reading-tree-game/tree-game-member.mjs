@@ -1,4 +1,4 @@
-import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-goodfriday1';
+import {festivalMusicURL} from '../../life-tree-festival-audio.mjs?v=20261012-easter1';
 import {loadScheduledChapters} from '../../bible-scripture-loader.mjs';
 import {mountGardenScene} from './tree-game-scenes.mjs?v=20261012-scenes1';
 import {iconMarkup} from '../../app-icons.mjs';

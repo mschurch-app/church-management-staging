@@ -13,7 +13,7 @@
   <link rel="preload" href="assets/garden-atlas.png" as="image">
   <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
-<link rel="stylesheet" href="tree-game-member.css?v=20261012-waterreturn1"><link rel="stylesheet" href="tree-game-scenes.css?v=20261012-scenes1"><link rel="stylesheet" href="tree-game-battle.css?v=20261012-battle1"><link rel="stylesheet" href="tree-game-arrange.css?v=20261012-width1"></head>
+<link rel="stylesheet" href="tree-game-member.css?v=20261012-festival1"><link rel="stylesheet" href="tree-game-scenes.css?v=20261012-scenes1"><link rel="stylesheet" href="tree-game-battle.css?v=20261012-battle1"><link rel="stylesheet" href="tree-game-arrange.css?v=20261012-width1"></head>
 <body class="garden-game" data-member-garden="true">
   <section id="member-gate" class="member-gate"><p class="eyebrow">M+ 就是你屬靈的家</p><h1>回到自己的小小庭園。</h1><p id="member-login-status" role="status">正在連接你的讀經進度…</p><a id="member-login-link" class="primary" href="../../line-member.html?church=M%2B&amp;feature=tree">從 LINE 登入</a><a class="secondary" href="../../line-member.html?church=M%2B&amp;feature=menu">會友服務與身分綁定</a><button type="button" class="secondary" onclick="location.reload()">重新整理</button></section><noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
   <a class="skip-link" href="#garden">前往我的花園</a>
@@ -58,6 +58,11 @@
           <div class="care-actions"><button id="water" class="secondary" type="button" disabled><span data-icon="water"></span><span>澆水 <small>+5 XP</small></span></button><button id="journal-open" class="secondary" type="button" disabled><span data-icon="journal"></span><span>拾光手札 <small>選填 · +5 XP</small></span></button></div>
           <p id="daily-status" class="status" role="status">先完成讀經，再回來照顧小樹。</p>
         </section>
+        <section id="festival-mission-card" class="festival-mission-card" aria-labelledby="festival-mission-title" hidden>
+          <p class="eyebrow">今日節慶任務 · 同工測試</p><h2 id="festival-mission-title">與今天的經文同行</h2>
+          <p id="festival-mission-summary" class="muted"></p><p id="festival-mission-progress" class="status" role="status"></p>
+          <button id="festival-mission-open" class="secondary" type="button" aria-haspopup="dialog">開啟今日任務</button>
+        </section>
         <button id="equipment-open" class="equipment-teaser" type="button" aria-haspopup="dialog"><span id="teaser-sword"></span><span><small>神所賜的全副軍裝</small><strong>打開你的裝備包</strong><em>取出、穿戴，帶著真理出發 →</em></span></button>
       </aside>
     </div>
@@ -67,6 +72,15 @@
   </main>
   <nav class="game-nav" aria-label="花園導覽"><a href="#garden" aria-current="page"><span data-icon="leaf"></span>小樹</a><button id="nav-bag" type="button" aria-haspopup="dialog"><span data-icon="bag"></span>裝備包</button><button id="gift-open" type="button" aria-haspopup="dialog"><span data-icon="gift"></span>恩典小舖</button></nav>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="festival-mission-dialog" class="text-dialog festival-mission-dialog" aria-labelledby="festival-dialog-title">
+    <div class="dialog-heading"><div><p class="eyebrow">FESTIVAL QUEST</p><h2 id="festival-dialog-title">今日節慶任務</h2></div><button type="button" class="icon-button" data-close="festival-mission-dialog" data-icon="close" aria-label="關閉節慶任務"></button></div>
+    <p id="festival-dialog-reference" class="festival-reference"></p><a id="festival-dialog-scripture" class="secondary festival-scripture-link" target="_blank" rel="noopener" href="https://www.biblegateway.com/">開啟今日節慶經文 ↗</a><p id="festival-dialog-reflection" class="muted"></p>
+    <fieldset id="festival-question"><legend id="festival-dialog-question"></legend><div id="festival-choices" class="festival-choices"></div></fieldset>
+    <p id="festival-mission-feedback" class="status" role="status" aria-live="polite"></p>
+    <button id="festival-answer" class="primary" type="button">確認答案</button>
+    <button id="festival-complete" class="primary" type="button" hidden>完成花園行動</button>
+    <p class="muted festival-note">答錯可再試，不扣信心或盼望；完成今日箴言讀經後，才能領取一次 +10 XP。</p>
+  </dialog>
   <dialog id="daily-grace-dialog" class="text-dialog daily-grace-dialog" aria-labelledby="daily-grace-title"><div class="dialog-heading"><div><p class="eyebrow">每一天，都有一份小恩典</p><h2 id="daily-grace-title">今天的話語，留下美好的禮物。</h2></div><button type="button" class="icon-button" data-close="daily-grace-dialog" data-icon="close" aria-label="關閉今日小物"></button></div><div id="daily-grace-art" class="daily-grace-art" aria-hidden="true"></div><h3 id="daily-grace-name"></h3><p id="daily-grace-count" class="muted"></p><div class="team-actions"><button type="button" id="daily-grace-garden" class="primary">回花園，為小樹澆水</button><button type="button" id="daily-grace-bag" class="secondary">看看小物的祝福</button></div></dialog>
   <dialog id="avatar-dialog" class="avatar-dialog" aria-labelledby="avatar-title">
     <div class="dialog-heading"><div><p class="eyebrow">YOUR GARDEN COMPANION</p><h2 id="avatar-title">選一位陪你成長的角色</h2></div><button type="button" class="icon-button" data-close="avatar-dialog" data-icon="close" aria-label="稍後選擇角色"></button></div>
@@ -115,6 +129,6 @@
 <dialog id="team-dialog" class="text-dialog" aria-labelledby="team-title"><div class="dialog-heading"><div><p class="eyebrow">因為有你，這個家更美好</p><h2 id="team-title">我的同行小組</h2><p id="team-name"></p></div><button class="icon-button" data-close="team-dialog" data-icon="close" type="button" aria-label="關閉同行小組"></button></div><p id="team-privacy" class="muted"></p><div class="team-actions"><button type="button" id="team-invite" class="primary">邀請組隊</button><button type="button" id="team-join" class="primary" hidden>接受邀請，加入同行</button><button type="button" id="team-leave" class="quiet-button" hidden>暫時離開同行</button></div><input id="team-invite-url" aria-label="小組邀請連結，可複製分享" readonly hidden><label for="care-message">送給家人的鼓勵（選填）<input id="care-message" maxlength="120" placeholder="今天也為你加油，一起慢慢長大。"></label><p class="muted">每天可關懷三位不同家人；每人每日最多收三份。不需回覆，也不消耗你的 HP 或 MP。</p><div id="team-list"></div><div id="received-care" aria-label="今天收到的關懷"></div><p id="team-status" class="status" role="status"></p></dialog>
 <dialog id="makeup-dialog" class="text-dialog" aria-labelledby="makeup-title"><div class="dialog-heading"><h2 id="makeup-title">把漏掉的一點活水補回來</h2><button class="icon-button" data-close="makeup-dialog" data-icon="close" type="button" aria-label="關閉補讀"></button></div><label for="makeup-date">選擇日期<input id="makeup-date" type="date"></label><div class="team-actions"><button id="makeup-read" class="primary" type="button">打開完整經文</button><button id="makeup-water" class="secondary" type="button">為這一天補澆水</button></div><p id="makeup-status" class="status" role="status">最近七天都能補讀；同一天不會重複加分。</p></dialog>
 <dialog id="arrange-dialog" class="text-dialog" aria-labelledby="arrange-title"><div class="dialog-heading"><h2 id="arrange-title">每份恩典，都留在花園</h2><button class="icon-button" data-close="arrange-dialog" data-icon="close" type="button" aria-label="關閉布置花園"></button></div><label for="arrange-item">選擇已放入的小物<select id="arrange-item"></select></label><label for="arrange-x">左右位置<input id="arrange-x" type="range" min="8" max="92" value="50"></label><label for="arrange-y">前後位置<input id="arrange-y" type="range" min="30" max="85" value="70"></label><button id="arrange-save" type="button" class="primary">保存位置</button><p class="muted">調整布置不會再次發放效果；同類小物會合併呈現收藏數量。</p><h3>我的收藏紀錄</h3><div id="collection-list"></div><p id="arrange-status" class="status" role="status"></p></dialog>
-  <script type="module" src="tree-member-game.mjs?v=20261012-waterreturn1"></script>
+  <script type="module" src="tree-member-game.mjs?v=20261012-festival1"></script>
 </body>
 </html>

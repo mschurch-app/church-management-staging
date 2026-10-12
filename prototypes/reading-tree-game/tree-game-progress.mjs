@@ -26,7 +26,7 @@ export function levelForXP(value) {
   return { xp, current, next, remaining: next ? next.xp - xp : 0,
     fraction: next ? (xp - current.xp) / (next.xp - current.xp) : 1 };
 }
-export function readingProgress({ records = [], notes = [], battles = [], startDate, today }) {
+export function readingProgress({ records = [], notes = [], battles = [], festivalMissions = {}, startDate, today }) {
   const first = ordinal(startDate), last = ordinal(today), dates = new Map();
   for (const record of records) {
     const day = ordinal(record.reading_date);
@@ -52,8 +52,12 @@ export function readingProgress({ records = [], notes = [], battles = [], startD
     const award = typeof battle === 'object' && battle?.kind === 'boss' ? 30 : 10;
     battleDates.set(date, Math.max(battleDates.get(date) || 0, award));
   }
+  const festivalCount = Object.entries(festivalMissions || {}).filter(([date, mission]) => {
+    const day = ordinal(date);
+    return day !== null && first !== null && last !== null && day >= first && day <= last && mission?.completed_at && dates.has(date);
+  }).length;
   const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: [...dates.values()].reduce((sum,r)=>sum+(r.boosted===true?40:20),0), water: [...dates.values()].filter(r => r.watered_at).length * 5,
-    journal: noteDates.size * 5, weekly: [...weeks.values()].filter(count => count >= 5).length * 30 };
+    journal: noteDates.size * 5, weekly: [...weeks.values()].filter(count => count >= 5).length * 30, festival: festivalCount * 10 };
   let day = dates.get(today)?.completion_type === 'on_time' ? today : dateAtOffset(today, -1), streak = 0;
   while (dates.get(day)?.completion_type === 'on_time') { streak++; day = dateAtOffset(day, -1); }
   return { ...levelForXP(Object.values(breakdown).reduce((sum, n) => sum + n, 0)),

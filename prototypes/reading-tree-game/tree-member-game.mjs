@@ -1,7 +1,7 @@
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
-import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-octoberteam1';
+import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-festival1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
-import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-member1';
+import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-festival1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
 import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';
 import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261012-october-game1';
@@ -144,6 +144,36 @@ function closeDialog(id) {
   if (opener?.isConnected && !opener.disabled) opener.focus({ preventScroll: true });
 }
 function progress() { return readingProgress({ ...state, today }); }
+function renderFestivalMission() {
+  const card=$('#festival-mission-card'),mission=document.body.dataset.octoberTest==='true'?memberData?.mission:null;
+  card.hidden=!mission;
+  if(!mission)return;
+  const entry=state.festivalMissions?.[today],answered=entry?.key===mission.key&&!!entry.answered_at,complete=answered&&!!entry.completed_at;
+  const read=state.records?.some(record=>record.reading_date===today&&['on_time','makeup'].includes(record.completion_type));
+  $('#festival-mission-title').textContent=mission.label;
+  $('#festival-mission-summary').textContent=`${mission.reference} · ${mission.reflection}`;
+  $('#festival-mission-progress').textContent=complete?'今日任務已完成並保存 · +10 XP':answered?(read?'經文題已完成，接著完成花園行動。':'經文題已完成；先讀完今日箴言，再完成花園行動。'):'讀一段節慶經文，回答一道題，再完成花園行動。';
+  $('#festival-mission-open').textContent=complete?'查看已完成的任務':answered?'繼續今日任務':'開啟今日任務';
+  $('#festival-dialog-title').textContent=mission.label;
+  $('#festival-dialog-reference').textContent=mission.reference;
+  $('#festival-dialog-scripture').href=`https://www.biblegateway.com/passage/?search=${encodeURIComponent(mission.reference)}&version=CUV`;
+  $('#festival-dialog-reflection').textContent=mission.reflection;
+  $('#festival-dialog-question').textContent=mission.question;
+  const choices=$('#festival-choices');
+  if(choices.dataset.key!==`${today}:${mission.key}`){
+    choices.replaceChildren(...mission.choices.map((choice,index)=>{
+      const label=document.createElement('label'),radio=document.createElement('input'),span=document.createElement('span');
+      radio.type='radio';radio.name='festival-answer';radio.value=String(index);span.textContent=choice;label.append(radio,span);return label;
+    }));choices.dataset.key=`${today}:${mission.key}`;
+  }
+  $('#festival-question').hidden=answered;
+  $('#festival-answer').hidden=answered;
+  $('#festival-complete').hidden=!answered||complete;
+  $('#festival-complete').disabled=!read||remoteBusy;
+  $('#festival-complete').textContent=mission.action;
+  if(complete)$('#festival-mission-feedback').textContent=mission.result+' · 今日獎勵已保存。';
+  else if(answered)$('#festival-mission-feedback').textContent=read?'答對了！現在可以完成花園行動。':'答對了！先完成今天的箴言讀經，再回來完成行動。';
+}
 function updateProgress() {
   const p = progress(), old = previousXP === null ? null : LEVELS.filter(level => level.xp <= previousXP).at(-1);
   $('#growth-title').textContent = `Lv.${p.current.level} ${p.current.name}`;
@@ -172,7 +202,7 @@ function updateProgress() {
   $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
   $('#water').querySelector('span:nth-child(2)').innerHTML = p.todayRecord?.watered_at ? '已澆水<small>今天的活水已送達</small>' : '澆水 <small>+5 XP</small>';
   $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '打開今日箴言，讓神的話陪伴你；也能自由參加花園挑戰。';
-  renderEncounter(); renderMember(state);
+  renderEncounter(); renderMember(state); renderFestivalMission();
   $('#journey-list').replaceChildren(...LEVELS.map(level => {
     const row = document.createElement('li'); row.classList.toggle('is-current', level.level === p.current.level);
     row.innerHTML = `<span>${level.level}</span><div><strong>${level.name}</strong><small>累積 ${level.xp.toLocaleString()} XP</small></div><em>${level.level === p.current.level ? '目前階段' : level.xp <= p.xp ? '已達成' : '等待成長'}</em>`;
@@ -511,6 +541,19 @@ $('#armor-tab').onclick = () => { category = 'armor'; selected = 'sword'; render
 $('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; renderInventory(); };
 $('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();
 $('#read-open').onclick=()=>openReading(today);
+$('#festival-mission-open').onclick=()=>{renderFestivalMission();openDialog('festival-mission-dialog');};
+$('#festival-answer').onclick=()=>void attempt(async()=>{
+  const choice=$('#festival-choices input:checked'),button=$('#festival-answer');
+  if(!choice){$('#festival-mission-feedback').textContent='先選擇一個答案。';return;}
+  button.disabled=true;$('#festival-mission-feedback').textContent='正在核對經文答案…';
+  try{await change('festival_answer',{choice:Number(choice.value)});$('#festival-mission-feedback').textContent='答對了！接著完成今天的花園行動。';sound('pick');}
+  catch(e){$('#festival-mission-feedback').textContent=e.message;}finally{button.disabled=false;}
+});
+$('#festival-complete').onclick=()=>void attempt(async()=>{
+  const button=$('#festival-complete');button.disabled=true;$('#festival-mission-feedback').textContent='正在保存今日任務…';
+  try{await change('festival_complete');$('#festival-mission-feedback').textContent=memberData.mission.result+' · +10 XP 已保存。';sound('pick');$('#garden').dataset.missionComplete='true';setTimeout(()=>delete $('#garden').dataset.missionComplete,1600);}
+  catch(e){$('#festival-mission-feedback').textContent=e.message;}finally{renderFestivalMission();}
+});
 $('#read-complete').onclick=()=>void markRead();$('#water').onclick=()=>void water();$('#garden-water').onclick=()=>void water();
 $('#makeup-read').onclick=()=>{const day=$('#makeup-date').value;if(day<$('#makeup-date').min||day>today){$('#makeup-status').textContent='請選擇可補讀的日期。';return;}closeDialog('makeup-dialog');openReading(day);};
 $('#makeup-water').onclick=()=>void water($('#makeup-date').value);

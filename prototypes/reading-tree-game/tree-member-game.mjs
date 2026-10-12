@@ -1,7 +1,7 @@
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
-import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-festival1';
+import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261013-missions1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
-import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-festival1';
+import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261013-missions1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
 import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';
 import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261012-october-game1';
@@ -174,6 +174,44 @@ function renderFestivalMission() {
   if(complete)$('#festival-mission-feedback').textContent=mission.result+' · 今日獎勵已保存。';
   else if(answered)$('#festival-mission-feedback').textContent=read?'答對了！現在可以完成花園行動。':'答對了！先完成今天的箴言讀經，再回來完成行動。';
 }
+const personalLabels={quiz:'經文尋寶',share:'把愛傳出去',prayer:'禱告同行'};
+function renderPersonalMission(){
+ const enabled=document.body.dataset.octoberTest==='true',data=enabled?memberData?.personalMission:null;
+ const card=$('#personal-mission-card'),weekly=$('#weekly-service-card');
+ card.hidden=!data?.active&&!data?.offer;weekly.hidden=!enabled;
+ if(!enabled)return;
+ const service=memberData?.weeklyService;
+ const lastCompleted=Object.keys(state.weeklyServiceMissions||{}).sort().at(-1);
+ $('#weekly-service-status').textContent=!memberData?.missionEvidenceAvailable?'正在連接服事紀錄；稍後重新整理。':service?.scheduled?`${service.date} 已列入已公布的主日週報服事表；主日日期過後完成這週任務。`:lastCompleted?`${lastCompleted} 的主日服事任務已完成 · +30 XP。本週 ${service?.date||''} 尚未有已公布的服事安排。`:`${service?.date||'本週'} 尚未有已公布的服事安排。因為有你，這個家更美好。`;
+ $('#weekly-service-binding-note').textContent=service?.memberBound?'系統以已綁定的會友姓名核對週報；LINE 暱稱不同也沒關係。':'若 LINE 名稱與服事表姓名不同，請先到「新朋友」選單完成 LINE 會友綁定；同工確認後再回來更新進度。';
+ $('#weekly-service-bind').hidden=!!service?.memberBound;
+ if(!data?.active&&!data?.offer)return;
+ const mission=data.active||data.offer,active=!!data.active,complete=!!mission.completedAt;
+ $('#personal-mission-title').textContent=personalLabels[mission.kind]||'今日任務';
+ $('#personal-mission-summary').textContent=mission.kind==='quiz'?'從聖經找出三個清楚的答案。每題都有提示。':mission.kind==='share'?'把祝福卡從 LINE 傳出去三次，讓愛繼續流動。':'到代禱牆，為另一位家人留言禱告，或提出一件自己的代禱事項。';
+ $('#personal-mission-progress').textContent=complete?'這份任務已完成 · +10 XP':active?`${mission.progress}／${mission.goal} 已完成 · 接取後不限完成日期`:'今天收到一份任務。可以自己決定何時接取。';
+ $('#personal-mission-open').textContent=complete?'查看已完成任務':active?'繼續這份任務':'看看今天的任務';
+ $('#personal-dialog-title').textContent=personalLabels[mission.kind]||'今日任務';
+ $('#personal-dialog-copy').textContent=$('#personal-mission-summary').textContent;
+ const content=$('#personal-dialog-content');content.replaceChildren();
+ $('#personal-mission-accept').hidden=active||complete;
+ $('#personal-mission-answer').hidden=!active||mission.kind!=='quiz'||complete;
+ $('#personal-mission-refresh').hidden=!active||mission.kind==='quiz'||complete;
+ if(complete){$('#personal-dialog-feedback').textContent='謝謝你完成這份陪伴。經驗值已保存。';return;}
+ if(!active){$('#personal-dialog-feedback').textContent='接下後沒有期限；完成才領取一次 +10 XP。';return;}
+ $('#personal-dialog-feedback').textContent=mission.kind==='quiz'?`已答對 ${mission.progress}／3 題。`:memberData?.missionEvidenceAvailable?`目前 ${mission.progress}／${mission.goal}。完成後回來按「更新完成進度」。`:'目前無法讀取跨功能紀錄，已保存的進度不會消失。請稍後更新。';
+ if(mission.kind==='quiz'){
+  const next=(mission.questions||[]).find(q=>!mission.correctIds?.includes(q.id));
+  if(!next)return;
+  const field=document.createElement('fieldset');field.className='mission-choices';field.dataset.questionId=String(next.id);
+  const legend=document.createElement('legend');legend.textContent=`第 ${mission.progress+1} 題 · ${next.question}`;field.append(legend);
+  next.choices.forEach((answer,index)=>{const label=document.createElement('label'),radio=document.createElement('input'),span=document.createElement('span');radio.type='radio';radio.name='personal-answer';radio.value=String(index);span.textContent=answer;label.append(radio,span);field.append(label);});
+  const hint=document.createElement('details'),summary=document.createElement('summary'),copy=document.createElement('p');summary.textContent='需要一點提示？';copy.textContent=`${next.hint} · ${next.reference}`;hint.append(summary,copy);field.append(hint);content.append(field);
+ }else{
+  const link=document.createElement('a');link.className='secondary';link.href=mission.kind==='share'?'../../line-member.html?church=M%2B&feature=love':'https://liff.line.me/2011645391-tldJTxN0';link.textContent=mission.kind==='share'?'打開「把愛傳出去」 ↗':'前往「我需要禱告」 ↗';content.append(link);
+  const note=document.createElement('p');note.className='muted';note.textContent=mission.kind==='share'?'每次 LINE 回報送出成功才計一次；不查看收件者或回覆。':'為別人的事項留言，或提出自己的代禱，保存後任一計一次；遊戲不顯示禱告內容。';content.append(note);
+ }
+}
 function updateProgress() {
   const p = progress(), old = previousXP === null ? null : LEVELS.filter(level => level.xp <= previousXP).at(-1);
   $('#growth-title').textContent = `Lv.${p.current.level} ${p.current.name}`;
@@ -202,7 +240,7 @@ function updateProgress() {
   $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
   $('#water').querySelector('span:nth-child(2)').innerHTML = p.todayRecord?.watered_at ? '已澆水<small>今天的活水已送達</small>' : '澆水 <small>+5 XP</small>';
   $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '打開今日箴言，讓神的話陪伴你；也能自由參加花園挑戰。';
-  renderEncounter(); renderMember(state); renderFestivalMission();
+  renderEncounter(); renderMember(state); renderFestivalMission(); renderPersonalMission();
   $('#journey-list').replaceChildren(...LEVELS.map(level => {
     const row = document.createElement('li'); row.classList.toggle('is-current', level.level === p.current.level);
     row.innerHTML = `<span>${level.level}</span><div><strong>${level.name}</strong><small>累積 ${level.xp.toLocaleString()} XP</small></div><em>${level.level === p.current.level ? '目前階段' : level.xp <= p.xp ? '已達成' : '等待成長'}</em>`;
@@ -542,6 +580,10 @@ $('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; ren
 $('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();
 $('#read-open').onclick=()=>openReading(today);
 $('#festival-mission-open').onclick=()=>{renderFestivalMission();openDialog('festival-mission-dialog');};
+$('#personal-mission-open').onclick=()=>{renderPersonalMission();openDialog('personal-mission-dialog');};
+$('#personal-mission-accept').onclick=()=>void attempt(async()=>{const button=$('#personal-mission-accept');button.disabled=true;$('#personal-dialog-feedback').textContent='正在保存這份任務…';try{await change('mission_accept');renderPersonalMission();sound('pick');}catch(e){$('#personal-dialog-feedback').textContent=e.message;}finally{button.disabled=false;}});
+$('#personal-mission-answer').onclick=()=>void attempt(async()=>{const field=$('#personal-dialog-content fieldset'),choice=field?.querySelector('input:checked'),button=$('#personal-mission-answer');if(!choice){$('#personal-dialog-feedback').textContent='先選擇一個答案。';return;}button.disabled=true;$('#personal-dialog-feedback').textContent='正在核對經文…';try{await change('mission_answer',{questionId:Number(field.dataset.questionId),choice:Number(choice.value)});renderPersonalMission();sound('pick');}catch(e){$('#personal-dialog-feedback').textContent=e.message;}finally{button.disabled=false;}});
+$('#personal-mission-refresh').onclick=()=>void attempt(async()=>{const button=$('#personal-mission-refresh');button.disabled=true;$('#personal-dialog-feedback').textContent='正在更新完成進度…';try{await change('me');renderPersonalMission();}catch(e){$('#personal-dialog-feedback').textContent=e.message;}finally{button.disabled=false;}});
 $('#festival-answer').onclick=()=>void attempt(async()=>{
   const choice=$('#festival-choices input:checked'),button=$('#festival-answer');
   if(!choice){$('#festival-mission-feedback').textContent='先選擇一個答案。';return;}

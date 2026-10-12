@@ -1,6 +1,7 @@
 import {emptyState,refreshState,applyCommand,validDay} from '../tree-garden/engine.ts';
 import {festivalTestForDate} from '../../../life-tree-festival-test-schedule.mjs';
 import {FESTIVAL_MISSIONS} from './festival-missions.ts';
+import {missionFor,acceptMission,answerMission,completeMission,publicMission} from './personal-missions.ts';
 const START='2026-10-01',END='2026-10-31';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const TEAM_COMMANDS=['team','invite','join','leave','care'];
@@ -16,10 +17,17 @@ function themeFor(today:string){
  const items:Record<string,string[]>={newyear:['fireworks'],spring:['redpacket'],dragon:['dumpling'],moon:['mooncake'],thanksgiving:['turkey'],christmas:['reindeer']};
  return {id:item.id,name:slot.label,day,items:item.id==='easter'?day===1?['donkey']:day===5?['bread','chalice']:day===6?['cross']:day===8?['egg']:[]:items[item.id]||[],music:item.musicByDay?.[day-1]||({anniversary:'anniversary',light:'light'} as Record<string,string>)[item.id]||item.id};
 }
-export async function octoberGarden(db:any,participant:any,body:any,today:string){
+async function missionEvidence(idToken:string,since:string){
+ try{
+  const response=await fetch('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/line-member',{method:'POST',signal:AbortSignal.timeout(12000),headers:{'content-type':'application/json',origin:'https://mscos.mchurch.online'},body:JSON.stringify({action:'mission_evidence',church:'M+',idToken,since})});
+  const data=await response.json();if(!response.ok||!data.ok)throw Error('evidence_unavailable');
+  return {...data,available:true};
+ }catch{return {evidence:{share:0,prayer:0,prayerCreate:0},service:null,available:false};}
+}
+export async function octoberGarden(db:any,participant:any,body:any,today:string,idToken:string){
  const subject=participant.line_subject,action=body.command||'me',theme=themeFor(today),teamCommand=TEAM_COMMANDS.includes(action),gameCommand=action!=='me'&&!teamCommand;
- if(!['me','avatar','equip','read','water','journal','place','move','hit','engage','retreat','attack','festival_answer','festival_complete',...TEAM_COMMANDS].includes(action))throw Error('invalid_action');
- if(!['me','team'].includes(action)&&(today<START||today>END))throw Error('test_closed');
+ if(!['me','avatar','equip','read','water','journal','place','move','hit','engage','retreat','attack','festival_answer','festival_complete','mission_accept','mission_answer',...TEAM_COMMANDS].includes(action))throw Error('invalid_action');
+ if(!['me','team','mission_answer'].includes(action)&&(today<START||today>END))throw Error('test_closed');
  if(!['me','team'].includes(action)&&(typeof body.requestId!=='string'||!UUID.test(body.requestId)))throw Error('invalid_request');
  if(action==='join'&&(typeof body.token!=='string'||!UUID.test(body.token)))throw Error('invite_invalid');
  if(action==='care'&&(typeof body.recipient!=='string'||!UUID.test(body.recipient)))throw Error('invalid_request');
@@ -50,13 +58,23 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
  }
  s.legacyImported=true;refreshState(s,today,theme);
  s.festivalMissions ||= {};
+ const personal=await missionFor(s,subject,today);
+ let evidence=await missionEvidence(idToken,personal.active?.acceptedAt||'1970-01-01T00:00:00.000Z');
+ s.weeklyServiceMissions||={};
+ if(evidence.available)for(const date of evidence.service?.completedDates||[])if(!s.weeklyServiceMissions[date])s.weeklyServiceMissions[date]={completedAt:new Date().toISOString(),source:'published_bulletin_and_bound_member_name'};
+ if(personal.active&&evidence.available&&((personal.active.kind==='share'&&evidence.evidence.share>=3)||(personal.active.kind==='prayer'&&(evidence.evidence.prayer>=1||evidence.evidence.prayerCreate>=1))))completeMission(personal);
  const festivalSlot=festivalTestForDate(today),festivalMission=festivalSlot&&FESTIVAL_MISSIONS[festivalSlot.key];
  // Request receipts make retried writes idempotent. Canonical writes occur only
  // once, in the same SQL transaction as the successful game version update.
  const repeated=gameCommand&&s.receipts.includes(body.requestId);
  if(gameCommand&&!repeated){
   const e=s.encounters[today];
-  if(['festival_answer','festival_complete'].includes(action)){
+  if(action==='mission_accept'){
+   await acceptMission(personal,subject,today);
+   evidence=await missionEvidence(idToken,personal.active?.acceptedAt||'1970-01-01T00:00:00.000Z');
+  }else if(action==='mission_answer'){
+   answerMission(personal,Number(body.questionId),Number(body.choice));
+  }else if(['festival_answer','festival_complete'].includes(action)){
    if(!festivalSlot||!festivalMission)throw Error('mission_unavailable');
    const entry=s.festivalMissions[today];
    if(action==='festival_answer'){
@@ -95,7 +113,7 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
  refreshState(s,today,theme);
  let version=saved.data.version;
  if(JSON.stringify(s)!==JSON.stringify(saved.data.state)){
-  const write=await db.rpc('october_garden_save',{p_subject:subject,p_version:version,p_state:s,p_action:teamCommand||repeated||action.startsWith('festival_')?'me':action,p_day:body.day||today});
+  const write=await db.rpc('october_garden_save',{p_subject:subject,p_version:version,p_state:s,p_action:teamCommand||repeated||action.startsWith('festival_')||action.startsWith('mission_')?'me':action,p_day:body.day||today});
   if(write.error)throw Error(['date_not_allowed','read_first','invalid_note','join_required'].find(v=>write.error.message.includes(v))||'unavailable');
   if(!write.data)throw Error('conflict');version++;
  }
@@ -117,5 +135,5 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
   const latest=await db.from('tree_reading_october_game_states').select('state,version').eq('line_subject',subject).single();
   if(latest.error)throw Error('unavailable');s=latest.data.state;version=latest.data.version;
  }
- return {ok:true,state:s,version,today,serverNow:Date.now(),profile:{name:participant.display_name,group_name:team.enabled?team.group_name:null,team_enabled:team.enabled,birthday_today:false},theme,team,care,mission:festivalSlot&&festivalMission?{key:festivalSlot.key,label:festivalSlot.label,reference:festivalSlot.item.days[festivalSlot.day-1].reference,reflection:festivalSlot.item.days[festivalSlot.day-1].reflection,question:festivalMission.question,choices:festivalMission.choices,action:festivalMission.action,result:festivalMission.result,reward:10}:null,plan:null,readingWindow:{start:START,end:END},mode:'october-test'};
+ return {ok:true,state:s,version,today,serverNow:Date.now(),profile:{name:participant.display_name,group_name:team.enabled?team.group_name:null,team_enabled:team.enabled,birthday_today:false},theme,team,care,personalMission:publicMission(personal,today,evidence.evidence),missionEvidenceAvailable:evidence.available,weeklyService:evidence.service,mission:festivalSlot&&festivalMission?{key:festivalSlot.key,label:festivalSlot.label,reference:festivalSlot.item.days[festivalSlot.day-1].reference,reflection:festivalSlot.item.days[festivalSlot.day-1].reflection,question:festivalMission.question,choices:festivalMission.choices,action:festivalMission.action,result:festivalMission.result,reward:10}:null,plan:null,readingWindow:{start:START,end:END},mode:'october-test'};
 }

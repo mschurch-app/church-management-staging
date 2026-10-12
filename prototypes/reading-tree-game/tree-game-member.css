@@ -42,3 +42,15 @@
 .garden-game[data-member-garden] .festival-mission-dialog>.primary{min-height:48px;margin-top:8px}
 .garden-game[data-member-garden] .festival-note{font-size:13px;line-height:1.6}
 .garden-game[data-member-garden] #garden[data-mission-complete=true] .scene-light{filter:brightness(1.15)}
+.garden-game[data-member-garden] .personal-mission-card{background:linear-gradient(145deg,#fffdf5,#eef3e8);border-color:#cbd9c5}
+.garden-game[data-member-garden] .personal-mission-card [hidden]{display:none!important}
+.garden-game[data-member-garden] .personal-mission-card a.secondary{display:inline-flex;align-items:center;justify-content:center;justify-self:start;min-height:48px;padding:10px 16px;text-decoration:none}
+.garden-game[data-member-garden] .personal-mission-dialog #personal-dialog-content{display:grid;gap:12px;margin:18px 0}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices{display:grid;gap:10px;border:0;padding:0;margin:0}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices legend{font-weight:700;line-height:1.5;margin-bottom:12px}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices label{display:flex;align-items:center;gap:12px;min-height:52px;padding:11px 14px;border:1px solid var(--game-border);border-radius:14px;background:#fffef9;cursor:pointer;line-height:1.5}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices input{width:22px;height:22px;flex:none;accent-color:var(--game-green)}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices label:has(input:checked){border-color:var(--game-green);background:#eef3e6}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices details{margin-top:12px;color:#445c49}
+.garden-game[data-member-garden] .personal-mission-dialog .mission-choices summary{min-height:44px;cursor:pointer}
+.garden-game[data-member-garden] .personal-mission-dialog a.secondary{display:inline-flex;align-items:center;min-height:48px;padding:10px 16px;text-decoration:none}

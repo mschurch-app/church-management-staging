@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;choices?:unknown;registrationId?:unknown;accept?:unknown;requestType?:unknown};
+type Body={action?:unknown;church?:unknown;feature?:unknown;idToken?:unknown;accessToken?:unknown;image?:unknown;date?:unknown;note?:unknown;memberName?:unknown;slotId?:unknown;slotIds?:unknown;choices?:unknown;registrationId?:unknown;accept?:unknown;requestType?:unknown;assetId?:unknown;since?:unknown};
 const churches=new Set(['M+','SHiNE']);
 const features=new Set(['menu','today','help','weekly','love','devotional','service_signup']);
 const origins=new Set((Deno.env.get('LINE_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,https://mschurch-app.github.io,http://127.0.0.1:4180,http://localhost:4180').split(',').map(v=>v.trim()).filter(Boolean));
@@ -68,6 +68,46 @@ Deno.serve(async request=>{
   const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SECRET_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
   if(!url||!key)return respond(origin,{ok:false,error:'unavailable'},503);
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+
+  if(action==='record_share'){
+    const assetId=Number(body.assetId);
+    if(!Number.isSafeInteger(assetId)||assetId<1)return respond(origin,{ok:false,error:'invalid_request'},400);
+    const saved=await db.from('line_share_assets').update({sent_at:new Date().toISOString()})
+      .eq('id',assetId).eq('church_id',church).eq('line_user_id',identity.id).is('sent_at',null).select('id').maybeSingle();
+    if(saved.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    // A retry of the same card must never count as a second share.
+    if(!saved.data){const existing=await db.from('line_share_assets').select('id,sent_at').eq('id',assetId).eq('church_id',church).eq('line_user_id',identity.id).maybeSingle();if(existing.error||!existing.data?.sent_at)return respond(origin,{ok:false,error:'invalid_request'},400);}
+    return respond(origin,{ok:true,recorded:true});
+  }
+
+  if(action==='mission_evidence'){
+    if(church!=='M+')return respond(origin,{ok:false,error:'invalid_church'},400);
+    const since=typeof body.since==='string'&&/^20\d\d-\d\d-\d\dT/.test(body.since)&&Number.isFinite(Date.parse(body.since))?new Date(body.since).toISOString():'1970-01-01T00:00:00.000Z';
+    const [shares,comments,prayers]=await Promise.all([
+      db.from('line_share_assets').select('id',{count:'exact',head:true}).eq('church_id',church).eq('line_user_id',identity.id).not('sent_at','is',null).gte('sent_at',since),
+      db.from('prayer_comments').select('prayer_id').eq('church_id',church).eq('line_user_id',identity.id).gte('created_at',since).limit(500),
+      db.from('prayers').select('id',{count:'exact',head:true}).eq('church_id',church).eq('line_user_id',identity.id).gte('created_at',since),
+    ]);
+    if(shares.error||comments.error||prayers.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    const parentIds=[...new Set((comments.data||[]).map(row=>row.prayer_id))];
+    let prayerComments=0;
+    if(parentIds.length){const parents=await db.from('prayers').select('id,line_user_id').eq('church_id',church).in('id',parentIds);if(parents.error)return respond(origin,{ok:false,error:'unavailable'},503);const other=new Set((parents.data||[]).filter(row=>row.line_user_id!==identity.id).map(row=>row.id));prayerComments=(comments.data||[]).filter(row=>other.has(row.prayer_id)).length;}
+    const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+    const day=new Date(`${today}T12:00:00Z`),weekday=day.getUTCDay();day.setUTCDate(day.getUTCDate()+((7-weekday)%7));const sunday=day.toISOString().slice(0,10);
+    const serviceDates=['2026-10-18','2026-10-25'];
+    const [boundName,bulletins,schedules]=await Promise.all([
+      db.rpc('tree_mission_member_name',{p_church:church,p_subject:identity.id}),
+      db.from('website_weekly_bulletins').select('service_date').eq('church_id',church).in('service_date',serviceDates).eq('status','published'),
+      db.from('service_schedules').select('*').eq('church_id',church).like('service_date','2026%').limit(80),
+    ]);
+    if(boundName.error||bulletins.error||schedules.error)return respond(origin,{ok:false,error:'unavailable'},503);
+    const memberName=String(boundName.data||'').trim();
+    const published=new Set((bulletins.data||[]).map(row=>row.service_date));
+    const roleKeys=['speaker','worship_leader','presider','prayer','guitar','bass','drums','tech_sound','tech_video','usher1','usher2','sunday_school','sunday_school_ta'];
+    const listed=(date:string)=>{const row=(schedules.data||[]).find(item=>String(item.service_date).replaceAll('/','-')===date);if(!row||!memberName)return false;const values=[...roleKeys.map(key=>row[key]),...Object.values(row.custom_assignments||{})];return values.some(value=>typeof value==='string'&&value.split(/[、,，／/;；\n]+/).some(name=>name.trim()===memberName));};
+    const service={date:sunday,memberBound:!!memberName,scheduled:published.has(sunday)&&listed(sunday),completedDates:serviceDates.filter(date=>date<today&&published.has(date)&&listed(date)),source:'published_bulletin_and_bound_member_name'};
+    return respond(origin,{ok:true,evidence:{share:shares.count||0,prayer:prayerComments,prayerCreate:prayers.count||0},service});
+  }
 
   if(action==='content'){
     if(!features.has(feature))return respond(origin,{ok:false,error:'invalid_feature'},400);
@@ -205,10 +245,10 @@ Deno.serve(async request=>{
     const ext=match[1]==='png'?'png':'jpg',path=`${church}/${new Date().toISOString().slice(0,10)}/${crypto.randomUUID()}.${ext}`;
     const uploaded=await db.storage.from('line-share-cards').upload(path,bytes,{contentType:`image/${match[1]}`,upsert:false,cacheControl:'604800'});
     if(uploaded.error)return respond(origin,{ok:false,error:'upload_failed'},503);
-    const recorded=await db.from('line_share_assets').insert({church_id:church,line_user_id:identity.id,object_path:path});
+    const recorded=await db.from('line_share_assets').insert({church_id:church,line_user_id:identity.id,object_path:path}).select('id').single();
     if(recorded.error){await db.storage.from('line-share-cards').remove([path]);return respond(origin,{ok:false,error:'unavailable'},503);}
     const publicUrl=db.storage.from('line-share-cards').getPublicUrl(path).data.publicUrl;
-    return respond(origin,{ok:true,url:publicUrl});
+    return respond(origin,{ok:true,url:publicUrl,assetId:recorded.data.id});
   }
   return respond(origin,{ok:false,error:'invalid_action'},400);
 });

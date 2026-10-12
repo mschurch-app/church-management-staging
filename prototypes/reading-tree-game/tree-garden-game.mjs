@@ -1,4 +1,6 @@
-import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs';
+import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
+import {setupFestivalPreview,previewThemeAudio} from './tree-game-festival-preview.mjs';
+import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-game7';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
 import { GardenAudio } from './tree-game-audio.mjs?v=20261012-game5';
 
@@ -42,6 +44,7 @@ const decorations = [
   { id: 'bird', name: '同行小鳥', copy: '讓小鳥停在樹旁，陪你慢慢長大。', days: 7 },
   { id: 'fountain', name: '活水噴泉', copy: '讓花園多一處活水，收藏每天的滋養。', days: 14 },
   { id: 'fruit', name: '祝福果實', copy: '把祝福果實掛在樹上，記得一路的恩典。', days: 30 },
+  ...FESTIVAL_ITEMS,
 ];
 const iconPaths = {
   leaf: '<path d="M20 3C9 2 3 6 4 13c1 7 10 7 13 1 2-4 2-8 3-11Z"/><path d="m3 21 11-12"/>',
@@ -72,7 +75,7 @@ function sprite(id) {
   const clip = `garden-sprite-${++spriteSequence}`;
   return `<svg class="game-sprite" viewBox="${rect.join(' ')}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${ATLAS}" width="1448" height="1086" clip-path="url(#${clip})"/></svg>`;
 }
-const decorationArt = id => id === 'bird' ? '<img class="bird-art" src="assets/garden-bird.svg" alt="" width="120" height="120">' : icon(id);
+const decorationArt = id => collectibleArt(id) || (id === 'bird' ? '<img class="bird-art" src="assets/garden-bird.svg" alt="" width="120" height="120">' : icon(id));
 const itemArt = item => rects[item.id] ? sprite(item.id) : `<span class="decoration-icon">${decorationArt(item.id)}</span>`;
 const hasBattle = date => state.battles.some(battle => (typeof battle === 'string' ? battle : battle?.reading_date) === date);
 const battleReward = () => state.encounters[today]?.boss ? 30 : 10;
@@ -108,7 +111,7 @@ function announce(message) { clearTimeout(toastTimer); $('#toast').textContent =
 function saveMessage(message) { announce(storageAvailable ? message : `${message}；此瀏覽器目前只保留本次開啟的進度。`); }
 function sound(kind) { audio.effect(kind); }
 function setAudioMode(mode) {
-  audio.setMode(mode);
+  audio.setMode(mode);previewThemeAudio(mode,state,audio);
   $('#audio-mode').textContent = { garden: '花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
   document.body.dataset.audioMode = mode;
 }
@@ -279,7 +282,7 @@ function openAvatar() {
 }
 function renderDecorations() {
   const positions = { flower: [26, 79], lamp: [17, 66], bird: [50, 40], fountain: [82, 73], fruit: [39, 41] };
-  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${positions[id][0]}%;top:${positions[id][1]}%">${decorationArt(id)}</span>`).join('');
+  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${(positions[id]||[15+(decorations.findIndex(v=>v.id===id)%5)*15,50+Math.floor(decorations.findIndex(v=>v.id===id)/5)*9])[0]}%;top:${(positions[id]||[15+(decorations.findIndex(v=>v.id===id)%5)*15,50+Math.floor(decorations.findIndex(v=>v.id===id)/5)*9])[1]}%">${decorationArt(id)}</span>`).join('');
 }
 function renderInventory() {
   const items = category === 'armor' ? equipment : decorations;
@@ -505,7 +508,7 @@ function renderSound() {
   $('#music-volume').value = String(Math.round(state.musicVolume * 100)); $('#effects-volume').value = String(Math.round(state.effectsVolume * 100));
   $('#music-output').value = `${Math.round(state.musicVolume * 100)}%`; $('#effects-output').value = `${Math.round(state.effectsVolume * 100)}%`;
   $('#music-volume').disabled = !state.music; $('#effects-volume').disabled = !state.sound; $('#effects-preview').disabled = !state.sound;
-  audio.configure({ music: state.music, effects: state.sound, musicVolume: state.musicVolume, effectsVolume: state.effectsVolume });
+  audio.configure({ music: state.music, effects: state.sound, musicVolume: state.musicVolume, effectsVolume: state.effectsVolume });previewThemeAudio(document.body.dataset.audioMode||'garden',state,audio);
 }
 $('#sound').onclick = () => { renderSound(); openDialog('audio-dialog'); };
 for (const id of ['music-enabled', 'effects-enabled', 'music-volume', 'effects-volume']) {
@@ -561,5 +564,5 @@ document.addEventListener('visibilitychange', () => {
 });
 setInterval(refreshDay, 60000);
 ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderEventLibrary(); renderSound(); updateProgress(); void loadAssets();
-setAudioMode('garden');
+setupFestivalPreview(syncAudioScene);setAudioMode('garden');
 if (!state.avatarId) openAvatar();

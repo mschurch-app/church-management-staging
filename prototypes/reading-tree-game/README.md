@@ -68,3 +68,11 @@
 ## game6 角色服裝配色
 
 男女角色各三色：森林綠、晴空藍、暖莓紅；披風、衣服與褲子搭配配色，保留原先臉型、髮型、姿勢與皮革／金色細節。使用 garden-avatars-v2.png，保留舊圖及原角色 id，換圖不重置已選角色、穿戴或成長。imagegen 編輯提示詞及來源見 assets/avatar-color-edit.json。
+
+## 會友正式接入與節慶預覽（2026-10-12）
+
+`index.html` 為同工本機體驗，含節慶／受難週／生日預覽及十二種節慶紀念；不讀寫會友資料。
+
+`member.html` 由 M+ LINE 會友服務的讀經入口開啟。`tree-member-game.mjs` 與 `tree-game-member.mjs` 接入 `tree-garden`，保存角色、回合、HP/MP、閱讀日期、背包、小物效果與花園位置。讀經雙倍與關懷限額由服務端確認。禮品兌換未開放。
+
+詳見 `docs/reports/2026-10-12-reading-tree-game/member-garden.md`。本次僅語法及部署資源核對，完整 Mac／iPhone 實機與功能流程尚待驗收。

@@ -1,0 +1,13 @@
+{
+  "version": "20261012-readable1",
+  "checks_passed": 22,
+  "target": "inventory.html / inventory.css / inventory.mjs",
+  "change": "Inventory cards use secondary neutral navigation surfaces, shared text tokens and one-column mobile rows. No-photo placeholders reuse existing SVG. Category and availability stay legible. Scope selected state preserved.",
+  "local_tests": "Mac Chrome automated synthetic Auth and inventory API; all writes intercepted; no production writes",
+  "contrast": "Actual computed colors checked against rendered backgrounds at 320,390,402,430,760,1280,1440,1920; standard text 4.5 and large text 3 minimum",
+  "iphone_17": "pending actual device acceptance",
+  "mac_safari": "pending actual device acceptance",
+  "overall_99_percent": "not claimed",
+  "service_worker": "Unchanged: HTML network only; style/script network first; CSS and module URLs versioned",
+  "shared_styles_auth_database_changes": false
+}

@@ -1,0 +1,145 @@
+{
+  "environment": "Mac Chrome; isolated synthetic Auth/inventory API; no production data writes; iPhone 17 and Safari not verified",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Reproduced original red primary-action styling on item cards",
+      "passed": true,
+      "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+      "text": "rgb(48, 40, 35)"
+    },
+    {
+      "name": "Actual inventory controller renders all items, subtracts active loans, marks zero availability and makes no writes",
+      "passed": true
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 320px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 390px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 402px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 430px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 760px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 1280px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 1440px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "Readable text, no overflow, 44px controls and standard header at 1920px",
+      "passed": true,
+      "textNodes": 91
+    },
+    {
+      "name": "200% text retains card content without horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Hover keeps neutral background and readable text",
+      "passed": true
+    },
+    {
+      "name": "Reduced motion disables card transitions",
+      "passed": true
+    },
+    {
+      "name": "Search, category, photo and location filters retain actual behavior",
+      "passed": true
+    },
+    {
+      "name": "Empty search offers readable recovery without losing inventory",
+      "passed": true
+    },
+    {
+      "name": "Keyboard opens correct item detail; text is readable and Escape closes",
+      "passed": true
+    },
+    {
+      "name": "Isolated edit save failure keeps input and restores controls; retry updates same item",
+      "passed": true
+    },
+    {
+      "name": "Print action remains available and afterprint restores layout",
+      "passed": true
+    },
+    {
+      "name": "View-only users can read cards and details but cannot edit, borrow or create",
+      "passed": true
+    },
+    {
+      "name": "Scope switch respects existing unit filter and empty setup state",
+      "passed": true
+    },
+    {
+      "name": "Unauthorized access stays blocked",
+      "passed": true
+    },
+    {
+      "name": "No uncaught browser errors or non-fixture network requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "table": "inventory_items",
+      "method": "PATCH",
+      "body": {
+        "scope": "M+",
+        "location_id": "room",
+        "name": "PVC管（已整理）",
+        "category": "其他",
+        "management_type": "quantity",
+        "brand": null,
+        "model": null,
+        "unit": "根",
+        "minimum_quantity": 0,
+        "status": "available",
+        "specifications": "籃球營做球框用，接續上童軍繩",
+        "notes": null,
+        "updated_by": "00000000-0000-4000-8000-000000000001"
+      }
+    },
+    {
+      "table": "inventory_items",
+      "method": "PATCH",
+      "body": {
+        "scope": "M+",
+        "location_id": "room",
+        "name": "PVC管（已整理）",
+        "category": "其他",
+        "management_type": "quantity",
+        "brand": null,
+        "model": null,
+        "unit": "根",
+        "minimum_quantity": 0,
+        "status": "available",
+        "specifications": "籃球營做球框用，接續上童軍繩",
+        "notes": null,
+        "updated_by": "00000000-0000-4000-8000-000000000001"
+      }
+    }
+  ]
+}

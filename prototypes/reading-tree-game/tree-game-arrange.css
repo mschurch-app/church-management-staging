@@ -1,0 +1,16 @@
+/* Scoped to garden decoration controls; preserve shared game colors and buttons. */
+.garden-game .garden-workspace{min-width:0}
+.garden-game .garden-decoration>.placed-decoration{display:block;pointer-events:auto;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;width:48px;height:55px;min-width:44px;min-height:44px;margin:0;padding:3px;border:0;border-radius:14px;background:transparent;cursor:grab;transition:box-shadow .18s,background .18s}
+.garden-game .garden-decoration>.placed-decoration>span{display:block;width:100%;height:100%;pointer-events:none}
+.garden-game .garden-decoration>.placed-decoration :is(img,svg){width:100%;height:100%;object-fit:contain;pointer-events:none}
+.garden-game .garden-decoration>.placed-decoration:is(.is-selected,:focus-visible){outline:2px solid #fff5c2;outline-offset:3px;background:#fff8d52b;box-shadow:0 0 0 5px #2d51394d,0 0 24px #fff0a955;animation:none;z-index:2}
+.garden-game .garden-decoration>.placed-decoration.is-dragging{cursor:grabbing;transition:none;filter:drop-shadow(0 5px 7px #1e342b66)}
+.garden-game .garden-arrangement{margin-top:12px;padding:14px 16px;border:1px solid var(--game-border);border-radius:20px;background:var(--game-paper);color:var(--game-ink)}
+.garden-game .garden-arrangement p{margin:0;font-size:12px;line-height:1.8;color:var(--game-ink)}
+.garden-game .arrangement-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.garden-game .arrangement-actions button{flex:1;min-width:44px;min-height:44px;padding:8px 12px;font-size:13px}
+.garden-game .arrangement-actions svg{display:inline-block;width:18px;height:18px;vertical-align:middle;margin-right:5px}
+.garden-game .garden-arrangement[aria-busy=true] [data-arrange-status]:before{content:"";display:inline-block;width:12px;height:12px;margin-right:8px;border:2px solid #bac6ae;border-top-color:var(--game-green);border-radius:50%;vertical-align:middle;animation:garden-position-saving .8s linear infinite}
+@keyframes garden-position-saving{to{transform:rotate(360deg)}}
+@media(max-width:720px){.garden-game .garden-decoration>.placed-decoration{width:44px;height:44px;padding:4px}.garden-game .garden-arrangement{padding:12px 14px;border-radius:18px}}
+@media(prefers-reduced-motion:reduce){.garden-game .garden-decoration>.placed-decoration{transition:none}.garden-game .garden-arrangement[aria-busy=true] [data-arrange-status]:before{animation:none}}

@@ -12,7 +12,7 @@
   <link rel="preload" href="assets/garden-atlas.png" as="image">
   <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
-<link rel="stylesheet" href="tree-game-scenes.css?v=20261012-scenes1"><link rel="stylesheet" href="tree-game-battle.css?v=20261012-battle1"></head>
+<link rel="stylesheet" href="tree-game-scenes.css?v=20261012-scenes1"><link rel="stylesheet" href="tree-game-battle.css?v=20261012-battle1"><link rel="stylesheet" href="tree-game-arrange.css?v=20261012-drag1"></head>
 <body class="garden-game">
   <noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
   <a class="skip-link" href="#garden">前往我的花園</a>
@@ -24,18 +24,19 @@
     <div class="page-heading"><div><p class="eyebrow">MY LITTLE GARDEN</p><h1>每天一點活水，<br class="mobile-break">長成自己的光。</h1><p class="subtitle">因為有你，這座花園更美好。</p></div><p class="demo-note">這裡可以放心體驗。<br>示範進度保存在這台裝置。</p></div>
     <section id="festival-preview" class="festival-preview-card"><p class="eyebrow">同工預覽 · 不影響正式會員紀錄</p><h2>看看節慶裡的小小花園</h2><label for="demo-festival">場景與配樂<select id="demo-festival"></select></label><label for="demo-holy-day" hidden>受難週的每日場景<select id="demo-holy-day"><option value="1">棕樹主日</option><option value="2">潔淨聖殿</option><option value="3">聖殿教導</option><option value="4">心的選擇</option><option value="5">最後晚餐</option><option value="6">受難日</option><option value="7">安息日</option><option value="8">復活主日</option></select></label><p id="demo-festival-status" class="status" role="status"></p></section>
     <div class="game-layout">
-      <section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
+      <div class="garden-workspace"><section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
         <div id="demo-festival-layer" class="demo-festival-layer" aria-hidden="true"></div><div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
         <div class="scene-top"><span class="scene-tag">我的小小庭園</span><span id="scene-day" class="scene-tag"></span></div>
         <div class="tree-shadow" aria-hidden="true"></div>
         <div id="tree-object" class="tree-object" role="img" aria-label="嫩葉階段的生命樹"></div>
         <div class="guardian" id="guardian" aria-label="花園守護者"><div id="guardian-base"></div><div id="guardian-gear" class="guardian-gear"></div></div>
-        <div class="garden-decoration" id="garden-decoration" aria-hidden="true"></div>
+        <div class="garden-decoration" id="garden-decoration" role="group" aria-label="可移動的花園小物"></div>
         <div class="garden-enemies" id="garden-enemies" aria-label="花園中的小黑影"></div>
         <div class="water-rain" aria-hidden="true"></div>
         <div class="scene-bottom"><div><p id="scene-caption">小樹記得每一份陪伴。</p><button id="defend-garden" class="battle-entry" type="button">判斷事件，選擇軍裝</button></div><button id="scene-bag" class="scene-bag" type="button" aria-haspopup="dialog"><span id="bag-object"></span><span>打開裝備包</span><i aria-hidden="true">6</i></button></div>
         <div id="asset-error" class="asset-error" hidden><p>花園素材暫時沒有載入，請重試。</p><button id="retry-assets" type="button" class="primary">重新載入素材</button></div>
       </section>
+      <section id="garden-arrangement" class="garden-arrangement" aria-label="花園小物的位置"><p data-arrange-status role="status" aria-live="polite">點選花園小物，就可以左右移動，放開後保存。</p><div data-arrange-controls class="arrangement-actions" hidden><button type="button" class="secondary" data-arrange-step="-2" aria-label="小物向左移動"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>向左</button><button type="button" class="secondary" data-arrange-step="2" aria-label="小物向右移動"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg>向右</button><button type="button" class="secondary" data-arrange-done>完成布置</button></div><div class="arrangement-actions"><button type="button" class="secondary" data-arrange-retry hidden>重試保存</button><button type="button" class="secondary" data-arrange-cancel hidden>取消移動</button></div></section></div>
       <aside class="garden-sidebar">
         <section class="growth-card" aria-labelledby="growth-title">
           <div class="section-top"><span class="eyebrow">每一點成長，都看得見</span><button id="journey-open" class="quiet-button" type="button" aria-haspopup="dialog">成長旅程 ↗</button></div>
@@ -97,7 +98,7 @@
   </dialog>
   <dialog id="quest-dialog" class="quest-dialog" aria-labelledby="quest-title">
     <div class="dialog-heading"><div><p class="eyebrow">WALK IN THE WORD</p><h2 id="quest-title">讓真理點亮前路</h2></div><button type="button" class="icon-button close-dialog" data-close="quest-dialog" aria-label="離開關卡" data-icon="close"></button></div>
-    <div id="quest-stage" class="quest-stage" data-phase="ready"><div class="quest-fog" aria-hidden="true"><i></i><i></i><i></i></div><div id="quest-boss-presence" class="quest-boss-presence" aria-hidden="true"></div><div id="quest-gear" class="quest-gear"></div><div class="sword-trail" aria-hidden="true"></div><div class="quest-sparks" aria-hidden="true"></div><div class="quest-shield-wave" aria-hidden="true"></div><div id="quest-special" class="quest-special"></div><span id="quest-counter" class="quest-counter">準備出發</span><div id="battle-celebration" class="battle-celebration" role="status" hidden><span aria-hidden="true">✦</span><strong>守護成功！</strong><small>兩秒後回到花園</small></div></div>
+    <div id="quest-stage" class="quest-stage" data-phase="ready"><div class="quest-fog" aria-hidden="true"><i></i><i></i><i></i></div><div id="quest-boss-presence" class="quest-boss-presence" aria-hidden="true"></div><div id="quest-gear" class="quest-gear"></div><div class="sword-trail" aria-hidden="true"></div><div class="quest-sparks" aria-hidden="true"></div><div class="quest-shield-wave" aria-hidden="true"></div><div id="quest-special" class="quest-special"></div><span id="quest-counter" class="quest-counter">準備出發</span><div id="battle-celebration" class="battle-celebration" role="status" hidden><span aria-hidden="true">✦</span><strong>守護成功！</strong><small>三秒後回到花園</small></div></div>
     <div class="quest-controls"><div id="quest-options" class="quest-options"></div><div class="quest-buttons"><button type="button" id="quest-action" class="primary"></button><button type="button" id="quest-return" class="quiet-button" hidden>回到花園</button></div></div>
     <div class="quest-copy"><p id="quest-hint" class="status" role="status"></p><details class="quest-context"><summary>情境與經文提醒</summary><p id="quest-scenario"></p><p id="quest-verse" class="quest-verse"></p></details></div>
   </dialog>
@@ -105,6 +106,6 @@
   <dialog id="journal-dialog" class="text-dialog" aria-labelledby="journal-title"><form id="journal-form"><div class="dialog-heading"><div><p class="eyebrow">A MOMENT TO KEEP</p><h2 id="journal-title">珍藏今天的拾光</h2></div><button type="button" class="icon-button" data-close="journal-dialog" data-icon="close" aria-label="關閉手札"></button></div><label for="journal-note">今天觸動你的一句話<textarea id="journal-note" maxlength="500" rows="5" placeholder="今天，神的話讓我想到……"></textarea></label><p class="muted">選填、私人收藏；修改同一天的內容不會重複增加 XP。</p><p id="journal-status" class="status" role="status"></p><button class="primary" type="submit">珍藏這份拾光</button></form></dialog>
   <dialog id="journey-dialog" class="text-dialog" aria-labelledby="journey-title"><div class="dialog-heading"><h2 id="journey-title">小樹的成長旅程</h2><button type="button" class="icon-button" data-close="journey-dialog" data-icon="close" aria-label="關閉成長旅程"></button></div><ol id="journey-list" class="journey-list"></ol><p class="muted">經驗永久累積，達到門檻立即成長。休息幾天，小樹也會保留你的努力。</p></dialog>
   <dialog id="gift-dialog" class="text-dialog" aria-labelledby="gift-title"><div class="dialog-heading"><h2 id="gift-title">恩典小舖</h2><button type="button" class="icon-button" data-close="gift-dialog" data-icon="close" aria-label="關閉恩典小舖"></button></div><p>禮品、庫存與主日領取流程正在規劃中。</p><p class="muted">遊戲體驗版先讓你照顧小樹、收藏與使用裝備。正式點數會與小樹 XP 分開，領禮品也保留小樹等級。</p></dialog>
-  <script type="module" src="tree-garden-game.mjs?v=20261012-battle1"></script>
+  <script type="module" src="tree-garden-game.mjs?v=20261012-drag1"></script>
 </body>
 </html>

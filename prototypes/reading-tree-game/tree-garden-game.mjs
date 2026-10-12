@@ -1,8 +1,9 @@
+import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import {setupFestivalPreview,previewThemeAudio} from './tree-game-festival-preview.mjs?v=20261012-scenes1';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-game7';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
-import { GardenAudio } from './tree-game-audio.mjs?v=20261012-game5';
+import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';
 
 const $ = selector => document.querySelector(selector);
 function taipeiDay() {
@@ -83,7 +84,7 @@ function seed() {
   const startDate = dateAtOffset(today, -7);
   return { version: 1, startDate, records: Array.from({ length: 7 }, (_, i) => ({ reading_date: dateAtOffset(startDate, i), completion_type: 'on_time', watered_at: 'demo' })),
     notes: Array.from({ length: 3 }, (_, i) => ({ reading_date: dateAtOffset(startDate, i), note: '示範拾光：謝謝神今天的陪伴。' })),
-    battles: [], encounters: {}, equipped: [], placed: [], avatarId: null, sound: false, music: false, musicVolume: .45, effectsVolume: .65 };
+    battles: [], encounters: {}, equipped: [], placed: [], decorationPositions: {}, avatarId: null, sound: false, music: false, musicVolume: .45, effectsVolume: .65 };
 }
 function readState() {
   try {
@@ -91,6 +92,7 @@ function readState() {
     if (saved?.version === 1 && /^\d{4}-\d{2}-\d{2}$/.test(saved.startDate) && ['records', 'notes', 'battles', 'equipped', 'placed'].every(k => Array.isArray(saved[k]))) {
       return { ...saved, records: saved.records.filter(r => r && typeof r === 'object'), notes: saved.notes.filter(n => n && typeof n === 'object'),
         equipped: saved.equipped.filter(id => equipment.some(item => item.id === id)), placed: saved.placed.filter(id => decorations.some(item => item.id === id)),
+        decorationPositions: Object.fromEntries(Object.entries(saved.decorationPositions || {}).filter(([id,p]) => decorations.some(item=>item.id===id) && Number.isFinite(p?.x) && Number.isFinite(p?.y)).map(([id,p])=>[id,{x:Math.max(8,Math.min(92,p.x)),y:Math.max(30,Math.min(85,p.y))}])),
         encounters: saved.encounters && typeof saved.encounters === 'object' ? saved.encounters : {}, sound: saved.sound === true,
         avatarId: AVATARS.some(avatar => avatar.id === saved.avatarId) ? saved.avatarId : null, music: saved.music === true,
         musicVolume: Number.isFinite(saved.musicVolume) ? Math.min(1, Math.max(0, saved.musicVolume)) : .45,
@@ -103,6 +105,21 @@ let state = readState(), category = 'armor', selected = 'sword', busy = false, q
 let storageAvailable = true, previousXP = null, avatarGender = null, avatarChoice = null, victoryTimer, gardenReturnTimer, bossPracticeNext = null;
 const audio = new GardenAudio(message => { $('#audio-status').textContent = message; });
 const dialogOpeners = new Map();
+function decorationPlacement(key){
+ const id=state.placed[Number(key)];if(!id)return null;
+ const defaults={flower:[26,79],lamp:[17,66],bird:[50,40],fountain:[82,73],fruit:[39,41]};
+ const i=decorations.findIndex(item=>item.id===id),position=defaults[id]||[15+(i%5)*15,50+Math.floor(i/5)*9];
+ return {id,...(state.decorationPositions?.[id]||{x:position[0],y:position[1]})};
+}
+const arrangement=setupGardenArrangement({
+ layer:$('#garden-decoration'),toolbar:$('#garden-arrangement'),getPlacement:decorationPlacement,
+ savePlacement:async move=>{
+  const previous=state.decorationPositions;
+  state.decorationPositions={...previous,[move.id]:{x:move.x,y:move.y}};persist();
+  if(!storageAvailable){state.decorationPositions=previous;throw Error('瀏覽器尚未保存位置。');}
+  renderDecorations();
+ },
+});
 function persist() {
   try { localStorage.setItem(STORAGE, JSON.stringify(state)); storageAvailable = true; }
   catch { storageAvailable = false; }
@@ -111,7 +128,7 @@ function announce(message) { clearTimeout(toastTimer); $('#toast').textContent =
 function saveMessage(message) { announce(storageAvailable ? message : `${message}；此瀏覽器目前只保留本次開啟的進度。`); }
 function sound(kind) { audio.effect(kind); }
 function setAudioMode(mode) {
-  audio.setMode(mode);previewThemeAudio(mode,state,audio);
+  previewThemeAudio(mode,state,audio); audio.setMode(mode);
   $('#audio-mode').textContent = { garden: '花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
   document.body.dataset.audioMode = mode;
 }
@@ -281,8 +298,12 @@ function openAvatar() {
   $('#avatar-audio-label').hidden = !!state.avatarId; renderAvatarChoices(); openDialog('avatar-dialog');
 }
 function renderDecorations() {
-  const positions = { flower: [26, 79], lamp: [17, 66], bird: [50, 40], fountain: [82, 73], fruit: [39, 41] };
-  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${(positions[id]||[15+(decorations.findIndex(v=>v.id===id)%5)*15,50+Math.floor(decorations.findIndex(v=>v.id===id)/5)*9])[0]}%;top:${(positions[id]||[15+(decorations.findIndex(v=>v.id===id)%5)*15,50+Math.floor(decorations.findIndex(v=>v.id===id)/5)*9])[1]}%">${decorationArt(id)}</span>`).join('');
+ const focused=document.activeElement?.closest('#garden-decoration [data-placement-index]')?.dataset.placementIndex;
+ $('#garden-decoration').innerHTML=state.placed.map((id,index)=>{
+  const item=decorationPlacement(index),name=decorations.find(d=>d.id===id).name;
+  return `<button type="button" class="placed-decoration placed-${id}" data-placement-index="${index}" data-item-name="${name}" aria-label="移動${name}" aria-pressed="false" style="left:${item.x}%;top:${item.y}%"><span aria-hidden="true">${decorationArt(id)}</span></button>`;
+ }).join('');arrangement.refresh();
+ if(focused!==undefined)$('#garden-decoration').querySelector(`[data-placement-index="${focused}"]`)?.focus({preventScroll:true});
 }
 function renderInventory() {
   const items = category === 'armor' ? equipment : decorations;
@@ -451,7 +472,7 @@ function celebrateAndReturn(current) {
   $('.quest-copy').scrollTop = 0;
   gardenReturnTimer = setTimeout(() => {
     if (quest?.epoch === current.epoch && current.complete && $('#quest-dialog').open) returnToGarden(current);
-  }, 2000);
+  }, 3000);
 }
 async function returnEquipment() {
   const current = quest;

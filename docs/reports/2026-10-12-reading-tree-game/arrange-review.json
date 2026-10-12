@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-12",
+  "change": "Direct garden decoration movement, reliable victory fanfare, three-second return",
+  "reason": "Replace the primary arrangement dialog flow with direct object manipulation and restore audible victory feedback.",
+  "scope": [
+    "member garden",
+    "October Proverbs coworker entry",
+    "standalone game preview"
+  ],
+  "direct_arrangement": {
+    "input": [
+      "horizontal pointer drag",
+      "arrow buttons",
+      "left/right keyboard arrows"
+    ],
+    "save": "One existing move command after release; no database or permission changes",
+    "failure": "Retain draft position with retry and cancel",
+    "touch": "pan-y preserves vertical scrolling; horizontal intent threshold before capture",
+    "bounds": "8–92% within visible right edge; preserve existing y",
+    "duplicates": "Keep current grouped collection rendering and move its representative index",
+    "refresh": "Skip background refresh while dragging or while a draft is pending",
+    "focus": "Restore object focus after save renders",
+    "target_minimum_css_px": 44
+  },
+  "audio": {
+    "mode_configuration": "Apply music preferences before switching score mode",
+    "victory_resume": "Attempt the fanfare when AudioContext becomes ready, once per victory, within the celebration window",
+    "duration_ms": 3000,
+    "muted_preferences": "respected"
+  },
+  "resource_version": "20261012-drag1",
+  "backend_changed": false,
+  "checks": {
+    "javascript_syntax": "passed for changed executable modules and generated preview",
+    "git_diff_check": "passed"
+  },
+  "functional_tests_run": false,
+  "acceptance": {
+    "mac_safari": "pending",
+    "mac_chrome": "pending",
+    "iphone17_safari": "pending",
+    "iphone17_line": "pending",
+    "member_cloud_save_and_reload": "pending",
+    "offline_retry_and_cancel": "pending",
+    "audible_victory_and_return_timing": "pending"
+  },
+  "quality_target_99_percent": "not_claimed"
+}

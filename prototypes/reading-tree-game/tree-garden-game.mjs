@@ -1,6 +1,6 @@
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
-import {setupFestivalPreview,previewThemeAudio} from './tree-game-festival-preview.mjs?v=20261012-scenes1';
+import {setupFestivalPreview,previewThemeAudio} from './tree-game-festival-preview.mjs?v=20261012-hosanna1';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-game7';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
 import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';

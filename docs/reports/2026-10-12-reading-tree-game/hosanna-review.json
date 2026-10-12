@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-12",
+  "change": "Use supplied Hosanna accompaniment for Palm Sunday only",
+  "test_scene_date": "2026-10-13",
+  "scene": "easter-1",
+  "source_title": "和撒那｜字幕伴奏版｜敬拜樂園",
+  "asset": "assets/audio/life-tree/festivals/hosanna-palm-sunday.mp3",
+  "asset_sha256": "b8e6af7e5ad0211c4afc7b427ea7d4bc8eced0966fda78a75ec3bf13a41f4729",
+  "bytes": 3223717,
+  "estimated_duration_seconds": 197.198367,
+  "source_bytes_preserved": true,
+  "scope": [
+    "member garden",
+    "October coworker game",
+    "standalone demo",
+    "legacy October devotional",
+    "festival preview"
+  ],
+  "backend_changed": false,
+  "reading_schedule_changed": false,
+  "functional_tests_run": false,
+  "acceptance": {
+    "iphone17_line_playback": "pending",
+    "mac_safari_playback": "pending",
+    "mac_chrome_playback": "pending",
+    "mute_background_battle_return": "pending"
+  },
+  "quality_target_99_percent": "not_claimed",
+  "checks": {
+    "modified_javascript_syntax": "passed",
+    "generated_preview_syntax": "passed",
+    "git_diff_check": "passed",
+    "audio_metadata": "MP3, 44.1kHz stereo, approximately 128kbps",
+    "source_identity": "byte-for-byte copy"
+  }
+}

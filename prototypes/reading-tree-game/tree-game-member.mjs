@@ -1,7 +1,5 @@
 import {loadScheduledChapters} from '../../bible-scripture-loader.mjs';
-import {festivalById} from '../../life-tree-festivals.mjs';
-import {festivalScene} from '../../life-tree-festival-art.mjs';
-import {collectibleArt} from './tree-game-collectibles.mjs';
+import {mountGardenScene} from './tree-game-scenes.mjs?v=20261012-scenes1';
 import {iconMarkup} from '../../app-icons.mjs';
 const API='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/tree-garden';
 const OCTOBER_API='https://svwgfgyxxgbqabosriom.supabase.co/functions/v1/tree-reading-october-test';
@@ -58,7 +56,7 @@ export function renderMember(s){
  $('#next-collectibles').replaceChildren(daily,...['flower','lamp','bird','fountain','fruit'].map(id=>{const p=document.createElement('p');p.textContent=`${itemName(id)} · 背包 ${s.inventory[id]?.count||0} 份`;return p;}));
  const theme=memberData.theme;$('#festival-label').textContent=theme.name;
  const layer=$('#member-festival');
- if(`${theme.id}:${theme.day}`!==layer.dataset.themeKey){layer.dataset.themeKey=`${theme.id}:${theme.day}`;layer.dataset.theme=theme.id;const item=festivalById(theme.id);layer.innerHTML=theme.id==='birthday'?`<div class="birthday-garden">${collectibleArt('cake')}<strong>生日快樂，願你蒙恩！</strong></div>`:item?festivalScene(item,{day:theme.day,treeMarkup:'',progress:7}):'';}
+ mountGardenScene(layer,theme);
  const read=$('#read-open').querySelector('span:nth-child(2) small');read.textContent=memberData.today>='2027-01-01'?'教會每日讀經 · 根、枝、果完整經文':`箴言 ${Number(memberData.today.slice(-2))} 章 · 完整經文`;
  $('#read-open').querySelector('strong').textContent=s.records.some(r=>r.reading_date===memberData.today)?'已完成':s.buffs.reading?'+40 XP':'+20 XP';
  $('#garden-tab span').textContent=String(Object.values(s.inventory).reduce((n,i)=>n+(i.count||0),0));

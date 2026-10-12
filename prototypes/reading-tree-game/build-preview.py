@@ -8,8 +8,9 @@ html = html.replace('<link rel="stylesheet" href="assets/app-design-tokens.css" 
                     '<style id="shared-design">' + (root / 'assets/app-design-tokens.css').read_text() + '</style>')
 html = re.sub(r'<link rel="stylesheet" href="tree-garden-game\.css\?v=[^"]+">',
               lambda _: '<style>' + (root / 'tree-garden-game.css').read_text() + '</style>', html)
-parts = ["import {FESTIVALS,festivalById} from '../../life-tree-festivals.mjs';\nimport {festivalScene} from '../../life-tree-festival-art.mjs';"]
-for name in ('tree-game-collectibles.mjs', 'tree-game-festival-preview.mjs', 'tree-game-progress.mjs', 'tree-game-events.mjs', 'tree-game-audio.mjs', 'tree-garden-game.mjs'):
+html = re.sub(r'<link rel="stylesheet" href="tree-game-scenes\.css\?v=[^"]+">', lambda _: '<style>' + (root / 'tree-game-scenes.css').read_text() + '</style>', html)
+parts = ["import {FESTIVALS,festivalById} from '../../life-tree-festivals.mjs';"]
+for name in ('tree-game-collectibles.mjs', 'tree-game-scenes.mjs', 'tree-game-festival-preview.mjs', 'tree-game-progress.mjs', 'tree-game-events.mjs', 'tree-game-audio.mjs', 'tree-garden-game.mjs'):
     code = (root / name).read_text()
     code = '\n'.join(line for line in code.splitlines() if not line.startswith('import '))
     parts.append(code.replace('export ', ''))

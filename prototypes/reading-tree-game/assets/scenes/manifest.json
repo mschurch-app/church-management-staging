@@ -1,0 +1,191 @@
+{
+  "generator": "Built-in image_gen.imagegen",
+  "transparent_background": false,
+  "references": [
+    "../garden-dawn.png",
+    "../garden-atlas.png"
+  ],
+  "style": "Painterly garden adventure environment plates; dynamic actors rendered separately",
+  "assets": [
+    {
+      "id": "anniversary",
+      "file": "anniversary.png",
+      "original_generated_file": "exec-b9f7c560-f0cf-4ecd-bac5-ce018929ee0f.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3281364,
+      "sha256": "381662488b3d909aa20c3a1d81cc9177680a1986eb6ee04de88adc3a4c5d7a8f",
+      "prompt": "Use case: stylized-concept. Asset type: full-bleed background plate for a polished painterly Christian garden adventure game, portrait 3:4 composition. Create a NEW church anniversary garden environment. References: image 1 is lighting and painterly environment style reference; image 2 is the existing game sprite atlas, style reference only, DO NOT reproduce its sprites. Scene: a beautiful sheltered garden courtyard with warm ivory stone terraces and distant graceful stone arches, understated cream and muted gold celebration bunting and a few glowing lanterns in the upper background, lush climbing greenery, tiny white flowering borders, warm late-afternoon sunshine. Refined hand-painted 3D game illustration with convincing depth, natural material texture, atmospheric perspective and cohesive emerald/ivory/antique gold colors, matching the atlas. Composition contract: empty grass clearing in the central 60 percent, especially x 22–65%, y 38–75%, where the app will render a large living tree; keep the lower-right middle at x 70%, y 70% clear for a full-body avatar. The ground beneath both must be the SAME continuous ground plane. Put celebration landmarks in the upper third and along far edges, legible even when cropped to a central vertical frame. A subdued dark-green foreground at the bottom 15% is for controls. Fill all edges. Absolutely NO central tree, characters, people, creatures, backpack, UI, labels, letters, numbers, logos, text, poster, white bands, panels, borders, flat vector art, clipart. Output one environment painting."
+    },
+    {
+      "id": "newyear",
+      "file": "newyear.png",
+      "original_generated_file": "exec-d0b140d6-0030-4694-8e30-b335d5cb5c22.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3040311,
+      "sha256": "76a2fdea5491b1aaa9eec825720b7a607a8cd09aa82ac543984164b379d854cd",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A midnight garden beside a distant reflective lake, warm gold and soft teal fireworks blossom HIGH in the indigo sky. A few refined warm lanterns trace the far terrace. Rich moonlit emerald grass clearing and subtle gold light on the ground; festive but spacious."
+    },
+    {
+      "id": "spring",
+      "file": "spring.png",
+      "original_generated_file": "exec-0853e11f-8f06-4965-a815-c87a4f1b70fa.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3196400,
+      "sha256": "d11131ff81b08d4f431a49aba73048ef11ca49c09d28bbde6a3ddf8c2229ef78",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: An elegant Chinese New Year garden in warm peach morning light, curved natural stone garden wall and bamboo foliage in the far background, handcrafted red silk lanterns and small gold tassels hung HIGH along the outer branches. A few plum blossoms frame the edges. Red, jade and antique gold details, grounded believable materials. No buildings, no cartoon houses, no text."
+    },
+    {
+      "id": "easter-1",
+      "file": "easter-1.png",
+      "original_generated_file": "exec-95f1ae05-0fd4-4242-b341-77106a4187eb.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3449085,
+      "sha256": "ca576b65cd72a0280964efe879e378a3198f9f7dd19ba3175076b9bcbd7641ba",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: Palm Sunday inspired Mediterranean olive garden in fresh bright morning. A dignified ancient stone gateway and palm fronds are far in the upper background; a soft cream fabric drape along one distant wall. Welcoming, peaceful olive and warm limestone palette; no crowds or people."
+    },
+    {
+      "id": "easter-2",
+      "file": "easter-2.png",
+      "original_generated_file": "exec-1279700e-dea4-4ffc-9792-74efd2c37a66.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3365029,
+      "sha256": "01b9db36df52747b4edda7da1123d2e2cc4304574d741e10aedd2ee8e39f94cb",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A serene ancient temple courtyard interpreted as a living garden, with sunlit limestone colonnades and broad distant steps in the upper background, soft ivy and olive leaves on the edges. Clean, quiet morning with warm ivory and sage, central grass clearing stays open."
+    },
+    {
+      "id": "easter-3",
+      "file": "easter-3.png",
+      "original_generated_file": "exec-dbd95fc9-580f-4d45-a269-daecb261a63f.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3395989,
+      "sha256": "4a84d8cec690fdc7ffe31afa0aa5e4d4f003539d9b59fc71639aec2a8ca911f2",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: An intimate teaching garden beside ancient limestone arches. A modest carved stone bench and a closed parchment scroll sit far in the upper-right background beneath an olive bower. Thoughtful golden mid-morning, fine flowering herbs, tranquil and welcoming."
+    },
+    {
+      "id": "easter-4",
+      "file": "easter-4.png",
+      "original_generated_file": "exec-03373b4b-3101-46d3-8763-9d875d27e4e6.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 2944373,
+      "sha256": "c2671b4e265a15871ceeb80b5bda73cc8cd9882195df20485f4a669858e3c919",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A reflective Mediterranean garden at blue dusk, a distant closed wooden gate inside a limestone garden wall, a single warm oil lantern far to one side, long soft shadows and gentle lavender sky. Mood of reflection and choosing ones path, never frightening."
+    },
+    {
+      "id": "easter-5",
+      "file": "easter-5.png",
+      "original_generated_file": "exec-d36f359a-79aa-4cfc-838a-03e276ab0602.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3205579,
+      "sha256": "f2f1611d7546be3a46389ee810fe9385c84d3d23db9effc92ea36f0f1cfd4bcd",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A Gethsemane inspired olive garden at quiet twilight. In the upper-right background under a simple stone arch, a small rustic supper table with pale linen, a loaf of bread and one simple cup, unoccupied. Moonlight and restrained warm oil lamps, deep olive and amber, contemplative."
+    },
+    {
+      "id": "easter-6",
+      "file": "easter-6.png",
+      "original_generated_file": "exec-03cce56a-ca04-45e1-800b-9c46d05228d4.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 2922645,
+      "sha256": "6ca436989f1f392e54f409a5dfdd03cee46fac974c87c3ce074cfbe98fdd61b3",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A solemn Good Friday garden in muted plum dusk. A simple empty wooden cross stands on a distant rocky rise in the upper-right background, violet clouds open to a thin warm horizon. The open foreground is still a living garden with grass and quiet white flowers; respectful, no human suffering, no horror."
+    },
+    {
+      "id": "easter-7",
+      "file": "easter-7.png",
+      "original_generated_file": "exec-a38dd189-05a7-4f0a-aea8-86e0825054c1.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3331308,
+      "sha256": "af8becd1def1874645578d870b49607fd0136d5f89430b50fa49933b8a366957",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A silent garden in cool pre-dawn blue. A small ancient rock-cut tomb with a closed circular stone appears far in the upper-right background, olive leaves and a few white lilies border the path. Patient and peaceful, fine early mist, no figures, no darkness over the central clearing."
+    },
+    {
+      "id": "easter-8",
+      "file": "easter-8.png",
+      "original_generated_file": "exec-fc7cac78-fb1e-4b89-8833-0bd4695c87c9.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3227381,
+      "sha256": "757914a6bc6d69cdf2e0b14f42f056aa33555d07fa2a9ff2bf6381245804437c",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A radiant resurrection morning garden with a distant EMPTY rock-cut tomb at upper-right, circular stone rolled aside, soft golden sunrise pouring through the hills, white lilies and living fresh greenery. Warm hopeful light touches the entire continuous central grass clearing. No figures, no text."
+    },
+    {
+      "id": "pentecost",
+      "file": "pentecost.png",
+      "original_generated_file": "exec-ed658d84-5522-480c-8c54-9bcdf0e74f28.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3366795,
+      "sha256": "1fb57b112039b02fd85d0e7ab6a0db8fcbadea8c8a4eb1e66543dec320ac02f0",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A living sunlit garden stirred by a gentle wind, tall grasses at the edges bending together, delicate warm amber flame-like points of light floating above the far garden terrace, cream fabric streamers high at the borders. Luminous gold and fresh olive, quiet sense of courage and renewal, no actual plants on fire."
+    },
+    {
+      "id": "dragon",
+      "file": "dragon.png",
+      "original_generated_file": "exec-b3e5c37b-04d2-44b8-ab4d-1e66fed40f7b.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3383071,
+      "sha256": "9b035890fe64b19436e9486d5ab94d62d80399aa09de7e465077d2544f972e97",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A fresh early summer garden beside an emerald river, bamboo and broad zongzi leaves frame the margins, a small beautifully carved wooden dragon boat rests at the far upper-right river edge, no crew. Soft jade water, warm stone riverbank, bright verdant central grass clearing."
+    },
+    {
+      "id": "moon",
+      "file": "moon.png",
+      "original_generated_file": "exec-60958487-a14b-4cc1-be17-791a0119f032.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 2989168,
+      "sha256": "c00ea0ee1e595e764e200147d78fe6922aaa7022d3fda86e5cc775803c2bfbe6",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A refined mid-autumn moon garden, a luminous full moon high at upper-right reflected in a distant curved lake, soft indigo and teal night, osmanthus blossoms and a few warm amber garden lanterns along the edges. A small stone tea table with a mooncake is distant at the right margin, not in the central play area."
+    },
+    {
+      "id": "light",
+      "file": "light.png",
+      "original_generated_file": "exec-0807c750-2a3e-4093-86c2-fd9b715c4316.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3227811,
+      "sha256": "5d5c5ed5618f43d199acdde3cb3456b6ff9cf9423731d7cd681eb315b267c2a2",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A brave but welcoming twilight forest garden, deep teal blue and plum atmosphere, a distant ancient stone arch touched with soft gold light, subtle glowing crystals and luminous flowers along the edges, gentle purple mist BEHIND the open grassy clearing. Central garden remains readable and peaceful. No monsters or halloween props."
+    },
+    {
+      "id": "thanksgiving",
+      "file": "thanksgiving.png",
+      "original_generated_file": "exec-79219a36-ec63-4cf7-b46b-4c57148d9c14.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3202397,
+      "sha256": "7baee6f4471f720b8c1165ce874c7d04915dc0e9f0500e61129106f7b67be582",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: An autumn gratitude garden in warm honey afternoon, amber and russet foliage framing the edges. A modest distant harvest table at upper-right holds a roast turkey, baskets of bread and pumpkins, surrounded by natural wheat and a few sunflowers. Rich olive central grass clearing, refined warm copper and cream accents, no people."
+    },
+    {
+      "id": "christmas",
+      "file": "christmas.png",
+      "original_generated_file": "exec-75eb7528-2ab9-40ec-b618-faa35f4c76e9.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3452781,
+      "sha256": "4093085fa206cc8110c3cf61943c9557acbd36cecf08d5ae773f7e51ec0c6ae9",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: An enchanting Christmas garden at blue hour, emerald evergreens with tiny warm golden string lights at the outer edges, a luminous single star high at upper-right, a small humble wooden manger under a simple natural timber shelter far in the background. Very light frost along the borders but green central clearing. Quiet cream-gold-indigo palette, no Santa, no people, no text."
+    },
+    {
+      "id": "birthday",
+      "file": "birthday.png",
+      "original_generated_file": "exec-f1e48d0e-2080-4dbd-ad5f-c77c6a69d867.png",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 3238348,
+      "sha256": "8327ecc38210677560dfdc72080cc43439e3c714633ed4f0af355f8793bafdf4",
+      "prompt": "Use case: stylized-concept. Asset type: one full-bleed background painting for a premium painterly Christian garden adventure game. Portrait 3:4 composition. References: image 1 is environment brushwork and lighting reference; image 2 is existing game sprite style reference ONLY, do NOT reproduce any of the sprites. The entire new illustration must look like the SAME richly hand-painted 3D adventure game world as these assets, with detailed organic textures, believable perspective and gentle atmospheric depth. COMPOSITION CONTRACT: a continuous empty grass clearing occupies the central 60 percent. Reserve x22–65%, y38–75% for a large dynamic tree rendered separately, and x65–85%, y56–80% for the dynamic avatar. Background landmarks and seasonal objects belong in the upper third and side margins, and must read when cropped into a central tall mobile viewport. Keep the same ground plane for tree and avatar. Foreground bottom 15 percent is softly shaded emerald ground, clear for UI controls. Fill all edges, no letterboxing. NO central tree, characters, humans, animals, weapons, backpacks, UI, readable lettering, numbers, logo, title, poster, borders, graphic panels, flat vector illustration or clipart. This is a seamless playable environment plate, not a mockup. Scene: A joyful personal birthday garden in warm soft morning, tasteful ivory and dusty-rose fabric ribbons draped HIGH at the outer edges, delicate flowering borders, a small round table far at upper-right holding an elegant cream birthday cake with a few tiny glowing candles. Sage grass clearing, soft champagne-gold highlights, refined and intimate, no people, no lettering."
+    }
+  ]
+}

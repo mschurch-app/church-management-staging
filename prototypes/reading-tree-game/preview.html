@@ -149,7 +149,62 @@
   <link rel="preload" href="assets/garden-atlas.png" as="image">
   <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
-<link rel="stylesheet" href="../../life-tree-festival-animation.css?v=20261012-member1"></head>
+<style>/* Game-only scene composition. Full environment art replaces legacy SVG posters. */
+.garden-game .garden-scene[data-scene]{height:clamp(600px,66vw,780px);min-height:0;aspect-ratio:auto;background-position:center;container-type:inline-size}
+.garden-game .garden-scene[data-scene] :is(.member-festival,.demo-festival-layer){position:absolute;inset:0;overflow:hidden;background:transparent;pointer-events:none;z-index:0}
+.garden-game .garden-environment{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .6s ease;user-select:none}
+.garden-game .garden-environment.is-ready{opacity:1}
+.garden-game .garden-scene[data-scene]:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,#142d2426,transparent 22%,transparent 72%,#14291e99 100%)}
+.garden-game .garden-scene[data-scene] .tree-object{top:auto;bottom:25%;left:19%;width:55%;height:45%;transform-origin:50% 93%;filter:drop-shadow(0 5px 4px #293d292a)}
+.garden-game .garden-scene[data-scene] .tree-object[data-art="sapling"]{top:auto;bottom:25%;left:25%;width:42%;height:34%}
+.garden-game .garden-scene[data-scene] .tree-object[data-level="4"]{left:17%;width:59%}
+.garden-game .garden-scene[data-scene] .tree-shadow{top:auto;bottom:24%;left:25%;width:43%;height:4%;background:#19352180;filter:blur(10px)}
+.garden-game .garden-scene[data-scene] .guardian{left:69%;top:auto;bottom:21%;width:18%;height:25%;filter:drop-shadow(0 5px 3px #14261d44)}
+.garden-game .garden-scene[data-scene] .guardian:before{content:"";position:absolute;left:10%;right:10%;bottom:1%;height:5%;background:#20392480;filter:blur(5px);border-radius:50%;z-index:-1}
+.garden-game .garden-scene[data-scene] .scene-top{left:20px;right:20px;top:20px;flex-wrap:wrap;align-items:start}
+.garden-game .garden-scene[data-scene] .scene-tag{min-height:36px;display:flex;align-items:center;padding:8px 13px;background:#fffdf0e8;color:#344c3b;border:1px solid #ffffff6b;box-shadow:0 3px 12px #203a2920;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px}
+.garden-game .garden-scene[data-scene] .scene-bottom{bottom:20px;left:22px;right:18px;gap:20px;color:#fff9df}
+.garden-game .garden-scene[data-scene] .scene-bottom p{color:#fff9df;text-shadow:0 1px 4px #182c20;line-height:1.7}
+.garden-game .garden-scene[data-scene] .scene-bag{flex:none;min-width:78px;min-height:88px;color:#fff9df;text-shadow:0 1px 4px #182c20}
+.garden-game .garden-scene[data-scene] .battle-entry{min-height:44px;background:#fff6d8ed;color:#354635;border-color:#fff6c8a6;box-shadow:0 4px 14px #182c2033;font-size:12px}
+.garden-game .garden-scene[data-scene] .garden-event-marker{left:4%;top:auto;bottom:27%;width:94px;height:104px;gap:7px;min-width:44px;min-height:44px}
+.garden-game .garden-scene[data-scene] .garden-event-marker .event-symbol{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle,#fff9dff2,#e9dcaecc);border-color:#fff3cbab;box-shadow:0 0 22px #ffe8a966,0 5px 12px #32402c33}
+.garden-game .garden-scene[data-scene] .garden-event-marker .event-symbol svg{width:28px;height:28px}
+.garden-game .garden-scene[data-scene] .garden-event-marker strong{max-width:110px;white-space:normal;font-size:11px;line-height:1.5;text-align:center;padding:5px 8px;background:#243c32e8;color:#fff6df;border-color:#f9e5b347;box-shadow:0 4px 12px #17332530}
+.garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss{width:112px;height:136px;bottom:25%}
+.garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss .event-shadow{width:92px;height:92px}
+.garden-game .garden-scene[data-scene] .scene-light{opacity:.24;mix-blend-mode:screen}
+.garden-game .garden-scene[data-scene-mood="night"] .scene-light{opacity:.12}
+.garden-game .garden-scene[data-scene-mood="night"] :is(.tree-object,.guardian,.garden-decoration){filter:brightness(.79) saturate(.8) drop-shadow(0 0 5px #a7c4e225)}
+.garden-game .garden-scene[data-scene-mood="solemn"] :is(.tree-object,.guardian,.garden-decoration){filter:brightness(.78) saturate(.65)}
+.garden-game .garden-scene[data-scene-mood="solemn"] .scene-light{opacity:.08}
+.garden-game .garden-atmosphere{position:absolute;inset:0;pointer-events:none}
+.garden-game .garden-atmosphere i{position:absolute;left:calc(8% + var(--mote)*16%);top:calc(37% + var(--mote)*7%);width:3px;height:3px;border-radius:50%;background:#fff4c9;box-shadow:0 0 8px 2px #f4df9b66;opacity:.45;animation:scene-mote 8s ease-in-out infinite;animation-delay:calc(var(--mote)*-1.3s)}
+.garden-game .garden-scene[data-scene-mood="solemn"] .garden-atmosphere{display:none}
+.garden-game .scene-retry{min-height:44px;padding:8px 12px;border:1px solid #e9dfbe;border-radius:12px;background:#fff9e9;color:#394c3c;font:inherit;font-size:12px;pointer-events:auto}
+.garden-game .garden-scene[data-scene] :is(button,a):focus-visible{outline:3px solid #fff3bf;outline-offset:4px}
+@keyframes scene-mote{0%,100%{transform:translate(0,0);opacity:.15}50%{transform:translate(6px,-14px);opacity:.6}}
+@media(max-width:800px){
+ .garden-game .garden-scene[data-scene]{height:clamp(470px,132vw,630px);min-height:0;position:relative;top:auto;border-radius:26px}
+ .garden-game .garden-scene[data-scene] .tree-object{left:16%;width:59%;height:43%;bottom:25%}
+ .garden-game .garden-scene[data-scene] .tree-object[data-art="sapling"]{left:25%;width:42%;height:32%;bottom:25%}
+ .garden-game .garden-scene[data-scene] .tree-object[data-level="4"]{left:14%;width:63%}
+ .garden-game .garden-scene[data-scene] .guardian{left:69%;width:20%;height:24%;bottom:21%}
+ .garden-game .garden-scene[data-scene] .scene-top{top:15px;left:14px;right:14px;gap:7px}
+ .garden-game .garden-scene[data-scene] .scene-tag{font-size:11px;min-height:34px;padding:7px 11px}
+ .garden-game .garden-scene[data-scene] .scene-bottom{left:16px;right:12px;bottom:16px;gap:10px}
+ .garden-game .garden-scene[data-scene] .scene-bottom>div{max-width:72%}
+ .garden-game .garden-scene[data-scene] .scene-bottom p{font-size:12px}
+ .garden-game .garden-scene[data-scene] .battle-entry{font-size:11px;padding:9px 11px}
+ .garden-game .garden-scene[data-scene] .garden-event-marker{left:2%;bottom:29%;width:84px;height:96px}
+ .garden-game .garden-scene[data-scene] .garden-event-marker strong{font-size:10px}
+ .garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss{width:96px;height:120px;bottom:27%}
+ .garden-game .garden-scene[data-scene] .garden-event-marker.marker-boss .event-shadow{width:80px;height:80px}
+}
+@media(prefers-reduced-motion:reduce){.garden-game .garden-environment{transition:none}.garden-game .garden-atmosphere i{animation:none;opacity:.3}}
+
+.garden-game .quest-stage{background-image:var(--garden-environment,url("assets/garden-dawn.png"))}
+</style></head>
 <body class="garden-game">
   <noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
   <a class="skip-link" href="#garden">前往我的花園</a>
@@ -159,6 +214,7 @@
   </header>
   <main>
     <div class="page-heading"><div><p class="eyebrow">MY LITTLE GARDEN</p><h1>每天一點活水，<br class="mobile-break">長成自己的光。</h1><p class="subtitle">因為有你，這座花園更美好。</p></div><p class="demo-note">這裡可以放心體驗。<br>示範進度保存在這台裝置。</p></div>
+    <section id="festival-preview" class="festival-preview-card"><p class="eyebrow">同工預覽 · 不影響正式會員紀錄</p><h2>看看節慶裡的小小花園</h2><label for="demo-festival">場景與配樂<select id="demo-festival"></select></label><label for="demo-holy-day" hidden>受難週的每日場景<select id="demo-holy-day"><option value="1">棕樹主日</option><option value="2">潔淨聖殿</option><option value="3">聖殿教導</option><option value="4">心的選擇</option><option value="5">最後晚餐</option><option value="6">受難日</option><option value="7">安息日</option><option value="8">復活主日</option></select></label><p id="demo-festival-status" class="status" role="status"></p></section>
     <div class="game-layout">
       <section id="garden" class="garden-scene" aria-label="我的生命樹花園" tabindex="-1" data-phase="idle">
         <div id="demo-festival-layer" class="demo-festival-layer" aria-hidden="true"></div><div class="scene-light" aria-hidden="true"></div><div id="fireflies" class="fireflies" aria-hidden="true"></div>
@@ -193,7 +249,7 @@
         <button id="equipment-open" class="equipment-teaser" type="button" aria-haspopup="dialog"><span id="teaser-sword"></span><span><small>神所賜的全副軍裝</small><strong>打開你的裝備包</strong><em>取出、穿戴，帶著真理出發 →</em></span></button>
       </aside>
     </div>
-    <section class="festival-preview-card"><p class="eyebrow">同工預覽 · 不影響正式會員紀錄</p><h2>看看節慶裡的小小花園</h2><label for="demo-festival">場景與配樂<select id="demo-festival"></select></label><label for="demo-holy-day" hidden>受難週的每日場景<select id="demo-holy-day"><option value="1">棕樹主日</option><option value="2">潔淨聖殿</option><option value="3">聖殿教導</option><option value="4">心的選擇</option><option value="5">最後晚餐</option><option value="6">受難日</option><option value="7">安息日</option><option value="8">復活主日</option></select></label><p id="demo-festival-status" class="status" role="status"></p></section><section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">每件軍裝，都有它的使命</p><h2>看懂事件，帶著合適的裝備出發。</h2><p>六種事件需要六件不同的軍裝。選錯會有叉叉與提示，選對後還要實際使用。</p></div><button id="quick-sword" class="secondary" type="button">體驗六種事件 →</button></section>
+    <section class="walk-card"><span data-icon="sun"></span><div><p class="eyebrow">每件軍裝，都有它的使命</p><h2>看懂事件，帶著合適的裝備出發。</h2><p>六種事件需要六件不同的軍裝。選錯會有叉叉與提示，選對後還要實際使用。</p></div><button id="quick-sword" class="secondary" type="button">體驗六種事件 →</button></section>
     <p class="scope-note">此版本提供花園、升級與裝備互動示範。全副軍裝可借用體驗；示範 XP 不用於教會禮品兌換。</p>
     <div class="demo-tools"><button type="button" id="boss-preview" class="secondary">體驗 Boss 三階段挑戰</button><p>約 10% 機率遇到 Boss，需要換用三件軍裝。此體驗不加分。</p></div>
   </main>
@@ -242,7 +298,6 @@
   <dialog id="gift-dialog" class="text-dialog" aria-labelledby="gift-title"><div class="dialog-heading"><h2 id="gift-title">恩典小舖</h2><button type="button" class="icon-button" data-close="gift-dialog" data-icon="close" aria-label="關閉恩典小舖"></button></div><p>禮品、庫存與主日領取流程正在規劃中。</p><p class="muted">遊戲體驗版先讓你照顧小樹、收藏與使用裝備。正式點數會與小樹 XP 分開，領禮品也保留小樹等級。</p></dialog>
   <script type="module">
 import {FESTIVALS,festivalById} from '../../life-tree-festivals.mjs';
-import {festivalScene} from '../../life-tree-festival-art.mjs';
 const FESTIVAL_ITEMS = [
  ['fireworks','跨年煙火','newyear'],['redpacket','春節紅包','spring'],['cake','生日蛋糕','birthday'],
  ['donkey','棕樹主日小驢','easter'],['bread','聖餅','easter'],['chalice','聖杯','easter'],['cross','十字架','easter'],['egg','復活蛋','easter'],
@@ -263,6 +318,49 @@ const shapes={
  reindeer:'<path d="m37 41-9-22m2 7-12-2m11-2-1-14m55 33 9-22m-2 7 12-2m-11-2 1-14" fill="none" stroke="#947653" stroke-width="5" stroke-linecap="round"/><path d="M28 49q-18-18-18 1 2 15 21 7m61-8q18-18 18 1-2 15-21 7" fill="#ba9970"/><path d="M28 49q32-27 64 0l-9 36q-23 27-46 0Z" fill="#c5a278"/><circle cx="43" cy="60" r="4" fill="#334a3c"/><circle cx="77" cy="60" r="4" fill="#334a3c"/><ellipse cx="60" cy="82" rx="13" ry="10" fill="#b95f59"/><path d="M39 99q21 14 42 0" stroke="#799985" stroke-width="10" fill="none"/>',
 };
 const collectibleArt=id=>shapes[id]?`<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="110" rx="38" ry="5" fill="#294431" opacity=".12"/>${shapes[id]}</svg>`:'';
+// Environment plates share the playable clearing; labels and actors remain live UI.
+const sceneNames = {
+  garden:'平日花園',newyear:'跨年星光庭園',spring:'新春蒙恩庭園',anniversary:'感恩同行庭院',
+  'easter-1':'榮耀進城','easter-2':'禱告的殿','easter-3':'聖殿教導','easter-4':'心的選擇',
+  'easter-5':'客西馬尼','easter-6':'十架的愛','easter-7':'安靜等候','easter-8':'復活晨光',
+  pentecost:'聖靈降臨',dragon:'端午溪畔',moon:'中秋月庭',light:'光明勇士',
+  thanksgiving:'豐收感恩',christmas:'聖誕盼望',birthday:'生日祝福庭園',
+};
+const nightScenes = new Set(['newyear','easter-4','easter-5','moon','light','christmas']);
+const solemnScenes = new Set(['easter-6','easter-7']);
+const GARDEN_SCENES = Object.freeze(Object.fromEntries(Object.entries(sceneNames).map(([id,name])=>[id,Object.freeze({
+  id,name,mood:solemnScenes.has(id)?'solemn':nightScenes.has(id)?'night':'day',
+  source:id==='garden'?'assets/garden-dawn.png':`assets/scenes/${id}.png`,
+})])));
+function sceneForTheme(theme={}) {
+  const day=Math.min(8,Math.max(1,Math.trunc(Number(theme.day))||1));
+  const key=theme.id==='easter'?`easter-${day}`:theme.id;
+  return GARDEN_SCENES[key]||GARDEN_SCENES.garden;
+}
+function mountGardenScene(layer,theme={}) {
+  if(!layer)return;
+  const scene=sceneForTheme(theme),stage=layer.closest('.garden-scene');
+  if(!stage||layer.dataset.sceneKey===scene.id)return;
+  layer.dataset.sceneKey=scene.id;layer.dataset.theme=theme.id||'garden';
+  stage.dataset.scene=scene.id;stage.dataset.sceneMood=scene.mood;
+  document.body.style.setProperty('--garden-environment',`url("${new URL(scene.source,import.meta.url).href}")`);
+  stage.querySelector('.scene-retry')?.remove();
+  const image=new Image();image.className='garden-environment';image.alt='';image.decoding='async';
+  image.fetchPriority='high';image.draggable=false;
+  const dust=document.createElement('div');dust.className='garden-atmosphere';
+  for(let i=0;i<6;i++){const mote=document.createElement('i');mote.style.setProperty('--mote',i);dust.append(mote);}
+  const current=()=>layer.dataset.sceneKey===scene.id&&image.parentElement===layer;
+  image.onload=()=>{if(current()){image.classList.add('is-ready');stage.querySelector('.scene-retry')?.remove();}};
+  image.onerror=()=>{
+    if(!current()||stage.querySelector('.scene-retry'))return;
+    const retry=document.createElement('button');retry.type='button';retry.className='scene-retry';
+    retry.textContent='重試節慶背景';retry.setAttribute('aria-label',`${scene.name}背景未載入，點此重試`);
+    retry.onclick=()=>{retry.remove();image.src=new URL(scene.source+'?retry='+Date.now(),import.meta.url).href;};
+    stage.querySelector('.scene-top').append(retry);
+  };
+  layer.replaceChildren(image,dust);
+  image.src=new URL(scene.source,import.meta.url).href;
+}
 let current='garden',day=1,track=null,trackKey='',prefs=null,player=null,mode='garden';
 function previewThemeAudio(nextMode,state,audio){
  mode=nextMode;prefs=state;player=audio;const item=festivalById(current),music=current==='birthday'?'anniversary':item?.musicByDay?.[day-1]||current;
@@ -274,7 +372,8 @@ function setupFestivalPreview(onChange){
  const selector=document.querySelector('#demo-festival'),days=document.querySelector('#demo-holy-day'),layer=document.querySelector('#demo-festival-layer');if(!selector)return;
  const choices=[['garden','平日花園'],...FESTIVALS.map(f=>[f.id,f.name]),['birthday','生日 · 生日快樂歌']];
  selector.replaceChildren(...choices.map(([id,name])=>{const option=document.createElement('option');option.value=id;option.textContent=name;return option;}));
- function render(){current=selector.value;day=Number(days.value)||1;days.parentElement.hidden=current!=='easter';const item=festivalById(current);layer.innerHTML=current==='birthday'?`<div class="birthday-garden">${collectibleArt('cake')}<strong>生日快樂，願你蒙恩！</strong></div>`:item?festivalScene(item,{day,treeMarkup:'',progress:7}):'';layer.dataset.theme=current;document.querySelector('#demo-festival-status').textContent=current==='garden'?'平日原創花園配樂':`${choices.find(c=>c[0]===current)?.[1]} · 切換音樂需先開啟音樂設定`;onChange();}
+ function render(){current=selector.value;day=Number(days.value)||1;days.parentElement.hidden=current!=='easter';const item=festivalById(current);mountGardenScene(layer,{id:current,day});document.querySelector('.scene-top .scene-tag').textContent=choices.find(c=>c[0]===current)?.[1]||'我的小小庭園';document.querySelector('#demo-festival-status').textContent=current==='garden'?'平日原創花園配樂':`${choices.find(c=>c[0]===current)?.[1]} · 切換音樂需先開啟音樂設定`;onChange();}
+ const requested=new URLSearchParams(location.search);if(choices.some(([id])=>id===requested.get('scene')))selector.value=requested.get('scene');days.value=String(Math.min(8,Math.max(1,Math.trunc(Number(requested.get('day')))||1)));
  selector.onchange=render;days.onchange=render;
  document.addEventListener('visibilitychange',()=>{if(document.hidden)track?.pause();else if(prefs&&player)previewThemeAudio(mode,prefs,player);});
  document.addEventListener('click',e=>{if(e.isTrusted&&prefs&&player)previewThemeAudio(mode,prefs,player);},{capture:true});
@@ -527,6 +626,7 @@ class GardenAudio {
       case 'bag': this.hiss(at, .15, 850, .09); phrase([48, 55], 'pluck', .16); break;
       case 'draw': this.hiss(at, .27, 1700, .13); phrase([64, 71, 76], 'bell', .3); break;
       case 'wrong': phrase([52, 46], 'triangle', .17, .12); break;
+      case 'incoming': this.hiss(at,.3,600,.1);this.drum(at+.22,.22);phrase([43,38],'triangle',.2,.08);break;
       case 'sword': this.hiss(at, .27, 1100, .25); phrase([76, 88], 'bell', .17, .12); break;
       case 'shield': this.drum(at, .22); phrase([45, 57, 69], 'bell', .45, .17); break;
       case 'belt': this.hiss(at, .05, 2500, .2); phrase([60, 67], 'pluck', .16); break;

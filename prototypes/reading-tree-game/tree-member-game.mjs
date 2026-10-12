@@ -104,7 +104,7 @@ async function change(action,payload={}){
  const key=JSON.stringify([action,payload]),requestId=pendingCommands.get(key)||crypto.randomUUID();pendingCommands.set(key,requestId);
  try{const result=await memberAPI(action,{...payload,requestId});const prefs=preferences();state={...memberData.state,...prefs};today=memberData.today;pendingCommands.delete(key);updateProgress();renderGuardian();renderDecorations();renderMember(state);return result;}
  catch(e){announce(e.message);throw e;}
- finally{remoteBusy=false;document.body.setAttribute('aria-busy','false');arrangement.refresh();}
+ finally{remoteBusy=false;document.body.setAttribute('aria-busy','false');renderFestivalMission();arrangement.refresh();}
 }
 async function attempt(work){try{await work();}catch(e){announce(e.message);}}
 async function refreshMember(){try{await change('me');announce('雲端進度已重新整理。');}catch{}}
@@ -170,7 +170,7 @@ function renderFestivalMission() {
   $('#festival-answer').hidden=answered;
   $('#festival-complete').hidden=!answered||complete;
   $('#festival-complete').disabled=!read||remoteBusy;
-  $('#festival-complete').textContent=mission.action;
+  $('#festival-complete').textContent=read?mission.action:'先讀完今天的箴言';
   if(complete)$('#festival-mission-feedback').textContent=mission.result+' · 今日獎勵已保存。';
   else if(answered)$('#festival-mission-feedback').textContent=read?'答對了！現在可以完成花園行動。':'答對了！先完成今天的箴言讀經，再回來完成行動。';
 }
@@ -178,14 +178,22 @@ const personalLabels={quiz:'經文尋寶',share:'把愛傳出去',prayer:'禱告
 function renderPersonalMission(){
  const enabled=document.body.dataset.octoberTest==='true',data=enabled?memberData?.personalMission:null;
  const card=$('#personal-mission-card'),weekly=$('#weekly-service-card');
- card.hidden=!data?.active&&!data?.offer;weekly.hidden=!enabled;
+ card.hidden=!enabled;weekly.hidden=!enabled;
  if(!enabled)return;
  const service=memberData?.weeklyService;
  const lastCompleted=Object.keys(state.weeklyServiceMissions||{}).sort().at(-1);
  $('#weekly-service-status').textContent=!memberData?.missionEvidenceAvailable?'正在連接服事紀錄；稍後重新整理。':service?.scheduled?`${service.date} 已列入已公布的主日週報服事表；主日日期過後完成這週任務。`:lastCompleted?`${lastCompleted} 的主日服事任務已完成 · +30 XP。本週 ${service?.date||''} 尚未有已公布的服事安排。`:`${service?.date||'本週'} 尚未有已公布的服事安排。因為有你，這個家更美好。`;
  $('#weekly-service-binding-note').textContent=!memberData?.missionEvidenceAvailable?'暫時無法確認綁定狀態，請稍後重新整理。':service?.nameMatched?'系統以已綁定的會友姓名核對週報；LINE 暱稱不同也沒關係。':service?.memberBound?'LINE 已綁定，但名冊有同名會友，請同工協助核對服事安排。':'若 LINE 名稱與服事表姓名不同，請先到「新朋友」選單完成 LINE 會友綁定；同工確認後再回來更新進度。';
  $('#weekly-service-bind').hidden=!memberData?.missionEvidenceAvailable||!!service?.memberBound;
- if(!data?.active&&!data?.offer)return;
+ if(!data?.active&&!data?.offer){
+  const available=!!data;
+  $('#personal-mission-title').textContent=available?'今天先和小樹同行':'任務暫時無法載入';
+  $('#personal-mission-summary').textContent=available?'今天沒有抽到隨機小任務。明天會重新抽選；每週主日服事任務仍可參與。':'請按右上角的重新整理，稍後再看看任務。';
+  $('#personal-mission-progress').textContent=available?'已接取的小任務沒有期限，完成後再領取獎勵。':'讀經與花園進度不受影響。';
+  $('#personal-mission-open').hidden=true;
+  return;
+ }
+ $('#personal-mission-open').hidden=false;
  const mission=data.active||data.offer,active=!!data.active,complete=!!mission.completedAt;
  $('#personal-mission-title').textContent=personalLabels[mission.kind]||'今日任務';
  $('#personal-mission-summary').textContent=mission.kind==='quiz'?'從聖經找出三個清楚的答案。每題都有提示。':mission.kind==='share'?'把祝福卡從 LINE 傳出去三次，讓愛繼續流動。':'到代禱牆，為另一位家人留言禱告，或提出一件自己的代禱事項。';
@@ -588,7 +596,7 @@ $('#festival-answer').onclick=()=>void attempt(async()=>{
   const choice=$('#festival-choices input:checked'),button=$('#festival-answer');
   if(!choice){$('#festival-mission-feedback').textContent='先選擇一個答案。';return;}
   button.disabled=true;$('#festival-mission-feedback').textContent='正在核對經文答案…';
-  try{await change('festival_answer',{choice:Number(choice.value)});$('#festival-mission-feedback').textContent='答對了！接著完成今天的花園行動。';sound('pick');}
+  try{await change('festival_answer',{choice:Number(choice.value)});renderFestivalMission();sound('pick');}
   catch(e){$('#festival-mission-feedback').textContent=e.message;}finally{button.disabled=false;}
 });
 $('#festival-complete').onclick=()=>void attempt(async()=>{

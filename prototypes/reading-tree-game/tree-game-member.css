@@ -54,3 +54,8 @@
 .garden-game[data-member-garden] .personal-mission-dialog .mission-choices details{margin-top:12px;color:#445c49}
 .garden-game[data-member-garden] .personal-mission-dialog .mission-choices summary{min-height:44px;cursor:pointer}
 .garden-game[data-member-garden] .personal-mission-dialog a.secondary{display:inline-flex;align-items:center;min-height:48px;padding:10px 16px;text-decoration:none}
+
+/* Quiz radios must not inherit the full-width text-input rule above. */
+.garden-game[data-member-garden] :is(.festival-choices,.mission-choices) label{display:flex;align-items:center;gap:12px;min-height:56px;margin:0;padding:12px 14px;font-size:16px;line-height:1.5}
+.garden-game[data-member-garden] :is(.festival-choices,.mission-choices) input[type=radio]{box-sizing:border-box;display:block;inline-size:22px;block-size:22px;min-inline-size:22px;min-block-size:22px;padding:0;margin:0;border:0;flex:0 0 22px;accent-color:var(--game-green)}
+.garden-game[data-member-garden] :is(.festival-choices,.mission-choices) label span{display:block;min-width:0;flex:1;overflow-wrap:anywhere}

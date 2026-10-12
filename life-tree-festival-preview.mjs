@@ -1,4 +1,4 @@
-import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-hosanna1';
+import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-goodfriday1';
 import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261011-spring-joy1';
 import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
 import {applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
@@ -100,7 +100,7 @@ async function playMusic(){
  try{
   await Promise.race([music.play(),new Promise((_,reject)=>timeout=setTimeout(()=>reject(new Error('audio timeout')),6000))]);
   if(task!==musicTask)return;if(!state.sound||document.hidden){music.pause();return;}
-  $('audio-status').textContent=state.item.id==='easter'&&state.day===1?'正在播放〈和撒那〉棕樹主日伴奏。':state.item.id==='anniversary'?'正在播放〈生日快樂〉週年慶配樂。':'正在播放「'+state.item.name+'」的花園音樂。';
+  $('audio-status').textContent=state.item.id==='easter'&&state.day===1?'正在播放〈和撒那〉棕樹主日伴奏。':state.item.id==='easter'&&state.day===6?'正在播放〈微亞多勒羅沙〉受難日伴奏。':state.item.id==='anniversary'?'正在播放〈生日快樂〉週年慶配樂。':'正在播放「'+state.item.name+'」的花園音樂。';
  }catch{
   if(task!==musicTask)return;music.pause();state.sound=false;syncSound();
   $('audio-status').textContent='音樂還沒開始，點一下上方喇叭就能重試。';

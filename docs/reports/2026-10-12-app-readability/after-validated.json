@@ -16530,56 +16530,948 @@
     "file": "newcomer.html",
     "width": 390,
     "state": "initial",
-    "url": "http://127.0.0.1:61211/newcomer.html?church=M%2B",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=M%2B",
     "errors": [],
-    "checked": 4,
+    "checked": 8,
     "failures": [],
     "headerClipped": false,
     "overflow": false,
     "status": "",
-    "controls": [],
-    "source": "after-integration.json"
+    "controls": [
+      {
+        "class": "w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black",
+        "text": "送出 LINE 綁定申請",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black",
+        "text": "我是第一次來，填寫新朋友資料",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "newcomer.html",
+    "width": 390,
+    "state": "newcomer-form",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "newcomer.html",
+    "width": 390,
+    "state": "newcomer-selected",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項二",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
   },
   {
     "file": "shine-newcomer.html",
     "width": 390,
     "state": "initial",
-    "url": "http://127.0.0.1:61211/newcomer.html?church=SHiNE",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=SHiNE",
     "errors": [],
-    "checked": 4,
+    "checked": 8,
     "failures": [],
     "headerClipped": false,
     "overflow": false,
     "status": "",
-    "controls": [],
-    "source": "after-integration.json"
+    "controls": [
+      {
+        "class": "w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black",
+        "text": "送出 LINE 綁定申請",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black",
+        "text": "我是第一次來，填寫新朋友資料",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 390,
+    "state": "newcomer-form",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 390,
+    "state": "newcomer-selected",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項二",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
   },
   {
     "file": "newcomer.html",
     "width": 1440,
     "state": "initial",
-    "url": "http://127.0.0.1:61211/newcomer.html?church=M%2B",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=M%2B",
     "errors": [],
-    "checked": 4,
+    "checked": 8,
     "failures": [],
     "headerClipped": false,
     "overflow": false,
     "status": "",
-    "controls": [],
-    "source": "after-integration.json"
+    "controls": [
+      {
+        "class": "w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black",
+        "text": "送出 LINE 綁定申請",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black",
+        "text": "我是第一次來，填寫新朋友資料",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "newcomer.html",
+    "width": 1440,
+    "state": "newcomer-form",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "newcomer.html",
+    "width": 1440,
+    "state": "newcomer-selected",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=M%2B",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項二",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
   },
   {
     "file": "shine-newcomer.html",
     "width": 1440,
     "state": "initial",
-    "url": "http://127.0.0.1:61211/newcomer.html?church=SHiNE",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=SHiNE",
     "errors": [],
-    "checked": 4,
+    "checked": 8,
     "failures": [],
     "headerClipped": false,
     "overflow": false,
     "status": "",
-    "controls": [],
-    "source": "after-integration.json"
+    "controls": [
+      {
+        "class": "w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black",
+        "text": "送出 LINE 綁定申請",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black",
+        "text": "我是第一次來，填寫新朋友資料",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 1440,
+    "state": "newcomer-form",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
+  },
+  {
+    "file": "shine-newcomer.html",
+    "width": 1440,
+    "state": "newcomer-selected",
+    "url": "http://127.0.0.1:61292/newcomer.html?church=SHiNE",
+    "errors": [],
+    "checked": 33,
+    "failures": [],
+    "headerClipped": false,
+    "overflow": false,
+    "status": "",
+    "controls": [
+      {
+        "class": "pill-btn active flex-1 justify-center",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn flex-1 justify-center",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項二",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn active",
+        "text": "測試選項一",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "pill-btn",
+        "text": "測試選項二",
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(48, 40, 35)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "打開相機",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "py-3 px-4 rounded-2xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition",
+        "text": "從相簿挑選",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      },
+      {
+        "class": "w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg",
+        "text": "✨ 很高興認識你 · 留下今日印記",
+        "background": "linear-gradient(135deg, rgb(168, 57, 41), rgb(183, 65, 46))",
+        "color": "rgb(255, 255, 255)"
+      }
+    ],
+    "source": "newcomer-form-final.json"
   }
 ]

@@ -124,4 +124,4 @@ October date guards deployed as v8 ACTIVE on 2026-10-10 at 14:12 Taipei; source 
 
 CSS、控制器及直接／間接引用統一 `20261012-readable2`，Worker namespace 同步更新；更新仍由使用者明確操作後啟用，沒有強制接管。新增用途請沿用 `docs/design/component-contract.md`，檢查有資料、已選取與懸停狀態。
 
-68 個 HTML 入口、206 次手機／桌面狀態、8,669 次文字量測均完成合併補驗，0 項已驗文字對比失敗／橫向溢出；不是全業務通過率。物品21項、庭園32項及Worker21項回歸通過。完整證據、既有品質測試未通過項與 Safari／iPhone 實機限制見 `docs/reports/2026-10-12-app-readability/`；不宣稱整體99%達標。
+68 個 HTML 入口、214 次手機／桌面狀態、8,949 次文字量測均完成合併補驗，0 項已驗文字對比失敗／橫向溢出；不是全業務通過率。物品21項、庭園32項及Worker21項回歸通過。完整證據、既有品質測試未通過項與 Safari／iPhone 實機限制見 `docs/reports/2026-10-12-app-readability/`；不宣稱整體99%達標。

@@ -64,6 +64,7 @@ async function setup(page,{signedIn=true}={}){
    else if(url.pathname.endsWith('/church_customizations'))data={church_id:url.searchParams.get('church_id')?.slice(3)||fixtureChurch,feature_modules:featureModules,welcome_fields:[{key:'name',label:'姓名',visible:true,required:true,sort_order:10,audience:'all'}],catalogs:{faith_status:['慕道友','委身家人']},version:1,updated_at:new Date().toISOString()};
    else if(url.pathname.endsWith('/church_public_settings')){if(req.method()==='PATCH'){writes.push({name:'church_public_settings',body});if(failSave){status=503;data={message:'fixture unavailable'};}else{publicSettings={...publicSettings,...body};data=[{church_id:fixtureChurch}];}}else data={church_id:fixtureChurch,...publicSettings};}
    else if(url.pathname.endsWith('/functions/v1/line-member')){data={ok:true,profile:{name:'測試會友'},item:{...daily()[0],scripture:'主是我的牧者',scripture_ref:'詩篇 23:1',prayer_text:'願主賜你平安'},progress:[],items:[{title:'主日聚會',day_name:'日',time:'10:00',location:'教會',category:'平安',scripture:'主是我的牧者',scripture_ref:'詩篇 23:1',prayer_text:'願主賜你平安'}],settings:{address:'測試地址'},binding_status:'approved',member:{name:'測試會友'},seasons:[],registrations:[]};}
+   else if(url.pathname.endsWith('/functions/v1/member-access'))data={state:'unbound'};
    else if(url.pathname.endsWith('/functions/v1/prayer-wall'))data={ok:true,prayers:[{id:1,author_name:'測試家人',title:'平安與盼望',content:'願主帶領我們',hands_count:2,halo_level:1,comments:[],created_at:new Date().toISOString()}]};
    else if(url.pathname.endsWith('/functions/v1/tree-reading-october-test')){const result=await treeFixture().call(body.action||'me');data=result;delete data.status;}
    else if(url.pathname.includes('/functions/')){data={ok:true,items:[],drafts:[],people:[],settings:{},connections:{},ministries:[]};if(url.pathname.endsWith('/daily-devotional-admin'))data={ok:true,items:daily(),reviewerStage:'initial'};if(url.pathname.endsWith('/weekly-bulletin-review'))data={ok:true,items:weekly()};}
@@ -96,6 +97,7 @@ for(const width of [390,1440]){
    };
    try{await capture();}catch(error){if(!/Execution context was destroyed/.test(error.message))throw error;await new Promise(r=>setTimeout(r,600));await capture();}
    const click=async(selector,state)=>{const n=await page.$(selector);if(!n)return;await n.click();await new Promise(r=>setTimeout(r,180));await page.waitForNetworkIdle({idleTime:100,timeout:1000}).catch(()=>{});await capture(state);};
+   if(['newcomer.html','shine-newcomer.html'].includes(file)){await click('#memberIdentityPanel button:last-child','newcomer-form');await click('#groupFeelings button:nth-child(2)','newcomer-selected');}
    if(file==='customization-settings.html')for(const tab of ['form','catalogs','features'])await click('.custom-tabs [data-tab="'+tab+'"]','tab-'+tab);
    if(file==='group-resources-management.html'){await click('#items .item:nth-child(2)','second-material');await click('#new','new-material');}
    if(file==='admin-accounts.html')await click('.admin-account-card button','account-editor');

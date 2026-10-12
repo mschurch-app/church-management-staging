@@ -1,8 +1,9 @@
-import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-member1';
+import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261012-october-game1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261012-member1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
-import { GardenAudio } from './tree-game-audio.mjs?v=20261012-game5';
+import { GardenAudio } from './tree-game-audio.mjs?v=20261012-october-game1';
+import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261012-october-game1';
 
 const $ = selector => document.querySelector(selector);
 function taipeiDay() {
@@ -45,6 +46,7 @@ const decorations = [
   { id: 'fruit', name: '祝福果實', copy: '把祝福果實掛在樹上，記得一路的恩典。', days: 30 },
   ...FESTIVAL_ITEMS,
 ];
+const graceEffects={flower:'補充信心 HP +20',lamp:'補充盼望 MP +20',bird:'下一次讀經 20 → 40 XP',fountain:document.body.dataset.octoberTest==='true'?'下次澆水，HP、MP 各額外補充 10':'下次收到關懷，HP、MP 各額外補充 10',fruit:'接下來 3 次讀經 20 → 40 XP'};
 const iconPaths = {
   leaf: '<path d="M20 3C9 2 3 6 4 13c1 7 10 7 13 1 2-4 2-8 3-11Z"/><path d="m3 21 11-12"/>',
   book: '<path d="M12 5C8 3 4 3 2 5v15c3-2 6-2 10 0 4-2 7-2 10 0V5c-3-2-7-2-10 0Zm0 0v15"/>',
@@ -85,6 +87,7 @@ const audio = new GardenAudio(message => { $('#audio-status').textContent = mess
 const dialogOpeners = new Map();
 let remoteBusy=false,readingDay=today;
 const pendingCommands=new Map();
+const octoberCombat=createOctoberCombat({getState:()=>state,getQuest:()=>quest,send:change,isSaving:()=>remoteBusy,renderAvatar:()=>avatarSprite(state.avatarId),sound});
 function persist(){savePreferences(state);}
 async function change(action,payload={}){
  if(remoteBusy)throw Error('上一個操作正在保存，請稍候。');
@@ -120,8 +123,9 @@ function openDialog(id, opener = document.activeElement) {
   dialog.querySelector('button:not(:disabled), textarea')?.focus({ preventScroll: true });
 }
 function closeDialog(id) {
+  if (id === 'avatar-dialog' && !state.avatarId) { $('#avatar-status').textContent = '先選一位喜歡的角色，再一起出發。'; return; }
   const dialog = document.getElementById(id);
-  if (id === 'quest-dialog') { questEpoch++; quest = null; }
+  if (id === 'quest-dialog') { octoberCombat.stop(false);questEpoch++; quest = null; }
   if (id === 'event-dialog') { eventContext = null; eventSelection = null; }
   if (id === 'reading-dialog') { cancelReading();window.speechSynthesis?.cancel(); audio.duck(false);duckTheme(false); }
   dialog.close();
@@ -150,7 +154,7 @@ function updateProgress() {
   $('#read-open').querySelector('span:nth-child(2)').innerHTML = `${p.todayRecord ? '再讀一次今日經文' : '開始今日讀經'}<small>試讀 · 以弗所書 6:17</small>`;
   $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
   $('#water').querySelector('span:nth-child(2)').innerHTML = p.todayRecord?.watered_at ? '已澆水<small>今天的活水已送達</small>' : '澆水 <small>+5 XP</small>';
-  $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '可以先守護花園，再開始今天的讀經。';
+  $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '打開今日箴言，讓神的話陪伴你；也能自由參加花園挑戰。';
   renderEncounter(); renderMember(state);
   $('#journey-list').replaceChildren(...LEVELS.map(level => {
     const row = document.createElement('li'); row.classList.toggle('is-current', level.level === p.current.level);
@@ -255,6 +259,9 @@ function renderAvatarChoices() {
 }
 function openAvatar() {
   avatarChoice = state.avatarId; avatarGender = AVATARS.find(avatar => avatar.id === avatarChoice)?.gender || null;
+  $('#avatar-dialog [data-close]').hidden = !state.avatarId;
+  $('#avatar-dialog [data-close]').setAttribute('aria-label', '關閉角色選擇');
+  $('#avatar-status').textContent = state.avatarId ? '可以更換角色，讀經與成長紀錄會保留。' : '第一次來，選一位陪你讀經成長的角色。';
   $('#avatar-audio-label').hidden = !!state.avatarId; renderAvatarChoices(); openDialog('avatar-dialog');
 }
 function renderDecorations(){
@@ -264,12 +271,12 @@ function renderDecorations(){
 function renderInventory() {
   const items = category === 'armor' ? equipment : decorations.filter(item=>state.inventory[item.id]?.count);
   $('#armor-tab').setAttribute('aria-pressed', String(category === 'armor')); $('#garden-tab').setAttribute('aria-pressed', String(category === 'garden'));
-  if (!items.length){$('#inventory').innerHTML='<p class="muted">今天讀經完成後，就能慢慢收集恩典小物。已放入花園的小物會留在收藏冊，不退回背包。</p>';$('#detail-art').innerHTML='';$('#item-type').textContent='從一點一滴開始';$('#item-name').textContent='下一份恩典，正在路上';$('#item-copy').textContent='累積讀經日期，不必連續，也不會因休息而歸零。';$('#item-reference').textContent='';$('#item-unlock').textContent='';$('#item-actions').replaceChildren();return;}
+  if (!items.length){$('#inventory').innerHTML='<p class="muted">完成今天讀經，隨機獲得一件恩典小物。已放入花園的小物會留在收藏冊，不退回背包。</p>';$('#detail-art').innerHTML='';$('#item-type').textContent='從一點一滴開始';$('#item-name').textContent='下一份恩典，正在路上';$('#item-copy').textContent='每天完成當天讀經就有一份驚喜，明天再回來收集。';$('#item-reference').textContent='';$('#item-unlock').textContent='';$('#item-actions').replaceChildren();return;}
   if (!items.some(item => item.id === selected)) selected = items[0].id;
   $('#inventory').replaceChildren(...items.map(item => {
     const button = document.createElement('button'); button.type = 'button'; button.dataset.item = item.id;
     button.setAttribute('aria-pressed', String(selected === item.id)); button.classList.toggle('is-equipped', state.equipped.includes(item.id));
-    button.innerHTML = `<span class="item-sprite">${itemArt(item)}</span><strong>${item.name}</strong><small>${category==='garden'?'背包 1 份':state.equipped.includes(item.id)?'已穿戴':progress().days>=item.days?'已收藏':'訓練借用'}</small>`;
+    button.innerHTML = `<span class="item-sprite">${itemArt(item)}</span><strong>${item.name}</strong><small>${category==='garden'?`背包 ${state.inventory[item.id]?.count||0} 份`:state.equipped.includes(item.id)?'已穿戴':progress().days>=item.days?'已收藏':'訓練借用'}</small>`;
     button.onclick = () => { selected = item.id; renderInventory(); $('#inventory').querySelector(`[data-item="${item.id}"]`)?.focus({ preventScroll: true }); sound('pick'); };
     return button;
   }));
@@ -278,7 +285,7 @@ function renderInventory() {
   $('#item-type').textContent = category === 'armor' ? '全副軍裝 · 隨時練習使用' : '恩典小物 · 使用一份，收藏一份';
   $('#item-name').textContent = item.name; $('#item-copy').textContent = item.copy;
   $('#item-reference').textContent = category === 'armor' ? '以弗所書 6:10–18' : '讓每一份陪伴，都留在花園裡。';
-  const effects={flower:'補充信心 HP +20；使用後再讀 3 天可收集。',lamp:'補充盼望 MP +20；使用後再讀 5 天可收集。',bird:'下一次讀經 20 → 40 XP；使用後再讀 7 天可收集。',fountain:'下次收到關懷，HP、MP 各多補 10；使用後再讀 14 天可收集。',fruit:'接下來 3 次讀經 20 → 40 XP；使用後再讀 30 天可收集。'};
+  const effects=graceEffects;
   $('#item-unlock').textContent=category==='armor'?`累積 ${item.days} 個讀經日期可正式收藏；收藏前可借用訓練，六件軍裝都能實際操作。`:effects[item.id]||'節期讀經收藏的紀念；放進花園，盼望 MP +10。';
   $('#item-actions').replaceChildren();
   if (category === 'armor') {
@@ -334,7 +341,7 @@ function openQuest(item, context) {
   $('#quest-action').textContent = item.action;
   $('#quest-return').disabled = false; $('#quest-gear').style.filter = '';
   $('#quest-action').disabled = item.id === 'belt'; $('#quest-action').hidden = item.id === 'helmet';
-  $('#quest-return').hidden = true; $('#quest-return').textContent = '收回裝備，回到花園 →';
+  $('#quest-return').hidden = document.body.dataset.octoberTest!=='true'; $('#quest-return').textContent = document.body.dataset.octoberTest==='true'?'先回花園讀經 · 保留進度':'收回裝備，回到花園 →';
   $('#quest-counter').textContent = quest.boss ? `Boss 挑戰 ${context.index - (context.practice ? 0 : 3) + 1}／3 · 操作 ${quest.hits}／${quest.total}` : `裝備使用 · ${quest.hits}／${quest.total}`;
   $('#quest-hint').textContent = context.practice ? '事件練習不加分；選對裝備後，用行動完成挑戰。' : `今天六種事件全部完成，即可獲得 ${battleReward()} XP；中途離開會保留進度。`;
   if (item.id === 'belt') $('#quest-hint').textContent += ' 先選擇一個願意實踐的行動。';
@@ -342,6 +349,7 @@ function openQuest(item, context) {
   $('#quest-stage').classList.toggle('boss-quest', !!quest.boss);
   if (item.id === 'sword') renderQuestEnemies();
   openDialog('quest-dialog'); syncAudioScene(); sound('enter'); sound('draw');
+  void octoberCombat.start();
   const epoch = quest.epoch; setTimeout(() => { if (quest?.epoch === epoch && !quest.busy && !quest.complete) $('#quest-stage').dataset.phase = 'ready'; }, motion.matches ? 0 : 750);
 }
 function renderQuestEnemies() {
@@ -353,12 +361,13 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, motion.matches ? 
 async function actQuest() {
   const current = quest;
   if (!current || current.busy || current.complete || (current.item.id === 'belt' && !current.selected)) return;
+  if(current.attackPreparing||octoberCombat.busy){$('#quest-hint').textContent='正在確認這一回合，稍候就能使用軍裝。';return;}
   if (current.encounter && (current.event.date !== today || current.event.index !== state.encounters[today].stage)) return;
   current.busy = true; $('#quest-hint').textContent='正在使用軍裝，迎接這一回合…'; $('#quest-action').disabled = true; $('#quest-stage').dataset.phase = 'acting'; sound(current.item.id);
   await pause(current.item.id === 'sword' ? 950 : 650);
   if (quest?.epoch !== current.epoch) return;
   if(current.encounter){try{await change('hit',{day:current.event.date,stage:current.event.index,hits:current.hits,gear:current.item.id,choice:current.selected?0:null});}catch(e){current.busy=false;if(quest?.epoch===current.epoch){$('#quest-action').disabled=false;$('#quest-stage').dataset.phase='ready';$('#quest-hint').textContent=e.message;}return;}if(quest?.epoch!==current.epoch)return;}
-  current.hits++;if(current.encounter){$('#quest-stage').classList.remove('counter-attack');requestAnimationFrame(()=>$('#quest-stage').classList.add('counter-attack'));}
+  current.hits++;if(current.encounter&&document.body.dataset.octoberTest!=='true'){$('#quest-stage').classList.remove('counter-attack');requestAnimationFrame(()=>$('#quest-stage').classList.add('counter-attack'));}
   if (current.item.id === 'sword') renderQuestEnemies();
   if (current.item.id === 'breastplate') $('#quest-special .armor-mist').style.opacity = String(1 - current.hits / current.total);
   if (current.item.id === 'boots') $('#quest-special').children[current.hits - 1]?.classList.add('visible');
@@ -370,6 +379,7 @@ async function actQuest() {
   $('#quest-counter').textContent = `${current.boss ? `Boss 挑戰 ${current.event.index - (current.event.practice ? 0 : 3) + 1}／3 · ` : ''}已完成操作 ${current.hits}／${current.total}`;
   if (current.hits >= current.total) {
     current.complete = true; $('#quest-stage').dataset.phase = 'complete'; $('#quest-action').hidden = true; $('#quest-return').hidden = false;
+    octoberCombat.finish();
     const event = eventById(current.event.id);
     if (current.encounter) {
       // The server has advanced this stage atomically with damage and resource cost.
@@ -392,7 +402,7 @@ async function actQuest() {
     $('#quest-stage').dataset.phase = 'ready'; $('#quest-action').disabled = false;
     $('#quest-hint').textContent = `完成 ${current.hits} 次，再 ${current.total - current.hits} 次就完成這個事件。`;
   }
-  if(current.encounter&&(state.life.hp<=0||state.life.mp<(current.boss?5:2))&&!current.complete){$('#quest-action').disabled=true;$('#quest-return').hidden=false;$('#quest-return').textContent='先回花園補充力量';$('#quest-hint').textContent='這一段進度已保存。讀經、澆水、寫手札或收到關懷後，就能繼續。';}
+  if(current.encounter&&(state.life.hp<=0||state.life.mp<(current.boss?5:2))&&!current.complete){$('#quest-action').disabled=true;$('#quest-return').hidden=false;$('#quest-return').textContent='先回花園補充力量';$('#quest-hint').textContent=document.body.dataset.octoberTest==='true'?'進度已保存。讀經補充 HP、MP；澆水與手札補充 MP，小花與小燈也能幫助你。':'這一段進度已保存。讀經、澆水、寫手札或收到關懷後，就能繼續。';}
   current.busy = false;
 }
 async function returnEquipment() {
@@ -415,12 +425,13 @@ async function returnEquipment() {
 async function markRead(){
  if($('#read-complete').disabled)return;
  const alreadyRead=state.records.some(r=>r.reading_date===readingDay);$('#read-complete').disabled=true;
- try{await change('read',{day:readingDay});closeDialog('reading-dialog');saveMessage(alreadyRead?'這一天的讀經已保存；重讀不重複加分或補充。':'讀經已保存，信心 HP +40、盼望 MP +20。');sound('pick');if(readingDay!==today){openDialog('makeup-dialog');$('#makeup-status').textContent='補讀已保存，可以為這一天補澆水。';}else $('#water').focus({preventScroll:true});}
+ try{await change('read',{day:readingDay});closeDialog('reading-dialog');saveMessage(alreadyRead?'這一天的讀經已保存；重讀不重複加分或補充。':'讀經已保存，信心 HP +40、盼望 MP +20。');sound('pick');if(readingDay!==today){openDialog('makeup-dialog');$('#makeup-status').textContent='補讀已保存，可以為這一天補澆水。';}else if(!alreadyRead&&state.dailyGrace?.[today]){const item=state.dailyGrace[today];$('#daily-grace-art').innerHTML=decorationArt(item);$('#daily-grace-name').textContent=itemName(item);$('#daily-grace-count').textContent=`${graceEffects[item]}。已收進裝備包，目前有 ${state.inventory[item]?.count||0} 份；使用後扣除一份。明天讀經完成，再收集一件。`;openDialog('daily-grace-dialog');sound('xp');}else $('#water').focus({preventScroll:true});}
  catch(e){$('#reading-load-status').textContent=e.message;$('#read-complete').disabled=false;}
 }
 async function water(day=today){
  const record=state.records.find(r=>r.reading_date===day);if(!record||record.watered_at||remoteBusy)return;
- busy=true;try{await change('water',{day});sound('water');$('#garden').dataset.phase='watering';saveMessage('活水送達 · +5 XP，盼望 MP +10');setTimeout(()=>{$('#garden').dataset.phase='idle';},motion.matches?200:2300);}catch{}finally{busy=false;updateProgress();}
+ const waterBoost=document.body.dataset.octoberTest==='true'&&state.buffs.care>0;
+ busy=true;try{await change('water',{day});sound('water');$('#garden').dataset.phase='watering';saveMessage(waterBoost?'活水送達 · +5 XP，MP +10；噴泉祝福額外補充 HP、MP 各 10。':'活水送達 · +5 XP，盼望 MP +10');setTimeout(()=>{$('#garden').dataset.phase='idle';},motion.matches?200:2300);}catch{}finally{busy=false;updateProgress();}
 }
 async function saveJournal(event){
  event.preventDefault();if(!progress().todayRecord)return;const note=$('#journal-note').value.trim();if(!note){$('#journal-status').textContent='寫下一句想收藏的亮光，再按下珍藏。';return;}
@@ -459,6 +470,8 @@ $('#makeup-read').onclick=()=>{const day=$('#makeup-date').value;if(day<$('#make
 $('#makeup-water').onclick=()=>void water($('#makeup-date').value);
 $('#journal-open').onclick = () => { $('#journal-note').value = state.notes.find(note => note.reading_date === today)?.note || ''; $('#journal-status').textContent = ''; openDialog('journal-dialog'); $('#journal-note').focus(); };
 $('#journal-form').onsubmit = saveJournal; $('#journey-open').onclick = () => openDialog('journey-dialog'); $('#gift-open').onclick = () => openDialog('gift-dialog');
+$('#daily-grace-garden').onclick=()=>{closeDialog('daily-grace-dialog');$('#garden').scrollIntoView({behavior:motion.matches?'auto':'smooth',block:'center'});$('#water').focus({preventScroll:true});};
+$('#daily-grace-bag').onclick=()=>{selected=state.dailyGrace?.[today]||'flower';category='garden';closeDialog('daily-grace-dialog');openBag();};
 $('#read-aloud').onclick = () => {
   if (!window.speechSynthesis) { announce('這個瀏覽器目前無法朗讀，仍可以閱讀經文。'); return; }
   speechSynthesis.cancel(); audio.duck(true);duckTheme(true); const text = new SpeechSynthesisUtterance($('.scripture').textContent); text.lang = 'zh-TW'; text.rate = .85;
@@ -488,7 +501,7 @@ document.querySelectorAll('[data-gender]').forEach(button => { button.onclick = 
 $('#avatar-confirm').onclick=()=>void attempt(async()=>{
  if(!AVATARS.some(avatar=>avatar.id===avatarChoice))return;
  if(!state.avatarId){state.music=$('#avatar-audio').checked;state.sound=$('#avatar-audio').checked;persist();}
- const button=$('#avatar-confirm');button.disabled=true;try{await change('avatar',{avatar:avatarChoice});renderSound();void audio.unlock().then(()=>sound('pick'));closeDialog('avatar-dialog');saveMessage('角色已保存，一起照顧這座花園吧。');}finally{button.disabled=false;}
+ const button=$('#avatar-confirm');button.disabled=true;$('#avatar-status').textContent='正在保存你的角色…';try{await change('avatar',{avatar:avatarChoice});renderSound();void audio.unlock().then(()=>sound('pick'));closeDialog('avatar-dialog');saveMessage('角色已保存，一起照顧這座花園吧。');}catch(e){$('#avatar-status').textContent=e.message;}finally{button.disabled=false;}
 });
 // A saved preference still requires a gesture on a freshly opened iPhone page.
 document.addEventListener('click', event => {

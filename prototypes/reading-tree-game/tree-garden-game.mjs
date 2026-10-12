@@ -1,4 +1,6 @@
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs';
+import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
+import { GardenAudio } from './tree-game-audio.mjs';
 
 const $ = selector => document.querySelector(selector);
 function taipeiDay() {
@@ -9,6 +11,17 @@ let today = taipeiDay();
 const STORAGE = 'mplus-tree-game-demo-v1';
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const ATLAS = 'assets/garden-atlas.png';
+const AVATAR_ATLAS = 'assets/garden-avatars.png';
+const AVATARS = ['male', 'female'].flatMap((gender, row) => Array.from({ length: 3 }, (_, column) => ({
+  id: `${gender}-${column + 1}`, gender, name: `${gender === 'male' ? '男生' : '女生'}外型 ${column + 1}`,
+  rect: [column * 408, row * 642.5, 408, 642.5],
+})));
+function avatarSprite(id) {
+  const avatar = AVATARS.find(item => item.id === id);
+  if (!avatar) return `<span class="guardian-placeholder">${icon('friend')}</span>`;
+  const rect = avatar.rect, clip = `garden-avatar-${++spriteSequence}`;
+  return `<svg class="game-sprite" viewBox="${rect.join(' ')}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${AVATAR_ATLAS}" width="1224" height="1285" clip-path="url(#${clip})"/></svg>`;
+}
 const rects = {
   sapling: [50, 50, 262, 310], tree: [380, 0, 320, 360], bloom: [703, 0, 420, 360],
   guardian: [1132, 0, 245, 367], bag: [28, 395, 300, 313], openBag: [389, 372, 304, 338],
@@ -39,6 +52,12 @@ const iconPaths = {
   bag: '<path d="M6 8V6a6 6 0 0 1 12 0v2M6 8h12l2 12H4Zm2 5h8v7M9 8v2m6-2v2"/>',
   gift: '<path d="M3 8h18v5H3Zm2 5v9h14v-9M12 8v14"/><path d="M12 8C3 8 6-2 12 8Zm0 0c9 0 6-10 0 0Z"/>',
   close: '<path d="m6 6 12 12M6 18 18 6"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+  heart: '<path d="M12 21C-4 11 3 0 12 7c9-7 16 4 0 14Z"/><path d="m13 7-3 5 4 2-3 5"/>',
+  whisper: '<path d="M4 4h16v12H9l-5 4V4Z"/><path d="M8 9h8m-8 3h5"/>',
+  friend: '<circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/>',
+  arrows: '<path d="m3 21 18-18m-7 0h7v7M3 13l8-8m-5 0h5v5m2 11 8-8m-5 0h5v5"/>',
+  star: '<path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/>',
   sound: '<path d="m11 4-5 4H3v8h3l5 4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',
   mute: '<path d="m11 4-5 4H3v8h3l5 4Zm5 5 6 6m0-6-6 6"/>',
   flower: '<path d="M12 10C3-4-3 10 8 12-3 17 8 27 12 16c4 11 15 1 4-4 11-2 5-16-4-2Z" fill="#e5b09d" stroke="#d18c77"/><circle cx="12" cy="12" r="3" fill="#f3d688"/><path d="M12 17v7" stroke="#6e8c50"/>',
@@ -61,7 +80,7 @@ function seed() {
   const startDate = dateAtOffset(today, -7);
   return { version: 1, startDate, records: Array.from({ length: 7 }, (_, i) => ({ reading_date: dateAtOffset(startDate, i), completion_type: 'on_time', watered_at: 'demo' })),
     notes: Array.from({ length: 3 }, (_, i) => ({ reading_date: dateAtOffset(startDate, i), note: '示範拾光：謝謝神今天的陪伴。' })),
-    battles: [], encounters: {}, equipped: [], placed: [], sound: false };
+    battles: [], encounters: {}, equipped: [], placed: [], avatarId: null, sound: false, music: false, musicVolume: .45, effectsVolume: .65 };
 }
 function readState() {
   try {
@@ -69,13 +88,17 @@ function readState() {
     if (saved?.version === 1 && /^\d{4}-\d{2}-\d{2}$/.test(saved.startDate) && ['records', 'notes', 'battles', 'equipped', 'placed'].every(k => Array.isArray(saved[k]))) {
       return { ...saved, records: saved.records.filter(r => r && typeof r === 'object'), notes: saved.notes.filter(n => n && typeof n === 'object'),
         equipped: saved.equipped.filter(id => equipment.some(item => item.id === id)), placed: saved.placed.filter(id => decorations.some(item => item.id === id)),
-        encounters: saved.encounters && typeof saved.encounters === 'object' ? saved.encounters : {}, sound: saved.sound === true };
+        encounters: saved.encounters && typeof saved.encounters === 'object' ? saved.encounters : {}, sound: saved.sound === true,
+        avatarId: AVATARS.some(avatar => avatar.id === saved.avatarId) ? saved.avatarId : null, music: saved.music === true,
+        musicVolume: Number.isFinite(saved.musicVolume) ? Math.min(1, Math.max(0, saved.musicVolume)) : .45,
+        effectsVolume: Number.isFinite(saved.effectsVolume) ? Math.min(1, Math.max(0, saved.effectsVolume)) : .65 };
     }
   } catch { /* Private browsing can still use the page in memory. */ }
   return seed();
 }
-let state = readState(), category = 'armor', selected = 'sword', busy = false, quest = null, questEpoch = 0, toastTimer, sceneTimer;
-let storageAvailable = true, previousXP = null, audioContext;
+let state = readState(), category = 'armor', selected = 'sword', busy = false, quest = null, questEpoch = 0, eventContext = null, eventSelection = null, toastTimer, sceneTimer;
+let storageAvailable = true, previousXP = null, avatarGender = null, avatarChoice = null, victoryTimer;
+const audio = new GardenAudio(message => { $('#audio-status').textContent = message; });
 const dialogOpeners = new Map();
 function persist() {
   try { localStorage.setItem(STORAGE, JSON.stringify(state)); storageAvailable = true; }
@@ -83,21 +106,19 @@ function persist() {
 }
 function announce(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').classList.add('visible'); toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 3300); }
 function saveMessage(message) { announce(storageAvailable ? message : `${message}；此瀏覽器目前只保留本次開啟的進度。`); }
-function sound(kind) {
-  if (!state.sound) return;
-  try {
-    audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
-    void audioContext.resume();
-    const notes = kind === 'sword' ? [330, 660, 988] : kind === 'level' ? [523, 659, 784, 1047] : kind === 'water' ? [1047, 784, 1175] : [392, 523];
-    const at = audioContext.currentTime;
-    notes.forEach((frequency, index) => {
-      const oscillator = audioContext.createOscillator(), gain = audioContext.createGain(), start = at + index * .09;
-      oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(frequency, start);
-      gain.gain.setValueAtTime(.0001, start); gain.gain.exponentialRampToValueAtTime(.04, start + .025); gain.gain.exponentialRampToValueAtTime(.0001, start + .25);
-      oscillator.connect(gain); gain.connect(audioContext.destination); oscillator.start(start); oscillator.stop(start + .27);
-      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
-    });
-  } catch { /* Visual feedback is always available without sound. */ }
+function sound(kind) { audio.effect(kind); }
+function setAudioMode(mode) {
+  audio.setMode(mode);
+  $('#audio-mode').textContent = { garden: '花園晨光', event: '事件出現 · 懸疑節奏', battle: '守護花園 · 戰鬥', boss: 'Boss 挑戰 · 加速戰鬥', victory: '勝利的光' }[mode];
+  document.body.dataset.audioMode = mode;
+}
+function syncAudioScene() {
+  clearTimeout(victoryTimer);
+  setAudioMode($('#quest-dialog').open ? quest?.complete ? 'garden' : quest?.boss ? 'boss' : 'battle' : $('#event-dialog').open ? eventContext?.boss ? 'boss' : 'event' : 'garden');
+}
+function celebrateAudio() {
+  setAudioMode('victory'); clearTimeout(victoryTimer);
+  victoryTimer = setTimeout(syncAudioScene, 3200);
 }
 function openDialog(id, opener = document.activeElement) {
   const dialog = document.getElementById(id);
@@ -109,9 +130,11 @@ function openDialog(id, opener = document.activeElement) {
 function closeDialog(id) {
   const dialog = document.getElementById(id);
   if (id === 'quest-dialog') { questEpoch++; quest = null; }
-  if (id === 'reading-dialog') window.speechSynthesis?.cancel();
+  if (id === 'event-dialog') { eventContext = null; eventSelection = null; }
+  if (id === 'reading-dialog') { window.speechSynthesis?.cancel(); audio.duck(false); }
   dialog.close();
   if (!document.querySelector('dialog[open]')) document.body.classList.remove('body-dialog-open');
+  if (['quest-dialog', 'event-dialog'].includes(id)) syncAudioScene();
   const opener = dialogOpeners.get(id);
   if (opener?.isConnected && !opener.disabled) opener.focus({ preventScroll: true });
 }
@@ -136,7 +159,7 @@ function updateProgress() {
   $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
   $('#water').querySelector('span:nth-child(2)').innerHTML = p.todayRecord?.watered_at ? '已澆水<small>今天的活水已送達</small>' : '澆水 <small>+5 XP</small>';
   $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '可以先守護花園，再開始今天的讀經。';
-  $('#battle-status').textContent = hasBattle(today) ? `今日守護已完成 · +${battleReward()} XP 已收藏` : state.encounters[today]?.boss ? '稀有 Boss 出現 · 完成守護 +30 XP' : '今日守護 · 首次完成 +10 XP';
+  renderEncounter();
   $('#journey-list').replaceChildren(...LEVELS.map(level => {
     const row = document.createElement('li'); row.classList.toggle('is-current', level.level === p.current.level);
     row.innerHTML = `<span>${level.level}</span><div><strong>${level.name}</strong><small>累積 ${level.xp.toLocaleString()} XP</small></div><em>${level.level === p.current.level ? '目前階段' : level.xp <= p.xp ? '已達成' : '等待成長'}</em>`;
@@ -151,32 +174,108 @@ function updateProgress() {
   previousXP = p.xp;
 }
 function ensureEncounter() {
-  const entry = state.encounters[today];
-  if (!entry || !Number.isInteger(entry.count) || entry.count < 1 || entry.count > 3) {
-    const roll = crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
-    const boss = roll < .1;
-    state.encounters[today] = { boss, count: boss ? 3 : 1 + Math.floor(Math.random() * 3), defeated: 0 }; persist();
+  const prior = state.encounters[today];
+  const valid = prior?.schema === 2 && Array.isArray(prior.events) && prior.events.length === 6 && new Set(prior.events).size === 6 && prior.events.every(id => eventById(id));
+  if (!valid) {
+    const boss = typeof prior?.boss === 'boolean' ? prior.boss : crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 < .1;
+    state.encounters[today] = { schema: 2, boss, events: eventDeck(boss), stage: 0, stageHits: 0 };
   }
-  state.encounters[today].defeated = hasBattle(today) ? state.encounters[today].count : Math.min(state.encounters[today].count, Math.max(0, Math.floor(Number(state.encounters[today].defeated) || 0)));
+  const entry = state.encounters[today];
+  entry.stage = hasBattle(today) ? 6 : Math.min(5, Math.max(0, Math.floor(Number(entry.stage) || 0)));
+  const event = eventById(entry.events[entry.stage]);
+  entry.stageHits = Math.min(event?.gear === 'belt' ? 0 : 2, Math.max(0, Math.floor(Number(entry.stageHits) || 0)));
+  persist();
+}
+function dailyEvent() {
+  const encounter = state.encounters[today];
+  if (encounter.stage >= encounter.events.length || hasBattle(today)) return null;
+  return { date: today, id: encounter.events[encounter.stage], index: encounter.stage, practice: false, boss: encounter.boss && encounter.stage >= 3 };
+}
+function eventArt(event, boss = false) {
+  if (boss || event.art === 'shadow') return `<span class="event-shadow shadow-art" style="--shadow-index:${boss ? 1 : 0}"></span>`;
+  return `<span class="event-symbol event-symbol-${event.art}">${icon(event.art)}</span>`;
 }
 function renderEncounter() {
-  const encounter = state.encounters[today], remaining = encounter.count - encounter.defeated, container = $('#garden-enemies');
+  const encounter = state.encounters[today], context = dailyEvent(), container = $('#garden-enemies');
   container.replaceChildren();
-  for (let i = 0; i < (encounter.boss && remaining ? 1 : remaining); i++) {
-    const button = document.createElement('button'); button.type = 'button'; button.className = `shadow-enemy shadow-enemy-${i}${encounter.boss ? ' shadow-boss' : ''}`;
-    button.setAttribute('aria-label', encounter.boss ? `稀有黑影 Boss，還有 ${remaining} 格生命，完成獲得 30 XP` : `小黑影 ${i + 1}，打開裝備包取出寶劍`);
-    button.innerHTML = `<span style="--shadow-index:${encounter.boss ? 1 : i % 3}" aria-hidden="true"></span>`;
-    if (encounter.boss) { const label = document.createElement('strong'); label.textContent = '稀有 Boss · 3 倍 XP'; const hp = document.createElement('i'); hp.className = 'boss-hp'; hp.innerHTML = `<span style="width:${remaining / encounter.count * 100}%"></span>`; button.append(label, hp); }
-    button.addEventListener('click', () => openBag('sword')); container.append(button);
+  if (context) {
+    const event = eventById(context.id), button = document.createElement('button');
+    button.type = 'button'; button.className = `garden-event-marker${context.boss ? ' marker-boss' : ''}`;
+    button.setAttribute('aria-label', `${context.boss ? 'Boss 挑戰：' : '花園事件：'}${event.title}，打開裝備包選擇軍裝`);
+    button.innerHTML = `${eventArt(event, context.boss)}<strong>${context.boss ? '稀有 Boss · 3 倍 XP' : event.title}</strong>${context.boss ? `<i class="boss-hp"><span style="width:${(6 - context.index) / 3 * 100}%"></span></i>` : ''}`;
+    button.onclick = () => openEvent(context); container.append(button);
   }
-  $('#defend-garden').hidden = remaining <= 0;
-  $('#defend-garden').textContent = encounter.boss ? '迎戰稀有 Boss · +30 XP' : '取出寶劍，守護花園 · +10 XP';
-  $('#scene-caption').textContent = remaining ? encounter.boss ? '稀有黑影 Boss 出現了！一起守護花園。' : `${remaining} 隻小黑影出現了，拿起神的話守護花園。` : '花園重新明亮，謝謝你的守護。';
+  $('#defend-garden').hidden = !context;
+  $('#defend-garden').textContent = context?.boss ? '判斷事件，選擇軍裝' : `處理花園事件 · ${Math.min(encounter.stage + 1, 6)}／6`;
+  $('#scene-caption').textContent = context ? `${context.boss ? 'Boss 挑戰：' : ''}${eventById(context.id).title}` : '六件軍裝都派上用場，花園重新明亮。';
+  $('#battle-status').textContent = hasBattle(today) ? `今日守護已完成 · +${battleReward()} XP 已收藏` : `今日事件 ${encounter.stage}／6 · 全部完成 +${battleReward()} XP${encounter.boss ? ' · 稀有 Boss 日' : ''}`;
+}
+function openEvent(context = dailyEvent()) {
+  if (!context || !eventById(context.id)) { announce('今日守護已完成，可以體驗其他事件，或開始讀經。'); return; }
+  eventContext = { ...context }; eventSelection = null;
+  const event = eventById(context.id);
+  $('#event-title').textContent = event.title;
+  $('#event-story').textContent = event.story;
+  $('#event-kicker').textContent = context.practice ? context.boss ? `Boss 三階段體驗 · ${context.index + 1}／3 · 不加分` : '事件體驗 · 不加分' : `今日事件 ${context.index + 1}／6${context.boss ? ' · Boss 挑戰' : ''}`;
+  $('#event-art').innerHTML = eventArt(event, context.boss) + (context.boss ? `<i class="boss-hp" aria-hidden="true"><span style="width:${(context.practice ? 3 - context.index : 6 - context.index) / 3 * 100}%"></span></i>` : '');
+  $('#event-art').dataset.kind = context.boss ? 'boss' : event.art;
+  $('#event-bag').innerHTML = sprite('openBag');
+  $('#event-feedback').dataset.result = 'ready'; $('#event-feedback').innerHTML = '<span class="event-result-mark" aria-hidden="true">?</span><span>打開裝備包，選一件適合這個事件的軍裝。</span>';
+  $('#event-use').disabled = true; $('#event-use').textContent = '先選擇裝備';
+  $('#event-choices').replaceChildren(...shuffled(equipment).map(item => {
+    const button = document.createElement('button'); button.type = 'button'; button.dataset.gear = item.id; button.setAttribute('aria-pressed', 'false');
+    button.innerHTML = `<span class="item-sprite">${sprite(item.id)}</span><strong>${item.name}</strong>`;
+    button.onclick = () => selectEventGear(item, button);
+    return button;
+  }));
+  openDialog('event-dialog'); syncAudioScene(); sound('bag');
+}
+function selectEventGear(item, button) {
+  if (!eventContext) return;
+  const event = eventById(eventContext.id), correct = item.id === event.gear;
+  eventSelection = correct ? item.id : null;
+  $('#event-choices').querySelectorAll('button').forEach(choice => { choice.setAttribute('aria-pressed', String(choice === button)); choice.removeAttribute('data-result'); });
+  button.dataset.result = correct ? 'correct' : 'wrong';
+  $('#event-feedback').dataset.result = correct ? 'correct' : 'wrong';
+  $('#event-feedback').innerHTML = `<span class="event-result-mark" aria-hidden="true">${icon(correct ? 'check' : 'close')}</span><span>${correct ? `選對了！取出${item.name}，用行動回應這個事件。` : `這件裝備不適合這個事件。${event.hint}`}</span>`;
+  $('#event-use').disabled = !correct;
+  $('#event-use').textContent = correct ? `取出${item.name}，開始使用` : '換一件裝備，再試一次';
+  sound(correct ? 'pick' : 'wrong');
+}
+function beginEventQuest() {
+  const context = eventContext;
+  if (!context || eventSelection !== eventById(context.id)?.gear) return;
+  if (!context.practice && (context.date !== today || context.index !== state.encounters[today].stage || hasBattle(today))) {
+    closeDialog('event-dialog'); renderEncounter(); announce('這個事件已完成，請從花園開啟目前的事件。'); return;
+  }
+  openQuest(equipment.find(item => item.id === eventSelection), context);
+}
+function renderEventLibrary() {
+  $('#event-library-list').replaceChildren(...GARDEN_EVENTS.map(event => {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'event-library-card';
+    button.innerHTML = `${eventArt(event)}<span><strong>${event.title}</strong><small>判斷事件 → 選擇軍裝 → 使用</small></span>`;
+    button.onclick = () => openEvent({ id: event.id, index: 0, practice: true, boss: false }); return button;
+  }));
 }
 function renderGuardian() {
-  $('#guardian-base').innerHTML = sprite('guardian');
+  $('#guardian-base').innerHTML = avatarSprite(state.avatarId);
   $('#guardian-gear').innerHTML = state.equipped.map(id => `<span class="guardian-slot slot-${id}">${sprite(id)}</span>`).join('');
-  $('#guardian').setAttribute('aria-label', `花園守護者${state.equipped.length ? '，已穿戴' + state.equipped.map(id => equipment.find(item => item.id === id).name).join('、') : '，尚未穿戴軍裝'}`);
+  $('#guardian').setAttribute('aria-label', `${AVATARS.find(avatar => avatar.id === state.avatarId)?.name || '尚未選擇角色'}，花園守護者${state.equipped.length ? '，已穿戴' + state.equipped.map(id => equipment.find(item => item.id === id).name).join('、') : '，尚未穿戴軍裝'}`);
+}
+function renderAvatarChoices() {
+  document.querySelectorAll('[data-gender]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.gender === avatarGender)));
+  $('#avatar-instruction').textContent = avatarGender ? '選擇喜歡的外型；角色更換不影響成長與裝備。' : '先選擇男生或女生，再挑選三種外型中的一款。';
+  $('#avatar-choices').replaceChildren(...AVATARS.filter(avatar => avatar.gender === avatarGender).map(avatar => {
+    const button = document.createElement('button'); button.type = 'button'; button.setAttribute('aria-pressed', String(avatar.id === avatarChoice));
+    button.innerHTML = `${avatarSprite(avatar.id)}<strong>${avatar.name}</strong><span aria-hidden="true">${icon('check')}</span>`;
+    button.onclick = () => { avatarChoice = avatar.id; renderAvatarChoices(); $('#avatar-choices').children[AVATARS.filter(a => a.gender === avatarGender).findIndex(a => a.id === avatar.id)]?.focus({ preventScroll: true }); sound('pick'); };
+    return button;
+  }));
+  $('#avatar-confirm').disabled = !avatarChoice;
+}
+function openAvatar() {
+  avatarChoice = state.avatarId; avatarGender = AVATARS.find(avatar => avatar.id === avatarChoice)?.gender || null;
+  $('#avatar-audio-label').hidden = !!state.avatarId; renderAvatarChoices(); openDialog('avatar-dialog');
 }
 function renderDecorations() {
   const positions = { flower: [26, 79], lamp: [17, 66], bird: [50, 40], fountain: [82, 73], fruit: [39, 41] };
@@ -205,8 +304,8 @@ function renderInventory() {
     equip.textContent = state.equipped.includes(item.id) ? '收回這件軍裝' : '穿戴到守護者';
     equip.onclick = () => { state.equipped = state.equipped.includes(item.id) ? state.equipped.filter(id => id !== item.id) : [...state.equipped, item.id]; persist(); renderGuardian(); renderInventory(); saveMessage(state.equipped.includes(item.id) ? `${item.name}已穿戴` : `${item.name}已收回裝備包`); };
     const use = document.createElement('button'); use.type = 'button'; use.className = 'primary';
-    const active = item.id === 'sword' && state.encounters[today].defeated < state.encounters[today].count;
-    use.textContent = active ? '取出寶劍，守護花園' : '取出裝備，開始體驗'; use.onclick = () => openQuest(item, active);
+    use.textContent = '練習這件裝備的對應事件';
+    use.onclick = () => openEvent({ id: GARDEN_EVENTS.find(event => event.gear === item.id).id, index: 0, practice: true, boss: false });
     $('#item-actions').append(equip, use);
   } else {
     const place = document.createElement('button'); place.type = 'button'; place.className = 'primary'; place.textContent = state.placed.includes(item.id) ? '收回裝備包' : '放進我的花園';
@@ -221,65 +320,96 @@ function openBag(item = selected) {
   requestAnimationFrame(() => { $('#bag-opening').classList.add('is-opening'); });
   setTimeout(() => { if ($('#bag-dialog').open) $('#bag-opening').innerHTML = sprite('openBag'); }, motion.matches ? 0 : 220);
 }
-function openQuest(item, encounter = false, bossPreview = false) {
-  quest = { item, encounter, boss: bossPreview || (encounter && state.encounters[today].boss), hits: 0, total: encounter ? state.encounters[today].count - state.encounters[today].defeated : item.id === 'belt' ? 1 : 3, selected: false, busy: false, complete: false, epoch: ++questEpoch };
+function openQuest(item, context) {
+  // Event selection is required for both daily challenges and practice.
+  if (!context || eventById(context.id)?.gear !== item.id) return;
+  const encounter = !context.practice;
+  quest = { item, event: { ...context }, encounter, boss: context.boss, hits: encounter ? state.encounters[today].stageHits : 0,
+    total: item.id === 'belt' ? 1 : 3, selected: false, busy: false, complete: false, epoch: ++questEpoch };
   $('#quest-title').textContent = item.title; $('#quest-scenario').textContent = item.scenario;
   $('#quest-verse').textContent = item.id === 'sword' ? '聖靈的寶劍，就是神的道。——以弗所書 6:17' : item.reminder;
   $('#quest-gear').innerHTML = sprite(item.id); $('#quest-stage').dataset.item = item.id; $('#quest-stage').dataset.phase = 'entering';
   $('#quest-special').innerHTML = item.id === 'breastplate' ? '<div class="armor-mist"></div>' : item.id === 'shield' ? '<div class="quest-arrow"></div>' : item.id === 'helmet' ? '<div class="puzzle-glow"></div>' : item.id === 'boots' ? [0, 1, 2].map(i => `<span class="trail-flower" style="left:${20 + i * 23}%;top:${76 - i * 20}%">${icon('flower')}</span>`).join('') : '';
+  $('#quest-boss-presence').innerHTML = quest.boss && item.id !== 'sword' ? eventArt(eventById(context.id), true) : '';
   $('#quest-options').replaceChildren();
   item.options.forEach((label, index) => {
-    const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.setAttribute('aria-pressed', 'false');
+    const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
+    const completed = item.id === 'helmet' && index < quest.hits;
+    button.setAttribute('aria-pressed', String(completed)); button.disabled = completed;
     button.onclick = () => {
       if (!quest || quest.item.id !== item.id || quest.busy || quest.complete) return;
       if (item.id === 'helmet') {
-        if (index !== quest.hits) { $('#quest-hint').textContent = '從左邊第一片開始，依序點亮三份盼望。'; return; }
+        if (index !== quest.hits) { $('#quest-hint').textContent = '✕ 從左邊第一片開始，依序點亮三份盼望。'; sound('wrong'); return; }
         void actQuest(); return;
       }
-      if (index !== item.correct) { $('#quest-hint').textContent = '再想一想：什麼行動能幫助我們誠實面對？'; return; }
+      if (index !== item.correct) { $('#quest-hint').textContent = '✕ 再想一想：什麼行動能幫助我們誠實面對？'; sound('wrong'); return; }
       quest.selected = true; button.setAttribute('aria-pressed', 'true'); $('#quest-hint').textContent = '願意誠實面對，現在把真理繫在心上。'; $('#quest-action').disabled = false;
     };
     $('#quest-options').append(button);
   });
+  if (item.id === 'breastplate') $('#quest-special .armor-mist').style.opacity = String(1 - quest.hits / quest.total);
+  if (item.id === 'boots') [...$('#quest-special').children].slice(0, quest.hits).forEach(node => node.classList.add('visible'));
   $('#quest-action').textContent = item.action;
   $('#quest-return').disabled = false; $('#quest-gear').style.filter = '';
-  $('#quest-action').disabled = item.id === 'belt'; $('#quest-action').hidden = false;
-  $('#quest-return').hidden = true; $('#quest-counter').textContent = quest.boss ? `稀有 Boss · 生命 ${quest.total}／3${bossPreview ? ' · 造型預覽' : ' · 3 倍 XP'}` : encounter ? `花園守護 · ${quest.total} 隻小黑影` : `裝備體驗 · 0／${quest.total}`;
-  $('#quest-hint').textContent = encounter ? `完成今日首次守護，即可獲得 ${battleReward()} XP，再去讀經澆水。` : item.id === 'belt' ? '先選擇一個願意實踐的行動。' : '點按按鈕就能操作；也可以直接點圖中的裝備。';
-  if (bossPreview) $('#quest-hint').textContent = 'Boss 造型預覽：攻擊三次驅散黑影。預覽不發放 XP，也不影響今日遭遇。';
+  $('#quest-action').disabled = item.id === 'belt'; $('#quest-action').hidden = item.id === 'helmet';
+  $('#quest-return').hidden = true; $('#quest-return').textContent = '收回裝備，回到花園 →';
+  $('#quest-counter').textContent = quest.boss ? `Boss 挑戰 ${context.index - (context.practice ? 0 : 3) + 1}／3 · 操作 ${quest.hits}／${quest.total}` : `裝備使用 · ${quest.hits}／${quest.total}`;
+  $('#quest-hint').textContent = context.practice ? '事件練習不加分；選對裝備後，用行動完成挑戰。' : `今天六種事件全部完成，即可獲得 ${battleReward()} XP；中途離開會保留進度。`;
+  if (item.id === 'belt') $('#quest-hint').textContent += ' 先選擇一個願意實踐的行動。';
+  if (item.id === 'helmet') $('#quest-hint').textContent += ' 依序點亮三片盼望。';
   $('#quest-stage').classList.toggle('boss-quest', !!quest.boss);
   if (item.id === 'sword') renderQuestEnemies();
-  openDialog('quest-dialog');
+  openDialog('quest-dialog'); syncAudioScene(); sound('enter'); sound('draw');
   const epoch = quest.epoch; setTimeout(() => { if (quest?.epoch === epoch && !quest.busy && !quest.complete) $('#quest-stage').dataset.phase = 'ready'; }, motion.matches ? 0 : 750);
 }
 function renderQuestEnemies() {
   if (!quest || quest.item.id !== 'sword') return;
   const left = quest.total - quest.hits;
-  $('#quest-special').innerHTML = left ? `<div class="quest-enemy${quest.boss ? ' quest-boss' : ''}"><span class="shadow-art" style="--shadow-index:${quest.boss ? 1 : quest.hits % 3}"></span>${quest.boss ? `<strong>稀有黑影 Boss</strong><i class="boss-hp"><span style="width:${left / 3 * 100}%"></span></i>` : ''}</div>` : '';
+  $('#quest-special').innerHTML = left ? `<div class="quest-enemy${quest.boss ? ' quest-boss' : ''}"><span class="shadow-art" style="--shadow-index:${quest.boss ? 1 : quest.hits % 3}"></span>${quest.boss ? '<strong>稀有黑影 Boss</strong>' : ''}</div>` : '';
 }
 const pause = ms => new Promise(resolve => setTimeout(resolve, motion.matches ? Math.min(120, ms) : ms));
 async function actQuest() {
   const current = quest;
   if (!current || current.busy || current.complete || (current.item.id === 'belt' && !current.selected)) return;
-  current.busy = true; $('#quest-action').disabled = true; $('#quest-stage').dataset.phase = 'acting'; sound(current.item.id === 'sword' ? 'sword' : 'pick');
+  if (current.encounter && (current.event.date !== today || current.event.index !== state.encounters[today].stage)) return;
+  current.busy = true; $('#quest-action').disabled = true; $('#quest-stage').dataset.phase = 'acting'; sound(current.item.id);
   await pause(current.item.id === 'sword' ? 950 : 650);
   if (quest?.epoch !== current.epoch) return;
   current.hits++;
-  if (current.encounter) { state.encounters[today].defeated++; persist(); renderEncounter(); }
+  if (current.encounter) { state.encounters[today].stageHits = current.hits; persist(); }
   if (current.item.id === 'sword') renderQuestEnemies();
   if (current.item.id === 'breastplate') $('#quest-special .armor-mist').style.opacity = String(1 - current.hits / current.total);
   if (current.item.id === 'boots') $('#quest-special').children[current.hits - 1]?.classList.add('visible');
-  if (current.item.id === 'helmet') { $('#quest-options').children[current.hits - 1]?.setAttribute('aria-pressed', 'true'); $('#quest-gear').style.filter = `drop-shadow(0 0 ${current.hits * 10}px #fff1a8)`; }
-  $('#quest-counter').textContent = current.boss ? `Boss 生命 ${current.total - current.hits}／3 · ${current.encounter ? '完成 +30 XP' : '造型預覽'}` : `${current.encounter ? '已驅散' : '已完成'} ${current.hits}／${current.total}`;
+  if (current.item.id === 'helmet') {
+    const piece = $('#quest-options').children[current.hits - 1]; piece?.setAttribute('aria-pressed', 'true'); if (piece) piece.disabled = true;
+    $('#quest-gear').style.filter = `drop-shadow(0 0 ${current.hits * 10}px #fff1a8)`;
+    $('#quest-options').children[current.hits]?.focus({ preventScroll: true });
+  }
+  $('#quest-counter').textContent = `${current.boss ? `Boss 挑戰 ${current.event.index - (current.event.practice ? 0 : 3) + 1}／3 · ` : ''}已完成操作 ${current.hits}／${current.total}`;
   if (current.hits >= current.total) {
     current.complete = true; $('#quest-stage').dataset.phase = 'complete'; $('#quest-action').hidden = true; $('#quest-return').hidden = false;
-    if (current.encounter && !hasBattle(today)) {
-      state.battles.push({ reading_date: today, kind: state.encounters[today].boss ? 'boss' : 'normal' }); persist(); updateProgress(); renderEncounter();
-      $('#quest-hint').textContent = `今日守護完成！+${battleReward()} XP 已加入小樹經驗。接著讀經，再回來澆水。`;
-      saveMessage(`${state.encounters[today].boss ? '稀有 Boss 已驅散！' : '花園重新明亮！'}每日守護 +${battleReward()} XP`);
-    } else $('#quest-hint').textContent = `${current.item.reminder} 裝備體驗可重玩，不重複加分。`;
-    $('#quest-return').focus({ preventScroll: true }); sound('level');
-  } else { $('#quest-stage').dataset.phase = 'ready'; $('#quest-action').disabled = false; $('#quest-hint').textContent = `完成 ${current.hits} 次，再 ${current.total - current.hits} 次就完成了。`; }
+    const event = eventById(current.event.id);
+    if (current.encounter) {
+      state.encounters[today].stage++; state.encounters[today].stageHits = 0;
+      if (state.encounters[today].stage >= 6 && !hasBattle(today)) {
+        state.battles.push({ reading_date: today, kind: state.encounters[today].boss ? 'boss' : 'normal' }); persist(); updateProgress();
+        $('#quest-hint').textContent = `${event.result} 今日守護完成！+${battleReward()} XP 已加入小樹經驗。接著讀經，再回來澆水。`;
+        saveMessage(`六種事件完成！每日守護 +${battleReward()} XP`);
+      } else {
+        persist(); renderEncounter();
+        $('#quest-hint').textContent = `${event.result} 已完成 ${state.encounters[today].stage}／6 個事件，收回裝備再迎接下一個挑戰。`;
+        $('#quest-return').textContent = '收回裝備，查看下一個事件 →';
+      }
+    } else {
+      const next = current.event.sequence && current.event.index + 1 < current.event.sequence.length;
+      $('#quest-hint').textContent = `${event.result} ${next ? 'Boss 還有下一個挑戰，需要重新選擇裝備。' : '事件體驗完成，不發放 XP。'}`;
+      if (next) $('#quest-return').textContent = '收回裝備，迎接 Boss 下一階段 →';
+    }
+    $('#quest-return').focus({ preventScroll: true }); celebrateAudio(); sound('xp');
+  } else {
+    $('#quest-stage').dataset.phase = 'ready'; $('#quest-action').disabled = false;
+    $('#quest-hint').textContent = `完成 ${current.hits} 次，再 ${current.total - current.hits} 次就完成這個事件。`;
+  }
   current.busy = false;
 }
 async function returnEquipment() {
@@ -288,10 +418,16 @@ async function returnEquipment() {
   current.busy = true; $('#quest-return').disabled = true; $('#quest-stage').dataset.phase = 'returning'; sound('bag');
   await pause(550);
   if (quest?.epoch !== current.epoch) return;
-  closeDialog('quest-dialog'); if ($('#bag-dialog').open) closeDialog('bag-dialog');
-  $('#quest-return').disabled = false; $('#scene-bag').focus({ preventScroll: true });
+  closeDialog('quest-dialog');
+  ['event-dialog', 'bag-dialog', 'event-library-dialog'].forEach(id => { if (document.getElementById(id).open) closeDialog(id); });
+  $('#quest-return').disabled = false;
+  if (current.complete && current.encounter && dailyEvent()) { openEvent(dailyEvent()); return; }
+  if (current.complete && current.event.sequence && current.event.index + 1 < current.event.sequence.length) {
+    const index = current.event.index + 1;
+    openEvent({ ...current.event, index, id: current.event.sequence[index] }); return;
+  }
   $('#garden').scrollIntoView({ behavior: motion.matches ? 'auto' : 'smooth', block: 'center' });
-  if (current.encounter) $('#read-open').focus({ preventScroll: true });
+  $(current.encounter ? '#read-open' : '#scene-bag').focus({ preventScroll: true });
 }
 function markRead() {
   if (!state.records.some(record => record.reading_date === today)) {
@@ -315,7 +451,7 @@ function saveJournal(event) {
   persist(); updateProgress(); closeDialog('journal-dialog'); saveMessage(existing ? '今天的拾光已更新，經驗值保留。' : '拾光已珍藏 · +5 XP'); sound('pick');
 }
 async function loadAssets() {
-  const assets = ['assets/garden-dawn.png', ATLAS, 'assets/garden-shadows.png'];
+  const assets = ['assets/garden-dawn.png', ATLAS, AVATAR_ATLAS, 'assets/garden-shadows.png'];
   const results = await Promise.allSettled(assets.map(src => new Promise((resolve, reject) => {
     const image = new Image(), timer = setTimeout(() => { image.onload = null; image.onerror = null; reject(new Error(src)); }, 15000);
     image.onload = () => { clearTimeout(timer); resolve(src); }; image.onerror = () => { clearTimeout(timer); reject(new Error(src)); }; image.src = src;
@@ -331,9 +467,11 @@ document.querySelectorAll('dialog').forEach(dialog => {
   dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog.id); });
   dialog.addEventListener('click', event => { if (event.target !== dialog) return; const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closeDialog(dialog.id); });
 });
-['scene-bag', 'equipment-open', 'nav-bag', 'defend-garden'].forEach(id => { document.getElementById(id).onclick = () => openBag('sword'); });
-$('#quick-sword').onclick = () => openBag('sword');
-$('#boss-preview').onclick = () => openQuest(equipment.find(item => item.id === 'sword'), false, true);
+['scene-bag', 'equipment-open', 'nav-bag'].forEach(id => { document.getElementById(id).onclick = () => openBag('sword'); });
+$('#defend-garden').onclick = () => openEvent();
+$('#quick-sword').onclick = () => openDialog('event-library-dialog');
+$('#event-use').onclick = beginEventQuest;
+$('#boss-preview').onclick = () => { const sequence = shuffled(['faith', 'hope', 'word']); openEvent({ id: sequence[0], index: 0, practice: true, boss: true, sequence }); };
 $('#armor-tab').onclick = () => { category = 'armor'; selected = 'sword'; renderInventory(); };
 $('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; renderInventory(); };
 $('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();
@@ -343,10 +481,41 @@ $('#journal-open').onclick = () => { $('#journal-note').value = state.notes.find
 $('#journal-form').onsubmit = saveJournal; $('#journey-open').onclick = () => openDialog('journey-dialog'); $('#gift-open').onclick = () => openDialog('gift-dialog');
 $('#read-aloud').onclick = () => {
   if (!window.speechSynthesis) { announce('這個瀏覽器目前無法朗讀，仍可以閱讀經文。'); return; }
-  speechSynthesis.cancel(); const text = new SpeechSynthesisUtterance($('.scripture').textContent); text.lang = 'zh-TW'; text.rate = .85; text.onerror = () => announce('朗讀暫時無法播放，可以稍後再試。'); speechSynthesis.speak(text);
+  speechSynthesis.cancel(); audio.duck(true); const text = new SpeechSynthesisUtterance($('.scripture').textContent); text.lang = 'zh-TW'; text.rate = .85;
+  text.onend = () => audio.duck(false); text.onerror = () => { audio.duck(false); announce('朗讀暫時無法播放，可以稍後再試。'); }; speechSynthesis.speak(text);
 };
-function renderSound() { $('#sound').innerHTML = icon(state.sound ? 'sound' : 'mute'); $('#sound').setAttribute('aria-pressed', String(state.sound)); $('#sound').setAttribute('aria-label', state.sound ? '關閉音效' : '開啟音效'); }
-$('#sound').onclick = () => { state.sound = !state.sound; persist(); renderSound(); if (state.sound) sound('pick'); };
+function renderSound() {
+  $('#sound').innerHTML = icon(state.music || state.sound ? 'sound' : 'mute');
+  $('#sound').setAttribute('aria-label', `音樂與音效設定，音樂${state.music ? '開' : '關'}、音效${state.sound ? '開' : '關'}`);
+  $('#music-enabled').checked = state.music; $('#effects-enabled').checked = state.sound;
+  $('#music-volume').value = String(Math.round(state.musicVolume * 100)); $('#effects-volume').value = String(Math.round(state.effectsVolume * 100));
+  $('#music-output').value = `${Math.round(state.musicVolume * 100)}%`; $('#effects-output').value = `${Math.round(state.effectsVolume * 100)}%`;
+  $('#music-volume').disabled = !state.music; $('#effects-volume').disabled = !state.sound; $('#effects-preview').disabled = !state.sound;
+  audio.configure({ music: state.music, effects: state.sound, musicVolume: state.musicVolume, effectsVolume: state.effectsVolume });
+}
+$('#sound').onclick = () => { renderSound(); openDialog('audio-dialog'); };
+for (const id of ['music-enabled', 'effects-enabled', 'music-volume', 'effects-volume']) {
+  document.getElementById(id).addEventListener(id.endsWith('volume') ? 'input' : 'change', () => {
+    state.music = $('#music-enabled').checked; state.sound = $('#effects-enabled').checked;
+    state.musicVolume = Number($('#music-volume').value) / 100; state.effectsVolume = Number($('#effects-volume').value) / 100;
+    persist(); renderSound(); void audio.unlock();
+  });
+}
+$('#audio-start').onclick = () => { if (!state.music && !state.sound) { state.music = true; state.sound = true; persist(); renderSound(); } void audio.unlock(); };
+$('#effects-preview').onclick = async () => { if (await audio.unlock()) sound('shield'); };
+$('#avatar-open').onclick = openAvatar;
+document.querySelectorAll('[data-gender]').forEach(button => { button.onclick = () => { avatarGender = button.dataset.gender; avatarChoice = null; renderAvatarChoices(); sound('pick'); }; });
+$('#avatar-confirm').onclick = () => {
+  if (!AVATARS.some(avatar => avatar.id === avatarChoice)) return;
+  if (!state.avatarId) { state.music = $('#avatar-audio').checked; state.sound = $('#avatar-audio').checked; }
+  state.avatarId = avatarChoice; persist(); renderGuardian(); renderSound();
+  void audio.unlock().then(() => sound('pick'));
+  closeDialog('avatar-dialog'); saveMessage('角色已選好，一起照顧這座花園吧。');
+};
+// A saved preference still requires a gesture on a freshly opened iPhone page.
+document.addEventListener('click', event => {
+  if (event.isTrusted && (state.music || state.sound) && audio.context?.state !== 'running') void audio.unlock();
+}, { capture: true });
 $('#retry-assets').onclick = () => { $('#retry-assets').disabled = true; void loadAssets().finally(() => { $('#retry-assets').disabled = false; }); };
 let gesture = null;
 $('#quest-stage').addEventListener('pointerdown', event => {
@@ -372,6 +541,11 @@ function refreshDay() {
   $('#scene-day').textContent = new Intl.DateTimeFormat('zh-TW', { timeZone: 'Asia/Taipei', month: 'long', day: 'numeric' }).format(new Date());
   announce('新的一天開始了，一起照顧小樹吧。');
 }
-document.addEventListener('visibilitychange', () => { document.body.classList.toggle('game-paused', document.hidden); if (document.hidden) window.speechSynthesis?.cancel(); else refreshDay(); });
+document.addEventListener('visibilitychange', () => {
+  document.body.classList.toggle('game-paused', document.hidden); audio.setHidden(document.hidden);
+  if (document.hidden) { window.speechSynthesis?.cancel(); audio.duck(false); } else refreshDay();
+});
 setInterval(refreshDay, 60000);
-ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderSound(); updateProgress(); void loadAssets();
+ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderEventLibrary(); renderSound(); updateProgress(); void loadAssets();
+setAudioMode('garden');
+if (!state.avatarId) openAvatar();

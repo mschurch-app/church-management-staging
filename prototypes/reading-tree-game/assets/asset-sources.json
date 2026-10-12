@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-10-12",
+  "asset": "assets/garden-avatars.png",
+  "tool": "image_gen.imagegen",
+  "transparent_background": true,
+  "reference": "assets/garden-atlas.png",
+  "original_output": "/Users/james-codex/.codex/generated_images/01a0f5c2-1828-7821-b2d8-caf250d34881/exec-06cf00bb-631b-47df-9972-abfdfebdba26.png",
+  "dimensions": [
+    1224,
+    1285
+  ],
+  "display": "3 columns, 2 rows; original PNG unchanged; SVG clips individual cells",
+  "prompt": "Create ONE new transparent PNG character sprite atlas for a polished hand-painted Christian garden adventure game. Use the reference solely for matching painterly brushwork, gentle warm lighting, soft detailed contours, cream tunics and sage green and antique gold palette. The new atlas must contain exactly SIX DISTINCT full-body human young adult adventurers, arranged in a rigid evenly spaced 3-column by 2-row grid. Top row: three male characters (short dark wavy hair; short straight chestnut hair; dark swept hair). Bottom row: three female characters (dark shoulder-length hair; chestnut braided ponytail; dark short bob). Warm friendly East Asian faces, visibly distinct hairstyles and clothing details. Modest cream tunics, green capes, brown ankle boots. Empty hands, no armor, no weapons, no bags, no tree, no scenery, no text, no labels, no border. Each character occupies one grid cell, facing slightly toward viewer in same neutral upright pose with arms slightly away from torso. Consistent relative proportions, head height, waist height and foot baseline across all six. Leave generous transparent margins all around each figure; absolutely no overlap between cells. Refined illustrated RPG character selection art with expressive faces and natural hands. Transparent background."
+}

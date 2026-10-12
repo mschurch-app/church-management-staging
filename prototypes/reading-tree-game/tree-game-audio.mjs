@@ -159,6 +159,7 @@ export class GardenAudio {
       case 'bag': this.hiss(at, .15, 850, .09); phrase([48, 55], 'pluck', .16); break;
       case 'draw': this.hiss(at, .27, 1700, .13); phrase([64, 71, 76], 'bell', .3); break;
       case 'wrong': phrase([52, 46], 'triangle', .17, .12); break;
+      case 'incoming': this.hiss(at,.3,600,.1);this.drum(at+.22,.22);phrase([43,38],'triangle',.2,.08);break;
       case 'sword': this.hiss(at, .27, 1100, .25); phrase([76, 88], 'bell', .17, .12); break;
       case 'shield': this.drum(at, .22); phrase([45, 57, 69], 'bell', .45, .17); break;
       case 'belt': this.hiss(at, .05, 2500, .2); phrase([60, 67], 'pluck', .16); break;

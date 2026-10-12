@@ -1,4 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {octoberGarden} from './garden.ts';
 
 type Body={action?:unknown;inviteCode?:unknown;readingDate?:unknown;challengeId?:unknown;resolutionAction?:unknown;note?:unknown};
 const START='2026-10-01',END='2026-10-31';
@@ -99,6 +100,10 @@ Deno.serve(async request=>{
     if(lookup.error)return reply(origin,{ok:false,error:'unavailable'},503);
     if(!lookup.data)return reply(origin,{ok:false,error:'join_required'},404);
     const participant=lookup.data;
+    if(action==='garden_game'){
+      try{return reply(origin,await octoberGarden(db,participant,body,today));}
+      catch(e){const message=e instanceof Error?e.message:'';const known=['invalid_action','invalid_request','test_closed','date_not_allowed','read_first','invalid_note','wrong_gear','stale_event','item_unavailable','already_full','rest_needed','mp_needed','join_required','conflict'];return reply(origin,{ok:false,error:known.includes(message)?message:'unavailable'},message==='conflict'?409:known.includes(message)?400:503);}
+    }
     if(action==='me'){
       await dailyChallenges(db,today);
       const notes=await db.from('tree_reading_october_test_journal').select('reading_date,note,passage,saved_at').eq('line_subject',identity.subject).order('reading_date');

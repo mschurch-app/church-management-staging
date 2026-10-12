@@ -12,7 +12,7 @@
   <link rel="preload" href="assets/garden-atlas.png" as="image">
   <link rel="preload" href="assets/garden-avatars-v2.png" as="image">
   <link rel="preload" href="assets/garden-bird.svg" as="image">
-<link rel="stylesheet" href="tree-game-member.css?v=20261012-member1"><link rel="stylesheet" href="../../life-tree-festival-animation.css?v=20261012-member1"></head>
+<link rel="stylesheet" href="tree-game-member.css?v=20261012-october-game1"><link rel="stylesheet" href="../../life-tree-festival-animation.css?v=20261012-member1"></head>
 <body class="garden-game" data-member-garden="true">
   <section id="member-gate" class="member-gate"><p class="eyebrow">M+ 就是你屬靈的家</p><h1>回到自己的小小庭園。</h1><p id="member-login-status" role="status">正在連接你的讀經進度…</p><a id="member-login-link" class="primary" href="../../line-member.html?church=M%2B&amp;feature=tree">從 LINE 登入</a><a class="secondary" href="../../line-member.html?church=M%2B&amp;feature=menu">會友服務與身分綁定</a><button type="button" class="secondary" onclick="location.reload()">重新整理</button></section><noscript>請啟用瀏覽器的 JavaScript，才能打開花園與使用裝備。</noscript>
   <a class="skip-link" href="#garden">前往我的花園</a>
@@ -36,7 +36,7 @@
         <div id="asset-error" class="asset-error" hidden><p>花園素材暫時沒有載入，請重試。</p><button id="retry-assets" type="button" class="primary">重新載入素材</button></div>
       </section>
       <aside class="garden-sidebar">
-<section class="life-card" aria-labelledby="life-title"><p class="eyebrow">一起被愛，一起得力</p><h2 id="life-title">今天，也有人陪你。</h2><div class="life-meter"><label for="life-hp">信心 HP <strong id="life-hp-value">100／100</strong></label><progress id="life-hp" max="100" value="100"></progress></div><div class="life-meter"><label for="life-mp">盼望 MP <strong id="life-mp-value">100／100</strong></label><progress id="life-mp" max="100" value="100"></progress></div><p id="buff-status" class="muted"></p><p id="care-boost" class="muted"></p><details><summary>下一份恩典，還有幾天？</summary><div id="next-collectibles"></div></details><p id="rest-notice" class="status" hidden>先在花園歇一歇，讀經、關懷與小花能補充力量；你的等級與收藏都會保留。</p><button id="team-open" class="secondary" type="button" aria-haspopup="dialog">我的同行小組</button><button id="makeup-open" class="quiet-button" type="button" aria-haspopup="dialog">最近七天補讀與澆水</button></section>
+<section class="life-card" aria-labelledby="life-title"><p class="eyebrow">一起被愛，一起得力</p><h2 id="life-title">今天，也有人陪你。</h2><div class="life-meter"><label for="life-hp">信心 HP <strong id="life-hp-value">100／100</strong></label><progress id="life-hp" max="100" value="100"></progress></div><div class="life-meter"><label for="life-mp">盼望 MP <strong id="life-mp-value">100／100</strong></label><progress id="life-mp" max="100" value="100"></progress></div><p id="buff-status" class="muted"></p><p id="care-boost" class="muted"></p><details><summary>每天一份恩典小物</summary><div id="next-collectibles"></div></details><p id="rest-notice" class="status" hidden>先在花園歇一歇，讀經、關懷與小花能補充力量；你的等級與收藏都會保留。</p><button id="team-open" class="secondary" type="button" aria-haspopup="dialog">我的同行小組</button><button id="makeup-open" class="quiet-button" type="button" aria-haspopup="dialog">最近七天補讀與澆水</button></section>
 
         <section class="growth-card" aria-labelledby="growth-title">
           <div class="section-top"><span class="eyebrow">每一點成長，都看得見</span><button id="journey-open" class="quiet-button" type="button" aria-haspopup="dialog">成長旅程 ↗</button></div>
@@ -49,7 +49,7 @@
         </section>
         <section class="today-card" aria-labelledby="today-title">
           <p class="eyebrow">TODAY'S LITTLE STEPS</p><h2 id="today-title">今天，為生命澆點水。</h2>
-          <p class="muted">守護花園，再用神的話滋養生命。</p>
+          <p class="muted">先安靜讀經，或選擇守護花園。每天一點同行，小樹都記得。</p>
           <p id="battle-status" class="battle-status">六種事件全部完成 · +10 XP</p>
           <button id="read-open" class="primary action-reading" type="button"><span class="button-icon" data-icon="book"></span><span>開始今日讀經<small>每日完整經文</small></span><strong>+20 XP</strong></button>
           <div class="care-actions"><button id="water" class="secondary" type="button" disabled><span data-icon="water"></span><span>澆水 <small>+5 XP</small></span></button><button id="journal-open" class="secondary" type="button" disabled><span data-icon="journal"></span><span>拾光手札 <small>選填 · +5 XP</small></span></button></div>
@@ -64,6 +64,7 @@
   </main>
   <nav class="game-nav" aria-label="花園導覽"><a href="#garden" aria-current="page"><span data-icon="leaf"></span>小樹</a><button id="nav-bag" type="button" aria-haspopup="dialog"><span data-icon="bag"></span>裝備包</button><button id="gift-open" type="button" aria-haspopup="dialog"><span data-icon="gift"></span>恩典小舖</button></nav>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="daily-grace-dialog" class="text-dialog daily-grace-dialog" aria-labelledby="daily-grace-title"><div class="dialog-heading"><div><p class="eyebrow">每一天，都有一份小恩典</p><h2 id="daily-grace-title">今天的話語，留下美好的禮物。</h2></div><button type="button" class="icon-button" data-close="daily-grace-dialog" data-icon="close" aria-label="關閉今日小物"></button></div><div id="daily-grace-art" class="daily-grace-art" aria-hidden="true"></div><h3 id="daily-grace-name"></h3><p id="daily-grace-count" class="muted"></p><div class="team-actions"><button type="button" id="daily-grace-garden" class="primary">回花園，為小樹澆水</button><button type="button" id="daily-grace-bag" class="secondary">看看小物的祝福</button></div></dialog>
   <dialog id="avatar-dialog" class="avatar-dialog" aria-labelledby="avatar-title">
     <div class="dialog-heading"><div><p class="eyebrow">YOUR GARDEN COMPANION</p><h2 id="avatar-title">選一位陪你成長的角色</h2></div><button type="button" class="icon-button" data-close="avatar-dialog" data-icon="close" aria-label="稍後選擇角色"></button></div>
     <p class="muted">這是你的花園，你可以挑選喜歡的外型，之後也能更換。</p>
@@ -71,6 +72,7 @@
     <p id="avatar-instruction" class="status">先選擇男生或女生，再挑選三種外型中的一款。</p><div id="avatar-choices" class="avatar-choices" role="group" aria-label="選擇角色外型"></div>
     <label id="avatar-audio-label" class="avatar-audio"><input id="avatar-audio" type="checkbox" checked> 同時開啟花園音樂與操作音效</label>
     <button id="avatar-confirm" class="primary" type="button" disabled>選好角色，進入花園</button>
+    <p id="avatar-status" class="status" role="status" aria-live="polite"></p>
   </dialog>
   <dialog id="audio-dialog" class="text-dialog audio-dialog" aria-labelledby="audio-title">
     <div class="dialog-heading"><div><p class="eyebrow">THE SOUND OF YOUR GARDEN</p><h2 id="audio-title">讓冒險有聲音</h2></div><button type="button" class="icon-button" data-close="audio-dialog" data-icon="close" aria-label="關閉聲音設定"></button></div>
@@ -92,7 +94,7 @@
   </dialog>
   <dialog id="bag-dialog" class="bag-dialog" aria-labelledby="bag-title">
     <div class="dialog-heading"><div><p class="eyebrow">YOUR ADVENTURE PACK</p><h2 id="bag-title">我的裝備包</h2></div><button type="button" class="icon-button close-dialog" aria-label="關閉裝備包" data-close="bag-dialog" data-icon="close"></button></div>
-    <div class="bag-intro"><div class="bag-opening" id="bag-opening"></div><p>每件寶物，都陪你把神的話帶進生活。<small>讀經逐步收藏軍裝與小物；軍裝收藏前，也能借用練習。</small></p></div>
+    <div class="bag-intro"><div class="bag-opening" id="bag-opening"></div><p>每件寶物，都陪你把神的話帶進生活。<small>每天讀經隨機獲得一件恩典小物；軍裝隨累積讀經日期收藏，也能借用練習。</small></p></div>
     <div class="inventory-tabs" role="group" aria-label="寶物分類"><button id="armor-tab" type="button" aria-pressed="true">全副軍裝 <span>6</span></button><button id="garden-tab" type="button" aria-pressed="false">花園寶物 <span>5</span></button></div>
     <div class="inventory-layout"><div id="inventory" class="inventory" aria-label="裝備列表"></div><section class="item-detail" id="item-detail" aria-label="裝備詳情"><div class="detail-plinth"><div id="detail-art" class="detail-art"></div><span class="item-halo"></span></div><p class="item-type" id="item-type"></p><h3 id="item-name"></h3><p id="item-copy"></p><p class="item-reference" id="item-reference"></p><p class="item-unlock" id="item-unlock"></p><div id="item-actions" class="item-actions"></div></section></div>
   </dialog>
@@ -109,6 +111,6 @@
 <dialog id="team-dialog" class="text-dialog" aria-labelledby="team-title"><div class="dialog-heading"><div><p class="eyebrow">因為有你，這個家更美好</p><h2 id="team-title">我的同行小組</h2><p id="team-name"></p></div><button class="icon-button" data-close="team-dialog" data-icon="close" type="button" aria-label="關閉同行小組"></button></div><p id="team-privacy" class="muted"></p><div class="team-actions"><button type="button" id="team-invite" class="primary">邀請組隊</button><button type="button" id="team-join" class="primary" hidden>接受邀請，加入同行</button><button type="button" id="team-leave" class="quiet-button" hidden>暫時離開同行</button></div><input id="team-invite-url" aria-label="小組邀請連結，可複製分享" readonly hidden><label for="care-message">送給家人的鼓勵（選填）<input id="care-message" maxlength="120" placeholder="今天也為你加油，一起慢慢長大。"></label><p class="muted">每天可關懷三位不同家人；每人每日最多收三份。不需回覆，也不消耗你的 HP 或 MP。</p><div id="team-list"></div><div id="received-care" aria-label="今天收到的關懷"></div><p id="team-status" class="status" role="status"></p></dialog>
 <dialog id="makeup-dialog" class="text-dialog" aria-labelledby="makeup-title"><div class="dialog-heading"><h2 id="makeup-title">把漏掉的一點活水補回來</h2><button class="icon-button" data-close="makeup-dialog" data-icon="close" type="button" aria-label="關閉補讀"></button></div><label for="makeup-date">選擇日期<input id="makeup-date" type="date"></label><div class="team-actions"><button id="makeup-read" class="primary" type="button">打開完整經文</button><button id="makeup-water" class="secondary" type="button">為這一天補澆水</button></div><p id="makeup-status" class="status" role="status">最近七天都能補讀；同一天不會重複加分。</p></dialog>
 <dialog id="arrange-dialog" class="text-dialog" aria-labelledby="arrange-title"><div class="dialog-heading"><h2 id="arrange-title">每份恩典，都留在花園</h2><button class="icon-button" data-close="arrange-dialog" data-icon="close" type="button" aria-label="關閉布置花園"></button></div><label for="arrange-item">選擇已放入的小物<select id="arrange-item"></select></label><label for="arrange-x">左右位置<input id="arrange-x" type="range" min="8" max="92" value="50"></label><label for="arrange-y">前後位置<input id="arrange-y" type="range" min="30" max="85" value="70"></label><button id="arrange-save" type="button" class="primary">保存位置</button><p class="muted">調整布置不會再次發放效果；同類小物會合併呈現收藏數量。</p><h3>我的收藏紀錄</h3><div id="collection-list"></div><p id="arrange-status" class="status" role="status"></p></dialog>
-  <script type="module" src="tree-member-game.mjs?v=20261012-member1"></script>
+  <script type="module" src="tree-member-game.mjs?v=20261012-october-game1"></script>
 </body>
 </html>

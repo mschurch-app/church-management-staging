@@ -1,7 +1,6 @@
 // Server-authoritative garden rules. Browser requests never carry a saved state or XP.
 export const ITEMS = [
-  {id:'flower',first:1,cycle:3},{id:'lamp',first:3,cycle:5},
-  {id:'bird',first:7,cycle:7},{id:'fountain',first:14,cycle:14},{id:'fruit',first:30,cycle:30},
+  {id:'flower'},{id:'lamp'},{id:'bird'},{id:'fountain'},{id:'fruit'},
 ];
 const GEARS:Record<string,string>={truth:'belt',justice:'breastplate',peace:'boots',faith:'shield',hope:'helmet',word:'sword'};
 const GEAR_DAYS:Record<string,number>={belt:3,breastplate:5,boots:7,shield:10,helmet:14,sword:21};
@@ -32,15 +31,22 @@ export function festival(day:string,birthday=false){
   for(const [id,[start,end,name,items,music]] of Object.entries(dates))if(day>=start&&day<=end){const index=Math.round((Date.parse(day)-Date.parse(start))/864e5)+1;return {id,name,items:id==='easter'?index===1?['donkey']:index===5?['bread','chalice']:index===6?['cross']:index===8?['egg']:[]:items,music:id==='easter'&&index===8?'easter':music,day:index};}
   return {id:'garden',name:'與神同行',items:[],music:'',day:1};
 }
-export function emptyState(today:string){return {schema:3,startDate:today,records:[],notes:[],battles:[],encounters:{},equipped:[],placed:[],avatarId:null,life:{hp:100,mp:100},buffs:{reading:0,care:0},inventory:{},collection:{},receipts:[],legacyImported:false};}
+export function emptyState(today:string){return {schema:4,startDate:today,records:[],notes:[],battles:[],encounters:{},equipped:[],placed:[],avatarId:null,life:{hp:100,mp:100},buffs:{reading:0,care:0},inventory:{},collection:{},dailyGrace:{},receipts:[],legacyImported:false};}
 export function refreshState(s:any,today:string,theme:any){
   const days=s.records.length;
-  for(const item of ITEMS){const prior=s.inventory[item.id]||{count:0,earned:0,start:0};const needed=prior.earned?item.cycle:item.first;if(!prior.count&&days-prior.start>=needed){prior.count=1;prior.earned++;}s.inventory[item.id]=prior;}
+  s.dailyGrace ||= {};s.schema=4;
+  for(const item of ITEMS)s.inventory[item.id] ||= {count:0,earned:0,start:0};
+  // One random grace item for today's completed reading. Backfills and retries
+  // never produce extra daily rewards; existing collections remain untouched.
+  if(s.records.some((r:any)=>r.reading_date===today)&&!s.dailyGrace[today]){
+    const item=ITEMS[random(ITEMS.length)],inv=s.inventory[item.id];
+    inv.count++;inv.earned++;s.dailyGrace[today]=item.id;
+  }
   for(const id of theme.items){const key=`${today.slice(0,4)}:${id}`;if(s.records.some((r:any)=>r.reading_date===today)&&!s.collection[key]&&!s.inventory[id]?.count){s.inventory[id]={count:1,earned:(s.inventory[id]?.earned||0)+1,start:days};s.collection[key]=true;}}
   if(!s.encounters[today]){const boss=random(10)===0;s.encounters[today]={schema:2,boss,events:boss?[...shuffled(['truth','justice','peace']),...shuffled(['faith','hope','word'])]:shuffled(Object.keys(GEARS)),stage:0,stageHits:0};}
   return s;
 }
-export function applyCommand(s:any,action:string,p:any,today:string){
+export function applyCommand(s:any,action:string,p:any,today:string,options:{counterOnHit?:boolean,waterCare?:boolean}={}){
   const day=p.day||today;
   if(['read','water','journal'].includes(action)&&(!validDay(day)||day>today||day<s.startDate||day<shift(today,-7)))throw Error('date_not_allowed');
   if(action==='avatar'){if(!/^(male|female)-[123]$/.test(p.avatar||''))throw Error('invalid_action');s.avatarId=p.avatar;}
@@ -48,13 +54,13 @@ export function applyCommand(s:any,action:string,p:any,today:string){
   else if(action==='read'){
     if(!s.records.some((r:any)=>r.reading_date===day)){const boosted=s.buffs.reading>0;if(boosted)s.buffs.reading--;s.records.push({reading_date:day,completion_type:day===today?'on_time':'makeup',watered_at:null,boosted,completed_at:new Date().toISOString()});s.life.hp=Math.min(100,s.life.hp+40);s.life.mp=Math.min(100,s.life.mp+20);}
   }else if(action==='water'){
-    const r=s.records.find((r:any)=>r.reading_date===day);if(!r)throw Error('read_first');if(!r.watered_at){r.watered_at=new Date().toISOString();s.life.mp=Math.min(100,s.life.mp+10);}
+    const r=s.records.find((r:any)=>r.reading_date===day);if(!r)throw Error('read_first');if(!r.watered_at){r.watered_at=new Date().toISOString();s.life.mp=Math.min(100,s.life.mp+10);if(options.waterCare&&s.buffs.care>0){s.buffs.care--;s.life.hp=Math.min(100,s.life.hp+10);s.life.mp=Math.min(100,s.life.mp+10);}}
   }else if(action==='journal'){
     if(!s.records.some((r:any)=>r.reading_date===day))throw Error('read_first');if(typeof p.note!=='string'||!p.note.trim()||p.note.length>500)throw Error('invalid_note');const prior=s.notes.find((r:any)=>r.reading_date===day);if(prior)prior.note=p.note.trim();else {s.notes.push({reading_date:day,note:p.note.trim()});s.life.mp=Math.min(100,s.life.mp+10);}
   }else if(action==='place'){
     const inv=s.inventory[p.item];if(!inv?.count)throw Error('item_unavailable');
     if(p.item==='flower'&&s.life.hp>=100||p.item==='lamp'&&s.life.mp>=100)throw Error('already_full');
-    inv.count=0;inv.start=s.records.length;
+    inv.count--;inv.start=s.records.length;
     s.placed.push({id:p.item,at:new Date().toISOString(),x:20+random(65),y:50+random(30)});
     if(p.item==='flower')s.life.hp=Math.min(100,s.life.hp+20);
     else if(p.item==='lamp')s.life.mp=Math.min(100,s.life.mp+20);
@@ -68,7 +74,7 @@ export function applyCommand(s:any,action:string,p:any,today:string){
     const e=s.encounters[today];if(p.day!==today||p.stage!==e.stage||p.hits!==e.stageHits||e.stage>=6)throw Error('stale_event');
     const gear=GEARS[e.events[e.stage]];if(p.gear!==gear||gear==='belt'&&p.choice!==0)throw Error('wrong_gear');
     const boss=e.boss&&e.stage>=3,cost=boss?5:2;if(s.life.hp<=0)throw Error('rest_needed');if(s.life.mp<cost)throw Error('mp_needed');
-    s.life.mp-=cost;s.life.hp=Math.max(0,s.life.hp-(boss?2+random(5):1+random(3)));e.stageHits++;
+    s.life.mp-=cost;if(options.counterOnHit!==false)s.life.hp=Math.max(0,s.life.hp-(boss?2+random(5):1+random(3)));e.stageHits++;
     if(e.stageHits>=(gear==='belt'?1:3)){e.stage++;e.stageHits=0;if(e.stage===6)s.battles.push({reading_date:today,kind:e.boss?'boss':'normal'});}
   }else if(action!=='me')throw Error('invalid_action');
   return s;

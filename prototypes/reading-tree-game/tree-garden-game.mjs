@@ -1,6 +1,6 @@
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
-import { GardenAudio } from './tree-game-audio.mjs';
+import { GardenAudio } from './tree-game-audio.mjs?v=20261012-game5';
 
 const $ = selector => document.querySelector(selector);
 function taipeiDay() {
@@ -62,7 +62,6 @@ const iconPaths = {
   mute: '<path d="m11 4-5 4H3v8h3l5 4Zm5 5 6 6m0-6-6 6"/>',
   flower: '<path d="M12 10C3-4-3 10 8 12-3 17 8 27 12 16c4 11 15 1 4-4 11-2 5-16-4-2Z" fill="#e5b09d" stroke="#d18c77"/><circle cx="12" cy="12" r="3" fill="#f3d688"/><path d="M12 17v7" stroke="#6e8c50"/>',
   lamp: '<path d="M8 6h8l2 12H6Zm4-5v5m-4 15h8M12 18v3" fill="#e9c873" stroke="#8f793f"/><path d="M11 10h2v5h-2" stroke="#fff9d8"/>',
-  bird: '<path d="M3 15c1-8 13-7 14-2l5 1-5 3c-3 5-9 3-14-2Z" fill="#a7c3b0" stroke="#5d806e"/><path d="m8 13 5 3-4 1"/><circle cx="15" cy="13" r=".8" fill="#314738"/>',
   fountain: '<path d="M3 18h18l-3 4H6Zm9 0V6m0 8C5-1 3 9 4 12m8 2C19-1 21 9 20 12" stroke="#9ad4d5"/><path d="M9 6h6M6 18h12" stroke="#b5af86"/>',
   fruit: '<path d="M12 7C1 2 1 20 10 22c2-1 2-1 4 0 9-2 9-20-2-15Z" fill="#ddb36c" stroke="#ad8a46"/><path d="M12 8V2c5-1 6 2 0 3" stroke="#688b51"/><path d="M7 11v4" stroke="#fff1bd"/>',
 };
@@ -73,7 +72,8 @@ function sprite(id) {
   const clip = `garden-sprite-${++spriteSequence}`;
   return `<svg class="game-sprite" viewBox="${rect.join(' ')}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${ATLAS}" width="1448" height="1086" clip-path="url(#${clip})"/></svg>`;
 }
-const itemArt = item => rects[item.id] ? sprite(item.id) : `<span class="decoration-icon">${icon(item.id)}</span>`;
+const decorationArt = id => id === 'bird' ? '<img class="bird-art" src="assets/garden-bird.svg" alt="" width="120" height="120">' : icon(id);
+const itemArt = item => rects[item.id] ? sprite(item.id) : `<span class="decoration-icon">${decorationArt(item.id)}</span>`;
 const hasBattle = date => state.battles.some(battle => (typeof battle === 'string' ? battle : battle?.reading_date) === date);
 const battleReward = () => state.encounters[today]?.boss ? 30 : 10;
 function seed() {
@@ -279,7 +279,7 @@ function openAvatar() {
 }
 function renderDecorations() {
   const positions = { flower: [26, 79], lamp: [17, 66], bird: [50, 40], fountain: [82, 73], fruit: [39, 41] };
-  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${positions[id][0]}%;top:${positions[id][1]}%">${icon(id)}</span>`).join('');
+  $('#garden-decoration').innerHTML = state.placed.map(id => `<span class="placed-decoration placed-${id}" style="left:${positions[id][0]}%;top:${positions[id][1]}%">${decorationArt(id)}</span>`).join('');
 }
 function renderInventory() {
   const items = category === 'armor' ? equipment : decorations;
@@ -309,7 +309,21 @@ function renderInventory() {
     $('#item-actions').append(equip, use);
   } else {
     const place = document.createElement('button'); place.type = 'button'; place.className = 'primary'; place.textContent = state.placed.includes(item.id) ? '收回裝備包' : '放進我的花園';
-    place.onclick = () => { state.placed = state.placed.includes(item.id) ? state.placed.filter(id => id !== item.id) : [...state.placed, item.id]; persist(); renderDecorations(); renderInventory(); saveMessage(state.placed.includes(item.id) ? `${item.name}已放進花園` : `${item.name}已收回`); };
+    place.onclick = () => {
+      const placing = !state.placed.includes(item.id);
+      state.placed = placing ? [...state.placed, item.id] : state.placed.filter(id => id !== item.id);
+      persist(); renderDecorations(); renderInventory();
+      if (placing) {
+        closeDialog('bag-dialog');
+        $('#garden').focus({ preventScroll: true });
+        $('#garden').scrollIntoView({ behavior: motion.matches ? 'auto' : 'smooth', block: 'center' });
+        const decoration = $(`.placed-${item.id}`);
+        decoration?.classList.add('just-placed');
+        setTimeout(() => decoration?.classList.remove('just-placed'), 1600);
+        sound(item.id === 'bird' ? 'bird' : 'pick');
+      } else sound('bag');
+      saveMessage(placing ? `${item.name}已放進花園` : `${item.name}已收回`);
+    };
     $('#item-actions').append(place);
   }
 }
@@ -451,7 +465,7 @@ function saveJournal(event) {
   persist(); updateProgress(); closeDialog('journal-dialog'); saveMessage(existing ? '今天的拾光已更新，經驗值保留。' : '拾光已珍藏 · +5 XP'); sound('pick');
 }
 async function loadAssets() {
-  const assets = ['assets/garden-dawn.png', ATLAS, AVATAR_ATLAS, 'assets/garden-shadows.png'];
+  const assets = ['assets/garden-dawn.png', ATLAS, AVATAR_ATLAS, 'assets/garden-shadows.png', 'assets/garden-bird.svg'];
   const results = await Promise.allSettled(assets.map(src => new Promise((resolve, reject) => {
     const image = new Image(), timer = setTimeout(() => { image.onload = null; image.onerror = null; reject(new Error(src)); }, 15000);
     image.onload = () => { clearTimeout(timer); resolve(src); }; image.onerror = () => { clearTimeout(timer); reject(new Error(src)); }; image.src = src;

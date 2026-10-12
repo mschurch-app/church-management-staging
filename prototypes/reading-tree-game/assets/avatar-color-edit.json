@@ -1,0 +1,13 @@
+{
+  "asset": "assets/garden-avatars-v2.png",
+  "generated_at": "2026-10-12",
+  "tool": "image_gen.imagegen",
+  "edit_target": "assets/garden-avatars.png",
+  "transparent_background": true,
+  "dimensions": [
+    1224,
+    1285
+  ],
+  "original_output": "/Users/james-codex/.codex/generated_images/01a0f5c2-1828-7821-b2d8-caf250d34881/exec-19fd2599-c33d-4a1c-9355-aff454af46c0.png",
+  "prompt": "Use case: precise-object-edit. Edit this existing transparent six-character sprite atlas. Change ONLY the fabric colors of clothing, cloaks and trousers. Preserve all SIX original characters, faces, skin, eyes, hair color and exact hairstyle, facial expressions, poses, body proportions, hands, boots, gold trim, buckles, painterly style and each character's exact position. Preserve the 3 columns by 2 rows grid, 1224 by 1285 canvas and transparent background, with no overlap and full feet. Both characters in LEFT column: forest sage green cloak, pale cream green tunic, moss green trousers. Both characters in MIDDLE column: clearly BLUE cloak (soft sapphire/sky blue), pale ice blue tunic, muted navy trousers. Both characters in RIGHT column: clearly warm BERRY RED cloak, pale warm rose cream tunic, muted burgundy trousers. Make the three clothing palettes immediately distinct at small game sizes. Keep all brown leather boots and belts and antique gold embroidery unchanged. The three female hairstyles must remain exactly as in the input: shoulder-length wavy, braided ponytail, short bob. No new accessories, no text, no scenery, no extra people. Actual transparent background."
+}

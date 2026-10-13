@@ -27,7 +27,7 @@ M＋同工頁面新增「信息預備」入口，沿用共用圖示、配色、�
 - QNAP 與 Synology 草稿版本 1 備份皆 1,135 bytes，SHA-256 `00c33f5ce22adf10cccbac583936977ba1d1bba3c0e952ee66d4c55024bfc295`。第二版本也取得一致回條。
 - Whisper large-v3-turbo 實際辨識公開合成語音；191-byte 逐字稿測試檔回存兩台 NAS，SHA-256 `581171f7e1f2c0a8ffc7c92b75039c40b597e5d726bdea1ef021b0731b9fe5ef`。
 - 未帶登入的使用者 endpoint 401；錯誤機器憑證 401；機器 endpoint 帶瀏覽器 Origin 403。
-- Chrome 隔離素材流程驗收：編輯保存、建立版本、影片排隊，390／1280 CSS px 無水平溢出，操作控制皆至少 44 px。Safari 隔離頁面正常載入。正式帳號頁面於發布後另記驗證結果。
+- Chrome 隔離素材流程驗收：編輯保存、建立版本、影片排隊，390／1280 CSS px 無水平溢出，操作控制皆至少 44 px。Safari 隔離頁面正常載入。正式 Safari 已沿用既有帳號成功讀取私人草稿、Mini 狀態、兩台 NAS 回條，並實際採用 12 頁草稿建立版本 3。
 - 安全 advisor 本模組只有四個「RLS enabled, no policy」INFO：刻意阻擋直接存取，透過 service-only RPC 與 owner 檢查。[Supabase 說明](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy)。既有其他模組的 advisories 不屬於本次變更。
 
 未宣稱真實 iPhone 17／LINE 內開或 99% 驗收。尚無使用者指定的新影片網址，因此沒有宣稱完成外部影片下載或實際 WAN 半速量測；時段切換、均速公式、程序停止及續跑由可控時鐘驗證。投影片交付可編輯逐頁內容與 JSON，Canva 製作仍屬後續階段。
@@ -37,3 +37,5 @@ M＋同工頁面新增「信息預備」入口，沿用共用圖示、配色、�
 原始碼位於 `scripts/sermon-preparation/`。既有憑證已安全佈建後，可執行 `python3 scripts/sermon-preparation/install_worker.py --restart` 更新工作程式及 launchd 設定；須確認 SSD 已掛載、既有 SSH 正常，以及工作最後回報時間／實際任務結果。
 
 機器程式不讀瀏覽器登入資料。macOS 的可移除磁碟存取只需既有 Python 執行程序能存取 SSD；沒有開放全磁碟存取或放寬系統安全功能。一般同工透過教會 OS 既有帳號查看自己的信息，背景排程不要求有人保持網頁登入。
+
+正式網站發布：PR #118，GitHub Pages build `38477024751` 成功，合併版本 `60789816b5c50d36ea7ddfa2c3c848334d7508ce`；實際 HTTP 200 且頁面、控制器、契約與 catalog 指紋符合原始碼。後續修正保留工作預覽的展開狀態，且非 M＋網址直接拒絕，避免堂會標示混用。

@@ -239,7 +239,7 @@ def execute(config,job):
         print(json.dumps({'event':'job_failed','job_id':job['id'],'kind':job['kind'],'error_class':type(exc).__name__}),flush=True)
 
 def loop(config,lane,once=False):
-    last_status=0
+    last_status=0;idle_delay=5
     while not STOP.is_set():
         try:
             if not HOME_ROOT.parent.is_dir() or not MODEL.parent.is_dir():raise RuntimeError('ssd_not_mounted')
@@ -248,9 +248,9 @@ def loop(config,lane,once=False):
                 rpc(config,'ping',{'summary':{'counts':status['counts'],'observed_at':dt.datetime.now(dt.timezone.utc).isoformat(),'model_available':MODEL.is_dir(),'mode':'local_mlx','media_policy':POLICY}})
                 last_status=time.monotonic()
             job=rpc(config,'claim',{'lane':lane}).get('job')
-            if job:execute(config,job)
+            if job:idle_delay=5;execute(config,job)
             elif once:return
-            else:STOP.wait(5)
+            else:STOP.wait(idle_delay);idle_delay=min(30,idle_delay*1.5)
         except Exception as exc:
             print(json.dumps({'event':'worker_waiting','lane':lane,'error_class':type(exc).__name__}),flush=True)
             if once:raise

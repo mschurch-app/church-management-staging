@@ -220,6 +220,30 @@ function renderPersonalMission(){
   const note=document.createElement('p');note.className='muted';note.textContent=mission.kind==='share'?'每次 LINE 回報送出成功才計一次；不查看收件者或回覆。':'為別人的事項留言，或提出自己的代禱，保存後任一計一次；遊戲不顯示禱告內容。';content.append(note);
  }
 }
+function renderSceneMission(){
+ const button=$('#scene-mission');
+ button.hidden=document.body.dataset.octoberTest!=='true';
+ if(button.hidden)return;
+ const personal=memberData?.personalMission,festival=memberData?.mission;
+ const festivalEntry=state.festivalMissions?.[today];
+ const festivalDone=festival&&festivalEntry?.key===festival.key&&!!festivalEntry.completed_at;
+ const festivalAnswered=festival&&festivalEntry?.key===festival.key&&!!festivalEntry.answered_at;
+ const service=memberData?.weeklyService;
+ let target='board',title='任務看板',hint='看看今天的任務',isNew=false;
+ if(personal?.offer&&!personal.offer.acceptedAt&&!personal.offer.completedAt){
+  target='personal';title='新任務來了';hint='點開接取任務';isNew=true;
+ }else if(festival&&!festivalDone){
+  target='festival';title='節慶任務';hint=festivalAnswered?'回來完成花園行動':'讀經文，回答問題';isNew=true;
+ }else if(personal?.active){
+  target='personal';title='任務進行中';hint=`已完成 ${personal.active.progress}／${personal.active.goal}`;
+ }else if(service?.scheduled&&!state.weeklyServiceMissions?.[service.date]){
+  target='weekly';title='本週服事任務';hint='查看週報服事安排';
+ }else if(personal){hint='今天沒有新任務';}
+ button.dataset.target=target;button.dataset.new=String(isNew);
+ button.querySelector('strong').textContent=title;
+ button.querySelector('small').textContent=hint;
+ button.setAttribute('aria-label',`${title}，${hint}`);
+}
 function updateProgress() {
   const p = progress(), old = previousXP === null ? null : LEVELS.filter(level => level.xp <= previousXP).at(-1);
   $('#growth-title').textContent = `Lv.${p.current.level} ${p.current.name}`;
@@ -248,7 +272,7 @@ function updateProgress() {
   $('#read-open').querySelector('strong').textContent = p.todayRecord ? '已完成' : '+20 XP';
   $('#water').querySelector('span:nth-child(2)').innerHTML = p.todayRecord?.watered_at ? '已澆水<small>今天的活水已送達</small>' : '澆水 <small>+5 XP</small>';
   $('#daily-status').textContent = p.todayRecord?.watered_at ? '讀經與澆水已完成，謝謝你今天的陪伴。' : p.todayRecord ? '讀經已保存，現在可以為小樹澆水。' : '打開今日箴言，讓神的話陪伴你；也能自由參加花園挑戰。';
-  renderEncounter(); renderMember(state); renderFestivalMission(); renderPersonalMission();
+  renderEncounter(); renderMember(state); renderFestivalMission(); renderPersonalMission(); renderSceneMission();
   $('#journey-list').replaceChildren(...LEVELS.map(level => {
     const row = document.createElement('li'); row.classList.toggle('is-current', level.level === p.current.level);
     row.innerHTML = `<span>${level.level}</span><div><strong>${level.name}</strong><small>累積 ${level.xp.toLocaleString()} XP</small></div><em>${level.level === p.current.level ? '目前階段' : level.xp <= p.xp ? '已達成' : '等待成長'}</em>`;
@@ -587,6 +611,12 @@ $('#armor-tab').onclick = () => { category = 'armor'; selected = 'sword'; render
 $('#garden-tab').onclick = () => { category = 'garden'; selected = 'flower'; renderInventory(); };
 $('#quest-action').onclick = () => void actQuest(); $('#quest-return').onclick = () => void returnEquipment();
 $('#read-open').onclick=()=>openReading(today);
+$('#scene-mission').onclick=()=>{
+ const target=$('#scene-mission').dataset.target;
+ if(target==='personal'){$('#personal-mission-open').click();return;}
+ if(target==='festival'){$('#festival-mission-open').click();return;}
+ (target==='weekly'?$('#weekly-service-card'):$('#personal-mission-card')).scrollIntoView({behavior:motion.matches?'auto':'smooth',block:'center'});
+};
 $('#festival-mission-open').onclick=()=>{renderFestivalMission();openDialog('festival-mission-dialog');};
 $('#personal-mission-open').onclick=()=>{renderPersonalMission();openDialog('personal-mission-dialog');};
 $('#personal-mission-accept').onclick=()=>void attempt(async()=>{const button=$('#personal-mission-accept');button.disabled=true;$('#personal-dialog-feedback').textContent='正在保存這份任務…';try{await change('mission_accept');renderPersonalMission();sound('pick');}catch(e){$('#personal-dialog-feedback').textContent=e.message;}finally{button.disabled=false;}});

@@ -1,4 +1,5 @@
--- Proposed only. NOT APPLIED: automatic approval review rejected this migration.
+-- Applied after explicit user approval on 2026-10-13. Consolidated reference only.
+-- See supabase/migrations/20261013075759*, 20261013080009*, 20261013080125* for exact applied history.
 -- Legacy registrations were made while the gateway was in test mode.
 alter table camp_registration.registrations
   add column payment_environment text not null default 'test' check (payment_environment in ('test','production')),
@@ -53,7 +54,7 @@ begin
       or existing.national_id_last4 is distinct from right(p_payload->>'national_id',4)
     then raise exception 'request_registration_mismatch'; end if;
     return jsonb_build_object('id',existing.id,'registration_no',existing.registration_no,'status',existing.status,'amount',existing.amount,
-      'merchant_order_no',(select merchant_order_no from camp_registration.payment_orders where registration_id=existing.id order by created_at desc limit 1));
+      'merchant_order_no',(select po.merchant_order_no from camp_registration.payment_orders po where po.registration_id=existing.id order by (po.status in ('created','account_issued','paid')) desc,po.created_at desc,po.id desc limit 1));
   end if;
   select * into event_row from camp_registration.events where slug='heat-basketball-camp-2027' and active for update;
   if not found or now()<event_row.registration_opens_at or now()>event_row.registration_closes_at then raise exception 'registration_closed'; end if;
@@ -141,7 +142,7 @@ begin
   if not found then raise exception 'retry_registration_not_found'; end if;
   select * into o from camp_registration.payment_orders
     where registration_id=r.id and payment_environment=p_environment
-    order by created_at desc,id desc limit 1 for update;
+    order by (status in ('created','account_issued','paid')) desc,created_at desc,id desc limit 1 for update;
   if r.status='paid' or o.status='paid' then
     return jsonb_build_object('id',r.id,'registration_no',r.registration_no,'status','paid');
   end if;
@@ -170,7 +171,7 @@ begin
   if p_request_id is null then return null; end if;
   select * into r from camp_registration.registrations where request_id=p_request_id limit 1;
   if not found then return null; end if;
-  select * into o from camp_registration.payment_orders where registration_id=r.id order by created_at desc,id desc limit 1;
+  select * into o from camp_registration.payment_orders where registration_id=r.id order by (status in ('created','account_issued','paid')) desc,created_at desc,id desc limit 1;
   return jsonb_build_object('registration_no',r.registration_no,'status',r.status,'amount',r.amount,
     'payment_environment',r.payment_environment,'order_status',o.status,
     'player_name',r.player_name,'guardian_name',r.guardian_name,'email',r.email,

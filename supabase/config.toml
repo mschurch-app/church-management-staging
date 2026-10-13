@@ -49,3 +49,10 @@ verify_jwt = false
 
 [functions.recent-traffic-report]
 verify_jwt = false
+
+[functions.sermon-preparation]
+verify_jwt = true
+
+# Device-only endpoint validates a per-worker hashed credential; browser origins are rejected.
+[functions.sermon-preparation-worker]
+verify_jwt = false

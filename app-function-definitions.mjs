@@ -554,6 +554,14 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "media-publishing",
     "settingsGroup": "content"
   },
+  "sermon_preparation": {
+    "permission": "website_weekly", "action": "edit", "church": "M+",
+    "file": "sermon-preparation.html", "icon": "📖", "title": "信息預備",
+    "description": "素材、領受、大綱與講章", "key": "sermon_preparation",
+    "group": "media", "symbol": "book", "configurableHome": true,
+    "searchTerms": ["講章", "講道", "預備", "信息工作室"],
+    "settingsId": "sermon-preparation", "settingsGroup": "content"
+  },
   "subtitle_library": {
     "permission": "website_weekly",
     "action": "edit",
@@ -624,7 +632,8 @@ export const FUNCTION_GROUPS=freezeTree([
       "love_share",
       "line_preview",
       "media_publishing",
-      "subtitle_library"
+      "subtitle_library",
+      "sermon_preparation"
     ]
   },
   {
@@ -704,6 +713,7 @@ export const SETTINGS_GROUPS=freezeTree([
       "line_preview",
       "media_publishing",
       "subtitle_library",
+      "sermon_preparation",
       "customization"
     ]
   },

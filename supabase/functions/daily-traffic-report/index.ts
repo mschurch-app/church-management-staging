@@ -7,6 +7,8 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_SECRET_KEY') || '';
 const GOOGLE_CLIENT_ID = Deno.env.get('YOUTUBE_OAUTH_CLIENT_ID') || '';
 const GOOGLE_CLIENT_SECRET = Deno.env.get('YOUTUBE_OAUTH_CLIENT_SECRET') || '';
+// Measurement ID installed on the public M+ website.
+const MCHURCH_MEASUREMENT_ID = 'G-VPZZCKQ41B';
 const db = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), {
@@ -64,7 +66,7 @@ async function getYoutube(token: string, start: string, end: string) {
   if (!response.ok) throw new Error(`youtube_analytics_${response.status}`);
   return youtubeSeries(data);
 }
-async function discoverGaProperty(token: string) {
+async function gaProperties(token: string) {
   const response = await fetch('https://analyticsadmin.googleapis.com/v1beta/accountSummaries?pageSize=200', {
     headers: { authorization: `Bearer ${token}` },
     signal: AbortSignal.timeout(20000)
@@ -74,6 +76,26 @@ async function discoverGaProperty(token: string) {
   const properties = (data.accountSummaries || []).flatMap((a: any) =>
     (a.propertySummaries || []).map((p: any) => ({ id: String(p.property || '').replace('properties/', ''), name: String(p.displayName || '') }))
   ).filter((p: any) => p.id);
+  return properties;
+}
+async function gaStreamMatches(token: string, propertyId: string): Promise<boolean | null> {
+  const response = await fetch('https://analyticsadmin.googleapis.com/v1beta/properties/' + propertyId + '/dataStreams?pageSize=200', {
+    headers: { authorization: 'Bearer ' + token }, signal: AbortSignal.timeout(20000)
+  });
+  // The existing Analytics report remains available if the Admin API grant is absent.
+  if (response.status === 401 || response.status === 403) return null;
+  if (!response.ok) throw new Error('analytics_admin_' + response.status);
+  const data = await response.json();
+  return (data.dataStreams || []).some((stream: any) =>
+    stream.webStreamData?.measurementId === MCHURCH_MEASUREMENT_ID);
+}
+async function discoverGaProperty(token: string, currentPropertyId = '') {
+  const properties = await gaProperties(token);
+  for (const property of properties) {
+    if (property.id === currentPropertyId) continue;
+    if (await gaStreamMatches(token, property.id) === true) return property;
+  }
+  if (currentPropertyId) throw new Error('ga4_measurement_id_not_found');
   if (properties.length === 1) return properties[0];
   const matches = properties.filter((p: any) => /m\+|大雅|mchurch/i.test(p.name));
   if (matches.length === 1) return matches[0];
@@ -134,8 +156,9 @@ Deno.serve(async (req) => {
     try {
       const google = await googleToken();
       const websiteTask = (async () => {
-        if (!gaPropertyId) {
-          const property = await discoverGaProperty(google.token);
+        const streamMatches = gaPropertyId ? await gaStreamMatches(google.token, gaPropertyId) : false;
+        if (!gaPropertyId || streamMatches === false) {
+          const property = await discoverGaProperty(google.token, gaPropertyId || '');
           gaPropertyId = property.id;
           const result = await db.from('traffic_reporting_settings').update({ ga4_property_id: gaPropertyId, updated_at: new Date().toISOString() }).eq('church_id', 'M+');
           if (result.error) throw result.error;

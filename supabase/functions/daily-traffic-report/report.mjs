@@ -53,7 +53,11 @@ export function message(date, website, youtube, instagram, status) {
   const lines = [`${date}｜網站與社群流量`, ''];
   if (status.website === 'ok') lines.push(`🌐 網站｜${website.active_users} 位訪客・${website.page_views} 次瀏覽${website.provisional ? '（初步數據）' : ''}`);
   else {
-    lines.push(['awaiting_data', 'no_reported_data'].includes(status.website) ? '🌐 網站｜尚未取得當日資料，不能判定為 0 人。' : '🌐 網站｜暫時無法讀取統計，請檢查平台連線。');
+    lines.push(status.website === 'ga4_measurement_id_not_found'
+      ? '🌐 網站｜網站追蹤碼與目前可讀的 GA4 資源不一致，請檢查串流設定。'
+      : ['awaiting_data', 'no_reported_data'].includes(status.website)
+      ? '🌐 網站｜尚未取得當日資料，不能判定為 0 人。'
+      : '🌐 網站｜暫時無法讀取統計，請檢查平台連線。');
     if (website.latest_available) lines.push(`最近有資料：${website.latest_available.date}，${website.latest_available.active_users} 位訪客・${website.latest_available.page_views} 次瀏覽。`);
   }
   if (status.youtube === 'ok') lines.push(`▶️ YouTube｜${youtube.views} 次觀看・${(youtube.estimated_minutes_watched / 60).toFixed(1)} 小時觀看${youtube.provisional ? '（初步數據）' : ''}`);

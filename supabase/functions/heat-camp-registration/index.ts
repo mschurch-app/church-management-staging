@@ -26,7 +26,7 @@ function checkEnvironment(c:ReturnType<typeof config>,input:any){
   const expected=safe(input.expected_environment,20);
   if((expected&&expected!==c.environment)||(c.environment==='production'&&expected!=='production'))throw Error('payment_environment_mismatch');
 }
-function clean(input:any){const r:Record<string,unknown>={},fields=['player_name','guardian_name','guardian_phone','email','line_id','national_id','postal_code','receipt_address','birthday','school_stage','school_name','height_cm','weight_kg','basketball_years','primary_position','dominant_hand','current_team','competition_level','jersey_size','jersey_number','jersey_name','emergency_name','emergency_phone','dietary_need','special_identity','medical_status','medical_notes','care_notes','donor_name','receipt_title','receipt_id','exception_reason','pricing_mode','payment_method'];for(const f of fields)r[f]=safe(input[f],f.includes('notes')?1000:f.includes('address')?220:160);r.training_goals=Array.isArray(input.training_goals)?input.training_goals.map((v:unknown)=>safe(v,30)).slice(0,10):[];for(const f of ['eligibility_exception','tax_upload_consent','public_credit','no_receipt','insurance_consent','privacy_consent','refund_consent','receipt_consent','truth_consent'])r[f]=input[f]===true;if(!r.insurance_consent||!r.privacy_consent||!r.refund_consent||(!r.no_receipt&&!r.receipt_consent)||!r.truth_consent)throw Error('consent_required');if(!['none','has'].includes(String(r.medical_status))||r.medical_status==='has'&&!r.medical_notes)throw Error('medical_status_required');return r;}
+function clean(input:any){const r:Record<string,unknown>={},fields=['player_name','guardian_name','guardian_phone','email','line_id','national_id','postal_code','receipt_address','birthday','school_stage','school_name','height_cm','weight_kg','basketball_years','primary_position','dominant_hand','current_team','competition_level','jersey_size','jersey_number','jersey_name','emergency_name','emergency_phone','dietary_need','special_identity','medical_status','medical_notes','care_notes','donor_name','receipt_title','receipt_id','exception_reason','pricing_mode','payment_method','onsite_code'];for(const f of fields)r[f]=safe(input[f],f.includes('notes')?1000:f.includes('address')?220:160);r.training_goals=Array.isArray(input.training_goals)?input.training_goals.map((v:unknown)=>safe(v,30)).slice(0,10):[];for(const f of ['eligibility_exception','tax_upload_consent','public_credit','no_receipt','insurance_consent','privacy_consent','refund_consent','receipt_consent','truth_consent'])r[f]=input[f]===true;if(!r.insurance_consent||!r.privacy_consent||(!r.no_receipt&&!r.receipt_consent)||!r.refund_consent||!r.truth_consent)throw Error('consent_required');if(!['none','has'].includes(String(r.medical_status))||r.medical_status==='has'&&!r.medical_notes)throw Error('medical_status_required');return r;}
 const paymentMethods:Record<string,string[]>={card:['CREDIT'],credit:['CREDIT'],webatm:['WEBATM'],atm:['VACC'],cvs:['CVS'],barcode:['BARCODE']};
 const enabledProductionMethods=new Set<string>(['card','webatm','atm','cvs','barcode']);
 const methodEnabled=(c:ReturnType<typeof config>,method:string)=>c.environment==='test'||enabledProductionMethods.has(method==='credit'?'card':method);
@@ -76,6 +76,30 @@ async function retryPayment(origin:string,input:any){
     return json(origin,503,{ok:false,error:'payment_retry_unavailable'});
   }
 }
+async function completeOnsiteRegistration(origin:string,input:any){
+  try{
+    const environment=Deno.env.get('NEWEBPAY_ENV')||'test';
+    if(!['test','production'].includes(environment)||safe(input.expected_environment,20)!==environment)
+      return json(origin,409,{ok:false,error:'payment_environment_mismatch'});
+    const requestId=safe(input.request_id,36),registration=clean(input.registration||{});
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))
+      return json(origin,400,{ok:false,error:'invalid_request_id'});
+    if(registration.pricing_mode!=='onsite')return json(origin,400,{ok:false,error:'onsite_verification_failed'});
+    registration.payment_environment=environment;
+    const created=await db().rpc('heat_camp_2027_create_registration',{
+      p_request_id:requestId,p_payload:registration,p_merchant_order_no:orderNo()
+    });
+    if(created.error){
+      const error=created.error.message?.match(/(onsite_verification_failed|onsite_code_used|request_registration_mismatch|payment_environment_mismatch|registration_closed|camp_full|jersey_or_order_unavailable|invalid_[a-z_]+|encryption_unavailable)/)?.[1]||'onsite_verification_failed';
+      return json(origin,409,{ok:false,error});
+    }
+    if(created.data?.status!=='paid')return json(origin,409,{ok:false,error:'onsite_verification_failed'});
+    return json(origin,200,{ok:true,status:'onsite_complete',registration_no:created.data.registration_no});
+  }catch(e){
+    return json(origin,400,{ok:false,error:e instanceof Error?e.message:'registration_failed'});
+  }
+}
+
 async function checkout(origin:string,input:any){
   try{
     const c=config();checkEnvironment(c,input);
@@ -129,6 +153,7 @@ Deno.serve(async req=>{
       const r=await db().rpc('heat_camp_2027_available_jersey_numbers',{p_environment:environment});
       return r.error?json(origin,503,{ok:false,error:'unavailable'}):json(origin,200,{ok:true,numbers:(r.data||[]).map((x:{jersey_number:number})=>x.jersey_number)});
     }
+    if(body.action==='complete_onsite_registration')return completeOnsiteRegistration(origin,body);
     if(body.action==='create_checkout')return checkout(origin,body);
     if(body.action==='registration_status')return registrationStatus(origin,body);
     if(body.action==='retry_payment')return retryPayment(origin,body);

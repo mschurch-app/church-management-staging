@@ -1,4 +1,4 @@
-const CACHE='church-os-shell-20261014-reviewflow1';
+const CACHE='church-os-shell-20261014-subtitle-summary1';
 const OFFLINE='/app-offline.html';
 const SHELL=[OFFLINE,'/app-offline.mjs?v=20261009-stage4','/app-runtime.mjs?v=20261009-stage4','/app.webmanifest','/assets/app/church-os-icon.svg','/assets/app/church-os-icon-192.png','/assets/app/church-os-icon-512.png','/auth.css','/apple-ui.css','/church-brand.css','/theme-vitality.css','/church-palette.css','/church-palette.css?v=20261012-readable2','/app-consistency.css?v=20261012-readable2','/app-design-tokens.css?v=20261009-stage2','/vendor/supabase-2.102.0.js','/app-line-auth.mjs','/admin-auth-config.mjs','/app-function-definitions.mjs?v=20261014-sermon3','/app-icons.mjs','/app-ui.mjs','/app-workflow.mjs?v=20261009-stage4','/app-workflow.css?v=20261009-stage3','/website-workflow.css?v=20261009-stage3'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL))));

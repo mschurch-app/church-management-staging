@@ -11,6 +11,13 @@ const staff=[{id:'pastor',display_name:'牧師',line_subject:'U'+'a'.repeat(32)}
 const finalIds=compiled(review,'finalNotificationIds','async function publicationForDraft',{Map});
 const recipients=await finalIds({from:()=>({select:()=>({in:()=>({eq:async()=>({data:staff,error:null})})})})},staff.map(x=>x.id));
 assert.deepEqual([...recipients],['pastor','wife-line']);
+const summary=compiled(review,'subtitleState','async function queueNotification',{});
+let summaryFields='';
+const summaryDb={from:()=>({select:fields=>{summaryFields=fields;return chain([{segment_index:0,review_status:'completed'}]);}})};
+const progress=await summary(summaryDb,'draft',false);
+assert.equal(summaryFields,'segment_index,review_status');
+assert.equal(progress.ready,true);
+assert.equal(progress.cues.length,0);
 
 async function publicationCase({ready,igOk=true,connected=true,workflowStatus='approved'}){
  const calls=[],setting={instagram_sermon_enabled:true,youtube_captions_enabled:true},workflow={status:workflowStatus,edit_confirmed_at:'2026-10-14T01:00:00Z'};

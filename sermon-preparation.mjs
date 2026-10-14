@@ -1,12 +1,12 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 import {setStatus} from './app-ui.mjs?v=20261014-sermon3';
-import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-sermon3';
+import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-guide1';
 
 const $=s=>document.querySelector(s),ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-preparation';
 const stepNames={information:'信息',materials:'素材',outline:'大綱',manuscript:'講章',slides:'投影片'};
-const jobNames={media:'影片下載與轉錄',search:'搜尋素材',detail:'讀取素材',outline:'提出大綱',manuscript:'分段講章',slides:'逐頁內容',backup:'NAS 版本備份'};
-const messages={forbidden:'尚未取得信息預備權限，需具備 M＋週報編輯權限及 LINE 綁定。',conflict:'已有較新的版本。你的輸入仍保留，請先下載或複製內容，再重新載入比對。',not_found:'找不到這份私人信息。',queue_limit:'目前排隊工作較多，請等已有工作完成後再試。',generation_limit:'已達今日生成上限，請先整理已有草稿。',materials_need_review:'請先逐份核對已選素材，再勾選確認。',outline_required:'請先保存並確認至少三個主要段落。',manuscript_too_short:'正文尚未達指定字數，請補充後再整理投影片。',invalid_draft:'請確認必填資料、字數及內容格式。',invalid_outline:'大綱每行一個段落，最多 12 段。',invalid_slides:'投影片最多 20 頁，請確認各頁標題。',invalid_materials:'素材格式不完整，請重新選取或補充自己的素材。'};
+const jobNames={media:'影片下載與轉錄',search:'搜尋素材',detail:'讀取素材',guide:'三輪引導查找',outline:'提出大綱',manuscript:'分段講章',slides:'逐頁內容',backup:'NAS 版本備份'};
+const messages={forbidden:'尚未取得信息預備權限，需具備 M＋週報編輯權限及 LINE 綁定。',conflict:'已有較新的版本。你的輸入仍保留，請先下載或複製內容，再重新載入比對。',not_found:'找不到這份私人信息。',queue_limit:'目前排隊工作較多，請等已有工作完成後再試。',generation_limit:'已達今日生成上限，請先整理已有草稿。',invalid_guide:'這輪問答已更新，請重新載入後從目前題目繼續。',materials_need_review:'請先逐份核對已選素材，再勾選確認。',outline_required:'請先保存並確認至少三個主要段落。',manuscript_too_short:'正文尚未達指定字數，請補充後再整理投影片。',invalid_draft:'請確認必填資料、字數及內容格式。',invalid_outline:'大綱每行一個段落，最多 12 段。',invalid_slides:'投影片最多 20 頁，請確認各頁標題。',invalid_materials:'素材格式不完整，請重新選取或補充自己的素材。'};
 let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,authorized=false,access=null,pollTimer=null,opening=0;
 const processed=new Set(),pendingResults=new Set(),requestIds=new Map();
 const el=(tag,text='',className='')=>{const n=document.createElement(tag);n.textContent=text;n.className=className;return n;};
@@ -69,10 +69,34 @@ function drawMaterials(){
  card.append(note,label,button('這次不用',()=>{draft.materials=draft.materials.filter(x=>x.id!==m.id);markDirty();drawMaterials();}));$('#materials').append(card);}
 }
 function drawSearch(result){
+ $('.studio-keyword-search').open=true;
  $('#search-results').replaceChildren();
  for(const m of result.items||[]){const card=el('article','','studio-material');card.append(el('h4',m.title),el('p',m.content),el('p',(m.speaker?'候選講員：'+m.speaker+' · ':'')+'尚待核對','source-meta'),sourceLink(m));
  card.append(button(draft.materials.some(x=>x.id===m.id)?'已加入':'閱讀完整段落，加入預備',()=>queue('detail',{url:m.url,ordinal:m.ordinal,content_sha:m.content_sha})));$('#search-results').append(card);}
  if(!result.items?.length)$('#search-results').append(el('p','沒有找到符合文字，可換一個關鍵字，或加入自己的素材。','muted'));
+}
+function drawGuide(){
+ const root=$('#guide-content'),progress=$('#guide-progress'),status=$('#guide-status');root.replaceChildren();
+ const latest=jobs.find(job=>job.kind==='guide'),completed=jobs.find(job=>job.kind==='guide'&&job.status==='completed');
+ if(!latest){progress.textContent='尚未開始';status.textContent='從你的信息主題與經文開始。';root.append(button('開始三輪引導',()=>queue('guide',{}),false));return;}
+ if(['queued','running'].includes(latest.status)){progress.textContent='AI 正在預備';status.textContent=latest.progress||'Mini 正在根據已選答案處理，稍後會自動顯示下一題。';return;}
+ if(latest.status==='failed')status.textContent=latest.error||'這輪暫時無法完成，請重試。';
+ const result=completed?.result;
+ if(!result||!Number.isInteger(result.round)||result.round<1||result.round>4){progress.textContent='尚未開始';root.append(button('重新開始三輪引導',()=>queue('guide',{}),false));return;}
+ if(result.round===4){
+  progress.textContent='三輪已完成';status.textContent=`已比對私人資料庫，找到 ${result.items?.length||0} 筆候選來源。請核對講員與上下文後再選用。`;
+  if(!result.items?.length)root.append(el('p','目前沒有合適的來源。可重新引導，或改用關鍵字搜尋。','muted'));
+  for(const item of result.items||[]){const card=el('article','','studio-material');card.append(el('h5',item.title),el('p',item.content),el('p',(item.speaker?'候選講員：'+item.speaker+' · ':'')+(item.matched_terms?.length?'符合主題：'+item.matched_terms.join('、')+' · ':'')+'來源內容待核對','source-meta'),sourceLink(item),button('閱讀完整段落，加入預備',()=>queue('detail',{url:item.url,ordinal:item.ordinal,content_sha:item.content_sha})));root.append(card);}
+  root.append(button('重新開始三輪問答',()=>queue('guide',{})));return;
+ }
+ progress.textContent=`第 ${result.round}／3 輪`;if(latest.status!=='failed')status.textContent='可複選；至少勾選一項，AI 才會根據答案追問。';
+ const fieldset=el('fieldset','','studio-guide-choices');fieldset.append(el('legend',result.question));
+ for(const [index,choice] of result.choices.entries()){const label=el('label'),check=el('input');check.type='checkbox';check.value=String(index);label.append(check,el('span',choice));fieldset.append(label);}
+ root.append(fieldset,button(result.round===3?'完成第三輪並查找信息':'送出答案，讓 AI 追問',()=>{
+  const selections=[...fieldset.querySelectorAll('input:checked')].map(input=>Number(input.value));
+  if(!selections.length){status.textContent='請先勾選至少一項。';fieldset.querySelector('input')?.focus();return;}
+  void queue('guide',{previous_job_id:completed.id,selections});
+ },false),button('重新開始',()=>queue('guide',{})));
 }
 function drawSlides(){
  $('#slides').replaceChildren();
@@ -94,6 +118,7 @@ function drawJobs(){
  if(j.base_version&&['outline','manuscript','slides'].includes(j.kind))card.append(el('small','依版本 '+j.base_version+' 生成'));
  if(j.status==='completed'&&j.kind==='media'){const details=el('details');details.open=openJobs.has(j.id);details.append(el('summary','查看逐字稿 · 講員與範圍待確認'));for(const item of j.result?.items||[]){const part=el('article');part.append(el('small',Math.floor(item.start/60)+':'+String(Math.floor(item.start%60)).padStart(2,'0')+' — '+Math.floor(item.end/60)+':'+String(Math.floor(item.end%60)).padStart(2,'0')),el('p',item.content),button('加入此段素材',()=>{addMaterial(item);showStep('materials');}));details.append(part);}card.append(details);}
  if(j.status==='completed'&&j.kind==='search')card.append(button('查看搜尋結果',()=>{drawSearch(j.result||{});showStep('materials');}));
+ if(j.status==='completed'&&j.kind==='guide')card.append(button(j.result?.round===4?'查看候選信息':'繼續三輪問答',()=>{drawGuide();showStep('materials');}));
  if(j.status==='completed'&&j.kind==='detail'&&j.result?.item)card.append(button('將此段加入預備',()=>{addMaterial(j.result.item);showStep('materials');}));
  if(j.status==='completed'&&['outline','manuscript','slides'].includes(j.kind)){const details=el('details');details.open=openJobs.has(j.id);details.append(el('summary','閱讀草稿後再採用'));const text=j.kind==='outline'?j.result.outline?.join('\n\n'):j.kind==='manuscript'?j.result.manuscript:JSON.stringify(j.result.slides,null,2);details.append(el('pre',text||'結果格式不完整'));card.append(details,button('採用此草稿並儲存新版本',()=>adopt(j),false));}
  if(j.status==='failed'&&j.result?.completed_sections){const details=el('details');details.open=openJobs.has(j.id);details.append(el('summary','查看已完成段落'));details.append(el('pre',j.result.completed_sections.join('\n\n')));card.append(details,button('將已完成段落附加至講章草稿',()=>{if(busy)return;draft=collect();draft.manuscript+='\n\n'+j.result.completed_sections.join('\n\n');drawEditor();markDirty();showStep('manuscript');}));}
@@ -106,7 +131,7 @@ async function loadList(){
 }
 async function openProject(id){
  if(busy||!mayLeave())return;lock(true);const seq=++opening;
- try{const result=await api('load',{project_id:id});if(seq!==opening)return;project=result.project;draft=validateDraft(result.payload);jobs=result.jobs||[];versions=result.versions||[];processed.clear();pendingResults.clear();jobs.filter(j=>['search','detail'].includes(j.kind)&&['queued','running'].includes(j.status)).forEach(j=>pendingResults.add(j.id));$('#search-results').replaceChildren();drawEditor();drawProjects();drawJobs();message('信息已載入；可返回任一步驟繼續預備。','success');history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+id);}
+ try{const result=await api('load',{project_id:id});if(seq!==opening)return;project=result.project;draft=validateDraft(result.payload);jobs=result.jobs||[];versions=result.versions||[];processed.clear();pendingResults.clear();jobs.filter(j=>['search','detail'].includes(j.kind)&&['queued','running'].includes(j.status)).forEach(j=>pendingResults.add(j.id));$('#search-results').replaceChildren();drawEditor();drawProjects();drawJobs();drawGuide();message('信息已載入；可返回任一步驟繼續預備。','success');history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+id);}
  catch(e){message(e.message,'error');}finally{lock(false);}
 }
 async function saveDraft(){
@@ -120,7 +145,7 @@ async function save(){if(busy)return;lock(true);try{await saveDraft();message('�
 async function queue(kind,options={}){
  if(busy||!project)return;lock(true);
  try{draft=collect();if(dirty)await saveDraft();generationReady(draft,kind);
- const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);drawJobs();message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
+ const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);drawJobs();if(kind==='guide')drawGuide();message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
  catch(e){message(messages[e.message]||e.message,'error');}finally{lock(false);}
 }
 async function adopt(job){
@@ -130,7 +155,7 @@ async function adopt(job){
 }
 async function poll(){
  if(!authorized)return;
- try{if(!document.hidden&&!busy){await loadList();if(project){const result=await api('load',{project_id:project.id});if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;drawBackup();processResults();if(changed)drawJobs();}}}catch{/* Keep user edits and last known job state. */}
+ try{if(!document.hidden&&!busy){await loadList();if(project){const result=await api('load',{project_id:project.id});if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;drawBackup();processResults();if(changed){drawJobs();drawGuide();}}}}catch{/* Keep user edits and last known job state. */}
  finally{pollTimer=setTimeout(poll,jobs.some(j=>['queued','running'].includes(j.status))?8000:30000);}
 }
 function download(kind){
@@ -151,7 +176,7 @@ async function start(){
  const requested=new URLSearchParams(location.search).get('project');if(requested&&items.some(p=>p.id===requested))await openProject(requested);else message('選一篇信息繼續預備，或建立新的信息。','success');pollTimer=setTimeout(poll,8000);
  }catch(e){message(e.message,'error');}
 }
-$('#draft-form').addEventListener('submit',e=>e.preventDefault());$('#draft-form').addEventListener('input',event=>{if(event.target.id==='outline')$('#outline-confirmed').checked=false;markDirty();});
+$('#draft-form').addEventListener('submit',e=>e.preventDefault());$('#draft-form').addEventListener('input',event=>{if(event.target.closest('.studio-guide,.studio-keyword-search,.studio-video'))return;if(event.target.id==='outline')$('#outline-confirmed').checked=false;markDirty();});
 document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>showStep(b.dataset.step));
 $('#save').onclick=save;$('#new-project').onclick=$('#empty-create').onclick=openCreate;$('#close-create').onclick=()=>{if(!busy)$('#create-dialog').close();};$('#create-form').onsubmit=create;
 $('#reload').onclick=async()=>{if(busy||!mayLeave())return;dirty=false;try{await loadList();if(project)await openProject(project.id);}catch(e){message(e.message,'error');}};

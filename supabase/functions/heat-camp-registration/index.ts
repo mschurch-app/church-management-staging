@@ -182,7 +182,9 @@ async function callback(req:Request,mode:string){
     });
     if(saved.error)throw Error(saved.error.message||'record_failed');
     if(mode==='notify')return new Response('1|OK',{headers:{'content-type':'text/plain; charset=utf-8'}});
-    const effectivePaid=paid||saved.data.status==='paid',state=effectivePaid?'paid':success?'account-issued':'failed';
+    const effectivePaid=paid||saved.data.status==='paid';
+    const codeIssued=Boolean(result.CodeNo||result.VaccNo||result.Barcode_1||result.Barcode_2||result.Barcode_3);
+    const state=effectivePaid?'paid':success&&codeIssued?'account-issued':success?'unknown':'failed';
     const target=testOrder
       ?`https://mchurch.online/heat-camp-payment-test.html?payment=${state}&order=${encodeURIComponent(order)}`
       :effectivePaid?`${SUCCESS_PAGE}?registration=${encodeURIComponent(saved.data.registration_no||'')}`

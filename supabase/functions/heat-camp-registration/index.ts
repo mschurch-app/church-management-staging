@@ -9,8 +9,33 @@ const hex=(b:ArrayBuffer|Uint8Array)=>[...new Uint8Array(b)].map(v=>v.toString(1
 const unhex=(v:string)=>new Uint8Array(v.match(/.{1,2}/g)?.map(x=>parseInt(x,16))||[]);
 const key=(v:string,u:KeyUsage[])=>crypto.subtle.importKey('raw',enc.encode(v),{name:'AES-CBC'},false,u);
 const encrypt=async(v:string,k:string,i:string)=>hex(await crypto.subtle.encrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['encrypt']),enc.encode(v)));
-const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replaceAll('-','+').replaceAll('_','/').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}const cipher=createDecipheriv('aes-256-cbc',enc.encode(k),enc.encode(i));const a=cipher.update(bytes),b=cipher.final(),plain=new Uint8Array(a.length+b.length);plain.set(a);plain.set(b,a.length);return dec.decode(plain).replace(/\0+$/,'');};
-const parseGatewayJson=(value:string,stage:string)=>{try{return JSON.parse(value);}catch{const trimmed=value.replace(/\0+$/,'');const pad=trimmed.charCodeAt(trimmed.length-1);if(pad>=1&&pad<=16&&trimmed.endsWith(String.fromCharCode(pad).repeat(pad))){try{return JSON.parse(trimmed.slice(0,-pad));}catch{}}throw Error(`${stage}_json_invalid`);}};
+const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replaceAll('-','+').replaceAll('_','/').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}const cipher=createDecipheriv('aes-256-cbc',enc.encode(k),enc.encode(i));cipher.setAutoPadding(false);const a=cipher.update(bytes),b=cipher.final(),plain=new Uint8Array(a.length+b.length);plain.set(a);plain.set(b,a.length);return dec.decode(plain);};
+const parseGatewayJson=(value:string,stage:string)=>{
+  try{return JSON.parse(value);}catch{}
+  let start=0;
+  while(start<value.length&&/\s/.test(value[start]))start++;
+  if(value[start]!=='{'&&value[start]!=='[')throw Error(`${stage}_json_invalid`);
+  let depth=0,quoted=false,escaped=false;
+  for(let i=start;i<value.length;i++){
+    const ch=value[i];
+    if(quoted){if(escaped)escaped=false;else if(ch==='\\')escaped=true;else if(ch==='"')quoted=false;continue;}
+    if(ch==='"'){quoted=true;continue;}
+    if(ch==='{'||ch==='[')depth++;
+    else if(ch==='}'||ch===']'){
+      depth--;
+      if(depth===0){
+        const suffix=value.slice(i+1);
+        if(suffix.length>32||[...suffix].some(c=>c.charCodeAt(0)>32))throw Error(`${stage}_padding_invalid`);
+        try{
+          const parsed=JSON.parse(value.slice(start,i+1));
+          if(suffix.length)console.info('heat-camp callback padding recovered',{stage,suffix_length:suffix.length});
+          return parsed;
+        }catch{throw Error(`${stage}_json_invalid`);}
+      }
+    }
+  }
+  throw Error(`${stage}_json_invalid`);
+};
 const sha=async(v:string)=>hex(await crypto.subtle.digest('SHA-256',enc.encode(v))).toUpperCase();
 const safe=(v:unknown,m=500)=>String(v??'').trim().slice(0,m);
 const orderNo=()=>('HB27'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();

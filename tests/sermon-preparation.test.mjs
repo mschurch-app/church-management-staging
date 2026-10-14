@@ -12,6 +12,10 @@ test('unreviewed material cannot enter any model generation',()=>{
  assert.throws(()=>generationReady(d,'outline'),/materials_need_review/);d.materials[0].reviewed=true;generationReady(d,'outline');
  d.materials.push({...d.materials[0]});assert.throws(()=>validateDraft(d),/invalid_materials/);
 });
+test('imported transcripts and archive sources can be used without proofreading',()=>{
+ const d=draft();d.materials=[{kind:'archive',source_kind:'video_transcript',id:'a',title:'影片轉譯',speaker:'講員',content:'[00:01:00] 文字',note:'',reviewed:false,url:'https://www.youtube.com/watch?v=AbCdEfGh123',ordinal:1,content_sha:'a'.repeat(64),excerpt_offset:0}];
+ generationReady(d,'outline');
+});
 test('archive source identity and content hash are required without claiming global review',()=>{
  const d=draft();d.materials=[{kind:'archive',id:'a',title:'來源',speaker:'候選',content:'內容',note:'',reviewed:true,url:'https://example.test/source',ordinal:1,content_sha:'a'.repeat(64)}];validateDraft(d);
  d.materials[0].url='javascript:alert(1)';assert.throws(()=>validateDraft(d),/invalid_materials/);

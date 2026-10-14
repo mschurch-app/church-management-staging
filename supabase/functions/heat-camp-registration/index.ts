@@ -13,6 +13,7 @@ const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.st
 const sha=async(v:string)=>hex(await crypto.subtle.digest('SHA-256',enc.encode(v))).toUpperCase();
 const safe=(v:unknown,m=500)=>String(v??'').trim().slice(0,m);
 const orderNo=()=>('HB27'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();
+const testOrderNo=()=>('HB27T'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();
 const expiry=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.now()+259200000)).replaceAll('-','');
 function config(){
   const merchantId=Deno.env.get('NEWEBPAY_MERCHANT_ID')||'';
@@ -32,7 +33,7 @@ const enabledProductionMethods=new Set<string>(['card','webatm','atm','cvs','bar
 const methodEnabled=(c:ReturnType<typeof config>,method:string)=>c.environment==='test'||enabledProductionMethods.has(method==='credit'?'card':method);
 const methodFlags=(c:ReturnType<typeof config>)=>Object.fromEntries(['card','webatm','atm','cvs','barcode'].map(method=>[method,methodEnabled(c,method)]));
 async function paymentGateway(origin:string,c:ReturnType<typeof config>,row:any,paymentMethod:string){
-  const fields:Record<string,string>={CREDIT:'0',WEBATM:'0',VACC:'0',CVS:'0',BARCODE:'0',APPLEPAY:'0',ANDROIDPAY:'0',SAMSUNGPAY:'0',MerchantID:c.merchantId,RespondType:'JSON',TimeStamp:String(Math.floor(Date.now()/1000)),Version:MPG_VERSION,LangType:'zh-tw',MerchantOrderNo:row.merchant_order_no,Amt:String(row.amount),ItemDesc:'2027熱火籃球營報名費',Email:safe(row.email,160),LoginType:'0',ExpireDate:expiry(),ReturnURL:FN+'?mode=return',NotifyURL:FN+'?mode=notify',CustomerURL:FN+'?mode=return'};
+  const fields:Record<string,string>={CREDIT:'0',WEBATM:'0',VACC:'0',CVS:'0',BARCODE:'0',APPLEPAY:'0',ANDROIDPAY:'0',SAMSUNGPAY:'0',MerchantID:c.merchantId,RespondType:'JSON',TimeStamp:String(Math.floor(Date.now()/1000)),Version:MPG_VERSION,LangType:'zh-tw',MerchantOrderNo:row.merchant_order_no,Amt:String(row.amount),ItemDesc:row.merchant_order_no.startsWith('HB27T')?'2027熱火籃球營金流測試':'2027熱火籃球營報名費',Email:safe(row.email,160),LoginType:'0',ExpireDate:expiry(),ReturnURL:FN+'?mode=return',NotifyURL:FN+'?mode=notify',CustomerURL:FN+'?mode=return'};
   for(const field of paymentMethods[paymentMethod])fields[field]='1';
   const tradeInfo=await encrypt(new URLSearchParams(fields).toString(),c.hashKey,c.hashIv),tradeSha=await sha(`HashKey=${c.hashKey}&${tradeInfo}&HashIV=${c.hashIv}`);
   return json(origin,200,{ok:true,status:'checkout',registration_no:row.registration_no,gateway:c.gateway,fields:{MerchantID:c.merchantId,TradeInfo:tradeInfo,TradeSha:tradeSha,Version:MPG_VERSION}});
@@ -134,7 +135,63 @@ async function checkout(origin:string,input:any){
     return json(origin,400,{ok:false,error:e instanceof Error?e.message:'registration_failed'});
   }
 }
-async function callback(req:Request,mode:string){const c=config(),back=c.environment==='production'?APP:TEST_APP;try{const form=await req.formData(),ti=safe(form.get('TradeInfo'),20000),ts=safe(form.get('TradeSha'),128),plainStatus=safe(form.get('Status'),40),plainMessage=safe(form.get('Message'),300);if(!ti||!ts){if(plainStatus||plainMessage)throw Error(`${plainStatus||'gateway_error'}:${plainMessage||'藍新未回傳交易資料'}`);throw Error('missing_trade_response');}if(await sha(`HashKey=${c.hashKey}&${ti}&HashIV=${c.hashIv}`)!==ts.toUpperCase())throw Error('signature_invalid');const data=JSON.parse(await decrypt(ti,c.hashKey,c.hashIv)),result=typeof data.Result==='string'?JSON.parse(data.Result):data.Result||{};if(result.MerchantID!==c.merchantId)throw Error('merchant_mismatch');const success=data.Status==='SUCCESS',type=safe(result.PaymentType,40),paid=success&&(type.startsWith('CREDIT')||Boolean(result.PayTime)),saved=await db().rpc('heat_camp_2027_record_payment',{p_merchant_order_no:safe(result.MerchantOrderNo,40),p_trade_no:safe(result.TradeNo,40),p_paid:paid,p_result:{...result,Status:data.Status,Message:data.Message,_environment:c.environment}});if(saved.error)throw Error(saved.error.message||'record_failed');if(mode==='notify')return new Response('1|OK',{headers:{'content-type':'text/plain; charset=utf-8'}});const effectivePaid=paid||saved.data.status==='paid',state=effectivePaid?'paid':success?'account-issued':'failed',target=effectivePaid?`${SUCCESS_PAGE}?registration=${encodeURIComponent(saved.data.registration_no||'')}`:`${back}?payment=${state}&registration=${encodeURIComponent(saved.data.registration_no||'')}&code=${encodeURIComponent(safe(data.Status,40))}&message=${encodeURIComponent(safe(data.Message,300))}`;return new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><script>location.replace(${JSON.stringify(target)})<\/script><a href="${target}">返回報名頁</a>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store'}});}catch(e){const message=e instanceof Error?e.message:'callback_error';console.error('heat-camp payment callback failed',{mode,message});if(mode==='notify')return new Response('0|ERROR',{status:400});return Response.redirect(`${back}?payment=failed&message=${encodeURIComponent(message)}`,303);}}
+async function paymentTestCheckout(origin:string,input:any){
+  const c=config();
+  if(c.environment!=='production'||safe(input.expected_environment,20)!=='production')return json(origin,409,{ok:false,error:'payment_environment_mismatch'});
+  const requestId=safe(input.request_id,36),password=safe(input.password,160),email=safe(input.email,160).toLowerCase(),method=safe(input.payment_method,20),amount=Number(input.amount);
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))return json(origin,400,{ok:false,error:'invalid_request_id'});
+  if(!['card','webatm','atm','cvs','barcode'].includes(method)||!methodEnabled(c,method))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
+  const created=await db().rpc('heat_camp_2027_create_payment_test_order',{
+    p_request_id:requestId,p_password:password,p_email:email,p_payment_method:method,p_amount:amount,p_merchant_order_no:testOrderNo()
+  });
+  if(created.error){
+    const error=created.error.message?.match(/(payment_test_password_invalid|payment_test_request_mismatch|invalid_payment_test_request)/)?.[1]||'payment_test_unavailable';
+    return json(origin,409,{ok:false,error});
+  }
+  if(created.data?.status!=='created')return json(origin,409,{ok:false,error:'payment_test_order_already_started'});
+  return paymentGateway(origin,c,created.data,method);
+}
+async function paymentTestDashboard(origin:string,input:any){
+  const c=config();
+  if(c.environment!=='production')return json(origin,409,{ok:false,error:'payment_environment_mismatch'});
+  const password=safe(input.password,160);
+  const [login,orders]=await Promise.all([
+    db().rpc('heat_camp_2027_payment_test_login',{p_password:password}),
+    db().rpc('heat_camp_2027_payment_test_orders',{p_password:password})
+  ]);
+  if(login.error||orders.error)return json(origin,401,{ok:false,error:'payment_test_password_invalid'});
+  return json(origin,200,{ok:true,methods:login.data.methods,orders:orders.data});
+}
+async function callback(req:Request,mode:string){
+  const c=config(),back=c.environment==='production'?APP:TEST_APP;
+  let testOrder=false;
+  try{
+    const form=await req.formData(),ti=safe(form.get('TradeInfo'),20000),ts=safe(form.get('TradeSha'),128),plainStatus=safe(form.get('Status'),40),plainMessage=safe(form.get('Message'),300);
+    if(!ti||!ts){if(plainStatus||plainMessage)throw Error(`${plainStatus||'gateway_error'}:${plainMessage||'藍新未回傳交易資料'}`);throw Error('missing_trade_response');}
+    if(await sha(`HashKey=${c.hashKey}&${ti}&HashIV=${c.hashIv}`)!==ts.toUpperCase())throw Error('signature_invalid');
+    const data=JSON.parse(await decrypt(ti,c.hashKey,c.hashIv)),result=typeof data.Result==='string'?JSON.parse(data.Result):data.Result||{};
+    if(result.MerchantID!==c.merchantId)throw Error('merchant_mismatch');
+    const order=safe(result.MerchantOrderNo,40);
+    testOrder=order.startsWith('HB27T');
+    const success=data.Status==='SUCCESS',type=safe(result.PaymentType,40),paid=success&&(type.startsWith('CREDIT')||Boolean(result.PayTime));
+    const saved=await db().rpc(testOrder?'heat_camp_2027_record_payment_test':'heat_camp_2027_record_payment',{
+      p_merchant_order_no:order,p_trade_no:safe(result.TradeNo,40),p_paid:paid,
+      p_result:{...result,Status:data.Status,Message:data.Message,_environment:c.environment}
+    });
+    if(saved.error)throw Error(saved.error.message||'record_failed');
+    if(mode==='notify')return new Response('1|OK',{headers:{'content-type':'text/plain; charset=utf-8'}});
+    const effectivePaid=paid||saved.data.status==='paid',state=effectivePaid?'paid':success?'account-issued':'failed';
+    const target=testOrder
+      ?`https://mchurch.online/heat-camp-payment-test.html?payment=${state}&order=${encodeURIComponent(order)}`
+      :effectivePaid?`${SUCCESS_PAGE}?registration=${encodeURIComponent(saved.data.registration_no||'')}`
+        :`${back}?payment=${state}&registration=${encodeURIComponent(saved.data.registration_no||'')}&code=${encodeURIComponent(safe(data.Status,40))}&message=${encodeURIComponent(safe(data.Message,300))}`;
+    return new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><script>location.replace(${JSON.stringify(target)})<\/script><a href="${target}">返回報名頁</a>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store'}});
+  }catch(e){
+    const message=e instanceof Error?e.message:'callback_error';console.error('heat-camp payment callback failed',{mode,message});
+    if(mode==='notify')return new Response('0|ERROR',{status:400});
+    return Response.redirect(`${testOrder?'https://mchurch.online/heat-camp-payment-test.html':back}?payment=failed&message=${encodeURIComponent(message)}`,303);
+  }
+}
 Deno.serve(async req=>{
   const origin=req.headers.get('origin')||'',mode=new URL(req.url).searchParams.get('mode')||'';
   if(mode==='notify'||mode==='return')return req.method==='POST'?callback(req,mode):new Response('method_not_allowed',{status:405});
@@ -153,6 +210,8 @@ Deno.serve(async req=>{
       const r=await db().rpc('heat_camp_2027_available_jersey_numbers',{p_environment:environment});
       return r.error?json(origin,503,{ok:false,error:'unavailable'}):json(origin,200,{ok:true,numbers:(r.data||[]).map((x:{jersey_number:number})=>x.jersey_number)});
     }
+    if(body.action==='payment_test_checkout')return paymentTestCheckout(origin,body);
+    if(body.action==='payment_test_dashboard')return paymentTestDashboard(origin,body);
     if(body.action==='complete_onsite_registration')return completeOnsiteRegistration(origin,body);
     if(body.action==='create_checkout')return checkout(origin,body);
     if(body.action==='registration_status')return registrationStatus(origin,body);

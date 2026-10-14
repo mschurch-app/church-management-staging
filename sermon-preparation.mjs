@@ -9,6 +9,7 @@ const jobNames={media:'影片下載與轉錄',search:'搜尋素材',detail:'讀�
 const messages={forbidden:'尚未取得信息預備權限，需具備 M＋週報編輯權限及 LINE 綁定。',conflict:'已有較新的版本。你的輸入仍保留，請先下載或複製內容，再重新載入比對。',not_found:'找不到這份私人信息。',queue_limit:'目前排隊工作較多，請等已有工作完成後再試。',generation_limit:'已達今日生成上限，請先整理已有草稿。',invalid_guide:'這輪問答已更新，請重新載入後從目前題目繼續。',materials_need_review:'請先逐份核對已選素材，再勾選確認。',outline_required:'請先保存並確認至少三個主要段落。',manuscript_too_short:'正文尚未達指定字數，請補充後再整理投影片。',invalid_draft:'請確認必填資料、字數及內容格式。',invalid_outline:'大綱每行一個段落，最多 12 段。',invalid_slides:'投影片最多 20 頁，請確認各頁標題。',invalid_materials:'素材格式不完整，請重新選取或補充自己的素材。'};
 let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,authorized=false,access=null,pollTimer=null,opening=0;
 const processed=new Set(),pendingResults=new Set(),requestIds=new Map();
+const schedulePoll=delay=>{clearTimeout(pollTimer);pollTimer=setTimeout(poll,delay);};
 const el=(tag,text='',className='')=>{const n=document.createElement(tag);n.textContent=text;n.className=className;return n;};
 const button=(text,fn,secondary=true)=>{const b=el('button',text,secondary?'secondary':'');b.type='button';b.disabled=busy;b.onclick=fn;return b;};
 const message=(text,tone='neutral')=>setStatus($('#status'),text,{tone});
@@ -145,7 +146,7 @@ async function save(){if(busy)return;lock(true);try{await saveDraft();message('�
 async function queue(kind,options={}){
  if(busy||!project)return;lock(true);
  try{draft=collect();if(dirty)await saveDraft();generationReady(draft,kind);
- const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);drawJobs();if(kind==='guide')drawGuide();message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
+ const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);drawJobs();if(kind==='guide'){drawGuide();schedulePoll(1000);}message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
  catch(e){message(messages[e.message]||e.message,'error');}finally{lock(false);}
 }
 async function adopt(job){
@@ -156,7 +157,7 @@ async function adopt(job){
 async function poll(){
  if(!authorized)return;
  try{if(!document.hidden&&!busy){await loadList();if(project){const result=await api('load',{project_id:project.id});if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;drawBackup();processResults();if(changed){drawJobs();drawGuide();}}}}catch{/* Keep user edits and last known job state. */}
- finally{pollTimer=setTimeout(poll,jobs.some(j=>['queued','running'].includes(j.status))?8000:30000);}
+ finally{schedulePoll(jobs.some(j=>j.kind==='guide'&&['queued','running'].includes(j.status))?2000:jobs.some(j=>['queued','running'].includes(j.status))?8000:30000);}
 }
 function download(kind){
  if(!project||!canAction(access,'M+','website_weekly','export'))return;

@@ -9,7 +9,7 @@ export function createOctoberCombat({getState,getQuest,send,isSaving,renderAvata
   hud.innerHTML='<div><strong class="incoming-title">仇敵正在蓄力</strong><span class="incoming-countdown"></span></div><progress max="100" value="0" aria-label="下一次攻擊準備進度"></progress><p class="incoming-guide">可隨時關閉戰鬥回花園；離開後停止攻擊，成長與收藏會保留。</p><p class="incoming-status" role="status" aria-live="polite"></p>';
   $('#combat-life').after(hud);
   let session=null,timer=null,epoch=0,active=false,inFlight=false,lastAttack='',nextAt=0,clearFX=null;
-  const interval=()=>getQuest()?.boss?5000:8000;
+  const interval=()=>5000;
   function notice(text){hud.querySelector('.incoming-status').textContent=text;}
   function paintAttack(attack){
     if(!attack||attack.id===lastAttack)return;lastAttack=attack.id;

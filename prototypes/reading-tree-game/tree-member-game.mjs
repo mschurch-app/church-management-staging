@@ -6,7 +6,7 @@ import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261014-festival-independent1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
 import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';
-import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261012-october-game1';
+import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261014-attack5s';
 
 const $ = selector => document.querySelector(selector);
 function taipeiDay() {

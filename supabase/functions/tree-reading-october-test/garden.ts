@@ -95,7 +95,7 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
     if(action==='engage')e.combat={session:body.session,at:Date.now(),active:true};
     else{
      if(!e.combat?.active||e.combat.session!==body.session)throw Error('stale_event');
-     const boss=e.boss&&e.stage>=3,interval=boss?5000:8000;
+     const boss=e.boss&&e.stage>=3,interval=5000;
      if(Date.now()-e.combat.at>=interval){
       const hp=Math.min(s.life.hp,boss?10:5),mp=Math.min(s.life.mp,boss?6:3);
       s.life.hp-=hp;s.life.mp-=mp;e.combat.at=Date.now();

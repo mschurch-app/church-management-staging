@@ -9,7 +9,8 @@ const hex=(b:ArrayBuffer|Uint8Array)=>[...new Uint8Array(b)].map(v=>v.toString(1
 const unhex=(v:string)=>new Uint8Array(v.match(/.{1,2}/g)?.map(x=>parseInt(x,16))||[]);
 const key=(v:string,u:KeyUsage[])=>crypto.subtle.importKey('raw',enc.encode(v),{name:'AES-CBC'},false,u);
 const encrypt=async(v:string,k:string,i:string)=>hex(await crypto.subtle.encrypt({name:'AES-CBC',iv:enc.encode(i)},await key(k,['encrypt']),enc.encode(v)));
-const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replaceAll('-','+').replaceAll('_','/').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}const cipher=createDecipheriv('aes-256-cbc',enc.encode(k),enc.encode(i));cipher.setAutoPadding(false);const a=cipher.update(bytes),b=cipher.final(),plain=new Uint8Array(a.length+b.length);plain.set(a);plain.set(b,a.length);let end=plain.length,pad=plain[end-1];if(pad>0&&pad<=16&&plain.slice(end-pad).every(value=>value===pad))end-=pad;return dec.decode(plain.slice(0,end)).replace(/\0+$/,'');};
+const decrypt=async(v:string,k:string,i:string)=>{let raw=v.trim();try{if(raw.startsWith('"')&&raw.endsWith('"'))raw=JSON.parse(raw);}catch{}try{if(raw.includes('%'))raw=decodeURIComponent(raw);}catch{}if(raw.startsWith('{'))return raw;let bytes:Uint8Array;if(/^[0-9a-f]+$/i.test(raw)&&raw.length%2===0)bytes=unhex(raw);else{const base64=raw.replaceAll(' ','+').replaceAll('-','+').replaceAll('_','/').replace(/^data:[^,]+,/,'');bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));}const cipher=createDecipheriv('aes-256-cbc',enc.encode(k),enc.encode(i));const a=cipher.update(bytes),b=cipher.final(),plain=new Uint8Array(a.length+b.length);plain.set(a);plain.set(b,a.length);return dec.decode(plain).replace(/\0+$/,'');};
+const parseGatewayJson=(value:string,stage:string)=>{try{return JSON.parse(value);}catch{const trimmed=value.replace(/\0+$/,'');const pad=trimmed.charCodeAt(trimmed.length-1);if(pad>=1&&pad<=16&&trimmed.endsWith(String.fromCharCode(pad).repeat(pad))){try{return JSON.parse(trimmed.slice(0,-pad));}catch{}}throw Error(`${stage}_json_invalid`);}};
 const sha=async(v:string)=>hex(await crypto.subtle.digest('SHA-256',enc.encode(v))).toUpperCase();
 const safe=(v:unknown,m=500)=>String(v??'').trim().slice(0,m);
 const orderNo=()=>('HB27'+Date.now().toString(36)+crypto.randomUUID().replaceAll('-','').slice(0,8)).toUpperCase();
@@ -29,11 +30,12 @@ function checkEnvironment(c:ReturnType<typeof config>,input:any){
 }
 function clean(input:any){const r:Record<string,unknown>={},fields=['player_name','guardian_name','guardian_phone','email','line_id','national_id','postal_code','receipt_address','birthday','school_stage','school_name','height_cm','weight_kg','basketball_years','primary_position','dominant_hand','current_team','competition_level','jersey_size','jersey_number','jersey_name','emergency_name','emergency_phone','dietary_need','special_identity','medical_status','medical_notes','care_notes','donor_name','receipt_title','receipt_id','exception_reason','pricing_mode','payment_method','onsite_code'];for(const f of fields)r[f]=safe(input[f],f.includes('notes')?1000:f.includes('address')?220:160);r.training_goals=Array.isArray(input.training_goals)?input.training_goals.map((v:unknown)=>safe(v,30)).slice(0,10):[];for(const f of ['eligibility_exception','tax_upload_consent','public_credit','no_receipt','insurance_consent','privacy_consent','refund_consent','receipt_consent','truth_consent'])r[f]=input[f]===true;if(!r.insurance_consent||!r.privacy_consent||(!r.no_receipt&&!r.receipt_consent)||!r.refund_consent||!r.truth_consent)throw Error('consent_required');if(!['none','has'].includes(String(r.medical_status))||r.medical_status==='has'&&!r.medical_notes)throw Error('medical_status_required');return r;}
 const paymentMethods:Record<string,string[]>={card:['CREDIT'],credit:['CREDIT'],webatm:['WEBATM'],atm:['VACC'],cvs:['CVS'],barcode:['BARCODE']};
-const enabledProductionMethods=new Set<string>(['card','webatm','atm','cvs','barcode']);
-const methodEnabled=(c:ReturnType<typeof config>,method:string)=>c.environment==='test'||enabledProductionMethods.has(method==='credit'?'card':method);
+const enabledProductionMethods=new Set<string>(['card','atm','barcode']);
+const methodEnabled=(_c:ReturnType<typeof config>,method:string)=>enabledProductionMethods.has(method==='credit'?'card':method);
 const methodFlags=(c:ReturnType<typeof config>)=>Object.fromEntries(['card','webatm','atm','cvs','barcode'].map(method=>[method,methodEnabled(c,method)]));
 async function paymentGateway(origin:string,c:ReturnType<typeof config>,row:any,paymentMethod:string){
-  const fields:Record<string,string>={CREDIT:'0',WEBATM:'0',VACC:'0',CVS:'0',BARCODE:'0',APPLEPAY:'0',ANDROIDPAY:'0',SAMSUNGPAY:'0',MerchantID:c.merchantId,RespondType:'JSON',TimeStamp:String(Math.floor(Date.now()/1000)),Version:MPG_VERSION,LangType:'zh-tw',MerchantOrderNo:row.merchant_order_no,Amt:String(row.amount),ItemDesc:row.merchant_order_no.startsWith('HB27T')?'2027熱火籃球營金流測試':'2027熱火籃球營報名費',Email:safe(row.email,160),LoginType:'0',ExpireDate:expiry(),ReturnURL:FN+'?mode=return',NotifyURL:FN+'?mode=notify',CustomerURL:FN+'?mode=return'};
+  const testFlow=row.merchant_order_no.startsWith('HB27T'),returnUrl=FN+(testFlow?'?mode=return&flow=payment-test':'?mode=return');
+  const fields:Record<string,string>={CREDIT:'0',WEBATM:'0',VACC:'0',CVS:'0',BARCODE:'0',APPLEPAY:'0',ANDROIDPAY:'0',SAMSUNGPAY:'0',MerchantID:c.merchantId,RespondType:'JSON',TimeStamp:String(Math.floor(Date.now()/1000)),Version:MPG_VERSION,LangType:'zh-tw',MerchantOrderNo:row.merchant_order_no,Amt:String(row.amount),ItemDesc:testFlow?'2027熱火籃球營金流測試':'2027熱火籃球營報名費',Email:safe(row.email,160),LoginType:'0',ExpireDate:expiry(),ReturnURL:returnUrl,NotifyURL:FN+'?mode=notify',CustomerURL:returnUrl};
   for(const field of paymentMethods[paymentMethod])fields[field]='1';
   const tradeInfo=await encrypt(new URLSearchParams(fields).toString(),c.hashKey,c.hashIv),tradeSha=await sha(`HashKey=${c.hashKey}&${tradeInfo}&HashIV=${c.hashIv}`);
   return json(origin,200,{ok:true,status:'checkout',registration_no:row.registration_no,gateway:c.gateway,fields:{MerchantID:c.merchantId,TradeInfo:tradeInfo,TradeSha:tradeSha,Version:MPG_VERSION}});
@@ -140,7 +142,7 @@ async function paymentTestCheckout(origin:string,input:any){
   if(c.environment!=='production'||safe(input.expected_environment,20)!=='production')return json(origin,409,{ok:false,error:'payment_environment_mismatch'});
   const requestId=safe(input.request_id,36),password=safe(input.password,160),email=safe(input.email,160).toLowerCase(),method=safe(input.payment_method,20),amount=Number(input.amount);
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))return json(origin,400,{ok:false,error:'invalid_request_id'});
-  if(!['card','webatm','atm','cvs','barcode'].includes(method)||!methodEnabled(c,method))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
+  if(!['card','atm','barcode'].includes(method)||!methodEnabled(c,method))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
   const created=await db().rpc('heat_camp_2027_create_payment_test_order',{
     p_request_id:requestId,p_password:password,p_email:email,p_payment_method:method,p_amount:amount,p_merchant_order_no:testOrderNo()
   });
@@ -160,16 +162,16 @@ async function paymentTestDashboard(origin:string,input:any){
     db().rpc('heat_camp_2027_payment_test_orders',{p_password:password})
   ]);
   if(login.error||orders.error)return json(origin,401,{ok:false,error:'payment_test_password_invalid'});
-  return json(origin,200,{ok:true,methods:login.data.methods,orders:orders.data});
+  return json(origin,200,{ok:true,methods:Object.fromEntries(Object.entries(login.data.methods).filter(([method])=>methodEnabled(c,method))),orders:orders.data});
 }
 async function callback(req:Request,mode:string){
   const c=config(),back=c.environment==='production'?APP:TEST_APP;
-  let testOrder=false;
+  let testOrder=new URL(req.url).searchParams.get('flow')==='payment-test';
   try{
     const form=await req.formData(),ti=safe(form.get('TradeInfo'),20000),ts=safe(form.get('TradeSha'),128),plainStatus=safe(form.get('Status'),40),plainMessage=safe(form.get('Message'),300);
     if(!ti||!ts){if(plainStatus||plainMessage)throw Error(`${plainStatus||'gateway_error'}:${plainMessage||'藍新未回傳交易資料'}`);throw Error('missing_trade_response');}
     if(await sha(`HashKey=${c.hashKey}&${ti}&HashIV=${c.hashIv}`)!==ts.toUpperCase())throw Error('signature_invalid');
-    const data=JSON.parse(await decrypt(ti,c.hashKey,c.hashIv)),result=typeof data.Result==='string'?JSON.parse(data.Result):data.Result||{};
+    const data=parseGatewayJson(await decrypt(ti,c.hashKey,c.hashIv),'trade_info'),result=typeof data.Result==='string'?parseGatewayJson(data.Result,'result'):data.Result||{};
     if(result.MerchantID!==c.merchantId)throw Error('merchant_mismatch');
     const order=safe(result.MerchantOrderNo,40);
     testOrder=order.startsWith('HB27T');
@@ -189,7 +191,7 @@ async function callback(req:Request,mode:string){
   }catch(e){
     const message=e instanceof Error?e.message:'callback_error';console.error('heat-camp payment callback failed',{mode,message});
     if(mode==='notify')return new Response('0|ERROR',{status:400});
-    return Response.redirect(`${testOrder?'https://mchurch.online/heat-camp-payment-test.html':back}?payment=failed&message=${encodeURIComponent(message)}`,303);
+    return Response.redirect(`${testOrder?'https://mchurch.online/heat-camp-payment-test.html':back}?payment=unknown&message=${encodeURIComponent(message)}`,303);
   }
 }
 Deno.serve(async req=>{

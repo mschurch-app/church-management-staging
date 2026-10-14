@@ -84,7 +84,6 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
     if(!entry)s.festivalMissions[today]={key:festivalSlot.key,answered_at:new Date().toISOString()};
    }else{
     if(entry?.key!==festivalSlot.key||!entry.answered_at)throw Error('mission_answer_first');
-    if(!s.records.some((record:any)=>record.reading_date===today&&['on_time','makeup'].includes(record.completion_type)))throw Error('read_first');
     if(!entry.completed_at)entry.completed_at=new Date().toISOString();
    }
   }else if(['engage','retreat','attack'].includes(action)){

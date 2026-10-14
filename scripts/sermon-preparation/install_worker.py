@@ -20,8 +20,11 @@ def main():
         if old.get('Label')!=LABEL or old.get('ProgramArguments',[None])[0]!='/Volumes/MPLUS-DATA/mplus-ai/runtime/mlx/bin/python':raise RuntimeError('Unexpected existing service')
         subprocess.run(['/bin/launchctl','bootout',domain,str(agent)],check=True)
     TARGET.mkdir(parents=True,exist_ok=True,mode=0o700)
-    for filename in ('worker.py','media.py','media_policy.py'):
+    for filename in ('worker.py','media.py','media_policy.py','archive_lane.py'):
         shutil.copy2(Path(__file__).with_name(filename),TARGET/filename);(TARGET/filename).chmod(0o700)
+    archive=PRIVATE/'library-archive'
+    if archive.is_dir():
+        shutil.copy2(Path(__file__).with_name('archive_transcribe.py'),archive/'transcribe.py');(archive/'transcribe.py').chmod(0o700)
     logs=Path.home()/'Library/Logs/MPLUS/sermon-preparation';logs.mkdir(parents=True,exist_ok=True,mode=0o700)
     value={'Label':LABEL,'ProgramArguments':['/Volumes/MPLUS-DATA/mplus-ai/runtime/mlx/bin/python','-B',str(TARGET/'worker.py')],'RunAtLoad':True,'KeepAlive':{'SuccessfulExit':False},'ThrottleInterval':30,'ExitTimeOut':45,'ProcessType':'Background','Umask':63,'StandardOutPath':str(logs/'worker.log'),'StandardErrorPath':str(logs/'worker-error.log'),'EnvironmentVariables':{'PYTHONUNBUFFERED':'1','HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false','HOME':str(Path.home())}}
     agent.parent.mkdir(exist_ok=True,mode=0o700);agent.write_bytes(plistlib.dumps(value));agent.chmod(0o600)

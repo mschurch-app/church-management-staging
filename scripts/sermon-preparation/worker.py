@@ -13,6 +13,7 @@ import signal
 import subprocess
 import sys
 import threading
+import contextlib
 import time
 import urllib.error
 import urllib.request
@@ -83,7 +84,15 @@ def asset_copy(path,project,host):
     finally:
         if proc.poll() is None:proc.kill();proc.wait()
 
+@contextlib.contextmanager
+def transcriber_guard():
+    with (HOME_ROOT/'transcriber.lock').open('a') as guard:
+        fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);yield
+
 def media_job(job,progress,job_dir):
+    with transcriber_guard():return media_job_locked(job,progress,job_dir)
+
+def media_job_locked(job,progress,job_dir):
     global MODEL_STATE
     MODEL_STATE=None
     import mlx.core as mx
@@ -228,7 +237,7 @@ def execute(config,job):
         atomic(result_file,result)
         rpc(config,'complete',{**lease,'result':result})
     except Deferred as exc:
-        rpc(config,'defer',{**lease,'progress':exc.message,'next_at':exc.next_at})
+        rpc(config,'defer',{**lease,'progress':exc.message,'next_at':exc.next_at,'stage':exc.stage})
     except Exception as exc:
         code=str(exc);partial={}
         checkpoint=job_dir/'sections.json'
@@ -239,7 +248,7 @@ def execute(config,job):
         print(json.dumps({'event':'job_failed','job_id':job['id'],'kind':job['kind'],'error_class':type(exc).__name__}),flush=True)
 
 def loop(config,lane,once=False):
-    last_status=0;idle_delay=5
+    last_status=0;last_archive=0;idle_delay=5
     while not STOP.is_set():
         try:
             if not HOME_ROOT.parent.is_dir() or not MODEL.parent.is_dir():raise RuntimeError('ssd_not_mounted')
@@ -250,7 +259,15 @@ def loop(config,lane,once=False):
             job=rpc(config,'claim',{'lane':lane}).get('job')
             if job:idle_delay=5;execute(config,job)
             elif once:return
-            else:STOP.wait(idle_delay);idle_delay=min(30,idle_delay*1.5)
+            else:
+                if time.monotonic()-last_archive>30:
+                    try:
+                        import archive_lane
+                        if lane=='io':archive_lane.io_tick(sys.modules[__name__])
+                        else:archive_lane.model_tick(sys.modules[__name__],STOP)
+                    except Exception as exc:print(json.dumps({'event':'archive_waiting','lane':lane,'error_class':type(exc).__name__}),flush=True)
+                    last_archive=time.monotonic()
+                STOP.wait(idle_delay);idle_delay=min(30,idle_delay*1.5)
         except Exception as exc:
             print(json.dumps({'event':'worker_waiting','lane':lane,'error_class':type(exc).__name__}),flush=True)
             if once:raise

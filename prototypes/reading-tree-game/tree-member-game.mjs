@@ -1,7 +1,8 @@
+import {setupTeamSocial} from './tree-game-team-social.mjs?v=20261014-team1';
 import {setupOpeningStory} from './tree-game-opening.mjs?v=20261014-opening1';
 import {OPENING_VERSION,needsOpening} from './tree-game-opening-state.mjs?v=20261014-opening1';
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
-import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261014-opening1';
+import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261014-team1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261014-festival-independent1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
@@ -105,6 +106,7 @@ const opening = octoberMode ? setupOpeningStory({
 }) : null;
 $('#story-replay').hidden = !octoberMode;
 let remoteBusy=false,readingDay=today;
+let teamSocial=null;
 const pendingCommands=new Map();
 const arrangement=setupGardenArrangement({
  layer:$('#garden-decoration'),toolbar:$('#garden-arrangement'),isSaving:()=>remoteBusy,
@@ -120,7 +122,7 @@ async function change(action,payload={}){
  if(remoteBusy)throw Error('上一個操作正在保存，請稍候。');
  remoteBusy=true;document.body.setAttribute('aria-busy','true');
  const key=JSON.stringify([action,payload]),requestId=pendingCommands.get(key)||crypto.randomUUID();pendingCommands.set(key,requestId);
- try{const result=await memberAPI(action,{...payload,requestId});const prefs=preferences();state={...memberData.state,...prefs};today=memberData.today;pendingCommands.delete(key);updateProgress();renderGuardian();renderDecorations();renderMember(state);return result;}
+ try{const result=await memberAPI(action,{...payload,requestId});const prefs=preferences();state={...memberData.state,...prefs};today=memberData.today;pendingCommands.delete(key);updateProgress();renderGuardian();renderDecorations();renderMember(state);teamSocial?.render(result.team);return result;}
  catch(e){announce(e.message);throw e;}
  finally{remoteBusy=false;document.body.setAttribute('aria-busy','false');renderFestivalMission();arrangement.refresh();}
 }
@@ -727,7 +729,8 @@ document.addEventListener('visibilitychange', () => {
 setInterval(refreshDay, 60000);
 ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderEventLibrary(); renderSound(); updateProgress(); void loadAssets();
 setAudioMode('garden');
-setupMemberControls({send:change,getState:()=>state,openDialog,announce,refresh:refreshMember,isOnboarding:()=>openingRequired});
+setupMemberControls({send:change,getState:()=>state,openDialog,announce,refresh:refreshMember,isOnboarding:()=>openingRequired,onTeamRender:team=>teamSocial?.render(team)});
+teamSocial=setupTeamSocial({getTeam:()=>memberData.team,send:change,openDialog,closeDialog,announce,renderAvatar:avatarSprite});
 if (!state.avatarId) openAvatar();
 else if (openingRequired) opening.open();
 
@@ -744,6 +747,6 @@ async function refreshQuietly(){
  if(polling||document.hidden||remoteBusy||arrangement.busy||document.querySelector('dialog[open]')||taipeiDay()!==today)return;
  polling=true;try{await memberAPI('me');if(!remoteBusy&&!arrangement.busy&&!document.querySelector('dialog[open]')){state={...memberData.state,...preferences()};today=memberData.today;updateProgress();renderGuardian();renderDecorations();}}catch{/* Keep the last confirmed view; the refresh button remains available. */}finally{polling=false;}
 }
-setInterval(()=>void refreshQuietly(),60000);
+setInterval(()=>void refreshQuietly(),octoberMode?20000:60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refreshQuietly();});
 window.addEventListener('beforeunload',event=>{const note=$('#journal-note').value.trim(),saved=state.notes.find(n=>n.reading_date===today)?.note||'';if(arrangement.busy||(note&&note!==saved)){event.preventDefault();event.returnValue='';}});

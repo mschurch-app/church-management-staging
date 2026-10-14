@@ -5,8 +5,8 @@ import {FESTIVAL_MISSIONS} from './festival-missions.ts';
 import {missionFor,acceptMission,answerMission,completeMission,publicMission} from './personal-missions.ts';
 const START='2026-10-01',END='2026-10-31';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const TEAM_COMMANDS=['team','invite','join','leave','care'];
-const TEAM_ERRORS=['join_required','test_closed','invite_invalid','team_already_joined','care_limit','care_forbidden','invalid_message','invalid_request'];
+const TEAM_COMMANDS=['team','invite','join','leave','care','social','profile','invite_people','invite_person','invite_answer'];
+const TEAM_ERRORS=['join_required','test_closed','invite_invalid','team_already_joined','care_limit','care_forbidden','invalid_message','invalid_request','team_required','request_unavailable','request_limit','support_read_first','supply_used','avatar_unavailable','already_full','invite_unavailable','invite_limit'];
 async function tokenDigest(token:string){
  const bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token)));
  return Array.from(bytes,value=>value.toString(16).padStart(2,'0')).join('');
@@ -25,7 +25,7 @@ async function missionEvidence(idToken:string,since:string){
   return {...data,available:true};
  }catch{return {evidence:{share:0,prayer:0,prayerCreate:0},service:null,available:false};}
 }
-export async function octoberGarden(db:any,participant:any,body:any,today:string,idToken:string){
+export async function octoberGarden(db:any,participant:any,body:any,today:string,idToken:string,verifiedPicture:string|null=null){
  const subject=participant.line_subject,action=body.command||'me',theme=themeFor(today),teamCommand=TEAM_COMMANDS.includes(action),gameCommand=action!=='me'&&!teamCommand;
  if(!['me','avatar','equip','read','water','journal','place','move','hit','engage','retreat','attack','festival_answer','festival_complete','mission_accept','mission_answer',...TEAM_COMMANDS].includes(action))throw Error('invalid_action');
  if(!['me','team','mission_answer'].includes(action)&&(today<START||today>END))throw Error('test_closed');
@@ -118,9 +118,28 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
   if(write.error)throw Error(['date_not_allowed','read_first','invalid_note','join_required'].find(v=>write.error.message.includes(v))||'unavailable');
   if(!write.data)throw Error('conflict');version++;
  }
- let care=null;
- if(action==='care'){
-  const result=await db.rpc('october_garden_send_care',{p_subject:subject,p_recipient:body.recipient,p_request:body.requestId,p_message:body.message});
+ let care=null,invitation=null;
+ if(['invite_people','invite_person','invite_answer'].includes(action)){
+  let result;
+  if(action==='invite_people')result=await db.rpc('october_team_invite_people',{p_subject:subject});
+  else if(action==='invite_person'){
+   if(!UUID.test(body.recipient||''))throw Error('invalid_request');
+   result=await db.rpc('october_team_invite_person',{p_subject:subject,p_recipient:body.recipient,p_request:body.requestId,p_picture:verifiedPicture});
+  }else{
+   if(!UUID.test(body.invite||'')||typeof body.accept!=='boolean')throw Error('invalid_request');
+   result=await db.rpc('october_team_answer_invite',{p_subject:subject,p_invite:body.invite,p_accept:body.accept,p_picture:verifiedPicture});
+  }
+  if(result.error)throw Error(TEAM_ERRORS.find(value=>result.error.message.includes(value))||'unavailable');
+  invitation=action==='invite_people'?{people:result.data}:result.data;
+ }
+ if(action==='profile'){
+  if(typeof body.shareAvatar!=='boolean')throw Error('invalid_action');
+  const result=await db.rpc('october_team_profile',{p_subject:subject,p_share:body.shareAvatar,p_picture:verifiedPicture});
+  if(result.error)throw Error(TEAM_ERRORS.find(value=>result.error.message.includes(value))||'unavailable');
+ }
+ if(action==='care'||action==='social'){
+  if(action==='social'&&(!['bless','pray','support','request','resolve'].includes(body.kind)||typeof body.message!=='string'||body.message.length>200||body.recipient!=null&&!UUID.test(body.recipient)||body.target!=null&&!UUID.test(body.target)))throw Error('invalid_request');
+  const result=await db.rpc('october_team_interact',{p_subject:subject,p_kind:action==='care'?'care':body.kind,p_recipient:body.recipient||null,p_request:body.requestId,p_message:body.message,p_target:body.target||null,p_need:body.need||'prayer'});
   if(result.error)throw Error(TEAM_ERRORS.find(value=>result.error.message.includes(value))||'unavailable');
   care=result.data;
  }
@@ -129,12 +148,15 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
  const invite=action==='invite'?crypto.randomUUID():null;
  const teamResult=await db.rpc('october_garden_team',{p_subject:subject,p_action:['invite','join','leave'].includes(action)?action:'team',p_token_hash:invite?await tokenDigest(invite):action==='join'?await tokenDigest(body.token):null});
  if(teamResult.error)throw Error(TEAM_ERRORS.find(value=>teamResult.error.message.includes(value))||'unavailable');
- const team={...teamResult.data,...(invite?{invite}:{})};
+ const social=await db.rpc('october_team_social_view',{p_subject:subject});
+ if(social.error)throw Error('unavailable');
+ const inbox=await db.rpc('october_team_invitation_view',{p_subject:subject});if(inbox.error)throw Error('unavailable');
+ const team={...teamResult.data,...social.data,invitations:inbox.data,...(invite?{invite}:{})};
  if(teamCommand){
   // A different teammate may have sent care while this request was in flight.
   // Never return the earlier snapshot over a newer recipient version.
   const latest=await db.from('tree_reading_october_game_states').select('state,version').eq('line_subject',subject).single();
   if(latest.error)throw Error('unavailable');s=latest.data.state;version=latest.data.version;
  }
- return {ok:true,state:s,version,today,serverNow:Date.now(),profile:{name:participant.display_name,group_name:team.enabled?team.group_name:null,team_enabled:team.enabled,birthday_today:false},theme,team,care,personalMission:publicMission(personal,today,evidence.evidence),missionEvidenceAvailable:evidence.available,weeklyService:evidence.service,mission:festivalSlot&&festivalMission?{key:festivalSlot.key,label:festivalSlot.label,reference:festivalSlot.item.days[festivalSlot.day-1].reference,reflection:festivalSlot.item.days[festivalSlot.day-1].reflection,question:festivalMission.question,choices:festivalMission.choices,action:festivalMission.action,result:festivalMission.result,reward:10}:null,plan:null,readingWindow:{start:START,end:END},mode:'october-test'};
+ return {ok:true,state:s,version,today,serverNow:Date.now(),profile:{name:participant.display_name,group_name:team.enabled?team.group_name:null,team_enabled:team.enabled,birthday_today:false},theme,team,care,invitation,personalMission:publicMission(personal,today,evidence.evidence),missionEvidenceAvailable:evidence.available,weeklyService:evidence.service,mission:festivalSlot&&festivalMission?{key:festivalSlot.key,label:festivalSlot.label,reference:festivalSlot.item.days[festivalSlot.day-1].reference,reflection:festivalSlot.item.days[festivalSlot.day-1].reflection,question:festivalMission.question,choices:festivalMission.choices,action:festivalMission.action,result:festivalMission.result,reward:10}:null,plan:null,readingWindow:{start:START,end:END},mode:'october-test'};
 }

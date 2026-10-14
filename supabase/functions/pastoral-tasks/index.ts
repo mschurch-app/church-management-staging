@@ -225,7 +225,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
       createdByMe:row.created_by===staff.id,assignedToMe:row.assigned_to===staff.id,
       sharedWithMe:Array.isArray(row.payload?.shared_assignee_ids)&&row.payload.shared_assignee_ids.includes(staff.id),
       canSubmit:row.status==='draft'&&row.created_by===staff.id,
-      canApprove:row.payload?.workflow!=='weekly_bulletin_review'&&row.status==='pending'&&(row.assigned_to===staff.id||canManage(staff)),
+      canApprove:!['weekly_bulletin_review','sermon_social_initial_review','sermon_social_final_review','sermon_youtube_caption_review'].includes(String(row.payload?.workflow||''))&&row.status==='pending'&&(row.assigned_to===staff.id||canManage(staff)),
       canNotify:row.status==='pending'&&(row.created_by===staff.id||canManage(staff)),
       canComplete:row.status==='approved'&&(row.assigned_to===staff.id||sharedWith(staff,row)||canManage(staff)),
       canAttach:(row.status==='draft'&&(row.created_by===staff.id||canManage(staff)))||
@@ -246,10 +246,12 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,staff:St
     const nextStatus=({submit:'pending',approve:'approved',complete:'completed'} as Record<string,string>)[body.action];
     if(!validTaskTransition(currentStatus,nextStatus))return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
     if(body.action==='submit'||body.action==='approve'){
-      const existing=await db.from('pastoral_tasks').select('created_by,assigned_to,title,due_at,status')
+      const existing=await db.from('pastoral_tasks').select('created_by,assigned_to,title,due_at,status,payload')
         .eq('id',body.taskId).eq('entity_key',entityKey).maybeSingle();
       if(existing.error)throw new Error('db');
       if(!existing.data)return json(APP_ORIGIN,{ok:false,error:'task_not_found'},404);
+      if(body.action==='approve'&&['sermon_social_initial_review','sermon_social_final_review','sermon_youtube_caption_review'].includes(String(existing.data.payload?.workflow||'')))
+        return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
       if(body.action==='submit'&&(existing.data.created_by!==staff.id||existing.data.status!=='draft'))
         return json(APP_ORIGIN,{ok:false,error:'invalid_transition'},409);
       if(body.action==='approve'&&existing.data.status==='pending'&&!canManage(staff)&&existing.data.assigned_to!==staff.id)

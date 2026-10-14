@@ -1,7 +1,7 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 import {setStatus} from './app-ui.mjs?v=20261014-sermon3';
-import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-guide1';
+import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-directuse1';
 
 const $=s=>document.querySelector(s),ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-preparation';
 const stepNames={information:'信息',materials:'素材',outline:'大綱',manuscript:'講章',slides:'投影片'};
@@ -60,19 +60,19 @@ function drawEditor(){
 function sourceLink(material){const a=el('a','回查原始來源 ↗');a.href=material.url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function drawMaterials(){
  $('#material-count').textContent='（'+draft.materials.length+'／24）';$('#materials').replaceChildren();
- for(const m of draft.materials){const card=el('article','','studio-material'),title=el('h4',m.title),meta=el('p',m.kind==='archive'?(m.speaker?'候選講員：'+m.speaker+' · ':'')+'參考段落，請核對上下文':m.kind==='transcript'?'影片轉錄 · 講員與範圍待確認':'自己提供的素材','source-meta');
+ for(const m of draft.materials){const card=el('article','','studio-material'),title=el('h4',m.title),meta=el('p',m.kind==='archive'?(m.speaker?'講員：'+m.speaker+' · ':'')+(m.source_kind==='video_transcript'?'AI 影片轉譯，可直接使用':'來源摘錄，可直接使用'):m.kind==='transcript'?'AI 影片轉譯，可直接使用 · 講員與範圍待確認':'自己提供的素材','source-meta');
  card.append(title,meta);if(m.url)card.append(sourceLink(m));
  const content=el('p',m.content);card.append(content);
  if(m.kind==='personal'){const editor=el('textarea');editor.value=m.content;editor.maxLength=6000;editor.rows=5;editor.setAttribute('aria-label','自己的素材內容');editor.oninput=()=>{m.content=editor.value;m.reviewed=false;card.querySelector('input[type=checkbox]').checked=false;markDirty();};card.append(editor);}
  const note=el('textarea');note.value=m.note;note.maxLength=3000;note.rows=3;note.placeholder='這份素材觸動我的是……';note.setAttribute('aria-label','素材領受與筆記');note.oninput=()=>{m.note=note.value;markDirty();};
- const label=el('label','','studio-check'),check=el('input');check.type='checkbox';check.checked=m.reviewed;check.onchange=()=>{m.reviewed=check.checked;markDirty();};label.append(check,el('span','已核對本次可使用的內容'));
- card.append(note,label,button('這次不用',()=>{draft.materials=draft.materials.filter(x=>x.id!==m.id);markDirty();drawMaterials();}));$('#materials').append(card);}
+ card.append(note);if(m.kind==='personal'){const label=el('label','','studio-check'),check=el('input');check.type='checkbox';check.checked=m.reviewed;check.onchange=()=>{m.reviewed=check.checked;markDirty();};label.append(check,el('span','已確認使用這份自有素材'));card.append(label);}
+ card.append(button('這次不用',()=>{draft.materials=draft.materials.filter(x=>x.id!==m.id);markDirty();drawMaterials();}));$('#materials').append(card);}
 }
 function drawSearch(result){
  $('.studio-keyword-search').open=true;
  $('#search-results').replaceChildren();
- for(const m of result.items||[]){const card=el('article','','studio-material');card.append(el('h4',m.title),el('p',m.content),el('p',(m.speaker?'候選講員：'+m.speaker+' · ':'')+'尚待核對','source-meta'),sourceLink(m));
- card.append(button(draft.materials.some(x=>x.id===m.id)?'已加入':'閱讀完整段落，加入預備',()=>queue('detail',{url:m.url,ordinal:m.ordinal,content_sha:m.content_sha})));$('#search-results').append(card);}
+ for(const m of result.items||[]){const card=el('article','','studio-material');card.append(el('h4',m.title),el('p',m.content),el('p',(m.speaker?'講員：'+m.speaker+' · ':'')+(m.source_kind==='video_transcript'?'AI 影片轉譯':'來源摘錄'),'source-meta'),sourceLink(m));
+ card.append(button(draft.materials.some(x=>x.id===m.id)?'已加入':'閱讀完整段落，加入預備',()=>queue('detail',{url:m.url,ordinal:m.ordinal,content_sha:m.content_sha,...(m.excerpt_offset===undefined?{}:{excerpt_offset:m.excerpt_offset})})));$('#search-results').append(card);}
  if(!result.items?.length)$('#search-results').append(el('p','沒有找到符合文字，可換一個關鍵字，或加入自己的素材。','muted'));
 }
 function drawGuide(){
@@ -84,9 +84,9 @@ function drawGuide(){
  const result=completed?.result;
  if(!result||!Number.isInteger(result.round)||result.round<1||result.round>4){progress.textContent='尚未開始';root.append(button('重新開始三輪引導',()=>queue('guide',{}),false));return;}
  if(result.round===4){
-  progress.textContent='三輪已完成';status.textContent=`已比對私人資料庫，找到 ${result.items?.length||0} 筆候選來源。請核對講員與上下文後再選用。`;
+  progress.textContent='三輪已完成';status.textContent=`已比對私人資料庫，找到 ${result.items?.length||0} 筆候選來源；AI 轉譯內容可直接加入預備。`;
   if(!result.items?.length)root.append(el('p','目前沒有合適的來源。可重新引導，或改用關鍵字搜尋。','muted'));
-  for(const item of result.items||[]){const card=el('article','','studio-material');card.append(el('h5',item.title),el('p',item.content),el('p',(item.speaker?'候選講員：'+item.speaker+' · ':'')+(item.matched_terms?.length?'符合主題：'+item.matched_terms.join('、')+' · ':'')+'來源內容待核對','source-meta'),sourceLink(item),button('閱讀完整段落，加入預備',()=>queue('detail',{url:item.url,ordinal:item.ordinal,content_sha:item.content_sha})));root.append(card);}
+  for(const item of result.items||[]){const card=el('article','','studio-material');card.append(el('h5',item.title),el('p',item.content),el('p',(item.speaker?'講員：'+item.speaker+' · ':'')+(item.matched_terms?.length?'符合主題：'+item.matched_terms.join('、')+' · ':'')+(item.source_kind==='video_transcript'?'AI 影片轉譯':'來源摘錄'),'source-meta'),sourceLink(item),button('閱讀完整段落，加入預備',()=>queue('detail',{url:item.url,ordinal:item.ordinal,content_sha:item.content_sha,...(item.excerpt_offset===undefined?{}:{excerpt_offset:item.excerpt_offset})})));root.append(card);}
   root.append(button('重新開始三輪問答',()=>queue('guide',{})));return;
  }
  progress.textContent=`第 ${result.round}／3 輪`;if(latest.status!=='failed')status.textContent='可複選；至少勾選一項，AI 才會根據答案追問。';

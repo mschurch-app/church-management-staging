@@ -54,7 +54,7 @@ export function readingProgress({ records = [], notes = [], battles = [], festiv
   }
   const festivalCount = Object.entries(festivalMissions || {}).filter(([date, mission]) => {
     const day = ordinal(date);
-    return day !== null && first !== null && last !== null && day >= first && day <= last && mission?.completed_at && dates.has(date);
+    return day !== null && first !== null && last !== null && day >= first && day <= last && mission?.completed_at;
   }).length;
   const breakdown = { battle: [...battleDates.values()].reduce((sum, n) => sum + n, 0), reading: [...dates.values()].reduce((sum,r)=>sum+(r.boosted===true?40:20),0), water: [...dates.values()].filter(r => r.watered_at).length * 5,
     journal: noteDates.size * 5, weekly: [...weeks.values()].filter(count => count >= 5).length * 30, festival: festivalCount * 10,

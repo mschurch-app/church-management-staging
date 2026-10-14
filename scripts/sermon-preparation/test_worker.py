@@ -80,5 +80,26 @@ class Generation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d,patch.object(worker,'infer',return_value=json.dumps({'slides':[{'title':'頁','content':'','notes':''}]*21})):
             with self.assertRaisesRegex(ValueError,'slides_invalid'):worker.generate(job,lambda _:None,Path(d))
 
+    def test_guided_questions_change_with_answers_and_search_only_after_three_rounds(self):
+        options={'round':1,'history':[]}
+        project={'title':'在難處中有盼望','scripture':'詩篇 23 篇'}
+        answers=[]
+        with patch.object(worker,'infer',side_effect=[
+            json.dumps({'question':'目前最需要什麼？','choices':['安慰','方向','陪伴','禱告']}),
+            json.dumps({'question':'哪一種處境？','choices':['家庭','職場','健康','人際']}),
+            json.dumps({'question':'希望怎樣回應？','choices':['信靠','等候','饒恕','行動']}),
+            json.dumps({'queries':['盼望','信靠']})
+        ]) as model,patch.object(worker,'nas',return_value={'items':[{'id':'source-1','title':'來源','content':'盼望','url':'https://example.test','speaker':'候選'}]}) as nas:
+            for round_number in (1,2,3):
+                result=worker.guide_job({'input':{'project':project,'payload':{'notes':'同工筆記'},'options':options}},lambda _:None)
+                self.assertEqual(result['round'],round_number);self.assertEqual(len(result['choices']),4)
+                nas.assert_not_called()
+                answers.append({'question':result['question'],'selected':[result['choices'][0]]})
+                options={'round':round_number+1,'history':answers.copy()}
+            result=worker.guide_job({'input':{'project':project,'payload':{},'options':options}},lambda _:None)
+            self.assertEqual(result['round'],4);self.assertEqual(len(result['history']),3)
+            self.assertEqual(len(result['items']),1);self.assertEqual(nas.call_count,2)
+            self.assertEqual(model.call_count,4)
+
 if __name__=='__main__':unittest.main()
 

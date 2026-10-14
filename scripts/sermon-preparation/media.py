@@ -13,14 +13,14 @@ import subprocess
 import sys
 import time
 from urllib.parse import urlparse,parse_qs
-from media_policy import allowed,local,limit,next_start,POLICY
+from media_policy import allowed,local,limit,next_start,next_download_start,selection,POLICY
 SERMON_PYTHON='/Volumes/MPLUS-DATA/mplus-ai/runtime/sermon/bin/python'
 MLX_PYTHON='/Volumes/MPLUS-DATA/mplus-ai/runtime/mlx/bin/python'
 FFMPEG='/Volumes/MPLUS-DATA/mplus-ai/runtime/sermon/lib/python3.12/site-packages/imageio_ffmpeg/binaries/ffmpeg-macos-aarch64-v7.1'
 WHISPER='/Volumes/MPLUS-DATA/mplus-ai/models/whisper-large-v3-turbo'
 MAX_BYTES=1024**3
 class Deferred(Exception):
-    def __init__(self,message):self.message=message;self.next_at=next_start().isoformat()
+    def __init__(self,message,stage='processing'):self.message=message;self.stage=stage;self.next_at=(next_download_start() if stage=='baseline' else next_start()).isoformat()
 def atomic(path,value):
     path=Path(path);tmp=path.with_name('.'+path.name+'.pending');tmp.write_text(json.dumps(value,ensure_ascii=False));os.chmod(tmp,0o600);os.replace(tmp,path)
 def load(path,default):
@@ -42,23 +42,29 @@ def terminate(proc):
     try:proc.wait(timeout=8)
     except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);proc.wait()
 
-def supervise(command,directory,progress,stop,phase,rate_file):
-    rate_state=load(rate_file,{'samples':[]});cap=limit(rate_state['samples'])
-    if not allowed():raise Deferred('已到時段外，將於台北時間 01:00 接續。')
-    if phase=='download' and cap=='unmeasured':raise Deferred('06:00 後缺少今天凌晨的實測均速；等待下個 01:00 測量後接續下載。')
+def supervise(command,directory,progress,stop,phase,rate_file,lock_fd=None):
+    if phase=='download' and shutil.disk_usage(directory).free<6*1024**3:raise RuntimeError('ssd_capacity_low')
+    cap=None;selected=None
+    if phase=='download':
+        policy_file=directory/'download-policy.json'
+        selected=load(policy_file,None)
+        if selected is None:
+            selected=selection(load(rate_file,{'samples':[]})['samples'])
+            if selected is None:raise Deferred('缺少當日 07:30–08:00 實測均速；保留進度，等下一個 00:00 開始下載。','baseline')
+            atomic(policy_file,selected)
+        cap=selected['rate_bytes_per_second']
+        if cap is not None and (type(cap) is not int or cap<=0):raise ValueError('invalid_saved_rate')
     args=list(command)
     if phase=='download':args+=['--rate',str(cap or 0),'--rate-file',str(rate_file)]
-    proc=subprocess.Popen(args,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
+    proc=subprocess.Popen(args,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True,pass_fds=() if lock_fd is None else (lock_fd,))
     last=0
     try:
         while proc.poll() is None:
             if stop.is_set():raise Deferred('Mini 暫停，已完成進度保留；下個時段接續。')
-            if not allowed():raise Deferred('已到中午 12:00，下載與轉錄暫停；明日 01:00 接續。')
-            if phase=='download' and local().hour>=6 and cap is None:
-                terminate(proc);return False # restart with a new rate budget exactly at 06:00
             if time.monotonic()-last>=10:
+                if shutil.disk_usage(directory).free<(5*1024**3 if phase=='download' else 200*1024**2):raise RuntimeError('ssd_capacity_low')
                 state=load(directory/'progress.json',{})
-                policy='06:00 前不額外限速' if local().hour<6 else ('限速 %.2f MiB/s'%(cap/1024**2) if isinstance(cap,int) else '轉錄時段內')
+                policy=('本支 WAN 不額外限速' if cap is None else '本支 WAN 限速 %.2f MiB/s'%(cap/1024**2)) if phase=='download' else '本機轉錄，不套用 WAN 限速'
                 progress(state.get('message','正在處理影片…')+' · '+policy);last=time.monotonic()
             time.sleep(0.5)
         if proc.returncode:raise RuntimeError('media_process_failed')
@@ -81,7 +87,6 @@ def download(args):
     import yt_dlp
     root=args.directory;rate_file=args.rate_file;state=load(rate_file,{'samples':[]});last=[None,None,0]
     def hook(event):
-        if not allowed():raise RuntimeError('window_closed')
         total=event.get('downloaded_bytes',0)
         if total>MAX_BYTES:raise ValueError('video_too_large')
         now=time.monotonic()
@@ -93,17 +98,22 @@ def download(args):
             cutoff=time.time()-86400;state['samples']=[s for s in state['samples'] if s['at']>cutoff]
             atomic(rate_file,state);atomic(root/'progress.json',{'message':'下載影片 %.1f MiB'%(total/1024**2)});last[2]=now
     def match(info,*,incomplete=False):
+        if args.verification_file and not incomplete:
+            verification=load(args.verification_file,{})
+            title=str(info.get('title','')).casefold();names=verification['names_by_speaker']
+            found={sid for sid,aliases in names.items() if any(name.casefold() in title for name in aliases)}
+            if info.get('channel_id') not in verification['source']['channel_ids'] or found!={verification['source']['id']}:return '講員或來源變更，保留待查'
         if info.get('is_live'):return '請於直播結束後加入'
-        if (info.get('duration') or 0)>7200:return '第一版每支影片上限兩小時'
+        if (info.get('duration') or 0)>args.max_duration:return '第一版每支影片上限兩小時'
         if not incomplete and not info.get('duration'):return '缺少影片長度'
-    options={'format':'best[height<=720][ext=mp4]/best[height<=720]','outtmpl':str(root/'video.%(ext)s'),'noplaylist':True,'continuedl':True,'concurrent_fragment_downloads':1,'max_filesize':MAX_BYTES,'match_filter':match,'ffmpeg_location':FFMPEG,'progress_hooks':[hook],'quiet':True,'no_warnings':True,'retries':3,'fragment_retries':3,'socket_timeout':20,'overwrites':False}
+    options={'format':('bestaudio[ext=m4a]/bestaudio' if args.audio_only else 'best[height<=720][ext=mp4]/best[height<=720]'),'outtmpl':str(root/(args.file_stem+'.%(ext)s')),'noplaylist':True,'continuedl':True,'concurrent_fragment_downloads':1,'max_filesize':MAX_BYTES,'match_filter':match,'ffmpeg_location':FFMPEG,'progress_hooks':[hook],'quiet':True,'no_warnings':True,'retries':3,'fragment_retries':3,'socket_timeout':20,'overwrites':False}
     if args.rate:options['ratelimit']=args.rate
     with yt_dlp.YoutubeDL(options) as downloader:
         info=downloader.extract_info(canonical(args.url),download=True)
         if not info:raise ValueError('video_unavailable')
         path=Path(downloader.prepare_filename(info))
     if not path.is_file() or path.stat().st_size>MAX_BYTES:raise ValueError('video_missing')
-    atomic(root/'download.json',{'file':path.name,'title':str(info.get('title',''))[:500],'duration':info['duration'],'url':canonical(args.url)})
+    atomic(root/'download.json',{'file':path.name,'title':str(info.get('title',''))[:500],'duration':info['duration'],'url':canonical(args.url),'rate_policy':load(root/'download-policy.json',None)})
 
 def transcribe(args):
     import mlx_whisper
@@ -113,7 +123,6 @@ def transcribe(args):
     root=args.directory;info=load(root/'download.json',{});source=root/info['file'];chunks=load(root/'chunks.json',[])
     for index in range(math.ceil(info['duration']/120)):
         if index<len(chunks):continue
-        if not allowed():raise RuntimeError('window_closed')
         atomic(root/'progress.json',{'message':'本機轉錄第 %d／%d 段'%(index+1,math.ceil(info['duration']/120))})
         wave=root/'chunk.wav'
         subprocess.run([FFMPEG,'-nostdin','-v','error','-y','-ss',str(index*120),'-i',str(source),'-t','120','-ar','16000','-ac','1',str(wave)],check=True)
@@ -133,6 +142,6 @@ def transcribe(args):
     atomic(root/'transcript.json',{'segments':segments,'model':'whisper-large-v3-turbo','url':info.get('url',''),'title':info.get('title',''),'duration':info['duration'],'video_sha256':digest.hexdigest(),'speaker':'講員與範圍待確認','reviewed':False,'policy':POLICY})
 
 if __name__=='__main__':
-    os.umask(0o077);p=argparse.ArgumentParser();p.add_argument('mode',choices=['download','transcribe']);p.add_argument('--directory',type=Path,required=True);p.add_argument('--url');p.add_argument('--rate',type=int,default=0);p.add_argument('--rate-file',type=Path);args=p.parse_args()
+    os.umask(0o077);p=argparse.ArgumentParser();p.add_argument('mode',choices=['download','transcribe']);p.add_argument('--directory',type=Path,required=True);p.add_argument('--url');p.add_argument('--rate',type=int,default=0);p.add_argument('--rate-file',type=Path);p.add_argument('--audio-only',action='store_true');p.add_argument('--max-duration',type=int,choices=[7200,14400],default=7200);p.add_argument('--file-stem',choices=['video','source'],default='video');p.add_argument('--verification-file',type=Path);args=p.parse_args()
     if args.mode=='download':download(args)
     else:transcribe(args)

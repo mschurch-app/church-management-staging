@@ -1,7 +1,7 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
-import {setStatus} from './app-ui.mjs?v=20261014-sermon2';
-import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-sermon2';
+import {setStatus} from './app-ui.mjs?v=20261014-sermon3';
+import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-sermon3';
 
 const $=s=>document.querySelector(s),ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-preparation';
 const stepNames={information:'信息',materials:'素材',outline:'大綱',manuscript:'講章',slides:'投影片'};
@@ -90,7 +90,7 @@ function drawJobs(){
  const openJobs=new Set([...$('#jobs').querySelectorAll('[data-job-id] details[open]')].map(d=>d.closest('[data-job-id]').dataset.jobId));
  $('#jobs').replaceChildren();
  for(const j of jobs){const card=el('article','','studio-job');card.dataset.jobId=j.id;card.append(el('strong',jobNames[j.kind]||j.kind));
- card.append(el('p',j.status==='queued'?(j.progress||(j.kind==='media'?'等待台北時間 01:00–12:00 接續。':'已排入佇列，等待 Mini 接續。')):j.status==='running'?j.progress||'正在處理…':j.status==='failed'?j.error:'已完成',j.status==='failed'?'studio-job-error':'muted'));
+ card.append(el('p',j.status==='queued'?(j.progress||(j.kind==='media'?'等待 Mini 接續；下載依開始時段選速，同一支影片保留原上限。':'已排入佇列，等待 Mini 接續。')):j.status==='running'?j.progress||'正在處理…':j.status==='failed'?j.error:'已完成',j.status==='failed'?'studio-job-error':'muted'));
  if(j.base_version&&['outline','manuscript','slides'].includes(j.kind))card.append(el('small','依版本 '+j.base_version+' 生成'));
  if(j.status==='completed'&&j.kind==='media'){const details=el('details');details.open=openJobs.has(j.id);details.append(el('summary','查看逐字稿 · 講員與範圍待確認'));for(const item of j.result?.items||[]){const part=el('article');part.append(el('small',Math.floor(item.start/60)+':'+String(Math.floor(item.start%60)).padStart(2,'0')+' — '+Math.floor(item.end/60)+':'+String(Math.floor(item.end%60)).padStart(2,'0')),el('p',item.content),button('加入此段素材',()=>{addMaterial(item);showStep('materials');}));details.append(part);}card.append(details);}
  if(j.status==='completed'&&j.kind==='search')card.append(button('查看搜尋結果',()=>{drawSearch(j.result||{});showStep('materials');}));

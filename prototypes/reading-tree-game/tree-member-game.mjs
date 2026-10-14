@@ -3,7 +3,7 @@ import {OPENING_VERSION,needsOpening} from './tree-game-opening-state.mjs?v=2026
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
 import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261014-opening1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
-import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261013-missions1';
+import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261014-festival-independent1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
 import { GardenAudio } from './tree-game-audio.mjs?v=20261012-drag1';
 import {createOctoberCombat} from './tree-game-october-combat.mjs?v=20261012-october-game1';
@@ -168,10 +168,9 @@ function renderFestivalMission() {
   card.hidden=!mission;
   if(!mission)return;
   const entry=state.festivalMissions?.[today],answered=entry?.key===mission.key&&!!entry.answered_at,complete=answered&&!!entry.completed_at;
-  const read=state.records?.some(record=>record.reading_date===today&&['on_time','makeup'].includes(record.completion_type));
   $('#festival-mission-title').textContent=mission.label;
   $('#festival-mission-summary').textContent=`${mission.reference} · ${mission.reflection}`;
-  $('#festival-mission-progress').textContent=complete?'今日任務已完成並保存 · +10 XP':answered?(read?'經文題已完成，接著完成花園行動。':'經文題已完成；先讀完今日箴言，再完成花園行動。'):'讀一段節慶經文，回答一道題，再完成花園行動。';
+  $('#festival-mission-progress').textContent=complete?'今日任務已完成並保存 · +10 XP':answered?'經文題已完成，接著完成花園行動。':'讀一段節慶經文，回答一道題，再完成花園行動。';
   $('#festival-mission-open').textContent=complete?'查看已完成的任務':answered?'繼續今日任務':'開啟今日任務';
   $('#festival-dialog-title').textContent=mission.label;
   $('#festival-dialog-reference').textContent=mission.reference;
@@ -188,10 +187,10 @@ function renderFestivalMission() {
   $('#festival-question').hidden=answered;
   $('#festival-answer').hidden=answered;
   $('#festival-complete').hidden=!answered||complete;
-  $('#festival-complete').disabled=!read||remoteBusy;
-  $('#festival-complete').textContent=read?mission.action:'先讀完今天的箴言';
+  $('#festival-complete').disabled=remoteBusy;
+  $('#festival-complete').textContent=mission.action;
   if(complete)$('#festival-mission-feedback').textContent=mission.result+' · 今日獎勵已保存。';
-  else if(answered)$('#festival-mission-feedback').textContent=read?'答對了！現在可以完成花園行動。':'答對了！先完成今天的箴言讀經，再回來完成行動。';
+  else if(answered)$('#festival-mission-feedback').textContent='答對了！現在可以完成花園行動。';
 }
 const personalLabels={quiz:'經文尋寶',share:'把愛傳出去',prayer:'禱告同行'};
 function renderPersonalMission(){

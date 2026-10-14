@@ -37,7 +37,7 @@ export function validateDraft(value){
 export function generationReady(draft,kind){
   validateDraft(draft);
   if(!['outline','manuscript','slides'].includes(kind))return;
-  if(draft.materials.some(m=>!m.reviewed))throw Error('materials_need_review');
+  if(draft.materials.some(m=>m.kind==='personal'&&!m.reviewed))throw Error('materials_need_review');
   if(kind==='manuscript'&&(!draft.outline_confirmed||draft.outline.length<3))throw Error('outline_required');
   if(kind==='slides'&&characterCount(draft.manuscript)<draft.target_characters)throw Error('manuscript_too_short');
 }

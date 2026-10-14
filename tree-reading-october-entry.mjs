@@ -14,7 +14,7 @@ if (legacy) {
   previous.hidden = true;
   previous.before(status);
   try {
-    const response = await fetch(new URL('member.html?v=20261013-beacon1', game), {
+    const response = await fetch(new URL('member.html?v=20261014-opening1', game), {
       cache: 'no-store', signal: AbortSignal.timeout(15000),
     });
     if (!response.ok) throw Error('game_unavailable');
@@ -36,7 +36,7 @@ if (legacy) {
     page.body.dataset.octoberTest = 'true';
     page.body.querySelectorAll('script').forEach(node => node.remove());
     document.body.replaceWith(page.body);
-    await import('./prototypes/reading-tree-game/tree-member-game.mjs?v=20261013-beacon1');
+    await import('./prototypes/reading-tree-game/tree-member-game.mjs?v=20261014-opening1');
   } catch {
     if (document.body.dataset.octoberTest === 'true' && document.querySelector('#member-gate')?.hidden === false) {
       // Authentication failures are presented by the shared gate, including the

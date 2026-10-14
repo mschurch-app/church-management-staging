@@ -1,0 +1,65 @@
+.garden-game .story-replay{margin-top:8px;min-height:44px;padding:0 2px;color:#315d48;font-size:13px}
+.garden-game .opening-dialog{width:min(920px,calc(100vw - 32px));max-width:none;max-height:min(94dvh,880px);padding:0;overflow:auto;border:1px solid #dce2cf;border-radius:28px;background:#fffdf5;color:#203d31;box-shadow:0 30px 90px #172b2266}
+.garden-game .opening-dialog::backdrop{background:#142b25a8;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.opening-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 24px 14px;border-bottom:1px solid #e6e7d9}
+.opening-header h2{font-size:clamp(21px,2.5vw,28px);line-height:1.25;margin:3px 0 0!important}
+.opening-cover{min-height:340px;padding:42px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 22%,#f8edc4 0%,#eef1dd 48%,#fffdf5 83%)}
+.opening-cover:before{content:'✳';font:normal 82px/1 Georgia,serif;color:#b6904c;text-shadow:0 0 30px #f5daa0;display:block;margin-bottom:20px}
+.opening-cover>p:first-child{max-width:530px;font-size:18px;line-height:1.85}
+.opening-cover-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:30px}
+.opening-cover-actions button{min-height:48px}
+.garden-game .opening-audio-note{font-size:12px;color:#607268;margin-top:14px}
+.opening-flow{display:flex;flex-direction:column}
+.opening-stage{position:relative;height:clamp(260px,38vw,390px);overflow:hidden;isolation:isolate;background:#839e65 url('assets/garden-dawn.png') center 47%/cover}
+.opening-stage:before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#243f2a8d 0%,transparent 32%,#e9dcad1d 100%);z-index:3;pointer-events:none}
+.opening-sun{position:absolute;inset:-30% -30% 25% 25%;background:radial-gradient(ellipse,#fff3bf9a 0%,#fff3bf21 32%,transparent 70%);z-index:1;animation:opening-breathe 5s ease-in-out infinite alternate}
+.opening-branch{position:absolute;left:44%;bottom:27%;width:12%;height:38%;border-radius:70% 25% 70% 25%;background:radial-gradient(ellipse at 50% 35%,#f4e395,#b8d283 45%,#5d813e 75%);filter:blur(5px);opacity:0;transform:scale(.2);transform-origin:bottom;transition:transform .7s ease,opacity .7s ease;z-index:2}
+.opening-stage[data-moment='grow'] .opening-branch,.opening-stage[data-moment='sprout'] .opening-branch{opacity:.88;transform:scale(1)}
+.opening-seed{position:absolute;left:47%;bottom:24%;width:12px;height:18px;border-radius:65% 35% 60% 40%;rotate:25deg;background:#e3b25d;box-shadow:0 0 0 10px #fff3bb3b,0 0 34px 16px #ffed9f99;z-index:5;animation:opening-breathe 2.5s ease-in-out infinite alternate}
+.opening-stage[data-moment='grow'] .opening-seed,.opening-stage[data-moment='gear'] .opening-seed{opacity:0}
+.opening-hero,.opening-gardener{position:absolute;bottom:-4%;height:93%;max-width:45%;object-fit:contain;object-position:bottom;z-index:4;filter:drop-shadow(0 12px 12px #1b352f66);transition:transform .48s ease,filter .48s ease}
+.opening-hero{left:11%;width:40%;display:grid;place-items:end center}
+.opening-hero .game-sprite{height:100%;width:100%;overflow:visible}
+.opening-gardener{right:9%;width:35%}
+.opening-stage[data-speaker='主角'] .opening-hero,.opening-stage[data-speaker='園丁'] .opening-gardener{transform:translateY(-6px) scale(1.025);filter:drop-shadow(0 13px 14px #183a3166) brightness(1.08)}
+.opening-stage[data-moment='gift'] .opening-gardener,.opening-stage[data-moment='gear'] .opening-gardener{right:3%;width:41%}
+.opening-stage-word{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:6;max-width:70%;padding:6px 14px;border-radius:30px;background:#fff9e9e6;border:1px solid #fff7d9;color:#365540;text-align:center;font-size:12px;letter-spacing:.04em}
+.opening-stage-word:empty{display:none}
+.opening-script{padding:18px 28px 10px;background:linear-gradient(180deg,#fffdf5,#f8f8ee);min-height:180px}
+.opening-script-top{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#627364;font-size:12px}
+.opening-script-top button{min-height:44px;padding:0 8px}
+.opening-speaker{font-weight:750;color:#856b3a;font-size:13px;letter-spacing:.08em;margin:2px 0 4px!important}
+.opening-line{font-size:clamp(18px,2.3vw,22px);line-height:1.7;font-weight:600;min-height:62px}
+.opening-reference{font-size:12px;color:#627364;margin-top:7px!important}
+.opening-gear{display:flex;align-items:center;gap:12px;margin-top:9px;padding:6px 14px;border-radius:16px;background:#edf2e1;border:1px solid #d7e2ca;font-size:13px}
+.opening-gear .game-sprite{height:58px;width:58px;flex:none}
+.opening-gear strong{display:block;font-size:15px}
+.opening-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 28px 20px;background:#f8f8ee}
+.opening-controls button{min-height:48px}
+.opening-controls .primary{min-width:166px}
+@keyframes opening-breathe{from{opacity:.72;transform:scale(.97)}to{opacity:1;transform:scale(1.05)}}
+@media(max-width:640px){
+  .garden-game .opening-dialog{width:100vw;max-height:calc(100dvh - env(safe-area-inset-top));height:calc(100dvh - env(safe-area-inset-top));margin:auto 0 0;border-radius:24px 24px 0 0}
+  .opening-header{padding:13px 17px 11px}.opening-cover{min-height:calc(100dvh - 110px);padding:24px 18px}.opening-cover>p:first-child{font-size:16px}
+  .opening-flow{min-height:calc(100dvh - env(safe-area-inset-top) - 75px)}
+  .opening-stage{height:clamp(225px,40dvh,380px);flex:none}.opening-hero{left:2%;width:51%;height:86%}.opening-gardener{right:-2%;width:47%;height:84%}
+  .opening-stage[data-moment='gift'] .opening-gardener,.opening-stage[data-moment='gear'] .opening-gardener{right:-7%;width:55%}
+  .opening-script{padding:15px 19px 8px;min-height:0;flex:1}.opening-line{font-size:17px;line-height:1.65;min-height:0}
+  .opening-controls{position:sticky;bottom:0;padding:10px 17px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 20px #f8f8eedd}
+  .opening-controls .primary{min-width:145px}
+}
+@media(prefers-reduced-motion:reduce){.opening-sun,.opening-seed{animation:none}.opening-branch,.opening-hero,.opening-gardener{transition:none}}
+.garden-game .gardener-voice-setting h3{font-size:15px;line-height:1.5;color:#334f3d;margin:0 0 6px}
+.garden-game .gardener-voice-setting>p:first-of-type{font-size:13px;line-height:1.65;color:#596b5d;margin:0}
+.garden-game #gardener-voice-preview{width:100%;margin-top:12px;font-size:13px}
+.garden-game #gardener-voice-status{margin-top:10px;line-height:1.6}
+.garden-game .opening-audio-status{min-height:1.2em;font-size:12px;color:#657368;margin:4px 0 0}
+.garden-game .is-loading::before{content:'';display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-2px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:opening-audio-spin .75s linear infinite}
+@keyframes opening-audio-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.garden-game .is-loading::before{animation:none;border-right-color:currentColor}}
+
+.opening-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.opening-actions .story-replay{margin:0}
+.opening-restart-note{font-size:12px;color:#66745d;margin:9px 0 0;line-height:1.7}
+
+.opening-dialog [hidden]{display:none!important}

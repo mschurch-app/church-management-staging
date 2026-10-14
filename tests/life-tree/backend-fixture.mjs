@@ -10,7 +10,7 @@ const file=process.env.TREE_FUNCTION_SOURCE||new URL('../../supabase/functions/t
 const source=fs.readFileSync(file,'utf8');
 const sdkImport="import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';";
 assert.ok(source.includes(sdkImport),'Expected pinned SDK import; review fixture if it changes');
-const code=stripTypeScriptTypes(source.replace(sdkImport,''));
+const code=stripTypeScriptTypes(source.replace(sdkImport,'').replace("import {octoberGarden} from './garden.ts';",''));
 const subject='U'+'a'.repeat(32),otherSubject='U'+'b'.repeat(32);
 
 export function fixture({start='2026-10-01',joined=true,authorized=true,failInsert=false,failUpdate=false,initial=[],initialNotes=[],initialChallenges=[],memberSubject=subject,isAdmin=false,instant='2026-10-10T05:24:00Z'}={}){
@@ -70,6 +70,7 @@ export function fixture({start='2026-10-01',joined=true,authorized=true,failInse
   }
   vm.runInNewContext(code,{
     Deno:{env:{get:key=>({SUPABASE_URL:'https://isolated.invalid',SUPABASE_SERVICE_ROLE_KEY:'isolated-not-a-credential'}[key])},serve:fn=>{handler=fn;}},
+    octoberGarden:()=>{throw Error('Garden commands use coworker-opening.mjs production-handler tests');},
     createClient:()=>({from}),Date:FrozenDate,Intl,URLSearchParams,Request,Response,AbortSignal,TextEncoder,crypto:webcrypto,
     fetch:async(url)=>{
       assert.equal(url,'https://api.line.me/oauth2/v2.1/verify','No real network allowed');

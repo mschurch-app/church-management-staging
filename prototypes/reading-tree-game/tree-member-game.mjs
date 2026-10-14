@@ -1,5 +1,7 @@
+import {setupOpeningStory} from './tree-game-opening.mjs?v=20261014-opening1';
+import {OPENING_VERSION,needsOpening} from './tree-game-opening-state.mjs?v=20261014-opening1';
 import {setupGardenArrangement} from './tree-game-arrange.mjs?v=20261012-drag1';
-import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261013-missions1';
+import {initMember,memberAPI,memberData,preferences,savePreferences,renderMember,prepareReading,themeAudio,setupMemberControls,itemName,cancelReading,duckTheme} from './tree-game-member.mjs?v=20261014-opening1';
 import {FESTIVAL_ITEMS,collectibleArt} from './tree-game-collectibles.mjs';
 import { LEVELS, readingProgress, dateAtOffset } from './tree-game-progress.mjs?v=20261013-missions1';
 import { GARDEN_EVENTS, eventById, eventDeck, shuffled } from './tree-game-events.mjs';
@@ -19,11 +21,12 @@ const AVATARS = ['male', 'female'].flatMap((gender, row) => Array.from({ length:
   id: `${gender}-${column + 1}`, gender, name: `${gender === 'male' ? '男生' : '女生'}・${['森林綠', '晴空藍', '暖莓紅'][column]}`,
   rect: [column * 408, row * 642.5, 408, 642.5],
 })));
-function avatarSprite(id) {
+function avatarSprite(id, pose = 'normal') {
   const avatar = AVATARS.find(item => item.id === id);
   if (!avatar) return `<span class="guardian-placeholder">${icon('friend')}</span>`;
+  const atlas = {seed:'assets/garden-avatars-seed.webp',reach:'assets/garden-avatars-reach.webp'}[pose] || AVATAR_ATLAS;
   const rect = avatar.rect, clip = `garden-avatar-${++spriteSequence}`;
-  return `<svg class="game-sprite" viewBox="${rect.join(' ')}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${AVATAR_ATLAS}" width="1224" height="1285" clip-path="url(#${clip})"/></svg>`;
+  return `<svg class="game-sprite" viewBox="${rect.join(' ')}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${rect[0]}" y="${rect[1]}" width="${rect[2]}" height="${rect[3]}"/></clipPath></defs><image href="${atlas}" width="1224" height="1285" clip-path="url(#${clip})"/></svg>`;
 }
 const rects = {
   sapling: [50, 50, 262, 310], tree: [380, 0, 320, 360], bloom: [703, 0, 420, 360],
@@ -85,7 +88,22 @@ let state = {...await initMember(),...preferences()}, category = 'armor', select
 let previousXP = null, avatarGender = null, avatarChoice = null, victoryTimer, gardenReturnTimer, bossPracticeNext = null;
 today=memberData.today;
 const audio = new GardenAudio(message => { $('#audio-status').textContent = message; });
+const octoberMode = document.body.dataset.octoberTest === 'true';
+let openingRequired = octoberMode && needsOpening(state);
+let selectingOpening = openingRequired;
 const dialogOpeners = new Map();
+const opening = octoberMode ? setupOpeningStory({
+ getAvatar:()=>state.avatarId,avatarSprite,gearSprite:sprite,
+ audio:{get context(){return audio.context;},unlock:()=>audio.unlock(),setMode:mode=>audio.setMode(mode),duck:value=>{audio.duck(value);duckTheme(value);}},
+ sound,enableStoryAudio:()=>{},isRequired:()=>openingRequired,
+ markSeen:async()=>{
+  if(!openingRequired)return;
+  await change('avatar',{avatar:state.avatarId,openingVersion:OPENING_VERSION});
+  if(needsOpening(state))throw Error('完成紀錄尚未保存');
+  openingRequired=false;document.dispatchEvent(new Event('garden-opening-complete'));
+ },openDialog,closeDialog,openReading:()=>{},openBag:()=>{}
+}) : null;
+$('#story-replay').hidden = !octoberMode;
 let remoteBusy=false,readingDay=today;
 const pendingCommands=new Map();
 const arrangement=setupGardenArrangement({
@@ -132,6 +150,7 @@ function openDialog(id, opener = document.activeElement) {
   dialog.querySelector('button:not(:disabled), textarea')?.focus({ preventScroll: true });
 }
 function closeDialog(id) {
+  if(openingRequired && (id==='opening-dialog' || (id==='avatar-dialog' && selectingOpening)))return;
   if (id === 'avatar-dialog' && !state.avatarId) { $('#avatar-status').textContent = '先選一位喜歡的角色，再一起出發。'; return; }
   const dialog = document.getElementById(id);
   if (id === 'quest-dialog') { clearTimeout(gardenReturnTimer); octoberCombat.stop(false);questEpoch++; quest = null; }
@@ -376,7 +395,7 @@ function renderAvatarChoices() {
 }
 function openAvatar() {
   avatarChoice = state.avatarId; avatarGender = AVATARS.find(avatar => avatar.id === avatarChoice)?.gender || null;
-  $('#avatar-dialog [data-close]').hidden = !state.avatarId;
+  $('#avatar-dialog [data-close]').hidden = !state.avatarId || openingRequired;
   $('#avatar-dialog [data-close]').setAttribute('aria-label', '關閉角色選擇');
   $('#avatar-status').textContent = state.avatarId ? '可以更換角色，讀經與成長紀錄會保留。' : '第一次來，選一位陪你讀經成長的角色。';
   $('#avatar-audio-label').hidden = !!state.avatarId; renderAvatarChoices(); openDialog('avatar-dialog');
@@ -671,7 +690,7 @@ document.querySelectorAll('[data-gender]').forEach(button => { button.onclick = 
 $('#avatar-confirm').onclick=()=>void attempt(async()=>{
  if(!AVATARS.some(avatar=>avatar.id===avatarChoice))return;
  if(!state.avatarId){state.music=$('#avatar-audio').checked;state.sound=$('#avatar-audio').checked;persist();}
- const button=$('#avatar-confirm');button.disabled=true;$('#avatar-status').textContent='正在保存你的角色…';try{await change('avatar',{avatar:avatarChoice});renderSound();void audio.unlock().then(()=>sound('pick'));closeDialog('avatar-dialog');saveMessage('角色已保存，一起照顧這座花園吧。');}catch(e){$('#avatar-status').textContent=e.message;}finally{button.disabled=false;}
+ const button=$('#avatar-confirm');button.disabled=true;$('#avatar-status').textContent='正在保存你的角色…';try{await change('avatar',{avatar:avatarChoice});renderSound();void audio.unlock().then(()=>sound('pick'));selectingOpening=false;closeDialog('avatar-dialog');if(openingRequired)opening.open();saveMessage('角色已保存，一起照顧這座花園吧。');}catch(e){$('#avatar-status').textContent=e.message;}finally{button.disabled=false;}
 });
 // A saved preference still requires a gesture on a freshly opened iPhone page.
 document.addEventListener('click', event => {
@@ -709,8 +728,8 @@ document.addEventListener('visibilitychange', () => {
 setInterval(refreshDay, 60000);
 ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderEventLibrary(); renderSound(); updateProgress(); void loadAssets();
 setAudioMode('garden');
-setupMemberControls({send:change,getState:()=>state,openDialog,announce,refresh:refreshMember});
-if (!state.avatarId) openAvatar();
+setupMemberControls({send:change,getState:()=>state,openDialog,announce,refresh:refreshMember,isOnboarding:()=>openingRequired});
+if (!state.avatarId || openingRequired) openAvatar();
 
 $('#garden-arrange').onclick=()=>arrangement.focusFirst();
 $('#garden-collection').onclick=()=>{

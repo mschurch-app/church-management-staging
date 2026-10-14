@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {stripTypeScriptTypes} from 'node:module';
+import {webcrypto} from 'node:crypto';
+import {OPENING_VERSION,needsOpening,completeOpening} from '../../prototypes/reading-tree-game/tree-game-opening-state.mjs';
+const root=new URL('../../',import.meta.url);
+function production(path,context){const code=stripTypeScriptTypes(fs.readFileSync(new URL(path,root),'utf8').replace(/^import .*;\n/gm,'').replace(/export /g,''));vm.runInContext(code,context,{filename:path});}
+const context=vm.createContext({crypto:webcrypto,Date,Intl,structuredClone,Uint32Array,TextEncoder,AbortSignal,completeOpening,festivalTestForDate:()=>null,FESTIVAL_MISSIONS:{},missionFor:async()=>({}),publicMission:()=>null,fetch:async()=>{throw Error('fixture: no external calls');}});
+production('supabase/functions/tree-garden/engine.ts',context);
+production('supabase/functions/tree-reading-october-test/garden.ts',context);
+const today='2026-10-14';
+const initial=vm.runInContext(`emptyState('${today}')`,context);
+Object.assign(initial,{startDate:'2026-10-01',avatarId:'female-2',legacyImported:true,festivalMissions:{},weeklyServiceMissions:{},records:[{reading_date:'2026-10-13',completion_type:'on_time',completed_at:'2026-10-13T01:00:00Z',watered_at:'2026-10-13T02:00:00Z',boosted:false}],notes:[{reading_date:'2026-10-13',note:'Synthetic saved reflection'}],battles:['2026-10-13'],equipped:['belt'],placed:[{id:'flower',x:45,y:62}],collection:{flower:5},inventory:{flower:{count:4,earned:5}},dailyGrace:{'2026-10-13':'flower'}});
+let saved={state:structuredClone(initial),version:12}; const writes=[];
+const db={from(table){let op='select';const q={upsert(){op='upsert';return q;},select(){return q;},eq(){return q;},single(){return q;},order(){return q;},then(resolve){return Promise.resolve({data:op==='upsert'?null:table==='tree_reading_october_game_states'?structuredClone(saved):table==='tree_reading_october_test_progress'?structuredClone(initial.records):structuredClone(initial.notes),error:null}).then(resolve);}};return q;},async rpc(name,p){if(name==='october_garden_team')return {data:{enabled:false},error:null};assert.equal(name,'october_garden_save');assert.equal(p.p_version,saved.version);writes.push(structuredClone(p));saved={state:structuredClone(p.p_state),version:saved.version+1};return {data:true,error:null};}};
+context.db=db;context.participant={line_subject:'synthetic',reading_start_date:'2026-10-01',display_name:'Isolated test'};
+async function call(payload){context.payload=payload;return await vm.runInContext(`octoberGarden(db,participant,payload,'${today}','fake-token')`,context);}
+await call({command:'me'}); const baseline=structuredClone(saved.state);
+assert(needsOpening(baseline));
+await call({command:'avatar',avatar:'female-2',requestId:webcrypto.randomUUID()});
+assert(needsOpening(saved.state),'choosing character does not complete story');
+const command={command:'avatar',avatar:'female-2',openingVersion:OPENING_VERSION,requestId:webcrypto.randomUUID()};
+await call(command);assert(!needsOpening(saved.state));
+for(const key of ['records','notes','battles','equipped','placed','collection','inventory','dailyGrace','life','buffs','encounters','personalMissions','weeklyServiceMissions','festivalMissions'])assert.deepEqual(saved.state[key],baseline[key],`${key} preserved`);
+const completed=structuredClone(saved);await call(command);assert.deepEqual(saved,completed,'retry is idempotent');
+await assert.rejects(call({...command,requestId:webcrypto.randomUUID(),openingVersion:'unknown'}),/invalid_action/);
+assert.deepEqual(saved,completed,'invalid version cannot change stored data');
+const other=structuredClone(initial);assert(needsOpening(other),'completion is per participant');
+assert(needsOpening({...saved.state,openingStory:{version:'older'}}),'new release gets one introduction');
+assert(!needsOpening({...saved.state,today:'2026-10-15'}),'next day does not repeat');
+assert(writes.every(p=>['me','avatar'].includes(p.p_action)),'existing RPC actions only');
+fs.writeFileSync('/private/tmp/coworker-opening-fixture.json',JSON.stringify({ok:true,state:baseline,version:12,today,serverNow:Date.now(),profile:{name:'測試同工',team_enabled:false},theme:{id:'garden',name:'十月箴言 · 與神同行',day:1,items:[]},team:{enabled:false},personalMission:null,mission:null,readingWindow:{start:'2026-10-01',end:'2026-10-31'}}));
+console.log('PASS: production October handler preserves progress, saves per-participant completion, retries safely and rejects unknown versions');

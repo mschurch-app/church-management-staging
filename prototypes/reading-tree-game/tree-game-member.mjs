@@ -110,7 +110,7 @@ export function themeAudio(mode,s,audio){
 export function stopThemeAudio(){themePlayer.pause();}
 export function cancelReading(){readingGeneration++;observer?.disconnect();}
 export function duckTheme(value){themePlayer.duck(value);}
-export function setupMemberControls({send,getState,openDialog,announce,refresh}){
+export function setupMemberControls({send,getState,openDialog,announce,refresh,isOnboarding=()=>false}){
  const teamLabel=OCTOBER_MODE?'同工組隊':'我的同行小組';
  $('#team-open').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">${iconMarkup('people')}</svg><span>${teamLabel}</span>`;
  if(OCTOBER_MODE){$('#team-title').textContent='同工同行小隊';$('#team-invite').textContent='邀請同工組隊';$('#team-leave').textContent='離開目前隊伍';$('#team-invite-url').setAttribute('aria-label','同工組隊連結，可複製分享');}
@@ -162,6 +162,6 @@ export function setupMemberControls({send,getState,openDialog,announce,refresh})
  $('#makeup-open').onclick=()=>{const input=$('#makeup-date'),s=getState();input.max=memberData.today;input.min=[s.startDate,new Date(Date.parse(memberData.today+'T12:00:00Z')-7*864e5).toISOString().slice(0,10)].sort().at(-1);input.value=memberData.today;openDialog('makeup-dialog');};
  document.addEventListener('click',e=>{if(e.isTrusted&&activeAudio&&activePrefs){themeAudio(activeMode,activePrefs,activeAudio);themePlayer.gesture(Boolean(e.target.closest?.('#audio-start')));}},{capture:true});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopThemeAudio();else if(activeAudio&&activePrefs)themeAudio(activeMode,activePrefs,activeAudio);});
- const offerInvite=()=>{if(pendingInvite&&!document.querySelector('dialog[open]'))void show();};
- if(pendingInvite){if(!getState().avatarId)$('#avatar-dialog').addEventListener('close',offerInvite,{once:true});queueMicrotask(offerInvite);}
+ const offerInvite=()=>{if(pendingInvite&&!isOnboarding()&&!document.querySelector('dialog[open]'))void show();};
+ if(pendingInvite){document.addEventListener('garden-opening-complete',()=>setTimeout(offerInvite,0),{once:true});if(!getState().avatarId)$('#avatar-dialog').addEventListener('close',offerInvite,{once:true});queueMicrotask(offerInvite);}
 }

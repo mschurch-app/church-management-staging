@@ -32,3 +32,18 @@ assert(!needsOpening({...saved.state,today:'2026-10-15'}),'next day does not rep
 assert(writes.every(p=>['me','avatar'].includes(p.p_action)),'existing RPC actions only');
 fs.writeFileSync('/private/tmp/coworker-opening-fixture.json',JSON.stringify({ok:true,state:baseline,version:12,today,serverNow:Date.now(),profile:{name:'測試同工',team_enabled:false},theme:{id:'garden',name:'十月箴言 · 與神同行',day:1,items:[]},team:{enabled:false},personalMission:null,mission:null,readingWindow:{start:'2026-10-01',end:'2026-10-31'}}));
 console.log('PASS: production October handler preserves progress, saves per-participant completion, retries safely and rejects unknown versions');
+// Exercise the actual combat handler at the five-second boundary with no real wait.
+let clock=Date.parse('2026-10-14T02:00:00Z');
+context.Date=class extends Date {constructor(...args){super(...(args.length?args:[clock]));}static now(){return clock;}};
+saved.state.encounters[today].boss=false;saved.state.encounters[today].stage=0;
+saved.state.life.hp=100;saved.state.life.mp=100;
+const session=webcrypto.randomUUID();
+const attack=()=>call({command:'attack',day:today,stage:0,session,requestId:webcrypto.randomUUID()});
+await call({command:'engage',day:today,stage:0,session,requestId:webcrypto.randomUUID()});
+clock+=4999;await attack();assert.equal(saved.state.life.hp,100,'no early attack');
+clock+=1;await attack();assert.equal(saved.state.life.hp,95,'attack at exactly 5 seconds');assert.equal(saved.state.life.mp,97);
+clock+=4999;await attack();assert.equal(saved.state.life.hp,95,'next attack also waits 5 seconds');
+clock+=1;await attack();assert.equal(saved.state.life.hp,90,'second attack at 10 seconds');
+await call({command:'retreat',day:today,session,requestId:webcrypto.randomUUID()});clock+=5000;
+await assert.rejects(attack(),/stale_event/);assert.equal(saved.state.life.hp,90,'leaving stops damage');
+console.log('PASS: real combat handler waits 4999ms, attacks at 5000ms, repeats at 10000ms and stops on retreat');

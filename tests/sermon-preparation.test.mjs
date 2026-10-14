@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {emptyDraft,validateDraft,generationReady,applyGenerated,characterCount} from '../sermon-preparation-contract.mjs';
+import {emptyDraft,validateDraft,generationReady,guideOptions,applyGenerated,characterCount} from '../sermon-preparation-contract.mjs';
 const draft=()=>emptyDraft({title:'驗收專案',speaker:'驗收講員',scripture:'測試經文範圍',service_date:'2026-10-14'});
 test('required information, known fields, and supported steps are enforced',()=>{
  assert.equal(validateDraft(draft()).step,'information');
@@ -54,4 +54,17 @@ test('video jobs only accept canonical public YouTube URLs',async()=>{
  const {videoUrl}=await import('../sermon-preparation-contract.mjs');
  assert.equal(videoUrl('https://youtu.be/abcdefghijk?list=discard'),'https://www.youtube.com/watch?v=abcdefghijk');
  for(const input of ['http://192.168.0.112/test','https://youtube.com.evil.test/watch?v=abcdefghijk','https://youtube.com/playlist?list=abc','javascript:alert(1)'])assert.throws(()=>videoUrl(input));
+});
+test('guided discovery requires three answered rounds before recommendations',()=>{
+ let options=guideOptions();assert.deepEqual(options,{round:1,history:[]});
+ for(let round=1;round<=3;round++){
+  const previous={round,history:options.history,question:`第 ${round} 題`,choices:['盼望','禱告','關係','信心']};
+  options=guideOptions(previous,[0,2]);
+  assert.equal(options.round,round+1);assert.equal(options.history.length,round);
+  assert.deepEqual(options.history.at(-1).selected,['盼望','關係']);
+ }
+ assert.equal(options.round,4);
+ assert.throws(()=>guideOptions({round:4,history:options.history,question:'多問一題',choices:['甲','乙','丙','丁']},[0]),/invalid_guide/);
+ assert.throws(()=>guideOptions({round:1,history:[],question:'題目',choices:['甲','乙','丙','丁']},[]),/invalid_guide/);
+ assert.throws(()=>guideOptions({round:1,history:[],question:'題目',choices:['甲','乙','丙','丁']},[0,0]),/invalid_guide/);
 });

@@ -2,4 +2,18 @@
 @media(max-width:850px){.sermon-studio .studio-layout{grid-template-columns:1fr}.sermon-studio .studio-projects{position:static;padding:16px}.sermon-studio #projects{grid-template-columns:repeat(2,minmax(0,1fr))}.sermon-studio .studio-card{padding:18px}.sermon-studio .studio-materials{grid-template-columns:1fr}.sermon-studio .studio-project-head h2{font-size:22px}.sermon-studio .studio-steps{gap:3px}.sermon-studio .studio-steps button{font-size:12px}}
 @media(max-width:520px){.sermon-studio .studio-form-grid,.sermon-studio .studio-slides{grid-template-columns:1fr}.sermon-studio .studio-toolbar{align-items:stretch}.sermon-studio .studio-search{grid-template-columns:1fr}.sermon-studio .studio-card{padding:15px;border-radius:20px}.sermon-studio .studio-project-head{display:block}.sermon-studio #save{width:100%;margin-top:12px}.sermon-studio .studio-steps{position:sticky;top:var(--app-header-height,72px);z-index:2;background:#fff;padding:8px 0}.sermon-studio #manuscript{min-height:55vh}.sermon-studio .studio-slide{aspect-ratio:auto}}
 @media(prefers-reduced-motion:reduce){.sermon-studio *{scroll-behavior:auto!important}}
+.sermon-studio .studio-guide{margin:18px 0 22px;padding:clamp(18px,3vw,26px);border:1px solid var(--app-border,#d7ddd3);border-radius:22px;background:linear-gradient(145deg,#f4f8f1,#fffaf1)}
+.sermon-studio .studio-guide h4{margin:4px 0 0;font-size:clamp(20px,2vw,26px);line-height:1.35}
+.sermon-studio .studio-guide-progress{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:999px;background:#e8f0e5;color:#294a38;font-size:13px;font-weight:700;white-space:nowrap}
+.sermon-studio .studio-guide-choices{border:0;margin:14px 0 16px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sermon-studio .studio-guide-choices legend{grid-column:1/-1;margin-bottom:12px;font-weight:700;font-size:17px;line-height:1.5}
+.sermon-studio .studio-guide-choices label{display:flex;align-items:center;gap:10px;min-height:52px;padding:10px 14px;border:1px solid #cbd7c8;border-radius:14px;background:#fff;cursor:pointer;box-sizing:border-box}
+.sermon-studio .studio-guide-choices label:has(input:checked){border-color:#4c755d;background:#eef6ed}
+.sermon-studio .studio-guide-choices input{width:20px;height:20px;flex:none;accent-color:#38674b}
+.sermon-studio .studio-guide #guide-content>.studio-material{margin:12px 0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+.sermon-studio .studio-guide #guide-content>.studio-material h5,.sermon-studio .studio-guide #guide-content>.studio-material p{width:100%;margin:0}
+.sermon-studio .studio-guide #guide-content>.studio-material h5{font-size:17px;line-height:1.45}
+.sermon-studio .studio-guide #guide-content>button{margin:0 10px 10px 0}
+.sermon-studio .studio-keyword-search{margin:14px 0 20px}.sermon-studio .studio-keyword-search>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:650}
+@media(max-width:520px){.sermon-studio .studio-guide-choices{grid-template-columns:1fr}.sermon-studio .studio-guide .studio-section-head{align-items:flex-start;gap:8px}.sermon-studio .studio-guide-progress{white-space:normal}}
 

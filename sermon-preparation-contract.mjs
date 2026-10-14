@@ -1,5 +1,13 @@
 export const STEPS=Object.freeze(['information','materials','outline','manuscript','slides']);
-export const JOB_KINDS=Object.freeze(['search','detail','outline','manuscript','slides','backup','media']);
+export const JOB_KINDS=Object.freeze(['search','detail','guide','outline','manuscript','slides','backup','media']);
+export function guideOptions(previous=null,selections=[]){
+  if(previous===null)return {round:1,history:[]};
+  if(!previous||!Number.isInteger(previous.round)||previous.round<1||previous.round>3||!Array.isArray(previous.history)||previous.history.length!==previous.round-1||typeof previous.question!=='string'||!previous.question.trim()||previous.question.length>300||!Array.isArray(previous.choices)||previous.choices.length!==4||previous.choices.some(value=>typeof value!=='string'||!value.trim()||value.length>100))throw Error('invalid_guide');
+  if(!Array.isArray(selections)||selections.length<1||selections.length>4||selections.some(value=>!Number.isInteger(value)||value<0||value>3)||new Set(selections).size!==selections.length)throw Error('invalid_guide');
+  const history=[...previous.history,{question:previous.question,selected:selections.map(index=>previous.choices[index])}];
+  if(history.some(turn=>!turn||typeof turn.question!=='string'||turn.question.length>300||!Array.isArray(turn.selected)||turn.selected.length<1||turn.selected.length>4||turn.selected.some(value=>typeof value!=='string'||value.length>100)))throw Error('invalid_guide');
+  return {round:history.length+1,history};
+}
 export const characterCount=text=>[...String(text||'').split(/\n#{1,6}\s*(?:來源|待查證)/)[0].replace(/^#{1,6}\s.*$/gm,'').replace(/\[素材\s*\d+\]/g,'').replace(/\s/g,'')].length;
 export const emptyDraft=(information={title:'',speaker:'',scripture:'',service_date:''})=>({format:'mplus-sermon-workspace',information,step:'information',notes:'',audience:'',bible_version:'',target_characters:5000,materials:[],outline:[],outline_confirmed:false,manuscript:'',source_checklist:[],slides:[]});
 export function validateDraft(value){

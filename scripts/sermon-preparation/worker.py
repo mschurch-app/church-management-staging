@@ -165,6 +165,30 @@ def parse_json(text):
     if not match:raise ValueError('model_json_invalid')
     return json.loads(match.group())
 
+def guide_job(job,progress):
+    options=job['input']['options'];round_number=options.get('round');history=options.get('history')
+    if type(round_number) is not int or round_number not in (1,2,3,4) or not isinstance(history,list) or len(history)!=round_number-1:raise ValueError('invalid_guide')
+    project=job['input']['project'];draft=job['input']['payload']
+    brief=json.dumps({'主題':project['title'],'經文':project['scripture'],'對象':draft.get('audience',''),'講員筆記':draft.get('notes','')[:1000],'已回答':history},ensure_ascii=False)
+    if round_number<=3:
+        progress('正在根據前一輪答案預備追問…')
+        focus=('這次需要的信息主題與處境','聽眾目前最需要被回應的問題','希望採取的經文或神學切入角度')[round_number-1]
+        data=parse_json(infer('這是同工尋找既有講道信息的三輪引導，第 '+str(round_number)+' 輪。資料：\n'+brief+'\n請根據已回答內容追問一個尚未問過、聚焦「'+focus+'」的具體問題，提供恰好四個可複選、互不重複的短選項。問題與選項全程使用自然繁體中文，不夾英文。不要提供講道推薦。只輸出 JSON：{"question":"問題","choices":["選項1","選項2","選項3","選項4"]}。',progress,500))
+        question,choices=data.get('question'),data.get('choices')
+        if not isinstance(question,str) or not question.strip() or len(question)>300 or not isinstance(choices,list) or len(choices)!=4 or any(not isinstance(choice,str) or not choice.strip() or len(choice)>100 for choice in choices) or len(set(choices))!=4:raise ValueError('invalid_guide')
+        return {'round':round_number,'history':history,'question':question.strip(),'choices':[choice.strip() for choice in choices],'model':MODEL.name}
+    progress('三輪回答已完成，正在私人資料庫比對來源…')
+    data=parse_json(infer('三輪引導已完成。根據以下資料提出 3 至 5 個簡短中文搜尋詞，每個以一個主題詞為主，必須來自使用者勾選的需要或指定經文；不要編造資料庫結果。資料：\n'+brief+'\n只輸出 JSON：{"queries":["詞1","詞2","詞3"]}。',progress,350))
+    queries=data.get('queries')
+    if not isinstance(queries,list) or not 1<=len(queries)<=5 or any(not isinstance(term,str) or not 1<=len(term.strip())<=30 for term in queries):raise ValueError('invalid_guide')
+    candidates={}
+    for term in queries:
+        for item in nas('search',{'query':term.strip()})['items']:
+            entry=candidates.setdefault(item['url'],{**item,'matched_terms':[]})
+            if term.strip() not in entry['matched_terms']:entry['matched_terms'].append(term.strip())
+    items=sorted(candidates.values(),key=lambda item:(-len(item['matched_terms']),not item.get('verified'),item['url']))[:6]
+    return {'round':4,'history':history,'queries':[term.strip() for term in queries],'items':items,'model':MODEL.name}
+
 def generate(job,progress,job_dir):
     data=job['input'];project,draft=data['project'],data['payload'];kind=job['kind']
     for m in draft['materials']:
@@ -227,6 +251,7 @@ def execute(config,job):
         elif job['kind']=='search':result=nas('search',job['input']['options'])
         elif job['kind']=='detail':result=nas('detail',job['input']['options'])
         elif job['kind']=='media':result=media_job(job,progress,job_dir)
+        elif job['kind']=='guide':result=guide_job(job,progress)
         elif job['kind']=='backup':
             progress('正在將此版本回存 QNAP 與 Synology…')
             payload={k:job['input'][k] for k in ('project','version','payload')}

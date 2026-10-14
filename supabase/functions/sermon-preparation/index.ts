@@ -1,9 +1,9 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {emptyDraft,validateDraft,generationReady,JOB_KINDS,videoUrl} from '../../../sermon-preparation-contract.mjs';
+import {emptyDraft,validateDraft,generationReady,guideOptions,JOB_KINDS,videoUrl} from '../../../sermon-preparation-contract.mjs';
 const ORIGIN='https://mscos.mchurch.online',UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const headers=(origin:string)=>({'content-type':'application/json; charset=utf-8','cache-control':'no-store','vary':'Origin',...(origin===ORIGIN?{'access-control-allow-origin':origin}:{}),'access-control-allow-headers':'authorization,content-type,apikey','access-control-allow-methods':'POST,OPTIONS'});
 const json=(o:string,status:number,body:unknown)=>new Response(JSON.stringify(body),{status,headers:headers(o)});
-const safeErrors=new Set(['forbidden','not_found','conflict','invalid_request','invalid_draft','invalid_materials','invalid_outline','invalid_slides','outline_required','materials_need_review','manuscript_too_short','project_limit','queue_limit','generation_limit']);
+const safeErrors=new Set(['forbidden','not_found','conflict','invalid_request','invalid_guide','invalid_draft','invalid_materials','invalid_outline','invalid_slides','outline_required','materials_need_review','manuscript_too_short','project_limit','queue_limit','generation_limit']);
 Deno.serve(async req=>{
  const origin=req.headers.get('origin')||'';
  if(req.method==='OPTIONS')return json(origin,origin===ORIGIN?200:403,{ok:origin===ORIGIN});
@@ -37,6 +37,17 @@ Deno.serve(async req=>{
     if(!JOB_KINDS.includes(input.kind)||input.kind==='backup'||!UUID.test(input.request_id||'')||!Number.isSafeInteger(input.base_version))throw Error('invalid_request');
     input.options={};
     if(input.kind==='search'){const query=body.options?.query;if(typeof query!=='string'||!query.trim()||query.length>80)throw Error('invalid_request');input.options={query:query.trim()};}
+    if(input.kind==='guide'){
+     const o=body.options||{};
+     if(o.previous_job_id===undefined){if(Object.keys(o).length)throw Error('invalid_guide');input.options=guideOptions();}
+     else{
+      if(!UUID.test(o.previous_job_id||'')||Object.keys(o).some(key=>!['previous_job_id','selections'].includes(key)))throw Error('invalid_guide');
+      const previous=await db.rpc('sermon_workspace_call',{p_user:user.id,p_action:'job',p_input:{job_id:o.previous_job_id}});
+      const job=previous.data?.job;
+      if(previous.error||job?.project_id!==input.project_id||job?.kind!=='guide'||job?.status!=='completed')throw Error('invalid_guide');
+      input.options=guideOptions(job.result,o.selections);
+     }
+    }
     if(input.kind==='media')input.options={url:videoUrl(body.options?.url)};
     if(input.kind==='detail'){
      const o=body.options;if(!o||typeof o.url!=='string'||o.url.length>2000||!/^https?:\/\//.test(o.url)||!Number.isSafeInteger(o.ordinal)||o.ordinal<0||!/^[a-f0-9]{64}$/.test(o.content_sha||''))throw Error('invalid_request');

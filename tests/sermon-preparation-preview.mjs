@@ -1,6 +1,6 @@
 // Isolated fixture server. Never connects to production auth or database.
 import http from 'node:http';import fs from 'node:fs';import path from 'node:path';
-import {emptyDraft} from '../sermon-preparation-contract.mjs';
+import {emptyDraft,guideOptions} from '../sermon-preparation-contract.mjs';
 const root=path.resolve(new URL('../',import.meta.url).pathname),id='00000000-0000-4000-8000-000000000001';
 let project={id,title:'信息預備驗收',speaker:'驗收講員',scripture:'詩篇 23:1–3',version:1,backup_version:1,updated_at:new Date().toISOString()},payload=emptyDraft({title:project.title,speaker:project.speaker,scripture:project.scripture,service_date:''}),jobs=[];
 const access={grants:[{church_id:'M+',permission:'website_weekly'},{church_id:'M+',permission:'pastoral_chats'}],featurePermissions:[]};
@@ -13,7 +13,15 @@ http.createServer(async(req,res)=>{
   if(input.action==='list')data={items:[project],worker:{online:true,summary:{counts:{web_documents:4649}}}};
   if(input.action==='load')data={project,payload,jobs,versions:[{version:project.version,created_at:project.updated_at}]};
   if(input.action==='save'){payload=input.payload;project={...project,...payload.information,version:project.version+1,backup_version:project.version};data={project,payload};}
-  if(input.action==='enqueue'){const job={id:crypto.randomUUID(),kind:input.kind,status:'queued',base_version:project.version};jobs.unshift(job);data={job};}
+  if(input.action==='enqueue'){
+   const job={id:crypto.randomUUID(),kind:input.kind,status:'queued',base_version:project.version};
+   if(input.kind==='guide'){
+    const previous=input.options?.previous_job_id?jobs.find(row=>row.id===input.options.previous_job_id):null;
+    const options=guideOptions(previous?.result||null,input.options?.selections||[]);
+    job.status='completed';job.result=options.round<4?{...options,question:['這次要回應什麼需要？','這篇信息主要給誰？','希望從哪個角度切入？'][options.round-1],choices:['盼望','信心','禱告','關係']}:{...options,items:[{id:'fixture-source',title:'在患難中仍有盼望',speaker:'候選講員',content:'隔離測試的來源摘要。',url:'https://example.test/sermon',ordinal:1,content_sha:'a'.repeat(64)}]};
+   }
+   jobs.unshift(job);data={job};
+  }
   res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,...data}));
  }
  if(!file.startsWith(root+'/'))return res.writeHead(403).end();

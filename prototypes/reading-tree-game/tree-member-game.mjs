@@ -90,7 +90,7 @@ today=memberData.today;
 const audio = new GardenAudio(message => { $('#audio-status').textContent = message; });
 const octoberMode = document.body.dataset.octoberTest === 'true';
 let openingRequired = octoberMode && needsOpening(state);
-let selectingOpening = openingRequired;
+let selectingOpening = openingRequired && !state.avatarId;
 const dialogOpeners = new Map();
 const opening = octoberMode ? setupOpeningStory({
  getAvatar:()=>state.avatarId,avatarSprite,gearSprite:sprite,
@@ -394,7 +394,7 @@ function renderAvatarChoices() {
 }
 function openAvatar() {
   avatarChoice = state.avatarId; avatarGender = AVATARS.find(avatar => avatar.id === avatarChoice)?.gender || null;
-  $('#avatar-dialog [data-close]').hidden = !state.avatarId || openingRequired;
+  $('#avatar-dialog [data-close]').hidden = !state.avatarId;
   $('#avatar-dialog [data-close]').setAttribute('aria-label', '關閉角色選擇');
   $('#avatar-status').textContent = state.avatarId ? '可以更換角色，讀經與成長紀錄會保留。' : '第一次來，選一位陪你讀經成長的角色。';
   $('#avatar-audio-label').hidden = !!state.avatarId; renderAvatarChoices(); openDialog('avatar-dialog');
@@ -728,7 +728,8 @@ setInterval(refreshDay, 60000);
 ensureEncounter(); persist(); renderGuardian(); renderDecorations(); renderEncounter(); renderEventLibrary(); renderSound(); updateProgress(); void loadAssets();
 setAudioMode('garden');
 setupMemberControls({send:change,getState:()=>state,openDialog,announce,refresh:refreshMember,isOnboarding:()=>openingRequired});
-if (!state.avatarId || openingRequired) openAvatar();
+if (!state.avatarId) openAvatar();
+else if (openingRequired) opening.open();
 
 $('#garden-arrange').onclick=()=>arrangement.focusFirst();
 $('#garden-collection').onclick=()=>{

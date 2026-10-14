@@ -1,3 +1,4 @@
+import {completeOpening} from '../../../prototypes/reading-tree-game/tree-game-opening-state.mjs';
 import {emptyState,refreshState,applyCommand,validDay} from '../tree-garden/engine.ts';
 import {festivalTestForDate} from '../../../life-tree-festival-test-schedule.mjs';
 import {FESTIVAL_MISSIONS} from './festival-missions.ts';
@@ -106,6 +107,7 @@ export async function octoberGarden(db:any,participant:any,body:any,today:string
    }
   }else{
    const stage=e.stage;applyCommand(s,action,body,today,{counterOnHit:false,waterCare:true});
+   if(action==='avatar'&&body.openingVersion!==undefined)completeOpening(s,body.openingVersion);
    if(action==='hit'&&stage!==e.stage&&e.combat)e.combat.active=false;
   }
   s.receipts=[...s.receipts.slice(-63),body.requestId];

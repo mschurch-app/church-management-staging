@@ -1,0 +1,90 @@
+{
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-4bit",
+  "voice_descriptions": {
+    "hero-male": "年輕少年男聲，約十六到十九歲。音色清亮輕盈，中高音域，帶著好奇與朝氣，親切真誠。自然的台灣華語口語，咬字清楚，像少年在花園中和長輩聊天。聲線柔和，節奏自然。",
+    "hero-female": "年輕少女女聲，約十六到十九歲。音色明亮清甜、輕盈自然，帶著好奇與朝氣，親切真誠。自然的台灣華語口語，咬字清楚，像少女在花園中和長輩聊天。聲線柔和，節奏自然。"
+  },
+  "clips": [
+    {
+      "file": "hero-female-youth-v2-01.m4a",
+      "role": "hero-female",
+      "line": 1,
+      "text": "這座花園這麼大，為什麼只有一粒小小的種子？",
+      "seconds": 4.0,
+      "sha256": "8922279b3285f4109ab4f22cf1c32d97646a330e90c2689995ee69e2aca23130"
+    },
+    {
+      "file": "hero-female-youth-v2-03.m4a",
+      "role": "hero-female",
+      "line": 3,
+      "text": "那麼小的種子，真的能長成讓飛鳥停留的樹嗎？",
+      "seconds": 4.56,
+      "sha256": "8c0686ca282ba6a147fc12ca38bc0b1e88106d97f10fbb0c61d4878473a3067a"
+    },
+    {
+      "file": "hero-female-youth-v2-05.m4a",
+      "role": "hero-female",
+      "line": 5,
+      "text": "那我是不是要趕快讓它長大？",
+      "seconds": 1.76,
+      "sha256": "17f534c51526b7caa6c9b0cb5bd06ae79736781abebb5b2175b1d3f88382e810"
+    },
+    {
+      "file": "hero-female-youth-v2-07.m4a",
+      "role": "hero-female",
+      "line": 7,
+      "text": "所以，我可以從今天讀一段聖經開始？",
+      "seconds": 3.52,
+      "sha256": "dfe8f3c7d3689899a839e6f8a68b578e25501a4c0747eabd4c05986001df0374"
+    },
+    {
+      "file": "hero-female-youth-v2-09.m4a",
+      "role": "hero-female",
+      "line": 9,
+      "text": "好！今天，就從這一粒種子開始。",
+      "seconds": 4.16,
+      "sha256": "6a5a1528ad78dd52b956bd42a6d3f514a2e73a5de0352386bb23c874bc4dba1b"
+    },
+    {
+      "file": "hero-male-youth-v2-01.m4a",
+      "role": "hero-male",
+      "line": 1,
+      "text": "這座花園這麼大，為什麼只有一粒小小的種子？",
+      "seconds": 8.08,
+      "sha256": "dd1dd201962b7126b220459a1739bac1df0f674a29983c963140601d13451de4"
+    },
+    {
+      "file": "hero-male-youth-v2-03.m4a",
+      "role": "hero-male",
+      "line": 3,
+      "text": "那麼小的種子，真的能長成讓飛鳥停留的樹嗎？",
+      "seconds": 3.76,
+      "sha256": "d084d2857104c363d2fa5d4fd41ee095ed02b6e772633a21838e0d319c04a12a"
+    },
+    {
+      "file": "hero-male-youth-v2-05.m4a",
+      "role": "hero-male",
+      "line": 5,
+      "text": "那我是不是要趕快讓它長大？",
+      "seconds": 2.16,
+      "sha256": "d026cb4c9e1ad1f74f73f537966220b092fbba0d5f78d9b0f3178d3a86852323"
+    },
+    {
+      "file": "hero-male-youth-v2-07.m4a",
+      "role": "hero-male",
+      "line": 7,
+      "text": "所以，我可以從今天讀一段聖經開始？",
+      "seconds": 4.08,
+      "sha256": "c620f76636d7a5b2d310ca62a89a7ee0595eb948142fade6339482a8edfce541"
+    },
+    {
+      "file": "hero-male-youth-v2-09.m4a",
+      "role": "hero-male",
+      "line": 9,
+      "text": "好！今天，就從這一粒種子開始。",
+      "seconds": 2.8,
+      "sha256": "6eabdb0777ed954c580416f8505f0e2e152afe12238defccbdb54d30edba928c"
+    }
+  ],
+  "synthetic_original_voices": true
+}

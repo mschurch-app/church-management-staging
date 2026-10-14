@@ -424,10 +424,11 @@ function renderTasks(tasks){
     if(task.completionReport){const report=document.createElement('div');report.className='completion-report';const label=document.createElement('strong');label.textContent='完成紀錄';const text=document.createElement('p');text.textContent=task.completionReport;report.append(label,text);article.append(report);}
     const actions=document.createElement('div');actions.className='task-actions';
     if(task.workflow==='weekly_bulletin_review'&&task.actionUrl){const review=document.createElement('a');review.className='button';review.href='..'+task.actionUrl;review.textContent='開啟週報審核';actions.append(review);}
+    if(['sermon_social_initial_review','sermon_social_final_review','sermon_youtube_caption_review'].includes(task.workflow)&&task.actionUrl){const review=document.createElement('a');review.className='button';review.href='..'+task.actionUrl;review.textContent=task.workflow==='sermon_social_initial_review'?'開啟講道 IG 初審':task.workflow==='sermon_social_final_review'?'開啟講道 IG 複審':'開啟 YouTube 字幕審核';actions.append(review);}
     if(task.workflow==='newcomer_care'&&task.actionUrl){const care=document.createElement('a');care.className='button';care.href='..'+task.actionUrl;care.textContent='開啟關懷紀錄';actions.append(care);}
     actions.append(taskButton('檢視／下載附件',task.id,'list-attachments',true));
     if(task.canSubmit)actions.append(taskButton('送出工作邀請並通知',task.id,'submit'));
-    if(task.canApprove)actions.append(taskButton('接受並開始處理',task.id,'approve'));
+    if(task.canApprove&&!['sermon_social_initial_review','sermon_social_final_review','sermon_youtube_caption_review'].includes(task.workflow))actions.append(taskButton('接受並開始處理',task.id,'approve'));
     if(task.canNotify)actions.append(taskButton('重新傳送通知',task.id,'retry-notification',true));
     if(task.canAttach){
       const input=document.createElement('input');input.type='file';input.multiple=true;

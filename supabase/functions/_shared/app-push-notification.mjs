@@ -1,5 +1,11 @@
 import webpush from 'npm:web-push@3.6.7';
 
+const quietForOwner=(userId)=>{
+ if(userId!=='b7d6ba5d-8e0a-4921-8813-e9f0071b7566')return false;
+ const hour=Number(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',hour:'2-digit',hourCycle:'h23'}).format(new Date()));
+ return hour>=22||hour<8;
+};
+
 async function vapid(db){
  const stored=await db.rpc('get_app_push_vapid_config');
  if(stored.error||!stored.data?.public_key||!stored.data?.private_key)return null;
@@ -10,7 +16,7 @@ async function vapid(db){
 async function notifyAppUser({db,userId,churchId,eventKey,sourceKey,title,body,url,ready}){
  const previous=await db.from('app_notifications').select('id').eq('user_id',userId).eq('event_key',eventKey).eq('source_key',sourceKey).maybeSingle();
  if(!previous.data)await db.from('app_notifications').insert({user_id:userId,church_id:churchId,event_key:eventKey,source_key:sourceKey,title,body,target_url:url});
- if(!ready)return {status:'stored',sent:0};
+ if(!ready||quietForOwner(userId))return {status:'stored',sent:0};
  const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',userId).eq('is_active',true);
  let sent=0;
  for(const item of subscriptions.data||[])try{await webpush.sendNotification({endpoint:item.endpoint,keys:{p256dh:item.p256dh,auth:item.auth_key}},JSON.stringify({title,body,url,tag:sourceKey}));sent++;}
@@ -47,7 +53,7 @@ export async function notifyNewcomerApp({db,memberId}){
  for(const userId of recipients.data){
   const previous=await db.from('app_notifications').select('id').eq('user_id',userId).eq('event_key','newcomer_created').eq('source_key',sourceKey).maybeSingle();
   if(!previous.data)await db.from('app_notifications').insert({user_id:userId,church_id:'M+',event_key:'newcomer_created',source_key:sourceKey,title,body,target_url:url});
-  if(!ready)continue;
+  if(!ready||quietForOwner(userId))continue;
   const subscriptions=await db.from('app_push_subscriptions').select('id,endpoint,p256dh,auth_key').eq('user_id',userId).eq('is_active',true);
   for(const item of subscriptions.data||[])try{
    await webpush.sendNotification({endpoint:item.endpoint,keys:{p256dh:item.p256dh,auth:item.auth_key}},JSON.stringify({title,body,url,tag:sourceKey}));sent++;

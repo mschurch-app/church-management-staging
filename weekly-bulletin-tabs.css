@@ -42,9 +42,6 @@ body[data-workflow-page="weekly"]:has(#weekly-two-track) #scope-note{display:non
 .approved-promo-facts div{padding:9px 0;border-bottom:1px solid #e1eae2}
 .approved-promo-facts dt{font-size:.82rem;color:#68806c}
 .approved-promo-facts dd{margin:3px 0 0;font-weight:750;overflow-wrap:anywhere}
-.weekly-image-edit{display:grid;gap:8px;margin-top:16px;font-weight:750}
-.weekly-image-edit input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #d8e4da;border-radius:12px;background:#fff}
-.approved-promo>strong:not(:first-child){display:block;margin-top:18px}
 .approved-promo>p{margin:12px 0 0;color:#536b5b}
 #weekly-two-track .schedule-role{display:grid;grid-template-columns:minmax(90px,.65fr) minmax(0,1.35fr);align-items:center}
 #weekly-two-track .schedule-role input{min-width:0;max-width:100%;min-height:43px;padding:8px 10px}

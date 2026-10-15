@@ -218,6 +218,7 @@ html.app-large-text body .member-page>.page-header :is(button,.secondary){font-s
 html.app-large-text body .mobile-app-nav{height:auto;max-height:none}
 html.app-large-text body .mobile-app-nav a{font-size:.7rem;min-width:0;overflow-wrap:anywhere}
 @media(max-width:480px){html body .app-system-banner{align-items:flex-start;flex-wrap:wrap}html body .app-system-banner button{margin-left:auto}}
+@media(max-width:480px){html body .app-system-banner.has-defer p{flex-basis:100%}html body .app-system-banner.has-defer button{margin-left:0}html body .app-system-banner.has-defer button:last-child{margin-left:auto}}
 
 html.app-large-text body :is(input,select,textarea){font-size:1rem!important;min-width:0}
 html.app-large-text body .member-page :is(h2,.section-heading h2){font-size:1.05rem!important;overflow-wrap:anywhere}

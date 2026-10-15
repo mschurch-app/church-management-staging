@@ -56,3 +56,7 @@ verify_jwt = true
 # Device-only endpoint validates a per-worker hashed credential; browser origins are rejected.
 [functions.sermon-preparation-worker]
 verify_jwt = false
+
+# Public volunteer signup validates input; admin actions verify bearer JWT and heat_camp permission.
+[functions.heat-camp-volunteer]
+verify_jwt = false

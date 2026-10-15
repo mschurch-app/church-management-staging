@@ -168,12 +168,12 @@ export const FUNCTION_CATALOG=freezeTree({
     "file": "heat-camp-admin.html",
     "icon": "🏀",
     "title": "熱火籃球營",
-    "description": "報名、繳費與名單",
+    "description": "報名、繳費、名單與志工",
     "key": "heat_camp",
     "group": "basketball",
     "symbol": "target",
     "configurableHome": true,
-    "searchTerms": []
+    "searchTerms": ["志工報名", "熱火籃球營志工"]
   },
   "website_weekly": {
     "permission": "website_weekly",

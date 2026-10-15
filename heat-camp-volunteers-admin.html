@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>熱火籃球營志工｜教會 OS</title>
+  <link rel="stylesheet" href="auth.css?v=20260923-aurora1">
+  <link rel="stylesheet" href="church-brand.css?v=20261008-header1">
+  <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
+  <link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
+  <link rel="stylesheet" href="church-palette.css?v=20261012-readable2">
+  <link rel="stylesheet" href="heat-camp-volunteers-admin.css?v=20261015-1">
+  <link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261012-readable2">
+</head>
+<body>
+  <main class="member-page volunteers-admin">
+    <header class="page-header"><div><p class="eyebrow">M+ · 2027 HEAT BASKETBALL CAMP</p><h1>志工報名與聯繫</h1><p class="muted">查看志工意願、聯絡資料與錄取名額。</p></div><a class="header-action" href="heat-camp-admin.html?church=M%2B">返回營隊管理</a></header>
+    <nav class="page-nav"><a href="admin-dashboard.html?church=M%2B">管理首頁</a><a href="heat-camp-admin.html?church=M%2B">營隊報名</a><a href="https://mchurch.online/heat-camp-volunteers.html" target="_blank" rel="noopener">開啟志工報名頁</a></nav>
+    <p id="status" class="status-message" role="status" aria-live="polite">正在確認登入權限…</p>
+    <section id="summary" class="volunteer-summary" aria-label="錄取名額"></section>
+    <section class="volunteer-panel"><div class="volunteer-toolbar"><div><h2>志工報名清單</h2><p id="count" class="muted"></p></div><div><label>狀態篩選<select id="filter"><option value="">全部</option><option value="pending">待聯繫</option><option value="contacted">已聯繫</option><option value="selected">已錄取</option><option value="declined">未錄取</option></select></label></div></div><div id="applications" class="applications"></div></section>
+  </main>
+  <script src="vendor/supabase-2.102.0.js"></script>
+  <script type="module" src="heat-camp-volunteers-admin.mjs?v=20261015-1"></script>
+  <script type="module" src="church-brand.mjs?v=20261012-readable2"></script>
+</body>
+</html>

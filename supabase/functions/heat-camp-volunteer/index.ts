@@ -55,14 +55,18 @@ Deno.serve(async req=>{
     const requestId=value(input.request_id,36);
     const name=value(input.name,80),church=value(input.church_affiliation,120)||'未提供',phone=value(input.phone,24),email=value(input.email,160);
     const lineId=value(input.line_id,80),experience=value(input.experience,1000),notes=value(input.notes,1000);
+    const birthday=value(input.birthday,10),nationalId=value(input.national_id,10).toUpperCase(),guardianName=value(input.guardian_name,80);
     const roles=Array.isArray(input.roles)?input.roles.filter((x):x is string=>typeof x==='string'):[];
+    if(!xBirthday(birthday)||!xNationalId(nationalId)||(xMinor(birthday)&&guardianName.length<2)||guardianName.length>80)
+      return json(400,{ok:false,error:'invalid_insurance'});
     if(!uuid.test(requestId)||name.length<2||name.length>80||church.length<1||church.length>120||!xPhone(phone)||!xEmail(email)
       ||roles.length<1||roles.length>3||new Set(roles).size!==roles.length||roles.some(x=>!roleNames[x])
       ||lineId.length>80||experience.length>1000||notes.length>1000
       ||input.training_agreed!==true||input.deployment_agreed!==true||input.privacy_agreed!==true)
       return json(400,{ok:false,error:'invalid_request'});
     const saved=await db.rpc('heat_camp_volunteer_submit',{p_request_id:requestId,p_payload:{
-      name,church_affiliation:church,phone,email,line_id:lineId,roles,experience,notes,
+      name,church_affiliation:church,phone,email,line_id:lineId,birthday,national_id:nationalId,
+      guardian_name:xMinor(birthday)?guardianName:'',roles,experience,notes,
       training_agreed:true,deployment_agreed:true,privacy_agreed:true
     }});
     if(saved.error||!saved.data?.id)return json(503,{ok:false,error:'save_failed'});
@@ -77,6 +81,12 @@ Deno.serve(async req=>{
   const verified=await auth.auth.getUser(token);
   if(verified.error||!verified.data.user)return json(401,{ok:false,error:'login_required'});
   const id=typeof input.id==='string'&&uuid.test(input.id)?input.id:null;
+  if(input.action==='insurance_details'){
+    if(!id)return json(400,{ok:false,error:'invalid_request'});
+    const details=await db.rpc('heat_camp_volunteer_insurance_get',{p_user:verified.data.user.id,p_id:id});
+    if(details.error)return json(details.error.message?.includes('forbidden')?403:400,{ok:false,error:details.error.message?.includes('forbidden')?'forbidden':'request_failed'});
+    return json(200,{ok:true,insurance:details.data});
+  }
   const action=input.action==='update'?'update':'list';
   if(input.action!=='list'&&input.action!=='update')return json(400,{ok:false,error:'invalid_action'});
   if(action==='update'&&!id)return json(400,{ok:false,error:'invalid_request'});
@@ -90,8 +100,26 @@ Deno.serve(async req=>{
     return json(code.includes('forbidden')?403:code.includes('role_full')?409:400,{ok:false,error:
       ['forbidden','role_full','invalid_roles','not_found','invalid_status'].find(x=>code.includes(x))||'request_failed'});
   }
-  return json(200,{ok:true,...result.data});
+  const items=Array.isArray(result.data?.items)?result.data.items.map((item:Record<string,unknown>)=>{
+    const {national_id_ciphertext:unused,...safeItem}=item;void unused;return safeItem;
+  }):[];
+  return json(200,{ok:true,...result.data,items});
 });
 
 function xPhone(phone:string){return /^[0-9+() -]{8,24}$/.test(phone);}
 function xEmail(email:string){return email.length>=5&&email.length<=160&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);}
+function xNationalId(id:string){return /^[A-Z][12][0-9]{8}$/.test(id);}
+function xBirthday(value:string){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+  const parsed=new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime())&&parsed.toISOString().slice(0,10)===value
+    &&value>='1900-01-01'&&value<=taipeiToday();
+}
+function xMinor(value:string){
+  const adultAt=new Date(`${value}T00:00:00Z`);adultAt.setUTCFullYear(adultAt.getUTCFullYear()+18);
+  return taipeiToday()<adultAt.toISOString().slice(0,10);
+}
+function taipeiToday(){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(part=>[part.type,part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}

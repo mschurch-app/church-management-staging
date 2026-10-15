@@ -1,0 +1,12 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=_AYaH6Fnk9U",
+  "source_stream": "1920x1080 YouTube HLS format 312",
+  "speaker_verified_from_video_title": "吳俊璋牧師",
+  "frames": [
+    {"file": "source-0900.jpg", "at_seconds_approx": 901},
+    {"file": "source-1500.jpg", "at_seconds_approx": 1501},
+    {"file": "source-2400.jpg", "at_seconds_approx": 2401}
+  ],
+  "processing": "Unaltered source-video stills extracted as JPEG. No generated person, slide, quote or text overlay.",
+  "review_note": "Landscape 16:9 source stills for editorial review. The sermon slides in the images are source-video content, not separately transcribed or checked."
+}

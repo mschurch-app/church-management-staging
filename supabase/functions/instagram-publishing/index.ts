@@ -157,8 +157,15 @@ Deno.serve(async request=>{
       const bulletinId=String(body.bulletinId||''),videoPath=String(body.reelVideoPath||''),audioPath=body.reelAudioPath?String(body.reelAudioPath):null,caption=String(body.reelCaption||'').trim().slice(0,2200),audioStart=Math.max(0,Math.min(86400,Number(body.reelAudioStart)||0));
       const version=Number(body.version);
       if(!/^[0-9a-f-]{36}$/i.test(bulletinId)||!Number.isInteger(version)||version<1||!videoPath.startsWith(`${church}/weekly/${bulletinId}/`)||!videoPath.endsWith('.mp4')||(audioPath&&!audioPath.startsWith(`${church}/reel-music/`)))return json(origin,{ok:false,error:'invalid_request'},400);
-      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,version:version+1,updated_by:user!.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).eq('version',version).in('status',['draft','changes_requested']).select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,speaker_photo_path,hero_image_path,reel_cover_image_path,sections,schedule_overrides,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
-      if(saved.error||!saved.data)return json(origin,{ok:false,error:'not_found'},404);
+      const latest=await client.db.from('website_weekly_bulletins').select('version,status,service_date,hero_image_path,sermon_topic,sermon_scripture,sermon_speaker').eq('id',bulletinId).eq('church_id',church).maybeSingle();
+      if(latest.error||!latest.data)return json(origin,{ok:false,error:'not_found'},404);
+      if(!['draft','changes_requested'].includes(latest.data.status))return json(origin,{ok:false,error:'bulletin_locked'},409);
+      const source=body.source||{};
+      if(source.heroImagePath){
+        if(source.heroImagePath!==latest.data.hero_image_path||source.serviceDate!==latest.data.service_date||source.topic!==latest.data.sermon_topic||source.scripture!==latest.data.sermon_scripture||source.speaker!==latest.data.sermon_speaker)return json(origin,{ok:false,error:'source_changed'},409);
+      }else if(version!==latest.data.version)return json(origin,{ok:false,error:'conflict'},409);
+      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,version:latest.data.version+1,updated_by:user!.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).eq('version',latest.data.version).in('status',['draft','changes_requested']).select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,speaker_photo_path,hero_image_path,reel_cover_image_path,sections,schedule_overrides,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
+      if(saved.error||!saved.data)return json(origin,{ok:false,error:'conflict'},409);
       return json(origin,{ok:true,bulletin:saved.data});
     }
     if(body.action==='publication_status'){

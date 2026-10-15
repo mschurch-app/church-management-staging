@@ -30,7 +30,7 @@ const sameInput=(a,b)=>['TOPIC','SCRIPTURE','SPEAKER','SERVICE_DATE','SUBTITLE',
 const STAGES={queued:'等候創作',creating:'送出 AI 創作',generating:'Canva AI 正在創作',generated:'核對單頁設計',resizing:'送出尺寸調整',resize:'Canva 正在調整尺寸',autofill:'處理先前填版工作',design_ready:'準備匯出',exporting:'建立匯出工作',export:'匯出圖片',ready:'圖片已保存'};
 
 export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
-  let settings=null,job=null,pendingId='',pendingRequest=null,connectionWindow=null,continuing=false,selectedOption=0;
+  let settings=null,job=null,jobs=[],pendingId='',pendingRequest=null,connectionWindow=null,continuing=false,selectedOption=0;
   const progress=createMediaProgress($('canva-progress'));
   const progressHistory=()=>`canva:${church}:${getContext().userId||'current'}`;
   const key=()=>`weekly-canva:${getContext().userId}:${church}:${getContext().bulletinId}`;
@@ -42,7 +42,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     $('canva-refresh-images').hidden=!job?.canReexport;
     for(const kind of ['home','ig'])$('canva-edit-'+kind).hidden=!job?.outputs?.[kind]?.designId;
     if(job&&progress.active)progress.update({label:'Canva 製圖中…',description:Object.entries(job.outputs).map(([kind,o])=>`${kind==='home'?'預告圖':'IG 圖'}：${STAGES[o.stage]||'處理中'}`).join('\n')});
-    if(job?.status==='ready')renderOptions();else if($('canva-options'))$('canva-options').hidden=true;
+    if(job?.status==='ready'&&!jobs.some(item=>item.id===job.id))jobs=[...jobs,job].slice(-2);if(jobs.length||job?.status==='ready')renderOptions();else if($('canva-options'))$('canva-options').hidden=true;
     if(job&&updateStatus){status(job.status==='blocked'?message({code:job.error}):Object.entries(job.outputs).map(([kind,o])=>`${kind.includes('ig')?'IG 圖':'預告圖'}：${STAGES[o.stage]||'處理中'}`).join(' · '));}
   }
   function sync(){
@@ -67,19 +67,25 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     return data;
   }
   async function load(){
-    try{settings=await request('status');sync();}
+    try{settings=await request('status');await loadSets();sync();}
     catch(error){status(message(error));sync();}
   }
+  async function loadSets(){
+    const id=getContext().bulletinId;if(!id)return;
+    try{const data=await request('list',{bulletinId:id});jobs=data.jobs||[];renderOptions();}
+    catch(error){if(error.code!=='not_found')onStatus(message(error),'error');}
+  }
   function renderOptions(){
-    const area=$('canva-options');if(!area||!job)return;area.replaceChildren();
-    for(let option=1;option<=3;option++){
-      const prefix='option'+option+'_',home=job.outputs[prefix+'home']||(option===1?job.outputs.home:null),ig=job.outputs[prefix+'ig']||(option===1?job.outputs.ig:null);
+    const area=$('canva-options');if(!area)return;area.replaceChildren();
+    const sets=jobs.length?jobs:job?.status==='ready'?[job]:[];
+    for(const [group,item] of sets.entries())for(let option=1;option<=3;option++){
+      const prefix='option'+option+'_',home=item.outputs[prefix+'home']||(option===1?item.outputs.home:null),ig=item.outputs[prefix+'ig']||(option===1?item.outputs.ig:null);
       if(!home?.path||!ig?.path)continue;
-      const card=document.createElement('article');card.className='canva-option';card.dataset.option=String(option);card.classList.toggle('selected',option===selectedOption);
-      const label=document.createElement('label');label.className='canva-option-choice';const radio=document.createElement('input');radio.type='radio';radio.name='canva-design';radio.value=String(option);radio.checked=option===selectedOption;
-      const title=document.createElement('b');title.textContent='設計 '+option;radio.onchange=()=>{selectedOption=option;area.querySelectorAll('.canva-option').forEach(node=>node.classList.toggle('selected',node===card));sync();};
+      const card=document.createElement('article');card.className='canva-option';card.dataset.option=String(option);
+      const label=document.createElement('label');label.className='canva-option-choice';const radio=document.createElement('input');radio.type='radio';radio.name='canva-design';radio.value=item.id+':'+option;
+      const title=document.createElement('b');title.textContent=`第 ${group+1} 批 · 設計 ${option}`;radio.onchange=()=>{job=item;selectedOption=option;area.querySelectorAll('.canva-option').forEach(node=>node.classList.toggle('selected',node===card));sync();};
       label.append(radio,title);const pair=document.createElement('div');pair.className='canva-option-images';
-      for(const [name,output] of [['官網橫圖',home],['IG 直圖',ig]]){const figure=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');img.src=db.storage.from('church-website-public-media').getPublicUrl(output.path).data.publicUrl;img.alt='設計 '+option+'｜'+name;caption.textContent=name;figure.append(img,caption);pair.append(figure);}
+      for(const [name,output] of [['官網橫圖',home],['IG 直圖',ig]]){const figure=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');img.src=db.storage.from('church-website-public-media').getPublicUrl(output.path).data.publicUrl;img.alt=`第 ${group+1} 批設計 ${option}｜${name}`;caption.textContent=name;figure.append(img,caption);pair.append(figure);}
       card.append(label,pair);area.append(card);
     }
     area.hidden=!area.children.length;
@@ -111,7 +117,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
         const context=getContext();
         if(job?.bulletinId&&job.bulletinId!==context.bulletinId)throw new Error('已切換週報，請回原週報繼續查看製圖結果。');
         const data=await request('advance',{jobId:pendingId});job=data.job;renderJob();
-        if(job.status==='ready'){renderOptions();progress.finish('三款設計已完成，請挑選一款並套用。');return;}
+        if(job.status==='ready'){await loadSets();renderOptions();progress.finish('設計已完成，請挑選一款並套用。');return;}
         if(job.status==='blocked'){progress.fail(message({code:job.error}));onStatus(message({code:job.error}),'error');return;}
         await sleep(Math.min(30000,Math.max(1500,Number(job.retryAfterMs)||1500)));
       }
@@ -124,7 +130,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     if(!reexport&&!$('canva-ai-consent')?.checked)throw Object.assign(new Error('請先同意將本週週報資料送至 Canva AI。'),{code:'ai_consent_required'});
     if(!context.editable)return;
     if(!['TOPIC','SCRIPTURE','SPEAKER','SERVICE_DATE'].every(k=>context.input[k]))throw new Error(ERRORS.information_required);
-    const parent=job?.id,requestId=crypto.randomUUID();selectedOption=0;$('canva-options').hidden=true;
+    const parent=job?.id,requestId=crypto.randomUUID();selectedOption=0;
     if(reexport&&(!parent||!sameInput(job.input,context.input)))throw new Error('主日資訊已變更，請重新產圖。');
     const action=reexport?'reexport':'start',payload={requestId,bulletinId:context.bulletinId,input:context.input,...(reexport?{parentJobId:parent}:{aiConsent:true})};
     savePending(requestId,{action,payload});progress.start({history:progressHistory()+(reexport?':export':':generate'),baselineSeconds:reexport?60:180,workId:requestId,label:reexport?'正在匯出 Canva 圖片…':'Canva AI 製圖中…',description:'正在建立本次工作，請稍候。'});job=null;renderJob();status(reexport?'正在重新匯出 Canva 設計…':'正在建立本週 Canva 製圖工作…');
@@ -143,7 +149,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
       data=await request(pendingRequest.action,pendingRequest.payload);
     }
     job=data.job;renderJob();
-    if(job.status==='ready'){renderOptions();progress.finish('三款設計已完成，請挑選一款並套用。');}else if(job.status==='working')await poll();else{progress.fail(message({code:job.error}));onStatus(message({code:job.error}),'error');}
+    if(job.status==='ready'){await loadSets();renderOptions();progress.finish('設計已完成，請挑選一款並套用。');}else if(job.status==='working')await poll();else{progress.fail(message({code:job.error}));onStatus(message({code:job.error}),'error');}
   }
   async function authorize(){
     // Open synchronously with the click, before any async work, so Safari allows it.
@@ -169,6 +175,6 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     connectionWindow=null;
     act(async()=>{await load();status(event.data.result==='connected'?'Canva 授權已完成，可送出本週 AI 製圖要求。':'Canva 授權未完成，請重新連結。');});
   });
-  return {sync,load,useOption:async option=>{if(!job||job.status!=='ready')throw new Error('Canva 三款圖卡尚未完成。');selectedOption=Number(option)||1;return acceptImages(selectedOption);},reset(){progress.reset();job=null;selectedOption=0;const saved=storedPending();pendingId=saved?.id||'';pendingRequest=saved?.request||null;status(pendingId?'這份週報有製圖紀錄，可繼續查詢結果。':'');renderJob();sync();}};
+  return {sync,load,loadSets,useOption:async choice=>{const [id,number]=String(choice).split(':');const selected=jobs.find(item=>item.id===id)||job;if(!selected||selected.status!=='ready')throw new Error('選取的 Canva 圖卡尚未完成。');job=selected;selectedOption=Number(number)||1;return acceptImages(selectedOption);},reset(){progress.reset();job=null;jobs=[];selectedOption=0;const saved=storedPending();pendingId=saved?.id||'';pendingRequest=saved?.request||null;status(pendingId?'這份週報有製圖紀錄，可繼續查詢結果。':'');renderJob();sync();}};
 }
 

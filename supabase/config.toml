@@ -60,3 +60,7 @@ verify_jwt = false
 # Public volunteer signup validates input; admin actions verify bearer JWT and heat_camp permission.
 [functions.heat-camp-volunteer]
 verify_jwt = false
+
+# Public learner church choice checks registration proof in its SQL RPC.
+[functions.heat-camp-church]
+verify_jwt = false

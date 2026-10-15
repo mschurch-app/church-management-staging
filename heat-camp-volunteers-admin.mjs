@@ -20,7 +20,7 @@ function renderSummary(){const root=$('#summary');root.replaceChildren();for(con
 function renderCard(item){
   const card=el('article','','application-card');card.id=`application-${item.id}`;
   const head=el('div','','application-head');const title=el('div');title.append(el('h3',item.name),el('div',`${states[item.status]||item.status} · ${localDate(item.created_at)}`,'application-meta'));head.append(title,el('strong',roleText(item.requested_roles)));card.append(head);
-  const details=el('div','','application-details');details.append(detail('手機',item.phone,`tel:${item.phone.replace(/[^0-9+]/g,'')}`),detail('Email',item.email,`mailto:${encodeURIComponent(item.email)}`),detail('LINE ID',item.line_id),detail('志工意願',roleText(item.requested_roles)),detail('已安排職務',roleText(item.assigned_roles)),detail('LINE 群通知',({sent:'已送達',failed:'傳送失敗',unavailable:'尚未設定',pending:'待發送'})[item.line_status]||item.line_status));card.append(details);
+  const details=el('div','','application-details');details.append(detail('所屬教會',item.church_affiliation),detail('手機',item.phone,`tel:${item.phone.replace(/[^0-9+]/g,'')}`),detail('Email',item.email,`mailto:${encodeURIComponent(item.email)}`),detail('LINE ID',item.line_id),detail('志工意願',roleText(item.requested_roles)),detail('已安排職務',roleText(item.assigned_roles)),detail('LINE 群通知',({sent:'已送達',failed:'傳送失敗',unavailable:'尚未設定',pending:'待發送'})[item.line_status]||item.line_status));card.append(details);
   if(item.experience)card.append(el('p',`相關經驗：${item.experience}`,'application-note'));
   if(item.notes)card.append(el('p',`備註：${item.notes}`,'application-note'));
   if(canEdit){

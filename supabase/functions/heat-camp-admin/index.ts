@@ -13,7 +13,7 @@ const labels:Record<string,Record<string,string>>={
 const displayRow=(row:Record<string,unknown>)=>Object.fromEntries(Object.entries(row).map(([key,value])=>[key,labels[key]?.[String(value)]||value]));
 const columns:[string,string][]=[
   ['registration_no','報名編號'],['player_name','球員姓名'],['guardian_name','家長／監護人'],['guardian_phone','聯絡電話'],['email','Email'],
-  ['school_stage','年級階段'],['school_name','學校'],['jersey_size','球衣尺寸'],['jersey_number','背號'],['jersey_name','球衣姓名'],
+  ['school_stage','年級階段'],['school_name','學校'],['church_affiliation','所屬教會'],['jersey_size','球衣尺寸'],['jersey_number','背號'],['jersey_name','球衣姓名'],
   ['amount','應繳金額'],['registration_status','報名狀態'],['payment_status','付款狀態'],['payment_method','付款方式'],
   ['bank_code','銀行代碼'],['virtual_account_masked','虛擬帳號（遮罩）'],['account_expires_at','繳費期限'],['paid_at','付款時間'],['merchant_order_no','藍新訂單編號'],['created_at','報名時間']
 ];
@@ -43,7 +43,9 @@ Deno.serve(async req=>{
   if(input.action==='details'){
     const details=await admin.rpc('heat_camp_2027_admin_details',{p_user:user.id,p_registration_no:String(input.registration_no||'').slice(0,80)});
     if(details.error){const code=String(details.error.message||'');return json(code.includes('forbidden')?403:404,{ok:false,error:code.includes('forbidden')?'forbidden':'request_failed'});}
-    return json(200,{ok:true,...details.data});
+    const churches=await admin.rpc('heat_camp_2027_church_affiliations',{p_user:user.id});
+    const registration=details.data.registration as Record<string,unknown>;
+    return json(200,{ok:true,...details.data,registration:{...registration,church_affiliation:churches.error?null:(churches.data?.[String(registration.registration_no)]||'未提供')},church_data_available:!churches.error});
   }
   if(input.action==='update'){
     const updated=await admin.rpc('heat_camp_2027_admin_update',{p_user:user.id,p_registration_no:String(input.registration_no||'').slice(0,80),p_changes:input.changes||{}});
@@ -59,7 +61,11 @@ Deno.serve(async req=>{
     const code=String(result.error.message||'');
     return json(code.includes('forbidden')?403:code.includes('event_not_found')?503:code.includes('filter_required')?413:400,{ok:false,error:code.includes('forbidden')?'forbidden':code.includes('filter_required')?'filter_required':'request_failed'});
   }
-  const payload=result.data as Record<string,unknown>;
+  const churches=await admin.rpc('heat_camp_2027_church_affiliations',{p_user:user.id});
+  if(churches.error&&input.action==='excel')return json(503,{ok:false,error:'church_data_unavailable'});
+  const churchMap=churches.error?{}:(churches.data||{});
+  const original=result.data as Record<string,unknown>;
+  const payload={...original,items:((original.items||[]) as Record<string,unknown>[]).map(item=>({...item,church_affiliation:churches.error?null:(churchMap[String(item.registration_no)]||'未提供')})),church_data_available:!churches.error};
   if(input.action==='excel'){
     const bytes=excel(((payload.items||[]) as Record<string,unknown>[]).map(displayRow));
     return json(200,{ok:true,file_name:'heat-camp-2027-registrations.xlsx',mime_type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:base64(bytes),total:payload.total_filtered});

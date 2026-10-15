@@ -27,7 +27,7 @@ Deno.serve(async req=>{
   if(!url||!anon||!key)return json(503,{ok:false,error:'service_unavailable'});
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
 
-  async function sendLine(id:string,name:string,roles:string[]){
+  async function sendLine(id:string,name:string,church:string,roles:string[]){
     const config=await db.rpc('heat_camp_volunteer_line_config');
     const group=String(config.data?.group_id||'');
     const token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
@@ -42,7 +42,7 @@ Deno.serve(async req=>{
       const response=await fetch('https://api.line.me/v2/bot/message/push',{
         method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),
         headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
-        body:JSON.stringify({to:group,messages:[{type:'text',text:`${title}\n意願：${choice}\n請由同工聯繫並審核：${link}`}]})
+        body:JSON.stringify({to:group,messages:[{type:'text',text:`${title}\n所屬教會：${church}\n意願：${choice}\n請由同工聯繫並審核：${link}`}]})
       });
       await db.rpc('heat_camp_volunteer_delivery',{p_id:id,p_status:response.ok?'sent':'failed',p_error:response.ok?null:`line_http_${response.status}`});
     }catch{
@@ -53,20 +53,20 @@ Deno.serve(async req=>{
   if(input.action==='submit'){
     if(value(input.website,100))return json(200,{ok:true,accepted:true});
     const requestId=value(input.request_id,36);
-    const name=value(input.name,80),phone=value(input.phone,24),email=value(input.email,160);
+    const name=value(input.name,80),church=value(input.church_affiliation,120)||'未提供',phone=value(input.phone,24),email=value(input.email,160);
     const lineId=value(input.line_id,80),experience=value(input.experience,1000),notes=value(input.notes,1000);
     const roles=Array.isArray(input.roles)?input.roles.filter((x):x is string=>typeof x==='string'):[];
-    if(!uuid.test(requestId)||name.length<2||name.length>80||!xPhone(phone)||!xEmail(email)
+    if(!uuid.test(requestId)||name.length<2||name.length>80||church.length<1||church.length>120||!xPhone(phone)||!xEmail(email)
       ||roles.length<1||roles.length>3||new Set(roles).size!==roles.length||roles.some(x=>!roleNames[x])
       ||lineId.length>80||experience.length>1000||notes.length>1000
       ||input.training_agreed!==true||input.deployment_agreed!==true||input.privacy_agreed!==true)
       return json(400,{ok:false,error:'invalid_request'});
     const saved=await db.rpc('heat_camp_volunteer_submit',{p_request_id:requestId,p_payload:{
-      name,phone,email,line_id:lineId,roles,experience,notes,
+      name,church_affiliation:church,phone,email,line_id:lineId,roles,experience,notes,
       training_agreed:true,deployment_agreed:true,privacy_agreed:true
     }});
     if(saved.error||!saved.data?.id)return json(503,{ok:false,error:'save_failed'});
-    if(saved.data.created)await sendLine(saved.data.id,name,roles);
+    if(saved.data.created)await sendLine(saved.data.id,name,church,roles);
     return json(200,{ok:true,accepted:true,reference:String(saved.data.id).slice(0,8).toUpperCase()});
   }
 

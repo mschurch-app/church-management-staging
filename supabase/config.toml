@@ -27,6 +27,9 @@ verify_jwt = false
 [functions.weekly-bulletin-review]
 verify_jwt = true
 
+[functions.weekly-promo-review]
+verify_jwt = true
+
 [functions.instagram-publishing]
 verify_jwt = true
 

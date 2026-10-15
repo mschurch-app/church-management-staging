@@ -1,3 +1,5 @@
+import {continueDraft} from './weekly-bulletin-draft.mjs';
+
 const $=selector=>document.querySelector(selector);
 const params=new URLSearchParams(location.search);
 const step=Math.max(1,Math.min(4,Number(params.get('workflow_step'))||1));
@@ -84,8 +86,9 @@ function makeStepOne(root,c){
       if(!chosen)throw new Error('請先選擇主日日期。');
       if(mode==='edit'){
         if(!c.can('edit'))throw new Error('目前帳號沒有編輯草稿的權限。');
-        const row=rows.find(item=>item.id===select.value);if(!row)throw new Error('請選擇要繼續編輯的草稿。');
-        await c.open(row,{force:true});$id('service-date').value=chosen;$id('service-date').dispatchEvent(new Event('change',{bubbles:true}));
+        const row=await continueDraft(c,select.value);
+        setPage(2,row.id);
+        return;
       }else if(mode==='copy'){
         if(!c.can('create'))throw new Error('目前帳號沒有建立週報的權限。');
         const row=rows.find(item=>item.id===select.value);if(!row)throw new Error('請選擇要複製的週報。');

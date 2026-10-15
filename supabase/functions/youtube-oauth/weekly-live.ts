@@ -38,7 +38,9 @@ async function runWeeklyLive(c:Context,body:any,getToken:()=>Promise<string>,per
   return {connection:connected,candidates:await upcoming(token,connected.channel_id),video};
  }
  if(!/^[0-9a-f-]{36}$/i.test(body.bulletinId||''))error('invalid_request');
- const found=await c.db.from('website_weekly_bulletins').select('*').eq('church_id','M+').eq('id',body.bulletinId).maybeSingle();if(found.error||!found.data)error('bulletin_not_found');const row=found.data;
+ const found=await c.db.from('website_weekly_bulletins').select('*').eq('church_id','M+').eq('id',body.bulletinId).maybeSingle();if(found.error||!found.data)error('bulletin_not_found');
+ const promoResult=await c.db.from('website_weekly_promos').select('status,version,snapshot').eq('church_id','M+').eq('bulletin_id',body.bulletinId).maybeSingle();if(promoResult.error)error('database');
+ const promo=promoResult.data,row=promo?{...found.data,...promo.snapshot,version:promo.version,status:promo.status==='approved'?'published':promo.status}:found.data;
  if(body.action==='weekly_status'){
   const log=await c.db.from('weekly_youtube_publications').select('status,video_id,bulletin_version,metadata_synced_at,thumbnail_synced_at,verified_at,error_code,updated_at').eq('bulletin_id',row.id).maybeSingle();if(log.error)error('database');
   return {connection:connected,metadata:weeklyMetadata(row),publication:log.data};
@@ -76,7 +78,7 @@ async function runWeeklyLive(c:Context,body:any,getToken:()=>Promise<string>,per
  try{
   const image=await c.db.storage.from('church-website-public-media').download(path);if(image.error||!image.data)error('thumbnail_download_failed');
   const mime=image.data.type||(/\.png$/i.test(path)?'image/png':'image/jpeg');if(!['image/jpeg','image/png'].includes(mime)||image.data.size>50*1024*1024)error('thumbnail_format');
-  const fresh=await c.db.from('website_weekly_bulletins').select('status,version,hero_image_path').eq('id',row.id).single();if(fresh.data?.status!=='published'||fresh.data.version!==row.version||fresh.data.hero_image_path!==path)error('bulletin_changed');
+  const fresh=promo?await c.db.from('website_weekly_promos').select('status,version,snapshot').eq('bulletin_id',row.id).single():await c.db.from('website_weekly_bulletins').select('status,version,hero_image_path').eq('id',row.id).single();if(fresh.data?.status!==(promo?'approved':'published')||fresh.data.version!==row.version||(promo?fresh.data.snapshot?.hero_image_path:fresh.data.hero_image_path)!==path)error('bulletin_changed');
   await broadcast(token,videoId,connected.channel_id,row.service_date);
   const videos=await google(token,'youtube/v3/videos?part=snippet&id='+videoId),old=videos.items?.[0];if(!old?.snippet||old.snippet.channelId!==connected.channel_id)error('video_not_found');
   if(!prior.previous_metadata)await checkpoint({previous_metadata:old.snippet});
@@ -92,7 +94,7 @@ async function runWeeklyLive(c:Context,body:any,getToken:()=>Promise<string>,per
    if(verified)break;if(i<2)await new Promise(resolve=>setTimeout(resolve,1500));
   }
   if(!verified)error('verification_pending');
-  const bound=await c.db.from('website_weekly_bulletins').update({youtube_sync_enabled:true,youtube_video_id:videoId}).eq('id',row.id).eq('version',row.version).eq('status','published');if(bound.error)error('binding_save_failed');
+  const bound=await c.db.from('website_weekly_bulletins').update({youtube_sync_enabled:true,youtube_video_id:videoId}).eq('id',row.id).eq('version',found.data.version).eq('status',found.data.status);if(bound.error)error('binding_save_failed');
   if(live.contentDetails?.boundStreamId){const preferred=await c.db.from('weekly_youtube_settings').upsert({church_id:'M+',preferred_stream_id:live.contentDetails.boundStreamId,updated_at:new Date().toISOString()});if(preferred.error)error('binding_save_failed');}
   await checkpoint({status:'synced',verified_at:new Date().toISOString(),lease_expires_at:null});
   return {status:'synced',videoId,url:'https://www.youtube.com/watch?v='+videoId,metadata,thumbnailPath:path};

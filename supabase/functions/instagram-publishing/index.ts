@@ -21,9 +21,9 @@ async function currentUser(request:Request,db:ReturnType<typeof createClient>){
   const token=(request.headers.get('authorization')||'').match(/^Bearer ([^\s]+)$/i)?.[1];
   if(!token)return null;const result=await db.auth.getUser(token);return result.error?null:result.data.user;
 }
-async function canManage(db:ReturnType<typeof createClient>,userId:string,church:string){
+async function permissions(db:ReturnType<typeof createClient>,userId:string,church:string){
   const result=await db.rpc('get_weekly_bulletin_review_profile',{p_user:userId,p_church:church});
-  return result.data?.reviewer===true;
+  return {editor:result.data?.editor===true,reviewer:result.data?.reviewer===true};
 }
 async function encryptionKey(serviceKey:string){
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${serviceKey}:instagram-publishing:v1`));
@@ -65,9 +65,12 @@ async function publishingEnabled(db:ReturnType<typeof createClient>,church:strin
 }
 async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,church:string,bulletinId:string,userId:string){
   if(!await publishingEnabled(db,church,'instagram_weekly_reel_enabled'))throw new Error('publishing_disabled');
-  const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_cover_image_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle(),bulletin=bulletinResult.data;
-  if(bulletinResult.error||!bulletin)throw new Error('bulletin_not_found');
-  if(bulletin.status!=='published')throw new Error('bulletin_not_published');
+  const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_cover_image_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle();
+  if(bulletinResult.error||!bulletinResult.data)throw new Error('bulletin_not_found');
+  const promoResult=await db.from('website_weekly_promos').select('status,version,snapshot').eq('bulletin_id',bulletinId).eq('church_id',church).maybeSingle();
+  if(promoResult.error)throw new Error('promo_unavailable');
+  const promo=promoResult.data,bulletin=promo?{...bulletinResult.data,...promo.snapshot,version:promo.version,status:promo.status}:bulletinResult.data;
+  if(bulletin.status!=='published'&&bulletin.status!=='approved')throw new Error('promo_not_approved');
   if(!bulletin.reel_enabled||!bulletin.reel_video_path)return {status:'skipped'};
   const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
   if(connectionResult.error||!connection)throw new Error('not_connected');
@@ -130,7 +133,8 @@ Deno.serve(async request=>{
   const cronSecret=request.headers.get('x-cron-secret')||'',internal=Boolean(cronSecret)&&(await client.db.rpc('pastoral_validate_care_cron_secret',{p_secret:cronSecret})).data===true;
   if(origin!==APP_ORIGIN&&!internal)return json(origin,{ok:false,error:'forbidden'},403);
   const user=internal?null:await currentUser(request,client.db);if(!internal&&!user)return json(origin,{ok:false,error:'login_required'},401);
-  if(!internal&&!await canManage(client.db,user!.id,church))return json(origin,{ok:false,error:'forbidden'},403);
+  const rights=internal?{editor:true,reviewer:true}:await permissions(client.db,user!.id,church);
+  if(!(body.action==='save_reel'||body.action==='publication_status'?rights.editor:rights.reviewer))return json(origin,{ok:false,error:'forbidden'},403);
   try{
     if(body.action==='status'){
       const result=await client.db.from('instagram_publishing_connections').select('username,instagram_user_id,account_type,status,connected_at,last_verified_at,last_error').eq('church_id',church).maybeSingle();
@@ -151,8 +155,9 @@ Deno.serve(async request=>{
     }
     if(body.action==='save_reel'){
       const bulletinId=String(body.bulletinId||''),videoPath=String(body.reelVideoPath||''),audioPath=body.reelAudioPath?String(body.reelAudioPath):null,caption=String(body.reelCaption||'').trim().slice(0,2200),audioStart=Math.max(0,Math.min(86400,Number(body.reelAudioStart)||0));
-      if(!/^[0-9a-f-]{36}$/i.test(bulletinId)||!videoPath.startsWith(`${church}/weekly/${bulletinId}/`)||!videoPath.endsWith('.mp4')||(audioPath&&!audioPath.startsWith(`${church}/reel-music/`)))return json(origin,{ok:false,error:'invalid_request'},400);
-      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,updated_by:user!.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
+      const version=Number(body.version);
+      if(!/^[0-9a-f-]{36}$/i.test(bulletinId)||!Number.isInteger(version)||version<1||!videoPath.startsWith(`${church}/weekly/${bulletinId}/`)||!videoPath.endsWith('.mp4')||(audioPath&&!audioPath.startsWith(`${church}/reel-music/`)))return json(origin,{ok:false,error:'invalid_request'},400);
+      const saved=await client.db.from('website_weekly_bulletins').update({reel_enabled:body.reelEnabled!==false,reel_video_path:videoPath,reel_audio_path:audioPath,reel_audio_start_seconds:audioStart,reel_caption:caption,version:version+1,updated_by:user!.id,updated_at:new Date().toISOString()}).eq('id',bulletinId).eq('church_id',church).eq('version',version).in('status',['draft','changes_requested']).select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,speaker_photo_path,hero_image_path,reel_cover_image_path,sections,schedule_overrides,status,version,created_by,updated_at,published_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,reel_audio_start_seconds').maybeSingle();
       if(saved.error||!saved.data)return json(origin,{ok:false,error:'not_found'},404);
       return json(origin,{ok:true,bulletin:saved.data});
     }

@@ -27,8 +27,15 @@ verify_jwt = false
 [functions.weekly-bulletin-review]
 verify_jwt = true
 
-[functions.instagram-publishing]
+[functions.weekly-promo-review]
 verify_jwt = true
+
+[functions.instagram-publishing]
+verify_jwt = false
+
+# OAuth callback and internal cron authenticate in the function body.
+[functions.youtube-oauth]
+verify_jwt = false
 
 [functions.media-publishing-settings]
 verify_jwt = true

@@ -45,6 +45,12 @@ async function reviewers(db:ReturnType<typeof adminClient>,church:string){
   const result=await db.rpc('get_weekly_bulletin_reviewers',{p_church:church});
   return Array.isArray(result.data)?result.data:[];
 }
+async function initialReviewer(db:ReturnType<typeof adminClient>,church:string){
+  const settings=await db.from('review_workflow_settings').select('initial_reviewer_id').eq('church_id',church).eq('workflow_key','weekly_bulletin').maybeSingle();
+  if(settings.error||!settings.data?.initial_reviewer_id)return null;
+  const staff=await db.from('pastoral_staff').select('id').eq('app_user_id',settings.data.initial_reviewer_id).eq('is_active',true).maybeSingle();
+  return staff.data?{userId:settings.data.initial_reviewer_id,staffId:staff.data.id}:null;
+}
 async function delivery(db:ReturnType<typeof adminClient>,values:Record<string,unknown>){
   await db.from('pastoral_notification_deliveries').upsert(values,{onConflict:'idempotency_key'});
 }
@@ -57,6 +63,12 @@ async function notifyReviewers(db:ReturnType<typeof adminClient>,church:string,b
     await delivery(db,{entity_key:entity,notification_type:'weekly_bulletin_review',recipient_staff_id:person.id,related_id:bulletin.id,idempotency_key:key,status:sent.status,error_code:sent.status==='sent'?null:`app:${sent.appStatus};line:${sent.lineStatus}`,app_status:sent.appStatus,line_status:sent.lineStatus,sent_at:sent.status==='sent'?new Date().toISOString():null,updated_at:new Date().toISOString()});
   }
   return people.length;
+}
+async function notifyInitial(db:ReturnType<typeof adminClient>,church:string,bulletin:{id:string;service_date:string;title:string;version:number},actorStaffId:string|null){
+  const person=await initialReviewer(db,church);if(!person)throw new Error('reviewer_not_configured');
+  const key=`weekly-initial:${bulletin.id}:${bulletin.version}:${person.staffId}`,url=reviewUrl(church,bulletin.id);
+  await db.from('pastoral_tasks').upsert({entity_key:churchEntity(church),title:`初審 ${bulletin.service_date} 週報`,description:`${bulletin.title} 已送初審，請核對週報文字與核准的預告圖。`,task_type:'document',status:'pending',assigned_to:person.staffId,created_by:actorStaffId,idempotency_key:key,payload:{workflow:'weekly_bulletin_initial_review',bulletin_id:bulletin.id,bulletin_version:bulletin.version,action_url:url}},{onConflict:'idempotency_key',ignoreDuplicates:true});
+  await notifyStaffDual({db,staffId:person.staffId,churchId:church,eventKey:'weekly_bulletin_review',routeKey:'weekly_bulletin_review',sourceKey:key,title:'主日週報等待初審',body:`${bulletin.service_date} 的週報文字請進行初審。`,url,lineMessage:`主日週報等待初審：${bulletin.service_date}\n${APP_ORIGIN}${url}`,idempotencyKey:key});
 }
 async function notifyEditor(db:ReturnType<typeof adminClient>,church:string,bulletin:{id:string;service_date:string;submitted_by:string|null},approved:boolean,comment:string){
   if(!bulletin.submitted_by)return;
@@ -72,52 +84,67 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
   const body=await request.json().catch(()=>null),church=body?.church;
   if(!body||typeof body.action!=='string'||!['M+','SHiNE'].includes(church))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
   const profile=await accountProfile(db,user.id,church);
+  const initial=await initialReviewer(db,church),isInitial=initial?.userId===user.id;
   if(!profile.editor)return json(APP_ORIGIN,{ok:false,error:'forbidden'},403);
   if(body.action==='submit'){
     if(!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
-    const found=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,status,version').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
+    const found=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,status,version,sections').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(found.error||!found.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
     if(!['draft','changes_requested'].includes(found.data.status))return json(APP_ORIGIN,{ok:false,error:'invalid_status'},409);
+    const promo=await db.from('website_weekly_promos').select('status,snapshot').eq('bulletin_id',found.data.id).eq('church_id',church).maybeSingle();
+    if(promo.error||promo.data?.status!=='approved')return json(APP_ORIGIN,{ok:false,error:'promo_not_approved'},409);
+    if(!initial)return json(APP_ORIGIN,{ok:false,error:'reviewer_not_configured'},409);
+    if(!Array.isArray(found.data.sections)||!found.data.sections.some((section:{description?:string;items?:Array<{label?:string;body?:string}>})=>String(section.description||'').trim()||Array.isArray(section.items)&&section.items.some(item=>String(item.label||'').trim()||String(item.body||'').trim())))return json(APP_ORIGIN,{ok:false,error:'bulletin_incomplete'},400);
     const now=new Date().toISOString();
-    const saved=await db.from('website_weekly_bulletins').update({status:'pending_review',submitted_by:user.id,submitted_at:now,reviewed_by:null,reviewed_at:null,review_comment:null,updated_by:user.id,updated_at:now}).eq('id',found.data.id).eq('status',found.data.status).select('id,service_date,title,version').maybeSingle();
+    const saved=await db.from('website_weekly_bulletins').update({status:'pending_initial',submitted_by:user.id,submitted_at:now,reviewed_by:null,reviewed_at:null,review_comment:null,updated_by:user.id,updated_at:now}).eq('id',found.data.id).eq('status',found.data.status).eq('version',found.data.version).select('id,service_date,title,version').maybeSingle();
     if(saved.error||!saved.data)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
     await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:found.data.id,church_id:church,bulletin_version:found.data.version,action:'submitted',actor_user_id:user.id});
-    const recipientCount=await notifyReviewers(db,church,saved.data,profile.staff?.id||null);
-    return json(APP_ORIGIN,{ok:true,status:'pending_review',recipientCount});
+    let notificationPending=false;try{await notifyInitial(db,church,saved.data,profile.staff?.id||null);}catch{notificationPending=true;}
+    return json(APP_ORIGIN,{ok:true,status:'pending_initial',recipientCount:1,notificationPending});
   }
   if(body.action==='list'){
-    if(!profile.reviewer)return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
-    const result=await db.from('website_weekly_bulletins').select('id,service_date,title,subtitle,status,version,submitted_at,review_comment').eq('church_id',church).in('status',['pending_review','changes_requested','published']).order('submitted_at',{ascending:false}).limit(50);
+    if(!profile.reviewer&&!isInitial)return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
+    const result=await db.from('website_weekly_bulletins').select('id,service_date,title,subtitle,status,version,submitted_at,review_comment').eq('church_id',church).in('status',['pending_initial','pending_review','changes_requested','published']).order('submitted_at',{ascending:false}).limit(50);
     if(result.error)throw new Error('db');
-    return json(APP_ORIGIN,{ok:true,items:result.data||[]});
+    return json(APP_ORIGIN,{ok:true,items:(result.data||[]).filter(row=>row.status==='pending_initial'?isInitial:profile.reviewer).map(row=>({...row,track:'bulletin'}))});
   }
   if(body.action==='get'){
-    if(!profile.reviewer||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
-    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,youtube_sync_enabled,youtube_video_id,youtube_title,youtube_description,youtube_tags').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
+    if((!profile.reviewer&&!isInitial)||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
+    const result=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,subtitle,service_time,sermon_topic,sermon_scripture,sermon_speaker,hero_image_path,reel_cover_image_path,sections,schedule_overrides,status,version,submitted_at,review_comment,reel_enabled,reel_video_path,reel_caption,reel_audio_path,youtube_sync_enabled,youtube_video_id,youtube_title,youtube_description,youtube_tags').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(result.error||!result.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
-    return json(APP_ORIGIN,{ok:true,bulletin:result.data});
+    const date=String(result.data.service_date),next=new Date(`${date}T12:00:00Z`);next.setUTCDate(next.getUTCDate()+7);const nextDate=next.toISOString().slice(0,10);
+    const [scheduleResult,roleResult]=await Promise.all([db.from('service_schedules').select('*').eq('church_id',church).in('service_date',[date,date.replaceAll('-','/'),nextDate,nextDate.replaceAll('-','/')]),db.from('schedule_role_preferences').select('role_key,label,sort_order').eq('church_id',church).eq('is_visible',true).order('sort_order')]);
+    if(scheduleResult.error||roleResult.error)throw new Error('db');
+    const week=(day:string,which:'current'|'next')=>{const record=(scheduleResult.data||[]).find(row=>String(row.service_date).replaceAll('/','-')===day)||{},override=result.data.schedule_overrides?.[which]||{};return (roleResult.data||[]).map(role=>({label:role.label,value:String(override[role.role_key]??record.custom_assignments?.[role.role_key]??record[role.role_key]??'').trim()})).filter(item=>item.value);};
+    const promo=await db.from('website_weekly_promos').select('bulletin_id').eq('bulletin_id',result.data.id).maybeSingle();if(promo.error)throw new Error('db');
+    return json(APP_ORIGIN,{ok:true,bulletin:{...result.data,legacy:!promo.data,weekly_schedule:{current:week(date,'current'),next:week(nextDate,'next')}},canDecide:result.data.status==='pending_initial'?isInitial:profile.reviewer});
   }
   if(['approve','request_changes'].includes(body.action)){
-    if(!profile.reviewer||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
+    if((!profile.reviewer&&!isInitial)||!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
     const comment=String(body.comment||'').trim().slice(0,2000);
     if(body.action==='request_changes'&&!comment)return json(APP_ORIGIN,{ok:false,error:'comment_required'},400);
     const found=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,status,version,submitted_by,youtube_sync_enabled').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(found.error||!found.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
-    if(found.data.status!=='pending_review'||Number(body.version)!==found.data.version)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
-    const approved=body.action==='approve',now=new Date().toISOString(),nextStatus=approved?'published':'changes_requested';
-    const saved=await db.from('website_weekly_bulletins').update({status:nextStatus,reviewed_by:user.id,reviewed_at:now,review_comment:comment||null,updated_by:user.id,updated_at:now,published_at:approved?now:null}).eq('id',found.data.id).eq('status','pending_review').eq('version',found.data.version).select('id').maybeSingle();
+    const stage=found.data.status==='pending_initial'?'initial':found.data.status==='pending_review'?'final':'';
+    if(!stage||Number(body.version)!==found.data.version)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
+    if(stage==='initial'&&!isInitial||stage==='final'&&!profile.reviewer)return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
+    const promo=await db.from('website_weekly_promos').select('bulletin_id').eq('bulletin_id',found.data.id).maybeSingle();if(promo.error)throw new Error('db');
+    const legacy=!promo.data,approved=body.action==='approve',now=new Date().toISOString(),nextStatus=approved?(stage==='initial'?'pending_review':'published'):'changes_requested';
+    const saved=await db.from('website_weekly_bulletins').update({status:nextStatus,reviewed_by:user.id,reviewed_at:now,review_comment:comment||null,updated_by:user.id,updated_at:now,published_at:nextStatus==='published'?now:null}).eq('id',found.data.id).eq('status',found.data.status).eq('version',found.data.version).select('id').maybeSingle();
     if(saved.error||!saved.data)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
-    const youtubeQueued=approved&&church==='M+'&&found.data.youtube_sync_enabled===true;
+    await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:found.data.id,church_id:church,bulletin_version:found.data.version,action:approved?(stage==='initial'?'initial_approved':'approved'):'changes_requested',actor_user_id:user.id,comment:comment||null});
+    await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now}).eq('entity_key',churchEntity(church)).eq('status','pending').contains('payload',{workflow:stage==='initial'?'weekly_bulletin_initial_review':'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version});
+    let notificationPending=false;
+    if(nextStatus==='pending_review')try{await notifyReviewers(db,church,found.data,profile.staff?.id||null);}catch{notificationPending=true;}
+    if(nextStatus==='published'||nextStatus==='changes_requested')try{await notifyEditor(db,church,found.data,nextStatus==='published',comment);}catch{notificationPending=true;}
+    const youtubeQueued=nextStatus==='published'&&legacy&&church==='M+'&&found.data.youtube_sync_enabled===true;
     if(youtubeQueued)EdgeRuntime.waitUntil(syncYoutube(db,request.headers.get('authorization')||'',found.data.id,found.data.version));
-    await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:found.data.id,church_id:church,bulletin_version:found.data.version,action:approved?'approved':'changes_requested',actor_user_id:user.id,comment:comment||null});
-    await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now,payload:{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version,review_result:nextStatus,review_comment:comment||null}}).eq('entity_key',churchEntity(church)).eq('status','pending').contains('payload',{workflow:'weekly_bulletin_review',bulletin_id:found.data.id,bulletin_version:found.data.version});
-    await notifyEditor(db,church,found.data,approved,comment);
     let instagramQueued=false;
-    if(approved&&church==='M+'){
+    if(nextStatus==='published'&&legacy&&church==='M+'){
       const setting=await db.from('media_publishing_settings').select('instagram_weekly_reel_enabled').eq('church_id',church).maybeSingle();
       if(!setting.error&&setting.data?.instagram_weekly_reel_enabled===true){instagramQueued=true;const token=request.headers.get('authorization')||'';EdgeRuntime.waitUntil(fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/instagram-publishing`,{method:'POST',headers:{authorization:token,'content-type':'application/json',origin:APP_ORIGIN},body:JSON.stringify({action:'publish',church,bulletinId:found.data.id})}).catch(()=>undefined));}
     }
-    return json(APP_ORIGIN,{ok:true,status:nextStatus,instagramQueued,youtubeQueued});
+    return json(APP_ORIGIN,{ok:true,status:nextStatus,instagramQueued,youtubeQueued,notificationPending});
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);
 }

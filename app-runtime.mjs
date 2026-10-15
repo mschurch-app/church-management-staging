@@ -1,16 +1,24 @@
 // Shared device behavior. This module does not read sessions or send business data.
-let mounted=false,banner,copy,action,updateRegistration,updateActivated=false,activationRequested=false,activationTimer=0,onlineTimer=0,revision=0,approvedRevision=0;
+let mounted=false,banner,copy,action,later,updateRegistration,updateActivated=false,activationRequested=false,activationTimer=0,onlineTimer=0,revision=0,approvedRevision=0,snoozedUntil=0;
 const waitingRegistrations=new WeakSet();
+const UPDATE_SNOOZE_KEY='church-os-update-snooze-until';
+const updateSnoozed=()=>{try{return Math.max(snoozedUntil,Number(localStorage.getItem(UPDATE_SNOOZE_KEY)))>Date.now();}catch{return snoozedUntil>Date.now();}};
+const clearUpdateSnooze=()=>{snoozedUntil=0;try{localStorage.removeItem(UPDATE_SNOOZE_KEY);}catch{}};
 const el=(tag,text='',className='')=>Object.assign(document.createElement(tag),{textContent:text,className});
 const hasDraft=()=>!!document.querySelector('[data-unsaved-changes="true"]');
 const isBusy=()=>!!document.querySelector('[aria-busy="true"],button.os-action-busy');
 const isOnline=()=>navigator.onLine!==false;
-function ensureBanner(){if(banner)return;banner=el('aside','','app-system-banner');banner.setAttribute('aria-label','連線與更新');copy=el('p');copy.setAttribute('role','status');action=el('button','','secondary');action.type='button';action.dataset.actionFeedback='off';banner.append(copy,action);document.body.append(banner);}
-function showBanner(text,label,handler){ensureBanner();copy.textContent=text;action.textContent=label||'';action.hidden=!label;action.disabled=false;action.onclick=handler||null;banner.hidden=false;}
+function ensureBanner(){if(banner)return;banner=el('aside','','app-system-banner');banner.setAttribute('aria-label','連線與更新');copy=el('p');copy.setAttribute('role','status');action=el('button','','secondary');action.type='button';action.dataset.actionFeedback='off';later=el('button','稍後','secondary');later.type='button';later.dataset.actionFeedback='off';later.setAttribute('aria-label','稍後提醒，24 小時內不再顯示');later.hidden=true;banner.append(copy,action,later);document.body.append(banner);}
+function showBanner(text,label,handler,defer=false){ensureBanner();copy.textContent=text;action.textContent=label||'';action.hidden=!label;action.disabled=false;action.onclick=handler||null;later.hidden=!defer;later.onclick=defer?snoozeUpdate:null;banner.classList.toggle('has-defer',defer);banner.hidden=false;}
+function snoozeUpdate(){snoozedUntil=Date.now()+24*60*60*1000;try{localStorage.setItem(UPDATE_SNOOZE_KEY,String(snoozedUntil));}catch{}refreshBanner();}
 function refreshBanner(){
   if(!mounted)return;
   if(!isOnline()){showBanner('目前沒有網路連線。連線恢復後，再重試未完成的操作。');return;}
-  if(updateRegistration?.waiting||updateActivated){showBanner('有新版本可以使用，準備好後再更新。','更新',applyUpdate);return;}
+  if(updateActivated){showBanner('新版已準備好。請完成目前操作，再按更新。','更新',applyUpdate);return;}
+  if(updateRegistration?.waiting){
+    if(updateSnoozed()){if(banner)banner.hidden=true;return;}
+    showBanner('有新版本可以使用，準備好後再更新。','更新',applyUpdate,true);return;
+  }
   if(banner)banner.hidden=true;
 }
 function canReload(){
@@ -26,6 +34,7 @@ function reloadNow(){
 export function refreshApp(){if(!isOnline()){refreshBanner();return false;}if(!canReload())return false;reloadNow();return true;}
 async function applyUpdate(){
   if(activationRequested||!isOnline()||!canReload())return;
+  clearUpdateSnooze();
   if(updateActivated){reloadNow();return;}
   const worker=updateRegistration?.waiting;if(!worker){refreshBanner();return;}
   approvedRevision=revision;activationRequested=true;showBanner('正在準備新版本…');
@@ -35,8 +44,9 @@ async function applyUpdate(){
 export function watchAppRegistration(registration){
   if(!registration||waitingRegistrations.has(registration))return;
   waitingRegistrations.add(registration);
-  const check=()=>{if(registration.waiting){updateRegistration=registration;refreshBanner();}};
+  const check=()=>{if(registration.waiting)updateRegistration=registration;else{if(updateRegistration===registration)updateRegistration=null;if(!updateRegistration)clearUpdateSnooze();}refreshBanner();};
   check();registration.addEventListener('updatefound',()=>{const worker=registration.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed')check();});});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check();});
 }
 function mount(){
   if(mounted||!document.body)return;mounted=true;
@@ -53,7 +63,8 @@ function mount(){
   window.addEventListener('online',()=>{refreshBanner();if(!updateRegistration?.waiting&&!updateActivated){showBanner('裝置已重新連線，請重試未完成的操作。');onlineTimer=setTimeout(refreshBanner,3000);}});
   navigator.serviceWorker?.getRegistration().then(watchAppRegistration).catch(()=>{});
   navigator.serviceWorker?.addEventListener('controllerchange',()=>{
-    if(!activationRequested)return;clearTimeout(activationTimer);activationRequested=false;updateActivated=true;
+    if(!activationRequested){if(updateRegistration&&!updateRegistration.waiting){updateRegistration=null;clearUpdateSnooze();}refreshBanner();return;}
+    clearTimeout(activationTimer);activationRequested=false;updateActivated=true;
     if(isBusy()||revision!==approvedRevision||document.visibilityState==='hidden'){showBanner('新版已準備好。請完成目前操作，再按更新。','更新',applyUpdate);return;}
     reloadNow();
   });

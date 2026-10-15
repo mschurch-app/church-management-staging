@@ -73,7 +73,7 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const metrics=[];
 function ok(name,value=true){assert.ok(value,name);checks.push(name);console.log('PASS '+name);}
 async function goto(file){await page.goto(base+'/'+file+'?church=M%2B',{waitUntil:'networkidle0'});await pause(150);}
-async function runtime(code){return page.evaluate(async code=>{const module=await import('/app-runtime.mjs?v=20261009-stage4');return new Function('module',code)(module);},code);}
+async function runtime(code){return page.evaluate(async code=>{const module=await import('/app-runtime.mjs?v=20261016-update-banner1');return new Function('module',code)(module);},code);}
 const active=()=>page.$eval('.notification-ticker-item.is-active',n=>n.dataset.notificationId);
 try{
  for(const file of ['admin-dashboard.html','church-settings.html','daily-devotional-admin.html','weekly-bulletin-review.html','website-maintenance.html','service-signup-admin.html']){
@@ -115,9 +115,15 @@ try{
  await page.$eval('#runtime-test-form',n=>n.reset());ok('reset clears draft',await page.$eval('#runtime-test-form',n=>n.dataset.unsavedChanges==='false'));
  await page.$eval('#runtime-test-form',n=>n.setAttribute('aria-busy','true'));ok('refresh blocked during an active operation',await runtime('return module.refreshApp()===false'));
  await page.$eval('#runtime-test-form',n=>n.removeAttribute('aria-busy'));
- await page.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261009-stage4'),reg=new EventTarget();window.updateMessages=[];reg.waiting={postMessage:m=>window.updateMessages.push(m)};module.watchAppRegistration(reg);module.watchAppRegistration(reg);});
+ await page.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261016-update-banner1'),reg=new EventTarget();window.updateMessages=[];reg.waiting={postMessage:m=>window.updateMessages.push(m)};module.watchAppRegistration(reg);module.watchAppRegistration(reg);});
  ok('new version offers explicit update',await page.$eval('.app-system-banner button',n=>!n.hidden&&n.textContent==='更新'));
  ok('update action touch target',await page.$eval('.app-system-banner button',n=>{const r=n.getBoundingClientRect();return r.width>=44&&r.height>=44;}));
+ await page.screenshot({path:out+'update-banner-390.png'});
+ ok('update can be deferred for a day',await page.$eval('.app-system-banner button[aria-label^="稍後提醒"]',n=>{const r=n.getBoundingClientRect();return !n.hidden&&r.width>=44&&r.height>=44;}));
+ await page.click('.app-system-banner button[aria-label^="稍後提醒"]');
+ ok('deferred update stays hidden without changing worker',await page.evaluate(()=>document.querySelector('.app-system-banner').hidden&&Number(localStorage.getItem('church-os-update-snooze-until'))>Date.now()&&updateMessages.length===0));
+ await page.evaluate(()=>{const now=Date.now;Date.now=()=>now()+24*60*60*1000+1;window.dispatchEvent(new Event('online'));Date.now=now;});
+ ok('update prompt returns after snooze expires',await page.$eval('.app-system-banner',n=>!n.hidden&&n.textContent.includes('有新版本')));
  await page.$eval('#runtime-test-form input',n=>n.dispatchEvent(new Event('input',{bubbles:true})));answers.push(false);await page.click('.app-system-banner button');ok('cancel update preserves draft and does not activate',await page.evaluate(()=>updateMessages.length===0));
  answers.push(true);await page.click('.app-system-banner button');ok('accepted update activates exactly once',await page.evaluate(()=>updateMessages.length===1&&updateMessages[0].type==='CHURCH_ACTIVATE_UPDATE'));
  await page.$eval('#runtime-test-form input',n=>n.dispatchEvent(new Event('input',{bubbles:true})));await page.evaluate(()=>navigator.serviceWorker.dispatchEvent(new Event('controllerchange')));await pause(100);
@@ -160,7 +166,7 @@ try{
  await Promise.all([swPage.waitForNavigation({waitUntil:'networkidle0'}),swPage.click('#retry')]);
  ok('retry opens original resource after network returns',!await swPage.$('#retry')&&swPage.url().includes('apple-ui.css?offline-probe=1'));
  await swPage.goto(base+'/app-offline.html',{waitUntil:'networkidle0'});
- await swPage.evaluate(async()=>{await import('/app-runtime.mjs?v=20261009-stage4');const module=await import('/app-runtime.mjs?v=20261009-stage4');const reg=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4&update-probe=1',{scope:'/'});module.watchAppRegistration(reg);});
+ await swPage.evaluate(async()=>{await import('/app-runtime.mjs?v=20261016-update-banner1');const module=await import('/app-runtime.mjs?v=20261016-update-banner1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4&update-probe=1',{scope:'/'});module.watchAppRegistration(reg);});
  await swPage.waitForSelector('.app-system-banner:not([hidden]) button:not([hidden])');
  ok('real updated worker waits for explicit consent',await swPage.evaluate(async()=>!!(await navigator.serviceWorker.getRegistration()).waiting));
  await Promise.all([swPage.waitForNavigation({waitUntil:'networkidle0'}),swPage.click('.app-system-banner button')]);

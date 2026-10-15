@@ -1,7 +1,7 @@
 import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261010-season-test1';
 import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261009-stage1';
 import './action-feedback.mjs?v=20261009-app-audit2';
-import './ios-experience.mjs?v=20261012-readable2';
+import './ios-experience.mjs?v=20261016-update-banner1';
 const validChurches=new Set(['M+','SHiNE']);
 const requested=new URLSearchParams(location.search).get('church');
 const church=validChurches.has(requested)?requested:null;

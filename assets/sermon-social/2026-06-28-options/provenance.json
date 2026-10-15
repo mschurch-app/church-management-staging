@@ -1,0 +1,20 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=fAGioCZ7FKk",
+  "source_stream": "1920x1080 60fps YouTube HLS format 312",
+  "speaker_verified_from_video_title": "吳俊璋牧師",
+  "frames": [
+    {
+      "file": "card-knees-up-a.jpg",
+      "at_seconds": 752
+    },
+    {
+      "file": "card-knees-up-b.jpg",
+      "at_seconds": 1402
+    },
+    {
+      "file": "card-half-body.jpg",
+      "at_seconds": 2302
+    }
+  ],
+  "processing": "source frame crop, proportional resize, JPEG compression, M+ card text overlay; no generated person or body"
+}

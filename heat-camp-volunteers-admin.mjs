@@ -20,10 +20,27 @@ function renderSummary(){const root=$('#summary');root.replaceChildren();for(con
 function renderCard(item){
   const card=el('article','','application-card');card.id=`application-${item.id}`;
   const head=el('div','','application-head');const title=el('div');title.append(el('h3',item.name),el('div',`${states[item.status]||item.status} · ${localDate(item.created_at)}`,'application-meta'));head.append(title,el('strong',roleText(item.requested_roles)));card.append(head);
-  const details=el('div','','application-details');details.append(detail('所屬教會',item.church_affiliation),detail('手機',item.phone,`tel:${item.phone.replace(/[^0-9+]/g,'')}`),detail('Email',item.email,`mailto:${encodeURIComponent(item.email)}`),detail('LINE ID',item.line_id),detail('志工意願',roleText(item.requested_roles)),detail('已安排職務',roleText(item.assigned_roles)),detail('LINE 群通知',({sent:'已送達',failed:'傳送失敗',unavailable:'尚未設定',pending:'待發送'})[item.line_status]||item.line_status));card.append(details);
+  const details=el('div','','application-details');details.append(detail('所屬教會',item.church_affiliation),detail('手機',item.phone,`tel:${item.phone.replace(/[^0-9+]/g,'')}`),detail('Email',item.email,`mailto:${encodeURIComponent(item.email)}`),detail('LINE ID',item.line_id),detail('志工意願',roleText(item.requested_roles)),detail('已安排職務',roleText(item.assigned_roles)),detail('LINE 群通知',({sent:'已送達',failed:'傳送失敗',unavailable:'尚未設定',pending:'待發送'})[item.line_status]||item.line_status),detail('投保資料',item.birthday&&item.national_id_last4?'已填寫':'待補'));card.append(details);
   if(item.experience)card.append(el('p',`相關經驗：${item.experience}`,'application-note'));
   if(item.notes)card.append(el('p',`備註：${item.notes}`,'application-note'));
   if(canEdit){
+    const insurance=el('div','','insurance-review');
+    insurance.append(detail('生日',item.birthday||'待補'),detail('身分證字號',item.national_id_last4?`末四碼 ${item.national_id_last4}`:'待補'));
+    if(item.guardian_name)insurance.append(detail('監護人姓名',item.guardian_name));
+    if(item.national_id_last4){
+      const reveal=el('button','顯示完整身分證（保險用）');reveal.type='button';reveal.className='insurance-reveal';
+      const value=el('strong','','insurance-identity');const feedback=el('span','','insurance-feedback');
+      let hideTimer;
+      reveal.addEventListener('click',async()=>{
+        if(value.textContent){clearTimeout(hideTimer);value.textContent='';reveal.textContent='顯示完整身分證（保險用）';return;}
+        reveal.disabled=true;feedback.textContent='讀取中…';
+        try{const result=await request('insurance_details',{id:item.id});value.textContent=result.insurance?.national_id||'尚未補齊';feedback.textContent='已記錄此次查看';reveal.textContent='隱藏';hideTimer=setTimeout(()=>{value.textContent='';reveal.textContent='顯示完整身分證（保險用）';feedback.textContent='';},60000);}
+        catch(error){feedback.textContent=error.message;}
+        finally{reveal.disabled=false;}
+      });
+      insurance.append(reveal,value,feedback);
+    }
+    card.append(insurance);
     const actions=el('div','','application-actions');const stateLabel=el('label','審核狀態');const select=el('select');for(const [key,label] of Object.entries(states)){const option=el('option',label);option.value=key;select.append(option);}select.value=item.status;stateLabel.append(select);actions.append(stateLabel);
     const assigned=el('div','','assigned');assigned.append(el('span','錄取職務：'));
     for(const role of item.requested_roles){const label=el('label');const check=document.createElement('input');check.type='checkbox';check.value=role;check.checked=(item.assigned_roles||[]).includes(role);label.append(check,el('span',labels[role]));assigned.append(label);}actions.append(assigned);

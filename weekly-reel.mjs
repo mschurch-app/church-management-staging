@@ -1,6 +1,6 @@
 import {AudioBufferSource,BufferTarget,CanvasSource,Mp4OutputFormat,Output,Quality,canEncodeVideo} from 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/+esm';
 
-const WIDTH=720,HEIGHT=1280,FPS=24,DURATION=5;
+const WIDTH=720,HEIGHT=1280,FPS=24,DURATION=8;
 function hero(ctx,image,progress){const scale=Math.min(612/image.width,344/image.height)*(1+progress*.015),w=image.width*scale,h=image.height*scale,x=(WIDTH-w)/2,y=190+(344-h)/2;ctx.save();ctx.beginPath();ctx.roundRect(54,190,612,344,24);ctx.clip();ctx.drawImage(image,x,y,w,h);ctx.restore();}
 function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
 function wrap(ctx,text,maxWidth,maxLines=3){const chars=[...String(text||'')],lines=[];let line='';for(const char of chars){const next=line+char;if(ctx.measureText(next).width>maxWidth&&line){lines.push(line);line=char;if(lines.length===maxLines-1)break;}else line=next;}if(line&&lines.length<maxLines)lines.push(line);const used=lines.join('').length;if(used<chars.length)lines[lines.length-1]=lines[lines.length-1].replace(/[，。！？、,.!?…]*$/,'')+'…';return lines;}

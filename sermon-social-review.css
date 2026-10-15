@@ -9,3 +9,5 @@
 .youtube-workflow{border-color:#c9ddd8;background:linear-gradient(180deg,#f9fcfb,#fff)}.youtube-state{display:inline-flex;margin:.45rem 0;padding:.35rem .7rem;border-radius:999px;background:#e9f5f1;color:#125b4e;font-weight:850}.youtube-controls{display:grid;grid-template-columns:auto minmax(180px,1fr) auto auto;gap:.75rem;align-items:end;margin:1rem 0}.youtube-controls label{margin:0}.youtube-controls button{margin:0;min-height:48px}@media(max-width:760px){.youtube-controls{grid-template-columns:1fr}.youtube-controls button{width:100%}}
 
 .review-actions #approve-hint,.review-actions #action-status{grid-column:1/-1;margin:0;padding:2px 4px;font-size:.9rem;line-height:1.45}.review-actions #approve-hint{color:#8a5b22;font-weight:700}.review-actions #action-status[data-tone="error"]{color:#a7352a;font-weight:800}.review-actions #action-status[data-tone="success"]{color:#216e59;font-weight:700}.review-actions #approve:disabled{opacity:.48;filter:saturate(.45);cursor:not-allowed;box-shadow:none}
+
+.artwork-options.source-landscape .artwork-option img{aspect-ratio:16/9;object-fit:contain;background:#173a32}

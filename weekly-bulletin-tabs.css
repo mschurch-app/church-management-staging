@@ -24,7 +24,7 @@ body[data-workflow-page="weekly"]:has(#weekly-two-track) #scope-note{display:non
 .two-track-heading span{padding:8px 12px;border-radius:999px;background:#edf5ef;color:#416851;font-weight:750}
 #weekly-two-track [data-weekly-panel]>p{margin:0;color:#5d7065;line-height:1.7}
 .two-track-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:20px;border:1px solid #e0e9e2;border-radius:18px;background:#f9fbf8}
-.two-track-fields>label:has(textarea),.two-track-fields>label:has(#speaker-photo),.two-track-fields>label:has(#bulletin-title){grid-column:1/-1}
+.two-track-fields>label:has(textarea),.two-track-fields>label:has(#bulletin-title){grid-column:1/-1}
 .two-track-fields label{min-width:0}
 #promo-media>.bulletin-section{margin:0}
 #promo-reel>#reel-panel,#promo-youtube>#weekly-youtube{margin:0;box-sizing:border-box}
@@ -47,4 +47,4 @@ body[data-workflow-page="weekly"]:has(#weekly-two-track) #scope-note{display:non
 #weekly-two-track .schedule-role input{min-width:0;max-width:100%;min-height:43px;padding:8px 10px}
 #weekly-two-track #sections{margin:0}
 #weekly-two-track #youtube-description-edit{min-height:180px}
-@media(max-width:720px){.two-track-active .bulletin-editor{padding:14px}.two-track-top{grid-template-columns:1fr;padding:18px}.two-track-top #two-track-date-caption{grid-column:1}.two-track-tabs button{font-size:.92rem}.two-track-fields,#weekly-two-track .canva-options,.approved-promo-facts{grid-template-columns:1fr}.two-track-fields>label:has(textarea),.two-track-fields>label:has(#speaker-photo),.two-track-fields>label:has(#bulletin-title){grid-column:1}.two-track-actions button{flex:1 1 150px}}
+@media(max-width:720px){.two-track-active .bulletin-editor{padding:14px}.two-track-top{grid-template-columns:1fr;padding:18px}.two-track-top #two-track-date-caption{grid-column:1}.two-track-tabs button{font-size:.92rem}.two-track-fields,#weekly-two-track .canva-options,.approved-promo-facts{grid-template-columns:1fr}.two-track-fields>label:has(textarea),.two-track-fields>label:has(#bulletin-title){grid-column:1}.two-track-actions button{flex:1 1 150px}}

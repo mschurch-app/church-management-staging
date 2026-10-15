@@ -326,6 +326,15 @@ async function handle(req:Request,c:Config,userId:string,body:any){
     if(row.error)throw new Failure('unavailable');
     return {ok:true,configured:c.ready,connected:!!row.data,canManage:rights.reviewer===true,mode:'canva_ai',preview:true};
   }
+  if(body.action==='list'){
+    if(!UUID.test(body.bulletinId||''))throw new Failure('invalid_request',400);
+    const promo=await c.db.from('website_weekly_promos').select('status,version,snapshot').eq('bulletin_id',body.bulletinId).eq('church_id',church).maybeSingle();
+    if(promo.error)throw new Failure('unavailable');
+    const found=await c.db.from('weekly_canva_jobs').select('*').eq('bulletin_id',body.bulletinId).eq('church_id',church).eq('status','ready').order('created_at',{ascending:false}).limit(20);
+    if(found.error)throw new Failure('unavailable');
+    const rows=(found.data||[]) as Job[],base=rows.find(row=>row.id===promo.data?.snapshot?.canva_base_job_id)||rows.find(row=>!row.input?.REVIEW_FOR_PROMO),review=rows.find(row=>row.input?.REVIEW_FOR_PROMO===String(promo.data?.version||'')&&row.input?.REVIEW_BASE_JOB_ID===base?.id);
+    return {ok:true,jobs:[base,review].filter(Boolean).map(publicJob)};
+  }
   if(!c.ready)throw new Failure('configuration_required',409);
   if(body.action==='authorize'){
     if(!rights.reviewer)throw new Failure('manager_required',403);
@@ -337,8 +346,8 @@ async function handle(req:Request,c:Config,userId:string,body:any){
     Object.entries({client_id:c.id,redirect_uri:c.redirect,response_type:'code',scope:SCOPES.join(' '),code_challenge:await hash(verifier),code_challenge_method:'s256',state}).forEach(([k,v])=>url.searchParams.set(k,v));
     return {ok:true,authorizationUrl:url.toString()};
   }
-  if(['start','reexport'].includes(body.action)){
-    if(body.action==='start'&&body.aiConsent!==true)throw new Failure('ai_consent_required',400);
+  if(['start','reexport','review_start'].includes(body.action)){
+    if(['start','review_start'].includes(body.action)&&body.aiConsent!==true)throw new Failure('ai_consent_required',400);
     if(!UUID.test(body.requestId||'')||!UUID.test(body.bulletinId||''))throw new Failure('invalid_request',400);
     const old=await c.db.from('weekly_canva_jobs').select('*').eq('id',body.requestId).maybeSingle();
     if(old.error)throw new Failure('unavailable');
@@ -347,6 +356,28 @@ async function handle(req:Request,c:Config,userId:string,body:any){
       return {ok:true,job:publicJob(old.data)};
     }
     await ensureEditable(c,{bulletin_id:body.bulletinId,church_id:church});
+    if(body.action!=='review_start'){
+      const stage=await c.db.from('website_weekly_promos').select('status').eq('bulletin_id',body.bulletinId).eq('church_id',church).maybeSingle();
+      if(stage.error)throw new Failure('unavailable');
+      if(stage.data&&!['draft','changes_requested'].includes(stage.data.status))throw new Failure('bulletin_locked',409);
+    }
+    let reviewPromo:any=null,reviewBase:Job|null=null;
+    if(body.action==='review_start'){
+      const settings=await c.db.from('review_workflow_settings').select('initial_reviewer_id').eq('church_id',church).eq('workflow_key','weekly_promo').maybeSingle();
+      if(settings.error||settings.data?.initial_reviewer_id!==userId)throw new Failure('reviewer_required',403);
+      const record=await c.db.from('website_weekly_promos').select('status,version,snapshot').eq('bulletin_id',body.bulletinId).eq('church_id',church).maybeSingle();
+      if(record.error||record.data?.status!=='pending_initial')throw new Failure('invalid_status',409);
+      reviewPromo=record.data;
+      const expected=reviewPromo.snapshot||{},entered=inputs(body);
+      if(entered.TOPIC!==expected.sermon_topic||entered.SCRIPTURE!==expected.sermon_scripture||entered.SPEAKER!==expected.sermon_speaker||entered.SERVICE_DATE!==expected.service_date)throw new Failure('invalid_request',400);
+      const candidates=await c.db.from('weekly_canva_jobs').select('*').eq('bulletin_id',body.bulletinId).eq('church_id',church).eq('status','ready').order('created_at',{ascending:false}).limit(20);
+      if(candidates.error)throw new Failure('unavailable');
+      reviewBase=((candidates.data||[]) as Job[]).find(row=>row.id===reviewPromo.snapshot?.canva_base_job_id)||((candidates.data||[]) as Job[]).find(row=>!row.input?.REVIEW_FOR_PROMO)||null;
+      if(!reviewBase)throw new Failure('not_found',404);
+      const previous=await c.db.from('weekly_canva_jobs').select('*').eq('bulletin_id',body.bulletinId).eq('church_id',church).contains('input',{REVIEW_FOR_PROMO:String(reviewPromo.version),REVIEW_BASE_JOB_ID:reviewBase.id}).order('created_at',{ascending:false}).limit(1).maybeSingle();
+      if(previous.error)throw new Failure('unavailable');
+      if(previous.data)return {ok:true,job:publicJob(previous.data as Job)};
+    }
     const parent=body.action==='reexport'?await ownedJob(c,String(body.parentJobId||''),church,userId):null;
     if(parent&&(parent.bulletin_id!==body.bulletinId||!Object.values(parent.outputs).every(o=>o.design_id)))throw new Failure('invalid_request',400);
     const input=parent?{...parent.input}:inputs(body),outputs:Record<string,Output>={};
@@ -363,7 +394,7 @@ async function handle(req:Request,c:Config,userId:string,body:any){
     const candidates=available.length?available:DIRECTIONS.map((_,i)=>i).filter(i=>i!==Number(history.data?.[0]?.input?.ART_DIRECTION));
     for(let index=candidates.length-1;index>0;index--){const randomIndex=crypto.getRandomValues(new Uint32Array(1))[0]%(index+1);[candidates[index],candidates[randomIndex]]=[candidates[randomIndex],candidates[index]];}
     const directions=candidates.slice(0,3);
-    if(!parent){input.GENERATION_MODE='canva_ai';input.ART_DIRECTIONS=JSON.stringify(directions);}
+    if(!parent){input.GENERATION_MODE='canva_ai';input.ART_DIRECTIONS=JSON.stringify(directions);if(reviewPromo&&reviewBase){input.REVIEW_FOR_PROMO=String(reviewPromo.version);input.REVIEW_BASE_JOB_ID=reviewBase.id;}}
     for(let option=1;option<=3;option++)for(const format of ['home','ig']){
       const kind=`option${option}_${format}`;
       if(parent){

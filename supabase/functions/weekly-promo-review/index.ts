@@ -54,8 +54,11 @@ async function handle(request:Request,db:Db,user:{id:string},origin:string){
     const rowResult=await db.from('website_weekly_bulletins').select('*').eq('id',id).eq('church_id',church).maybeSingle(),row=rowResult.data;
     if(rowResult.error||!row)return json(origin,{ok:false,error:'not_found'},404);
     if(!['draft','changes_requested'].includes(row.status))return json(origin,{ok:false,error:'bulletin_locked'},409);
-    if(!row.sermon_topic||!row.sermon_scripture||!row.sermon_speaker||!row.speaker_photo_path||!row.hero_image_path||!row.reel_cover_image_path||church==='M+'&&(!row.reel_enabled||!row.reel_video_path))return json(origin,{ok:false,error:'promo_incomplete'},400);
-    const data={bulletin_id:id,church_id:church,status:'pending_initial',version:(promo?.version||0)+1,snapshot:snapshot(row),submitted_by:user.id,submitted_at:new Date().toISOString(),reviewed_by:null,reviewed_at:null,review_comment:null,updated_at:new Date().toISOString()};
+    if(!row.sermon_topic||!row.sermon_scripture||!row.sermon_speaker||!row.hero_image_path||!row.reel_cover_image_path||church==='M+'&&(!row.reel_enabled||!row.reel_video_path))return json(origin,{ok:false,error:'promo_incomplete'},400);
+    const jobs=await db.from('weekly_canva_jobs').select('id,input').eq('bulletin_id',id).eq('church_id',church).eq('status','ready').order('created_at',{ascending:false}).limit(10);
+    if(jobs.error)throw new Error('db');
+    const base=(jobs.data||[]).find((item:any)=>item.input?.TOPIC===row.sermon_topic&&item.input?.SCRIPTURE===row.sermon_scripture&&item.input?.SPEAKER===row.sermon_speaker&&item.input?.SERVICE_DATE===row.service_date);
+    const data={bulletin_id:id,church_id:church,status:'pending_initial',version:(promo?.version||0)+1,snapshot:{...snapshot(row),canva_base_job_id:base?.id||null},submitted_by:user.id,submitted_at:new Date().toISOString(),reviewed_by:null,reviewed_at:null,review_comment:null,updated_at:new Date().toISOString()};
     const saved=promo?await db.from('website_weekly_promos').update(data).eq('bulletin_id',id).eq('status',promo.status).eq('version',promo.version).select('bulletin_id').maybeSingle():await db.from('website_weekly_promos').insert(data).select('bulletin_id').maybeSingle();
     if(saved.error||!saved.data)return json(origin,{ok:false,error:'conflict'},409);
     await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:id,church_id:church,bulletin_version:data.version,track:'promo',action:'submitted',actor_user_id:user.id});

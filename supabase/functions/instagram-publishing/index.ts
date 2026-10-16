@@ -63,6 +63,15 @@ async function publishingEnabled(db:ReturnType<typeof createClient>,church:strin
   if(result.error)throw new Error('publishing_settings_unavailable');
   return result.data?.[field]===true;
 }
+function allowedSermonImageUrl(value:string,draftId:string,church:string){
+  try{
+    const image=new URL(value),storage=new URL(Deno.env.get('SUPABASE_URL')||'');
+    if(image.protocol!=='https:'||image.username||image.password||image.search||image.hash)return false;
+    if(image.origin===APP_ORIGIN)return true;
+    const prefix=`/storage/v1/object/public/church-website-public-media/${encodeURIComponent(church)}/sermons/${draftId}/`,file=image.pathname.slice(prefix.length);
+    return image.origin===storage.origin&&image.pathname.startsWith(prefix)&&/^[a-f0-9]{64}\.(?:jpg|jpeg|png|webp)$/i.test(file);
+  }catch{return false;}
+}
 async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,church:string,bulletinId:string,userId:string){
   if(!await publishingEnabled(db,church,'instagram_weekly_reel_enabled'))throw new Error('publishing_disabled');
   const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_cover_image_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle();
@@ -100,7 +109,7 @@ async function publishSermon(db:ReturnType<typeof createClient>,serviceKey:strin
   const draftResult=await db.from('sermon_social_drafts').select('id,church_id,service_date,sermon_title,speaker,caption,status,social_image_url').eq('id',draftId).eq('church_id',church).maybeSingle(),draft=draftResult.data;
   if(draftResult.error||!draft)throw new Error('sermon_not_found');
   if(draft.status!=='approved')throw new Error('sermon_not_approved');
-  if(!draft.social_image_url?.startsWith('https://mscos.mchurch.online/'))throw new Error('sermon_image_missing');
+  if(!allowedSermonImageUrl(String(draft.social_image_url||''),draft.id,church))throw new Error('sermon_image_missing');
   const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
   if(connectionResult.error||!connection)throw new Error('not_connected');
   const previous=await db.from('sermon_social_publication_jobs').select('status,instagram_media_id,image_url').eq('draft_id',draft.id).maybeSingle();

@@ -67,7 +67,7 @@ await page.screenshot({path:out+'/account-editor-390.png',fullPage:true});
 await page.$eval('#editor form',form=>form.requestSubmit());await new Promise(r=>setTimeout(r,1200));assert(writes.some(w=>w.name==='save_admin_account_bundle'));
 // Restricted service leader: exactly their service entries, no owner settings.
 mode='leader';await page.goto(base+'/admin-dashboard.html?church=M%2B',{waitUntil:'networkidle0'});await page.waitForSelector('#modules .dashboard-card');
-const restricted=await page.evaluate(()=>[...document.querySelectorAll('#modules [data-folder-key]')].map(n=>n.dataset.folderKey));assert.deepEqual(new Set(restricted),new Set(['schedules','service_signups']));
+const restricted=await page.evaluate(()=>[...document.querySelectorAll('#modules [data-folder-key]')].map(n=>n.dataset.folderKey));assert.deepEqual(new Set(restricted),new Set(['schedules','service_signups','service_quick_match']));
 mode='owner';
 const htmlFiles=fs.readdirSync(root).filter(f=>f.endsWith('.html')&&fs.readFileSync(path.join(root,f),'utf8').includes('class="member-page'));
 const geometry=[];

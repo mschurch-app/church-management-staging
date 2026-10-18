@@ -9,7 +9,8 @@ const all=availableFunctionKeys(full,'M+',home),grouped=FUNCTION_GROUPS.flatMap(
 assert.equal(new Set(grouped).size,grouped.length);assert.deepEqual(new Set(grouped),new Set(Object.keys(FUNCTION_CATALOG)));assert.equal(all.length,Object.keys(FUNCTION_CATALOG).length);
 assert(canOpen(full,'M+','private_prayers'));assert(canOpen(full,'M+','pastoral_chats'));
 const leader={grants:[{church_id:'M+',permission:'schedules'}],featurePermissions:[]};
-assert.deepEqual(new Set(availableFunctionKeys(leader,'M+',{})),new Set(['schedules','service_signups']));
+assert.deepEqual(new Set(availableFunctionKeys(leader,'M+',{})),new Set(['schedules','service_signups','service_quick_match']));
+assert.equal(FUNCTION_CATALOG.service_quick_match.file,'service-signup-admin.html?match=1');
 assert.equal(availableFunctionKeys(full,'SHiNE',home).includes('members'),false);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('school_students'),false);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('admin_accounts'),false);

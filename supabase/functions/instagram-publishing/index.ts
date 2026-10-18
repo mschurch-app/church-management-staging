@@ -72,6 +72,9 @@ function allowedSermonImageUrl(value:string,draftId:string,church:string){
     return image.origin===storage.origin&&image.pathname.startsWith(prefix)&&/^[a-f0-9]{64}\.(?:jpg|jpeg|png|webp)$/i.test(file);
   }catch{return false;}
 }
+function allowedSermonVideoPath(value:string,draftId:string,church:string){
+  return new RegExp(`^${church.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}/sermons/${draftId}/[a-f0-9]{64}\\.mp4$`,'i').test(value);
+}
 async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,church:string,bulletinId:string,userId:string){
   if(!await publishingEnabled(db,church,'instagram_weekly_reel_enabled'))throw new Error('publishing_disabled');
   const bulletinResult=await db.from('website_weekly_bulletins').select('id,church_id,version,status,reel_enabled,reel_video_path,reel_cover_image_path,reel_caption,title,service_date').eq('id',bulletinId).eq('church_id',church).maybeSingle();
@@ -106,24 +109,27 @@ async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,
 
 async function publishSermon(db:ReturnType<typeof createClient>,serviceKey:string,church:string,draftId:string,userId:string|null){
   if(!await publishingEnabled(db,church,'instagram_sermon_enabled'))throw new Error('publishing_disabled');
-  const draftResult=await db.from('sermon_social_drafts').select('id,church_id,service_date,sermon_title,speaker,caption,status,social_image_url').eq('id',draftId).eq('church_id',church).maybeSingle(),draft=draftResult.data;
+  const draftResult=await db.from('sermon_social_drafts').select('id,church_id,service_date,sermon_title,speaker,caption,status,review_stage,social_media_type,social_video_path,social_image_url').eq('id',draftId).eq('church_id',church).maybeSingle(),draft=draftResult.data;
   if(draftResult.error||!draft)throw new Error('sermon_not_found');
-  if(draft.status!=='approved')throw new Error('sermon_not_approved');
+  if(draft.status!=='approved'||draft.review_stage!=='completed')throw new Error('sermon_not_approved');
   if(!allowedSermonImageUrl(String(draft.social_image_url||''),draft.id,church))throw new Error('sermon_image_missing');
+  const isReel=draft.social_media_type==='reel';
+  if(isReel&&!allowedSermonVideoPath(String(draft.social_video_path||''),draft.id,church))throw new Error('sermon_video_missing');
   const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
   if(connectionResult.error||!connection)throw new Error('not_connected');
-  const previous=await db.from('sermon_social_publication_jobs').select('status,instagram_media_id,image_url').eq('draft_id',draft.id).maybeSingle();
-  if(previous.data?.status==='published'&&previous.data.instagram_media_id&&previous.data.image_url===draft.social_image_url)return {status:'published',mediaId:previous.data.instagram_media_id};
+  const previous=await db.from('sermon_social_publication_jobs').select('status,instagram_media_id').eq('draft_id',draft.id).maybeSingle();
+  if(previous.data?.status==='published'&&previous.data.instagram_media_id)return {status:'published',mediaId:previous.data.instagram_media_id};
   const caption=String(draft.caption||`${draft.sermon_title}\n${draft.speaker||''}\n${draft.service_date}\n\n#Mplus大雅教會 #主日講道 #台中教會`).slice(0,2200),now=new Date().toISOString();
-  const queued=await db.from('sermon_social_publication_jobs').upsert({draft_id:draft.id,church_id:church,image_url:draft.social_image_url,caption,status:'processing',attempt_count:1,requested_by:userId,requested_at:now,started_at:now,error_code:null,updated_at:now},{onConflict:'draft_id'}).select('id').single();
+  const queued=await db.from('sermon_social_publication_jobs').upsert({draft_id:draft.id,church_id:church,image_url:draft.social_image_url,media_type:isReel?'reel':'image',video_path:isReel?draft.social_video_path:null,caption,status:'processing',attempt_count:1,requested_by:userId,requested_at:now,started_at:now,error_code:null,updated_at:now},{onConflict:'draft_id'}).select('id').single();
   if(queued.error||!queued.data)throw new Error('job_store');
   try{
     const token=await decryptToken(connection.access_token_ciphertext,connection.access_token_iv,serviceKey);
-    const created=await graph(`${connection.instagram_user_id}/media`,token,'POST',{image_url:draft.social_image_url,caption}),containerId=String(created.id||'');
+    const media=isReel?{media_type:'REELS',video_url:db.storage.from('church-website-public-media').getPublicUrl(draft.social_video_path).data.publicUrl,cover_url:draft.social_image_url,caption,share_to_feed:'true'}:{image_url:draft.social_image_url,caption};
+    const created=await graph(`${connection.instagram_user_id}/media`,token,'POST',media),containerId=String(created.id||'');
     if(!containerId)throw new Error('instagram_api');
     await db.from('sermon_social_publication_jobs').update({container_id:containerId,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
     let ready=false;
-    for(let attempt=0;attempt<15;attempt++){const state=await graph(containerId,token,'GET',{fields:'status_code,status'});if(state.status_code==='FINISHED'){ready=true;break;}if(['ERROR','EXPIRED'].includes(state.status_code))throw new Error('instagram_processing');await wait(1500);}
+    for(let attempt=0;attempt<(isReel?20:15);attempt++){const state=await graph(containerId,token,'GET',{fields:'status_code,status'});if(state.status_code==='FINISHED'){ready=true;break;}if(['ERROR','EXPIRED'].includes(state.status_code))throw new Error('instagram_processing');await wait(isReel?2000:1500);}
     if(!ready)throw new Error('instagram_timeout');
     const published=await graph(`${connection.instagram_user_id}/media_publish`,token,'POST',{creation_id:containerId}),mediaId=String(published.id||'');
     if(!mediaId)throw new Error('instagram_api');

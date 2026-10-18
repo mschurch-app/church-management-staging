@@ -11,3 +11,6 @@
 .review-actions #approve-hint,.review-actions #action-status{grid-column:1/-1;margin:0;padding:2px 4px;font-size:.9rem;line-height:1.45}.review-actions #approve-hint{color:#8a5b22;font-weight:700}.review-actions #action-status[data-tone="error"]{color:#a7352a;font-weight:800}.review-actions #action-status[data-tone="success"]{color:#216e59;font-weight:700}.review-actions #approve:disabled{opacity:.48;filter:saturate(.45);cursor:not-allowed;box-shadow:none}
 
 .artwork-options.source-landscape .artwork-option img{aspect-ratio:16/9;object-fit:contain;background:#173a32}
+.sermon-review-page .review-card[hidden]{display:none!important}
+.reel-review{display:grid;gap:18px}.reel-preview{display:grid;grid-template-columns:minmax(0,360px) minmax(0,220px);align-items:start;gap:16px}.reel-preview video,.reel-preview img{width:100%;aspect-ratio:9/16;object-fit:contain;border-radius:16px;background:#14211f;box-shadow:0 12px 30px rgba(22,28,25,.16)}@media(max-width:680px){.reel-preview{grid-template-columns:minmax(0,1fr) minmax(0,35%);gap:10px}}
+.reel-upload-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.reel-upload-fields label{display:grid;gap:6px}.reel-upload-fields input{width:100%;min-height:44px}#upload-status{min-height:1.5em}@media(max-width:680px){.reel-upload-fields{grid-template-columns:1fr}}

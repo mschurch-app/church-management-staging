@@ -309,7 +309,9 @@ dialog.notification-modal[open]{touch-action:pan-y}
   .notification-history-dialog .notification-detail-actions{grid-template-columns:1fr}
   .notification-history-list{padding:12px 14px 16px}
   .notification-history-item{padding:13px 14px}
-  .mobile-app-nav{position:fixed;z-index:100;right:10px;bottom:max(8px,env(safe-area-inset-bottom));left:10px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid rgba(221,207,197,.92);border-radius:22px;background:rgba(255,252,249,.94);box-shadow:0 12px 34px rgba(63,41,31,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .mobile-app-nav{position:fixed;z-index:100;right:10px;bottom:max(6px,calc(env(safe-area-inset-bottom) - 7px));left:10px;display:grid;grid-template-columns:repeat(4,1fr);padding:7px;border:1px solid rgba(221,207,197,.92);border-radius:22px;background:rgba(255,252,249,.94);box-shadow:0 12px 34px rgba(63,41,31,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  /* The dock already sits above the Home indicator; a second safe-area inset inside it makes it too tall. */
+  html.church-ios .dashboard-page + .mobile-app-nav{padding-bottom:7px!important}
   .mobile-app-nav a{display:flex;min-width:0;min-height:50px;align-items:center;justify-content:center;flex-direction:column;gap:2px;border-radius:16px;color:#715c52;font-size:10px;font-weight:800;text-decoration:none}
   .mobile-app-nav a span{font-size:19px;line-height:1}
   .mobile-app-nav a:active,.mobile-app-nav a:focus-visible{background:#f9e6dc;color:#a43b2a;outline:none}

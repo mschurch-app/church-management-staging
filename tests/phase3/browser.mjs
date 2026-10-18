@@ -35,7 +35,7 @@ page.on('request',async req=>{
    else if(name==='get_website_weekly_data'){if(body.p_service_date===delaySchedule)await new Promise(resolve=>setTimeout(resolve,550));data={schedule:{tech_sound:'排班 '+body.p_service_date},next_schedule:null,schedule_roles:[]};}
    else if(name==='update_service_signup_slot'){if(await write()){const slot=services.slots.find(row=>row.id===body.p_slot);slot.capacity=body.p_capacity;slot.is_open=body.p_open;data=true;}}
    else if(name==='update_service_signup_season'){if(await write()){services.seasons.find(row=>row.id===body.p_season).status=body.p_status;data=true;}}
-   else if(name==='create_service_signup_quarter'){if(await write())data=true;}
+   else if(name==='create_service_signup_period'){if(await write())data=true;}
    else if(name==='service_signup_apply_smart_match'){if(await write()){for(const slot of services.slots)for(const person of slot.registrations)if(body.p_registrations.includes(person.id))person.status='confirmed';data={applied:body.p_registrations.length,skipped:0};}}
    else if(name==='list_church_schedules')data=[];
   }

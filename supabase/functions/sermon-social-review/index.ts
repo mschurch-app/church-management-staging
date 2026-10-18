@@ -3,6 +3,7 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 const APP='https://mscos.mchurch.online';
 const MEDIA='https://aqanuwilmvdtlzuqlrau.supabase.co/storage/v1/object/public/church-website-public-media/';
 const INITIAL='d066ac92-9801-46cc-9293-2932399b4e11';
+const DIRECT_PASTOR='c25e9543-51a8-4c02-8c26-63f864a59089';
 const UUID=/^[0-9a-f-]{36}$/i;
 const headers=(origin:string)=>({...(origin===APP?{'access-control-allow-origin':origin}:{}),'access-control-allow-headers':'authorization,content-type,apikey','access-control-allow-methods':'POST,OPTIONS','content-type':'application/json; charset=utf-8','cache-control':'no-store','vary':'Origin'});
 const json=(origin:string,status:number,body:unknown)=>new Response(JSON.stringify(body),{status,headers:headers(origin)});
@@ -78,6 +79,7 @@ async function publishApproved(db:any,req:Request,draft:any){
  return result;
 }
 function validArtwork(options:any){if(!Array.isArray(options)||options.length!==3)return false;const values=options.map(String);return values.filter(x=>x.includes('/card-knees-up')).length===2&&values.filter(x=>x.includes('/card-half-body')).length===1;}
+function canPublishDirect(staffId:string,isFinal:boolean,draft:any){return staffId===DIRECT_PASTOR&&isFinal&&draft.status==='pending_review'&&draft.review_stage==='initial_review';}
 
 Deno.serve(async req=>{
  const origin=req.headers.get('origin')||'';
@@ -94,6 +96,7 @@ Deno.serve(async req=>{
  const finals=await finalReviewerIds(db),isFinal=finals.includes(staff.id),initial=draft.review_stage==='initial_review';
  if(!isFinal&&staff.id!==INITIAL)return json(origin,403,{ok:false,error:'這份內容目前不是由您審核。'});
  const canReviewIg=draft.status==='pending_review'&&(initial?staff.id===INITIAL: draft.review_stage==='pastoral_confirmation'&&isFinal);
+ const canDirect=canPublishDirect(staff.id,isFinal,draft);
 
  if(body.action==='get'){
   const details=isFinal&&!initial,subtitles=draft.youtube_caption_requested===false?{rows:[],ready:false,cues:[]}:await subtitleState(db,draft.id,details);let workflow=null;
@@ -101,7 +104,7 @@ Deno.serve(async req=>{
   const connection=details&&draft.youtube_caption_requested!==false?(await db.from('youtube_oauth_connections').select('status').eq('church_id','M+').maybeSingle()).data:null;
   const sourceImage=draft.source_image_path?MEDIA+draft.source_image_path.split('/').map(encodeURIComponent).join('/'):null;
   const reelUrl=validReel(draft)?db.storage.from('church-website-public-media').getPublicUrl(draft.social_video_path).data.publicUrl:null;
-  return json(origin,200,{ok:true,draft:{...draft,source_image_url:sourceImage,social_video_url:reelUrl,subtitle_cues:subtitles.cues,subtitles_ready:subtitles.ready,subtitle_segments:subtitles.rows.map((x:any)=>({segment_index:x.segment_index,review_status:x.review_status,review_error:x.review_error,cue_count:Array.isArray(x.reviewed_cues)&&x.reviewed_cues.length?x.reviewed_cues.length:Array.isArray(x.cues)?x.cues.length:0}))},publication:await publicationForDraft(db,draft.id),youtube_workflow:workflow,youtube_connected:connection?.status==='connected',is_final_reviewer:isFinal,can_review_ig:canReviewIg});
+  return json(origin,200,{ok:true,draft:{...draft,source_image_url:sourceImage,social_video_url:reelUrl,subtitle_cues:subtitles.cues,subtitles_ready:subtitles.ready,subtitle_segments:subtitles.rows.map((x:any)=>({segment_index:x.segment_index,review_status:x.review_status,review_error:x.review_error,cue_count:Array.isArray(x.reviewed_cues)&&x.reviewed_cues.length?x.reviewed_cues.length:Array.isArray(x.cues)?x.cues.length:0}))},publication:await publicationForDraft(db,draft.id),youtube_workflow:workflow,youtube_connected:connection?.status==='connected',is_final_reviewer:isFinal,can_review_ig:canReviewIg,can_publish_direct:canDirect});
  }
  if(['prepare_reel_upload','complete_reel_upload'].includes(body.action)){
   if(draft.social_media_type!=='reel'||!['processing','changes_requested'].includes(draft.status))return json(origin,409,{ok:false,error:'目前不能更換這支 Reel。'});
@@ -141,6 +144,28 @@ Deno.serve(async req=>{
   try{const metadata=await youtubeAction(req,draft.id,'update_sermon_metadata'),captions=await youtubeAction(req,draft.id,'publish_subtitles',60000);await db.from('sermon_youtube_workflows').update({status:'published',published_at:new Date().toISOString(),error_code:null,updated_at:new Date().toISOString()}).eq('draft_id',draft.id);await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now}).eq('status','pending').contains('payload',{workflow:'sermon_youtube_caption_review',draft_id:draft.id});return json(origin,200,{ok:true,status:'youtube_published',youtube:{metadata,captions}});}catch(error){const message=error instanceof Error?error.message:'youtube_publish_failed';await db.from('sermon_youtube_workflows').update({status:'failed',error_code:message.slice(0,500),updated_at:new Date().toISOString()}).eq('draft_id',draft.id);return json(origin,503,{ok:false,error:'YouTube 字幕上稿失敗，已保留目前字幕，可稍後重試。'});}
  }
  if(body.action==='sync_publication'){if(!isFinal||draft.status!=='approved'||draft.review_stage!=='completed')return json(origin,409,{ok:false,error:'尚未完成 IG 複審。'});const publication=await publishApproved(db,req,draft);return json(origin,200,{ok:true,status:'approved',...publication});}
+ if(body.action==='approve_direct'){
+  if(!canDirect)return json(origin,403,{ok:false,error:'只有吳俊璋牧師本人可以略過初審直接發布。'});
+  const existing=await publicationForDraft(db,draft.id);
+  if(existing?.status==='published'&&existing.instagram_media_id)return json(origin,409,{ok:false,error:'already_published'});
+  let publishBody=body;
+  if(draft.social_media_type==='reel'){
+   if(!await reelAssetsExist(db,draft))return json(origin,409,{ok:false,error:'Reel 或封面尚未上傳完成，請先確認影片可預覽。'});
+  }else{
+   const selected=String(body.socialImageUrl||'').trim(),options=Array.isArray(draft.social_image_options)?draft.social_image_options:[];
+   if(!validArtwork(options)||!selected||!options.includes(selected))return json(origin,409,{ok:false,error:'請先從三張候選圖中選擇一張，才能直接發布。'});
+   try{const publicImageUrl=await persistSocialImage(db,draft.id,selected);publishBody={...body,socialImageUrl:publicImageUrl};}
+   catch{return json(origin,503,{ok:false,error:'圖卡無法轉存成 Instagram 可讀取的圖片，尚未發布。'});}
+  }
+  const now=new Date().toISOString(),comment=String(body.comment||'').trim().slice(0,1900);
+  const approval=await db.from('sermon_social_drafts').update({...cleaned(publishBody,draft),status:'approved',review_stage:'completed',final_reviewed_at:now,final_reviewer_id:staff.id,final_review_comment:comment?'牧師直接核准，略過初審。'+comment:'牧師直接核准，略過初審。'}).eq('id',draft.id).eq('status','pending_review').eq('review_stage','initial_review').select('id').maybeSingle();
+  if(approval.error)return json(origin,503,{ok:false,error:'approval_failed'});
+  if(!approval.data)return json(origin,409,{ok:false,error:'already_submitted'});
+  await db.from('pastoral_tasks').update({status:'completed',completed_at:now,updated_at:now}).eq('status','pending').contains('payload',{workflow:'sermon_social_initial_review',draft_id:draft.id});
+  await db.from('sermon_social_notification_queue').delete().eq('draft_id',draft.id).eq('stage','initial_review').eq('status','pending');
+  const publication=await publishApproved(db,req,draft);
+  return json(origin,200,{ok:true,status:'approved',...publication});
+ }
  if(body.action==='reject'){const comment=String(body.comment||'').trim().slice(0,2000);if(!comment)return json(origin,400,{ok:false,error:'退回時請填寫意見。'});await db.from('sermon_social_drafts').update({...cleaned(body,draft),status:'changes_requested',initial_review_comment:initial?comment:draft.initial_review_comment,final_review_comment:initial?null:comment}).eq('id',draft.id);const workflow=initial?'sermon_social_initial_review':'sermon_social_final_review';await db.from('pastoral_tasks').update({status:'completed',completed_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('status','pending').contains('payload',{workflow,draft_id:draft.id});return json(origin,200,{ok:true,status:'changes_requested'});}
  if(body.action==='approve'){
   const existing=await publicationForDraft(db,draft.id);if(existing?.status==='published'&&existing.instagram_media_id)return json(origin,409,{ok:false,error:'already_published'});const now=new Date().toISOString();

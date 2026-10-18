@@ -1,8 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {notifyStaffApp} from '../_shared/app-push-notification.mjs';
-import {notifyStaffDual} from '../_shared/dual-notification.mjs';
-
-const APP='https://mscos.mchurch.online',INITIAL='d066ac92-9801-46cc-9293-2932399b4e11';
 
 const json=(status:number,body:unknown)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 
@@ -22,13 +19,11 @@ Deno.serve(async req=>{
    const draft=await db.from('sermon_social_drafts').select('status,review_stage').eq('id',item.draft_id).maybeSingle();
    const active=item.stage==='initial_review'?draft.data?.status==='pending_review'&&draft.data?.review_stage==='initial_review':item.stage==='pastoral_confirmation'?draft.data?.status==='pending_review'&&draft.data?.review_stage==='pastoral_confirmation':true;
    if(!active){await db.from('sermon_social_notification_queue').update({status:'sent',sent_at:new Date().toISOString(),error_code:'stage_superseded',updated_at:new Date().toISOString()}).eq('id',item.id);continue;}
-   const dual=item.stage==='pastoral_confirmation'||item.stage==='initial_review'&&item.staff_id===INITIAL;
-   const result=dual?await notifyStaffDual({db,staffId:item.staff_id,churchId:'M+',eventKey:'sermon_social_review',sourceKey:item.source_key,title:item.title,body:item.body,url:item.target_url,lineMessage:`${item.title}\n${item.body}\n開啟審核：${APP}${item.target_url}`,idempotencyKey:item.source_key}):null;
-   const app=result?result.appStatus:(await notifyStaffApp({db,staffId:item.staff_id,churchId:'M+',eventKey:'sermon_social_review',sourceKey:item.source_key,title:item.title,body:item.body,url:item.target_url})).status;
-   const line=result?result.lineStatus:'disabled',appDone=['sent','stored'].includes(app),lineDone=!dual||line==='sent';
-   const saved=await db.from('pastoral_notification_deliveries').upsert({entity_key:'mplus',notification_type:'sermon_social_review',recipient_staff_id:item.staff_id,related_id:item.draft_id,idempotency_key:item.source_key,status:appDone&&lineDone?'sent':'failed',error_code:appDone&&lineDone?null:`app:${app};line:${line}`,app_status:appDone?'sent':app,line_status:line,sent_at:appDone&&lineDone?new Date().toISOString():null,updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
+   const app=(await notifyStaffApp({db,staffId:item.staff_id,churchId:'M+',eventKey:'sermon_social_review',sourceKey:item.source_key,title:item.title,body:item.body,url:item.target_url})).status;
+   const appDone=['sent','stored'].includes(app);
+   const saved=await db.from('pastoral_notification_deliveries').upsert({entity_key:'mplus',notification_type:'sermon_social_review',recipient_staff_id:item.staff_id,related_id:item.draft_id,idempotency_key:item.source_key,status:appDone?'sent':'failed',error_code:appDone?null:`app:${app}`,app_status:appDone?'sent':app,line_status:'disabled',sent_at:appDone?new Date().toISOString():null,updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
    if(saved.error)throw saved.error;
-   if(!appDone||!lineDone)throw new Error(`app:${app};line:${line}`);
+   if(!appDone)throw new Error(`app:${app}`);
    await db.from('sermon_social_notification_queue').update({status:'sent',sent_at:new Date().toISOString(),error_code:null,updated_at:new Date().toISOString()}).eq('id',item.id);
    sent++;
   }catch(error){

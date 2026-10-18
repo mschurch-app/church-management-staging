@@ -584,12 +584,25 @@ export const FUNCTION_CATALOG=freezeTree({
     "file": "service-signup-admin.html",
     "icon": "📅",
     "title": "服事意願與協調",
-    "description": "季度意願、候補與排班協調",
+    "description": "每兩個月的服事意願、候補與排班協調",
     "key": "service_signups",
     "group": "service",
     "symbol": "calendar",
     "configurableHome": false,
     "searchTerms": []
+  },
+  "service_quick_match": {
+    "church": "M+",
+    "permission": "schedules",
+    "file": "service-signup-admin.html?match=1",
+    "icon": "⚡",
+    "title": "服事快速適配",
+    "description": "事工領袖可預排負責類別的服事人選",
+    "key": "service_quick_match",
+    "group": "service",
+    "symbol": "calendar",
+    "configurableHome": false,
+    "searchTerms": ["智能配對", "快速配對", "事工領袖"]
   }
 });
 export const FUNCTION_GROUPS=freezeTree([
@@ -614,6 +627,7 @@ export const FUNCTION_GROUPS=freezeTree([
       "attendance",
       "schedules",
       "service_signups",
+      "service_quick_match",
       "spaces",
       "inventory"
     ]

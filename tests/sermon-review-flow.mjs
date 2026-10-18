@@ -5,6 +5,33 @@ import vm from 'node:vm';
 
 const review=readFileSync(new URL('../supabase/functions/sermon-social-review/index.ts',import.meta.url),'utf8');
 const youtube=readFileSync(new URL('../supabase/functions/youtube-oauth/index.ts',import.meta.url),'utf8');
+const directStart=review.indexOf('function canPublishDirect('),directEnd=review.indexOf('\n\nDeno.serve',directStart);
+assert(directStart>=0&&directEnd>directStart);
+const canPublishDirect=vm.runInNewContext(stripTypeScriptTypes(review.slice(directStart,directEnd))+'\ncanPublishDirect',{DIRECT_PASTOR:'c25e9543-51a8-4c02-8c26-63f864a59089'});
+const pendingInitial={status:'pending_review',review_stage:'initial_review'};
+assert.equal(canPublishDirect('c25e9543-51a8-4c02-8c26-63f864a59089',true,pendingInitial),true);
+assert.equal(canPublishDirect('d066ac92-9801-46cc-9293-2932399b4e11',false,pendingInitial),false);
+assert.equal(canPublishDirect('another-final-reviewer',true,pendingInitial),false);
+assert.equal(canPublishDirect('c25e9543-51a8-4c02-8c26-63f864a59089',true,{status:'approved',review_stage:'completed'}),false);
+assert.equal(canPublishDirect('c25e9543-51a8-4c02-8c26-63f864a59089',true,{status:'pending_review',review_stage:'pastoral_confirmation'}),false);
+const directBlockStart=review.indexOf(" if(body.action==='approve_direct'){");
+const directBlockEnd=review.indexOf(" if(body.action==='reject')",directBlockStart);
+assert(directBlockStart>=0&&directBlockEnd>directBlockStart);
+const directBlock=stripTypeScriptTypes('async function runDirect(){'+review.slice(directBlockStart,directBlockEnd)+'}');
+let approvedPatch=null,published=0;
+const directDraft={id:'draft',status:'pending_review',review_stage:'initial_review',social_media_type:'reel'};
+function directContext(allowed){return {body:{action:'approve_direct',caption:'revised'},canDirect:allowed,draft:directDraft,staff:{id:'pastor'},origin:'app',Date,String,Error,json:(_origin,status,value)=>({httpStatus:status,...value}),publicationForDraft:async()=>null,reelAssetsExist:async()=>true,cleaned:()=>({caption:'revised'}),publishApproved:async()=>{published++;return {instagram:{status:'published'}}},db:{from(table){const q=chain(table==='sermon_social_drafts'?{id:'draft'}:null);q.update=patch=>{if(table==='sermon_social_drafts')approvedPatch=patch;return q};q.delete=()=>q;return q}},req:{}};}
+const directRunner=context=>vm.runInNewContext(directBlock+'\nrunDirect',context)();
+assert.equal((await directRunner(directContext(false))).httpStatus,403);
+assert.equal(published,0);
+const directResult=await directRunner(directContext(true));
+assert.equal(directResult.httpStatus,200);
+assert.equal(directResult.instagram.status,'published');
+assert.equal(approvedPatch.status,'approved');
+assert.equal(approvedPatch.review_stage,'completed');
+assert.equal(approvedPatch.final_reviewer_id,'pastor');
+assert.equal('initial_reviewer_id' in approvedPatch,false);
+assert.equal(published,1);
 function compiled(source,name,next,context){const start=source.indexOf(`async function ${name}(`),end=source.indexOf(next,start);assert(start>=0&&end>start);const code=stripTypeScriptTypes(source.slice(start,end));return vm.runInNewContext(`${code}\n${name}`,context);}
 function chain(result){const q={};for(const op of ['select','eq','in','order','update','contains'])q[op]=()=>q;q.maybeSingle=async()=>({data:result});q.then=(resolve)=>Promise.resolve({error:null,data:result}).then(resolve);return q;}
 const staff=[{id:'pastor',display_name:'牧師',line_subject:'U'+'a'.repeat(32)},{id:'wife-old',display_name:'師母',line_subject:null},{id:'wife-line',display_name:'師母',line_subject:'U'+'b'.repeat(32)}];
@@ -49,4 +76,4 @@ let autoCalls=[];const autoDb={from(table){if(table==='sermon_social_drafts')ret
 const auto=compiled(youtube,'queueYoutubeReviewWhenReady','async function proofreadSubtitleSegment',{Date,Error,String,console,updateVideo:async()=>autoCalls.push('metadata'),publishSubtitles:async()=>autoCalls.push('captions')});
 assert.equal(await auto({db:autoDb},'draft'),1);
 assert.deepEqual(autoCalls,['metadata','captions']);
-console.log('sermon review flow: recipients, final publishing, delayed caption upload passed');
+console.log('sermon review flow: pastor direct access, recipients, final publishing, delayed caption upload passed');

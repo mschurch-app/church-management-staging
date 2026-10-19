@@ -1,5 +1,7 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {createDecipheriv} from 'node:crypto';
+import {linePayGet,linePayPost,linePayRequestPayload,linePayWebUrl} from './line-pay-api.mjs';
+import {reconcileLinePay} from './line-pay-reconcile.mjs';
 const APP='https://mchurch.online/heat-camp-2027.html',TEST_APP='https://mchurch.online/heat-camp-2027-test.html',SUCCESS_PAGE='https://mchurch.online/heat-camp-2027-success.html',FN='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/heat-camp-registration',MPG_VERSION='2.3';
 const origins=new Set(['https://mchurch.online','https://www.mchurch.online','http://127.0.0.1:4180','http://localhost:4180']),enc=new TextEncoder(),dec=new TextDecoder();
 const cors=(o:string)=>({'access-control-allow-origin':origins.has(o)?o:'https://mchurch.online','access-control-allow-headers':'content-type, apikey, authorization','access-control-allow-methods':'POST, OPTIONS','cache-control':'no-store','vary':'Origin'});
@@ -57,7 +59,64 @@ function clean(input:any){const r:Record<string,unknown>={},fields=['player_name
 const paymentMethods:Record<string,string[]>={card:['CREDIT'],credit:['CREDIT'],webatm:['WEBATM'],atm:['VACC'],cvs:['CVS'],barcode:['BARCODE']};
 const enabledProductionMethods=new Set<string>(['card','atm','barcode']);
 const methodEnabled=(_c:ReturnType<typeof config>,method:string)=>enabledProductionMethods.has(method==='credit'?'card':method);
-const methodFlags=(c:ReturnType<typeof config>)=>Object.fromEntries(['card','webatm','atm','cvs','barcode'].map(method=>[method,methodEnabled(c,method)]));
+const LINE_PAY_RELEASE_READY=false; // Switch only after full sandbox payment and reconciliation acceptance.
+const linePayEnabled=(c:ReturnType<typeof config>)=>LINE_PAY_RELEASE_READY&&Deno.env.get('LINE_PAY_ENABLED')==='true'
+  && Deno.env.get('LINE_PAY_ENV')===c.environment
+  && Boolean(Deno.env.get('LINE_PAY_CHANNEL_SECRET'));
+const linePayConfig=(c:ReturnType<typeof config>)=>{
+  // Closing the public checkout must not strand an already authorized order.
+  if(Deno.env.get('LINE_PAY_ENV')!==c.environment||!Deno.env.get('LINE_PAY_CHANNEL_SECRET'))
+    throw Error('line_pay_config_invalid');
+  return {channelId:'1654237984',secret:Deno.env.get('LINE_PAY_CHANNEL_SECRET')||'',environment:c.environment};
+};
+const methodFlags=(c:ReturnType<typeof config>)=>({...Object.fromEntries(['card','webatm','atm','cvs','barcode'].map(method=>[method,methodEnabled(c,method)])),line_pay:linePayEnabled(c)});
+const validRequestId=(value:string)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+async function linePayCheckout(origin:string,c:ReturnType<typeof config>,requestId:string,row:any,newOrderNo:string){
+  if(!linePayEnabled(c))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
+  if(row.merchant_order_no!==newOrderNo)return json(origin,409,{ok:false,error:'payment_status_pending'});
+  const claimed=await db().rpc('heat_camp_2027_claim_line_pay_order',{
+    p_request_id:requestId,p_environment:c.environment,p_merchant_order_no:newOrderNo
+  });
+  if(claimed.error)return json(origin,409,{ok:false,error:'line_pay_order_unavailable'});
+  const order=claimed.data;
+  const credentials=linePayConfig(c);
+  const result=await linePayPost({...credentials,path:'/v4/payments/request',
+    payload:linePayRequestPayload({orderId:order.merchant_order_no,amount:order.amount,
+      confirmUrl:FN+'?mode=line_confirm',cancelUrl:FN+'?mode=line_cancel'})});
+  const transactionId=String(result?.transactionId||'');
+  const paymentUrl=linePayWebUrl(result?.paymentUrl?.web,c.environment);
+  const saved=await db().rpc('heat_camp_2027_save_line_pay_request',{
+    p_merchant_order_no:order.merchant_order_no,p_transaction_id:transactionId,p_payment_url:paymentUrl
+  });
+  if(saved.error)throw Error('line_pay_request_not_saved');
+  return json(origin,200,{ok:true,status:'checkout',registration_no:order.registration_no,redirect_url:paymentUrl});
+}
+const lineReturn=(state:string,registrationNo:string)=>Response.redirect(
+  `${APP}?payment=${encodeURIComponent(state)}&registration=${encodeURIComponent(registrationNo)}`,303);
+const reconcileOrder=(c:ReturnType<typeof config>,order:any,transactionId:string)=>
+  reconcileLinePay({order,transactionId,credentials:linePayConfig(c),
+    client:{get:linePayGet,post:linePayPost},database:db()});
+async function linePayReturn(req:Request,mode:'line_confirm'|'line_cancel'){
+  const params=new URL(req.url).searchParams;
+  const transactionId=params.get('transactionId')||'',orderId=params.get('orderId')||'';
+  if(!/^[0-9]{16,22}$/.test(transactionId)||!/^HB27[0-9A-Z]{10,22}$/.test(orderId))
+    return lineReturn('unknown','');
+  try{
+    const c=config();
+    const found=await db().rpc('heat_camp_2027_line_pay_order',{p_transaction_id:transactionId});
+    if(found.error||!found.data||found.data.merchant_order_no!==orderId
+      ||found.data.payment_environment!==c.environment)throw Error('line_pay_order_mismatch');
+    const order=found.data;
+    // Even a cancel redirect may race with an already captured payment. LINE's
+    // signed status, never the redirect URL alone, decides the final state.
+    const result=await reconcileOrder(c,order,transactionId);
+    if(result==='paid')return Response.redirect(`${SUCCESS_PAGE}?registration=${encodeURIComponent(order.registration_no)}`,303);
+    return lineReturn(result==='pending'||result==='awaiting_authorization'?'unknown':result,order.registration_no);
+  }catch(error){
+    console.error('LINE Pay return requires reconciliation',{transactionId,message:error instanceof Error?error.message:'unknown'});
+    return lineReturn('unknown','');
+  }
+}
 async function paymentGateway(origin:string,c:ReturnType<typeof config>,row:any,paymentMethod:string){
   const testFlow=row.merchant_order_no.startsWith('HB27T'),returnUrl=FN+(testFlow?'?mode=return&flow=payment-test':'?mode=return');
   const showGatewayInstructions=paymentMethod==='atm'||paymentMethod==='barcode';
@@ -76,18 +135,31 @@ async function registrationStatus(origin:string,input:any){
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))return json(origin,400,{ok:false,error:'invalid_request_id'});
   try{
     const c=config();checkEnvironment(c,input);
-    const row=await retryContext(requestId);
+    let row=await retryContext(requestId);
     if(!row||row.payment_environment!==c.environment)return json(origin,404,{ok:false,error:'registration_not_found'});
-    return json(origin,200,{ok:true,registration_no:row.registration_no,status:row.status,amount:row.amount,order_status:row.order_status,retry_allowed:row.status==='awaiting_payment'&&['failed','expired','cancelled'].includes(row.order_status)});
+    let verificationPending=false;
+    let resumeUrl='';
+    if(row.payment_provider==='line_pay'&&row.order_status==='created'&&row.transaction_id){
+      try{
+        const result=await reconcileOrder(c,{status:row.order_status,merchant_order_no:row.merchant_order_no,amount:row.amount},row.transaction_id);
+        row=await retryContext(requestId);
+        if(result==='awaiting_authorization'&&row.status==='awaiting_payment'&&row.order_status==='created'&&row.payment_url)
+          resumeUrl=linePayWebUrl(row.payment_url,c.environment);
+      }catch(error){
+        verificationPending=true;
+        console.error('LINE Pay status reconciliation pending',{registrationNo:row.registration_no,message:error instanceof Error?error.message:'unknown'});
+      }
+    }
+    return json(origin,200,{ok:true,registration_no:row.registration_no,status:row.status,amount:row.amount,order_status:row.order_status,verification_pending:verificationPending,resume_url:resumeUrl,retry_allowed:!verificationPending&&row.status==='awaiting_payment'&&['failed','expired','cancelled'].includes(row.order_status)});
   }catch{return json(origin,503,{ok:false,error:'retry_status_unavailable'});}
 }
 async function retryPayment(origin:string,input:any){
   const requestId=safe(input.request_id,36),paymentMethod=safe(input.payment_method,20);
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))return json(origin,400,{ok:false,error:'invalid_request_id'});
-  if(!paymentMethods[paymentMethod])return json(origin,400,{ok:false,error:'payment_method_unavailable'});
+  if(!paymentMethods[paymentMethod]&&paymentMethod!=='line_pay')return json(origin,400,{ok:false,error:'payment_method_unavailable'});
   try{
     const c=config();checkEnvironment(c,input);
-    if(!methodEnabled(c,paymentMethod))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
+    if(paymentMethod==='line_pay'?!linePayEnabled(c):!methodEnabled(c,paymentMethod))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
     const row=await retryContext(requestId);
     if(!row||row.payment_environment!==c.environment)return json(origin,404,{ok:false,error:'registration_not_found'});
     if(row.status==='paid'||row.order_status==='paid')return json(origin,200,{ok:true,status:'paid',registration_no:row.registration_no});
@@ -99,6 +171,7 @@ async function retryPayment(origin:string,input:any){
     if(prepared.error)return json(origin,409,{ok:false,error:'payment_retry_unavailable'});
     if(prepared.data?.status==='paid')return json(origin,200,{ok:true,status:'paid',registration_no:row.registration_no});
     if(prepared.data?.merchant_order_no!==newOrderNo)return json(origin,409,{ok:false,error:'payment_status_pending'});
+    if(paymentMethod==='line_pay')return linePayCheckout(origin,c,requestId,prepared.data,newOrderNo);
     return paymentGateway(origin,c,prepared.data,paymentMethod);
   }catch(e){
     console.error('heat-camp payment retry failed',{message:e instanceof Error?e.message:'retry_failed'});
@@ -135,7 +208,8 @@ async function checkout(origin:string,input:any){
     const requestId=safe(input.request_id,36),registration=clean(input.registration||{}),paymentMethod=safe(registration.payment_method,20)||'atm';
     const methods:Record<string,string[]>={card:['CREDIT','APPLEPAY','ANDROIDPAY','SAMSUNGPAY'],credit:['CREDIT','APPLEPAY','ANDROIDPAY','SAMSUNGPAY'],webatm:['WEBATM'],atm:['VACC'],cvs:['CVS'],barcode:['BARCODE']};
     if(!/^[0-9a-f-]{36}$/i.test(requestId))return json(origin,400,{ok:false,error:'invalid_request_id'});
-    if(!methods[paymentMethod]||!methodEnabled(c,paymentMethod))return json(origin,409,{ok:false,error:'payment_method_unavailable'});
+    if(paymentMethod==='line_pay'?!linePayEnabled(c):(!methods[paymentMethod]||!methodEnabled(c,paymentMethod)))
+      return json(origin,409,{ok:false,error:'payment_method_unavailable'});
     registration.payment_environment=c.environment;
 
     const newOrderNo=orderNo();
@@ -158,6 +232,7 @@ async function checkout(origin:string,input:any){
       if(receipt.error)return json(origin,409,{ok:false,error:'receipt_preference_failed'});
     }
 
+    if(paymentMethod==='line_pay')return linePayCheckout(origin,c,requestId,row,newOrderNo);
     return paymentGateway(origin,c,row,paymentMethod);
   }catch(e){
     return json(origin,400,{ok:false,error:e instanceof Error?e.message:'registration_failed'});
@@ -225,6 +300,8 @@ async function callback(req:Request,mode:string){
 Deno.serve(async req=>{
   const origin=req.headers.get('origin')||'',mode=new URL(req.url).searchParams.get('mode')||'';
   if(mode==='notify'||mode==='return')return req.method==='POST'?callback(req,mode):new Response('method_not_allowed',{status:405});
+  if(mode==='line_confirm'||mode==='line_cancel')
+    return req.method==='GET'?linePayReturn(req,mode):new Response('method_not_allowed',{status:405});
   if(req.method==='OPTIONS')return origins.has(origin)?new Response('ok',{headers:cors(origin)}):json(origin,403,{ok:false,error:'forbidden'});
   if(req.method!=='POST'||!origins.has(origin))return json(origin,403,{ok:false,error:'forbidden'});
   const body=await req.json().catch(()=>null);

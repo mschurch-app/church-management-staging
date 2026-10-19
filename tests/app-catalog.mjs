@@ -13,6 +13,8 @@ assert.deepEqual(new Set(availableFunctionKeys(leader,'M+',{})),new Set(['schedu
 assert.equal(FUNCTION_CATALOG.service_quick_match.file,'service-signup-admin.html?match=1');
 assert.equal(availableFunctionKeys(full,'SHiNE',home).includes('members'),false);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('school_students'),false);
+assert.equal(availableFunctionKeys(full,'M+',{}).includes('pastoral_workflow_survey'),false);
+assert.equal(availableFunctionKeys(full,'M+',{home_modules:['pastoral_workspace']}).includes('pastoral_workflow_survey'),true);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('admin_accounts'),false);
 assert.equal(availableFunctionKeys({...full,featurePermissions:[{church_id:'M+',feature_key:'members',view:false}]},'M+',home).includes('members'),false);
 assert.equal(availableFunctionKeys(full,'M+',home,{feature_modules:[{key:'members',enabled:false}]}).includes('members'),false);

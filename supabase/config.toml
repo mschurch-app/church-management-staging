@@ -21,6 +21,10 @@ verify_jwt = false
 [functions.pastoral-coworker-tools]
 verify_jwt = false
 
+# Church OS session or verified LINE ID token is checked inside the function.
+[functions.pastoral-workflow-survey]
+verify_jwt = false
+
 [functions.app-push]
 verify_jwt = false
 

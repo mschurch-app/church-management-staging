@@ -60,6 +60,17 @@ export const FUNCTION_CATALOG=freezeTree({
       "同工協作"
     ]
   },
+  "pastoral_workflow_survey": {
+    "file": "pastoral/workflow-survey.html",
+    "icon": "📝",
+    "title": "同工工作流程調查",
+    "description": "蒐集例行工作、卡點與提醒偏好",
+    "key": "pastoral_workflow_survey",
+    "group": "pastoral",
+    "symbol": "check",
+    "configurableHome": false,
+    "searchTerms": ["同工問卷", "工作流程", "每週工作"]
+  },
   "private_prayers": {
     "permission": "private_prayers",
     "file": "prayers.html",
@@ -616,7 +627,8 @@ export const FUNCTION_GROUPS=freezeTree([
       "groups",
       "private_prayers",
       "pastoral_chats",
-      "pastoral_workspace"
+      "pastoral_workspace",
+      "pastoral_workflow_survey"
     ]
   },
   {

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>同工工作流程調查｜教會 OS</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/app/church-os-icon.svg">
+  <link rel="stylesheet" href="../app-design-tokens.css?v=20261019-workflow1">
+  <link rel="stylesheet" href="../app-consistency.css?v=20261019-workflow1">
+  <link rel="stylesheet" href="workflow-survey.css?v=20261019-workflow1">
+</head>
+<body>
+  <header class="survey-header">
+    <a class="survey-brand" href="workspace.html"><span class="brand-mark" aria-hidden="true">M+</span><span>教會 OS<small>同工工作流程調查</small></span></a>
+    <a class="header-back" href="workspace.html">返回工作區</a>
+  </header>
+  <main class="survey-shell">
+    <section class="survey-intro">
+      <p class="eyebrow">COWORKER WORKFLOW · 約 5 分鐘</p>
+      <h1>讓每週工作更好記、更好做</h1>
+      <p>請告訴我們你實際負責的事，以及最容易卡住或遺漏的地方。答案會用來設計個人工作清單、提醒與交接流程；不是工作表現評分。</p>
+      <p class="privacy-note">回覆會以你的同工身分記錄，僅你本人與該單位的牧師／管理者可查看；送出後仍可回來修改。不會自動通知其他同工。</p>
+    </section>
+
+    <section id="auth-screen" class="status-card" aria-live="polite">
+      <p id="auth-status" role="status">正在確認教會 OS 帳號與同工權限…</p>
+      <div id="login-actions" class="login-actions" hidden>
+        <a id="os-login" class="button primary" href="../admin-login.html?next=pastoral%2Fworkflow-survey.html">使用教會 OS 登入</a>
+        <a class="button secondary" href="https://liff.line.me/2011645391-VGkQRZ9d">使用 LINE 同工入口</a>
+      </div>
+    </section>
+
+    <div id="survey-root" hidden>
+      <div class="survey-toolbar">
+        <p id="staff-label">教會同工</p>
+        <label id="entity-field">使用單位<select id="entity" aria-label="選擇使用單位"></select></label>
+      </div>
+      <p id="saved-note" class="saved-note" role="status"></p>
+      <button id="reload-survey" class="button secondary" type="button" hidden>重新載入問卷</button>
+      <form id="survey-form" novalidate hidden>
+        <section class="survey-card" aria-labelledby="areas-title">
+          <div class="section-heading"><span>01</span><div><h2 id="areas-title">你的工作範圍</h2><p>選出你實際負責的領域，可複選。</p></div></div>
+          <fieldset id="areas-options" class="choice-grid"><legend class="visually-hidden">負責領域</legend>
+            <label><input type="checkbox" value="客服班">客服班</label><label><input type="checkbox" value="教會行政">教會行政</label>
+            <label><input type="checkbox" value="總務設備">總務設備</label><label><input type="checkbox" value="主日聚會">主日聚會</label>
+            <label><input type="checkbox" value="敬拜影音">敬拜影音</label><label><input type="checkbox" value="兒少青年">兒少青年</label>
+            <label><input type="checkbox" value="牧養關懷">牧養關懷</label><label><input type="checkbox" value="協會事工">協會事工</label>
+            <label><input type="checkbox" value="其他">其他</label>
+          </fieldset>
+          <label class="field">其他工作範圍或補充（選填）<input id="area-other" maxlength="120" placeholder="例如：小組協調、活動報名"></label>
+        </section>
+
+        <section class="survey-card" aria-labelledby="routine-title">
+          <div class="section-heading"><span>02</span><div><h2 id="routine-title">固定要做的事</h2><p>至少填一件；請以「每週真的會做什麼」來寫，最多八件。</p></div></div>
+          <div id="routine-list" class="routine-list"></div>
+          <button id="add-routine" class="button secondary" type="button">＋ 增加一件工作</button>
+          <p class="field-help">例子：恩茹「每週安排客服班表」、鈺庭「週三核對行政待辦」、章節「主日前檢查影音與器材」。</p>
+          <label class="field">偶爾才發生、但也由你負責的事（選填）<textarea id="irregular-work" maxlength="800" rows="3" placeholder="例如：活動前採購、設備報修、臨時接待"></textarea></label>
+        </section>
+
+        <section class="survey-card" aria-labelledby="friction-title">
+          <div class="section-heading"><span>03</span><div><h2 id="friction-title">目前哪裡不好用？</h2><p>這一段最能幫我們判斷改版先做什麼。</p></div></div>
+          <label class="field">你大約多久會打開教會 OS？<select id="os-usage"><option value="daily">幾乎每天</option><option value="weekly">每週</option><option value="monthly">每月幾次</option><option value="rarely">很少使用</option><option value="never">尚未使用</option></select></label>
+          <label class="field">你最容易忘記、延誤或卡住的步驟是什麼？<textarea id="missed-steps" maxlength="800" rows="3" placeholder="請寫一個最近發生過的例子，不需寫人名或私人細節"></textarea></label>
+          <fieldset id="current-tools-options" class="choice-grid"><legend>現在通常怎麼記得工作？（可複選）</legend>
+            <label><input type="checkbox" value="紙本或筆記">紙本或筆記</label><label><input type="checkbox" value="LINE 訊息">LINE 訊息</label>
+            <label><input type="checkbox" value="手機行事曆">手機行事曆</label><label><input type="checkbox" value="試算表">試算表</label>
+            <label><input type="checkbox" value="教會 OS">教會 OS</label><label><input type="checkbox" value="憑記憶">憑記憶</label>
+            <label><input type="checkbox" value="其他">其他</label>
+          </fieldset>
+          <fieldset id="frictions-options" class="choice-grid"><legend>使用教會 OS 時的阻礙（可複選）</legend>
+            <label><input type="checkbox" value="找不到入口">找不到入口</label><label><input type="checkbox" value="資訊散在不同地方">資訊散在不同地方</label>
+            <label><input type="checkbox" value="手機操作太繁瑣">手機操作太繁瑣</label><label><input type="checkbox" value="不知道下一步">不知道下一步</label>
+            <label><input type="checkbox" value="缺少到期提醒">缺少到期提醒</label><label><input type="checkbox" value="不清楚誰負責">不清楚誰負責</label>
+            <label><input type="checkbox" value="交接困難">交接困難</label><label><input type="checkbox" value="重複輸入資料">重複輸入資料</label>
+            <label><input type="checkbox" value="不知道怎麼使用">不知道怎麼使用</label><label><input type="checkbox" value="現有功能幫助不大">現有功能幫助不大</label>
+            <label><input type="checkbox" value="資料不是最新">資料不是最新</label><label><input type="checkbox" value="通知太多">通知太多</label>
+            <label><input type="checkbox" value="目前沒有明顯阻礙" data-exclusive>目前沒有明顯阻礙</label>
+            <label><input type="checkbox" value="其他">其他</label>
+          </fieldset>
+          <label class="field">還有什麼阻礙？（選填）<input id="friction-other" maxlength="400" placeholder="例如：找不到某個常用按鈕"></label>
+          <label class="field">如果你臨時不能做，現在怎麼交接？（選填）<textarea id="handoff" maxlength="500" rows="2" placeholder="例如：在 LINE 群組找代理，沒有固定清單"></textarea></label>
+        </section>
+
+        <section class="survey-card" aria-labelledby="improve-title">
+          <div class="section-heading"><span>04</span><div><h2 id="improve-title">希望系統怎麼幫你？</h2><p>選擇真正會讓你願意打開使用的功能。</p></div></div>
+          <fieldset id="improvements-options" class="choice-grid"><legend>最希望增加或改善的功能（可複選）</legend>
+            <label><input type="checkbox" value="我的每週清單">我的每週清單</label><label><input type="checkbox" value="到期前提醒">到期前提醒</label>
+            <label><input type="checkbox" value="一鍵回報完成">一鍵回報完成</label><label><input type="checkbox" value="交接與代理">交接與代理</label>
+            <label><input type="checkbox" value="常用資料集中">常用資料集中</label><label><input type="checkbox" value="手機快速入口">手機快速入口</label>
+            <label><input type="checkbox" value="工作範本">工作範本</label><label><input type="checkbox" value="目前不需要新功能" data-exclusive>目前不需要新功能</label>
+            <label><input type="checkbox" value="其他">其他</label>
+          </fieldset>
+          <label class="field">其他想法（選填）<input id="improvement-other" maxlength="400" placeholder="例如：每週一打開就看到本週三件要緊的事"></label>
+          <div class="two-fields">
+            <label class="field">如果要提醒，哪個方式最適合？<select id="reminder-channel"><option value="app">教會 OS App</option><option value="line">LINE 私訊</option><option value="calendar">手機行事曆</option><option value="none">不需要提醒</option></select></label>
+            <label class="field">什麼時候提醒？<select id="reminder-lead"><option value="day_before">前一天</option><option value="same_day">當天</option><option value="both">前一天及當天</option><option value="none">不需要提醒</option></select></label>
+          </div>
+          <label class="field">如果只能先改一件事，你會選什麼？<textarea id="first-change" maxlength="500" rows="2" placeholder="請用你自己的工作情境說明"></textarea></label>
+        </section>
+        <div class="survey-actions"><p>送出後可再修改；不會替你建立任務或發出提醒。</p><button id="submit-survey" class="button primary" type="submit" data-app-control>送出工作流程回覆</button></div>
+        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <section id="manager-section" class="manager-section" hidden aria-labelledby="manager-title">
+        <div class="manager-heading"><div><p class="eyebrow">改版依據 · 僅牧師與管理者</p><h2 id="manager-title">同工回覆彙整</h2></div><button id="load-responses" class="button secondary" type="button">查看目前回覆</button></div>
+        <p id="manager-status" role="status"></p><div id="response-summary"></div><div id="response-list"></div>
+      </section>
+    </div>
+  </main>
+  <template id="routine-template">
+    <article class="routine-item">
+      <div class="routine-heading"><h3>例行工作 <span data-routine-number></span></h3><button class="remove-routine" type="button" aria-label="移除這件例行工作">移除</button></div>
+      <label class="field">這件事是什麼？<input data-routine-title maxlength="120" placeholder="例如：每週安排客服班表" required></label>
+      <div class="two-fields"><label class="field">多久做一次？<select data-routine-cadence><option value="weekly">每週</option><option value="daily">每天</option><option value="biweekly">每兩週</option><option value="monthly">每月</option><option value="bimonthly">每兩個月</option><option value="quarterly">每季</option><option value="yearly">每年</option><option value="as_needed">有需要時</option></select></label>
+        <label class="field">通常什麼時候？<select data-routine-timing><option value="varies">時間不固定</option><option value="weekday">平日</option><option value="monday">週一</option><option value="tuesday">週二</option><option value="wednesday">週三</option><option value="thursday">週四</option><option value="friday">週五</option><option value="saturday">週六</option><option value="sunday">週日</option><option value="weekend">週末</option></select></label></div>
+      <label class="field">怎樣算完成？（選填）<input data-routine-done maxlength="240" placeholder="例如：班表已確認並通知所有值班同工"></label>
+      <label class="routine-reminder"><input type="checkbox" data-routine-reminder>這件事需要系統提醒我</label>
+    </article>
+  </template>
+  <script src="../vendor/supabase-2.102.0.js"></script>
+  <script type="module" src="workflow-survey.mjs?v=20261019-workflow1"></script>
+</body>
+</html>

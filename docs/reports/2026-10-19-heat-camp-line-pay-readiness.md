@@ -12,7 +12,7 @@
 ## 尚待完成的上線閘門（2026-10-19 23:30 後狀態）
 
 1. 隔離沙盒交易的 request、授權、confirm、付款明細與商店後台 TWD 100 已核對成功；它沒有建立營隊報名。正式報名 RPC 已以完整回滾測試核對建立、續付網址、金額防護、冪等入帳、晚到取消及收據佇列。下一步仍須在隔離環境驗證**真實 LINE 回跳與正式報名訂單**的整合，以及確認成功時是否由既有收據同步程序實際處理；不能把隔離沙盒交易或回滾測試當成真實營隊付款。
-2. 前端 LINE Pay 選項已提交到 GitHub，但由後端旗標隱藏；正式 Edge Function v41 的 `LINE_PAY_RELEASE_READY=false`。2026-10-19 23:30 GitHub Pages build 尚在排隊，公開頁仍是舊版；須等待發布完成並再次讀回線上頁面。完整驗證完成前維持關閉，不能聲稱報名頁已可使用 LINE Pay。
+2. 前端 LINE Pay 選項已提交到 GitHub 並由後端旗標隱藏；正式 Edge Function v41 的 `LINE_PAY_RELEASE_READY=false`。2026-10-19 23:48 從公開網址讀回新版 HTML、JS 模組與付款續查程式（均 HTTP 200），但 LINE Pay 選項仍不可見。完整外部付款驗證完成前維持關閉，不能聲稱報名頁已可使用 LINE Pay。
 3. 依使用者指示，上線前最後再做一筆**正式環境小額實付**，核對正式 LINE Pay 交易、本站紀錄與金額，並處理測試交易的退款／帳務標示；不使用真實營隊名額或正式營隊收據。這筆實付尚未執行。
 
 ## 2026-10-19 本機進度
@@ -35,5 +35,6 @@
 - 使用者要求先完成付款後頁面、返回及資料入庫，再把小額正式實付留到最後。Edge Function v41 已部署：LINE 回跳會以簽章查詢 LINE 狀態，符合條件才 confirm；核對訂單、交易 ID、TWD 金額後，以 service-role RPC 原子標記報名與訂單已付並排入正式收據佇列。取消、逾時與查證不明不會顯示付款成功；前端能以原 request ID 查詢、回到同一筆 LINE 付款網址，並在確認成功後顯示報名成功頁。即使關閉新訂單選項，已開出的訂單仍可核對收尾。12 項無密鑰測試通過，含 confirm 回應逾時及付款已成功但本站寫入失敗後的補記。
 - 新增 `supabase/tests/heat_camp_line_pay_rollback_verification.sql` 並在正式 Supabase 專案執行：通過原報名 claim、儲存同筆付款網址、拒絕金額不符、只入帳一次、晚到取消不覆蓋已付款、正式收據佇列僅一筆；測試插入資料全數回滾，報名前後數量均為 1。公開設定 HTTP 煙霧測試回 200：正式藍新信用卡、ATM、條碼仍為 true，LINE Pay 為 false。網站修改已分別提交 GitHub `9e544414`、`4da30394`、`4caaba83`，保留遠端既有教會關係欄位；公開頁讀回仍是舊版，Pages build 排隊中，不能聲稱網站更新已生效。
 - Edge Function 線上 `registration_status` 對不存在 request ID 回 404 `registration_not_found`，未誤回可付款；無效 LINE 回跳返回本站 `payment=unknown`，沒有宣稱成功。這些只是無實付煙霧測試，不能取代真人付款回跳測試。
+- 23:48 GitHub Pages 最新工作尚未顯示完成，但從公開網址唯讀取得新版 `heat-camp-2027.html`（22,349 字元；包含新版模組版本和隱藏的 LINE Pay 選項）、新版入口模組（63 字元）與 `heat-camp-checkout.mjs`（27,656 字元；包含續付與教會關係欄位），三者均 HTTP 200。後端原始碼、兩個單元測試、三份資料庫遷移、回滾驗證測試和本報告也已同步到 `mschurch-app/church-management-staging`；Edge Function 正式部署仍為 v41。
 
 官方規格：<https://developers-pay.line.me/online-api-v4>、<https://developers-pay.line.me/online/prerequisites>、<https://developers-pay.line.me/offline/prerequisites>、<https://developers-pay.line.me/online/implement-basic-payment>。Supabase 出站 IP 限制：<https://supabase.com/docs/guides/troubleshooting/why-supabase-edge-functions-cannot-provide-static-egress-ips-for-whitelisting-3d78b0>。密鑰操作：<https://supabase.com/docs/guides/functions/secrets>。

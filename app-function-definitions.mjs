@@ -206,6 +206,19 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "website-maintenance",
     "settingsGroup": "content"
   },
+  "association_news": {
+    "church": "M+",
+    "permission": "website_group_resources",
+    "file": "association-news.html",
+    "icon": "📰",
+    "title": "協會網站",
+    "description": "最新消息上稿，發佈後直接顯示於協會首頁",
+    "key": "association_news",
+    "group": "media",
+    "symbol": "globe",
+    "configurableHome": true,
+    "searchTerms": ["協會", "最新消息", "tcsc.org.tw", "上稿"]
+  },
   "website_group_resources": {
     "permission": "website_group_resources",
     "file": "group-resources-management.html",
@@ -652,6 +665,7 @@ export const FUNCTION_GROUPS=freezeTree([
       "tree_reading_admin",
       "life_tree_festivals",
       "website_weekly",
+      "association_news",
       "website_group_resources",
       "pastoral_content",
       "todays_message",
@@ -730,6 +744,7 @@ export const SETTINGS_GROUPS=freezeTree([
     "note": "主日、靈修、表單與社群內容",
     "keys": [
       "website_weekly",
+      "association_news",
       "website_group_resources",
       "tree_reading_admin",
       "life_tree_festivals",

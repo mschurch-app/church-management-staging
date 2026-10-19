@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261019-service1';
-export * from './app-function-definitions.mjs?v=20261019-service1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261019-workflow1';
+export * from './app-function-definitions.mjs?v=20261019-workflow1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const configured=new Map((settings.feature_modules||[]).map(item=>[canonicalFunctionKey(item.key),item]));
  const assigned=new Set((home.home_modules||[]).map(canonicalFunctionKey));
@@ -14,6 +14,7 @@ export function availableFunctionKeys(access,church,home={},settings={}) {
   if(key==='system_monitor'&&!home.system_monitor_access)return false;
   if(key==='church_settings'&&!home.is_owner&&!SETTINGS_GROUPS.some(group=>group.keys.some(entry=>{const tool=FUNCTION_CATALOG[entry];return !tool.owner&&(!tool.church||tool.church===church)&&configured.get(entry)?.enabled!==false&&canOpen(access,church,tool.permission)&&(!tool.action||canAction(access,church,tool.permission,tool.action));})))return false;
   if((key.startsWith('school')||key.startsWith('basketball')||key==='pastoral_workspace')&&!assigned.has(key))return false;
+  if(key==='pastoral_workflow_survey'&&!assigned.has('pastoral_workspace'))return false;
   return true;
  });
 }

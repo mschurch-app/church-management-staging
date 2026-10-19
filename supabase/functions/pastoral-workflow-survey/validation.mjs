@@ -1,6 +1,6 @@
 export const SURVEY_VERSION = 1;
 export const ENTITY_KEYS = ['mplus', 'shine', 'tcsc'];
-export const AREAS = ['客服班', '教會行政', '總務設備', '主日聚會', '敬拜影音', '兒少青年', '牧養關懷', '協會事工', '其他'];
+export const AREAS = ['課輔班', '教會行政', '總務設備', '主日聚會', '敬拜影音', '兒少青年', '牧養關懷', '協會事工', '其他'];
 export const CADENCES = ['daily', 'weekly', 'biweekly', 'monthly', 'bimonthly', 'quarterly', 'yearly', 'as_needed'];
 export const WEEK_TIMES = ['weekday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'weekend', 'varies'];
 export const OS_USAGE = ['daily', 'weekly', 'monthly', 'rarely', 'never'];

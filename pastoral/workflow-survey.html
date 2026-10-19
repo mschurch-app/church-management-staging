@@ -27,7 +27,7 @@
     <section id="auth-screen" class="status-card" aria-live="polite">
       <p id="auth-status" role="status">正在確認教會 OS 帳號與同工權限…</p>
       <div id="login-actions" class="login-actions" hidden>
-        <a id="os-login" class="button primary" href="../admin-login.html?next=pastoral%2Fworkflow-survey.html%3Fv%3D20261019-workflow2">使用教會 OS 登入</a>
+        <a id="os-login" class="button primary" href="../admin-login.html?next=pastoral%2Fworkflow-survey.html%3Fv%3D20261019-workflow3">使用教會 OS 登入</a>
         <a class="button secondary" href="https://liff.line.me/2011645391-VGkQRZ9d">使用 LINE 同工入口</a>
       </div>
     </section>
@@ -43,7 +43,7 @@
         <section class="survey-card" aria-labelledby="areas-title">
           <div class="section-heading"><span>01</span><div><h2 id="areas-title">你的工作範圍</h2><p>選出你實際負責的領域，可複選。</p></div></div>
           <fieldset id="areas-options" class="choice-grid"><legend class="visually-hidden">負責領域</legend>
-            <label><input type="checkbox" value="客服班">客服班</label><label><input type="checkbox" value="教會行政">教會行政</label>
+            <label><input type="checkbox" value="課輔班">課輔班</label><label><input type="checkbox" value="教會行政">教會行政</label>
             <label><input type="checkbox" value="總務設備">總務設備</label><label><input type="checkbox" value="主日聚會">主日聚會</label>
             <label><input type="checkbox" value="敬拜影音">敬拜影音</label><label><input type="checkbox" value="兒少青年">兒少青年</label>
             <label><input type="checkbox" value="牧養關懷">牧養關懷</label><label><input type="checkbox" value="協會事工">協會事工</label>
@@ -56,7 +56,7 @@
           <div class="section-heading"><span>02</span><div><h2 id="routine-title">固定要做的事</h2><p>至少填一件；請以「每週真的會做什麼」來寫，最多八件。</p></div></div>
           <div id="routine-list" class="routine-list"></div>
           <button id="add-routine" class="button secondary" type="button">＋ 增加一件工作</button>
-          <p class="field-help">例子：「每週安排客服班表」、「週三核對行政待辦」、「主日前檢查影音與器材」。</p>
+          <p class="field-help">例子：「每週安排課輔班表」、「週三核對行政待辦」、「主日前檢查影音與器材」。</p>
           <label class="field">偶爾才發生、但也由你負責的事（選填）<textarea id="irregular-work" maxlength="800" rows="3" placeholder="例如：活動前採購、設備報修、臨時接待"></textarea></label>
         </section>
 
@@ -113,7 +113,7 @@
   <template id="routine-template">
     <article class="routine-item">
       <div class="routine-heading"><h3>例行工作 <span data-routine-number></span></h3><button class="remove-routine" type="button" aria-label="移除這件例行工作">移除</button></div>
-      <label class="field">這件事是什麼？<input data-routine-title maxlength="120" placeholder="例如：每週安排客服班表" required></label>
+      <label class="field">這件事是什麼？<input data-routine-title maxlength="120" placeholder="例如：每週安排課輔班表" required></label>
       <div class="two-fields"><label class="field">多久做一次？<select data-routine-cadence><option value="weekly">每週</option><option value="daily">每天</option><option value="biweekly">每兩週</option><option value="monthly">每月</option><option value="bimonthly">每兩個月</option><option value="quarterly">每季</option><option value="yearly">每年</option><option value="as_needed">有需要時</option></select></label>
         <label class="field">通常什麼時候？<select data-routine-timing><option value="varies">時間不固定</option><option value="weekday">平日</option><option value="monday">週一</option><option value="tuesday">週二</option><option value="wednesday">週三</option><option value="thursday">週四</option><option value="friday">週五</option><option value="saturday">週六</option><option value="sunday">週日</option><option value="weekend">週末</option></select></label></div>
       <label class="field">怎樣算完成？（選填）<input data-routine-done maxlength="240" placeholder="例如：班表已確認並通知所有值班同工"></label>

@@ -199,6 +199,7 @@ async function load() {
     $('#task-form').hidden = preview;
     $('#tab-schedule').hidden = preview;
     church = assistantChurch(staff, params.get('church'));
+    if(church==='M+'){location.replace('../mplus-dashboard.html?church=M%2B');return;}
     $('#newcomer-care-link').href=`../newcomer-care.html?church=${encodeURIComponent(church)}`;
     if($('#newcomer-care-nav'))$('#newcomer-care-nav').href=`../newcomer-care.html?church=${encodeURIComponent(church)}`;
     $('#church-name').textContent = (church === 'M+' ? 'M＋大雅教會' : '火樂教會') + ' / COWORKER COLLABORATION';

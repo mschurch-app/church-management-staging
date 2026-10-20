@@ -10,13 +10,13 @@ export function visibleCenters(allowed){return Object.fromEntries(Object.entries
 export function mountMplusNavigation({allowed,hrefFor,openSchool}){
  const centers=visibleCenters(new Set(allowed)),main=document.querySelector('main'),oldNav=document.querySelector('.mobile-app-nav');
  document.body.classList.add('mplus-navigation');
- const style=document.createElement('link');style.rel='stylesheet';style.href='mplus-navigation.css?v=20261020-close1';document.head.append(style);
+ const style=document.createElement('link');style.rel='stylesheet';style.href='mplus-navigation.css?v=20261020-flat1';document.head.append(style);
  const panel=document.createElement('section');panel.className='mplus-center';panel.hidden=true;main.append(panel);
  const top=document.createElement('nav');top.className='mplus-top';top.setAttribute('aria-label','M+ 首頁與系統');
  const home=document.createElement('button');home.textContent='首頁';home.dataset.appControl='navigation';home.onclick=()=>show('home');top.append(home);
  const notice=document.createElement('button');notice.textContent='通知';notice.dataset.appControl='navigation';notice.onclick=()=>{show('home');document.querySelector('#notification-history')?.click();};top.append(notice);
  if(allowed.includes('church_settings')){const a=document.createElement('a');a.textContent='系統管理';a.href=hrefFor('church_settings');top.append(a);}
- main.querySelector('.page-header').after(top);const work=document.createElement('a');work.textContent='本週工作與協作';work.href='pastoral/workspace.html?church=M%2B&tab=tasks';work.className='mplus-work-entry';top.after(work);
+ main.querySelector('.page-header').after(top);
  const dock=document.createElement('nav');dock.className='mobile-app-nav mplus-dock';dock.setAttribute('aria-label','M+ 五大入口');
  const icons={church:'people',school:'book',admin:'box',service:'calendar',website:'globe'};
  for(const [key,center]of Object.entries(centers)){const b=document.createElement('button');b.type='button';b.dataset.appControl='navigation';b.dataset.center=key;b.append(createAppIcon(icons[key],'mplus-icon module-bar-icon'),document.createTextNode(center.title));b.onclick=()=>show(key);dock.append(b);}

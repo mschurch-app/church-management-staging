@@ -375,10 +375,28 @@ async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,
   }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
 }
 
+
+async function listSharedEvents(token:string,start:string,end:string){
+ const first=Date.parse(start),last=Date.parse(end);if(!Number.isFinite(first)||!Number.isFinite(last)||last<=first||last-first>31*86400000)throw Error('invalid_window');
+ const rows:Array<Record<string,unknown>>=[];let page='';
+ for(let count=0;count<10;count++){
+  const url=new URL('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CALENDAR_ID)+'/events');
+  for(const [k,v]of Object.entries({timeMin:new Date(first).toISOString(),timeMax:new Date(last).toISOString(),singleEvents:'true',orderBy:'startTime',timeZone:'Asia/Taipei',maxResults:'250'}))url.searchParams.set(k,v);if(page)url.searchParams.set('pageToken',page);
+  const r=await fetch(url,{headers:{authorization:'Bearer '+token},redirect:'error',signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('calendar_api');const data=await r.json();
+  for(const item of data.items||[]){if(item.status==='cancelled')continue;const hidden=item.visibility==='private'||item.visibility==='confidential';rows.push({id:String(item.id),summary:hidden?'私人行程':String(item.summary||'未命名行程').slice(0,200),start:item.start?.dateTime||item.start?.date,end:item.end?.dateTime||item.end?.date,allDay:!!item.start?.date,location:hidden?'':String(item.location||'').slice(0,500),coworkerNames:hidden?'':String(item.description||'').split('共同參與同工：')[1]?.split('\n')[0]?.slice(0,500)||''});}
+  page=data.nextPageToken||'';if(!page)return rows;
+ }throw Error('calendar_too_many_events');
+}
+
 async function handleAction(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
   if(!staff.entityKeys.includes('mplus'))return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
   const body=await request.json().catch(()=>null);
   if(!body||typeof body.action!=='string')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+  if(body.action==='list-events'){
+    if(typeof body.start!=='string'||typeof body.end!=='string'||!Number.isFinite(Date.parse(body.start))||!Number.isFinite(Date.parse(body.end))||Date.parse(body.end)<=Date.parse(body.start)||Date.parse(body.end)-Date.parse(body.start)>31*86400000)return json(APP_ORIGIN,{ok:false,error:'invalid_window'},400);
+    const token=await accessToken(db);if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
+    try{return json(APP_ORIGIN,{ok:true,calendarId:CALENDAR_ID,events:await listSharedEvents(token,body.start,body.end)});}catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
+  }
   if(body.action==='connect')return await startConnect(staff,db);
   if(body.action==='connect-drive')return await startConnect(staff,db,DRIVE_SCOPES);
   if(body.action==='list-schedule-staff'){
@@ -462,8 +480,8 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     try{
       const result=await createCalendarEvent(token,body.requestId,appointment,participants);
       if(result.conflict)return json(APP_ORIGIN,{ok:false,error:'calendar_conflict'},409);
-      const notifications=await notifyMeetingParticipants(db,participants,body.requestId,appointment);
-      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID,notifications});
+      const notifications=body.notifyParticipants===false?{status:'not_requested',sent:0,total:participants.length}:await notifyMeetingParticipants(db,participants,body.requestId,appointment);
+      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID,eventId:body.requestId.toLowerCase().replaceAll('-',''),notifications});
     }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);

@@ -1,0 +1,12 @@
+import {FUNCTION_CATALOG} from '/app-function-definitions.mjs';
+import {mountMplusNavigation,MPLUS_CENTERS} from '/mplus-navigation.mjs?v=20261020-shell2';
+import {mountWeekCalendar} from '/mplus-week-calendar.mjs?v=20261020-shell2';
+import {taipeiDate} from '/mplus-week-model.mjs';
+import {openCalendarEditor} from '/mplus-google-calendar.mjs';
+const params=new URLSearchParams(location.search);
+await new Promise(resolve=>setTimeout(resolve,Number(params.get('delay')||0)));
+const allowed=params.has('limited')?['groups']:['church_settings',...new Set(Object.values(MPLUS_CENTERS).flatMap(c=>c.cards.flatMap(([,links])=>links.map(([,key])=>key))))];
+document.querySelector('#welcome').textContent='示範同工｜測試資料';document.querySelector('#status').hidden=true;
+mountMplusNavigation({allowed,hrefFor:(key,file)=>{const url=new URL(file||FUNCTION_CATALOG[key].file,location.origin);url.searchParams.set('church','M+');return url.href;},openSchool:e=>e.preventDefault()});
+mountWeekCalendar({allowed:true,loadData:async()=>[{id:'fixture1',title:'聚會預備（示範資料）',assignedToMe:true,status:'approved',dueAt:taipeiDate()+'T18:00:00+08:00'}]});
+const testButton=document.createElement('button');testButton.textContent='測試新增行程';testButton.onclick=()=>openCalendarEditor(taipeiDate(),async()=>{}, {api:async()=>({staff:[{id:'fixture-main',name:'示範同工',isSelf:true,role:'pastor'},{id:'fixture-other',name:'示範協作同工',isSelf:false,role:'secretary'}]})});document.querySelector('#mplus-home').append(testButton);

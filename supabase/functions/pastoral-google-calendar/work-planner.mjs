@@ -141,6 +141,12 @@ export async function sendWorkNotification({db,deliver,staffId,key,related,title
  const idempotencyKey=key+':'+related+':'+staffId;
  // Reuse the verified channel/quiet-hour logic, with receipts isolated from older workflows.
  const receiptDb={from:table=>db.from(table==='pastoral_notification_deliveries'?'mplus_work_notifications':table),rpc:(...args)=>db.rpc(...args)};
+ const overnight=await db.from('staff_overnight_notifications').select('status,app_status,line_status').eq('staff_id',staffId).eq('source_key',idempotencyKey).maybeSingle();
+ if(overnight.error)throw Error('notification_receipt_failed');
+ if(overnight.data&&['pending','processing','sent'].includes(overnight.data.status)){
+  const sent=overnight.data.status==='sent',saved=await db.from('mplus_work_notifications').upsert({idempotency_key:idempotencyKey,recipient_staff_id:staffId,event_key:key,related_id:related,app_status:overnight.data.app_status||(sent?'stored':'queued'),line_status:overnight.data.line_status||'queued',status:sent?'sent':'queued',updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
+  if(saved.error)throw Error('notification_receipt_failed');return sent?'sent':'queued';
+ }
  const result=await deliver({db:receiptDb,staffId,churchId:'M+',eventKey:key,sourceKey:idempotencyKey,title,body:message,url:'/mplus-dashboard.html?church=M%2B',lineMessage:message+'\n開啟 M＋工作台：https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B',idempotencyKey});
  const saved=await db.from('mplus_work_notifications').upsert({idempotency_key:idempotencyKey,recipient_staff_id:staffId,event_key:key,related_id:related,app_status:result.appStatus,line_status:result.lineStatus,status:result.status,updated_at:new Date().toISOString()},{onConflict:'idempotency_key'});
  if(saved.error)throw Error('notification_receipt_failed');return result.status;

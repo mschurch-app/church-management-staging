@@ -1,6 +1,6 @@
 /* M+ visual source. The bootstrap disables the previous three skins for M+. */
 html.mplus-theme{--app-accent:#173f34;--app-accent-end:#173f34;--app-ink:#203b30;--app-secondary:#61736a;--app-border:#dae3dc;--app-surface:#fff;--app-surface-muted:#f6f8f5;--accent:#173f34;--muted:#61736a;--border:#dae3dc;color:#203b30;background:#f6f8f5}
-html.mplus-theme body{background:#f6f8f5;color:#203b30}
+html.mplus-theme body{background:#f6f8f5!important;color:#203b30!important}
 html.mplus-theme main.member-page{background:transparent;border:0;border-radius:0;box-shadow:none;width:100%;max-width:1120px;margin:auto;padding:20px 20px 100px}
 html.mplus-theme .member-page>.page-header{background:#173f34!important;box-shadow:none;border-radius:14px!important;height:auto!important;min-height:124px!important;padding:20px!important}
 html.mplus-theme .page-header::before,html.mplus-theme .page-header::after,html.mplus-theme main.member-page::before{display:none}
@@ -27,3 +27,18 @@ html.mplus-theme :is(button,.button){box-shadow:none}
 
 html.mplus-theme .login-visual :is(h1,h2,h3,p,.login-mark){color:#fff!important}
 html.mplus-theme button.mplus-week-task{width:100%;text-align:left;margin:7px 0;box-shadow:none;background:#eef4e6;color:#214535;border:1px solid #dce7d2}
+
+/* M+ service scheduling uses the same green palette as the M+ shell. */
+html.mplus-theme .module-bar a.current{background:#173f34!important;color:#fff!important;box-shadow:none!important}
+html.mplus-theme .module-bar a.current .module-bar-icon{color:#fff!important;background:#ffffff18!important}
+html.mplus-theme .schedule-page .eyebrow{color:#3c6550!important}
+html.mplus-theme .schedule-page .export-icon,html.mplus-theme .schedule-page .role-settings-mark{background:#315d4a!important;color:#fff!important;box-shadow:none!important}
+html.mplus-theme .schedule-page .schedule-date,html.mplus-theme .schedule-page .schedule-card--featured .schedule-date{background:#315d4a!important;color:#fff!important}
+html.mplus-theme .schedule-page .schedule-date span{color:#e7f0e8!important}
+html.mplus-theme .schedule-page .schedule-card--featured{border-color:#a8c3af!important;background:#f4f8f1!important;box-shadow:0 8px 24px #173f3410!important}
+html.mplus-theme .schedule-page .schedule-card--featured:before{background:#789c80!important}
+html.mplus-theme .schedule-page .schedule-now{border-color:#bdd2bf;background:#eaf2e6;color:#315d4a;box-shadow:none}
+html.mplus-theme .schedule-page .schedule-card--past .schedule-date{background:#74877a!important}
+html.mplus-theme .schedule-page :is(.schedule-export,.role-settings-entry,.role-settings-panel,.schedule-history,.schedule-card){border-color:#dae3dc;background:#fff;box-shadow:0 7px 22px #173f3408}
+html.mplus-theme .schedule-page .entry-icon{background:#eaf2e6;color:#315d4a}
+html.mplus-theme :is(button.secondary,a.secondary,.ghost-button){color:#315d4a!important;border-color:#bfcfc2!important}

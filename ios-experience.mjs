@@ -2,6 +2,8 @@ import './app-runtime.mjs?v=20261016-update-banner1';
 import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
+  // Standalone M+ owns its first-paint styles; retain shared device behavior only.
+  if(document.documentElement.dataset.appShell!=='mplus'){
   const version='20261009-stage2';
   const stylesheet=document.createElement('link');
   stylesheet.rel='stylesheet';stylesheet.href=new URL(`./ios-experience.css?v=${version}`,import.meta.url).href;
@@ -11,6 +13,7 @@ if(!window.__churchIosExperience){
   if(consistency)document.head.insertBefore(stylesheet,consistency);
   else{const shared=document.createElement('link');shared.rel='stylesheet';shared.dataset.appConsistency='1';shared.href=new URL('./app-consistency.css?v=20261012-readable2',import.meta.url).href;document.head.append(stylesheet,shared);}
   document.documentElement.classList.add('church-ios');
+  }
   if(/iPhone|iPad|iPod/.test(navigator.userAgent)||navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)document.documentElement.classList.add('church-ios-device');
   const meta=(name,content)=>{let node=document.head.querySelector(`meta[name="${name}"]`);if(!node){node=document.createElement('meta');node.name=name;document.head.append(node);}node.content=content;};
   meta('apple-mobile-web-app-capable','yes');meta('apple-mobile-web-app-status-bar-style','black-translucent');

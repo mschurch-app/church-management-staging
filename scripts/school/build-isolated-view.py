@@ -2,7 +2,7 @@
 from pathlib import Path
 import re
 import argparse,hashlib,json,subprocess,shutil
-parser=argparse.ArgumentParser();parser.add_argument('--source',required=True);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--source',required=True);parser.add_argument('--source-ref');args=parser.parse_args()
 SOURCE=Path(args.source).resolve();ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'school';OUT.mkdir(exist_ok=True)
 source=(SOURCE/'index.html').read_text()
 source=source.replace('<html lang="zh-TW">','<html lang="zh-TW" data-church="M+" data-mplus-function-nav="true" data-school-entry="church-os">').replace('<title>M+ 大雅教會 課輔行政系統</title>','<title>課輔工作台｜M＋教會 OS</title>')
@@ -11,7 +11,7 @@ for sheet in ['church-palette.css','church-os-theme.css','school-ui.css']:
  source=re.sub(r'  <link rel="stylesheet" href="'+re.escape(sheet)+r'\?[^\"]+">\n','',source)
 source=source.replace(' autofocus', '').replace('<head>', '<head>\n  <meta name="referrer" content="no-referrer">\n  <meta name="robots" content="noindex,nofollow">')
 source=source.replace('<meta name="theme-color" content="#faf8f6">','<meta name="theme-color" content="#173f34">\n  <link rel="stylesheet" href="church-os-school.css?v=20261020-os1">\n  <link rel="stylesheet" href="church-os-dock.css?v=20261020-os1">')
-source=source.replace('school-ui.js?v=20261009-stage3','church-os-ui.js?v=20261020-os1')
+source=re.sub(r'school-ui\.js\?v=[^\"]+', 'church-os-ui.js?v=20261020-face-reload1', source)
 a=source.index('  <header class="glass-header');b=source.index('  </header>',a)+len('  </header>')
 nav=re.search(r'      <nav id="school-desktop-nav".*?</nav>',source[a:b],re.S).group(0)
 header='''  <header class="os-school-header">
@@ -38,7 +38,7 @@ ui=ui.replace("catalog.filter(permitted).filter(item=>(item.title", "catalog.fil
 (OUT/'church-os-school.css').write_text((SOURCE/'school-ui.css').read_text()+(ROOT/'scripts/school/layout.css').read_text())
 for name in ['app-design-tokens.css','school-icons.js','school-mark.svg']:shutil.copyfile(SOURCE/name,OUT/name)
 files=['index.html','index2.html','enrollment.html','school-ui.js','school-ui.css','church-os-theme.css']
-manifest={'repository':'mschurch-app/m-shcool','commit':subprocess.check_output(['git','-C',str(SOURCE),'rev-parse','HEAD'],text=True).strip(),'independent_files_unchanged':{f:hashlib.sha256((SOURCE/f).read_bytes()).hexdigest() for f in files}}
+manifest={'repository':'mschurch-app/m-shcool','commit':args.source_ref or subprocess.check_output(['git','-C',str(SOURCE),'rev-parse','HEAD'],text=True).strip(),'upstream_files_sha256':{f:hashlib.sha256((SOURCE/f).read_bytes()).hexdigest() for f in files}}
 def core(text):
  i=text.index('const SUPABASE_URL');a=text.rfind('<script',0,i);return text[text.index('>',a)+1:text.index('</script>',i)]
 manifest['original_business_script_sha256']=hashlib.sha256(core((SOURCE/'index.html').read_text()).encode()).hexdigest()

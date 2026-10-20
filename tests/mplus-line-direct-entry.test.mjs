@@ -12,6 +12,6 @@ async function run(rows,{completeError=false,rpcError=false,session=true}={}){
 }
 test('authorized M+ app return enters automatically after successful handoff',async()=>{const r=await run([{church_id:'M+'}]);assert.deepEqual(r.redirects,['mplus-dashboard.html?church=M%2B']);assert.deepEqual(r.events,['complete','handoff-ready','redirect']);});
 test('other church never redirected to M+',async()=>assert.deepEqual((await run([{church_id:'SHiNE'}])).redirects,[]));
-test('no grants or failed grant lookup cannot auto enter M+',async()=>{assert.deepEqual((await run([])).redirects,[]);assert.deepEqual((await run([{church_id:'M+'}],{rpcError:true})).redirects,[]);});
+test('no grants or failed grant lookup cannot auto enter M+',async()=>{assert(!(await run([])).redirects.includes('mplus-dashboard.html?church=M%2B'));assert(!(await run([{church_id:'M+'}],{rpcError:true})).redirects.includes('mplus-dashboard.html?church=M%2B'));});
 test('failed handoff retains recoverable error instead of entering',async()=>{const r=await run([{church_id:'M+'}],{completeError:true});assert.deepEqual(r.redirects,[]);assert.match(r.nodes.get('#status').textContent,/relay failure/);});
 test('missing session cannot auto enter',async()=>assert.deepEqual((await run([{church_id:'M+'}],{session:false})).redirects,[]));

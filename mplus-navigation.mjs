@@ -36,5 +36,6 @@ export function mountMplusNavigation({allowed,hrefFor,openSchool}){
   if(key==='admin')panel.append(node('p','行政表單尚未開放；籃球隊維持獨立 App。','hub-note'));
   window.scrollTo(0,0);
  }
- show('home');return {show};
+ const requestedCenter=new URLSearchParams(location.search).get('center');
+ show(Object.hasOwn(centers,requestedCenter)?requestedCenter:'home');return {show};
 }

@@ -1,3 +1,4 @@
+import {mountMplusFunctionNavigation} from '../mplus-function-nav.mjs?v=20261020-dock1';
 import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261009-stage4';
 import { PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TOOLS_ENDPOINT } from './config.mjs?v=20260930-1';
 
@@ -84,6 +85,7 @@ function activateTab(name) {
     const panel = $(`#panel-${button.dataset.tab}`);
     if (panel) panel.hidden = !active;
   });
+  mountMplusFunctionNavigation({church:'M+',center:name==='photos'?'website':'admin'});
   const titles={attendance:'出勤與請假',photos:'照片資料庫'};
   if($('#tools-page-title'))$('#tools-page-title').textContent=titles[name]||'團隊工具';
   document.querySelectorAll('[data-tool-nav]').forEach(link=>link.classList.toggle('is-active',link.dataset.toolNav===name));

@@ -1,3 +1,4 @@
+import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261020-dock1';
 import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261010-season-test1';
 import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261009-stage1';
 import './action-feedback.mjs?v=20261009-app-audit2';
@@ -98,6 +99,7 @@ async function mountManagement(){
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;window.applyMplusTheme?.(selected);updateManagementBrand(managementRoot,selected);
     cleanLegacyNavigation();mountModuleBar(access,selected,settings);mountHeaderTools(access,selected);
+    if(selected==='M+'&&currentFile!=='admin-dashboard.html')mountMplusFunctionNavigation({church:selected});
     const header=document.querySelector('.member-page>.page-header'),content=header?.querySelector(':scope>div:not(.header-tools)');
     if(content){const existing=content.querySelector('#welcome, #identity');if(existing){existing.className='admin-identity';existing.textContent=access.user.name+'｜'+access.user.title;}else if(!content.querySelector('.admin-identity')){const chip=document.createElement('p'),name=document.createElement('strong'),title=document.createElement('span');chip.className='admin-identity';name.textContent=access.user.name;title.textContent=access.user.title;chip.append(name,document.createTextNode('｜'),title);content.append(chip);}}
   }catch{}

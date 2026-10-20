@@ -1,0 +1,11 @@
+/* M+ functional pages only. No changes to forms, authentication or SHiNE. */
+html[data-mplus-function-nav="true"]{scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+html[data-mplus-function-nav="true"] body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
+html[data-mplus-function-nav="true"] .collab-mobile-nav,
+html[data-mplus-function-nav="true"] .mobile-app-nav{display:none!important}
+html[data-mplus-function-nav="true"] .mplus-function-dock{box-sizing:border-box;position:fixed;z-index:45;inset:auto max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;max-width:720px;margin-inline:auto;padding:9px 8px calc(9px + env(safe-area-inset-bottom,0px));background:#fffdfa;border:1px solid #e1e7e2;border-bottom:0;border-radius:23px 23px 0 0;box-shadow:0 -5px 24px #173f3410}
+html[data-mplus-function-nav="true"] .mplus-function-dock a{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:53px;padding:5px 2px;border:0;border-radius:14px;background:transparent;color:#74817b;text-decoration:none;font:600 12px/1.3 system-ui,sans-serif;white-space:nowrap}
+html[data-mplus-function-nav="true"] .mplus-function-dock a[aria-current="page"]{background:#eaf2ed;color:#173f34}
+html[data-mplus-function-nav="true"] .mplus-function-dock a:focus-visible{outline:2px solid #173f34;outline-offset:-2px}
+html[data-mplus-function-nav="true"] .mplus-function-icon{display:block;width:23px;height:23px;flex:none}
+@media(min-width:861px){html[data-mplus-function-nav="true"] .mplus-function-dock{bottom:12px;border-bottom:1px solid #e1e7e2;border-radius:23px}}

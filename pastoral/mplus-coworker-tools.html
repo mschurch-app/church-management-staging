@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-mplus-function-nav="true">
 <head><link rel="icon" type="image/svg+xml" href="../assets/app/church-os-icon.svg?v=20261003-glass1"><link rel="shortcut icon" href="../assets/app/church-os-icon.svg?v=20261003-glass1">
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <link data-mplus-function-nav rel="stylesheet" href="../mplus-function-nav.css?v=20261020-dock1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <title>M＋同工｜出勤請假與照片</title>
@@ -89,14 +90,15 @@
       </section>
     </section>
       </main>
-      <nav class="collab-mobile-nav" aria-label="手機主要導覽">
-        <a href="../mplus-dashboard.html?church=M%2B"><span>⌂</span>總覽</a>
-        
-        <a href="../mplus-dashboard.html?church=M%2B"><span>▦</span>行事曆</a>
-        <a class="is-active" href="mplus-coworker-tools.html?church=M%2B&tab=attendance"><span>▤</span>工具</a>
+      <nav class="mplus-function-dock" aria-label="M+ 五大入口">
+        <a data-center="church" href="../mplus-dashboard.html?church=M%2B&amp;center=church"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m2.4 11.1 8.45-7.2a1.8 1.8 0 0 1 2.3 0l8.45 7.2a1.35 1.35 0 0 1-1.75 2.05L19 12.4v7.1A2.5 2.5 0 0 1 16.5 22h-2.7v-6.4h-3.6V22H7.5A2.5 2.5 0 0 1 5 19.5v-7.1l-.85.75A1.35 1.35 0 0 1 2.4 11.1Z" fill="currentColor" stroke="none"/></svg>教會</a>
+        <a data-center="school" href="../mplus-dashboard.html?church=M%2B&amp;center=school"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5C8 2 4 3 2 4v15c4-2 7-1 10 1 3-2 6-3 10-1V4c-2-1-6-2-10 1Zm0 0v15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>課輔</a>
+        <a data-center="admin" href="../mplus-dashboard.html?church=M%2B&amp;center=admin" aria-current="page"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v13H3Zm0 0h18M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>行政</a>
+        <a data-center="service" href="../mplus-dashboard.html?church=M%2B&amp;center=service"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v6m10-6v6M3 11h18m-13 5h2m4 0h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>服事</a>
+        <a data-center="website" href="../mplus-dashboard.html?church=M%2B&amp;center=website"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>網站</a>
       </nav>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="mplus-coworker-tools.mjs?v=20261020-no-memo1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="mplus-coworker-tools.mjs?v=20261020-dock1"></script>
 </body>
 </html>

@@ -10,7 +10,7 @@ export function visibleCenters(allowed){return Object.fromEntries(Object.entries
 export function mountMplusNavigation({allowed,hrefFor,openSchool}){
  const centers=visibleCenters(new Set(allowed)),main=document.querySelector('main'),oldNav=document.querySelector('.mobile-app-nav');
  document.body.classList.add('mplus-navigation');
- const style=document.createElement('link');style.rel='stylesheet';style.href='mplus-navigation.css?v=20261020-google1';document.head.append(style);
+ const style=document.createElement('link');style.rel='stylesheet';style.href='mplus-navigation.css?v=20261020-close1';document.head.append(style);
  const panel=document.createElement('section');panel.className='mplus-center';panel.hidden=true;main.append(panel);
  const top=document.createElement('nav');top.className='mplus-top';top.setAttribute('aria-label','M+ 首頁與系統');
  const home=document.createElement('button');home.textContent='首頁';home.dataset.appControl='navigation';home.onclick=()=>show('home');top.append(home);

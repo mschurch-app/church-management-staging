@@ -77,6 +77,9 @@ async function start(){
         document.querySelector('.login-panel h1').textContent='可以進入 M+ 了';
         back.textContent='直接進入 M+ 工作台';back.href='mplus-dashboard.html?church=M%2B';back.className='secondary';
         back.style.cssText='display:flex;align-items:center;justify-content:center;min-height:48px;margin-top:20px;text-decoration:none';
+        status.textContent='登入成功，正在進入 M＋工作台…';
+        location.replace('mplus-dashboard.html?church=M%2B');
+        return;
       }else{
         back.addEventListener('click',event=>{event.preventDefault();window.close();status.textContent='若視窗未關閉，請使用手機的 App 切換器返回教會 OS，或點主畫面的教會 OS 圖示。';});
       }

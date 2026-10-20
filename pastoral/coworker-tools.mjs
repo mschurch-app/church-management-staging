@@ -105,7 +105,7 @@ tabs.forEach((button, index) => {
     if (target) { event.preventDefault(); activateTab(target.dataset.tab); target.focus(); }
   });
 });
-$('#entity').addEventListener('change', event => { entityKey = event.target.value; activateTab($('.tabs [aria-selected="true"]')?.dataset.tab || 'memo'); });
+$('#entity').addEventListener('change', event => { entityKey = event.target.value; if(entityKey==='mplus'){const target=new URL('mplus-coworker-tools.html',location.href);target.searchParams.set('church','M+');target.searchParams.set('tab',$('.tabs [aria-selected="true"]')?.dataset.tab||'attendance');location.replace(target);return;} activateTab($('.tabs [aria-selected="true"]')?.dataset.tab || 'memo'); });
 $('#sign-out').addEventListener('click', signOut);
 
 async function loadMemos() {
@@ -301,7 +301,10 @@ async function start() {
     entityKeys = [...new Set((staff.churches || []).map(name => churchKeys[name]).filter(Boolean))];
     if (!entityKeys.length) throw new Error('此帳號沒有可用的單位權限。');
     $('#entity').replaceChildren(...entityKeys.map(key => { const option = document.createElement('option'); option.value = key; option.textContent = entityNames[key]; return option; }));
-    entityKey = entityKeys.includes('mplus') ? 'mplus' : entityKeys[0]; $('#entity').value = entityKey;
+    const requested=churchKeys[params.get('church')];
+    entityKey = entityKeys.includes(requested) ? requested : entityKeys.includes('mplus') ? 'mplus' : entityKeys[0];
+    if(entityKey==='mplus'){const target=new URL('mplus-coworker-tools.html',location.href);target.search=location.search;target.searchParams.set('church','M+');target.hash=location.hash;location.replace(target);return;}
+    $('#entity').value = entityKey;
     $('#drive-admin-tools').hidden = !['pastor', 'admin'].includes(staff.role);
     $('#attendance-admin-card').hidden = !['pastor', 'admin'].includes(staff.role);
     $('#auth-status').textContent = `已登入：${staff.name}。備忘與個人資料依你的同工權限管理。`;

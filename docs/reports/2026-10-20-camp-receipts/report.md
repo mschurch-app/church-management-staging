@@ -28,3 +28,7 @@
 `PGLITE_MODULE=/tmp/camp-receipt-db-test/node_modules/@electric-sql/pglite/dist/index.js node tests/receipt-database.mjs`
 
 正式 migration：20261020030916。Edge：heat-camp-receipt。沒有修改背景排程或自動化。
+
+## 使用者選定樣板（2026-10-20）
+
+使用者已確認 basketball-camp-02 作為籃球營收據：深綠、橘紅與萊姆色，籃球及球場線條，沿用原四章。原簡潔版 association-classic-01 收納於本機樣板庫，未覆蓋。新版已接回 renderer 與 Edge 部署來源；本次僅更新既有 PR，尚未發布新設計。

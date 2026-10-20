@@ -1,6 +1,7 @@
 """Build an isolated Church OS view. Never changes standalone entries or business logic."""
 from pathlib import Path
 import re
+from redesign import redesign
 import argparse,hashlib,json,subprocess,shutil
 parser=argparse.ArgumentParser();parser.add_argument('--source',required=True);parser.add_argument('--source-ref');args=parser.parse_args()
 SOURCE=Path(args.source).resolve();ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'school';OUT.mkdir(exist_ok=True)
@@ -10,8 +11,8 @@ source=source.replace('<html lang="zh-TW">','<html lang="zh-TW" data-church="M+"
 for sheet in ['church-palette.css','church-os-theme.css','school-ui.css']:
  source=re.sub(r'  <link rel="stylesheet" href="'+re.escape(sheet)+r'\?[^\"]+">\n','',source)
 source=source.replace(' autofocus', '').replace('<head>', '<head>\n  <meta name="referrer" content="no-referrer">\n  <meta name="robots" content="noindex,nofollow">')
-source=source.replace('<meta name="theme-color" content="#faf8f6">','<meta name="theme-color" content="#173f34">\n  <link rel="stylesheet" href="church-os-school.css?v=20261020-os1">\n  <link rel="stylesheet" href="church-os-dock.css?v=20261020-os1">')
-source=re.sub(r'school-ui\.js\?v=[^\"]+', 'church-os-ui.js?v=20261020-face-reload1', source)
+source=source.replace('<meta name="theme-color" content="#faf8f6">','<meta name="theme-color" content="#173f34">\n  <link rel="stylesheet" href="church-os-school.css?v=20261021-workspace1">\n  <link rel="stylesheet" href="church-os-dock.css?v=20261020-os1">')
+source=re.sub(r'school-ui\.js\?v=[^\"]+', 'church-os-ui.js?v=20261021-workspace1', source)
 a=source.index('  <header class="glass-header');b=source.index('  </header>',a)+len('  </header>')
 nav=re.search(r'      <nav id="school-desktop-nav".*?</nav>',source[a:b],re.S).group(0)
 header='''  <header class="os-school-header">
@@ -28,11 +29,13 @@ source=source.replace('使用教會 OS 的 LINE 或 Email 帳號登入，再選�
 source=source.replace('  <a href="#school-main"', (ROOT/'scripts/school/dock.html').read_text()+'\n  <a href="#school-main"',1)
 source=source.replace('href="church-os-dock.css?v=20261020-os1"','href="../mplus-function-nav.css?v=20261020-dock1"').replace('src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"','src="../vendor/supabase-2.102.0.js"').replace('href="enrollment.html"','href="https://school.mchurch.online/enrollment.html"')
 source=source.replace('{ global: { fetch: mschoolApiFetch } }','{ auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, global: { fetch: mschoolApiFetch } }')
+source=redesign(source)
 (OUT/'index.html').write_text(source)
 ui=(SOURCE/'school-ui.js').read_text().replace('launcher.hidden=!user;','launcher.hidden=true;')
 ui=ui.replace("makeDialog('school-tools','功能收納盒')","makeDialog('school-tools','全部課輔功能')")
 # Public enrollment workstation stays an independent original entry, not a Church OS task.
 ui=ui.replace("catalog.filter(permitted).filter(item=>(item.title", "catalog.filter(permitted).filter(item=>!item.href).filter(item=>(item.title")
+ui=ui.replace("!item.href && item.key!=='staff'", "!item.href && !['staff','messages','import'].includes(item.key)")
 (OUT/'church-os-ui.js').write_text(ui)
 
 (OUT/'church-os-school.css').write_text((SOURCE/'school-ui.css').read_text()+(ROOT/'scripts/school/layout.css').read_text())

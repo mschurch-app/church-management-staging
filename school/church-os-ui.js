@@ -41,7 +41,7 @@
     user=nextUser||null;
     if (!$('school-main')) return;
     const desktop=$('school-desktop-nav');desktop.replaceChildren();
-    for(const item of catalog.filter(permitted).filter(item=>!item.href && item.key!=='staff')) {
+    for(const item of catalog.filter(permitted).filter(item=>!item.href && !['staff','messages','import'].includes(item.key))) {
       const button=featureButton(item,'nav');button.id='nav-'+item.key;desktop.append(button);
     }
     // Legacy authorization UI still references these IDs even for unauthenticated users.

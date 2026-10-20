@@ -203,3 +203,48 @@ body.school-app{padding-bottom:calc(100px + env(safe-area-inset-bottom))!importa
 }
 }
 @media print{.os-school-header,.mplus-function-dock,#school-desktop-nav{display:none!important}}
+
+/* Feature workspaces: structure belongs to this OS view only. */
+@media screen {
+.school-app{background:#f5f7f2!important;color:#203e34!important}
+.school-app .os-school-header{box-shadow:none}
+.school-app #school-desktop-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));overflow:visible;gap:6px;padding:0;margin:0 0 24px;min-height:0}
+.school-app #school-desktop-nav button{min-width:0;justify-content:center;padding:11px 7px;border-radius:12px;white-space:normal;line-height:1.35;font-size:13px}
+.school-app #school-desktop-nav button.hidden{display:none!important}
+.school-app #school-page-bar{margin:0 0 18px;padding:0;align-items:center}
+.school-app #school-page-bar h1{font-size:30px;letter-spacing:-.03em}
+.school-app #school-page-bar p{color:#63766a;font-size:12px;letter-spacing:.08em}
+.school-app #school-page-bar button{font-size:12px;min-height:44px;padding:10px 12px;border-radius:12px;white-space:nowrap}
+.os-workspace{display:flex;flex-direction:column;gap:20px;min-width:0}
+.os-workspace-intro p{margin:0;font-size:14px;line-height:1.7;color:#607368;max-width:65ch}
+.os-toolbar{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:18px;padding:20px;background:white;border:1px solid #dce5dc;border-radius:20px}
+.os-filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;flex:1;min-width:0}
+.os-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.os-field{display:flex;flex-direction:column;gap:7px;min-width:130px;max-width:100%;flex:1}
+.os-field>span{font-size:12px;font-weight:650;color:#607368}
+.school-app .os-field>:is(input,select){width:100%;min-width:0;font-size:16px!important;font-weight:500;border:1px solid #d4dfd5!important;background:#f8faf7!important;border-radius:11px;min-height:46px;padding:10px 12px;color:#203e34!important}
+.school-app .os-toolbar button{min-height:44px;border-radius:11px;padding:10px 14px;font-size:13px!important;justify-content:center;white-space:normal;margin:0}
+.school-app .os-toolbar button:hover,.school-app .os-station button:hover{filter:brightness(.94)}
+.school-app .os-toolbar button:is(.bg-indigo-600,.bg-emerald-600,.bg-rose-600,.bg-gradient-to-r),.school-app .os-station button:is(.bg-gradient-to-r,.bg-slate-900){background:#173f34!important;color:white!important}
+.school-app .os-toolbar button:is(.text-indigo-600,.text-emerald-600){color:#245c43!important}
+.os-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#dce5dc;border:1px solid #dce5dc;border-radius:20px;overflow:hidden}
+.os-metric{background:#fff;padding:20px;min-width:0}
+.school-app .os-metric>span:first-child,.school-app .os-metric p{font-size:12px!important;color:#607368!important;font-weight:550}
+.school-app .os-metric>span:last-child,.school-app .os-metric [id^=stat-]{font-size:25px!important;line-height:1.35;color:#203e34!important;letter-spacing:-.03em;font-weight:750}
+.os-metric>.w-9{display:none}.os-metric.flex{display:block}
+.os-results,.os-live-feed,.os-station{background:#fff;border:1px solid #dce5dc;border-radius:20px;padding:22px;min-width:0}
+.os-checkin-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:start;margin-top:20px!important}
+.os-block-heading{display:flex;gap:12px;align-items:center;margin-bottom:22px;text-align:left}.os-block-heading h2{font-size:19px;font-weight:750;margin:0}.os-block-heading p{font-size:12px;color:#607368;margin-top:4px}.os-step{display:grid;place-items:center;background:#eaf0e4;color:#34533e;width:42px;height:42px;border-radius:12px;font-size:13px;font-weight:700;flex-shrink:0}
+.os-station{max-width:none;margin:0;text-align:left}.os-station>div:first-of-type+div{flex-wrap:wrap;justify-content:flex-start}.os-station>p{color:#607368!important;font-size:13px!important;line-height:1.7}.os-station>h2{font-size:16px;margin:20px 0 5px}.os-station input{font-size:16px!important;letter-spacing:0;text-align:left}.os-station .text-center{text-align:left}
+.school-app .os-live-feed th,.school-app .os-results th{font-size:12px!important;padding:14px 12px;color:#607368!important}.school-app .os-live-feed td,.school-app .os-results td{padding:16px 12px;font-size:14px!important}
+.school-app :is(.os-workspace,.os-checkin-grid) button:focus-visible,.school-app #school-desktop-nav button:focus-visible{outline:3px solid #8aaf91;outline-offset:3px}
+.school-app #print-paper-content{margin-top:20px;border-radius:20px;box-shadow:none;border-color:#dce5dc;overflow-x:auto}
+.school-app #tab-schedules #schedule-calendar-view{background:white;border:1px solid #dce5dc;border-radius:20px;padding:18px}
+.school-app #tab-schedules #schedule-list-view{background:white;border:1px solid #dce5dc;border-radius:20px;padding:12px}
+.school-app #tab-schedules #schedule-calendar-view button{min-width:44px;min-height:44px}
+.school-app #tab-counseling .os-results tbody td:nth-child(6),.school-app #tab-counseling .os-results tbody td:nth-child(7){white-space:normal;min-width:190px;line-height:1.7}
+@media(max-width:767px){
+.school-app #school-desktop-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:24px}.school-app #school-desktop-nav button{font-size:12px;padding:10px 5px;min-height:46px}.school-app #school-desktop-nav .school-symbol{display:none}
+.school-app #school-page-bar h1{font-size:27px}.os-toolbar{padding:16px;gap:16px;align-items:stretch}.os-filters{width:100%;flex-basis:100%;gap:12px}.os-field{min-width:120px}.os-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.os-actions>button:only-child{grid-column:1/-1}.os-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.os-metric{padding:16px}.os-metric>span:last-child{font-size:23px!important}.os-checkin-grid{grid-template-columns:1fr;gap:16px}.os-results,.os-live-feed,.os-station{padding:16px}.os-workspace{gap:16px}.school-app #tab-schedules #schedule-calendar-view{padding:12px}.os-report-controls .os-field{flex-basis:100%}.os-report-controls .os-actions{display:flex}.os-report-controls .os-actions button{width:100%}.school-app .os-field input[type=date],.school-app .os-field input[type=month]{min-height:48px;-webkit-appearance:none}
+}
+}

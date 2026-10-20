@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-church="M+" data-mplus-function-nav="true" data-school-entry="church-os">
+<head><base href="../school/">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>課輔工作台預覽（合成資料）</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { navy: '#0f172a', indigo: '#4f46e5', amber: '#f59e0b' } },
+          fontFamily: { sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'], mono: ['JetBrains Mono', 'Menlo', 'monospace'] }
+        }
+      }
+    }
+  </script>
+
+  <!-- System typography and local SVG icons are shared with Church OS. -->
+  
+  <!-- Supabase JS Client -->
+  
+  <!-- QRCode.js -->
+  
+  <!-- Html5-Qrcode -->
+  
+  <!-- face-api.js -->
+  
+  <!-- Canvas Confetti 慶祝特效 -->
+  
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent;
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    }
+    @media (min-width: 768px) { body { padding-bottom: 2rem; } }
+    .glass-header { background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .tab-btn-active { background: rgba(255, 255, 255, 0.2); color: #ffffff !important; font-weight: 800; border-bottom: 3px solid #fbbf24; }
+    .clean-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04); }
+    .hud-corner { position: absolute; width: 18px; height: 18px; border-color: #38bdf8; pointer-events: none; z-index: 20; }
+    .hud-tl { top: 10px; left: 10px; border-top: 3px solid #38bdf8; border-left: 3px solid #38bdf8; border-top-left-radius: 4px; }
+    .hud-tr { top: 10px; right: 10px; border-top: 3px solid #38bdf8; border-right: 3px solid #38bdf8; border-top-right-radius: 4px; }
+    .hud-bl { bottom: 10px; left: 10px; border-bottom: 3px solid #38bdf8; border-left: 3px solid #38bdf8; border-bottom-left-radius: 4px; }
+    .hud-br { bottom: 10px; right: 10px; border-bottom: 3px solid #38bdf8; border-right: 3px solid #38bdf8; border-bottom-right-radius: 4px; }
+    .scanner-line { position: absolute; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.85), transparent); animation: scanAnim 2.8s ease-in-out infinite; pointer-events: none; z-index: 15; }
+    @keyframes scanAnim { 0% { top: 8%; opacity: 0.3; } 50% { top: 86%; opacity: 1; } 100% { top: 8%; opacity: 0.3; } }
+    .custom-scroll::-webkit-scrollbar { display: none; }
+    .custom-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* 2026 visual refresh: softer hierarchy and better mobile ergonomics */
+    :root {
+      --surface: rgba(255, 255, 255, 0.92);
+      --line: #e6e9ef;
+      --ink: #172033;
+      --muted: #667085;
+      --brand: #4f46e5;
+      --brand-soft: #eef2ff;
+    }
+    body {
+      background:
+        radial-gradient(circle at 8% -4%, rgba(79, 70, 229, .11), transparent 30rem),
+        radial-gradient(circle at 94% 8%, rgba(245, 158, 11, .10), transparent 26rem),
+        linear-gradient(180deg, #f8fafc 0%, #f5f6fa 55%, #f8fafc 100%);
+      color: var(--ink);
+    }
+    .glass-header {
+      background: linear-gradient(112deg, rgba(15, 23, 42, .98), rgba(30, 41, 59, .96));
+      box-shadow: 0 10px 34px rgba(15, 23, 42, .16);
+    }
+    .clean-card {
+      background: var(--surface);
+      border-color: rgba(226, 232, 240, .92);
+      box-shadow: 0 12px 34px rgba(15, 23, 42, .055), 0 1px 2px rgba(15, 23, 42, .04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    main > div > .clean-card { animation: panel-in .22s ease-out both; }
+    @keyframes panel-in { from { opacity: 0; transform: translateY(6px); } }
+    button, a, input, select, textarea { touch-action: manipulation; }
+    button { letter-spacing: .005em; }
+    input, select, textarea {
+      min-height: 42px;
+      border-color: #d8dee9 !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .025);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #818cf8 !important;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, .12);
+      background: #fff;
+    }
+    table thead { position: sticky; top: 0; z-index: 2; }
+    table tbody tr { transition: background-color .15s ease; }
+    #mobile-bottom-dock {
+      box-shadow: 0 20px 48px rgba(15, 23, 42, .34);
+      padding-bottom: max(.5rem, env(safe-area-inset-bottom));
+    }
+    #mobile-bottom-dock button {
+      min-width: 52px;
+      min-height: 50px;
+      border-radius: 16px;
+      transition: color .15s ease, background-color .15s ease, transform .15s ease;
+    }
+    #mobile-bottom-dock button:active { transform: scale(.94); background: rgba(255,255,255,.08); }
+    [id^="modal-"] > div {
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: 0 28px 80px rgba(15, 23, 42, .28);
+    }
+    #modal-counseling-add > div { overscroll-behavior: contain; }
+    #modal-counseling-add form > div[class*="rounded-2xl"] {
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
+    }
+    @media (max-width: 767px) {
+      body { padding-bottom: calc(6.7rem + env(safe-area-inset-bottom)); }
+      main { padding: 14px 12px 24px !important; }
+      .clean-card { border-radius: 22px !important; }
+      .clean-card[class*="p-4"], .clean-card[class*="p-5"] { padding: 16px !important; }
+      header .max-w-7xl { padding-inline: 12px; }
+      #modal-counseling-add { align-items: flex-end; padding: 0; }
+      #modal-counseling-add > div {
+        width: 100%; max-width: none; max-height: 94dvh;
+        border-radius: 28px 28px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+      }
+      #modal-counseling-add form { gap: 12px; }
+      #modal-counseling-add label { line-height: 1.45; }
+      #modal-counseling-add input, #modal-counseling-add select, #modal-counseling-add textarea { font-size: 16px; }
+      #modal-counseling-add form > .flex.border-t {
+        position: sticky; bottom: calc(-18px - env(safe-area-inset-bottom)); z-index: 5;
+        margin-inline: -16px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+        background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
+      }
+      #counsel-add-button { min-height: 42px; justify-content: center; }
+      #tab-counseling .grid.grid-cols-2 { gap: 8px; }
+      #tab-counseling .grid.grid-cols-2 > div { padding: 12px; border-radius: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+
+    /* A4 列印樣式 */
+    @media print {
+      @page { size: landscape; margin: 8mm; }
+      body { background: #ffffff !important; padding: 0 !important; color: #000000 !important; }
+      header, nav, #print-controls-bar, #mobile-bottom-dock, .no-print { display: none !important; }
+      main { max-width: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+      #tab-print-center { display: block !important; }
+      .print-page-box { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
+      .print-page-break { page-break-after: always; break-after: page; }
+      table { border-collapse: collapse !important; width: 100% !important; }
+      th, td { border: 1px solid #000000 !important; }
+      .monthly-attendance-print { width: 100% !important; table-layout: fixed !important; font-size: 7px !important; }
+      .monthly-attendance-print th, .monthly-attendance-print td { padding: .7mm .35mm !important; white-space: nowrap !important; }
+      .monthly-attendance-print .student-name-col { width: 20mm !important; }
+      .monthly-attendance-print .rate-col { width: 11mm !important; }
+      .monthly-attendance-print .signature-col { width: 14mm !important; }
+      .qr-print-sheet { width: 100% !important; }
+      .qr-print-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 3mm !important;
+        align-items: start !important;
+      }
+      .qr-print-card {
+        box-sizing: border-box !important;
+        height: 31mm !important;
+        padding: 2mm !important;
+        gap: 2mm !important;
+        border: .35mm dashed #64748b !important;
+        border-radius: 2mm !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+      .qr-print-code { width: 26mm !important; height: 26mm !important; padding: 1mm !important; }
+      .qr-print-code canvas, .qr-print-code img { width: 24mm !important; height: 24mm !important; max-width: none !important; }
+      .qr-print-info { min-width: 0 !important; overflow: hidden !important; }
+      .qr-print-info h3, .qr-print-info p { white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="app-design-tokens.css?v=20261009-stage3">
+  <meta name="theme-color" content="#173f34">
+  <link rel="stylesheet" href="church-os-school.css?v=20261021-workspace1">
+  <link rel="stylesheet" href="../mplus-function-nav.css?v=20261020-dock1">
+  <link rel="icon" href="school-mark.svg" type="image/svg+xml">
+  <script defer src="school-icons.js?v=20261009-stage3"></script>
+  <script defer src="church-os-ui.js?v=20261021-workspace1"></script>
+</head>
+<body class="school-app min-h-screen flex flex-col antialiased">
+
+  <!-- 頂部導航列 -->
+  <header class="os-school-header">
+    <div class="os-school-brand"><a href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B" aria-label="M＋首頁"><img src="https://mscos.mchurch.online/assets/brands/mplus-logo-white.png" alt="M＋大雅教會"></a><div><p>教會 OS · 課輔</p><h1>M＋課輔工作台</h1><p id="clock-display">正在連線…</p></div></div>
+    <div class="os-school-account"><a class="os-school-home" href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B">首頁</a><div id="auth-logged" class="hidden items-center"><span id="logged-user-tag"></span><button type="button" onclick="doLogout()">登出課輔</button></div></div>
+  </header>
+
+<nav class="mplus-function-dock" aria-label="M+ 五大入口">
+        <a data-center="church" href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B&amp;center=church"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m2.4 11.1 8.45-7.2a1.8 1.8 0 0 1 2.3 0l8.45 7.2a1.35 1.35 0 0 1-1.75 2.05L19 12.4v7.1A2.5 2.5 0 0 1 16.5 22h-2.7v-6.4h-3.6V22H7.5A2.5 2.5 0 0 1 5 19.5v-7.1l-.85.75A1.35 1.35 0 0 1 2.4 11.1Z" fill="currentColor" stroke="none"/></svg>教會</a>
+        <a aria-current="page" data-center="school" href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B&amp;center=school"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5C8 2 4 3 2 4v15c4-2 7-1 10 1 3-2 6-3 10-1V4c-2-1-6-2-10 1Zm0 0v15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>課輔</a>
+        <a data-center="admin" href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B&amp;center=admin"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v13H3Zm0 0h18M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>行政</a>
+        <a data-center="service" href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B&amp;center=service"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v6m10-6v6M3 11h18m-13 5h2m4 0h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>服事</a>
+        <a data-center="website" href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B&amp;center=website"><svg class="mplus-function-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>網站</a>
+      </nav>
+
+  <a href="#school-main" class="school-skip">跳到主要內容</a>
+  <!-- 主內容容器 -->
+  <main id="school-main" class="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-4">
+
+      <nav id="school-desktop-nav" aria-label="課輔功能" class="hidden md:flex space-x-1 overflow-x-auto pb-1.5 text-xs font-bold border-t border-white/10 pt-1.5 custom-scroll">
+        <button onclick="switchTab('checkin')" id="nav-checkin" class="tab-btn-active px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 whitespace-nowrap"><i class="fa-solid fa-qrcode text-xs"></i><span>打卡中心</span></button>
+        <button onclick="requireTab('schedules')" id="nav-schedules" class="px-3 py-1.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition flex items-center space-x-1.5 whitespace-nowrap"><i class="fa-solid fa-calendar-check text-xs"></i><span>排班行事曆</span></button>
+        <button onclick="requireTab('rollcall')" id="nav-rollcall" class="px-3 py-1.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition flex items-center space-x-1.5 whitespace-nowrap"><i class="fa-solid fa-clipboard-check text-xs"></i><span>課堂點名</span></button>
+        <button onclick="requireTab('students')" id="nav-students" class="px-3 py-1.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition flex items-center space-x-1.5 whitespace-nowrap"><i class="fa-solid fa-address-book text-xs"></i><span>人員名冊</span></button>
+        <button onclick="requireTab('counseling')" id="nav-counseling" class="px-3 py-1.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition flex items-center space-x-1.5 whitespace-nowrap"><i class="fa-solid fa-hand-holding-heart text-xs"></i><span>個別輔導</span></button>
+        <button onclick="requireTab('messages')" id="nav-messages" class="px-3 py-1.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition flex items-center space-x-1.5 whitespace-nowrap"><i class="fa-solid fa-comments text-xs"></i><span>家長留言</span></button>
+        <button onclick="requireStaffPrintTab()" id="nav-print" class="hidden px-3 py-1.5 rounded-lg bg-amber-400/20 text-amber-300 hover:bg-amber-400/30 transition flex items-center space-x-1.5 whitespace-nowrap border border-amber-400/30"><i class="fa-solid fa-file-export text-xs"></i><span>報表輸出</span></button>
+        <button onclick="requireImportTab()" id="nav-import" class="hidden px-3 py-1.5 rounded-lg bg-emerald-400/20 text-emerald-300 hover:bg-emerald-400/30 transition flex items-center space-x-1.5 whitespace-nowrap border border-emerald-400/30"><i class="fa-solid fa-file-csv text-xs"></i><span>資料匯入</span></button>
+      </nav>
+    <div id="school-page-bar" class="school-page-bar" hidden><div><p id="school-page-group">學生與到班</p><h1 id="school-page-title">到班打卡</h1></div><button type="button" data-school-open-tools>全部課輔功能</button></div>
+    <!-- 1. 打卡中心 -->
+    <div id="tab-checkin" class="space-y-4">
+      <section id="school-feature-launcher" class="school-launcher" aria-label="課輔常用功能" hidden></section>
+      <section class="os-metrics" aria-label="資料摘要"><div class="os-metric">
+          <div><p class="text-[11px] font-bold text-slate-400">今日到班學員</p><div class="flex items-baseline gap-1 mt-0.5"><span class="text-xl sm:text-2xl font-black text-slate-800" id="stat-stu-count">0</span><span class="text-xs text-slate-400">人</span></div></div>
+          <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-user-graduate"></i></div>
+        </div><div class="os-metric">
+          <div><p class="text-[11px] font-bold text-slate-400">教職出勤同工</p><div class="flex items-baseline gap-1 mt-0.5"><span class="text-xl sm:text-2xl font-black text-slate-800" id="stat-staff-count">0</span><span class="text-xs text-slate-400">人</span></div></div>
+          <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-chalkboard-user"></i></div>
+        </div><div class="os-metric">
+          <div><p class="text-[11px] font-bold text-slate-400">今日發放點數</p><div class="flex items-baseline gap-1 mt-0.5"><span class="text-xl sm:text-2xl font-black text-amber-600" id="stat-pts-count">0</span><span class="text-xs text-slate-400">點</span></div></div>
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-coins"></i></div>
+        </div><div class="os-metric">
+          <div><p class="text-[11px] font-bold text-slate-400">本月排定班次</p><div class="flex items-baseline gap-1 mt-0.5"><span class="text-xl sm:text-2xl font-black text-slate-800" id="stat-sch-count">0</span><span class="text-xs text-slate-400">班</span></div></div>
+          <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-calendar-day"></i></div>
+        </div></section><div class="os-checkin-grid"><section class="os-station"><div class="os-block-heading"><span class="os-step">01</span><div><h2>到班簽到</h2><p>選擇人臉、QR 或條碼簽到</p></div></div>
+        <div class="flex justify-center gap-2.5 mb-4">
+          <button type="button" onclick="toggleFaceRecognition()" id="btn-toggle-face" class="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 text-white font-bold rounded-xl shadow-sm text-xs sm:text-sm flex items-center space-x-1.5 transition active:scale-95"><i class="fa-solid fa-face-smile text-base"></i><span id="btn-face-text">開啟人臉相機</span></button>
+          <button type="button" id="kiosk-manage-button" onclick="openKioskDevices()" class="hidden min-h-[44px] px-4 rounded-xl border text-slate-900">簽到設備</button>
+          <button type="button" onclick="toggleCameraScanner()" id="btn-toggle-cam" class="px-4 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 text-white font-bold rounded-xl shadow-sm text-xs sm:text-sm flex items-center space-x-1.5 transition active:scale-95"><i class="fa-solid fa-qrcode text-base"></i><span id="btn-cam-text">QR 掃描</span></button>
+        </div>
+
+        <div id="face-recognition-container" class="hidden mb-4 overflow-hidden rounded-2xl border-2 border-indigo-500 bg-slate-950 relative shadow-xl">
+          <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
+          <div class="scanner-line"></div>
+          <div class="relative w-full aspect-[4/3] bg-black flex items-center justify-center">
+            <video id="face-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+            <canvas id="face-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
+            <div id="face-loading-msg" class="absolute bg-slate-900/90 text-white text-xs px-3.5 py-1.5 rounded-full flex items-center space-x-2 z-20"><i class="fa-solid fa-circle-notch fa-spin text-amber-400"></i><span>AI 模型載入中...</span></div>
+          </div>
+          <div class="p-2.5 bg-slate-900 text-white text-xs flex justify-between items-center px-4">
+            <span id="face-status-text" class="text-blue-300 font-bold truncate">請正面直視鏡頭</span>
+            <button onclick="toggleFaceRecognition()" class="text-rose-400 hover:text-rose-300 font-bold text-xs ml-2">關閉相機</button>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-700 leading-relaxed mb-4">學生每天記錄一次到班；工讀生第一次上班、第二次下班。辨識成功後請離開鏡頭至少 5 秒，避免連續打卡。</p>
+        <p class="text-center mb-4"><a href="https://school.mchurch.online/enrollment.html" class="inline-block px-4 py-3 rounded-xl bg-white text-teal-800 font-bold border border-teal-200">學生建檔工作站</a></p>
+        <div id="camera-scanner-container" class="hidden mb-4 overflow-hidden rounded-2xl border-2 border-emerald-500 bg-black relative shadow-lg">
+          <div id="qr-reader" class="w-full"></div>
+          <div class="p-2.5 bg-slate-900 text-white text-xs flex justify-between items-center px-4"><span>鏡頭掃描中：對準學生條碼卡</span><button onclick="toggleCameraScanner()" class="text-rose-400 hover:text-rose-300 font-bold text-xs">關閉相機</button></div>
+        </div>
+
+        <h2 class="text-base sm:text-lg font-black text-slate-800 tracking-tight">條碼槍 / 學號手動簽到</h2>
+        <p class="text-xs text-slate-400 mb-3">條碼槍自動刷入，或手動輸入學號按 Enter</p>
+        
+        <form onsubmit="handleScan(event)" class="space-y-2.5">
+          <input type="text" aria-label="條碼或學號" id="scan-code-input" placeholder="請刷條碼或輸入學號 (例: 2026S0001)" autocomplete="off" class="w-full bg-slate-50 hover:bg-white border-2 border-slate-200 hover:border-indigo-400 rounded-xl px-4 py-3 text-base sm:text-lg font-bold text-center uppercase tracking-wider focus:outline-none focus:border-indigo-600 font-mono transition">
+          <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-sm transition active:scale-98">確認打卡報到</button>
+        </form>
+        <div id="scan-tip" class="mt-3 text-xs font-bold hidden py-2 px-3 rounded-xl"></div>
+      </section><section class="os-live-feed">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center space-x-2"><span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span><span>今日即時出勤動態</span></h3>
+          <span class="text-[11px] text-slate-400 font-medium">即時連線更新</span>
+        </div>
+        <div class="block md:hidden space-y-2" id="logs-cards-mobile"><p class="text-center text-xs text-slate-400 py-6">載入今日動態中...</p></div>
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 text-slate-400 font-bold border-b border-slate-100"><tr><th class="py-2.5 px-4">時間</th><th class="py-2.5 px-4">照片</th><th class="py-2.5 px-4">編號</th><th class="py-2.5 px-4">姓名</th><th class="py-2.5 px-4">身分</th><th class="py-2.5 px-4">打卡狀態</th></tr></thead>
+            <tbody id="logs-list" class="divide-y divide-slate-100 font-medium"><tr><td colspan="6" class="py-6 text-center text-slate-400">載入今日動態中...</td></tr></tbody>
+          </table>
+        </div>
+      </section></div>
+    </div>
+
+    <!-- 2. 排班行事曆 -->
+    <div id="tab-schedules" class="hidden space-y-4">
+      <div id="schedule-status" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700" role="status" aria-live="polite"></div>
+      <section class="os-workspace" data-os-workspace="schedules"><div class="os-workspace-intro"><h2 class="sr-only"> 教職員排班行事曆</h2><p>查看月曆或清單；需要固定時段時，可一次安排多週。</p></div><div class="os-toolbar"><div class="os-filters"><div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
+              <button onclick="setScheduleView('calendar')" id="btn-view-cal" class="px-3 py-1.5 rounded-lg bg-white text-indigo-600 font-bold shadow-xs"><i class="fa-solid fa-calendar mr-1"></i>月曆</button>
+              <button onclick="setScheduleView('list')" id="btn-view-list" class="px-3 py-1.5 rounded-lg text-slate-600 font-bold"><i class="fa-solid fa-list-ul mr-1"></i>清單</button>
+            </div><label class="os-field"><span>查看同工</span><select id="schedule-worker-filter" onchange="renderActiveScheduleView()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"></select></label></div><div class="os-actions"><button id="btn-batch-schedule" onclick="openBatchScheduleModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-calendar-plus"></i><span>安排多週班表</span></button><button id="btn-add-schedule" onclick="openScheduleModal('add')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-plus"></i><span>單日排班</span></button></div></div><section class="os-metrics" aria-label="資料摘要"><div class="os-metric"><span class="text-[11px] font-bold text-indigo-600 block">本月總班次</span><span class="text-lg sm:text-xl font-black text-indigo-950 mt-0.5 block" id="total-count-badge">0 班</span></div><div class="os-metric"><span class="text-[11px] font-bold text-blue-600 block">排定總工時</span><span class="text-lg sm:text-xl font-black text-blue-950 mt-0.5 block" id="total-shift-badge">0 小時</span></div><div class="os-metric"><span class="text-[11px] font-bold text-emerald-600 block">出勤同工</span><span class="text-lg sm:text-xl font-black text-emerald-950 mt-0.5 block" id="total-workers-badge">0 人</span></div><div class="os-metric"><span class="text-[11px] font-bold text-amber-600 block">預估薪資支出</span><span class="text-lg sm:text-xl font-black text-amber-950 mt-0.5 block" id="total-wage-badge">$0</span></div></section><div id="schedule-calendar-view" class="space-y-2.5">
+          <div class="flex justify-between items-center bg-slate-50 px-3.5 py-2 rounded-2xl border border-slate-200">
+            <div class="flex items-center space-x-2">
+              <button aria-label="上一個月" onclick="prevMonth()" class="w-7 h-7 flex items-center justify-center bg-white rounded-lg border border-slate-200 hover:bg-slate-100 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+              <h3 class="text-xs sm:text-sm font-black text-slate-800 font-mono" id="calendar-month-title">2026 年 09 月</h3>
+              <button aria-label="下一個月" onclick="nextMonth()" class="w-7 h-7 flex items-center justify-center bg-white rounded-lg border border-slate-200 hover:bg-slate-100 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
+            <button onclick="goToCurrentMonth()" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold hover:bg-slate-100 transition">本月</button>
+          </div>
+          <p class="md:hidden text-xs text-slate-600">月曆可左右滑動，也可切換清單查看。</p>
+          <div class="school-calendar-scroll border border-slate-200 rounded-2xl overflow-x-auto bg-white" tabindex="0" aria-label="可左右捲動的排班月曆">
+            <div class="grid grid-cols-7 text-center font-bold text-[11px] sm:text-xs py-2 bg-slate-50 border-b border-slate-200 text-slate-600">
+              <div class="text-rose-500">週日</div><div>週一</div><div>週二</div><div>週三</div><div>週四</div><div>週五</div><div class="text-blue-600">週六</div>
+            </div>
+            <div id="calendar-grid" class="grid grid-cols-7 divide-x divide-y divide-slate-100 text-xs"></div>
+          </div>
+        </div><section class="os-results"><div id="schedule-list-view" class="hidden overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap">
+            <thead class="bg-slate-50 text-slate-500 border-b border-slate-100 font-bold">
+              <tr><th class="py-3 px-3">排班日期</th><th class="py-3 px-3">同工編號</th><th class="py-3 px-3">同工姓名</th><th class="py-3 px-3">班別時段</th><th class="py-3 px-3">負責工作</th><th class="py-3 px-3">工時</th><th class="py-3 px-3 text-center">操作</th></tr>
+            </thead>
+            <tbody id="schedules-list" class="divide-y divide-slate-100 font-medium"><tr><td colspan="7" class="py-6 text-center text-slate-400">載入排班中...</td></tr></tbody>
+          </table>
+        </div></section></section>
+    </div>
+
+    <!-- 3. 課堂點名 -->
+    <div id="tab-rollcall" class="hidden space-y-4">
+      <section class="os-workspace" data-os-workspace="rollcall"><div class="os-workspace-intro"><h2 class="sr-only"> 課堂點名與聯絡簿核章</h2><p>選擇日期，逐位記錄出席、作業與聯絡簿；確認後儲存。</p></div><div class="os-toolbar"><div class="os-filters"><label class="os-field"><span>點名日期</span><input type="date" id="rollcall-date-picker" onchange="loadRollCallsForDate()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-mono"></label></div><div class="os-actions"><button type="button" onclick="reloadRollCallSheet()" class="min-h-[44px] px-3 rounded-xl border text-slate-900">重新載入</button><button id="rollcall-batch-attendance" onclick="batchSetAll('attendance', '出席')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-check-double mr-1 text-emerald-600"></i>全體出席</button><button id="rollcall-batch-homework" onclick="batchSetAll('homework', '已完成')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-book mr-1 text-blue-600"></i>作業完成</button><button id="rollcall-batch-signed" onclick="batchSetAll('signed', '是')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-stamp mr-1 text-purple-600"></i>全體核章</button><button id="rollcall-save" onclick="saveRollCallSheet()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center space-x-1 ml-auto sm:ml-0 transition active:scale-95"><i class="fa-solid fa-floppy-disk"></i><span>儲存紀錄</span></button></div></div><section class="os-metrics" aria-label="資料摘要"><div class="os-metric"><span class="text-[11px] text-indigo-600 font-bold block">應到學員</span><span class="text-lg sm:text-xl font-black text-indigo-900 mt-0.5 block" id="rc-stat-total">0 人</span></div><div class="os-metric"><span class="text-[11px] text-emerald-600 font-bold block">實到出席</span><span class="text-lg sm:text-xl font-black text-emerald-900 mt-0.5 block" id="rc-stat-attend">0 人</span></div><div class="os-metric"><span class="text-[11px] text-blue-600 font-bold block">作業完成率</span><span class="text-lg sm:text-xl font-black text-blue-900 mt-0.5 block" id="rc-stat-hw">0%</span></div><div class="os-metric"><span class="text-[11px] text-purple-600 font-bold block">聯絡簿核章</span><span class="text-lg sm:text-xl font-black text-purple-900 mt-0.5 block" id="rc-stat-signed">0 人</span></div></section><div class="block md:hidden space-y-2.5" id="rollcall-cards-mobile"><p class="text-center text-xs text-slate-400 py-6">載入點名名冊中...</p></div><section class="os-results"><div class="hidden md:block overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 text-slate-500 border-b border-slate-100 font-bold">
+              <tr><th class="py-3 px-3">學號</th><th class="py-3 px-3">姓名</th><th class="py-3 px-3">學校/年級</th><th class="py-3 px-3">出席狀態</th><th class="py-3 px-3">作業完成進度</th><th class="py-3 px-3">聯絡簿核章</th><th class="py-3 px-3">請假 / 叮嚀備註</th></tr>
+            </thead>
+            <tbody id="rollcall-table-body" class="divide-y divide-slate-100 font-medium"><tr><td colspan="7" class="py-6 text-center text-slate-400">載入點名名冊中...</td></tr></tbody>
+          </table>
+        </div></section></section>
+    </div>
+
+    <!-- 4. 人員名冊 -->
+    <div id="tab-students" class="hidden space-y-4">
+      <section class="os-workspace" data-os-workspace="students"><div class="os-workspace-intro"><h2 class="sr-only"> 學員與人員名冊</h2><p>選擇人員類別與狀態，查看或更新資料。</p></div><div class="os-toolbar"><div class="os-filters"><label class="os-field"><span>人員類別</span><select id="user-role-scope" aria-label="人員類別" onchange="filterUsersList()" class="school-scope"><option value="all">全部人員</option><option value="students">學生</option><option value="staff">教職同工</option></select></label><label class="os-field"><span>在班狀態</span><select id="user-status-filter" onchange="filterUsersList()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+              <option value="全部">全部狀態</option><option value="在班" selected>在班學員</option><option value="退班">退班學員</option><option value="畢業">畢業學員</option><option value="在職">在職教職</option><option value="離職">離職同工</option>
+            </select></label><label class="os-field"><span>搜尋名冊</span><input type="text" id="user-filter" oninput="filterUsersList()" placeholder="搜尋姓名/學號/狀況..." class="flex-1 sm:flex-none px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs"></label></div><div class="os-actions"><button id="roster-print-button" onclick="openStudentRosterPrint()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-file-export"></i><span>輸出學生名冊</span></button><button id="roster-add-button" onclick="openUserModal('add')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-user-plus"></i><span>新增建檔</span></button><button id="face-backfill-button" type="button" onclick="backfillStudentFaceDescriptors()" class="hidden px-3.5 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-face-smile"></i><span>補建學生人臉特徵</span></button></div></div><div id="face-backfill-status" class="hidden rounded-2xl border border-violet-200 bg-violet-50 p-3 text-xs text-violet-950 whitespace-pre-wrap" role="status" aria-live="polite"></div><div class="block md:hidden space-y-2.5" id="students-cards-mobile"><p class="text-center text-xs text-slate-400 py-6">載入名冊中...</p></div><section class="os-results"><div class="hidden md:block overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap">
+            <thead class="bg-slate-50 text-slate-500 border-b border-slate-100">
+              <tr>
+                <th class="py-3 px-3">照片</th>
+                <th class="py-3 px-3">學號/編號</th>
+                <th class="py-3 px-3">姓名</th>
+                <th class="py-3 px-3">身分/狀態</th>
+                <th class="py-3 px-3">學校/班級</th>
+                <th class="py-3 px-3">主要家長與電話</th>
+                <th class="py-3 px-3">家庭/經濟狀況</th>
+                <th class="py-3 px-3">點數</th>
+                <th class="py-3 px-3 text-center">操作管理</th>
+              </tr>
+            </thead>
+            <tbody id="students-table" class="divide-y divide-slate-100 font-medium"><tr><td colspan="9" class="py-6 text-center text-slate-400">載入名冊中...</td></tr></tbody>
+          </table>
+        </div></section></section>
+    </div>
+
+    <!-- 5. 個別輔導 -->
+    <div id="tab-counseling" class="hidden space-y-4">
+      <section class="os-workspace" data-os-workspace="counseling"><div class="os-workspace-intro"><h2 class="sr-only"> 個別學童輔導紀錄</h2><p>詳實記錄晤談重點、情緒陪伴、弱科補救與後續追蹤</p></div><div class="os-toolbar"><div class="os-filters"><label class="os-field"><span>輔導學童</span><select id="counsel-filter-student" onchange="filterCounselingList()" class="flex-1 sm:flex-none px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"><option value="">全部學童</option></select></label><label class="os-field"><span>輔導向度</span><select id="counsel-filter-category" onchange="filterCounselingList()" class="flex-1 sm:flex-none px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+              <option value="">全部向度</option><option value="課業輔導">課業輔導</option><option value="情緒行為">情緒行為</option><option value="家庭關懷">家庭關懷</option><option value="品格引導">品格引導</option>
+            </select></label></div><div class="os-actions"><button id="counsel-add-button" onclick="openAddCounselingModal()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm transition active:scale-95"><i class="fa-solid fa-pen-nib"></i><span>新增輔導</span></button></div></div><section class="os-metrics" aria-label="資料摘要"><div class="os-metric"><span class="text-[11px] text-rose-600 font-bold block">累計輔導</span><span class="text-lg sm:text-xl font-black text-rose-900 mt-0.5 block" id="cs-stat-count">0 次</span></div><div class="os-metric"><span class="text-[11px] text-indigo-600 font-bold block">陪伴時長</span><span class="text-lg sm:text-xl font-black text-indigo-900 mt-0.5 block" id="cs-stat-mins">0 分鐘</span></div><div class="os-metric"><span class="text-[11px] text-blue-600 font-bold block">受輔學童</span><span class="text-lg sm:text-xl font-black text-blue-900 mt-0.5 block" id="cs-stat-students">0 位</span></div><div class="os-metric"><span class="text-[11px] text-amber-600 font-bold block">待追蹤個案</span><span class="text-lg sm:text-xl font-black text-amber-900 mt-0.5 block" id="cs-stat-followup">0 案</span></div></section><section class="os-results"><div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap sm:whitespace-normal">
+            <thead class="bg-slate-50 text-slate-500 border-b border-slate-100 font-bold">
+              <tr><th class="py-3 px-3">晤談時間</th><th class="py-3 px-3">學號/姓名</th><th class="py-3 px-3">向度</th><th class="py-3 px-3">輔導老師</th><th class="py-3 px-3">時長</th><th class="py-3 px-3">狀況描述與晤談要點</th><th class="py-3 px-3">後續處置與追蹤</th><th class="py-3 px-3 text-center">操作</th></tr>
+            </thead>
+            <tbody id="counseling-list" class="divide-y divide-slate-100 font-medium"><tr><td colspan="8" class="py-6 text-center text-slate-400">載入輔導紀錄中...</td></tr></tbody>
+          </table>
+        </div></section></section>
+    </div>
+
+    <!-- 6. 家長留言板 -->
+    <div id="tab-messages" class="hidden space-y-4">
+      <div class="clean-card rounded-3xl p-4 sm:p-7">
+        <h2 class="text-lg sm:text-2xl font-black text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-comments text-indigo-600"></i> 家長留言板與親師回覆</h2>
+        <p class="text-xs text-slate-400 mb-4">掌握家長叮嚀、請假備註並即時給予溫暖回饋</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap sm:whitespace-normal">
+            <thead class="bg-slate-50 text-slate-500 border-b border-slate-100 font-bold">
+              <tr><th class="py-3 px-3">留言時間</th><th class="py-3 px-3">學號/姓名</th><th class="py-3 px-3">家長叮嚀囑咐</th><th class="py-3 px-3">老師回覆內容</th><th class="py-3 px-3 text-center">操作</th></tr>
+            </thead>
+            <tbody id="messages-list" class="divide-y divide-slate-100 font-medium"><tr><td colspan="5" class="py-6 text-center text-slate-400">載入中...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. 列印報表中心 (同工M限定，完整支援 5 大報表) -->
+    <div id="tab-print-center" class="hidden space-y-4">
+      <section id="print-controls-bar" class="os-workspace os-report-controls" data-os-workspace="reports"><div class="os-workspace-intro"><h2 class="sr-only">報表與列印</h2><p>選擇報表、班級與月份，確認預覽後輸出 PDF 或列印。</p></div><div class="os-toolbar"><div class="os-filters"><label class="os-field"><span>報表種類</span><select id="print-report-type" onchange="onReportTypeChange()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700">
+            <option value="month_rollcall" selected>📋 當月學生出席點名總表 (專案核銷)</option>
+            <option value="qrcode">🏷️ 學生識別 QR Code 裁切卡</option>
+            <option value="rollcall">📋 現場單日點名與聯絡簿核章紙本表</option>
+            <option value="workhours">⏱️ 教職與工讀每月工時明細表</option>
+            <option value="roster">📑 課輔班完整學生與家長名冊</option>
+          </select></label><label class="os-field"><span>班級</span><select id="print-class-filter" onchange="renderSelectedReport()" class="px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl text-xs font-black text-amber-900">
+            <option value="elementary">國小班點名表</option>
+            <option value="junior">🎓 國中班點名表</option>
+            <option value="both" selected>📑 國小＋國中班（分開兩頁）</option>
+          </select></label><label class="os-field"><span>報表月份</span><input type="month" id="print-month-filter" value="" onchange="renderSelectedReport()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black font-mono"></label></div><div class="os-actions"><button onclick="window.print()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl text-xs font-black shadow-sm flex items-center space-x-1.5 transition active:scale-95">
+            <i class="fa-solid fa-file-export"></i><span>輸出 PDF／列印</span>
+          </button></div></div></section>
+      <div id="print-paper-content" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md print-page-box min-h-[600px]"></div>
+    </div>
+
+    <!-- 舊資料 CSV 智慧匯入精靈 -->
+    <div id="tab-import" class="hidden space-y-4">
+      <div class="clean-card rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto space-y-5">
+        <div>
+          <h2 class="text-xl font-black text-slate-900 flex items-center gap-2"><i class="fa-solid fa-file-csv text-emerald-600"></i> 舊 Google 試算表 / CSV 資料智慧匯入精靈</h2>
+          <p class="text-xs text-slate-500 mt-1">請上傳舊的 CSV 檔案或直接貼上表格文字，系統會自動對應欄位批次匯入資料庫！</p>
+        </div>
+        <div class="space-y-2">
+          <label class="block font-bold text-xs text-slate-700">1. 上傳 CSV 檔案 或 直接貼上：</label>
+          <input type="file" id="csv-file-input" accept=".csv" onchange="handleCsvFileUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700">
+          <textarea id="csv-raw-textarea" rows="5" oninput="invalidateCsvPreview()" placeholder="或在此貼上舊 Excel 內容..." class="w-full p-3 font-mono text-xs bg-slate-50 border rounded-2xl"></textarea>
+          <button type="button" onclick="parseCsvContent()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-sm">🔍 解析 CSV 欄位並進行對應</button>
+        </div>
+        <div id="csv-mapping-section" class="hidden space-y-4 pt-4 border-t border-slate-200">
+          <h3 class="font-bold text-slate-800 text-sm">2. 欄位對應設定：</h3>
+          <div id="mapping-dropdowns-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-4 rounded-2xl border"></div>
+          <div class="flex items-center justify-between pt-2">
+            <span id="csv-preview-count" class="text-xs font-bold text-slate-600">共解析出 0 筆資料</span>
+            <button type="button" onclick="showImportHistory()" class="min-h-[44px] px-3 rounded-xl border text-slate-900">匯入紀錄</button>
+<button type="button" id="csv-preview-button" onclick="previewCsvImport()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md">預覽變更</button>
+          </div>
+          <p class="text-sm text-slate-700">未對應或留白的欄位會保留原資料；既有人員的點數不由匯入覆寫。</p>
+          <div id="csv-import-review" class="space-y-3" style="scroll-margin-top:96px" aria-live="polite"></div>
+          <button type="button" id="csv-confirm-button" onclick="executeCsvImport()" style="scroll-margin-block:120px" class="hidden w-full px-5 py-3 bg-emerald-600 text-white rounded-xl font-bold">確認匯入</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 手機專屬底部黑色懸浮導航欄 -->
+  <nav id="mobile-bottom-dock" class="hidden md:hidden fixed bottom-3 inset-x-3 z-40 bg-slate-900/95 backdrop-blur-2xl border border-white/10 rounded-3xl px-2 py-2 shadow-2xl justify-around items-center text-[10px] font-bold text-slate-400">
+    <button onclick="switchTab('checkin')" id="m-nav-checkin" class="flex flex-col items-center py-1 text-amber-400 font-black"><i class="fa-solid fa-qrcode text-base mb-0.5"></i><span>打卡</span></button>
+    <button onclick="requireTab('schedules')" id="m-nav-schedules" class="flex flex-col items-center py-1 hover:text-white"><i class="fa-solid fa-calendar-days text-base mb-0.5"></i><span>排班</span></button>
+    <button onclick="requireTab('rollcall')" id="m-nav-rollcall" class="flex flex-col items-center py-1 hover:text-white"><i class="fa-solid fa-clipboard-check text-base mb-0.5"></i><span>點名</span></button>
+    <button onclick="requireTab('students')" id="m-nav-students" class="flex flex-col items-center py-1 hover:text-white"><i class="fa-solid fa-address-book text-base mb-0.5"></i><span>名冊</span></button>
+    <button onclick="requireTab('counseling')" id="m-nav-counseling" class="flex flex-col items-center py-1 hover:text-white"><i class="fa-solid fa-hand-holding-heart text-base mb-0.5"></i><span>輔導</span></button>
+    <button onclick="requireStaffPrintTab()" id="m-nav-print-center" class="flex flex-col items-center py-1 hover:text-white"><i class="fa-solid fa-file-export text-base mb-0.5"></i><span>報表</span></button>
+  </nav>
+
+  <!-- ======================== 彈窗區域 ======================== -->
+
+  <!-- 安排多週班表產生器彈窗 -->
+  <div id="modal-batch-schedule" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-2xl max-h-[92vh] overflow-y-auto custom-scroll border border-slate-100">
+      <div class="flex justify-between items-center mb-3.5 border-b pb-3">
+        <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2"><i class="fa-solid fa-calendar-plus text-emerald-600"></i> 安排多週班表產生器</h3>
+        <button onclick="closeBatchScheduleModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+      <div class="space-y-3.5 text-xs sm:text-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div><label class="block font-bold text-slate-600 mb-1">選擇目標月份 *</label><input type="month" id="batch-month" value="" onchange="previewBatchDates()" class="w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl font-bold font-mono text-xs"></div>
+          <div><label class="block font-bold text-slate-600 mb-1">服事同工 / 老師 *</label><select id="batch-worker-select" class="w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl font-bold text-xs"></select></div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">選擇每週固定星期 (可複選) *</label>
+          <div class="grid grid-cols-5 gap-2" id="batch-weekdays-box">
+            <label class="flex items-center space-x-1 p-2 bg-slate-50 border rounded-xl font-bold text-xs cursor-pointer"><input type="checkbox" value="1" checked onchange="previewBatchDates()"> <span>週一</span></label>
+            <label class="flex items-center space-x-1 p-2 bg-slate-50 border rounded-xl font-bold text-xs cursor-pointer"><input type="checkbox" value="2" checked onchange="previewBatchDates()"> <span>週二</span></label>
+            <label class="flex items-center space-x-1 p-2 bg-slate-50 border rounded-xl font-bold text-xs cursor-pointer"><input type="checkbox" value="3" checked onchange="previewBatchDates()"> <span>週三</span></label>
+            <label class="flex items-center space-x-1 p-2 bg-slate-50 border rounded-xl font-bold text-xs cursor-pointer"><input type="checkbox" value="4" checked onchange="previewBatchDates()"> <span>週四</span></label>
+            <label class="flex items-center space-x-1 p-2 bg-slate-50 border rounded-xl font-bold text-xs cursor-pointer"><input type="checkbox" value="5" checked onchange="previewBatchDates()"> <span>週五</span></label>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50/60 rounded-2xl p-3.5 border border-emerald-200 space-y-2">
+          <div class="flex justify-between items-center"><span class="font-bold text-emerald-900 text-xs">🗓️ 篩選出的上課日期 (點擊 × 可移除)：</span><span id="batch-count-tag" class="bg-emerald-600 text-white font-mono text-[10px] font-black px-2 py-0.5 rounded-full">0 天</span></div>
+          <div id="batch-preview-chips" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto bg-white p-2.5 rounded-xl border border-emerald-100 custom-scroll"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div><label class="block font-bold text-slate-600 mb-1">開始時間</label><input type="time" id="batch-start-time" value="16:00" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold font-mono text-xs"></div>
+          <div><label class="block font-bold text-slate-600 mb-1">結束時間</label><input type="time" id="batch-end-time" value="18:00" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold font-mono text-xs"></div>
+        </div>
+        <div><label class="block font-bold text-slate-600 mb-1">負責工作描述</label><input type="text" id="batch-job" value="課輔陪伴" class="w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl text-xs"></div>
+        <div class="flex space-x-2 pt-3 border-t">
+          <button type="button" onclick="closeBatchScheduleModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold">取消</button>
+          <button type="button" onclick="executeBatchSchedule()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black shadow-sm">確認批次建立排班</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 單日排班彈窗 -->
+  <div id="modal-schedule" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl max-h-[92vh] overflow-y-auto custom-scroll">
+      <div class="flex justify-between items-center mb-3.5 border-b pb-3">
+        <h3 class="text-base sm:text-lg font-black text-slate-800" id="modal-sch-title">排班日程登記</h3>
+        <button onclick="closeScheduleModal()" class="text-slate-400 font-bold text-xl">&times;</button>
+      </div>
+      <form onsubmit="handleScheduleSubmit(event)" class="space-y-3.5 text-xs sm:text-sm">
+        <input type="hidden" id="sch-edit-id" value="">
+        <div><label class="block font-bold text-slate-600 mb-1">排班日期 *</label><input type="date" id="sch-date" required class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl font-bold font-mono"></div>
+        <div><label class="block font-bold text-slate-600 mb-1">服事同工 *</label><select id="sch-worker-select" onchange="onWorkerSelectChange()" required class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl font-bold"></select></div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div><label class="block font-bold text-slate-600 mb-1">開始時間 *</label><input type="time" id="sch-start-time" value="16:00" onchange="autoCalcHours()" required class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl font-bold font-mono"></div>
+          <div><label class="block font-bold text-slate-600 mb-1">結束時間 *</label><input type="time" id="sch-end-time" value="18:00" onchange="autoCalcHours()" required class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl font-bold font-mono"></div>
+        </div>
+        <div class="p-3 bg-indigo-50 rounded-2xl border flex justify-between items-center"><span class="text-xs font-bold text-indigo-800">核算工時：</span><span class="text-base font-black text-indigo-950 font-mono" id="sch-hours-display">2.0 小時</span><input type="hidden" id="sch-hours-val" value="2"></div>
+        <div><label class="block font-bold text-slate-600 mb-1">負責工作</label><input type="text" id="sch-job" class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl"></div>
+        <div class="flex space-x-2 pt-3 border-t">
+          <button type="button" onclick="closeScheduleModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold">取消</button>
+          <button type="submit" class="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-sm">確認儲存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 人員建檔 / 編輯 彈窗 (🌟 點選式複選標籤系統 + 正確對齊 SQL 欄位) -->
+  <div id="modal-user" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl overflow-y-auto max-h-[92vh] custom-scroll">
+      <div class="flex justify-between items-center mb-4 border-b pb-3">
+        <h3 class="text-lg sm:text-xl font-black text-slate-800" id="modal-user-title">個人資料</h3>
+        <button onclick="closeUserModal()" class="text-slate-400 font-bold text-2xl">&times;</button>
+      </div>
+      <form onsubmit="handleUserSubmit(event)" class="space-y-5 text-xs sm:text-sm">
+        <input type="hidden" id="form-user-mode" value="add">
+        <input type="hidden" id="form-face-descriptor" value="">
+        <input type="hidden" id="form-original-avatar-url" value="">
+        
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-3.5">
+          <h4 class="font-bold text-slate-700">基本資料與照片</h4>
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <div class="relative shrink-0">
+              <img id="preview-avatar" src="https://ui-avatars.com/api/?name=User&background=cbd5e1" class="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-md">
+              <span id="face-enrolled-badge" class="hidden absolute -bottom-1.5 -right-1.5 bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-xs">AI已建檔</span>
+            </div>
+            <div class="flex-1 w-full space-y-2">
+              <div><label class="block font-bold text-slate-600 mb-1">大頭照網址</label><input type="text" id="form-avatar" onchange="autoExtractFaceFromUrl()" placeholder="照片網址或系統私人照片" class="w-full px-3.5 py-2 bg-white border rounded-xl text-xs"></div>
+              <div class="flex items-center space-x-2">
+                <button type="button" onclick="startCameraSnapForFace()" class="px-3.5 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-camera"></i><span>拍照建檔</span></button>
+                <span id="face-extract-tip" class="text-[11px] font-bold text-slate-400"></span>
+              </div>
+              <div id="camera-snap-box" class="hidden p-3 bg-slate-950 rounded-2xl text-center space-y-2">
+                <video id="snap-video" autoplay playsinline muted class="w-full max-w-xs mx-auto rounded-xl aspect-square object-cover"></video>
+                <div class="flex justify-center space-x-2">
+                  <button type="button" onclick="captureAndExtractFace()" class="px-4 py-1 bg-emerald-500 text-white font-bold rounded-lg text-xs">拍照並儲存</button>
+                  <button type="button" onclick="stopCameraSnap()" class="px-3 py-1 bg-slate-700 text-white rounded-lg text-xs">取消</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div><label id="form-id-label" class="block font-bold text-slate-600 mb-1">學號/編號 *</label><input type="text" id="form-id" required class="w-full uppercase font-mono font-bold px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">姓名 *</label><input type="text" id="form-name" required class="w-full font-bold px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">性別</label><select id="form-gender" class="w-full px-3 py-2 bg-white border rounded-xl font-bold"><option value="男">男</option><option value="女">女</option></select></div>
+            <div><label class="block font-bold text-slate-600 mb-1">出生日期</label><input type="date" id="form-birth" class="w-full px-3 py-2 bg-white border rounded-xl font-mono"></div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div><label class="block font-bold text-slate-600 mb-1">身分證字號</label><input type="text" id="form-id-card" class="w-full uppercase font-mono px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">身分類別</label><select id="form-role" onchange="handleUserRoleChange()" class="w-full px-3 py-2 bg-white border rounded-xl font-bold"><option value="學生">學生</option><option value="同工">同工</option><option value="老師">老師</option><option value="工讀生">工讀生</option></select></div><div class="sm:col-span-2"><p class="text-xs text-slate-600">既有人員類別不在個人資料中變更。同工的登入角色與停權請使用登入權限設定。</p><button id="staff-access-open" type="button" onclick="openStaffAccess()" class="hidden mt-2 min-h-[44px] px-4 py-3 rounded-xl border text-rose-700 font-bold">設定同工登入權限</button></div>
+            <div><label class="block font-bold text-slate-600 mb-1">狀態 *</label><select id="form-status" class="w-full px-3 py-2 bg-amber-50 font-bold border border-amber-300 rounded-xl text-amber-900"><option value="在班">在班</option><option value="退班">退班</option><option value="畢業">畢業</option><option value="在職">在職</option><option value="離職">離職</option></select></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
+          <h4 class="font-bold text-slate-700">學校與住址</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div><label class="block font-bold text-slate-600 mb-1">就讀學校</label><input type="text" id="form-school" placeholder="大雅國小/國中" class="w-full px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">年級班級</label><input type="text" id="form-grade" placeholder="4年級/5班" class="w-full px-3 py-2 bg-white border rounded-xl"></div>
+            <div class="col-span-2"><label class="block font-bold text-slate-600 mb-1">通訊住址</label><input type="text" id="form-address" class="w-full px-3 py-2 bg-white border rounded-xl"></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
+          <h4 class="font-bold text-slate-700">聯絡方式</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+            <div><label class="block font-bold text-slate-600 mb-1">本人手機</label><input type="text" id="form-phone" class="w-full font-mono px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">主要家長姓名</label><input type="text" id="form-parent-name" class="w-full px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">稱謂關係</label><input type="text" id="form-parent-relation" placeholder="父親/母親/阿嬤" class="w-full px-3 py-2 bg-white border rounded-xl"></div>
+            <div><label class="block font-bold text-slate-600 mb-1">家長電話</label><input type="text" id="form-parent-phone" class="w-full font-mono px-3 py-2 bg-white border rounded-xl"></div>
+          </div>
+          <div><label class="block font-bold text-slate-600 mb-1">夢想點數</label><input type="number" id="form-points" value="0" class="w-32 font-bold px-3 py-2 bg-white border rounded-xl"></div>
+        </div>
+
+        <!-- 🌟 4. 家庭與經濟狀況 (點選式複選標籤，先點選者為第一優先) -->
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-3.5">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-slate-700"><i class="fa-solid fa-people-roof text-rose-600"></i> 家庭狀況 · 可複選</h4>
+            <input type="hidden" id="form-family-status" value="">
+          </div>
+          <div class="bg-white p-3 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <span class="text-xs font-bold text-slate-500">已選取家庭/經濟標籤：</span>
+            <div id="selected-family-preview" class="flex flex-wrap gap-1.5 items-center"><span class="text-xs text-slate-400 italic">尚未點選</span></div>
+          </div>
+          <div class="space-y-1.5">
+            <div id="family-tags-container" class="flex flex-wrap gap-2">
+              <button type="button" onclick="toggleFamilyTag('單親')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 單親</button>
+              <button type="button" onclick="toggleFamilyTag('低收入戶')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 低收入戶</button>
+              <button type="button" onclick="toggleFamilyTag('中低收入戶')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 中低收入戶</button>
+              <button type="button" onclick="toggleFamilyTag('隔代教養')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 隔代教養</button>
+              <button type="button" onclick="toggleFamilyTag('新住民家庭')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 新住民家庭</button>
+              <button type="button" onclick="toggleFamilyTag('原住民家庭')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 原住民家庭</button>
+              <button type="button" onclick="toggleFamilyTag('雙親')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 雙親</button>
+              <button type="button" onclick="toggleFamilyTag('脆弱家庭')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 脆弱家庭</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🌟 5. 個人身心/健康備註 (點選式複選標籤) -->
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-3.5">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-slate-700"><i class="fa-solid fa-notes-medical text-teal-600"></i> 健康與叮嚀 · 可複選</h4>
+            <input type="hidden" id="form-health-notes" value="">
+          </div>
+          <div class="bg-white p-3 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <span class="text-xs font-bold text-slate-500">已選取身心/健康標籤：</span>
+            <div id="selected-health-preview" class="flex flex-wrap gap-1.5 items-center"><span class="text-xs text-slate-400 italic">無特殊狀況</span></div>
+          </div>
+          <div class="space-y-1.5">
+            <div id="health-tags-container" class="flex flex-wrap gap-2">
+              <button type="button" onclick="toggleHealthTag('ADHD')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ ADHD</button>
+              <button type="button" onclick="toggleHealthTag('自閉症')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 自閉症</button>
+              <button type="button" onclick="toggleHealthTag('地中海型貧血')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 地中海型貧血</button>
+              <button type="button" onclick="toggleHealthTag('輕度智力不足')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 輕度智力不足</button>
+              <button type="button" onclick="toggleHealthTag('染色體異常')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 染色體異常</button>
+              <button type="button" onclick="toggleHealthTag('蠶豆症')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 蠶豆症</button>
+              <button type="button" onclick="toggleHealthTag('過敏體質')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 過敏體質</button>
+              <button type="button" onclick="toggleHealthTag('無')" class="px-3 py-1.5 bg-white border rounded-xl text-xs font-bold">＋ 無</button>
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">其他詳細備註或特殊叮嚀</label>
+            <input type="text" id="form-health-extra" placeholder="若有其他特殊情況可在此手動輸入補充" class="w-full px-3 py-2 bg-white border rounded-xl">
+          </div>
+        </div>
+
+        <div class="flex space-x-3 pt-3 border-t">
+          <button type="button" onclick="closeUserModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold">取消</button>
+          <button id="user-submit-button" type="submit" class="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-sm">確認儲存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 輔導紀錄 彈窗 -->
+  <div id="modal-counseling-add" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] custom-scroll">
+      <div class="flex justify-between items-center mb-3.5 border-b pb-3">
+        <h3 id="counsel-modal-title" class="text-base sm:text-lg font-black text-slate-800">新增個別學童輔導紀錄</h3>
+        <button onclick="closeAddCounselingModal()" class="text-slate-400 font-bold text-xl">&times;</button>
+      </div>
+      <form onsubmit="handleCounselingSubmit(event)" class="space-y-3.5 text-xs sm:text-sm">
+        <input type="hidden" id="counsel-edit-id" value="">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div><label class="block font-bold text-slate-600 mb-1">輔導對象 *</label><select id="counsel-student-select" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold"></select></div>
+          <div><label id="counsel-teacher-label" class="block font-bold text-slate-600 mb-1">輔導老師 *</label><select id="counsel-teacher-select" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold"></select></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div><label class="block font-bold text-slate-600 mb-1">日期 *</label><input type="date" id="counsel-date" required class="w-full min-w-0 px-2.5 py-2 bg-slate-50 border rounded-xl font-mono font-bold text-xs"></div>
+          <div><label class="block font-bold text-slate-600 mb-1">向度</label><select id="counsel-category" onchange="switchCounselTags()" class="w-full px-2 py-2 bg-slate-50 border rounded-xl font-bold text-xs"><option value="課業輔導">課業輔導</option><option value="情緒行為">情緒行為</option><option value="家庭關懷">家庭關懷</option><option value="品格引導">品格引導</option></select></div>
+          <div><label class="block font-bold text-slate-600 mb-1">時長(分)</label><input type="number" id="counsel-duration" value="30" step="5" required class="w-full px-2.5 py-2 bg-slate-50 border rounded-xl font-bold text-xs"></div>
+        </div>
+        <div class="bg-slate-50 border rounded-2xl p-3"><label class="block font-bold text-slate-600 mb-2">本次觀察與協助（可複選）</label><div id="counsel-quick-tags" class="flex flex-wrap gap-1.5"></div></div>
+        <div class="bg-rose-50 border border-rose-100 rounded-2xl p-3"><label class="block font-bold text-rose-800 mb-2">心理層面（可複選）</label><div id="counsel-psychology-tags" class="flex flex-wrap gap-1.5"></div></div>
+        <div class="bg-amber-50 border border-amber-100 rounded-2xl p-3"><label class="block font-bold text-amber-800 mb-2">家庭層面（可複選）</label><div id="counsel-family-tags" class="flex flex-wrap gap-1.5"></div></div>
+        <div class="bg-slate-50 border rounded-2xl p-3"><label class="block font-bold text-slate-600 mb-2">後續處理與追蹤（可複選）</label><div id="counsel-followup-tags" class="flex flex-wrap gap-1.5"></div></div>
+        <div><label class="block font-bold text-slate-600 mb-1">補充描述（選填）</label><textarea id="counsel-content" rows="2" class="w-full px-3 py-2 bg-white border rounded-xl" placeholder="可補充勾選項目未涵蓋的內容"></textarea></div>
+        <div><label class="block font-bold text-slate-600 mb-1">其他追蹤說明（選填）</label><textarea id="counsel-followup" rows="2" class="w-full px-3 py-2 bg-white border rounded-xl"></textarea></div>
+        <div class="flex space-x-2.5 pt-3 border-t">
+          <button type="button" onclick="closeAddCounselingModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold">取消</button>
+          <button id="counsel-submit-button" type="submit" class="flex-1 py-2.5 bg-rose-600 text-white rounded-xl font-bold shadow-sm">確認儲存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 教會 OS 登入 -->
+  <div id="modal-login" role="dialog" aria-modal="true" aria-labelledby="school-login-title" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-7 shadow-2xl border">
+      <h3 id="school-login-title" class="text-xl font-bold text-slate-900">登入課輔</h3>
+      <p class="mt-3 text-sm text-slate-700 leading-relaxed">請回到教會 OS 確認登入，再從「課輔」選擇需要的功能。</p>
+      <p class="mt-2 text-sm text-slate-600 leading-relaxed">學生打卡不需要登入。新同工請先請管理同工確認登入權限。</p>
+      <a href="https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B&amp;center=school" class="block text-center mt-5 min-h-[44px] px-4 py-3 bg-rose-600 text-white rounded-xl font-bold">前往教會 OS 登入</a>
+      <button type="button" onclick="closeLoginModal()" class="w-full mt-2 min-h-[44px] px-4 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold">返回打卡</button>
+    </div>
+  </div>
+  <div id="modal-staff-access" role="dialog" aria-modal="true" aria-labelledby="staff-access-title" class="fixed inset-0 bg-slate-950/70 flex items-center justify-center p-4 z-50 hidden">
+    <form onsubmit="saveStaffAccess(event)" class="bg-white rounded-3xl max-w-md w-full p-6 max-h-[85dvh] overflow-y-auto">
+      <h3 id="staff-access-title" class="text-xl font-bold text-slate-900">同工登入權限</h3>
+      <p id="staff-access-person" class="mt-2 font-bold text-slate-800"></p>
+      <p class="my-3 text-sm text-slate-700">請確認這是本人已審核的教會帳號。儲存後，此同工的舊登入會失效，需要重新由教會 OS 進入。</p>
+      <input id="staff-access-id" type="hidden">
+      <label for="staff-access-account" class="block mt-3 text-sm font-bold text-slate-800">教會 OS 帳號</label>
+      <select id="staff-access-account" required class="w-full mt-1 min-h-[44px] border rounded-xl p-3 bg-white text-slate-900"></select>
+      <label for="staff-access-role" class="block mt-3 text-sm font-bold text-slate-800">課輔角色</label>
+      <select id="staff-access-role" class="w-full mt-1 min-h-[44px] border rounded-xl p-3 bg-white text-slate-900"><option>同工</option><option>老師</option><option>工讀生</option></select>
+      <p class="mt-2 text-sm text-slate-600">同工可管理；老師可新增及修改，不能刪除；工讀生可查閱。</p>
+      <label class="flex items-center gap-3 min-h-[44px] my-3 text-slate-900"><input type="checkbox" id="staff-access-active">允許登入課輔</label>
+      <p id="staff-access-error" role="status" class="text-sm text-rose-700 my-2"></p>
+      <div class="flex gap-2"><button type="button" onclick="closeStaffAccess()" class="flex-1 min-h-[44px] bg-slate-100 text-slate-700 rounded-xl p-3">取消</button><button id="staff-access-save" type="submit" class="flex-1 min-h-[44px] bg-rose-600 text-white rounded-xl p-3 font-bold">儲存權限</button></div>
+    </form>
+  </div>
+
+  <!-- 金句彈窗 -->
+  <div id="modal-verse-box" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl">
+      <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl"><i class="fa-solid fa-circle-check"></i></div>
+      <h3 class="text-xl sm:text-2xl font-black text-slate-900" id="verse-title">簽到成功！</h3>
+      <p class="text-xs text-slate-500 mt-1" id="verse-sub">已登記出勤紀錄</p>
+      <div class="my-4 bg-amber-50 border border-amber-200 rounded-2xl p-4 text-left">
+        <p class="text-xs font-bold text-amber-800 mb-1">今日屬天祝福：</p>
+        <p class="text-xs sm:text-sm text-amber-950 font-serif leading-relaxed" id="verse-quote"></p>
+      </div>
+      <button onclick="closeVerseModal()" class="w-full py-2.5 bg-indigo-600 text-white text-xs font-bold rounded-xl">我知道了</button>
+    </div>
+  </div>
+
+<dialog id="kiosk-device-dialog" aria-labelledby="kiosk-device-title" style="width:min(92vw,600px);max-height:85dvh;border:1px solid #ddd;border-radius:24px;padding:24px;overscroll-behavior:contain;color:#172e2a;background:#fffdf9"><h2 id="kiosk-device-title" class="text-xl font-bold">簽到設備</h2><p class="my-3">先在現場電腦綁定並確認可打卡，再啟用「限已綁定設備」。建檔工作站有自己的專用密碼與權限。</p><div id="kiosk-device-list"></div><div class="flex flex-wrap gap-2 mt-4"><button type="button" onclick="manageKioskDevice('register')" class="min-h-[44px] px-4 rounded-xl bg-teal-800 text-white">綁定這台電腦</button><button type="button" id="kiosk-policy-button" onclick="manageKioskDevice('policy')" class="min-h-[44px] px-4 border rounded-xl">設定簽到限制</button><button type="button" onclick="closeKioskDevices()" class="min-h-[44px] px-4 border rounded-xl">完成</button></div><p id="kiosk-device-status" role="status" class="mt-3"></p></dialog>
+  <!-- 核心 JavaScript 程式碼 -->
+  <script>
+// Synthetic view only: no school API, camera, persistence or external writes.
+let demoRoute=new URLSearchParams(location.search).get('tab')||'schedules';
+window.schoolInterface={state:()=>({user:{name:'示範同工',role_type:'同工'},busy:false}),navigate:tab=>{demoRoute=tab;for(const panel of document.querySelectorAll('main > [id^="tab-"]'))panel.classList.toggle('hidden',panel.id!=='tab-'+tab);window.SchoolUI?.onNavigate(tab);},roster:scope=>{document.getElementById('user-role-scope').value=scope;window.schoolInterface.navigate('students');}};
+window.addEventListener('DOMContentLoaded',()=>{
+const $=id=>document.getElementById(id);
+$('auth-logged').classList.remove('hidden');$('auth-logged').classList.add('flex');$('logged-user-tag').textContent='示範同工';$('clock-display').textContent='版面預覽 · 合成資料';
+const values={'stat-stu-count':'24','stat-staff-count':'4','stat-pts-count':'24','stat-sch-count':'32','total-count-badge':'32 班','total-shift-badge':'96 小時','total-workers-badge':'4 人','total-wage-badge':'$19,200','rc-stat-total':'26 人','rc-stat-attend':'24 人','rc-stat-hw':'92%','rc-stat-signed':'23 人','cs-stat-count':'18 次','cs-stat-mins':'540 分鐘','cs-stat-students':'6 位','cs-stat-followup':'3 案','calendar-month-title':'2026 年 10 月'};
+for(const [key,value] of Object.entries(values))$(key).textContent=value;
+$('rollcall-date-picker').value='2026-10-21';$('print-month-filter').value='2026-10';$('schedule-worker-filter').innerHTML='<option>全部同工</option><option>示範老師</option>';
+$('calendar-grid').innerHTML=Array.from({length:35},(_,i)=>'<div class="p-2 min-h-[80px]"><strong>'+((i%31)+1)+'</strong>'+(i%7===2?'<p class="mt-2 p-1 rounded bg-emerald-50 text-emerald-900">16:00 課業陪伴</p>':'')+'</div>').join('');
+$('students-cards-mobile').innerHTML='<article class="p-4 border rounded-2xl"><strong>示範學童 A</strong><p>國小五年級 · 在班</p><p>學號 2026SDEMO · 夢想點數 12 點</p></article><article class="p-4 border rounded-2xl"><strong>示範學童 B</strong><p>國中一年級 · 在班</p><p>學號 2026SDEMO2 · 夢想點數 8 點</p></article>';
+$('students-table').innerHTML='<tr><td>—</td><td>DEMO</td><td>示範學童 A</td><td>學生／在班</td><td>國小五年級</td><td>合成資料</td><td>—</td><td>12</td><td>預覽</td></tr>';
+$('rollcall-cards-mobile').innerHTML='<article class="p-4 border rounded-2xl"><strong>示範學童 A</strong><p class="my-2">國小五年級</p><label>出席狀態<select class="w-full"><option>出席</option><option>請假</option></select></label><label>作業進度<select class="w-full"><option>已完成</option><option>未完成</option></select></label><label>聯絡簿<select class="w-full"><option>已核章</option></select></label></article>';
+$('rollcall-table-body').innerHTML='<tr><td>DEMO</td><td>示範學童 A</td><td>國小五年級</td><td>出席</td><td>已完成</td><td>已核章</td><td>—</td></tr>';
+$('counseling-list').innerHTML='<tr><td>10/21 16:00</td><td>示範學童 A</td><td>課業輔導</td><td>示範老師</td><td>30 分鐘</td><td>閱讀練習與課業陪伴。</td><td>下週持續追蹤。</td><td>預覽</td></tr>';
+$('logs-cards-mobile').innerHTML='<article class="p-4 border rounded-2xl"><strong>示範學童 A</strong><p>15:30 · 學生到班</p></article><article class="p-4 border rounded-2xl"><strong>示範老師</strong><p>15:00 · 上班打卡</p></article>';
+$('logs-list').innerHTML='<tr><td>15:30</td><td>—</td><td>DEMO</td><td>示範學童 A</td><td>學生</td><td>到班</td></tr>';
+$('print-paper-content').innerHTML='<h2 class="text-xl font-bold mb-4">2026 年 10 月 · 學生出席點名總表</h2><p>版面預覽（合成資料）</p><table class="w-full mt-6"><thead><tr><th>姓名</th><th>應到日數</th><th>出席日數</th><th>出席率</th></tr></thead><tbody><tr><td>示範學童 A</td><td>20</td><td>19</td><td>95%</td></tr></tbody></table>';
+window.SchoolUI.sync(window.schoolInterface.state().user);window.schoolInterface.navigate(demoRoute);
+});
+</script>
+</body>
+</html>

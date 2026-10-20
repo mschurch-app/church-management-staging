@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {taipeiDate,weekStart,addDay,calendarTasks,tasksOn} from '../mplus-week-model.mjs';
+test('Taipei date and Monday week remain correct across UTC and year boundaries',()=>{assert.equal(taipeiDate('2026-12-31T17:00:00Z'),'2027-01-01');assert.equal(weekStart('2027-01-01'),'2026-12-28');assert.equal(addDay('2026-12-31',1),'2027-01-01');});
+test('calendar excludes unrelated, draft and cancelled tasks, includes own and shared',()=>{assert.deepEqual(calendarTasks([{id:1,assignedToMe:true,status:'approved'},{id:2,sharedWithMe:true,status:'pending'},{id:3,createdByMe:true,status:'approved'},{id:4,assignedToMe:true,status:'draft'},{id:5,assignedToMe:true,status:'cancelled'}]).map(t=>t.id),[1,2]);});
+test('deadline date uses Taipei and undated tasks are not invented dates',()=>{assert.deepEqual(tasksOn([{id:1,dueAt:'2026-10-20T17:00:00Z'},{id:2,dueAt:null}],'2026-10-21').map(t=>t.id),[1]);});

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const html=read('pastoral/mplus-coworker-tools.html'),source=read('pastoral/mplus-coworker-tools.mjs'),legacy=read('pastoral/coworker-tools.mjs');
+test('M+ document and controller contain no memo interface or memo API calls',()=>{assert(!/id="(?:panel-memo|tab-memo|memo-form)"|備忘/.test(html));assert(!/api\('(?:list|create|archive)-memo/.test(source));assert(!source.includes('loadMemos'));});
+test('M+ tools still require verified M+ access and retain attendance/photo navigation',()=>{assert(source.includes("await authenticateStaff("));assert(source.includes("entityKeys.includes('mplus')"));assert(source.includes("entityKeys=['mplus']"));assert(html.includes('id="panel-attendance"'));assert(html.includes('id="panel-photos"'));assert(html.includes('id="leave-form"'));assert(html.includes('id="photo-form"'));});
+test('attendance, leave review and photo behavior remain identical to existing implementation',()=>{const core=s=>s.slice(s.indexOf('async function loadAttendance()'),s.indexOf('async function start()'));assert.equal(core(source),core(legacy));});
+test('other churches retain their memo implementation; shared M+ entry bridges with context',()=>{assert(legacy.includes("api('list-memos')"));assert(legacy.includes("api('create-memo'"));assert(legacy.includes("if(entityKey==='mplus')"));assert(legacy.includes('target.hash=location.hash'));assert(legacy.includes('entityKeys.includes(requested)'));});
+test('M+ navigation uses the new module while keeping attendance and photo deep links',()=>{const nav=read('mplus-navigation.mjs');assert(!nav.includes('pastoral/coworker-tools.html'));assert(nav.includes('pastoral/mplus-coworker-tools.html?tab=attendance#leave-list'));assert(nav.includes('pastoral/mplus-coworker-tools.html?tab=photos'));assert(existsSync(new URL('../pastoral/mplus-coworker-tools.html',import.meta.url)));});

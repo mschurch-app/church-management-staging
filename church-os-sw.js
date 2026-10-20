@@ -22,6 +22,6 @@ self.addEventListener('fetch',event=>{
 });
 self.addEventListener('notificationclick',event=>{
  event.notification.close();let target='/admin-dashboard.html';try{const url=new URL(event.notification.data?.url||target,self.location.origin);if(url.origin===self.location.origin)target=url.href;}catch{}
- event.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(async windows=>{const open=windows.find(client=>'focus'in client);if(open){try{await open.navigate(target);return await open.focus();}catch{}}return self.clients.openWindow(target);}));
+ event.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(async windows=>{const open=windows.find(client=>{if(!('focus'in client))return false;try{const path=new URL(client.url).pathname;return !/^\/(?:line-member|tree-reading|scripture-tree|daily-devotional\.html|today-verse|prayer-wall|service-signup\.html|prototypes\/reading-tree-game)/.test(path)&&path.endsWith('.html');}catch{return false;}});if(open){try{await open.navigate(target);return await open.focus();}catch{}}return self.clients.openWindow(target);}));
 });
 self.addEventListener('push',event=>{let payload={};try{payload=event.data?.json()||{};}catch{payload={body:event.data?.text()||''};}event.waitUntil(self.registration.showNotification(payload.title||'教會 OS',{body:payload.body||'你有一則新通知。',icon:'/assets/app/church-os-icon-192.png',badge:'/assets/app/church-os-icon-192.png',tag:payload.tag||'church-os',data:{url:payload.url||'/admin-dashboard.html'}}));});

@@ -102,3 +102,11 @@ $('#manageRoles').onclick=openRoleSettings;
 $('#weekPng').onclick=exportWeekly;
 $('#monthPng').onclick=exportMonthly;
 load().then(async()=>{if(preview&&new URLSearchParams(location.search).get('previewPng')==='1'&&schedules.length){const shell=el('section','','png-dev-preview'),canvas=await makeWeekly(schedules.find(row=>isoDate(row.service_date)>=weekStartIso())||schedules[0]);canvas.style.width='min(540px,100%)';canvas.style.height='auto';shell.append(el('h2','本週 PNG 預覽'),canvas);document.body.append(shell);}});
+
+// M+ output controls are intentionally isolated from SHiNE.
+if(church==='M+'){
+ const actions=document.querySelector('.export-actions'),print=el('button','列印服事表','secondary'),share=el('button','發送服事表','secondary');print.type=share.type='button';
+ print.onclick=()=>window.print();
+ share.onclick=async()=>{const row=schedules.find(item=>item.service_date===$('#weekPick').value);if(!row)return toast('請先選擇要發送的聚會日期。');share.disabled=true;try{const canvas=await makeWeekly(row),blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('圖片製作失敗');const file=new File([blob],churchName+'-'+row.service_date+'-服事表.png',{type:'image/png'});if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:churchName+'服事表'});}else{await download(canvas,churchName+'-'+row.service_date+'-服事表');toast('圖片已下載，請自行選擇 LINE 或其他管道分享。');}}catch(e){if(e.name!=='AbortError')toast(e.message||'無法開啟分享，請重試。');}finally{share.disabled=false;}};
+ actions.append(print,share);
+}

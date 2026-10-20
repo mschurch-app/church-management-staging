@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-20",
+  "scope": "M+ only navigation, dedicated entry/controller; reader isolation",
+  "production_entry": "https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B",
+  "checks": {
+    "navigation_model": 4,
+    "outside_line_no_oauth": 1,
+    "function_catalog": 18,
+    "service_worker": 22,
+    "mobile_width": 375,
+    "mobile_scroll_width": 375
+  },
+  "implemented": [
+    "M+ five hubs and permission-filtered real routes",
+    "dedicated M+ entry/controller; SHiNE keeps existing layout",
+    "notification does not navigate LINE/tree windows",
+    "M+ tree opened outside LINE stops with explanation, no auto OAuth",
+    "M+ service roster print and explicit user-controlled file sharing"
+  ],
+  "limitations": [
+    "physical iPhone/LINE switching still requires device acceptance",
+    "administrative forms not configured; no fabricated link",
+    "weekly work remains existing authenticated workspace; demonstration records not deployed",
+    "backend permission and data schemas unchanged"
+  ],
+  "rollback": "revert release commit; no member data modifications"
+}

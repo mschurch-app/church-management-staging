@@ -1,7 +1,7 @@
-import {readCalendar,openCalendarEditor,showCalendarEvent} from './mplus-google-calendar.mjs?v=20261020-google1';
+import {readCalendar,openCalendarEditor,showCalendarEvent} from './mplus-google-calendar.mjs?v=20261020-close1';
 import {staffLineIdToken} from './pastoral/auth.mjs?v=20260924-4';
 import {PASTORAL_TASKS_ENDPOINT} from './pastoral/config.mjs?v=20260924-4';
-import {taipeiDate,addDay,weekStart,calendarTasks,tasksOn} from './mplus-week-model.mjs?v=20261020-google1';
+import {taipeiDate,addDay,weekStart,calendarTasks,tasksOn} from './mplus-week-model.mjs?v=20261020-close1';
 const text=(tag,value,cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 async function loadTasks(){const token=await staffLineIdToken();const r=await fetch(PASTORAL_TASKS_ENDPOINT,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},credentials:'omit',cache:'no-store',redirect:'error',signal:AbortSignal.timeout(12000),body:JSON.stringify({action:'list',entityKey:'mplus'})});const data=await r.json();if(!r.ok||data.ok===false)throw Error('目前無法讀取工作行事曆，請確認同工身分或稍後重試。');if(!Array.isArray(data.tasks))throw Error('工作資料格式不完整，請重試。');return data.tasks;}
 async function loadWork(start){const results=await Promise.allSettled([loadTasks(),readCalendar(start)]);return {tasks:results[0].status==='fulfilled'?results[0].value:[],events:results[1].status==='fulfilled'?results[1].value:[],problems:results.filter(r=>r.status==='rejected').map(r=>r.reason.message)};}

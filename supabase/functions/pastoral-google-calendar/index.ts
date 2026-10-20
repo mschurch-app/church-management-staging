@@ -1,7 +1,9 @@
+import {handleWorkPlanner,eventPermissions} from './work-planner.mjs';
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
-import {notifyStaffDual} from '../_shared/dual-notification.mjs';
+import {notifyStaffDual} from './vendor/dual-notification.mjs';
 import {BUFFER_MS, DEFAULT_WORK_DAYS, DEFAULT_WORK_END, DEFAULT_WORK_START, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
 
+const UUID=/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const CHANNEL_ID='2011645391';
 const APP_ORIGIN='https://mscos.mchurch.online';
 const CALENDAR_ID='mbot@tcsc.org.tw';
@@ -182,7 +184,7 @@ async function saveSchedulePreferences(db:ReturnType<typeof adminClient>,staff:S
   const restDays=body.restDays;
   const workStart=body.workStart,workEnd=body.workEnd;
   const allowEmergencyOverride=body.allowEmergencyOverride;
-  const validClock=(value:unknown)=>typeof value==='string'&&/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(value);
+  const validClock=(value:unknown):value is string=>typeof value==='string'&&/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(value);
   if(!Array.isArray(restDays)||restDays.some(day=>!Number.isInteger(day)||day<0||day>6)||
     !validClock(workStart)||!validClock(workEnd)||workStart>=workEnd||typeof allowEmergencyOverride!=='boolean')
     return json(APP_ORIGIN,{ok:false,error:'invalid_schedule_preferences'},400);
@@ -247,7 +249,7 @@ async function eventAlreadyCreated(token:string,requestId:string,eventId:string,
   const privateProps=event.extendedProperties?.private||{};
   return privateProps.pastoralRequestId===requestId&&privateProps.pastoralParticipantIds===[...participants].map(person=>person.id).sort().join(',')&&event.summary===appointment.summary&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||'')===appointment.start&&Date.parse(event.end?.dateTime||'')===appointment.end;
 }
-async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number},participants:Array<{id:string;display_name:string;line_subject:string|null}>){
+async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number},participants:Array<{id:string;display_name:string;line_subject:string|null}>,creatorId:string){
   const eventId=requestId.toLowerCase().replaceAll('-','');
   const base=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`;
   if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
@@ -257,7 +259,7 @@ async function createCalendarEvent(token:string,requestId:string,appointment:{su
     start:{dateTime:new Date(appointment.start).toISOString(),timeZone:'Asia/Taipei'},
     end:{dateTime:new Date(appointment.end).toISOString(),timeZone:'Asia/Taipei'},
     description:`共同參與同工：${participants.map(person=>person.display_name).join('、')}`,
-    extendedProperties:{private:{pastoralRequestId:requestId,pastoralParticipantIds:participants.map(person=>person.id).sort().join(',')}}};
+    extendedProperties:{private:{pastoralRequestId:requestId,mplusCreator:creatorId,mplusPrimary:participants[0].id,pastoralParticipantIds:participants.map(person=>person.id).sort().join(',')}}};
   const response=await fetch(`${base}?sendUpdates=none`,{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(event)});
   if(response.status===409){
     if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
@@ -304,7 +306,7 @@ async function resolveMeetingParticipants(db:ReturnType<typeof adminClient>,prim
 async function sendCoworkerPush(db:ReturnType<typeof adminClient>,recipient:{id:string;display_name:string;line_subject:string|null},
   notificationType:string,relatedId:string,message:string){
   const key=`${notificationType}:${relatedId}:${recipient.id}`;
-  const delivered=await notifyStaffDual({db,staffId:recipient.id,eventKey:notificationType,sourceKey:key,title:'M+ 同工行程通知',body:message,url:'/pastoral/workspace.html?tab=calendar',lineMessage:`M+ 同工行程通知：${message}\n開啟同工工作台：https://liff.line.me/2011645391-VGkQRZ9d/workspace.html?tab=calendar`,idempotencyKey:key});
+  const delivered=await notifyStaffDual({db,staffId:recipient.id,eventKey:notificationType,sourceKey:key,title:'M+ 同工行程通知',body:message,url:'/mplus-dashboard.html?church=M%2B',lineMessage:`M+ 同工行程通知：${message}\n開啟同工工作台：https://mscos.mchurch.online/mplus-dashboard.html?church=M%2B`,idempotencyKey:key});
   const status=delivered.status,errorCode=status==='sent'?null:`app:${delivered.appStatus};line:${delivered.lineStatus}`;
   const save=await db.from('pastoral_notification_deliveries').upsert({
     entity_key:'mplus',notification_type:notificationType,recipient_staff_id:recipient.id,related_id:relatedId,
@@ -376,26 +378,35 @@ async function findAvailableSlots(db:ReturnType<typeof adminClient>,staff:Staff,
 }
 
 
-async function listSharedEvents(token:string,start:string,end:string){
+async function listSharedEvents(token:string,start:string,end:string,staff:Staff){
  const first=Date.parse(start),last=Date.parse(end);if(!Number.isFinite(first)||!Number.isFinite(last)||last<=first||last-first>31*86400000)throw Error('invalid_window');
  const rows:Array<Record<string,unknown>>=[];let page='';
  for(let count=0;count<10;count++){
   const url=new URL('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CALENDAR_ID)+'/events');
   for(const [k,v]of Object.entries({timeMin:new Date(first).toISOString(),timeMax:new Date(last).toISOString(),singleEvents:'true',orderBy:'startTime',timeZone:'Asia/Taipei',maxResults:'250'}))url.searchParams.set(k,v);if(page)url.searchParams.set('pageToken',page);
   const r=await fetch(url,{headers:{authorization:'Bearer '+token},redirect:'error',signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('calendar_api');const data=await r.json();
-  for(const item of data.items||[]){if(item.status==='cancelled')continue;const hidden=item.visibility==='private'||item.visibility==='confidential';rows.push({id:String(item.id),summary:hidden?'私人行程':String(item.summary||'未命名行程').slice(0,200),start:item.start?.dateTime||item.start?.date,end:item.end?.dateTime||item.end?.date,allDay:!!item.start?.date,location:hidden?'':String(item.location||'').slice(0,500),coworkerNames:hidden?'':String(item.description||'').split('共同參與同工：')[1]?.split('\n')[0]?.slice(0,500)||''});}
+  for(const item of data.items||[]){if(item.status==='cancelled')continue;const hidden=item.visibility==='private'||item.visibility==='confidential';rows.push({id:String(item.id),summary:hidden?'私人行程':String(item.summary||'未命名行程').slice(0,200),start:item.start?.dateTime||item.start?.date,end:item.end?.dateTime||item.end?.date,allDay:!!item.start?.date,workOutcome:hidden?null:item.extendedProperties?.private?.mplusOutcome||null,routineId:hidden?null:item.extendedProperties?.private?.mplusRoutine||null,...eventPermissions(staff,item),location:hidden?'':String(item.location||'').slice(0,500),coworkerNames:hidden?'':String(item.description||'').split('共同參與同工：')[1]?.split('\n')[0]?.slice(0,500)||''});}
   page=data.nextPageToken||'';if(!page)return rows;
  }throw Error('calendar_too_many_events');
+}
+
+
+function canonicalCalendarStaff(rows:Array<{id:string;display_name:string;app_user_id?:string|null;role:string}>,selfId:string){
+ const groups=new Map<string,typeof rows>();
+ for(const row of rows){const name=String(row.display_name||'').normalize('NFKC').replace(/\s+/g,'').trim();const key=name||row.id;const group=groups.get(key)||[];group.push(row);groups.set(key,group);}
+ return [...groups.values()].map(group=>[...group].sort((a,b)=>a.id===selfId?-1:b.id===selfId?1:Number(!!b.app_user_id)-Number(!!a.app_user_id)||a.id.localeCompare(b.id))[0]);
 }
 
 async function handleAction(request:Request,db:ReturnType<typeof adminClient>,staff:Staff){
   if(!staff.entityKeys.includes('mplus'))return json(APP_ORIGIN,{ok:false,error:'mplus_access_required'},403);
   const body=await request.json().catch(()=>null);
   if(!body||typeof body.action!=='string')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+  const work=await handleWorkPlanner({db,staff,body,calendarId:CALENDAR_ID,accessToken,scheduleTarget,resolveParticipants:resolveMeetingParticipants,preferences:schedulePreferences,scheduleError,notify:sendCoworkerPush,deliver:notifyStaffDual});
+  if(work)return json(APP_ORIGIN,work.data,work.status);
   if(body.action==='list-events'){
     if(typeof body.start!=='string'||typeof body.end!=='string'||!Number.isFinite(Date.parse(body.start))||!Number.isFinite(Date.parse(body.end))||Date.parse(body.end)<=Date.parse(body.start)||Date.parse(body.end)-Date.parse(body.start)>31*86400000)return json(APP_ORIGIN,{ok:false,error:'invalid_window'},400);
     const token=await accessToken(db);if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
-    try{return json(APP_ORIGIN,{ok:true,calendarId:CALENDAR_ID,events:await listSharedEvents(token,body.start,body.end)});}catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
+    try{return json(APP_ORIGIN,{ok:true,calendarId:CALENDAR_ID,events:await listSharedEvents(token,body.start,body.end,staff)});}catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
   }
   if(body.action==='connect')return await startConnect(staff,db);
   if(body.action==='connect-drive')return await startConnect(staff,db,DRIVE_SCOPES);
@@ -405,9 +416,9 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     if(access.error)throw new Error('db');
     const staffIds=[...new Set((access.data||[]).map((row:{staff_id:string})=>row.staff_id))];
     if(!staffIds.length)return json(APP_ORIGIN,{ok:true,staff:[]});
-    const result=await db.from('pastoral_staff').select('id,display_name,role,is_active').eq('is_active',true).in('id',staffIds).order('display_name');
+    const result=await db.from('pastoral_staff').select('id,display_name,role,is_active,app_user_id').eq('is_active',true).in('id',staffIds).order('display_name');
     if(result.error)throw new Error('db');
-    const rows=result.data||[];
+    const rows=canonicalCalendarStaff(result.data||[],staff.id);
     const prefs=rows.length?await db.from('pastoral_staff_schedule_preferences').select('staff_id,rest_days,work_start,work_end,allow_emergency_override').in('staff_id',rows.map((row:{id:string})=>row.id)):{data:[],error:null};
     if(prefs.error)throw new Error('db');
     const byId=new Map((prefs.data||[]).map((row:{staff_id:string;rest_days:number[];work_start:string;work_end:string;allow_emergency_override:boolean})=>[row.staff_id,row]));
@@ -478,7 +489,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     const token=await accessToken(db);
     if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
     try{
-      const result=await createCalendarEvent(token,body.requestId,appointment,participants);
+      const result=await createCalendarEvent(token,body.requestId,appointment,participants,staff.id);
       if(result.conflict)return json(APP_ORIGIN,{ok:false,error:'calendar_conflict'},409);
       const notifications=body.notifyParticipants===false?{status:'not_requested',sent:0,total:participants.length}:await notifyMeetingParticipants(db,participants,body.requestId,appointment);
       return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID,eventId:body.requestId.toLowerCase().replaceAll('-',''),notifications});

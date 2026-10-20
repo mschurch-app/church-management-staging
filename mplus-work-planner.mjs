@@ -1,0 +1,76 @@
+import {calendarApi} from './mplus-google-calendar.mjs?v=20261021-work1';
+import {taipeiDate,addDay} from './mplus-week-model.mjs?v=20261021-work1';
+const node=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
+export const plannerStatus=()=>calendarApi('routine-status');
+const notifyText=r=>!r?.total?'':r.queued===r.total?'通知已排入早上 8 點後送出。':r.sent===r.total?'已通知參與同工。':`通知已送出 ${r.sent}/${r.total} 人；尚未送達的通知需重新確認。`;
+function sheet(title,{required=false}={}){
+ const dialog=document.createElement('dialog');dialog.dataset.actionFeedback='off';dialog.className='mplus-event-dialog mplus-planner';const header=node('header','','mplus-dialog-header'),heading=node('h2',title),close=node('button','✕','mplus-dialog-close');close.type='button';close.setAttribute('aria-label','關閉視窗');header.append(heading,close);dialog.append(header);const body=node('div','','planner-body'),status=node('p','','planner-status');status.setAttribute('role','status');dialog.append(body,status);const previous=document.activeElement;
+ let locked=required,busy=false,dirty=false;
+ function dismiss(){if(busy){status.textContent='正在儲存，請稍候。';return;}if(locked){status.textContent='請先新增一項例行行程，或選擇目前沒有例行行程。';return;}if(dirty&&!window.confirm('尚未儲存，要放棄這次輸入嗎？'))return;dialog.close();}
+ close.onclick=dismiss;dialog.addEventListener('cancel',e=>{e.preventDefault();dismiss();});dialog.addEventListener('close',()=>{dialog.remove();if(previous?.isConnected)previous.focus();},{once:true});dialog.addEventListener('input',()=>{dirty=true;});document.body.append(dialog);dialog.showModal();return {dialog,body,status,heading,lock:v=>{locked=v;},busy:v=>{busy=v;close.disabled=v;},clean:()=>{dirty=false;},close:()=>{locked=false;dirty=false;dismiss();}};
+}
+function createForm(){const form=document.createElement('form');form.dataset.actionFeedback='off';return form;}
+function notificationRetry(ui,result,retry){const r=result.notifications;if(!r?.total||r.sent+(r.queued||0)>=r.total)return;const message=node('p',notifyText(r)),again=button('重試未送達通知',async()=>{again.disabled=true;try{const next=await retry();message.textContent=notifyText(next.notifications);if(next.notifications?.sent+(next.notifications?.queued||0)>=next.notifications?.total)again.remove();}catch(e){message.textContent=e.message;}finally{again.disabled=false;}});ui.body.append(message,again);}
+function field(form,title,input){const l=node('label',title);l.append(input);form.append(l);return input;}
+function input(form,label,type,value='',required=true){const i=document.createElement('input');i.type=type;i.value=value;i.required=required;return field(form,label,i);}
+function select(form,label,items,value){const i=document.createElement('select');for(const [v,text] of items){const o=node('option',text);o.value=v;i.append(o);}i.value=value;return field(form,label,i);}
+function button(label,fn,cls='secondary'){const b=node('button',label,cls);b.type='button';b.onclick=fn;return b;}
+function peopleFields(form,people){const self=people.find(p=>p.isSelf);if(!self)throw Error('尚未確認同工身分，請重新登入。');const manage=['pastor','admin'].includes(self.role),primary=select(form,'主要負責人',people.filter(p=>manage||p.isSelf).map(p=>[p.id,p.name]),self.id),set=document.createElement('fieldset');set.append(node('legend','協作同工（可複選）'));form.append(set);const render=()=>{set.querySelectorAll('label').forEach(l=>l.remove());for(const p of people.filter(p=>p.id!==primary.value)){const l=node('label',p.name),check=document.createElement('input');check.type='checkbox';check.value=p.id;l.prepend(check);set.append(l);}};primary.onchange=render;render();return ()=>({staffId:primary.value,participantIds:[...set.querySelectorAll('input:checked')].map(i=>i.value)});}
+export async function openRoutineWizard(date=addDay(taipeiDate(),1),onSaved=async()=>{},{required=false,api=calendarApi}={}){
+ const ui=sheet('新增例行行程',{required});ui.body.append(node('p',required?'第一次使用，先把固定的工作時間安排好。可逐項新增，設定會隨帳號保存。':'每次設定一項，儲存後可接著新增。'));const steps=node('p','1 工作內容　→　2 重複時間　→　3 負責同工','planner-steps');ui.body.append(steps);ui.status.textContent='正在讀取同工…';let people;
+ try{people=(await api('list-schedule-staff')).staff||[];}catch(e){ui.status.textContent=e.message;ui.body.append(button('重新讀取',()=>{ui.lock(false);ui.close();void openRoutineWizard(date,onSaved,{required,api});}));return;}
+ if(!ui.dialog.isConnected)return;ui.status.textContent='';
+ const form=createForm(),panels=[0,1,2].map(()=>document.createElement('fieldset'));panels.forEach(p=>form.append(p));ui.body.append(form);
+ const title=input(panels[0],'例行工作名稱','text');title.maxLength=200;
+ const frequency=select(panels[0],'重複方式',[['weekly','每週固定星期'],['daily','每天'],['monthly','每月固定日期']],'weekly');
+ const day=input(panels[1],'第一次日期','date',date),time=input(panels[1],'開始時間','time','09:00'),duration=select(panels[1],'預計時長',[30,60,90,120].map(n=>[String(n),n+' 分鐘']),'60');
+ const days=document.createElement('fieldset');days.className='planner-weekdays';days.append(node('legend','每週哪幾天'));const weekday=new Date(date+'T12:00:00Z').getUTCDay();for(let d=0;d<7;d++){const l=node('label','週'+'日一二三四五六'[d]),c=document.createElement('input');c.type='checkbox';c.value=d;c.checked=d===weekday;l.prepend(c);days.append(l);}panels[1].append(days);
+ day.onchange=()=>{const d=new Date(day.value+'T12:00:00Z').getUTCDay();days.querySelectorAll('input').forEach(c=>{c.checked=Number(c.value)===d;});};
+ const until=input(panels[1],'結束日期（選填；留白持續到手動停止）','date','',false);panels[1].append(node('p','每月 29–31 日遇到沒有該日期的月份會略過。後續時段可能與其他安排重疊，請定期查看行事曆。','planner-hint'));
+ const location=input(panels[2],'地點（選填）','text','',false);location.maxLength=500;let getPeople;try{getPeople=peopleFields(panels[2],people);}catch(e){ui.status.textContent=e.message;return;}
+ const emergency=input(panels[2],'需安排在休息日或一般工時外（將依原有規則檢查）','checkbox','',false);emergency.checked=false;emergency.parentElement.classList.add('planner-check');emergency.parentElement.prepend(emergency);
+ const actions=node('div','','planner-actions'),prev=button('上一步',()=>change(-1)),next=button('下一步',()=>change(1),'primary'),save=node('button','儲存這項例行行程','primary');save.type='submit';actions.append(prev,next,save);form.append(actions);
+ let step=0,payload=null;
+ function show(){panels.forEach((p,i)=>{p.hidden=i!==step;p.disabled=i!==step;});days.hidden=frequency.value!=='weekly';prev.hidden=step===0;next.hidden=step===2;save.hidden=step!==2;steps.textContent=`第 ${step+1}/3 步 · `+['工作內容','重複時間','負責與協作同工'][step];}
+ function change(delta){if(delta>0&&!form.reportValidity())return;if(step===0&&delta>0&&!title.value.trim()){ui.status.textContent='請填寫例行工作名稱。';title.focus();return;}if(step===1&&delta>0&&frequency.value==='weekly'&&![...days.querySelectorAll('input:checked')].some(c=>Number(c.value)===new Date(day.value+'T12:00:00Z').getUTCDay())){ui.status.textContent='第一次日期必須包含在選取的星期中。';return;}step+=delta;ui.status.textContent='';show();}
+ frequency.onchange=show;show();
+ const none=button('目前沒有例行行程',async()=>{if(!window.confirm('確認目前沒有例行行程？日後仍可新增。'))return;ui.busy(true);try{await api('finish-routine-setup',{noRoutines:true});ui.clean();ui.lock(false);ui.body.replaceChildren(node('p','設定已完成。日後可以在「例行行程」繼續新增。'),button('完成',()=>ui.close(),'primary'));ui.status.textContent='';}catch(e){ui.status.textContent=e.message;}finally{ui.busy(false);}});if(required)ui.body.append(none);
+ form.onsubmit=async e=>{e.preventDefault();if(!form.reportValidity())return;
+  if(!payload){const start=new Date(day.value+'T'+time.value+':00+08:00');payload={requestId:crypto.randomUUID(),summary:title.value.trim(),start:start.toISOString(),end:new Date(start.getTime()+Number(duration.value)*60000).toISOString(),frequency:frequency.value,weekdays:[...days.querySelectorAll('input:checked')].map(c=>Number(c.value)),until:until.value||null,location:location.value.trim(),emergency:emergency.checked,...getPeople()};}
+  ui.busy(true);none.disabled=true;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=true);ui.status.textContent='正在儲存並寫入共用行事曆…';
+  try{const r=await api('save-routine',payload);ui.clean();await onSaved();ui.body.replaceChildren(node('h3','這項已設定完成'),node('p',notifyText(r.notifications)),node('p','要繼續新增下一項嗎？'),button('新增下一項',()=>{ui.lock(false);ui.close();void openRoutineWizard(date,onSaved,{required,api});},'primary'),button('結束設定',async()=>{ui.busy(true);try{await api('finish-routine-setup');ui.lock(false);ui.body.replaceChildren(node('p','設定完成。日後可以在「例行行程」繼續新增。'),button('完成',()=>ui.close(),'primary'));ui.status.textContent='';}catch(e){ui.status.textContent=e.message;}finally{ui.busy(false);}}));notificationRetry(ui,r,()=>api('save-routine',payload));ui.status.textContent='';}
+  catch(e){if(['invalid_routine','meeting_in_past','outside_schedule','rest_day','emergency_not_allowed','staff_forbidden','invalid_staff'].includes(e.code)){payload=null;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=false);none.disabled=false;show();ui.status.textContent=e.message+' 請返回修改後再儲存。';}else{ui.status.textContent=e.message+' 若結果未確認，請用下方按鈕重試同一項，勿重複新增。';save.textContent='重新確認這項儲存結果';save.disabled=false;}}
+  finally{ui.busy(false);}
+ };
+}
+export async function openRoutineCenter(onSaved=async()=>{},{api=calendarApi}={}){
+ const ui=sheet('例行行程');async function load(){ui.status.textContent='正在讀取…';try{const data=await api('routine-status');ui.body.replaceChildren(button('＋ 新增例行行程',()=>{ui.close();void openRoutineWizard(undefined,onSaved,{api});},'primary'));
+  if(!data.routines.length)ui.body.append(node('p','目前沒有例行行程。'));
+  for(const r of data.routines){const article=node('article','','planner-routine');article.append(node('h3',r.title),node('p',`${{weekly:'每週',daily:'每天',monthly:'每月'}[r.definition.frequency]||''} · ${{active:'執行中',pending:'同步待確認',stopped:'已停止'}[r.status]}`));
+   if(r.status==='pending'&&r.created_by===data.selfId)article.append(button('重新確認同步',async()=>{ui.busy(true);try{const d=r.definition;await api('save-routine',{...d,requestId:r.id,staffId:d.primary,participantIds:d.participants.filter(id=>id!==d.primary)});await load();await onSaved();}catch(e){ui.status.textContent=e.message;}finally{ui.busy(false);}}));
+   if(r.canStop&&r.status==='active')article.append(button('停止後續例行行程',()=>{ui.close();openReport('停止後續例行行程','已發生的歷史保留；之後不再新增這個系列。',async note=>api('stop-routine',{routineId:r.id,note}),onSaved);},'planner-danger'));
+   ui.body.append(article);
+  }ui.status.textContent='';}catch(e){ui.status.textContent=e.message;}}await load();
+}
+export async function openWorkAssignment(date,onSaved=async()=>{},{api=calendarApi}={}){
+ const ui=sheet('指派工作'),form=createForm();ui.body.append(node('p','指定負責人與完成期限；對方在首頁行事曆接受後回報進度。'),form);ui.status.textContent='正在確認指派權限…';let people;
+ try{const [state,staff]=await Promise.all([api('routine-status'),api('list-schedule-staff')]);if(!state.canAssign)throw Error('目前沒有主管指派權限。');people=staff.staff||[];}catch(e){ui.status.textContent=e.message;return;}if(!ui.dialog.isConnected)return;
+ const title=input(form,'工作名稱','text');title.maxLength=200;const description=field(form,'工作內容與完成標準',document.createElement('textarea'));description.required=true;description.maxLength=5000;description.rows=4;const due=input(form,'完成期限（台北時間，必填）','datetime-local',date+'T17:00'),getPeople=peopleFields(form,people),save=node('button','指派並通知','primary');save.type='submit';form.append(save);ui.status.textContent='';let payload=null;
+ form.onsubmit=async e=>{e.preventDefault();if(!form.reportValidity())return;if(!payload)payload={requestId:crypto.randomUUID(),title:title.value.trim(),description:description.value.trim(),dueAt:new Date(due.value+':00+08:00').toISOString(),...getPeople()};ui.busy(true);form.querySelectorAll('input,select,textarea,button').forEach(n=>n.disabled=true);ui.status.textContent='正在儲存工作與通知…';try{const r=await api('assign-work',payload);ui.clean();await onSaved();ui.body.replaceChildren(node('h3','工作已指派'),node('p',notifyText(r.notifications)),button('完成',()=>ui.close(),'primary'));notificationRetry(ui,r,()=>api('assign-work',payload));ui.status.textContent='';}catch(e){if(['invalid_task','invalid_staff','pastor_required'].includes(e.code)){payload=null;form.querySelectorAll('input,select,textarea,button').forEach(n=>n.disabled=false);ui.status.textContent=e.message+' 請修改後再送出。';}else{ui.status.textContent=e.message+' 可重試確認同一筆指派。';save.textContent='重新確認指派結果';save.disabled=false;}}finally{ui.busy(false);}};
+}
+export function openReport(title,description,submit,onSaved=async()=>{}){
+ const requestId=crypto.randomUUID(),ui=sheet(title),form=createForm(),note=field(form,'回報內容／原因（必填）',document.createElement('textarea'));note.required=true;note.rows=4;note.maxLength=3000;const save=node('button','確認回報','primary');save.type='submit';form.append(save);ui.body.append(node('p',description),form);
+ form.onsubmit=async e=>{e.preventDefault();if(!form.reportValidity())return;const value=note.value.trim();if(!value)return;ui.busy(true);note.disabled=true;save.disabled=true;try{const r=await submit(value,requestId);ui.clean();await onSaved();ui.body.replaceChildren(node('p','已回報。'+notifyText(r.notifications)),button('完成',()=>ui.close(),'primary'));notificationRetry(ui,r,()=>submit(value,requestId));ui.status.textContent='';}catch(e){ui.status.textContent=e.message+' 請重試確認同一筆回報。';save.disabled=false;}finally{ui.busy(false);}};
+}
+export function openTaskDetails(task,onSaved=async()=>{},{api=calendarApi}={}){
+ const ui=sheet(task.title);ui.body.append(node('p',task.description||''),node('p','主要負責人：'+task.assigneeName),node('p',task.dueAt?'完成期限：'+new Date(task.dueAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'尚未指定期限'));
+ const labels={pending:'待接受',approved:'進行中',completed:'已完成',cancelled:'已取消'};ui.body.append(node('p','狀態：'+(labels[task.status]||task.status)));
+ for(const r of task.workReports||[])ui.body.append(node('p',r.authorName+'：'+r.text));if(task.completionReport)ui.body.append(node('p','完成回報：'+task.completionReport));
+ if(task.workflow==='mplus_assignment'){
+  const act=(label,outcome)=>button(label,()=>{ui.close();openReport(label,outcome==='cancelled'?'取消後停止這項工作，保留歷史。':'回報會記錄在這項工作。',(note,requestId)=>api('report-work',{taskId:task.id,outcome,note,requestId}),onSaved);});
+  if(task.canApprove)ui.body.append(act('接受工作','accepted'));
+  if(task.canReportProgress)ui.body.append(act('回報進度','progress'));
+  if(task.canComplete)ui.body.append(act('完成並回報','completed'));
+  if((task.createdByMe||task.canCancel)&&['pending','approved'].includes(task.status))ui.body.append(act('取消這項工作','cancelled'));
+ }else if(task.actionUrl){const a=node('a','開啟這項工作的處理頁');a.href=task.actionUrl;ui.body.append(a);}
+}

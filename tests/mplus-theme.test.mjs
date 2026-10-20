@@ -15,3 +15,9 @@ test('explicit SHiNE remains unchanged even when next mentions M+',()=>{const r=
 test('shared unselected login is not assigned a church',()=>assert.equal(boot('').classes.size,0));
 test('old M+ workspace redirects only M+ while coworker tools remain available',()=>{assert.match(boot('?church=M%2B','/pastoral/workspace.html').redirect,/mplus-dashboard/);assert.equal(boot('?church=SHiNE','/pastoral/workspace.html').redirect,undefined);assert.match(boot('?church=M%2B','/pastoral/coworker-tools.html').redirect,/mplus-coworker-tools.html/);assert.equal(boot('?church=M%2B','/pastoral/mplus-coworker-tools.html').redirect,undefined);});
 test('homepage no longer links to old workspace and still reads the same calendar and task data',()=>{const s=readFileSync(new URL('../mplus-week-calendar.mjs',import.meta.url),'utf8');assert(!s.includes('pastoral/workspace.html'));assert(!s.includes('管理工作'));assert(s.includes('readCalendar(start)'));assert(s.includes('PASTORAL_TASKS_ENDPOINT'));assert(s.includes('showCalendarEvent(task)'));assert(s.includes('共用行事曆'));});
+test('late legacy stylesheet injection is disabled only while M+ is selected',()=>{
+ let callback;const root={dataset:{},classList:{add(){}}},sheet={href:'https://example.test/apple-ui.css',media:'',matches:()=>true,querySelectorAll:()=>[]};
+ const document={currentScript:{src:'https://example.test/mplus-theme.js'},documentElement:root,head:{},querySelectorAll:()=>[],querySelector:()=>null};
+ vm.runInNewContext(source,{URL,URLSearchParams,document,window:{},location:{search:'?church=M%2B',pathname:'/schedules.html'},MutationObserver:class{constructor(fn){callback=fn;}observe(){}}});
+ callback([{addedNodes:[sheet]}]);assert.equal(sheet.media,'not all');sheet.media='';root.dataset.church='SHiNE';callback([{addedNodes:[sheet]}]);assert.equal(sheet.media,'');
+});

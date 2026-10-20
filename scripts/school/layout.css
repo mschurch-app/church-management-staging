@@ -1,0 +1,24 @@
+
+/* Dedicated Church OS entry. Standalone index/index2 never load this file. */
+@media screen {
+:root{--app-ink:#203e34;--app-secondary:#65796f;--app-accent:#173f34;--app-accent-end:#315d4a;--app-surface-muted:#f4f8f4;--app-border:#dbe5dd;--app-link:#245e48;--app-shadow:0 8px 24px #173f3408}
+html{scroll-padding-top:18px}
+body.school-app{padding-bottom:calc(100px + env(safe-area-inset-bottom))!important}
+.os-school-header{display:flex;align-items:center;justify-content:space-between;gap:18px;width:min(1180px,calc(100% - 40px));margin:24px auto 0;padding:26px 30px;border-radius:26px;background:#173f34;color:#fff;box-shadow:0 14px 28px #173f3414}
+.os-school-brand{display:flex;align-items:center;gap:20px;min-width:0}.os-school-brand>a{display:flex;align-items:center}.os-school-brand img{width:76px;height:64px;object-fit:contain}
+.os-school-header h1{color:#fff;font-size:24px;font-weight:750;margin:4px 0 7px}.os-school-header p{margin:0;color:#d4e6d9;font-size:12px;line-height:1.5}.os-school-header #clock-display{font-size:11px;color:#b9cfc2}
+.os-school-account{display:flex;align-items:center;gap:9px}.os-school-account #auth-logged{gap:10px}.os-school-account #logged-user-tag{font-size:13px;color:#fff;max-width:100px;overflow-wrap:anywhere}
+.school-app .os-school-header button,.school-app .os-school-home{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid #ffffff35;border-radius:13px;background:#ffffff12;color:#fff;font-size:13px;font-weight:650;white-space:nowrap;text-decoration:none}
+.school-app main{width:min(1180px,calc(100% - 40px))!important;padding:22px 0 30px!important}
+.school-app #school-desktop-nav{display:flex!important;gap:7px;overflow-x:auto;white-space:nowrap;padding:0 0 16px;border:0;min-height:60px;margin-bottom:10px;scrollbar-width:thin}
+.school-app #school-desktop-nav button{display:flex;align-items:center;gap:6px;color:#64786c!important;background:#fff!important;border:1px solid #dbe5dd!important;border-radius:14px;padding:10px 14px;font-size:13px;flex-shrink:0;min-height:44px}
+.school-app #school-desktop-nav button[aria-current=page]{color:#fff!important;background:#173f34!important;border-color:#173f34!important}
+.school-app #school-desktop-nav .school-symbol{background:transparent;color:inherit}.school-app #school-desktop-nav .school-symbol svg{--school-symbol-cutout:currentColor}
+.school-app #mobile-bottom-dock,.school-app #school-feature-launcher{display:none!important}
+.school-page-bar{padding:4px 0 18px}.school-page-bar h1{font-size:28px}.school-page-bar>div>p{font-size:11px;color:#71867a;letter-spacing:.12em}.school-page-bar button{font-size:13px}
+.school-app :is(.bg-rose-600,.bg-indigo-600){background:#173f34!important;color:#fff!important}.school-app :is(.text-rose-600,.text-indigo-600){color:#245c43!important}
+@media(max-width:767px){
+.os-school-header{width:calc(100% - 28px);margin:14px auto 0;padding:20px;border-radius:23px;flex-wrap:wrap;gap:14px}.os-school-brand{gap:13px}.os-school-brand img{width:58px;height:48px}.os-school-header h1{font-size:21px}.os-school-account{width:100%;justify-content:space-between;border-top:1px solid #ffffff25;padding-top:12px}.os-school-account #auth-logged{margin-left:auto}.school-app main{width:calc(100% - 28px)!important;padding:18px 0 24px!important}.school-page-bar h1{font-size:25px}.school-app #school-desktop-nav{margin-bottom:4px}.school-app #school-desktop-nav button{padding:9px 12px}.school-app .school-page-bar{gap:10px}
+}
+}
+@media print{.os-school-header,.mplus-function-dock,#school-desktop-nav{display:none!important}}

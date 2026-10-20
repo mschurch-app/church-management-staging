@@ -25,7 +25,7 @@ async function load(){try{
 }
 $('#logout').onclick=async()=>{await db.auth.signOut();location.replace('admin-login.html?church=M%2B');};
 async function openSchool(event,destination){
- event.preventDefault();$('#status').hidden=false;$('#status').textContent='正在使用教會 OS 帳號開啟課輔系統…';
+ event.preventDefault();const schoolDestination=new URL(destination);if(schoolDestination.origin!=='https://school.mchurch.online')return;const osDestination=new URL('school/index.html',location.href);osDestination.search=schoolDestination.search;destination=osDestination.href;$('#status').hidden=false;$('#status').textContent='正在使用教會 OS 帳號開啟課輔系統…';
  try{
   const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token)throw new Error('missing_session');
   const response=await fetch('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/mschool-api/church-login',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},signal:AbortSignal.timeout(15000)});

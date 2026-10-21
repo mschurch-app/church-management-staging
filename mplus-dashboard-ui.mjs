@@ -1,5 +1,6 @@
+import {mountWorkProfile} from './work-profile.mjs?v=20261021-work-roles1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
-import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261009-stage2';
+import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261021-work-roles1';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';
 import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261019-association1';
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261012-readable2';
@@ -18,6 +19,7 @@ async function load(){try{
  const [monitor,capabilities]=await Promise.all([db.rpc('get_my_system_monitor_access'),db.rpc('get_my_app_capabilities')]);home.system_monitor_access=!monitor.error&&monitor.data===true;home.is_owner=capabilities.data?.is_owner===true;
  const allowed=availableFunctionKeys(access,church,home,settings);$('#welcome').textContent=access.user.name+'｜'+access.user.title;
  if(church==='M+'){mountMplusNavigation({allowed,hrefFor,openSchool});mountWeekCalendar({allowed:allowed.includes('pastoral_workspace')});}
+ void mountWorkProfile({db,allowed,openSchool});
  wireSearch(allowed);$('#function-search').disabled=false;$('#status').hidden=true;
  void dashboardCounts(db,church,access.grants).then(renderCounts).catch(()=>{});
  void loadNotificationCenter($('#notification-list'),$('#notification-count'),$('#notification-history'));

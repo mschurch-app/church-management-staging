@@ -26,3 +26,5 @@ html body .finance-page :is(input:not([type=checkbox]):not([type=radio]),select,
 html body .finance-tabs button:not([aria-current="page"]){background:#fff!important;color:#224b39!important}
 html body .finance-tabs button[aria-current="page"]{background:#1b5140!important;color:#fff!important}
 .finance-page input:focus-visible,.finance-page select:focus-visible,.finance-page button:focus-visible{outline:3px solid #bb8749;outline-offset:2px}
+
+.finance-confirmations{margin:18px 0;padding:18px;border:1px solid #c8d9cc;border-radius:15px;background:#f3f7f1}.finance-confirmations .finance-check{display:flex;align-items:center;gap:12px;min-height:48px;line-height:1.5}.finance-confirmations input[type=checkbox]{width:24px;height:24px;flex-shrink:0}.finance-summary small{font-weight:400;line-height:1.5;color:#536c60}.finance-summary input[readonly]{background:#f3f7f1!important;font-weight:800}

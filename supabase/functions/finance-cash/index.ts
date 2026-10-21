@@ -26,8 +26,8 @@ function client(key: string, token?: string) {
 }
 
 function resultError(message: string) {
-  const code = String(message || '').match(/(forbidden|target_not_mplus_admin|member_not_found|member_code_mismatch|unlinked_offering_code|version_conflict|batch_locked|batch_not_found|invalid_transition|cash_total_mismatch|bag_total_mismatch|verified_cash_mismatch|reason_required|invalid_batch|invalid_bag|invalid_bag_name|invalid_bag_total|invalid_counters|invalid_line|invalid_code)/)?.[1] || 'request_failed';
-  return { code, status: code === 'forbidden' ? 403 : code === 'version_conflict' || code === 'batch_locked' ? 409 : 400 };
+  const code = String(message || '').match(/(counter_confirmations_required|counter_confirmation_forbidden|invalid_confirmation|forbidden|target_not_mplus_admin|member_not_found|member_code_mismatch|unlinked_offering_code|version_conflict|batch_locked|batch_not_found|invalid_transition|cash_total_mismatch|bag_total_mismatch|verified_cash_mismatch|reason_required|invalid_batch|invalid_bag|invalid_bag_name|invalid_bag_total|invalid_counters|invalid_line|invalid_code)/)?.[1] || 'request_failed';
+  return { code, status: code.includes('forbidden') ? 403 : code === 'version_conflict' || code === 'batch_locked' ? 409 : 400 };
 }
 
 Deno.serve(async request => {
@@ -60,7 +60,11 @@ Deno.serve(async request => {
   const capability = await userClient.rpc('get_my_app_capabilities');
   const owner = !capability.error && capability.data?.is_owner === true;
   const canRead = owner || roles.size > 0;
-  if (action === 'profile') return reply(origin, 200, { ok: true, roles: [...roles], owner });
+  if (action === 'profile') {
+    const identity=roles.has('entry')?await admin.rpc('finance_cash_counter_identity',{p_actor:user.id}):{data:null,error:null};
+    if(identity.error)return reply(origin,503,{ok:false,code:'service_unavailable'});
+    return reply(origin,200,{ok:true,roles:[...roles],owner,actorUserId:identity.data});
+  }
 
   if (action === 'accounts') {
     if (!owner) return reply(origin, 403, { ok: false, code: 'forbidden' });
@@ -158,6 +162,13 @@ Deno.serve(async request => {
     });
     if (result.error) { const error = resultError(result.error.message); return reply(origin, error.status, { ok: false, code: error.code }); }
     return reply(origin, 200, { ok: true, batch: result.data });
+  }
+
+  if(action==='confirm_counter'){
+    if(!roles.has('entry')||!UUID.test(String(input.batchId||''))||typeof input.confirmed!=='boolean')return reply(origin,403,{ok:false,code:'forbidden'});
+    const result=await admin.rpc('finance_confirm_cash_batch',{p_actor:user.id,p_batch_id:input.batchId,p_expected_version:input.version,p_confirmed:input.confirmed});
+    if(result.error){const error=resultError(result.error.message);return reply(origin,error.status,{ok:false,code:error.code});}
+    return reply(origin,200,{ok:true,batch:result.data});
   }
 
   if (action === 'transition') {

@@ -7,9 +7,9 @@ const sample = () => ({
   counterConfirmations: ['worker-a','worker-b'].map(userId=>({userId,confirmedAt:'2026-10-21T13:00:00Z'})),
   counterUserIds: ['worker-a', 'worker-b'], enteredTotal: 1500, countedCash: 1500,
   bags: [
-    { sequence: 1, bagName: '王小明', memberId: 1, offeringCode: '0013', identityResolved: true, declaredTotal: 1200,
+    { confirmedBy:'worker-a',confirmedAt:'2026-10-21T13:00:00Z', sequence: 1, bagName: '王小明', memberId: 1, offeringCode: '0013', identityResolved: true, declaredTotal: 1200,
       lines: [{ category: '十一奉獻', amount: 1000 }, { category: '感恩奉獻', amount: 200 }] },
-    { sequence: 2, bagName: '匿名', anonymous: true, declaredTotal: 300,
+    { confirmedBy:'worker-a',confirmedAt:'2026-10-21T13:00:00Z', sequence: 2, bagName: '匿名', anonymous: true, declaredTotal: 300,
       lines: [{ category: '一般／不具名奉獻', amount: 300 }] }
   ]
 });

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import puppeteer from 'puppeteer-core';
 
-const out = new URL('../docs/reports/2026-10-21-finance/', import.meta.url).pathname;
+const out = new URL('../docs/reports/2026-10-21-finance-entry/', import.meta.url).pathname;
 fs.mkdirSync(out, { recursive: true });
 const root = new URL('../', import.meta.url).pathname;
 const server = spawn(process.execPath, ['tests/serve.mjs'], { cwd: root, env: { ...process.env, CHURCH_TEST_PORT: '8781' }, stdio: 'pipe' });
@@ -30,17 +30,23 @@ try {
     const card = await page.$('.hub-tile:nth-child(2)');
     assert(card);
     assert.match(await card.evaluate(node => node.textContent), /同工行政/);
-    assert.match(await card.evaluate(node => node.textContent), /奉獻與財務/);
+    assert.doesNotMatch(await card.evaluate(node => node.textContent), /奉獻與財務/);
     await card.evaluate(node => node.click());
     const dialog = await page.waitForSelector('.mplus-event-dialog[open]', { timeout: 3000 });
-    assert(dialog);
-    assert.match(await dialog.evaluate(node => node.textContent), /同工行政/);
-    const href = await dialog.$$eval('a',nodes=>nodes.find(node=>node.textContent.includes('奉獻與財務'))?.getAttribute('href'));
-    assert.match(href, /finance-cash\.html/);
+    assert.doesNotMatch(await dialog.evaluate(node => node.textContent), /奉獻與財務/);
+    assert.equal(await dialog.$$eval('a',nodes=>nodes.length),2);
     await page.click('.mplus-dialog-close');
+    const finance=await page.$('a.hub-tile');assert(finance);
+    assert.match(await finance.evaluate(node=>node.textContent),/奉獻與財務/);
+    assert.match(await finance.evaluate(node=>node.getAttribute('href')),/finance-cash\.html/);
+    await page.setRequestInterception(true);
+    page.on('request',req=>req.url().includes('/finance-cash.html')?req.respond({status:200,contentType:'text/html',body:'<h1>Finance route fixture</h1>'}):req.continue());
     if (width < 600) await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: width >= 600 });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    await Promise.all([page.waitForNavigation(),finance.click()]);
+    assert.match(page.url(),/finance-cash\.html/);
+    assert.equal(await page.$('.mplus-event-dialog[open]'),null);
     await page.close();
   }
   console.log('finance navigation visual check: mobile and desktop passed');

@@ -1,4 +1,4 @@
-import {createWorkProfileEditor} from './work-profile.mjs?v=20261021-work-roles1';
+import {createWorkProfileEditor} from './work-profile.mjs?v=20261022-accounting1';
 import {FUNCTION_CATALOG,FUNCTION_GROUPS} from './app-function-definitions.mjs?v=20261010-season-test1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminBundle} from './admin-accounts-management.mjs?v=20261021-work-roles1';

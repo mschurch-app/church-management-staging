@@ -2,7 +2,7 @@ import {createFunctionEntry} from './app-ui.mjs?v=20261019-workflow1';
 if(typeof document!=='undefined'&&!document.querySelector('#work-profile-style')){const l=document.createElement('link');l.id='work-profile-style';l.rel='stylesheet';l.href=new URL('./work-profile.css?v=20261021-work-roles1',import.meta.url).href;document.head.append(l);}
 export const WORK_ROLES=['主任牧師','牧師','師母','傳道','輔導','事工領袖','小組長'];
 export const WORK_DOMAINS={church:'教會',school:'課輔',team:'籃球球隊',camp:'熱火籃球營'};
-export const WORK_CATALOG={"church":{"administration":"行政","general_affairs":"總務","worship":"敬拜","welcome":"接待關懷","youth_junior":"學生牧區 · 青少","youth":"學生牧區 · 青年","college":"學生牧區 · 大專","children":"兒童主日學","av_sound":"影音 · 音控","av_lighting":"影音 · 燈控","av_subtitles":"影音 · 字幕"},"school":{"director":"主任","teacher":"老師","assistant":"工讀生","volunteer":"志工"},"team":{"manager":"經理"},"camp":{"manager":"營隊管理者","coworker":"營隊同工"}};
+export const WORK_CATALOG={"church":{"administration":"行政","accounting":"財務會計","general_affairs":"總務","worship":"敬拜","welcome":"接待關懷","youth_junior":"學生牧區 · 青少","youth":"學生牧區 · 青年","college":"學生牧區 · 大專","children":"兒童主日學","av_sound":"影音 · 音控","av_lighting":"影音 · 燈控","av_subtitles":"影音 · 字幕"},"school":{"director":"主任","teacher":"老師","assistant":"工讀生","volunteer":"志工"},"team":{"manager":"經理"},"camp":{"manager":"營隊管理者","coworker":"營隊同工"}};
 const node=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const label=(name,input)=>{const l=node('label',name);l.append(input);return l;};
 const read=async(db,user,church)=>{const query=db.rpc('get_work_profile',{p_user:user,p_church:church});const r=await (typeof query.abortSignal==='function'?query.abortSignal(AbortSignal.timeout(12000)):query);if(r.error)throw Error('身分與事工分工未能讀取，請重新載入。');return r.data;};
@@ -18,6 +18,7 @@ export function createWorkProfileEditor(db,user,getChurch){
  return {section,load,values,ready:()=>ready};
 }
 const PRIMARY_TOOLS={
+ 'church.accounting':['finance_cash'],
  'church.administration':['website_weekly','association_news','review_workflows','notification_settings'],
  'church.general_affairs':['spaces','inventory'],
  'church.worship':['schedules','service_signups','service_quick_match'],

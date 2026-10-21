@@ -73,7 +73,7 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const metrics=[];
 function ok(name,value=true){assert.ok(value,name);checks.push(name);console.log('PASS '+name);}
 async function goto(file){await page.goto(base+'/'+file+'?church=M%2B',{waitUntil:'networkidle0'});await pause(150);}
-async function runtime(code){return page.evaluate(async code=>{const module=await import('/app-runtime.mjs?v=20261009-stage4');return new Function('module',code)(module);},code);}
+async function runtime(code){return page.evaluate(async code=>{const module=await import('/app-runtime.mjs?v=20261021-startup-update1');return new Function('module',code)(module);},code);}
 const active=()=>page.$eval('.notification-ticker-item.is-active',n=>n.dataset.notificationId);
 try{
  for(const file of ['admin-dashboard.html','church-settings.html','daily-devotional-admin.html','weekly-bulletin-review.html','website-maintenance.html','service-signup-admin.html']){
@@ -115,13 +115,12 @@ try{
  await page.$eval('#runtime-test-form',n=>n.reset());ok('reset clears draft',await page.$eval('#runtime-test-form',n=>n.dataset.unsavedChanges==='false'));
  await page.$eval('#runtime-test-form',n=>n.setAttribute('aria-busy','true'));ok('refresh blocked during an active operation',await runtime('return module.refreshApp()===false'));
  await page.$eval('#runtime-test-form',n=>n.removeAttribute('aria-busy'));
- await page.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261009-stage4'),reg=new EventTarget();window.updateMessages=[];reg.waiting={postMessage:m=>window.updateMessages.push(m)};module.watchAppRegistration(reg);module.watchAppRegistration(reg);});
- ok('new version offers explicit update',await page.$eval('.app-system-banner button',n=>!n.hidden&&n.textContent==='更新'));
- ok('update action touch target',await page.$eval('.app-system-banner button',n=>{const r=n.getBoundingClientRect();return r.width>=44&&r.height>=44;}));
- await page.$eval('#runtime-test-form input',n=>n.dispatchEvent(new Event('input',{bubbles:true})));answers.push(false);await page.click('.app-system-banner button');ok('cancel update preserves draft and does not activate',await page.evaluate(()=>updateMessages.length===0));
- answers.push(true);await page.click('.app-system-banner button');ok('accepted update activates exactly once',await page.evaluate(()=>updateMessages.length===1&&updateMessages[0].type==='CHURCH_ACTIVATE_UPDATE'));
+ await page.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261021-startup-update1'),reg=new EventTarget();window.updateMessages=[];reg.waiting={postMessage:m=>window.updateMessages.push(m)};module.watchAppRegistration(reg);module.watchAppRegistration(reg);});
+ ok('update never displays unsolicited banner',await page.$eval('.app-system-banner',n=>n.hidden));
+ await page.$eval('#runtime-test-form input',n=>n.dispatchEvent(new Event('input',{bubbles:true})));answers.push(false);ok('cancel manual update preserves draft',await runtime('return module.refreshApp()===false')&&await page.evaluate(()=>updateMessages.length===0));
+ answers.push(true);await runtime('return module.refreshApp()');ok('manual update activates exactly once',await page.evaluate(()=>updateMessages.length===1&&updateMessages[0].type==='CHURCH_ACTIVATE_UPDATE'));
  await page.$eval('#runtime-test-form input',n=>n.dispatchEvent(new Event('input',{bubbles:true})));await page.evaluate(()=>navigator.serviceWorker.dispatchEvent(new Event('controllerchange')));await pause(100);
- ok('typing while update activates prevents reload',await page.$eval('.app-system-banner',n=>n.textContent.includes('完成目前操作')));
+ ok('typing while update activates prevents reload without nagging',await page.$eval('#runtime-test-form',n=>n.dataset.unsavedChanges==='true')&&await page.$eval('.app-system-banner',n=>n.hidden));
  await page.$eval('#runtime-test-form',n=>n.reset());
  const touch=async(selector,kind='cancel')=>page.evaluate((selector,kind)=>{window.scrollTo({top:0,behavior:'instant'});const node=document.querySelector(selector);const emit=(type,x,y)=>node.dispatchEvent(new TouchEvent(type,{bubbles:true,cancelable:true,touches:type==='touchend'||type==='touchcancel'?[]:[new Touch({identifier:1,target:node,clientX:x,clientY:y})]}));emit('touchstart',100,100);emit('touchmove',kind==='horizontal'?300:100,kind==='horizontal'?120:250);const shown=document.querySelector('.app-pull-refresh').classList.contains('visible');emit(kind==='end'?'touchend':'touchcancel',100,250);return shown;},selector,kind);
  ok('standalone pull indicator is installed',!!await page.$('.app-pull-refresh'));
@@ -160,11 +159,11 @@ try{
  await Promise.all([swPage.waitForNavigation({waitUntil:'networkidle0'}),swPage.click('#retry')]);
  ok('retry opens original resource after network returns',!await swPage.$('#retry')&&swPage.url().includes('apple-ui.css?offline-probe=1'));
  await swPage.goto(base+'/app-offline.html',{waitUntil:'networkidle0'});
- await swPage.evaluate(async()=>{await import('/app-runtime.mjs?v=20261009-stage4');const module=await import('/app-runtime.mjs?v=20261009-stage4');const reg=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4&update-probe=1',{scope:'/'});module.watchAppRegistration(reg);});
- await swPage.waitForSelector('.app-system-banner:not([hidden]) button:not([hidden])');
- ok('real updated worker waits for explicit consent',await swPage.evaluate(async()=>!!(await navigator.serviceWorker.getRegistration()).waiting));
- await Promise.all([swPage.waitForNavigation({waitUntil:'networkidle0'}),swPage.click('.app-system-banner button')]);
- ok('explicit update activates and reloads',await swPage.evaluate(()=>navigator.serviceWorker.controller.scriptURL.includes('update-probe')));
+ await swPage.evaluate(async()=>{await import('/app-runtime.mjs?v=20261021-startup-update1');const module=await import('/app-runtime.mjs?v=20261021-startup-update1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4&update-probe=1',{scope:'/'});module.watchAppRegistration(reg);});
+ await swPage.waitForFunction(()=>navigator.serviceWorker.controller?.scriptURL.includes('update-probe'));
+ await swPage.waitForFunction(()=>sessionStorage.getItem('church-os-auto-update-reload')!==null);
+ ok('real updated worker activates automatically on opening',await swPage.evaluate(()=>navigator.serviceWorker.controller.scriptURL.includes('update-probe')));
+ ok('automatic startup update has no update banner',await swPage.evaluate(()=>!document.querySelector('.app-system-banner:not([hidden])')));
  await swContext.close();
  ok('no business mutations sent',writes.length===0);ok('no unexpected browser errors',errors.length===0);
  passed=true;

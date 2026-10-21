@@ -1,4 +1,4 @@
-import './app-runtime.mjs?v=20261016-update-banner1';
+import './app-runtime.mjs?v=20261021-startup-update1';
 import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;

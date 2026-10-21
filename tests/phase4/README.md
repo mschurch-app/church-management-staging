@@ -25,7 +25,7 @@ npm run quality:gate
 - `browser.mjs`：獨立 Chrome profile，所有 Supabase Auth／RPC／Storage／Edge Function 用合成資料攔截，其餘外部請求封鎖。只檢查已讀標記的合成呼叫，不寄送真實通知、發文或修改會友／排班。
 - 六頁 390 CSS px 一般字體及 200% root font-size；正常表頭 164 px，放大後容許長高，不能整頁橫向溢出。讀取資源 decodedBodySize 預算每頁 800,000 bytes，屬於此合成內容條件，排除正式媒體／API 內容與真實網路速度；不作為完整效能成績。
 - 通知焦點／背景／浮窗／減少動態效果暫停、鍵盤略過導覽、連線提示、未儲存／忙碌／輸入中更新保護、下拉與邊緣返回取消。
-- 真正 Chrome Service Worker 的安裝、離線原址恢復、重試、等待更新與明確接管。CDP 同時對頁面和背景 Worker 模擬斷線，避免只有頁面斷線而 Worker 仍能連網。
+- 真正 Chrome Service Worker 的安裝、離線原址恢復、重試、開啟時自動接管及不干擾操作。CDP 同時對頁面和背景 Worker 模擬斷線，避免只有頁面斷線而 Worker 仍能連網。
 - 第四階段 Chrome 真實 Worker 測試仍是桌面 Chromium；不等於 iPhone 主畫面或 Mac Safari。Safari WebDriver 未允許遠端自動化時保留待驗收，不修改使用者系統設定。
 
 新功能必須另加自己的真實業務與角色情境。合成 viewport／API 不能宣稱全部操作、真機、真實 LINE 或 99% 已完成。

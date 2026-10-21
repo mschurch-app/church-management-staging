@@ -8,6 +8,7 @@ import {workflowSummary,apiResult,uncertainWrite,lockControls,draftGuard,reviewD
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-bulletin-review';
 const PROMO_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-promo-review';
 const CANVA_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-canva';
+const INSTAGRAM_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/instagram-publishing';
 const $=selector=>document.querySelector(selector),params=new URLSearchParams(location.search),church=params.get('church')||'M+';
 let youtubePreview=null;
 let current=null,items=[],busy=false,reading=false,recovery=false,readVersion=0,requestedId=null,authorized=false;
@@ -27,6 +28,26 @@ async function canvaApi(action,payload={}){
   const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token)throw new Error('請重新登入教會 OS。');
   const response=await fetch(CANVA_ENDPOINT,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(45000),body:JSON.stringify({action,church,...payload})}),result=await apiResult(response);
   if(!response.ok||!result.ok)throw new Error(({reviewer_required:'只有本段初審人可再產生三套圖。',credit_quota_exceeded:'Canva AI 額度已用完，原三套圖仍保留。',connection_required:'Canva 連線已失效，請管理員重新連線。',invalid_status:'本份預告已離開初審階段。'}[result.error])||'Canva 再生圖尚未完成，請稍後重試。');return result;
+}
+async function instagramApi(action,payload={}){
+  const session=await db.auth.getSession(),token=session.data.session?.access_token;if(!token)throw new Error('請重新登入教會 OS。');
+  const response=await fetch(INSTAGRAM_ENDPOINT,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(60000),body:JSON.stringify({action,church,...payload})}),result=await apiResult(response);
+  if(!response.ok||!result.ok)throw new Error(({instagram_timeout:'Instagram 尚在處理影片，請稍後再按重試。',instagram_processing:'Instagram 無法處理這支影片，請同工重新產生 Reel。',instagram_already_published:'Instagram 已接受發布，請先檢查帳號，避免重複貼文。',permission_missing:'Instagram 發布權限不足，請檢查連線。',token_expired:'Instagram 連線已過期，請重新連結。'}[result.error])||'Instagram 發布失敗，請檢查發布紀錄。');
+  return result;
+}
+async function refreshInstagram(row){
+  const panel=$('#instagram-publication'),message=$('#instagram-publication-message'),button=$('#instagram-retry');if(!panel||!message||!button||current!==row)return;
+  try{const result=await instagramApi('publication_status',{bulletinId:row.id});if(current!==row)return;const job=result.publication;
+    message.textContent=job?.status==='published'?'Instagram Reel 已發布。':job?.status==='processing'?'Instagram 正在處理 Reel，請稍後確認。':job?.status==='failed'?({'instagram_timeout':'影片處理逾時，尚未發布；可接續原工作重試。','instagram_processing':'Instagram 無法處理影片，請同工檢查檔案。','instagram_already_published':'Instagram 回報已發布，請先核對帳號內容。'}[job.error_code]||'Instagram 發布失敗，尚未出現在帳號；可重試。'):'目前沒有 Instagram 發布紀錄。';
+    button.hidden=job?.status!=='failed'||job.error_code==='instagram_processing'||job.error_code==='instagram_already_published'||!authorized;
+  }catch(error){if(current===row){message.textContent=error.message||'無法確認 Instagram 發布狀態。';button.hidden=true;}}
+}
+async function retryInstagram(row){
+  const button=$('#instagram-retry'),message=$('#instagram-publication-message');if(!row||current!==row||row.track!=='promo'||row.status!=='approved'||busy||!button||!message)return;
+  busy=true;button.disabled=true;message.textContent='正在接續原本的 Instagram 發布工作…';
+  try{const result=await instagramApi('publish',{bulletinId:row.id});if(current===row)message.textContent=result.status==='published'?'Instagram Reel 已發布。':'Instagram 仍在處理影片。';}
+  catch(error){if(current===row)message.textContent=error.message||'Instagram 尚未發布。';}
+  finally{busy=false;button.disabled=false;if(current===row)await refreshInstagram(row);}
 }
 async function showCanvaSets(row){
   const area=$('#review-canva-options');if(!area||row!==current)return;
@@ -78,6 +99,11 @@ function renderFinalPromo(row,area){
   else if(row.reel_cover_image_path){const cover=document.createElement('img');cover.className='review-reel-cover';cover.alt='IG Reel 封面';cover.src=db.storage.from('church-website-public-media').getPublicUrl(row.reel_cover_image_path).data.publicUrl;reel.append(cover);}
   else{const missing=document.createElement('p');missing.textContent='IG Reel 尚未準備完成。';reel.append(missing);}
   area.append(reel);
+  if(row.status==='approved'&&church==='M+'){
+    const panel=document.createElement('section'),heading=document.createElement('h3'),message=document.createElement('p'),retry=document.createElement('button');
+    panel.id='instagram-publication';panel.className='review-section';heading.textContent='Instagram 發布狀態';message.id='instagram-publication-message';message.setAttribute('role','status');message.textContent='正在確認實際發布結果…';retry.id='instagram-retry';retry.type='button';retry.className='secondary';retry.textContent='重試發布 Instagram Reel';retry.hidden=true;retry.onclick=()=>retryInstagram(row);panel.append(heading,message,retry);area.append(panel);
+    refreshInstagram(row);
+  }
   if(church==='M+'){
     const block=document.createElement('section'),heading=document.createElement('h3');block.className='review-section';heading.textContent='YouTube 標題與說明';block.append(heading);
     try{const data=weeklyMetadata(row);for(const [label,value] of [['標題',data.title],['說明',data.description]]){const line=document.createElement('div'),name=document.createElement('b'),content=document.createElement('p');line.className='review-item';name.textContent=label;content.textContent=value;line.append(name,content);block.append(line);}}

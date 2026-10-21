@@ -47,6 +47,11 @@ function tab(name) {
     const button = $(`[data-tab="${key}"]`);
     button.setAttribute('aria-current', key === name ? 'page' : 'false');
   }
+  if(name==='editor'&&!state.roles.has('entry')){
+    $('#cash-form').querySelectorAll('input,select,button').forEach(control=>{control.disabled=true;});
+    $('#add-donor').disabled=true;$('#add-anonymous').disabled=true;
+    $('#editor-state').textContent='唯讀：此帳號目前沒有「同工登錄」權限，可依現有權限查看或複審。新增、搜尋會友與修改奉獻需由系統負責人授權「同工登錄」。';
+  }
 }
 
 function newGroup(anonymous = false) {
@@ -65,6 +70,7 @@ function mostRecentSunday() {
 }
 
 function clearEditor() {
+  if(!state.roles.has('entry')){status('此帳號沒有「同工登錄」權限，請由系統負責人於財務人員權限設定。','error');return;}
   state.batch = null; state.dirty = true; state.pendingCounterUserId=null; state.groups = [newGroup()];
   $('#offering-date').value = mostRecentSunday();
   $('#counted-cash').value = '';
@@ -96,6 +102,7 @@ function select(options, value, handler) {
 
 const memberLookups=new WeakMap();
 async function searchMember(group,results){
+ if(!state.roles.has('entry')){results.replaceChildren(textNode('p','此帳號沒有「同工登錄」權限；請由系統負責人於財務人員權限設定。','finance-note finance-member-error'));return;}
  const term=group.name.trim()||group.offeringCode.trim(),request={};memberLookups.set(group,request);
  if(!term){results.replaceChildren();return;}if(state.busy)return;
  const fresh=()=>memberLookups.get(group)===request&&results.isConnected&&state.groups.includes(group)&&group.name.trim()===term;
@@ -113,7 +120,7 @@ async function searchMember(group,results){
     invalidateGroup(group);markDirty();drawGroups();status(`已連結會友 ${member.name}。${group.offeringCode?'奉獻編號與會友資料已帶入。':'會友已連結；奉獻編號尚未設定，請在下方補編號。'}`);
    });results.append(button);
   }
- }catch(error){if(fresh())results.replaceChildren(textNode('p',(error.message||'查找失敗')+' 請按「搜尋會友」重試，已填內容會保留。','finance-note finance-member-error'));}
+ }catch(error){if(fresh())results.replaceChildren(textNode('p',error.message===errors.forbidden?'目前沒有「同工登錄」權限，請由系統負責人於財務人員權限設定；已填內容保留。':(error.message||'查找失敗')+' 請按「搜尋會友」重試，已填內容會保留。','finance-note finance-member-error'));}
 }
 
 function bagTotal(group,bag){return (group.anonymous?['一般／不具名奉獻']:categories).reduce((sum,category)=>sum+(number(bag.amounts[category])||0),0);}
@@ -472,5 +479,5 @@ await work(async () => {
   $('#finance-app').hidden = false; $('#roles-tab').hidden = !state.owner;
   $('#new-batch').hidden = !state.roles.has('entry');
   await workers(); await batches();
-  status('已載入主日奉獻工作區。');
+  status(state.roles.has('entry')?'已載入主日奉獻工作區。':'已載入主日奉獻工作區。此帳號未授權「同工登錄」，可依現有權限查看或複審。');
 });

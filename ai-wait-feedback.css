@@ -1,0 +1,23 @@
+.ai-wait-surface .weekly-media-progress{margin:14px 0;padding:16px;border:1px solid var(--app-border,#e3d9d0);border-radius:16px;background:var(--app-surface,#fff);color:var(--app-ink,#332d28)}
+.ai-wait-surface [data-media-progress]{width:100%;min-width:0}
+.ai-wait-surface [data-media-progress][hidden]{display:none!important}
+.ai-wait-surface .media-progress-heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ai-wait-surface .media-progress-title{flex:1;min-width:120px;font-size:1rem}
+.ai-wait-surface .media-progress-amount{font-size:.9rem;font-weight:700;font-variant-numeric:tabular-nums}
+.ai-wait-surface .media-progress-detail{font-size:.94rem;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere;margin:10px 0}
+.ai-wait-surface .media-progress-detail:empty{display:none}
+.ai-wait-surface .media-progress-bar{display:block;width:100%;height:8px;border:0;border-radius:99px;overflow:hidden;margin:12px 0;accent-color:var(--app-accent,#a9472c)}
+.ai-wait-surface .media-progress-bar::-webkit-progress-bar{background:var(--app-border,#e3d9d0);border-radius:99px}
+.ai-wait-surface .media-progress-bar::-webkit-progress-value{background:var(--app-accent,#a9472c);border-radius:99px}
+.ai-wait-surface .media-progress-footer{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.82rem;line-height:1.6}
+.ai-wait-surface .media-progress-elapsed{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ai-wait-surface .media-activity{position:relative;display:inline-block;flex:none;width:24px;height:24px;color:var(--app-secondary,#68625c)}
+.ai-wait-surface .media-activity span{position:absolute;left:10.5px;top:1px;width:3px;height:6px;border-radius:2px;background:currentColor;transform-origin:1.5px 11px;transform:rotate(var(--spoke-angle));opacity:.25;animation:weekly-media-spoke 1s linear infinite;animation-delay:var(--spoke-delay)}
+.ai-wait-surface .weekly-media-progress:not([data-state="working"]) .media-activity{display:none}
+.ai-wait-surface .weekly-media-progress:not([data-state="working"]) .media-activity span{animation:none}
+@keyframes weekly-media-spoke{0%{opacity:1}100%{opacity:.18}}
+@media(prefers-reduced-motion:reduce){.ai-wait-surface .media-activity span{animation:none;opacity:.55}}
+
+.ai-wait-surface{min-width:0;scroll-margin-top:24px}
+.ai-wait-surface:empty{display:none}
+.ai-wait-surface [data-state="error"]{border-color:#a53b2c}

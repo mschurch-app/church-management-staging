@@ -1,4 +1,4 @@
-import './app-runtime.mjs?v=20261021-startup-update1';
+import './app-runtime.mjs?v=20261022-resume1';
 import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
@@ -32,7 +32,9 @@ if(!window.__churchIosExperience){
   const mountTransition=()=>{if(!transition.isConnected)document.body.append(transition);};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountTransition,{once:true});else mountTransition();
   document.addEventListener('click',event=>{const link=event.target.closest('a[href]');if(!link||event.defaultPrevented||link.target||link.hasAttribute('download')||event.metaKey||event.ctrlKey)return;const url=new URL(link.href,location.href);if(url.origin!==location.origin||url.href===location.href||url.hash&&url.pathname===location.pathname&&url.search===location.search)return;transition.classList.add('is-loading');setTimeout(()=>transition.classList.remove('is-loading'),12000);});
-  window.addEventListener('pageshow',()=>transition.classList.remove('is-loading'));
+  const resetTransient=()=>{transition.classList.remove('is-loading');pressed?.classList.remove('ios-pressed');pressed=null;};
+  window.addEventListener('pageshow',resetTransient);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)resetTransient();});
   if(window.visualViewport){const resize=()=>{const inset=Math.max(0,innerHeight-window.visualViewport.height-window.visualViewport.offsetTop);document.documentElement.style.setProperty('--ios-keyboard-inset',`${inset}px`);document.documentElement.classList.toggle('ios-keyboard-open',inset>100);};window.visualViewport.addEventListener('resize',resize);window.visualViewport.addEventListener('scroll',resize);resize();}
   let edgeStart=null,edgeHint;
   document.addEventListener('touchstart',event=>{edgeStart=null;const touch=event.touches[0];if(event.touches.length!==1||touch.clientX>22||document.querySelector('[data-unsaved-changes="true"],[aria-busy="true"]')||document.querySelector('dialog[open],[role=dialog]:not([hidden])')||event.target.closest('[role=dialog],dialog,input,textarea,select,[contenteditable],.app-hub-grid,.module-bar'))return;edgeStart={x:touch.clientX,y:touch.clientY};},{passive:true});

@@ -1,3 +1,4 @@
+import {installResumeRecovery} from './app-resume.mjs?v=20261022-resume1';
 // Shared device behavior. This module does not read sessions or send business data.
 let mounted=false,banner,copy,action,updateRegistration,updateActivated=false,activationRequested=false,activationTimer=0,onlineTimer=0,revision=0,approvedRevision=0,automaticActivation=false;
 const waitingRegistrations=new WeakSet();
@@ -61,7 +62,9 @@ function mount(){
   for(const type of ['pointerdown','keydown','input','change'])document.addEventListener(type,()=>{interacted=true;},true);
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='hidden'){hiddenAt=Date.now();return;}
-    if(hiddenAt&&Date.now()-hiddenAt>=30000){openingUntil=Date.now()+8000;interacted=false;updateOnOpening();if(isOnline())navigator.serviceWorker?.getRegistration().then(registration=>{watchAppRegistration(registration);return registration?.update();}).catch(()=>{});}
+    // Returning to unfinished work is not a new opening. Fetch the update quietly,
+    // but activate it on the next real opening instead of replacing this document.
+    if(hiddenAt&&Date.now()-hiddenAt>=30000){openingUntil=0;if(isOnline())navigator.serviceWorker?.getRegistration().then(registration=>{watchAppRegistration(registration);return registration?.update();}).catch(()=>{});}
     hiddenAt=0;
   });
   document.addEventListener('input',event=>{const form=event.target.closest('form');if(form){form.dataset.unsavedChanges='true';revision++;}},true);
@@ -81,7 +84,7 @@ function mount(){
     if(isBusy()||revision!==approvedRevision||document.visibilityState==='hidden'||(automaticActivation&&!quietOpening())){refreshBanner();return;}
     reloadUpdated();
   });
-  refreshBanner();installPullToRefresh();
+  refreshBanner();installPullToRefresh();installResumeRecovery({hasDraft,isBusy});
 }
 function installPullToRefresh(){
   if(!(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)||!('ontouchstart'in window))return;

@@ -13,7 +13,7 @@ async function fixture(setup=''){
   window.messages=[];window.clockOffset=0;const now=Date.now;Date.now=()=>now()+clockOffset;
   const sw=new EventTarget();sw.getRegistration=async()=>undefined;Object.defineProperty(navigator,'serviceWorker',{value:sw,configurable:true});
   window.reg=new EventTarget();reg.waiting={postMessage:message=>messages.push(message)};
-  new Function(setup)();window.runtime=await import('/app-runtime.mjs?v=20261021-startup-update1');
+  new Function(setup)();window.runtime=await import('/app-runtime.mjs?v=20261022-resume1');
  },setup);return page;
 }
 const count=p=>p.evaluate(()=>messages.length);
@@ -29,12 +29,12 @@ try{
  p=await fixture("sessionStorage.setItem('church-os-auto-update-reload',String(Date.now()))");await p.evaluate(()=>runtime.watchAppRegistration(reg));ok(await count(p)===0,'recent automatic reload prevents loop');await p.close();
  p=await fixture("Object.defineProperty(navigator,'onLine',{value:false,configurable:true})");await p.evaluate(()=>runtime.watchAppRegistration(reg));ok(await count(p)===0,'offline opening never requests activation');ok(await p.$eval('.app-system-banner',n=>!n.hidden&&n.textContent.includes('沒有網路')),'offline recovery remains available');await p.close();
  p=await fixture();await p.evaluate(()=>{runtime.watchAppRegistration(reg);reg.waiting.postMessage=()=>{throw Error('unavailable')};});await p.type('input','x');await p.evaluate(()=>navigator.serviceWorker.dispatchEvent(new Event('controllerchange')));await p.evaluate(()=>{document.visibilityState;Object.defineProperty(document,'visibilityState',{value:'hidden',configurable:true});document.dispatchEvent(new Event('visibilitychange'));clockOffset=31000;Object.defineProperty(document,'visibilityState',{value:'visible',configurable:true});document.dispatchEvent(new Event('visibilitychange'));});ok(await p.$eval('input',n=>n.value==='x'),'foreground resume preserves existing drafts');await p.close();
- p=await fixture();await p.evaluate(()=>{clockOffset=9000;runtime.watchAppRegistration(reg);Object.defineProperty(document,'visibilityState',{value:'hidden',configurable:true});document.dispatchEvent(new Event('visibilitychange'));clockOffset=40000;Object.defineProperty(document,'visibilityState',{value:'visible',configurable:true});document.dispatchEvent(new Event('visibilitychange'));});ok(await count(p)===1,'clean foreground reopening applies a deferred update');await p.close();
+ p=await fixture();await p.evaluate(()=>{clockOffset=9000;runtime.watchAppRegistration(reg);Object.defineProperty(document,'visibilityState',{value:'hidden',configurable:true});document.dispatchEvent(new Event('visibilitychange'));clockOffset=40000;Object.defineProperty(document,'visibilityState',{value:'visible',configurable:true});document.dispatchEvent(new Event('visibilitychange'));});ok(await count(p)===0,'foreground resume defers updates until a real opening');await p.close();
  p=await fixture();await p.evaluate(()=>{reg.waiting.postMessage=()=>{throw Error('unavailable')};runtime.watchAppRegistration(reg);});ok(await silent(p),'automatic activation failure stays quiet');await p.close();
  const context=await browser.createBrowserContext();p=await context.newPage();
  await p.goto(origin+'/app-offline.html');await p.evaluate(async()=>{await navigator.serviceWorker.register('/church-os-sw.js?startup-baseline',{scope:'/'});await navigator.serviceWorker.ready;});await p.waitForFunction(()=>navigator.serviceWorker.controller!==null);ok(true,'real worker installs and controls page');
  const navigation=p.waitForNavigation({waitUntil:'networkidle0'});
- await p.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261021-startup-update1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?startup-updated',{scope:'/'});module.watchAppRegistration(reg);});
+ await p.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261022-resume1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?startup-updated',{scope:'/'});module.watchAppRegistration(reg);});
  await navigation;ok(await p.evaluate(()=>navigator.serviceWorker.controller?.scriptURL.includes('startup-updated')),'real waiting worker activates and page reloads automatically');ok(await silent(p),'real update reload shows no banner');
  const stamp=await p.evaluate(()=>sessionStorage.getItem('church-os-auto-update-reload'));await p.reload({waitUntil:'networkidle0'});ok(await p.evaluate(()=>sessionStorage.getItem('church-os-auto-update-reload'))===stamp,'reopening after update does not create reload loop');await context.close();
  console.log('TOTAL',checks);

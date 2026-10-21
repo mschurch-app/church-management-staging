@@ -1,5 +1,5 @@
 // Deterministic interactive operations; no cron, agent or model calls.
-export const CAMPAIGN='mplus-routines-20261022', ONBOARD_FROM='2026-10-22';
+export const CAMPAIGN='mplus-routines-20261022', ONBOARD_FROM='2026-10-21';
 const UUID=/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const DAY=['SU','MO','TU','WE','TH','FR','SA'];
 const manager=s=>['pastor','admin'].includes(s.role);
@@ -7,8 +7,9 @@ const iso=x=>new Date(x).toISOString();
 export function localDate(x=Date.now()){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(x));}
 export function routineDefinition(b,now=Date.now()){
  if(typeof b.summary!=='string'||!b.summary.trim()||b.summary.trim().length>200||typeof b.start!=='string'||typeof b.end!=='string'||!UUID.test(b.requestId||''))return null;
- const start=Date.parse(b.start),end=Date.parse(b.end),minutes=(end-start)/60000;
- if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(b.start)||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(b.end)||!Number.isFinite(start)||!Number.isFinite(end)||start<=now||![30,60,90,120].includes(minutes)||localDate(start)!==localDate(end))return null;
+ const allDay=b.allDay===true;const start=Date.parse(b.start+(allDay?'T00:00:00+08:00':'')),end=Date.parse(b.end+(allDay?'T00:00:00+08:00':'')),minutes=(end-start)/60000;
+ if(allDay&&(!/^\d{4}-\d{2}-\d{2}$/.test(b.start)||!/^\d{4}-\d{2}-\d{2}$/.test(b.end)||!Number.isFinite(start)||!Number.isFinite(end)||localDate(start)!==b.start||localDate(end)!==b.end||minutes!==1440||(Number.isFinite(now)&&b.start<localDate(now))))return null;
+ if(!allDay&&(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(b.start)||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(b.end)||!Number.isFinite(start)||!Number.isFinite(end)||start<=now||![30,60,90,120].includes(minutes)||localDate(start)!==localDate(end)))return null;
  if(b.location!==undefined&&(typeof b.location!=='string'||b.location.length>500))return null;
  if(!['daily','weekly','monthly'].includes(b.frequency))return null;
  let rule='RRULE:FREQ='+b.frequency.toUpperCase();const weekday=new Date(localDate(start)+'T12:00:00Z').getUTCDay();
@@ -17,17 +18,17 @@ export function routineDefinition(b,now=Date.now()){
   rule+=';BYDAY='+[...new Set(b.weekdays)].sort().map(d=>DAY[d]).join(',');
  }
  if(b.frequency==='monthly')rule+=';BYMONTHDAY='+Number(localDate(start).slice(-2));
- if(b.until){if(typeof b.until!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(b.until)||!Number.isFinite(Date.parse(b.until+'T12:00:00+08:00'))||localDate(Date.parse(b.until+'T12:00:00+08:00'))!==b.until||b.until<localDate(start))return null;rule+=';UNTIL='+iso(Date.parse(b.until+'T23:59:59+08:00')).replace(/[-:]/g,'').replace('.000','');}
- return {summary:b.summary.trim(),location:(b.location||'').trim(),start:iso(start),end:iso(end),rule,frequency:b.frequency,weekdays:b.frequency==='weekly'?[...new Set(b.weekdays)].sort():[],until:b.until||null};
+ if(b.until){if(typeof b.until!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(b.until)||!Number.isFinite(Date.parse(b.until+'T12:00:00+08:00'))||localDate(Date.parse(b.until+'T12:00:00+08:00'))!==b.until||b.until<localDate(start))return null;rule+=';UNTIL='+(allDay?b.until.replaceAll('-',''):iso(Date.parse(b.until+'T23:59:59+08:00')).replace(/[-:]/g,'').replace('.000',''));}
+ return {summary:b.summary.trim(),location:(b.location||'').trim(),start:allDay?b.start:iso(start),end:allDay?b.end:iso(end),...(allDay?{allDay:true}:{}),rule,frequency:b.frequency,weekdays:b.frequency==='weekly'?[...new Set(b.weekdays)].sort():[],until:b.until||null};
 }
 export function eventPermissions(staff,item){
  const p=item.extendedProperties?.private||{},participants=String(p.pastoralParticipantIds||'').split(',');
  const privateEvent=['private','confidential'].includes(item.visibility);
- return {canReport:!privateEvent&&(manager(staff)||p.mplusCreator===staff.id||participants.includes(staff.id)),canCancel:!privateEvent&&(manager(staff)||p.mplusCreator===staff.id||p.mplusPrimary===staff.id)};
+ return {canReport:!privateEvent&&p.mplusPrimary===staff.id,canCancel:!privateEvent&&(manager(staff)||p.mplusCreator===staff.id||p.mplusPrimary===staff.id)};
 }
 export function stoppedRecurrence(event,now=Date.now()){
- if(Date.parse(event.start?.dateTime||event.start?.date)>=now)return {status:'cancelled'};
- const until=iso(now-1000).replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+ if(Date.parse(event.start?.dateTime||(event.start?.date?event.start.date+'T00:00:00+08:00':''))>=now)return {status:'cancelled'};
+ const until=event.start?.date?localDate(now-86400000).replaceAll('-',''):iso(now-1000).replace(/[-:]/g,'').replace(/\.\d{3}/,'');
  return {recurrence:(event.recurrence||[]).filter(r=>!r.startsWith('RRULE:')).concat((event.recurrence||[]).filter(r=>r.startsWith('RRULE:')).map(r=>r.replace(/;(?:COUNT|UNTIL)=[^;]+/g,'')+';UNTIL='+until))};
 }
 function fail(error,status=400){return {status,data:{ok:false,error}};}
@@ -46,8 +47,10 @@ async function handle(c){
  if(action==='routine-status'){
   const all=await checked(db.from('mplus_work_routines').select('id,created_by,primary_staff_id,participant_ids,title,definition,status').order('created_at'));
   const routines=(all||[]).filter(r=>manager(s)||r.created_by===s.id||r.participant_ids.includes(s.id)||r.primary_staff_id===s.id).map(r=>({...r,canStop:manager(s)||r.created_by===s.id||r.primary_staff_id===s.id}));
-  const row=await checked(db.from('mplus_work_onboarding').select('finished_at,no_routines').eq('staff_id',s.id).eq('campaign',CAMPAIGN).maybeSingle());
-  return ok({routines,canAssign:manager(s),setupRequired:localDate(now)>=ONBOARD_FROM&&!row,setupDone:!!row,selfId:s.id});
+  // Initial setup belongs to the staff account, not a dated release campaign.
+  const completed=await checked(db.from('mplus_work_onboarding').select('finished_at').eq('staff_id',s.id).limit(1));
+  const setupDone=!!completed?.length||(all||[]).some(r=>r.created_by===s.id&&['active','stopped'].includes(r.status));
+  return ok({routines,canAssign:manager(s),setupRequired:localDate(now)>=ONBOARD_FROM&&!setupDone,setupDone,selfId:s.id});
  }
  if(action==='finish-routine-setup'){
   const routines=await checked(db.from('mplus_work_routines').select('id').eq('created_by',s.id).eq('status','active').limit(1));
@@ -55,7 +58,7 @@ async function handle(c){
   await checked(db.from('mplus_work_onboarding').upsert({staff_id:s.id,campaign:CAMPAIGN,no_routines:!routines?.length,finished_at:iso(now)},{onConflict:'staff_id,campaign'}));return ok({finished:true});
  }
  if(action==='save-routine'){
-  const d=routineDefinition(b,-Infinity);if(!d)return fail('invalid_routine');
+  const d=routineDefinition(b,-Infinity);if(!d)return fail('invalid_routine');if(d.allDay&&d.start<localDate(now))return fail('meeting_in_past',409);
   const primary=await c.scheduleTarget(db,s,b.staffId);if(!primary||(!manager(s)&&primary!==s.id))return fail('staff_forbidden',403);
   const people=await c.resolveParticipants(db,primary,b.participantIds);if(!people)return fail('invalid_staff');
   const definition={...d,primary,participants:people.map(p=>p.id).sort()};
@@ -64,27 +67,29 @@ async function handle(c){
   if(row&&(row.created_by!==s.id||row.fingerprint!==fingerprint))return fail('idempotency_conflict',409);
   if(row?.status==='stopped')return fail('routine_stopped',409);
   // Reuse the existing scheduling rules; check the first occurrence before creation.
-  if(!row)for(const p of people){const error=c.scheduleError(Date.parse(d.start),Date.parse(d.end),b.emergency===true,await c.preferences(db,p.id),now);if(error)return fail(error,409);}
+  if(!row&&!d.allDay)for(const p of people){const error=c.scheduleError(Date.parse(d.start),Date.parse(d.end),b.emergency===true,await c.preferences(db,p.id),now);if(error)return fail(error,409);}
   const id=b.requestId.replaceAll('-','').toLowerCase();
   if(!row){const inserted=await db.from('mplus_work_routines').insert({id:b.requestId,created_by:s.id,primary_staff_id:primary,participant_ids:people.map(p=>p.id),title:d.summary,definition,fingerprint,google_event_id:id,status:'pending'});
    if(inserted.error){row=await checked(db.from('mplus_work_routines').select('*').eq('id',b.requestId).maybeSingle());if(!row||row.created_by!==s.id||row.fingerprint!==fingerprint)return fail('idempotency_conflict',409);}}
-  const event={id,summary:d.summary,location:d.location,start:{dateTime:d.start,timeZone:'Asia/Taipei'},end:{dateTime:d.end,timeZone:'Asia/Taipei'},recurrence:[d.rule],description:'共同參與同工：'+people.map(p=>p.display_name).join('、'),extendedProperties:{private:{pastoralParticipantIds:people.map(p=>p.id).sort().join(','),mplusRoutine:b.requestId,mplusCreator:s.id,mplusPrimary:primary,mplusFingerprint:fingerprint}}};
+  const event={id,summary:d.summary,location:d.location,start:d.allDay?{date:d.start}:{dateTime:d.start,timeZone:'Asia/Taipei'},end:d.allDay?{date:d.end}:{dateTime:d.end,timeZone:'Asia/Taipei'},recurrence:[d.rule],description:'共同參與同工：'+people.map(p=>p.display_name).join('、'),extendedProperties:{private:{pastoralParticipantIds:people.map(p=>p.id).sort().join(','),mplusRoutine:b.requestId,mplusCreator:s.id,mplusPrimary:primary,mplusFingerprint:fingerprint}}};
   const saved=await google('', 'POST',event);
   if(saved.extendedProperties?.private?.mplusFingerprint!==fingerprint||saved.status==='cancelled')return fail('idempotency_conflict',409);
   await checked(db.from('mplus_work_routines').update({status:'active',updated_at:iso(now)}).eq('id',b.requestId).eq('created_by',s.id).eq('status','pending'));
-  const notifications=await notify(people.filter(p=>p.id!==s.id).map(p=>p.id),'routine_created','例行行程已安排',`例行行程：${d.summary}\n首次：${d.start}\n已寫入共用行事曆。`);
+  // A confirmed first save completes setup even if the user closes before the final screen.
+  await checked(db.from('mplus_work_onboarding').upsert({staff_id:s.id,campaign:CAMPAIGN,no_routines:false,finished_at:iso(now)},{onConflict:'staff_id,campaign'}));
+  const notifications=await notify(people.filter(p=>p.id!==s.id).map(p=>p.id),'routine_created','例行工作已安排',`例行工作：${d.summary}\n首次：${d.start}\n已寫入共用行事曆。`);
   return ok({id:b.requestId,eventId:id,notifications});
  }
  if(action==='stop-routine'){
   if(!UUID.test(b.routineId||'')||typeof b.note!=='string'||!b.note.trim()||b.note.length>3000)return fail('invalid_report');
   const row=await checked(db.from('mplus_work_routines').select('*').eq('id',b.routineId).maybeSingle());
   if(!row||(!manager(s)&&![row.created_by,row.primary_staff_id].includes(s.id)))return fail('report_forbidden',403);
-  if(row.status==='stopped'){if(row.definition.stop_note!==b.note.trim())return fail('event_already_reported',409);return ok({stopped:true,notifications:await notify(row.participant_ids.filter(id=>id!==s.id),'routine_stopped','例行已停止',`例行行程「${row.title}」已停止後續安排。\n原因：${b.note.trim()}`)});}
+  if(row.status==='stopped'){if(row.definition.stop_note!==b.note.trim())return fail('event_already_reported',409);return ok({stopped:true,notifications:await notify(row.participant_ids.filter(id=>id!==s.id),'routine_stopped','例行已停止',`例行工作「${row.title}」已停止後續安排。\n原因：${b.note.trim()}`)});}
   const event=await google(row.google_event_id);
   if(event.extendedProperties?.private?.mplusRoutine!==row.id)return fail('event_forbidden',403);
   if(event.status!=='cancelled')await google(row.google_event_id,'PATCH',stoppedRecurrence(event,now),event.etag);
   await checked(db.from('mplus_work_routines').update({status:'stopped',definition:{...row.definition,stop_note:b.note.trim(),stopped_by:s.id,stopped_at:iso(now)},updated_at:iso(now)}).eq('id',row.id));
-  return ok({stopped:true,notifications:await notify(row.participant_ids.filter(id=>id!==s.id),'routine_stopped','例行已停止',`例行行程「${row.title}」已停止後續安排。\n原因：${b.note.trim()}`)});
+  return ok({stopped:true,notifications:await notify(row.participant_ids.filter(id=>id!==s.id),'routine_stopped','例行已停止',`例行工作「${row.title}」已停止後續安排。\n原因：${b.note.trim()}`)});
  }
  if(action==='report-event'){
   if(typeof b.eventId!=='string'||!/^[a-zA-Z0-9_-]{5,256}$/.test(b.eventId)||!['completed','cancelled'].includes(b.outcome)||typeof b.note!=='string'||!b.note.trim()||b.note.length>3000)return fail('invalid_report');
@@ -124,7 +129,7 @@ async function handle(c){
   const row=await checked(db.from('pastoral_tasks').select('*').eq('id',b.taskId).eq('entity_key','mplus').maybeSingle());
   if(!row||row.payload?.workflow!=='mplus_assignment')return fail('task_not_found',404);
   const assigned=row.assigned_to===s.id,shared=(row.payload?.shared_assignee_ids||[]).includes(s.id),manage=manager(s)||row.created_by===s.id;
-  if(b.outcome==='cancelled'?!manage:b.outcome==='accepted'?(!assigned&&!manager(s)):(!assigned&&!shared&&!manager(s)))return fail('report_forbidden',403);
+  if(b.outcome==='cancelled'?!manage:!assigned)return fail('report_forbidden',403);
   const expected=b.outcome==='accepted'?'pending':'approved',next={accepted:'approved',completed:'completed',cancelled:'cancelled',progress:row.status}[b.outcome];
   if(row.status===next&&['completed','cancelled','accepted'].includes(b.outcome)){if(b.outcome==='completed'&&row.payload?.completion_report!==b.note.trim()||b.outcome==='cancelled'&&row.payload?.cancel_report!==b.note.trim())return fail('event_already_reported',409);return ok({status:row.status,notifications:await notify([row.created_by,row.assigned_to,...(row.payload?.shared_assignee_ids||[])].filter(id=>id&&id!==s.id),'work_'+b.outcome,'工作進度',`工作「${row.title}」${{accepted:'已接受',completed:'已完成',cancelled:'已取消'}[b.outcome]}。\n回報：${b.note.trim()}`)});}
   if(b.outcome!=='cancelled'&&row.status!==expected||b.outcome==='cancelled'&&!['pending','approved'].includes(row.status))return fail('invalid_transition',409);

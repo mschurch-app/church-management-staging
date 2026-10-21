@@ -1,0 +1,22 @@
+{
+  "checks": [
+    "desktop: cancel",
+    "desktop: escape",
+    "desktop: success",
+    "desktop: save-failed",
+    "desktop: reel-failed",
+    "desktop: api-failed",
+    "desktop: notification-pending",
+    "phone: cancel",
+    "phone: escape",
+    "phone: success",
+    "phone: save-failed",
+    "phone: reel-failed",
+    "phone: api-failed",
+    "phone: notification-pending"
+  ],
+  "production_data_writes": false,
+  "line_notifications_sent": false,
+  "real_iphone": "not_tested",
+  "safari": "not_tested"
+}

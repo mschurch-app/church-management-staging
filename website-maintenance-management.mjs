@@ -1,5 +1,5 @@
 import {programAssignment} from './weekly-program-autofill.mjs?v=20261012-schedule1';
-import {initWeeklyYoutube} from './weekly-youtube.mjs?v=20261015-two-track1';
+import {initWeeklyYoutube} from './weekly-youtube.mjs?v=20261021-weekly-link1';
 import {initWeeklyCanva} from './weekly-canva.mjs?v=20261021-canva-choice1';
 import {createMediaProgress} from './weekly-media-progress.mjs?v=20261010-media-progress1';
 import {db} from './admin-db.mjs?v=20261012-readable2';

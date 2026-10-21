@@ -57,7 +57,7 @@ async function graph(path:string,token:string,method='GET',parameters:Record<str
   if(!response.ok||data?.error){const error=new Error('instagram_api');(error as Error&{details?:unknown}).details=data?.error||data;throw error;}
   return data;
 }
-function apiErrorCode(error:unknown){const details=(error as Error&{details?:{code?:number;error_subcode?:number}})?.details;if(details?.code===10||details?.code===200)return 'permission_missing';if(details?.code===190)return 'token_expired';return 'instagram_api';}
+function apiErrorCode(error:unknown){const known=(error as Error)?.message;if(known==='instagram_processing'||known==='instagram_timeout'||known==='instagram_already_published')return known;const details=(error as Error&{details?:{code?:number;error_subcode?:number}})?.details;if(details?.code===10||details?.code===200)return 'permission_missing';if(details?.code===190)return 'token_expired';return 'instagram_api';}
 async function publishingEnabled(db:ReturnType<typeof createClient>,church:string,field:'instagram_sermon_enabled'|'instagram_weekly_reel_enabled'){
   const result=await db.from('media_publishing_settings').select(field).eq('church_id',church).maybeSingle();
   if(result.error)throw new Error('publishing_settings_unavailable');
@@ -91,24 +91,26 @@ async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,
   const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
   if(connectionResult.error||!connection)throw new Error('not_connected');
   const caption=String(bulletin.reel_caption||`${bulletin.title}\n${bulletin.service_date}\n\n#Mplus大雅教會 #主日週報 #台中教會`).slice(0,2200),now=new Date().toISOString();
-  const previous=await db.from('instagram_publication_jobs').select('status,instagram_media_id').eq('bulletin_id',bulletin.id).eq('bulletin_version',bulletin.version).maybeSingle();
+  const previous=await db.from('instagram_publication_jobs').select('status,instagram_media_id,container_id,media_path,attempt_count,started_at').eq('bulletin_id',bulletin.id).eq('bulletin_version',bulletin.version).maybeSingle();
   if(previous.data?.status==='published'&&previous.data.instagram_media_id)return {status:'published',mediaId:previous.data.instagram_media_id};
-  const queued=await db.from('instagram_publication_jobs').upsert({church_id:church,bulletin_id:bulletin.id,bulletin_version:bulletin.version,media_path:bulletin.reel_video_path,caption,status:'processing',requested_by:userId,requested_at:now,started_at:now,updated_at:now},{onConflict:'bulletin_id,bulletin_version'}).select('id,status,instagram_media_id').single();
+  if(previous.data?.status==='processing'&&Date.now()-new Date(previous.data.started_at||0).getTime()<120000)return {status:'processing'};
+  const reusableContainer=previous.data?.media_path===bulletin.reel_video_path?String(previous.data?.container_id||''):'';
+  const queued=await db.from('instagram_publication_jobs').upsert({church_id:church,bulletin_id:bulletin.id,bulletin_version:bulletin.version,media_path:bulletin.reel_video_path,caption,status:'processing',requested_by:userId,requested_at:now,started_at:now,updated_at:now,attempt_count:Number(previous.data?.attempt_count||0)+1,container_id:reusableContainer||null,error_code:null},{onConflict:'bulletin_id,bulletin_version'}).select('id,status,instagram_media_id').single();
   if(queued.error||!queued.data)throw new Error('job_store');
   try{
     const token=await decryptToken(connection.access_token_ciphertext,connection.access_token_iv,serviceKey),videoUrl=db.storage.from('church-website-public-media').getPublicUrl(bulletin.reel_video_path).data.publicUrl;
     const coverUrl=bulletin.reel_cover_image_path?db.storage.from('church-website-public-media').getPublicUrl(bulletin.reel_cover_image_path).data.publicUrl:null;
-    const created=await graph(`${connection.instagram_user_id}/media`,token,'POST',{media_type:'REELS',video_url:videoUrl,caption,share_to_feed:'true',...(coverUrl?{cover_url:coverUrl}:{})}),containerId=String(created.id||'');
+    const created=reusableContainer?null:await graph(`${connection.instagram_user_id}/media`,token,'POST',{media_type:'REELS',video_url:videoUrl,caption,share_to_feed:'true',...(coverUrl?{cover_url:coverUrl}:{})}),containerId=reusableContainer||String(created?.id||'');
     if(!containerId)throw new Error('instagram_api');
-    await db.from('instagram_publication_jobs').update({container_id:containerId,attempt_count:1,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
+    await db.from('instagram_publication_jobs').update({container_id:containerId,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
     let ready=false;
-    for(let attempt=0;attempt<20;attempt++){await wait(2000);const state=await graph(containerId,token,'GET',{fields:'status_code,status'});if(state.status_code==='FINISHED'){ready=true;break;}if(['ERROR','EXPIRED'].includes(state.status_code))throw new Error('instagram_processing');}
+    for(let attempt=0;attempt<20;attempt++){if(attempt)await wait(2000);const state=await graph(containerId,token,'GET',{fields:'status_code,status'});if(state.status_code==='FINISHED'){ready=true;break;}if(state.status_code==='PUBLISHED')throw new Error('instagram_already_published');if(['ERROR','EXPIRED'].includes(state.status_code))throw new Error('instagram_processing');}
     if(!ready)throw new Error('instagram_timeout');
     const published=await graph(`${connection.instagram_user_id}/media_publish`,token,'POST',{creation_id:containerId}),mediaId=String(published.id||'');
     if(!mediaId)throw new Error('instagram_api');
     await db.from('instagram_publication_jobs').update({status:'published',instagram_media_id:mediaId,published_at:new Date().toISOString(),error_code:null,updated_at:new Date().toISOString()}).eq('id',queued.data.id);
     return {status:'published',mediaId};
-  }catch(error){const code=apiErrorCode(error);await db.from('instagram_publication_jobs').update({status:'failed',error_code:code,updated_at:new Date().toISOString()}).eq('id',queued.data.id);if(code==='token_expired')await db.from('instagram_publishing_connections').update({status:'expired',last_error:code,updated_at:new Date().toISOString()}).eq('church_id',church);throw new Error(code);}
+  }catch(error){const code=apiErrorCode(error),details=(error as Error&{details?:{code?:number;error_subcode?:number}})?.details;console.error('weekly_reel_publish_failed',{code,metaCode:details?.code||null,metaSubcode:details?.error_subcode||null,containerId:reusableContainer||null});await db.from('instagram_publication_jobs').update({status:'failed',error_code:code,updated_at:new Date().toISOString()}).eq('id',queued.data.id);if(code==='token_expired')await db.from('instagram_publishing_connections').update({status:'expired',last_error:code,updated_at:new Date().toISOString()}).eq('church_id',church);throw new Error(code);}
 }
 
 async function publishSermon(db:ReturnType<typeof createClient>,serviceKey:string,church:string,draftId:string,userId:string|null){
@@ -153,7 +155,7 @@ Deno.serve(async request=>{
   if(origin!==APP_ORIGIN&&!internal)return json(origin,{ok:false,error:'forbidden'},403);
   const user=internal?null:await currentUser(request,client.db);if(!internal&&!user)return json(origin,{ok:false,error:'login_required'},401);
   const rights=internal?{editor:true,reviewer:true}:await permissions(client.db,user!.id,church);
-  if(!(body.action==='save_reel'||body.action==='publication_status'?rights.editor:rights.reviewer))return json(origin,{ok:false,error:'forbidden'},403);
+  if(!(body.action==='save_reel'?rights.editor:body.action==='publication_status'?(rights.editor||rights.reviewer):rights.reviewer))return json(origin,{ok:false,error:'forbidden'},403);
   try{
     if(body.action==='status'){
       const result=await client.db.from('instagram_publishing_connections').select('username,instagram_user_id,account_type,status,connected_at,last_verified_at,last_error').eq('church_id',church).maybeSingle();
@@ -202,7 +204,7 @@ Deno.serve(async request=>{
     return json(origin,{ok:false,error:'invalid_action'},400);
   }catch(error){
     const message=error instanceof Error?error.message:'';
-    const safeErrors=new Set(['invalid_token','publishing_disabled','not_connected','permission_missing','token_expired','sermon_image_missing','sermon_video_missing','sermon_not_approved','reel_media_missing','job_store','instagram_api','instagram_processing','instagram_timeout','publishing_settings_unavailable']);
+    const safeErrors=new Set(['invalid_token','publishing_disabled','not_connected','permission_missing','token_expired','sermon_image_missing','sermon_video_missing','sermon_not_approved','reel_media_missing','job_store','instagram_api','instagram_processing','instagram_timeout','instagram_already_published','publishing_settings_unavailable']);
     const code=safeErrors.has(message)?message:'unavailable';
     return json(origin,{ok:false,error:code},code==='invalid_token'?400:code==='publishing_disabled'?409:503);
   }

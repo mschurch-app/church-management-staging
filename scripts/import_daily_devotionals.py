@@ -65,7 +65,7 @@ def main() -> None:
         item={field:row.get(field,"") for field in FIELDS}
         for field in ("day_number","week_number","chapter_count"):item[field]=int(item[field])
         item["scripture_is_excerpt"]="…" in item["scripture_text"] or "..." in item["scripture_text"]
-        item["review_status"]="initial_review";items.append(item)
+        item["review_status"]="final_review";items.append(item)
     args.out.mkdir(parents=True,exist_ok=True);json_path=args.out/f"devotionals-{args.month}.json";json_path.write_text(json.dumps({"church_id":"M+","source_file":args.workbook.name,"items":items},ensure_ascii=False,indent=2)+"\n")
     fields=["church_id"]+FIELDS+["scripture_is_excerpt","scripture_version","scripture_source","scripture_license_note","review_status"]
     lines=[f"-- Generated from {args.workbook.name}","-- Insert-only seed: existing reviewed dates are never overwritten.","begin;"]

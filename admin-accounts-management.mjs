@@ -1,4 +1,4 @@
-import {readAccess} from './admin-access.mjs?v=20261009-stage1';
+import {readAccess} from './admin-access.mjs?v=20261021-work-roles1';
 export {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261010-season-test1';
 import {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES} from './app-function-definitions.mjs?v=20261010-season-test1';
 async function signedIn(db){await readAccess(db);}
@@ -11,7 +11,7 @@ export async function saveAdminBundle(db,row,church,input,requestId){
   const result=await db.rpc('save_admin_account_bundle',{p_user:row.user_id,p_church:church,p_input:input,p_expected_version:row.version,p_request_id:requestId});
   if(result.error||result.data?.saved!==true){
     const code=result.error?.message||'';
-    const messages={account_changed:'其他管理員已更新這位同工，請重新開啟資料確認後再儲存。',scope_without_grant:'負責服事類別前，請勾選服事安排權限。',owner_immutable:'專案擁有者的權限不可變更。',invalid_profile:'姓名與職稱皆為必填，最多 60 個字。',role_grants_mismatch:'角色與權限不一致，請改選自訂權限後重試。',not_owner:'目前沒有管理帳號的權限，請重新登入。',session_revoked:'登入已失效，請重新登入。',request_reused:'本次送出內容已改變，請重新開啟編輯畫面。'};
+    const messages={work_profile_changed:'其他管理者已更新此人的事工分工，請重新開啟後再儲存。',invalid_work_profile:'請確認教會職位與事工分工設定。',invalid_work_assignment:'事工分工選項不正確，請重新開啟設定。',duplicate_work_assignment:'同一領域請指定一項主責，其餘可選共同參與。',invalid_reminder_route:'請選擇群組或個人工作提醒。',account_changed:'其他管理員已更新這位同工，請重新開啟資料確認後再儲存。',scope_without_grant:'負責服事類別前，請勾選服事安排權限。',owner_immutable:'專案擁有者的權限不可變更。',invalid_profile:'姓名與職稱皆為必填，最多 60 個字。',role_grants_mismatch:'角色與權限不一致，請改選自訂權限後重試。',not_owner:'目前沒有管理帳號的權限，請重新登入。',session_revoked:'登入已失效，請重新登入。',request_reused:'本次送出內容已改變，請重新開啟編輯畫面。'};
     throw new Error(messages[code]||'儲存結果尚未確認；請保留此畫面重試，或重新整理名單確認。');
   }
   return result.data;

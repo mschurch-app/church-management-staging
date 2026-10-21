@@ -1,4 +1,4 @@
-import {handleWorkPlanner,eventPermissions} from './work-planner.mjs';
+import {handleWorkPlanner,eventPermissions,calendarEventTitle} from './work-planner.mjs';
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {notifyStaffDual} from './vendor/dual-notification.mjs';
 import {BUFFER_MS, DEFAULT_WORK_DAYS, DEFAULT_WORK_END, DEFAULT_WORK_START, MEETING_MINUTES, scheduleError} from './calendar-policy.ts';
@@ -215,6 +215,7 @@ function readAppointment(body:Record<string,unknown>){
   if(body.location!==undefined&&typeof body.location!=='string')return null;
   const location=typeof body.location==='string'?body.location.trim():'';
   if(location.length>500)return null;
+  if(body.allDay===true){const day=typeof body.start==='string'&&validCalendarDate(body.start)?body.start:null,until=typeof body.end==='string'&&validCalendarDate(body.end)?body.end:null;if(!day||!until)return null;const start=Date.parse(day+'T00:00:00+08:00'),end=Date.parse(until+'T00:00:00+08:00');const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());if(end-start!==86400000||day<today)return null;return {summary:body.summary.trim(),location,start,end,allDay:true,emergency:false};}
   let start:number,end:number;
   try{start=parseRfc3339(body.start);end=parseRfc3339(body.end);}catch{return null;}
   if(end<=start||end-start>120*60*1000||!MEETING_MINUTES.includes((end-start)/60000))return null;
@@ -240,24 +241,24 @@ async function freeBusy(token:string,start:string,end:string){
   return calendar.busy as Array<{start:string;end:string}>;
 }
 
-async function eventAlreadyCreated(token:string,requestId:string,eventId:string,appointment:{summary:string;location:string;start:number;end:number},participants:Array<{id:string;display_name:string;line_subject:string|null}>){
+async function eventAlreadyCreated(token:string,requestId:string,eventId:string,appointment:{summary:string;location:string;start:number;end:number;allDay?:boolean},participants:Array<{id:string;display_name:string;line_subject:string|null}>){
   const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${eventId}`;
   const response=await fetch(url,{headers:{authorization:`Bearer ${token}`},redirect:'error',signal:AbortSignal.timeout(12000)});
   if(response.status===404)return false;
   if(!response.ok)throw new Error('calendar_api');
   const event=await response.json();
   const privateProps=event.extendedProperties?.private||{};
-  return privateProps.pastoralRequestId===requestId&&privateProps.pastoralParticipantIds===[...participants].map(person=>person.id).sort().join(',')&&event.summary===appointment.summary&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||'')===appointment.start&&Date.parse(event.end?.dateTime||'')===appointment.end;
+  return privateProps.pastoralRequestId===requestId&&privateProps.pastoralParticipantIds===[...participants].map(person=>person.id).sort().join(',')&&[appointment.summary,calendarEventTitle(appointment.summary,participants[0].display_name)].includes(event.summary)&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||(event.start?.date?event.start.date+'T00:00:00+08:00':''))===appointment.start&&Date.parse(event.end?.dateTime||(event.end?.date?event.end.date+'T00:00:00+08:00':''))===appointment.end;
 }
-async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number},participants:Array<{id:string;display_name:string;line_subject:string|null}>,creatorId:string){
+async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number;allDay?:boolean},participants:Array<{id:string;display_name:string;line_subject:string|null}>,creatorId:string){
   const eventId=requestId.toLowerCase().replaceAll('-','');
   const base=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`;
   if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
-  const busy=await freeBusy(token,new Date(appointment.start-BUFFER_MS).toISOString(),new Date(appointment.end+BUFFER_MS).toISOString());
+  const busy=appointment.allDay?[]:await freeBusy(token,new Date(appointment.start-BUFFER_MS).toISOString(),new Date(appointment.end+BUFFER_MS).toISOString());
   if(busy.length)return {created:false,conflict:true};
-  const event={id:eventId,summary:appointment.summary,...(appointment.location?{location:appointment.location}:{}),
-    start:{dateTime:new Date(appointment.start).toISOString(),timeZone:'Asia/Taipei'},
-    end:{dateTime:new Date(appointment.end).toISOString(),timeZone:'Asia/Taipei'},
+  const event={id:eventId,summary:calendarEventTitle(appointment.summary,participants[0].display_name),...(appointment.location?{location:appointment.location}:{}),
+    start:appointment.allDay?{date:new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(appointment.start))}:{dateTime:new Date(appointment.start).toISOString(),timeZone:'Asia/Taipei'},
+    end:appointment.allDay?{date:new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(appointment.end))}:{dateTime:new Date(appointment.end).toISOString(),timeZone:'Asia/Taipei'},
     description:`共同參與同工：${participants.map(person=>person.display_name).join('、')}`,
     extendedProperties:{private:{pastoralRequestId:requestId,mplusCreator:creatorId,mplusPrimary:participants[0].id,pastoralParticipantIds:participants.map(person=>person.id).sort().join(',')}}};
   const response=await fetch(`${base}?sendUpdates=none`,{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(event)});
@@ -317,7 +318,7 @@ async function sendCoworkerPush(db:ReturnType<typeof adminClient>,recipient:{id:
   return status;
 }
 async function notifyMeetingParticipants(db:ReturnType<typeof adminClient>,people:Array<{id:string;display_name:string;line_subject:string|null}>,
-  requestId:string,appointment:{summary:string;location:string;start:number;end:number}){
+  requestId:string,appointment:{summary:string;location:string;start:number;end:number;allDay?:boolean}){
   const date=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'medium',timeStyle:'short'}).format(new Date(appointment.start));
   const results=await Promise.all(people.map(person=>sendCoworkerPush(db,person,'calendar_participant',requestId,
     `${appointment.summary}\n時間：${date}\n地點：${appointment.location||'未指定'}\n共同參與：${people.map(item=>item.display_name).join('、')}`)));
@@ -482,7 +483,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     if(!targetStaffId)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},403);
     const participants=await resolveMeetingParticipants(db,targetStaffId,body.participantIds);
     if(!participants)return json(APP_ORIGIN,{ok:false,error:'invalid_staff'},400);
-    for(const person of participants){
+    if(!appointment.allDay)for(const person of participants){
       const policy=scheduleError(appointment.start,appointment.end,appointment.emergency,await schedulePreferences(db,person.id));
       if(policy)return json(APP_ORIGIN,{ok:false,error:policy},409);
     }

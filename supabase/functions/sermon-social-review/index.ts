@@ -20,10 +20,50 @@ async function publicationForDraft(db:any,draftId:string){const r=await db.from(
 function cleaned(body:any,draft?:any){const array=(value:any)=>Array.isArray(value)?value.map(x=>String(x).trim()).filter(Boolean).slice(0,12):[];return {speaker:String(body.speaker||'').trim().slice(0,100),scripture:String(body.scripture||'').trim().slice(0,300),sermon_start_seconds:Number(body.start)||null,sermon_end_seconds:Number(body.end)||null,outline:array(body.outline),key_points:array(body.keyPoints),applications:array(body.applications),caption:String(body.caption||'').trim().slice(0,2200),social_image_url:draft?.social_media_type==='reel'?draft.social_image_url:String(body.socialImageUrl||'').trim()||null,updated_at:new Date().toISOString()};}
 function validReel(draft:any){return draft.social_media_type==='reel'&&new RegExp('^M\\+/sermons/'+draft.id+'/[a-f0-9]{64}\\.mp4$','i').test(String(draft.social_video_path||''))&&Boolean(draft.social_image_url);}
 async function reelAssetsExist(db:any,draft:any){if(!validReel(draft))return false;const cover=String(draft.social_image_url||''),prefix=MEDIA+'M%2B/sermons/'+draft.id+'/';if(!cover.startsWith(prefix)||!/[a-f0-9]{64}\.(?:jpg|jpeg|png|webp)$/i.test(cover.slice(prefix.length)))return false;const coverPath='M+/sermons/'+draft.id+'/'+decodeURIComponent(cover.slice(prefix.length));const [videoInfo,coverInfo]=await Promise.all([db.storage.from('church-website-public-media').info(draft.social_video_path),db.storage.from('church-website-public-media').info(coverPath)]);return !videoInfo.error&&!coverInfo.error&&Number(videoInfo.data?.size)>0&&Number(coverInfo.data?.size)>0;}
+function legacySocialImage(value:string){
+ try{
+  const url=new URL(value),storage=new URL(Deno.env.get('SUPABASE_URL')||''),prefix='/storage/v1/object/public/church-media/';
+  if(url.protocol!=='https:'||url.origin!==storage.origin||url.search||url.hash||!url.pathname.startsWith(prefix))return null;
+  const path=decodeURIComponent(url.pathname.slice(prefix.length));
+  if(!/^sermon-social\/[a-z0-9_-]+\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp)$/i.test(path))return null;
+  return {path,mime:/\.png$/i.test(path)?'image/png':/\.webp$/i.test(path)?'image/webp':'image/jpeg'};
+ }catch{return null;}
+}
+function appSocialImage(value:string){
+ try{
+  const url=new URL(value),version=url.searchParams.get('v');
+  if(url.origin!==APP||url.hash||url.searchParams.size>(version?1:0)||version&&!/^[a-z0-9_-]{1,40}$/i.test(version))return null;
+  if(!/^\/assets\/sermon-social\/(?:[a-z0-9_-]+\/)?[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp)$/i.test(url.pathname))return null;
+  return {url:value,mime:/\.png$/i.test(url.pathname)?'image/png':/\.webp$/i.test(url.pathname)?'image/webp':'image/jpeg'};
+ }catch{return null;}
+}
+function canonicalSocialImage(value:string,draftId:string){
+ const prefix=MEDIA+'M%2B/sermons/'+draftId+'/';
+ return value.startsWith(prefix)&&/^[a-f0-9]{64}\.(?:jpg|png|webp)$/i.test(value.slice(prefix.length));
+}
 async function persistSocialImage(db:any,draftId:string,value:string){
- const match=value.match(/^data:(image\/(?:jpeg|png|webp))(?:;name=\/[^;,]*)?;base64,([A-Za-z0-9+/]+={0,2})$/i);
- if(!match)return value;
- const mime=match[1].toLowerCase(),bytes=Uint8Array.from(atob(match[2]),c=>c.charCodeAt(0));
+ if(canonicalSocialImage(value,draftId)){
+  const path='M+/sermons/'+draftId+'/'+value.split('/').pop(),info=await db.storage.from('church-website-public-media').info(path);
+  if(info.error||!(Number(info.data?.size)>0))throw new Error('sermon_image_invalid');
+  return value;
+ }
+ const match=value.match(/^data:(image\/(?:jpeg|png|webp))(?:;name=\/[^;,]*)?;base64,([A-Za-z0-9+/]+={0,2})$/i),legacy=match?null:legacySocialImage(value),app=match||legacy?null:appSocialImage(value);
+ if(!match&&!legacy&&!app)throw new Error('sermon_image_invalid');
+ let mime:string,bytes:Uint8Array;
+ if(match){mime=match[1].toLowerCase();bytes=Uint8Array.from(atob(match[2]),c=>c.charCodeAt(0));}
+ else if(legacy){
+  mime=legacy!.mime;
+  const source=db.storage.from('church-media'),info=await source.info(legacy!.path);
+  if(info.error||!info.data||Number(info.data.size)<1||Number(info.data.size)>5*1024*1024)throw new Error('sermon_image_invalid');
+  const downloaded=await source.download(legacy!.path);
+  if(downloaded.error||!downloaded.data)throw new Error('sermon_image_upload_failed');
+  bytes=new Uint8Array(await downloaded.data.arrayBuffer());
+ }else{
+  mime=app!.mime;
+  const response=await fetch(app!.url,{signal:AbortSignal.timeout(15000),redirect:'error'});
+  if(!response.ok||Number(response.headers.get('content-length')||0)>5*1024*1024)throw new Error('sermon_image_invalid');
+  bytes=new Uint8Array(await response.arrayBuffer());
+ }
  if(bytes.length>5*1024*1024)throw new Error('sermon_image_too_large');
  const valid=mime==='image/jpeg'?bytes.length>=3&&bytes[0]===0xff&&bytes[1]===0xd8&&bytes[2]===0xff:mime==='image/png'?bytes.length>=8&&bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4e&&bytes[3]===0x47:mime==='image/webp'?bytes.length>=12&&String.fromCharCode(...bytes.slice(0,4))==='RIFF'&&String.fromCharCode(...bytes.slice(8,12))==='WEBP':false;
  if(!valid)throw new Error('sermon_image_invalid');
@@ -31,6 +71,15 @@ async function persistSocialImage(db:any,draftId:string,value:string){
  const uploaded=await db.storage.from('church-website-public-media').upload(path,bytes,{contentType:mime,cacheControl:'3600',upsert:true});
  if(uploaded.error)throw new Error('sermon_image_upload_failed');
  return MEDIA+path.split('/').map(encodeURIComponent).join('/');
+}
+async function ensureApprovedSermonImage(db:any,draftId:string){
+ const result=await db.from('sermon_social_drafts').select('status,review_stage,social_media_type,social_image_url').eq('id',draftId).single(),draft=result.data;
+ if(result.error||!draft||draft.status!=='approved'||draft.review_stage!=='completed')throw new Error('sermon_image_migration_failed');
+ if(draft.social_media_type==='reel')return;
+ const url=await persistSocialImage(db,draftId,String(draft.social_image_url));
+ if(url===draft.social_image_url)return;
+ const saved=await db.from('sermon_social_drafts').update({social_image_url:url,updated_at:new Date().toISOString()}).eq('id',draftId).eq('status','approved').eq('social_image_url',draft.social_image_url).select('id').maybeSingle();
+ if(saved.error||!saved.data)throw new Error('sermon_image_migration_failed');
 }
 
 async function subtitleState(db:any,draftId:string,includeCues=true){const r=await db.from('sermon_subtitle_segments').select(includeCues?'segment_index,cues,reviewed_cues,review_status,review_error':'segment_index,review_status').eq('draft_id',draftId).order('segment_index');if(r.error)throw r.error;const rows=r.data||[];return {rows,ready:rows.length>0&&rows.every((x:any)=>x.review_status==='completed'),cues:rows.flatMap((x:any)=>x.review_status==='completed'&&Array.isArray(x.reviewed_cues)?x.reviewed_cues:Array.isArray(x.cues)?x.cues:[])};}
@@ -41,7 +90,7 @@ async function publishApproved(db:any,req:Request,draft:any){
  const setting=await db.from('media_publishing_settings').select('instagram_sermon_enabled,youtube_captions_enabled').eq('church_id','M+').maybeSingle();
  if(setting.error)throw new Error('無法讀取發布設定。');
  if(setting.data?.instagram_sermon_enabled===true){
-  try{const response=await fetch((Deno.env.get('SUPABASE_URL')||'')+'/functions/v1/instagram-publishing',{method:'POST',headers:{authorization:req.headers.get('authorization')||'','content-type':'application/json',origin:APP},body:JSON.stringify({action:'publish_sermon',church:'M+',draftId:draft.id}),signal:AbortSignal.timeout(60000)}),data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(String(data.error||'instagram_publish_failed'));result.instagram={status:'published',...data};}
+  try{await ensureApprovedSermonImage(db,draft.id);const response=await fetch((Deno.env.get('SUPABASE_URL')||'')+'/functions/v1/instagram-publishing',{method:'POST',headers:{authorization:req.headers.get('authorization')||'','content-type':'application/json',origin:APP},body:JSON.stringify({action:'publish_sermon',church:'M+',draftId:draft.id}),signal:AbortSignal.timeout(60000)}),data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(String(data.error||'instagram_publish_failed'));result.instagram={status:'published',...data};}
   catch(error){result.instagram={status:'failed',error:error instanceof Error?error.message:'instagram_publish_failed'};}
  }else result.instagram={status:'disabled'};
  if(draft.youtube_caption_requested!==false){
@@ -178,7 +227,9 @@ Deno.serve(async req=>{
     const selected=String(body.socialImageUrl||'').trim(),options=Array.isArray(draft.social_image_options)?draft.social_image_options:[];
     if(!validArtwork(options))return json(origin,409,{ok:false,error:'請先完成兩張膝蓋以上、一張半身的 1080p M+ 主日信息圖卡。'});
     if(!selected||!options.includes(selected))return json(origin,400,{ok:false,error:'請先選擇一張講道講員圖，才能送牧師、師母確認。'});
-    const publicImageUrl=await persistSocialImage(db,draft.id,selected);
+    let publicImageUrl:string;
+    try{publicImageUrl=await persistSocialImage(db,draft.id,selected);}
+    catch{return json(origin,503,{ok:false,error:'圖卡轉存失敗，尚未送審；請確認圖片可預覽。'});}
     patch={...cleaned({...body,socialImageUrl:publicImageUrl},draft),social_image_options:options.map((value:string)=>value===selected?publicImageUrl:value)};
    }
    const transitioned=await db.from('sermon_social_drafts').update({...patch,status:'pending_review',review_stage:'pastoral_confirmation',initial_reviewed_at:now,initial_reviewer_id:staff.id,initial_review_comment:String(body.comment||'').trim().slice(0,2000)||null}).eq('id',draft.id).eq('status','pending_review').eq('review_stage','initial_review').select('id').maybeSingle();

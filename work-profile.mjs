@@ -5,7 +5,7 @@ export const WORK_DOMAINS={church:'教會',school:'課輔',team:'籃球球隊',c
 export const WORK_CATALOG={"church":{"administration":"行政","general_affairs":"總務","worship":"敬拜","welcome":"接待關懷","youth_junior":"學生牧區 · 青少","youth":"學生牧區 · 青年","college":"學生牧區 · 大專","children":"兒童主日學","av_sound":"影音 · 音控","av_lighting":"影音 · 燈控","av_subtitles":"影音 · 字幕"},"school":{"director":"主任","teacher":"老師","assistant":"工讀生","volunteer":"志工"},"team":{"manager":"經理"},"camp":{"manager":"營隊管理者","coworker":"營隊同工"}};
 const node=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const label=(name,input)=>{const l=node('label',name);l.append(input);return l;};
-const read=async(db,user,church)=>{const r=await db.rpc('get_work_profile',{p_user:user,p_church:church});if(r.error)throw Error('身分與事工分工未能讀取，請重新載入。');return r.data;};
+const read=async(db,user,church)=>{const query=db.rpc('get_work_profile',{p_user:user,p_church:church});const r=await (typeof query.abortSignal==='function'?query.abortSignal(AbortSignal.timeout(12000)):query);if(r.error)throw Error('身分與事工分工未能讀取，請重新載入。');return r.data;};
 export function createWorkProfileEditor(db,user,getChurch){
  const section=node('fieldset','','work-profile-editor');section.append(node('legend','教會職位與事工分工'));
  const state=node('p','正在讀取身分與分工…','muted'),body=node('div');section.append(state,body);
@@ -38,7 +38,8 @@ export function workspaceToolGroups(profile,available){
  const primary=pick((profile.assignments||[]).filter(a=>a.type==='primary').flatMap(a=>PRIMARY_TOOLS[a.domain+'.'+a.key]||[]));
  const shared=pick((profile.assignments||[]).filter(a=>a.type==='shared').flatMap(a=>SHARED_TOOLS[a.domain]||[]));
  const own=pick(['pastoral_workspace',...(['主任牧師','牧師','傳道'].includes(profile.church_role)?['sermon_preparation']:[])]);
- return [{label:'主責事工工具',keys:primary},{label:'共同參與與被指派工作',keys:shared},{label:'個人工具',keys:own}].filter(g=>g.keys.length);
+ const overviewMap={church:['groups','attendance','schedules'],school:['school_reports','school_schedules'],team:['basketball_gamecenter','basketball_schedule'],camp:['heat_camp']};const oversight=pick((profile.oversight_domains||[]).flatMap(d=>overviewMap[d]||[]));
+ return [{label:'主責事工工具',keys:primary},{label:'共同參與與被指派工作',keys:shared},{label:'個人工具',keys:own},{label:'另行委任的統籌工具',keys:oversight}].filter(g=>g.keys.length);
 }
 export async function mountWorkProfile({db,allowed,openSchool}){
  let section=document.querySelector('#work-profile-home');if(!section){section=node('section','','work-profile-home');section.id='work-profile-home';const anchor=document.querySelector('#mplus-week-slot')||document.querySelector('.mplus-week')||document.querySelector('#summary');anchor?anchor.before(section):document.querySelector('main')?.append(section);}

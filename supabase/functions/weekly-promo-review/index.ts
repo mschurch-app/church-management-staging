@@ -16,11 +16,11 @@ async function staffId(db:Db,userId:string){const r=await db.from('pastoral_staf
 async function notify(db:Db,church:string,id:string,date:string,title:string,stage:'initial'|'final',version:number,by:string|null){
   const initial=stage==='initial',settings=await setting(db,church);let ids:string[]=[];
   if(initial){if(!settings?.initial_reviewer_id)throw new Error('reviewer_not_configured');const id=await staffId(db,settings.initial_reviewer_id);if(!id)throw new Error('reviewer_not_configured');ids=[id];}
-  else{const r=await db.rpc('get_weekly_bulletin_reviewers',{p_church:church});ids=(Array.isArray(r.data)?r.data:[]).map((v:{id:string})=>v.id);}
+  else{const r=await db.rpc('get_weekly_bulletin_reviewers',{p_church:church});ids=(Array.isArray(r.data)?r.data:[]).map((v:{id:string})=>v.id).filter((recipient:string)=>recipient!==by);}
   const url=route(church,id);
   for(const recipient of ids){const key=`weekly-promo:${id}:${version}:${stage}:${recipient}`;
-    await db.from('pastoral_tasks').upsert({entity_key:entity(church),title:`${date} 主日社群預告${initial?'初審':'複審'}`,description:`${title} 等待${initial?'鈺庭初審':'牧師或師母複審'}。`,task_type:'document',status:'pending',assigned_to:recipient,created_by:by,idempotency_key:key,payload:{workflow:'weekly_promo_review',bulletin_id:id,version,stage,action_url:url}},{onConflict:'idempotency_key',ignoreDuplicates:true});
-    await notifyStaffDual({db,staffId:recipient,churchId:church,eventKey:'weekly_bulletin_review',routeKey:'weekly_bulletin_review',sourceKey:key,title:'主日社群預告等待審核',body:`${date} 的預告請進行${initial?'初審':'複審'}。`,url,lineMessage:`主日社群預告等待${initial?'初審':'複審'}：${date}\n${ORIGIN}${url}`,idempotencyKey:key});
+    await db.from('pastoral_tasks').upsert({entity_key:entity(church),title:`${date} 主日社群預告${initial?'初審':'審核'}`,description:`${title} 等待${initial?'鈺庭初審':'牧師或師母審核'}。`,task_type:'document',status:'pending',assigned_to:recipient,created_by:by,idempotency_key:key,payload:{workflow:'weekly_promo_review',bulletin_id:id,version,stage,action_url:url}},{onConflict:'idempotency_key',ignoreDuplicates:true});
+    await notifyStaffDual({db,staffId:recipient,churchId:church,eventKey:'weekly_bulletin_review',routeKey:'weekly_bulletin_review',sourceKey:key,title:'主日社群預告等待審核',body:`${date} 的預告請進行${initial?'初審':'審核'}。`,url,lineMessage:`主日社群預告等待${initial?'初審':'審核'}：${date}\n${ORIGIN}${url}`,idempotencyKey:key});
   }
   return ids.length;
 }
@@ -37,20 +37,22 @@ async function handle(request:Request,db:Db,user:{id:string},origin:string){
   if(!access.editor)return json(origin,{ok:false,error:'forbidden'},403);
   if(body.action==='list'){
     if(!initial&&!final)return json(origin,{ok:false,error:'reviewer_required'},403);
-    const r=await db.from('website_weekly_promos').select('bulletin_id,status,version,submitted_at,review_comment,snapshot').eq('church_id',church).in('status',['pending_initial','pending_review','changes_requested','approved']).order('submitted_at',{ascending:false}).limit(50);
-    if(r.error)throw new Error('db');return json(origin,{ok:true,items:(r.data||[]).filter((v:any)=>v.status==='pending_initial'?initial:final).map((v:any)=>({id:v.bulletin_id,service_date:v.snapshot?.service_date,title:v.snapshot?.sermon_topic||v.snapshot?.title,status:v.status,version:v.version,submitted_at:v.submitted_at,review_comment:v.review_comment,track:'promo'}))});
+    const r=await db.from('website_weekly_promos').select('bulletin_id,status,version,submitted_at,submitted_by,review_comment,snapshot').eq('church_id',church).in('status',['pending_initial','pending_review','changes_requested','approved']).order('submitted_at',{ascending:false}).limit(50);
+    if(r.error)throw new Error('db');return json(origin,{ok:true,items:(r.data||[]).filter((v:any)=>v.status==='pending_initial'?initial&&v.submitted_by!==user.id:final&&v.submitted_by!==user.id).map((v:any)=>({id:v.bulletin_id,service_date:v.snapshot?.service_date,title:v.snapshot?.sermon_topic||v.snapshot?.title,status:v.status,version:v.version,submitted_at:v.submitted_at,review_comment:v.review_comment,track:'promo'}))});
   }
   if(!UUID.test(id))return json(origin,{ok:false,error:'invalid_request'},400);
   const result=await db.from('website_weekly_promos').select('*').eq('bulletin_id',id).eq('church_id',church).maybeSingle();if(result.error)throw new Error('db');const promo=result.data;
-  if(body.action==='status'){return json(origin,{ok:true,promo:promo?{status:promo.status,version:promo.version,review_comment:promo.review_comment,snapshot:promo.snapshot}:null});}
+  if(body.action==='status'){return json(origin,{ok:true,submitStage:initial?'final':'initial',promo:promo?{status:promo.status,version:promo.version,review_comment:promo.review_comment,snapshot:promo.snapshot,directToFinal:promo.submitted_by===settings?.initial_reviewer_id&&promo.status==='pending_review'}:null});}
   if(body.action==='get'){
     if(!initial&&!final)return json(origin,{ok:false,error:'reviewer_required'},403);
     if(!promo)return json(origin,{ok:false,error:'not_found'},404);
-    return json(origin,{ok:true,promo:{id,church_id:church,...promo.snapshot,status:promo.status,version:promo.version,review_comment:promo.review_comment},canDecide:promo.status==='pending_initial'?initial:final});
+    return json(origin,{ok:true,promo:{id,church_id:church,...promo.snapshot,status:promo.status,version:promo.version,review_comment:promo.review_comment},canDecide:promo.submitted_by!==user.id&&(promo.status==='pending_initial'?initial:final)});
   }
   if(body.action==='submit'){
     if(promo&&!['draft','changes_requested'].includes(promo.status))return json(origin,{ok:false,error:'invalid_status'},409);
+    const stage=initial?'final':'initial';
     if(!settings?.initial_reviewer_id||!await staffId(db,settings.initial_reviewer_id))return json(origin,{ok:false,error:'reviewer_not_configured'},409);
+    if(stage==='final'){const reviewers=await db.rpc('get_weekly_bulletin_reviewers',{p_church:church});if(reviewers.error||!Array.isArray(reviewers.data)||!reviewers.data.some((person:{app_user_id:string})=>person.app_user_id!==user.id))return json(origin,{ok:false,error:'reviewer_not_configured'},409);}
     const rowResult=await db.from('website_weekly_bulletins').select('*').eq('id',id).eq('church_id',church).maybeSingle(),row=rowResult.data;
     if(rowResult.error||!row)return json(origin,{ok:false,error:'not_found'},404);
     if(!['draft','changes_requested'].includes(row.status))return json(origin,{ok:false,error:'bulletin_locked'},409);
@@ -58,17 +60,19 @@ async function handle(request:Request,db:Db,user:{id:string},origin:string){
     const jobs=await db.from('weekly_canva_jobs').select('id,input').eq('bulletin_id',id).eq('church_id',church).eq('status','ready').order('created_at',{ascending:false}).limit(10);
     if(jobs.error)throw new Error('db');
     const base=(jobs.data||[]).find((item:any)=>item.input?.TOPIC===row.sermon_topic&&item.input?.SCRIPTURE===row.sermon_scripture&&item.input?.SPEAKER===row.sermon_speaker&&item.input?.SERVICE_DATE===row.service_date);
-    const data={bulletin_id:id,church_id:church,status:'pending_initial',version:(promo?.version||0)+1,snapshot:{...snapshot(row),canva_base_job_id:base?.id||null},submitted_by:user.id,submitted_at:new Date().toISOString(),reviewed_by:null,reviewed_at:null,review_comment:null,updated_at:new Date().toISOString()};
+    const status=stage==='final'?'pending_review':'pending_initial';
+    const data={bulletin_id:id,church_id:church,status,version:(promo?.version||0)+1,snapshot:{...snapshot(row),canva_base_job_id:base?.id||null},submitted_by:user.id,submitted_at:new Date().toISOString(),reviewed_by:null,reviewed_at:null,review_comment:null,updated_at:new Date().toISOString()};
     const saved=promo?await db.from('website_weekly_promos').update(data).eq('bulletin_id',id).eq('status',promo.status).eq('version',promo.version).select('bulletin_id').maybeSingle():await db.from('website_weekly_promos').insert(data).select('bulletin_id').maybeSingle();
     if(saved.error||!saved.data)return json(origin,{ok:false,error:'conflict'},409);
     await db.from('website_weekly_bulletin_review_events').insert({bulletin_id:id,church_id:church,bulletin_version:data.version,track:'promo',action:'submitted',actor_user_id:user.id});
-    let notificationPending=false;try{await notify(db,church,id,row.service_date,row.sermon_topic,'initial',data.version,access.staffId||null);}catch{notificationPending=true;}
-    return json(origin,{ok:true,status:'pending_initial',notificationPending});
+    let notificationPending=false;try{await notify(db,church,id,row.service_date,row.sermon_topic,stage,data.version,access.staffId||null);}catch{notificationPending=true;}
+    return json(origin,{ok:true,status,notificationPending});
   }
   if(body.action==='approve'||body.action==='request_changes'){
     if(!promo)return json(origin,{ok:false,error:'not_found'},404);
     const stage=promo.status==='pending_initial'?'initial':promo.status==='pending_review'?'final':'';
     if(!stage||Number(body.version)!==promo.version)return json(origin,{ok:false,error:'conflict'},409);
+    if(promo.submitted_by===user.id)return json(origin,{ok:false,error:'self_review_forbidden'},403);
     if(stage==='initial'&&!initial||stage==='final'&&!final)return json(origin,{ok:false,error:'reviewer_required'},403);
     const approved=body.action==='approve',comment=String(body.comment||'').trim().slice(0,2000);if(!approved&&!comment)return json(origin,{ok:false,error:'comment_required'},400);
     const next=approved?(stage==='initial'?'pending_review':'approved'):'changes_requested',now=new Date().toISOString();

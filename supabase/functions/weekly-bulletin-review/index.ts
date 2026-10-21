@@ -1,3 +1,5 @@
+import {loadWeeklyOfferingPreview} from './offering-preview.mjs';
+import {ACCOUNTING_SECTION_KEY,accountingSnapshotMatches} from './weekly-offering.mjs';
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import {notifyStaffDual} from '../_shared/dual-notification.mjs';
 
@@ -86,11 +88,22 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
   const profile=await accountProfile(db,user.id,church);
   const initial=await initialReviewer(db,church),isInitial=initial?.userId===user.id;
   if(!profile.editor)return json(APP_ORIGIN,{ok:false,error:'forbidden'},403);
+  if(body.action==='offering_preview'){
+    if(church!=='M+')return json(APP_ORIGIN,{ok:false,error:'forbidden'},403);
+    try{return json(APP_ORIGIN,{ok:true,preview:await loadWeeklyOfferingPreview(db,body.serviceDate)});}
+    catch(error){return json(APP_ORIGIN,{ok:false,error:error instanceof Error&&error.message==='invalid_service_date'?'invalid_service_date':'offering_unavailable'},400);}
+  }
   if(body.action==='submit'){
     if(!UUID.test(body.bulletinId||''))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
     const found=await db.from('website_weekly_bulletins').select('id,church_id,service_date,title,status,version,sections').eq('id',body.bulletinId).eq('church_id',church).maybeSingle();
     if(found.error||!found.data)return json(APP_ORIGIN,{ok:false,error:'not_found'},404);
     if(!['draft','changes_requested'].includes(found.data.status))return json(APP_ORIGIN,{ok:false,error:'invalid_status'},409);
+    const accounting=Array.isArray(found.data.sections)?found.data.sections.find((section:{key?:string})=>section.key===ACCOUNTING_SECTION_KEY):null;
+    if(accounting&&accounting.enabled!==false){
+      if(church!=='M+')return json(APP_ORIGIN,{ok:false,error:'forbidden'},403);
+      try{if(!accountingSnapshotMatches(accounting,await loadWeeklyOfferingPreview(db,found.data.service_date)))return json(APP_ORIGIN,{ok:false,error:'offering_refresh_required'},409);}
+      catch{return json(APP_ORIGIN,{ok:false,error:'offering_refresh_required'},409);}
+    }
     const promo=await db.from('website_weekly_promos').select('status,snapshot').eq('bulletin_id',found.data.id).eq('church_id',church).maybeSingle();
     if(promo.error||promo.data?.status!=='approved')return json(APP_ORIGIN,{ok:false,error:'promo_not_approved'},409);
     if(!initial)return json(APP_ORIGIN,{ok:false,error:'reviewer_not_configured'},409);

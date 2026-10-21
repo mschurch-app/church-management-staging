@@ -29,7 +29,7 @@ try {
     await page.click('[data-center="admin"]');
     const card = await page.$('.hub-tile:nth-child(2)');
     assert(card);
-    assert.match(await card.evaluate(node => node.textContent), /同工行政/);
+    assert.match(await card.evaluate(node => node.textContent), /出勤請假/);
     assert.doesNotMatch(await card.evaluate(node => node.textContent), /奉獻與財務/);
     await card.evaluate(node => node.click());
     const dialog = await page.waitForSelector('.mplus-event-dialog[open]', { timeout: 3000 });

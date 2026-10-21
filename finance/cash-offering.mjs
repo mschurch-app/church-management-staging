@@ -13,13 +13,13 @@ const actions = Object.freeze({
 function positiveInteger(value) { return Number.isSafeInteger(value) && value > 0; }
 
 export function validateCashBag(bag) {
-  if (!bag || !String(bag.bagName ?? '').trim()) throw new Error('每袋須有袋上姓名或匿名標示。');
+  if (!bag || !String(bag.bagName ?? '').trim()) throw new Error('每筆須有奉獻者姓名或匿名標示。');
   if (!Number.isInteger(bag.sequence) || bag.sequence < 1) throw new Error('袋序號不正確。');
   if (bag.memberId != null && (!bag.offeringCode || !/^\d{4}$/.test(bag.offeringCode))) {
     throw new Error('已建檔會友須有四位奉獻編號。');
   }
-  if (bag.identityResolved === false) throw new Error('袋上姓名與奉獻編號不一致，請先釐清。');
-  if (!Array.isArray(bag.lines) || bag.lines.length === 0) throw new Error('每袋須有奉獻分類及金額。');
+  if (bag.identityResolved === false) throw new Error('奉獻者姓名與奉獻編號不一致，請先釐清。');
+  if (!Array.isArray(bag.lines) || bag.lines.length === 0) throw new Error('每筆須有奉獻分類及金額。');
   let total = 0;
   for (const line of bag.lines) {
     if (!categories.has(line.category) || !positiveInteger(line.amount)) throw new Error('奉獻分類或金額不正確。');
@@ -28,13 +28,13 @@ export function validateCashBag(bag) {
     total += line.amount;
     if (!Number.isSafeInteger(total)) throw new Error('袋合計超出可計算範圍。');
   }
-  if (bag.declaredTotal !== total) throw new Error(`第 ${bag.sequence} 袋金額與分類加總不符。`);
+  if (bag.declaredTotal !== total) throw new Error(`第 ${bag.sequence} 筆金額與分類加總不符。`);
   return total;
 }
 
 export function validateCashBatch(batch) {
   if (!batch || !/^\d{4}-\d{2}-\d{2}$/.test(batch.offeringDate ?? '') || batch.projectId !== 'mplus') {
-    throw new Error('主日現金批次日期或專案不正確。');
+    throw new Error('當週奉獻日期或堂會不正確。');
   }
   const counters = batch.counterUserIds;
   if (!Array.isArray(counters) || counters.length !== 2 || !counters[0] || !counters[1] || counters[0] === counters[1]) {
@@ -44,13 +44,13 @@ export function validateCashBatch(batch) {
   const sequences = new Set();
   let total = 0;
   for (const bag of batch.bags) {
-    if (sequences.has(bag.sequence)) throw new Error('同一批次袋序號不可重複。');
+    if (sequences.has(bag.sequence)) throw new Error('同一筆當週奉獻紀錄的袋序號不可重複。');
     sequences.add(bag.sequence);
     total += validateCashBag(bag);
-    if (!Number.isSafeInteger(total)) throw new Error('批次金額超出可計算範圍。');
+    if (!Number.isSafeInteger(total)) throw new Error('當週奉獻金額超出可計算範圍。');
   }
-  if (batch.enteredTotal !== total) throw new Error('批次登錄總額與逐袋合計不符。');
-  if (batch.countedCash !== total) throw new Error('現金實點總額與逐袋登錄總額不符。');
+  if (batch.enteredTotal !== total) throw new Error('奉獻登錄合計與各袋加總不符。');
+  if (batch.countedCash !== total) throw new Error('現金實點總額與奉獻登錄合計不符。');
   return total;
 }
 

@@ -621,7 +621,7 @@ export const FUNCTION_CATALOG=freezeTree({
     "file": "finance-cash.html",
     "icon": "📋",
     "title": "主日奉獻",
-    "description": "現金逐袋登錄、核對與入帳",
+    "description": "逐筆登錄奉獻、核對與入帳",
     "key": "finance_cash",
     "group": "finance",
     "symbol": "clipboard",

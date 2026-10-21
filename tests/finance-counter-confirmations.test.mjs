@@ -7,7 +7,7 @@ const ids=['11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-22222
 async function setup(){
  const db=new PGlite();await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create schema church_auth;create table church_auth.accounts(user_id uuid primary key,is_active boolean not null);create table church_auth.grants(user_id uuid,church_id text,permission text);create table church_auth.owners(user_id uuid primary key);create table public.members(id bigint primary key,church_id text,archived_at timestamptz);create function church_auth.canonical_account(uuid) returns uuid language sql immutable as 'select $1';`);
  await db.exec(await read('supabase/migrations/20261021054456_finance_cash_foundation.sql'));
- await db.exec(await read('supabase/migrations/20261021125216_cash_counter_confirmations.sql'));
+ await db.exec(await read('supabase/migrations/20261021132134_cash_counter_confirmations.sql'));
  for(const id of ids){await db.query('insert into auth.users values($1)',[id]);await db.query('insert into church_auth.accounts values($1,true)',[id]);await db.query("insert into church_auth.grants values($1,'M+','members')",[id]);}
  for(const id of ids.slice(0,3))await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'entry',$1)",[id]);
  await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'cash_verify',$1),($2,'approve',$2)",[ids[3],ids[4]]);

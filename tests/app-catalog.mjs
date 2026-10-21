@@ -4,7 +4,7 @@ const {FUNCTION_CATALOG,FUNCTION_GROUPS,availableFunctionKeys,favoriteKeys}=awai
 const {canOpen}=await import('../admin-access.mjs?v=20261009-app-audit2');
 const permissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp'];
 const full={grants:permissions.map(permission=>({church_id:'M+',permission})),featurePermissions:[]};
-const home={is_owner:true,system_monitor_access:true,home_modules:Object.keys(FUNCTION_CATALOG)};
+const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,home_modules:Object.keys(FUNCTION_CATALOG)};
 const all=availableFunctionKeys(full,'M+',home),grouped=FUNCTION_GROUPS.flatMap(g=>g.keys);
 assert.equal(new Set(grouped).size,grouped.length);assert.deepEqual(new Set(grouped),new Set(Object.keys(FUNCTION_CATALOG)));assert.equal(all.length,Object.keys(FUNCTION_CATALOG).length);
 assert(canOpen(full,'M+','private_prayers'));assert(canOpen(full,'M+','pastoral_chats'));
@@ -16,6 +16,8 @@ assert.equal(availableFunctionKeys(full,'M+',{}).includes('school_students'),fal
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('pastoral_workflow_survey'),false);
 assert.equal(availableFunctionKeys(full,'M+',{home_modules:['pastoral_workspace']}).includes('pastoral_workflow_survey'),true);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('admin_accounts'),false);
+assert.equal(availableFunctionKeys(full,'M+',{}).includes('finance_cash'),false);
+assert.equal(availableFunctionKeys(full,'SHiNE',home).includes('finance_cash'),false);
 assert.equal(availableFunctionKeys({...full,featurePermissions:[{church_id:'M+',feature_key:'members',view:false}]},'M+',home).includes('members'),false);
 assert.equal(availableFunctionKeys(full,'M+',home,{feature_modules:[{key:'members',enabled:false}]}).includes('members'),false);
 const shine={...full,grants:permissions.map(permission=>({church_id:'SHiNE',permission}))};

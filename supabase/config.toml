@@ -44,6 +44,9 @@ verify_jwt = false
 [functions.media-publishing-settings]
 verify_jwt = true
 
+[functions.finance-cash]
+verify_jwt = true
+
 [functions.heat-camp-admin]
 verify_jwt = false
 

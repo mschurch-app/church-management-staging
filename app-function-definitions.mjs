@@ -615,6 +615,19 @@ export const FUNCTION_CATALOG=freezeTree({
     "configurableHome": false,
     "searchTerms": []
   },
+  "finance_cash": {
+    "church": "M+",
+    "financeAccess": true,
+    "file": "finance-cash.html",
+    "icon": "📋",
+    "title": "主日奉獻",
+    "description": "現金逐袋登錄、核對與入帳",
+    "key": "finance_cash",
+    "group": "finance",
+    "symbol": "clipboard",
+    "configurableHome": false,
+    "searchTerms": ["財務", "會計", "奉獻", "點收", "現金"]
+  },
   "service_quick_match": {
     "church": "M+",
     "permission": "schedules",
@@ -656,6 +669,12 @@ export const FUNCTION_GROUPS=freezeTree([
       "spaces",
       "inventory"
     ]
+  },
+  {
+    "key": "finance",
+    "title": "教會財務",
+    "note": "M＋主日奉獻登錄與核對",
+    "keys": ["finance_cash"]
   },
   {
     "key": "media",

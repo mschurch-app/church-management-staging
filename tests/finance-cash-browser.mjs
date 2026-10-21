@@ -12,6 +12,8 @@ fs.mkdirSync(out, { recursive: true });
 const user = { id: '11111111-1111-4111-8111-111111111111', email: 'fixture@example.invalid', app_metadata: {}, user_metadata: {} };
 const second = '22222222-2222-4222-8222-222222222222';
 const session = { access_token: 'test.token.signature', refresh_token: 'fixture', token_type: 'bearer', expires_at: Math.floor(Date.now() / 1000) + 3600, user };
+const roleAccounts = [{ userId: user.id, name: '測試同工甲', title: '行政', roles: [] }, { userId: second, name: '測試同工乙', title: '師母', roles: [] }];
+let failNextRoleAssignment = false, failNextWorkers = false, failNextAccounts = false;
 const server = spawn(process.execPath, ['tests/serve.mjs'], { cwd: root, env: { ...process.env, CHURCH_TEST_PORT: '8778' }, stdio: 'pipe' });
 await new Promise((resolve, reject) => {
   server.stdout.once('data', resolve);
@@ -35,11 +37,23 @@ try {
       if (url.pathname === '/auth/v1/user') data = user;
       else if (url.pathname === '/auth/v1/token') data = session;
       else if (url.pathname.includes('/functions/v1/finance-cash')) {
-        data = ({
+        if (body.action === 'assign_role') {
+          await new Promise(resolve => setTimeout(resolve, 250));
+          if (failNextRoleAssignment) { failNextRoleAssignment = false; data = { ok: false, code: 'service_unavailable' }; }
+          else {
+            const account = roleAccounts.find(item => item.userId === body.userId);
+            if (account) account.roles = body.enabled ? [...new Set([...account.roles,body.role])] : account.roles.filter(role => role !== body.role);
+            data = { ok: true };
+          }
+        } else if (body.action === 'workers' && failNextWorkers) {
+          failNextWorkers = false; data = { ok: false, code: 'service_unavailable' };
+        } else if (body.action === 'accounts' && failNextAccounts) {
+          failNextAccounts = false; data = { ok: false, code: 'service_unavailable' };
+        } else data = ({
           profile: { ok: true, roles: ['entry','cash_verify','approve'], owner: true },
           workers: { ok: true, workers: [{ userId: user.id, name: '測試同工甲' }, { userId: second, name: '測試同工乙' }] },
           list: { ok: true, batches: [] },
-          accounts: { ok: true, accounts: [] },
+          accounts: { ok: true, accounts: roleAccounts },
           members: { ok: true, members: [{ id: 1, name: '王小明', phone: '0900000000', offeringCode: '0013' }] }
         })[body.action] || { ok: false, code: 'invalid_request' };
       } else if (url.pathname.includes('/rpc/get_my_app_capabilities')) data = { is_owner: true };
@@ -86,6 +100,36 @@ try {
     assert.equal(tabs.overflow, false, `${width}px finance tabs must not scroll sideways`);
     assert.deepEqual(tabs.buttons, [true,true,true], `${width}px finance tabs must be fully visible`);
   }
+  await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+  await page.click('#roles-tab');
+  await page.waitForSelector('#role-list input[data-role-key="entry"]');
+  assert.match(await page.$eval('.finance-role-help', node => node.textContent), /立即儲存/);
+  const entry = `#role-list input[data-user-id="${user.id}"][data-role-key="entry"]`;
+  const verify = `#role-list input[data-user-id="${user.id}"][data-role-key="cash_verify"]`;
+  const approve = `#role-list input[data-user-id="${user.id}"][data-role-key="approve"]`;
+  await page.click(entry);
+  await page.waitForFunction(() => [...document.querySelectorAll('#role-list input')].every(input => input.disabled));
+  await page.waitForFunction(selector => document.querySelector(selector)?.closest('.finance-list-card')?.querySelector('.finance-role-status')?.textContent === '已儲存。', {}, entry);
+  assert.equal(roleAccounts[0].roles.includes('entry'), true);
+  await page.screenshot({ path: path.join(out, 'roles-saved-390.png'), fullPage: true });
+  failNextRoleAssignment = true;
+  await page.click(verify);
+  await page.waitForFunction(selector => document.querySelector(selector)?.closest('.finance-list-card')?.querySelector('.finance-role-status')?.textContent === '未儲存，請再試一次。', {}, verify);
+  assert.equal(await page.$eval(verify, input => input.checked), false);
+  failNextWorkers = true;
+  await page.click(entry);
+  await page.waitForFunction(selector => document.querySelector(selector)?.closest('.finance-list-card')?.querySelector('.finance-role-status')?.textContent.includes('權限已儲存，但點收同工清單暫時無法更新'), {}, entry);
+  assert.equal(await page.$eval(entry, input => input.checked), false);
+  assert.equal(roleAccounts[0].roles.includes('entry'), false);
+  failNextRoleAssignment = true; failNextAccounts = true;
+  await page.click(approve);
+  await page.waitForFunction(selector => document.querySelector(selector)?.closest('.finance-list-card')?.querySelector('.finance-role-status')?.textContent.includes('無法確認是否儲存'), {}, approve);
+  assert.equal(await page.$$eval('#role-list input', inputs => inputs.every(input => input.disabled)), true);
+  await page.click('#reload-roles');
+  await page.waitForFunction(selector => document.querySelector(selector)?.disabled === false, {}, approve);
+  await page.waitForFunction(() => document.querySelector('#reload-roles')?.disabled === false);
+  assert.equal(await page.$eval(approve, input => input.checked), false);
+  await page.screenshot({ path: path.join(out, 'roles-390.png'), fullPage: true });
   assert.deepEqual(consoleErrors, []);
   console.log('finance cash browser smoke: desktop and mobile passed');
 } finally {

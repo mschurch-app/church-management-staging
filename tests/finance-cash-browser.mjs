@@ -71,6 +71,21 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true, 'no horizontal overflow');
     await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
   }
+  for (const width of [320,360,375,390,430]) {
+    await page.setViewport({ width, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const tabs = await page.$eval('.finance-tabs', nav => {
+      const area = nav.getBoundingClientRect();
+      return {
+        overflow: nav.scrollWidth > nav.clientWidth + 1,
+        buttons: [...nav.querySelectorAll('button:not([hidden])')].map(button => {
+          const rect = button.getBoundingClientRect();
+          return rect.left >= area.left - 1 && rect.right <= area.right + 1 && rect.height >= 44;
+        })
+      };
+    });
+    assert.equal(tabs.overflow, false, `${width}px finance tabs must not scroll sideways`);
+    assert.deepEqual(tabs.buttons, [true,true,true], `${width}px finance tabs must be fully visible`);
+  }
   assert.deepEqual(consoleErrors, []);
   console.log('finance cash browser smoke: desktop and mobile passed');
 } finally {

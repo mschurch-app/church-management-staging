@@ -162,7 +162,7 @@ function makeStepThree(root,c){
   async function persistMedia(){
     const selected=root.querySelector('input[name="canva-design"]:checked');
     if(!selected)throw new Error('請完成 Canva 製圖，並選擇一款設計。');
-    if(selected.value!=='saved'&&!await c.useCanvaOption(Number(selected.value)))throw new Error('圖卡尚未套用，請再試一次。');
+    if(selected.value!=='saved'&&!await c.useCanvaOption(selected.value))throw new Error('圖卡尚未套用，請再試一次。');
     if($id('reel-caption'))$id('reel-caption').value=caption.value.trim();
     if(!await c.save())throw new Error($id('status').textContent||'社群媒體設定尚未保存，請留在此頁重試。');
     let keep=root.querySelector('input[name="canva-design"][value="saved"]');

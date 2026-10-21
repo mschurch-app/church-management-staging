@@ -1,0 +1,21 @@
+{
+  "passed": [
+    "desktop: radio and sync retain choice",
+    "desktop: preview image selects card",
+    "desktop: keyboard selection",
+    "desktop: correct batch and both sizes applied",
+    "desktop: reload retains choice",
+    "desktop: failed download preserves choice and stops progress without applying",
+    "desktop: readonly blocks selection",
+    "phone: radio and sync retain choice",
+    "phone: preview image selects card",
+    "phone: keyboard selection",
+    "phone: correct batch and both sizes applied",
+    "phone: reload retains choice",
+    "phone: failed download preserves choice and stops progress without applying",
+    "phone: readonly blocks selection"
+  ],
+  "real_iphone": "not_tested",
+  "safari": "not_tested",
+  "production_data_writes": false
+}

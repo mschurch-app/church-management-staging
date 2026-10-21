@@ -134,8 +134,9 @@ function inputs(body:any):Record<string,string>{
 }
 function designBrief(input:Record<string,string>,kind:string,direction:number,requestId:string){
   const facts={church:input.CHURCH_NAME,sunday_date:input.SERVICE_DATE,topic:input.TOPIC,scripture_reference:input.SCRIPTURE,speaker:input.SPEAKER,subtitle:input.SUBTITLE,service_time:input.SERVICE_TIME};
+  const mplusPalette=input.CHURCH_NAME==='M+ 大雅教會'?['靛藍與亮珊瑚橘','深紫與亮杏黃','酒紅與暖白','寶藍與亮桃紅'][direction%4]:null;
   return `請創作全新的單頁繁體中文教會主日宣傳設計。只要一頁，沒有封面、附頁或簡報項目符號。
-依據本週主題與經文出處，重新發想合宜的場景、意象、配色與字體布局。${DIRECTIONS[direction]}。此方向僅為創作提示，請自由設計，不套用固定模板。
+依據本週主題與經文出處，重新發想合宜的場景、意象、配色與字體布局。${DIRECTIONS[direction]}。此方向僅為創作提示，請自由設計，不套用固定模板。${mplusPalette?`本次使用${mplusPalette}為主色，避免綠色系背景、綠色標題與低對比文字；IG 圖卡在手機縮圖尺寸仍要一眼讀到主題。`:``}
 ${isHome(kind)?'用途為官網 16:9 橫式預告圖，目標 1600×900；建立橫向視覺層次，文字與主視覺均衡。':'用途為 IG 9:16 直式宣傳圖，目標 1080×1920；將文字組與主要意象保持獨立可編輯，便於下一步 Canva 調整為直式尺寸。'}
 本週兩種尺寸共享信息意象，請依用途重新構圖。與過往每週採用不同的背景與布局；本次創作識別 ${requestId}（不可印在圖上）。
 所有文字使用獨立可編輯圖層；以主題為最大標題，日期、經文、講員完整清楚，留白充足，對比清晰。維持溫暖、有質感的教會邀請風格，不自行繪製或仿造 Logo、不使用虛構講員照片。

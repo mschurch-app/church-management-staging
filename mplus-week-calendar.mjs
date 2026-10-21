@@ -1,5 +1,5 @@
-import {plannerStatus,openRoutineWizard,openRoutineCenter,openWorkAssignment,openTaskDetails} from './mplus-work-planner.mjs?v=20261021-save-allday1';
-import {calendarApi,readCalendar,openCalendarEditor,showCalendarEvent} from './mplus-google-calendar.mjs?v=20261021-save-allday1';
+import {plannerStatus,openRoutineWizard,openRoutineCenter,openWorkAssignment,openTaskDetails} from './mplus-work-planner.mjs?v=20261021-repeat-choice1';
+import {calendarApi,readCalendar,openCalendarEditor,showCalendarEvent} from './mplus-google-calendar.mjs?v=20261021-repeat-choice1';
 import {staffLineIdToken} from './pastoral/auth.mjs?v=20260924-4';
 import {PASTORAL_TASKS_ENDPOINT} from './pastoral/config.mjs?v=20260924-4';
 import {taipeiDate,addDay,weekStart,calendarTasks,tasksOn,workTime} from './mplus-week-model.mjs?v=20261021-work-timeline1';

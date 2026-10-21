@@ -1,13 +1,13 @@
 import {createAppIcon} from './app-icons.mjs?v=20261020-shell2';
 export const MPLUS_CENTERS={
-church:{title:'教會',cards:[['會友與關懷',[['會友','members'],['新朋友','newcomer_care'],['代禱與關懷','private_prayers'],['關懷訊息','pastoral_chats']]],['小組與聚會',[['小組安排','groups'],['聚會出席','attendance'],['小組教材','website_group_resources']]],['信息與靈修',[['信息預備','sermon_preparation'],['生命樹與靈修','tree_reading_admin']]],['奉獻與財務',[['主日奉獻','finance_cash']]]]},
+church:{title:'教會',cards:[['會友與關懷',[['會友','members'],['新朋友','newcomer_care'],['代禱與關懷','private_prayers'],['關懷訊息','pastoral_chats']]],['小組與聚會',[['小組安排','groups'],['聚會出席','attendance'],['小組教材','website_group_resources']]],['信息與靈修',[['信息預備','sermon_preparation'],['生命樹與靈修','tree_reading_admin']]]]},
 school:{title:'課輔',cards:[['課輔日常',[['課程與老師安排','school_schedules'],['課輔打卡','school_checkin'],['學生點名','school_rollcall']]],['學生與輔導',[['學生資料','school_students'],['個別輔導','school_counseling']]],['統計與報表',[['出席統計與列印','school_reports']]]]},
-admin:{title:'行政',cards:[['場地與物品',[['場地預約','spaces'],['設備與物品借還','inventory']]],['同工行政',[['出勤紀錄','pastoral_workspace','pastoral/mplus-coworker-tools.html?tab=attendance#attendance-list'],['請假簽核','pastoral_workspace','pastoral/mplus-coworker-tools.html?tab=attendance#leave-list']]],['活動與其他',[['籃球營報名','heat_camp']]]]},
+admin:{title:'行政',cards:[['場地與物品',[['場地預約','spaces'],['設備與物品借還','inventory']]],['同工行政',[['出勤紀錄','pastoral_workspace','pastoral/mplus-coworker-tools.html?tab=attendance#attendance-list'],['請假簽核','pastoral_workspace','pastoral/mplus-coworker-tools.html?tab=attendance#leave-list'],['奉獻與財務','finance_cash']]],['活動與其他',[['籃球營報名','heat_camp']]]]},
 service:{title:'服事',cards:[['服事安排',[['主日服事總排','schedules']]],['調查與協調',[['意願自排','service_signups','service-signup.html?from=app'],['換班協調','service_signups','service-signup-admin.html#changePanel']]],['服事表輸出',[['列印服事表','schedules','schedules.html#export-title'],['發送服事表','schedules','schedules.html#export-title']]]]},
 website:{title:'網站',cards:[['網站上稿',[['教會網站與週報','website_weekly'],['協會網站最新消息','association_news']]],['內容與發布',[['社群發布','media_publishing'],['牧養圖卡','pastoral_content'],['給今天的你','todays_message'],['把愛傳出去','love_share']]],['共用素材',[['照片資料庫','pastoral_workspace','pastoral/mplus-coworker-tools.html?tab=photos'],['字幕詞庫','subtitle_library']]]]}
 };
 export function visibleCenters(allowed){return Object.fromEntries(Object.entries(MPLUS_CENTERS).map(([key,center])=>[key,{...center,cards:center.cards.map(([title,links])=>[title,links.filter(([,permission])=>allowed.has(permission))]).filter(([,links])=>links.length)}]));}
-const hubNotes={church:'陪伴人，也一起在信仰裡成長。',school:'今天的課務與孩子的需要，一起照顧。',admin:'讓場地、人員與活動安排更順暢。',service:'找到合適的位置，一起完成每次服事。',website:'從內容準備到上稿發布，集中在這裡。'};
+const hubNotes={church:'陪伴人，也一起在信仰裡成長。',school:'今天的課務與孩子的需要，一起照顧。',admin:'場地、同工、奉獻與活動事務，集中處理。',service:'找到合適的位置，一起完成每次服事。',website:'從內容準備到上稿發布，集中在這裡。'};
 const hubIcons={church:'home',school:'mplus-book',admin:'mplus-box',service:'mplus-calendar',website:'mplus-globe'};
 const node=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 export function mountMplusNavigation({allowed,hrefFor,openSchool}){
@@ -33,7 +33,7 @@ export function mountMplusNavigation({allowed,hrefFor,openSchool}){
   panel.replaceChildren();const center=centers[key],heading=node('div','','hub-heading');heading.append(node('p','M+ · 功能中心','hub-kicker'),node('h1',center.title),node('p',hubNotes[key]));panel.append(heading);
   const grid=node('div','','hub-grid');for(const [title,links]of center.cards){const tile=node('button','','hub-tile'),symbol=node('span','','hub-symbol'),copy=node('span','','hub-copy');tile.type='button';symbol.append(createAppIcon(hubIcons[key],'mplus-icon'));copy.append(node('strong',title),node('small',links.map(([label])=>label).join('、')));tile.append(symbol,copy,node('b','›'));tile.onclick=()=>openCategory(key,title,links);grid.append(tile);}panel.append(grid);
   if(!center.cards.length)panel.append(node('p','你目前沒有此區的功能權限，請聯繫管理同工。','muted'));
-  if(key==='admin')panel.append(node('p','行政表單尚未開放；籃球隊維持獨立 App。','hub-note'));
+  if(key==='admin')panel.append(node('p','行政功能逐步開放；籃球隊維持獨立 App。','hub-note'));
   window.scrollTo(0,0);
  }
  const requestedCenter=new URLSearchParams(location.search).get('center');

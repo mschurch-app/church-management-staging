@@ -13,6 +13,7 @@ const user = { id: '11111111-1111-4111-8111-111111111111', email: 'fixture@examp
 const second = '22222222-2222-4222-8222-222222222222';
 const session = { access_token: 'test.token.signature', refresh_token: 'fixture', token_type: 'bearer', expires_at: Math.floor(Date.now() / 1000) + 3600, user };
 const roleAccounts = [{ userId: user.id, name: '測試同工甲', title: '行政', roles: [] }, { userId: second, name: '測試同工乙', title: '師母', roles: [] }];
+let entryAllowed=true;
 let failNextRoleAssignment = false, failNextWorkers = false, failNextAccounts = false;
 const server = spawn(process.execPath, ['tests/serve.mjs'], { cwd: root, env: { ...process.env, CHURCH_TEST_PORT: '8778' }, stdio: 'pipe' });
 await new Promise((resolve, reject) => {
@@ -54,7 +55,7 @@ try {
         } else if (body.action === 'accounts' && failNextAccounts) {
           failNextAccounts = false; data = { ok: false, code: 'service_unavailable' };
         } else data = ({
-          profile: { ok: true, roles: ['entry','cash_verify','approve'], owner: true },
+          profile: { ok: true, roles:entryAllowed?['entry','cash_verify','approve']:['approve'], owner: true },
           workers: { ok: true, workers: [{ userId: user.id, name: '測試同工甲' }, { userId: second, name: '測試同工乙' }] },
           list: { ok: true, batches: [] },
           accounts: { ok: true, accounts: roleAccounts },
@@ -85,5 +86,6 @@ try {
     await page.$eval(query,el=>el.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true})));await type('輸入中');await new Promise(r=>setTimeout(r,500));assert.equal(await page.$$('.finance-search-results button').then(x=>x.length),0);await page.$eval(query,el=>el.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true})));await page.waitForSelector('.finance-search-results button');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await page.screenshot({path:path.join(out,'member-search-'+width+'.png'),fullPage:true});
   }
+  entryAllowed=false;await page.goto(base+'/finance-cash.html',{waitUntil:'networkidle0'});await page.waitForSelector('#finance-app:not([hidden])');assert.equal(await page.$eval('#new-batch',n=>n.hidden),true);await page.click('[data-tab="editor"]');assert.ok((await page.$eval('#editor-state',n=>n.textContent)).includes('唯讀'));assert.equal(await page.$$eval('#cash-form input,#cash-form select,#cash-form button',nodes=>nodes.every(n=>n.disabled)),true);assert.equal(await page.$eval('#add-donor',n=>n.disabled),true);assert.equal(await page.$eval('#add-anonymous',n=>n.disabled),true);
   assert.deepEqual(consoleErrors,[]);console.log('PASS desktop + phone: automatic lookup, explicit linking, pending code, duplicate names, empty/error, stale response, IME, contact clearing, no overflow.');
 }finally{await browser?.close();server.kill('SIGTERM');}

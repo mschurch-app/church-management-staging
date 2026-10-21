@@ -60,8 +60,10 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
   }
   if (result?.error || !Array.isArray(result?.data)) throw new Error('密碼已驗證，但暫時無法讀取管理權限，請再登入一次。');
   const availableGrants = result.data.filter(row => churches.has(row.church_id) && permissions.has(row.permission));
-  const grants = hasLineIdentity ? availableGrants : availableGrants.filter(row => row.church_id === 'SHiNE');
-  if (!hasLineIdentity && !grants.length && availableGrants.some(row => row.church_id === 'M+')) {
+  const workIdentity=(!hasLineIdentity&&user.email_confirmed_at)?await db.rpc('get_work_profile',{p_user:null,p_church:'M+'}):null;
+  const verifiedWorkIdentity=!workIdentity?.error&&!!workIdentity?.data?.profile;
+  const grants = (hasLineIdentity||verifiedWorkIdentity) ? availableGrants : availableGrants.filter(row => row.church_id === 'SHiNE');
+  if (!hasLineIdentity && !verifiedWorkIdentity && !grants.length && availableGrants.some(row => row.church_id === 'M+')) {
     if(location.pathname.split('/').pop()!=='admin-line-link.html'){
       const next=location.pathname.split('/').pop()+location.search+location.hash;
       location.replace('admin-line-link.html?next='+encodeURIComponent(next));

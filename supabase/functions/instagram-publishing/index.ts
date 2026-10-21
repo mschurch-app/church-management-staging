@@ -84,6 +84,10 @@ async function publishReel(db:ReturnType<typeof createClient>,serviceKey:string,
   const promo=promoResult.data,bulletin=promo?{...bulletinResult.data,...promo.snapshot,version:promo.version,status:promo.status}:bulletinResult.data;
   if(bulletin.status!=='published'&&bulletin.status!=='approved')throw new Error('promo_not_approved');
   if(!bulletin.reel_enabled||!bulletin.reel_video_path)return {status:'skipped'};
+  const mediaPrefix=`${church}/weekly/${bulletin.id}/`,storage=db.storage.from('church-website-public-media');
+  if(!String(bulletin.reel_video_path).startsWith(mediaPrefix)||!String(bulletin.reel_video_path).endsWith('.mp4')||bulletin.reel_cover_image_path&&!String(bulletin.reel_cover_image_path).startsWith(mediaPrefix))throw new Error('reel_media_missing');
+  const videoInfo=await storage.info(bulletin.reel_video_path),coverInfo=bulletin.reel_cover_image_path?await storage.info(bulletin.reel_cover_image_path):null;
+  if(videoInfo.error||!(Number(videoInfo.data?.size)>0)||coverInfo&&(coverInfo.error||!(Number(coverInfo.data?.size)>0)))throw new Error('reel_media_missing');
   const connectionResult=await db.from('instagram_publishing_connections').select('*').eq('church_id',church).eq('status','connected').maybeSingle(),connection=connectionResult.data;
   if(connectionResult.error||!connection)throw new Error('not_connected');
   const caption=String(bulletin.reel_caption||`${bulletin.title}\n${bulletin.service_date}\n\n#Mplus大雅教會 #主日週報 #台中教會`).slice(0,2200),now=new Date().toISOString();
@@ -198,7 +202,8 @@ Deno.serve(async request=>{
     return json(origin,{ok:false,error:'invalid_action'},400);
   }catch(error){
     const message=error instanceof Error?error.message:'';
-    const code=message==='invalid_token'?'invalid_token':message==='publishing_disabled'?'publishing_disabled':'unavailable';
+    const safeErrors=new Set(['invalid_token','publishing_disabled','not_connected','permission_missing','token_expired','sermon_image_missing','sermon_video_missing','sermon_not_approved','reel_media_missing','job_store','instagram_api','instagram_processing','instagram_timeout','publishing_settings_unavailable']);
+    const code=safeErrors.has(message)?message:'unavailable';
     return json(origin,{ok:false,error:code},code==='invalid_token'?400:code==='publishing_disabled'?409:503);
   }
 });

@@ -28,8 +28,8 @@ async function api(action, values = {}) {
   return response.data;
 }
 
-function status(message, tone = '') {
-  const element = $('#finance-status'); element.textContent = message; element.dataset.tone = tone;
+function status(message, tone = '', announce = true) {
+  const element = $('#finance-status'); element.setAttribute('aria-live',announce ? 'polite' : 'off'); element.textContent = message; element.dataset.tone = tone;
 }
 
 async function work(task) {
@@ -309,18 +309,79 @@ async function batches() {
   }
 }
 
+function syncRoleChecks(accounts) {
+  const byUser = new Map(accounts.map(account => [account.userId,new Set(account.roles)]));
+  for (const input of $('#role-list').querySelectorAll('input[data-role-key]')) {
+    const assigned = byUser.get(input.dataset.userId);
+    if (assigned) input.checked = assigned.has(input.dataset.roleKey);
+  }
+}
+
+function roleFeedback(note, message, tone = '') {
+  note.setAttribute('aria-live',tone === 'error' ? 'assertive' : 'polite');
+  note.textContent = message; note.dataset.tone = tone;
+}
+
 async function roles() {
   const response = await api('accounts'); const list = $('#role-list'); list.replaceChildren();
   for (const account of response.accounts) {
     const card = document.createElement('div'); card.className = 'finance-list-card finance-role-row';
     const person = document.createElement('div'); person.append(textNode('strong',account.name),textNode('small',account.title));
     const choices = document.createElement('div'); choices.className = 'finance-role-checks';
+    const note = textNode('p','','finance-role-status'); note.setAttribute('role','status'); note.setAttribute('aria-live','polite'); person.append(note);
     for (const [role,label] of Object.entries(labels)) {
       const input = document.createElement('input'); input.type = 'checkbox'; input.checked = account.roles.includes(role);
-      input.addEventListener('change', () => void work(async () => {
-        try { await api('assign_role',{ userId: account.userId, role, enabled: input.checked }); status('人員權限已更新。'); await roles(); await workers(); }
-        catch (error) { input.checked = !input.checked; throw error; }
-      }));
+      input.dataset.userId = account.userId; input.dataset.roleKey = role;
+      input.addEventListener('change', () => {
+        const enabled = input.checked;
+        if (state.busy) { input.checked = !enabled; return; }
+        void work(async () => {
+          const controls = [...list.querySelectorAll('input[type="checkbox"]')], reload = $('#reload-roles');
+          controls.forEach(control => { control.disabled = true; });
+          reload.disabled = true;
+          roleFeedback(note,'正在儲存…');
+          let freeze = false, snapshot = null, warning = '';
+          try {
+            try {
+              await api('assign_role',{ userId: account.userId, role, enabled });
+            } catch (writeError) {
+              try {
+                snapshot = await api('accounts'); syncRoleChecks(snapshot.accounts);
+                const current = snapshot.accounts.find(item => item.userId === account.userId);
+                if (!current) throw new Error('account_missing');
+                if (current.roles.includes(role) !== enabled) {
+                  roleFeedback(note,'未儲存，請再試一次。','error');
+                  status(writeError.message || '權限未儲存。','error',false);
+                  return;
+                }
+              } catch {
+                freeze = true;
+                roleFeedback(note,'無法確認是否儲存，請按「重新讀取權限」。','error');
+                status('無法確認權限是否儲存，請重新讀取權限。','error',false);
+                return;
+              }
+            }
+            if (!snapshot) {
+              try { snapshot = await api('accounts'); syncRoleChecks(snapshot.accounts); }
+              catch { warning = '已儲存，但最新權限清單暫時無法讀取。'; }
+            }
+            if (snapshot) {
+              const current = snapshot.accounts.find(item => item.userId === account.userId);
+              if (!current) { freeze = true; warning = '此同工已不在最新清單，請按「重新讀取權限」。'; }
+              else if (current.roles.includes(role) !== enabled) warning = '權限已被其他人更新，請確認目前勾選狀態。';
+            }
+            if (!freeze && role === 'entry') {
+              try { await workers(); }
+              catch { warning = '權限已儲存，但點收同工清單暫時無法更新。'; }
+            }
+            roleFeedback(note,warning || '已儲存。',warning ? 'warning' : 'success');
+            status(warning || `${account.name}的${label}權限已儲存。`,warning ? 'error' : '',false);
+          } finally {
+            if (!freeze) controls.forEach(control => { control.disabled = false; });
+            reload.disabled = false;
+          }
+        });
+      });
       const wrapper = document.createElement('label'); wrapper.append(input,textNode('span',label)); choices.append(wrapper);
     }
     card.append(person,choices); list.append(card);
@@ -330,6 +391,7 @@ async function roles() {
 for (const button of document.querySelectorAll('[data-tab]')) button.addEventListener('click', () => void work(async () => {
   const name = button.dataset.tab; if (name === 'batches') await batches(); if (name === 'roles') await roles(); tab(name);
 }));
+$('#reload-roles').addEventListener('click', () => void work(async () => { await roles(); await workers(); status('已重新讀取人員權限。'); }));
 $('#new-batch').addEventListener('click', clearEditor);
 $('#back-to-list').addEventListener('click', () => void work(async () => { await batches(); tab('batches'); }));
 $('#add-donor').addEventListener('click', () => { state.groups.push(newGroup()); drawGroups(); });

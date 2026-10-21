@@ -1,6 +1,7 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 const $=s=>document.querySelector(s),draft=new URLSearchParams(location.search).get('draft'),endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-social-review';let item,youtubeWorkflow,instagramPublication=null,isFinalReviewer=false,canReviewIg=false,canPublishDirect=false,reviewBlockedMessage='',busy=false,submitted=false;
 function setStatus(text,tone=''){const n=$('#status'),near=$('#action-status');n.textContent=text;n.dataset.tone=tone;if(near){near.textContent=text;near.dataset.tone=tone;}}
+function instagramFailure(code){return ({sermon_image_migration_failed:'講道圖卡轉存失敗，請聯絡管理員確認圖片檔案。',sermon_image_invalid:'講道圖卡檔案無法使用，請聯絡管理員重新上傳。',sermon_image_missing:'講道圖卡不是可發布的檔案，請聯絡管理員重新上傳。',sermon_video_missing:'Reel 影片檔案未備妥，請重新上傳。',not_connected:'M+ Instagram 尚未連線，請由管理員重新連接。',token_expired:'M+ Instagram 授權已到期，請由管理員重新連接。',permission_missing:'Instagram 帳號缺少發布權限，請由管理員檢查授權。',publishing_disabled:'講道 Instagram 發布功能目前未開啟。',instagram_processing:'Instagram 未能完成媒體處理，請檢查圖卡或影片後重試。',instagram_timeout:'Instagram 處理逾時，請先確認帳號上是否已有貼文，再重試。',instagram_api:'Instagram 暫時未接受這份媒體，請檢查圖卡或影片後重試。',job_store:'發布紀錄無法儲存，請稍後重試。',unavailable:'發布服務暫時無法使用，請稍後重試。'})[String(code||'')]||'發布未完成，請稍後重試；核准內容已保留。';}
 function reviewAccessMessage(){
  if(item.status==='changes_requested')return '本集已退回修改，等待重新送審。';
  if(item.review_stage==='completed')return '本集 IG 審核已完成。';
@@ -34,7 +35,7 @@ function renderPublication(status){
  retry.hidden=!approved||!isFinalReviewer||published;
  retry.disabled=busy||!approved||!isFinalReviewer||published;
  label.hidden=!approved;
- label.textContent=published?'Instagram 已發布。':approved?'內容已核准，Instagram 尚未確認發布。請按「重試發布」；失敗時會保留核准狀態。':'';
+ label.textContent=published?'Instagram 已發布。':approved?status?.status==='failed'?'內容已核准；'+instagramFailure(status.error_code)+' 請確認後按「重試發布」。':'內容已核准，Instagram 尚未確認發布。請按「重試發布」；失敗時會保留核准狀態。':'';
  label.dataset.tone=published?'success':'error';
 }
 function render(data){item=data.draft;youtubeWorkflow=data.youtube_workflow;isFinalReviewer=data.is_final_reviewer===true;canReviewIg=data.can_review_ig===true;canPublishDirect=data.can_publish_direct===true;const initial=item.review_stage==='initial_review';submitted=!(canReviewIg||canPublishDirect);reviewBlockedMessage=canReviewIg||canPublishDirect?'':reviewAccessMessage();$('#subtitle-library-link').href='youtube-subtitle-library.html?draft='+encodeURIComponent(item.id);$('#content').hidden=false;$('#title').textContent=item.sermon_title;const source=item.source_channel_name?item.source_channel_name+'公開影片・':'';const destination=item.youtube_caption_requested===false?'只發布 M+ Instagram・':'';$('#meta').textContent=source+destination+item.service_date+'・'+(item.speaker||'講員待確認')+'・'+(item.scripture||'經文待確認');$('#video').href=item.youtube_url;renderArtworkOptions();renderReel();renderReelUpload();renderSubtitles();renderYoutube();$('#speaker').value=item.speaker||'';$('#scripture').value=item.scripture||'';$('#start').value=item.sermon_start_seconds??'';$('#end').value=item.sermon_end_seconds??'';$('#caption').value=item.caption||'';list($('#outline'),item.outline);list($('#points'),item.key_points);list($('#applications'),item.applications);$('#stage').textContent=canPublishDirect?'IG 待初審｜牧師可直接發布':initial?'IG 初審｜邵鈺庭':item.review_stage==='completed'?'IG 審核完成':'IG 最終確認｜牧師、師母';$('#approve').textContent=canPublishDirect?'牧師直接核准並發布 IG':canReviewIg?initial?'IG 初審通過，送牧師／師母':'確認發布 Instagram':initial?'等待鈺庭初審':'目前無法審核';$('#save').disabled=!canReviewIg;$('#reject').disabled=!canReviewIg;$('#save').title=canPublishDirect?'請核對欄位後按「牧師直接核准並發布 IG」，修改會一併儲存。':reviewBlockedMessage;$('#reject').title=canPublishDirect?'此操作僅限當階段初審人。':reviewBlockedMessage;setStatus(canPublishDirect?'請核對 Reel、封面與貼文。按「牧師直接核准並發布 IG」會略過鈺庭初審，直接送往 M+ Instagram；修改的欄位會一併儲存。':reviewBlockedMessage|| (item.social_media_type==='reel'?'請觀看字幕 Reel，核對封面、講員、經文與貼文後送出審核。':initial?'請核對講員圖、講員、經文、大綱、重點與貼文；選擇一張講員圖後即可送出初審，IG 不必等待字幕。':item.youtube_caption_requested===false?'請確認圖片與貼文後發布到 M+ Instagram。':'請確認圖片與貼文後發布 Instagram。YouTube 字幕在下方獨立處理。'));renderPublication(data.publication);syncApproveAvailability();}
@@ -55,13 +56,13 @@ async function act(action,extra={}){
    youtubeWorkflow={...youtubeWorkflow,status:'published'};renderYoutube();setStatus('YouTube 繁體中文字幕已上稿。','success');
   }else if(action==='sync_publication'){
    renderPublication(data.instagram);
-   setStatus(data.instagram?.status==='published'?'Instagram 已發布。':'內容已核准，但 Instagram 發布仍未成功：'+String(data.instagram?.error||'請稍後重試。'),data.instagram?.status==='published'?'success':'error');
+   setStatus(data.instagram?.status==='published'?'Instagram 已發布。':'內容已核准，但 Instagram 發布仍未成功：'+instagramFailure(data.instagram?.error),data.instagram?.status==='published'?'success':'error');
   }else if(action==='approve'&&data.status==='approved'){
    submitted=true;item.status='approved';item.review_stage='completed';renderPublication(data.instagram);
    const published=data.instagram?.status==='published';
    $('#approve').textContent=published?'已發布 Instagram':'IG 已核准，待發布';
    $('#approve-hint').textContent='核准已完成，無法重複核准。';
-   setStatus(published?'Instagram 已發布；YouTube 字幕仍依獨立流程處理。':'內容已核准，但 Instagram 發布失敗：'+String(data.instagram?.error||'請按「重試發布」。'),published?'success':'error');
+   setStatus(published?'Instagram 已發布；YouTube 字幕仍依獨立流程處理。':'內容已核准，但 Instagram 發布失敗：'+instagramFailure(data.instagram?.error),published?'success':'error');
    if(published)setTimeout(()=>location.assign('admin-dashboard.html?church=M%2B'),1400);
   }else{
    submitted=true;item.status=action==='reject'?'changes_requested':item.status;

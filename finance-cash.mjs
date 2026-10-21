@@ -6,10 +6,10 @@ const categories = ['十一奉獻','感恩奉獻','宣教奉獻','建堂奉獻',
 const labels = { entry: '同工登錄', cash_verify: '師母對現金', approve: '牧師複審' };
 const errors = {
   forbidden: '沒有此操作權限。', login_required: '登入已過期，請重新登入。',
-  version_conflict: '資料已由其他人修改，請重新載入。', batch_locked: '這筆批次已送審，不能直接修改。',
+  version_conflict: '資料已由其他人修改，請重新載入。', batch_locked: '當週奉獻紀錄已送審，不能直接修改。',
   invalid_counters: '請選兩位不同且有登錄權限的點收同工。', member_code_mismatch: '會友與奉獻編號不一致。',
-  unlinked_offering_code: '奉獻編號尚未連結會友，請先查證。', bag_total_mismatch: '袋面總額與分類加總不符。',
-  cash_total_mismatch: '現金實點與逐袋總額不符。', verified_cash_mismatch: '師母實點金額與同工點收不符。',
+  unlinked_offering_code: '奉獻編號尚未連結會友，請先查證。', bag_total_mismatch: '本筆奉獻總額與分類加總不符。',
+  cash_total_mismatch: '現金實點與奉獻登錄合計不符。', verified_cash_mismatch: '師母實點金額與同工點收不符。',
   invalid_transition: '目前狀態不能執行此步驟。', reason_required: '退回時請填寫原因。',
   target_not_mplus_admin: '該帳號沒有 M+ 管理權限。', service_unavailable: '服務暫時無法使用，請稍後再試。'
 };
@@ -66,7 +66,7 @@ function clearEditor() {
   state.batch = null; state.groups = [newGroup()];
   $('#offering-date').value = mostRecentSunday();
   $('#counted-cash').value = '';
-  $('#editor-title').textContent = '新建主日現金批次';
+  $('#editor-title').textContent = '新增當週奉獻紀錄';
   $('#editor-state').textContent = '儲存後可送師母核對。';
   $('#review-panel').hidden = true;
   $('#cash-form').querySelectorAll('input,select,button').forEach(control => { control.disabled = false; });
@@ -114,7 +114,7 @@ async function searchMember(group, results) {
 
 function drawBag(group, bag, index) {
   const details = document.createElement('details'); details.className = 'finance-bag'; details.open = true;
-  const summary = document.createElement('summary'); summary.textContent = `第 ${index + 1} 袋 · ${bag.declaredTotal || 0} 元`; details.append(summary);
+  const summary = document.createElement('summary'); summary.textContent = `第 ${index + 1} 筆 · ${bag.declaredTotal || 0} 元`; details.append(summary);
   const grid = document.createElement('div'); grid.className = 'finance-category-grid';
   const choices = group.anonymous ? ['一般／不具名奉獻'] : categories;
   for (const category of choices) {
@@ -124,8 +124,8 @@ function drawBag(group, bag, index) {
   details.append(grid);
   if (!group.anonymous) details.append(labelFor('指定奉獻用途', field('text', bag.designation, value => { bag.designation = value; }, { maxLength: 120 })));
   const footer = document.createElement('div'); footer.className = 'finance-bag-footer';
-  footer.append(labelFor('袋面總額', field('number', bag.declaredTotal, value => { bag.declaredTotal = value; summary.textContent = `第 ${index + 1} 袋 · ${value || 0} 元`; totals(); }, { min: '1' })));
-  const remove = textNode('button', '移除這袋'); remove.type = 'button'; remove.className = 'secondary';
+  footer.append(labelFor('本筆奉獻總額', field('number', bag.declaredTotal, value => { bag.declaredTotal = value; summary.textContent = `第 ${index + 1} 筆 · ${value || 0} 元`; totals(); }, { min: '1' })));
+  const remove = textNode('button', '移除這筆'); remove.type = 'button'; remove.className = 'secondary';
   remove.addEventListener('click', () => { group.bags.splice(index, 1); drawGroups(); totals(); });
   footer.append(remove); details.append(footer); return details;
 }
@@ -148,7 +148,7 @@ function drawGroup(group, index) {
     const results = document.createElement('div'); results.className = 'finance-search-results';
     search.addEventListener('click', () => void work(() => searchMember(group, results)));
     nameWrap.append(search); const nameBlock = document.createElement('div');
-    nameBlock.append(textNode('strong','袋上姓名或奉獻編號'),nameWrap,results); fields.append(nameBlock);
+    nameBlock.append(textNode('strong','奉獻者姓名或奉獻編號'),nameWrap,results); fields.append(nameBlock);
     const codeNote = document.createElement('div');
     codeNote.append(textNode('strong', `奉獻編號：${group.offeringCode || (group.memberId ? '待補' : '未建檔')}`));
     if (group.memberId && !group.offeringCode) {
@@ -162,8 +162,8 @@ function drawGroup(group, index) {
       const row = document.createElement('div'); row.className = 'finance-inline'; row.append(input, assign); codeNote.append(row);
     }
     fields.append(codeNote);
-    fields.append(labelFor('袋上電話（選填）', field('tel', group.phone, value => { group.phone = value; }, { maxLength: 60 })));
-    fields.append(labelFor('袋上地址（選填）', field('text', group.address, value => { group.address = value; }, { maxLength: 300 })));
+    fields.append(labelFor('電話（選填）', field('tel', group.phone, value => { group.phone = value; }, { maxLength: 60 })));
+    fields.append(labelFor('地址（選填）', field('text', group.address, value => { group.address = value; }, { maxLength: 300 })));
   }
   fields.append(labelFor('週報顯示', select([['public','顯示編號／遮蔽姓名'],['anonymous','匿名'],['unlisted','只計入總額']], group.publicChoice, value => { group.publicChoice = value; })));
   fields.append(labelFor('收據偏好', select([['annual','年度收據'],['single','單次收據'],['none','不開收據']], group.receiptPreference, value => { group.receiptPreference = value; })));
@@ -174,7 +174,7 @@ function drawGroup(group, index) {
   card.append(fields);
   const bags = document.createElement('div'); bags.className = 'finance-bags'; group.bags.forEach((bag, i) => bags.append(drawBag(group, bag, i))); card.append(bags);
   if (!group.anonymous) {
-    const add = textNode('button', '＋ 同一人再加一袋'); add.type = 'button'; add.className = 'secondary';
+    const add = textNode('button', '＋ 同一人再加一筆'); add.type = 'button'; add.className = 'secondary';
     add.addEventListener('click', () => { group.bags.push({ declaredTotal: '', amounts: {}, designation: '' }); drawGroups(); });
     card.append(add);
   }
@@ -198,9 +198,9 @@ function makePayload() {
     const lines = (group.anonymous ? ['一般／不具名奉獻'] : categories).filter(category => number(bag.amounts[category]) > 0).map(category => ({
       category, amount: number(bag.amounts[category]), ...(category === '指定奉獻' ? { designation: bag.designation.trim() } : {})
     }));
-    if (!group.name.trim()) throw new Error('每位奉獻者須填袋上姓名。');
+    if (!group.name.trim()) throw new Error('每位奉獻者須填姓名。');
     if (group.memberId && !group.offeringCode) throw new Error('已選會友仍缺奉獻編號，請先補編號。');
-    if (!lines.length) throw new Error('每袋至少填一項奉獻分類。');
+    if (!lines.length) throw new Error('每筆至少填一項奉獻分類。');
     if (lines.some(line => line.category === '指定奉獻' && !line.designation)) throw new Error('指定奉獻須填用途。');
     const declaredTotal = number(bag.declaredTotal);
     if (declaredTotal !== lines.reduce((sum, line) => sum + line.amount, 0)) throw new Error(errors.bag_total_mismatch);
@@ -299,12 +299,12 @@ async function workers() {
 
 async function batches() {
   const response = await api('list'); const list = $('#batch-list'); list.replaceChildren();
-  if (!response.batches.length) list.append(textNode('p','目前沒有主日現金批次。','finance-note'));
+  if (!response.batches.length) list.append(textNode('p','目前沒有當週奉獻紀錄。','finance-note'));
   for (const batch of response.batches) {
     const card = document.createElement('div'); card.className = 'finance-list-card finance-role-row';
     const detail = document.createElement('div');
-    detail.append(textNode('strong',`${batch.offering_date}　${statusLabel(batch.status)}`),textNode('small',`逐袋 ${Number(batch.entered_total).toLocaleString('zh-TW')} 元 · 版本 ${batch.version}`));
-    const open = textNode('button','查看批次'); open.type = 'button'; open.addEventListener('click', () => void work(() => openBatch(batch.id)));
+    detail.append(textNode('strong',`${batch.offering_date}　${statusLabel(batch.status)}`),textNode('small',`登錄合計 ${Number(batch.entered_total).toLocaleString('zh-TW')} 元 · 版本 ${batch.version}`));
+    const open = textNode('button','查看當週紀錄'); open.type = 'button'; open.addEventListener('click', () => void work(() => openBatch(batch.id)));
     card.append(detail,open); list.append(card);
   }
 }

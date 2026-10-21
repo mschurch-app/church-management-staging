@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import { financeAccounts, financeCanonicalTarget, financeWorkers } from './accounts.ts';
 
 const APP_ORIGIN = 'https://mscos.mchurch.online';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -63,22 +64,22 @@ Deno.serve(async request => {
 
   if (action === 'accounts') {
     if (!owner) return reply(origin, 403, { ok: false, code: 'forbidden' });
-    const result = await userClient.rpc('list_admin_accounts_v3');
-    if (result.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
+    const result = await userClient.rpc('list_admin_accounts_v4');
+    if (result.error || !Array.isArray(result.data)) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
     const assigned = await admin.from('finance_staff_roles').select('user_id,role_key');
     if (assigned.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
-    const accounts = (result.data || []).filter((row: { grants?: { church_id?: string }[]; is_active?: boolean }) => row.is_active && row.grants?.some(grant => grant.church_id === 'M+'));
-    return reply(origin, 200, { ok: true, accounts: accounts.map((row: { user_id: string; display_name?: string; job_title?: string }) => ({
-      userId: row.user_id, name: row.display_name || '管理同工', title: row.job_title || '',
-      roles: (assigned.data || []).filter(item => item.user_id === row.user_id).map(item => item.role_key)
-    })) });
+    return reply(origin, 200, { ok: true, accounts: financeAccounts(result.data, assigned.data || []) });
   }
 
   if (action === 'assign_role') {
     if (!owner || !UUID.test(String(input.userId || '')) || !['entry','cash_verify','approve'].includes(String(input.role || '')) || typeof input.enabled !== 'boolean') {
       return reply(origin, 403, { ok: false, code: 'forbidden' });
     }
-    const result = await admin.rpc('finance_assign_role', { p_actor: user.id, p_target: input.userId, p_role: input.role, p_enabled: input.enabled });
+    const listed = await userClient.rpc('list_admin_accounts_v4');
+    if (listed.error || !Array.isArray(listed.data)) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
+    const target = financeCanonicalTarget(listed.data, String(input.userId));
+    if (!target) return reply(origin, 400, { ok: false, code: 'target_not_mplus_admin' });
+    const result = await admin.rpc('finance_assign_role', { p_actor: user.id, p_target: target, p_role: input.role, p_enabled: input.enabled });
     if (result.error) { const error = resultError(result.error.message); return reply(origin, error.status, { ok: false, code: error.code }); }
     return reply(origin, 200, { ok: true });
   }
@@ -87,12 +88,11 @@ Deno.serve(async request => {
     if (!canRead) return reply(origin, 403, { ok: false, code: 'forbidden' });
     const workerIds = await admin.from('finance_staff_roles').select('user_id').eq('role_key', 'entry');
     if (workerIds.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
-    const ids = (workerIds.data || []).map(row => row.user_id);
+    const ids = [...new Set((workerIds.data || []).map(row => row.user_id))];
     if (!ids.length) return reply(origin, 200, { ok: true, workers: [] });
     const people = await admin.from('pastoral_staff').select('app_user_id,display_name').in('app_user_id', ids).eq('is_active', true);
     if (people.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
-    const names = new Map((people.data || []).map(row => [row.app_user_id, row.display_name]));
-    return reply(origin, 200, { ok: true, workers: ids.map(id => ({ userId: id, name: names.get(id) || `同工 ${id.slice(0, 8)}` })) });
+    return reply(origin, 200, { ok: true, workers: financeWorkers(workerIds.data || [], people.data || []) });
   }
 
   if (action === 'members') {

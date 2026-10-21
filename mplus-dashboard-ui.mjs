@@ -1,4 +1,4 @@
-import {mountWorkProfile} from './work-profile.mjs?v=20261021-work-roles1';
+import {mountWorkProfile} from './work-profile.mjs?v=20261022-accounting1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261021-work-roles1';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';

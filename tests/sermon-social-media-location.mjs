@@ -32,10 +32,13 @@ assert.equal(legacySocialImage(legacy)?.path,'sermon-social/2026-07-19-options/c
 assert.equal(legacySocialImage(legacy.replace(storageOrigin,'https://evil.example')),null);
 assert.equal(appSocialImage(app)?.mime,'image/jpeg');
 assert.equal(appSocialImage(app.replace('?v=20261016a','?redirect=evil')),null);
-await ensureApprovedSermonImage(db,'draft');
+const prepared=await ensureApprovedSermonImage(db,'draft');
 assert.match(draft.social_image_url,/church-website-public-media\/M%2B\/sermons\/draft\/[a-f0-9]{64}\.jpg$/);
+assert.equal(prepared,draft.social_image_url);
 assert.equal(uploads.length,1);
 assert.equal(uploads[0].options.contentType,'image/jpeg');
+assert.equal(await ensureApprovedSermonImage(db,'draft'),prepared);
+assert.equal(uploads.length,1);
 assert.equal(await persistSocialImage(db,'draft',draft.social_image_url),draft.social_image_url);
 assert.equal(uploads.length,1);
 assert.match(await persistSocialImage(db,'draft',app),/church-website-public-media\/M%2B\/sermons\/draft\/[a-f0-9]{64}\.jpg$/);

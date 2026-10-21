@@ -45,7 +45,7 @@ page.on('request',async req=>{
   }
   else if(url.pathname.includes('/functions/v1/daily-devotional-admin')){
    if(body.action==='content_list'){if(failRead){code=503;data={ok:false,error:'unavailable'};}else data={ok:true,items,reviewerStage:stage};}
-   else if(await write()){const row=items.find(item=>item.id===body.id);if(body.action==='content_update'){Object.assign(row,body.values);row.review_status='initial_review';}else row.review_status=body.toStatus;data={ok:true};}
+   else if(await write()){const row=items.find(item=>item.id===body.id);if(body.action==='content_update'){Object.assign(row,body.values);row.review_status='approved';}else row.review_status=body.toStatus;data={ok:true};}
   }
   else if(url.pathname.includes('/functions/v1/weekly-bulletin-review')){
    if(body.action==='list'){if(failRead){code=503;data={error:'unavailable'};}else data={ok:true,items:bulletins};}

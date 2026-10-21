@@ -94,24 +94,26 @@ function select(options, value, handler) {
   node.value = value; node.addEventListener('change', () => handler(node.value)); return node;
 }
 
-async function searchMember(group, results) {
-  const term = group.name.trim() || group.offeringCode.trim();
-  if (!term) { status('先輸入姓名或奉獻編號。', 'error'); return; }
-  const response = await api('members', { search: term });
+const memberLookups=new WeakMap();
+async function searchMember(group,results){
+ const term=group.name.trim()||group.offeringCode.trim(),request={};memberLookups.set(group,request);
+ if(!term){results.replaceChildren();return;}if(state.busy)return;
+ const fresh=()=>memberLookups.get(group)===request&&results.isConnected&&state.groups.includes(group)&&group.name.trim()===term;
+ results.replaceChildren(textNode('p','正在查找會友，請稍候…','finance-note'));
+ try{
+  const response=await api('members',{search:term});if(!fresh())return;
   results.replaceChildren();
-  if (!response.members.length) {
-    results.append(textNode('p', '沒有找到會友；可先以姓名暫存，之後補建檔。', 'finance-note'));
-    return;
+  if(!response.members.length){results.append(textNode('p','沒有找到相符會友。請確認姓名；尚未建檔者可先保留姓名暫存。','finance-note'));return;}
+  results.append(textNode('p','請點選正確會友以連結資料；同名者請核對電話或奉獻編號。','finance-note'));
+  for(const member of response.members){
+   const button=textNode('button',`${member.name}　${member.offeringCode?'奉獻編號 '+member.offeringCode:'奉獻編號待補'}${member.phone?'　'+member.phone:''}`);button.type='button';button.className='secondary';
+   button.addEventListener('click',()=>{
+    if(!fresh()||state.busy)return;
+    memberLookups.set(group,{});group.memberId=member.id;group.offeringCode=member.offeringCode||'';group.name=member.name;group.phone=member.phone||'';
+    invalidateGroup(group);markDirty();drawGroups();status(`已連結會友 ${member.name}。${group.offeringCode?'奉獻編號與會友資料已帶入。':'會友已連結；奉獻編號尚未設定，請在下方補編號。'}`);
+   });results.append(button);
   }
-  for (const member of response.members) {
-    const button = document.createElement('button'); button.type = 'button';
-    button.textContent = `${member.name}　${member.offeringCode || '奉獻編號待補'}${member.phone ? `　${member.phone}` : ''}`;
-    button.addEventListener('click', () => {
-      group.memberId = member.id; group.offeringCode = member.offeringCode || ''; group.name = member.name; group.phone = member.phone || '';
-      results.replaceChildren(); invalidateGroup(group); markDirty(); drawGroups(); status(`已連結會友 ${member.name}。`);
-    });
-    results.append(button);
-  }
+ }catch(error){if(fresh())results.replaceChildren(textNode('p',(error.message||'查找失敗')+' 請按「搜尋會友」重試，已填內容會保留。','finance-note finance-member-error'));}
 }
 
 function bagTotal(group,bag){return (group.anonymous?['一般／不具名奉獻']:categories).reduce((sum,category)=>sum+(number(bag.amounts[category])||0),0);}
@@ -150,18 +152,28 @@ function drawGroup(group, index) {
   head.append(remove); card.append(head);
   const fields = document.createElement('div'); fields.className = 'finance-group-fields';
   if (!group.anonymous) {
+    let timer=null,composing=false,phoneInput;
     const name = field('text', group.name, value => {
-      if (group.memberId != null && value !== group.name) { group.memberId = null; group.offeringCode = ''; }
-      group.name = value;
+      memberLookups.set(group,{});clearTimeout(timer);results.replaceChildren();
+      if(value!==group.name){
+        if(group.memberId!=null){group.memberId=null;group.offeringCode='';group.phone='';if(phoneInput)phoneInput.value='';codeNote.querySelector('.finance-code-assignment')?.remove();}
+        invalidateGroup(group);
+      }
+      group.name=value;codeStatus.textContent='尚未連結會友；請選擇下方搜尋結果。';
+      if(!composing&&value.trim())timer=setTimeout(()=>void searchMember(group,results),350);
     }, { maxLength: 80 });
+    name.className='finance-member-query';name.placeholder='輸入姓名或奉獻編號，自動查找';name.setAttribute('aria-label','奉獻者姓名或奉獻編號');name.autocomplete='off';
+    name.addEventListener('compositionstart',()=>{composing=true;clearTimeout(timer);memberLookups.set(group,{});results.replaceChildren();});
+    name.addEventListener('compositionend',()=>{composing=false;clearTimeout(timer);if(group.name.trim())timer=setTimeout(()=>void searchMember(group,results),350);});
+    name.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.isComposing&&!composing){event.preventDefault();clearTimeout(timer);void searchMember(group,results);}});
     const nameWrap = document.createElement('div'); nameWrap.className = 'finance-inline'; nameWrap.append(name);
     const search = textNode('button', '搜尋會友'); search.type = 'button'; search.className = 'secondary';
-    const results = document.createElement('div'); results.className = 'finance-search-results';
-    search.addEventListener('click', () => void work(() => searchMember(group, results)));
+    const results = document.createElement('div'); results.className = 'finance-search-results';results.setAttribute('role','status');results.setAttribute('aria-live','polite');
+    search.addEventListener('click',()=>{clearTimeout(timer);void searchMember(group,results);});
     nameWrap.append(search); const nameBlock = document.createElement('div');
-    nameBlock.append(textNode('strong','奉獻者姓名或奉獻編號'),nameWrap,results); fields.append(nameBlock);
+    nameBlock.append(textNode('strong','奉獻者姓名或奉獻編號'),nameWrap,textNode('small','輸入後自動查找，再點選正確會友；只有姓名文字尚未連結會友。','finance-note'),results); fields.append(nameBlock);
     const codeNote = document.createElement('div');
-    codeNote.append(textNode('strong', `奉獻編號：${group.offeringCode || (group.memberId ? '待補' : '未建檔')}`));
+    const codeStatus=textNode('strong',group.memberId?`已連結會友：${group.name} · 奉獻編號：${group.offeringCode||'待補（尚未設定）'}`:'尚未連結會友；輸入姓名後請點選搜尋結果。','finance-member-state');codeNote.append(codeStatus);
     if (group.memberId && !group.offeringCode) {
       const input = field('text', '', () => {}, { maxLength: 4 }); input.placeholder = '四位數';
       const assign = textNode('button', '設定編號'); assign.type = 'button';
@@ -170,10 +182,10 @@ function drawGroup(group, index) {
         await api('assign_code', { memberId: group.memberId, offeringCode });
         group.offeringCode = offeringCode; invalidateGroup(group); markDirty(); drawGroups(); status('奉獻編號已設定。');
       }));
-      const row = document.createElement('div'); row.className = 'finance-inline'; row.append(input, assign); codeNote.append(row);
+      const row = document.createElement('div'); row.className = 'finance-inline finance-code-assignment'; row.append(input, assign); codeNote.append(row);
     }
     fields.append(codeNote);
-    fields.append(labelFor('電話（選填）', field('tel', group.phone, value => { group.phone = value; }, { maxLength: 60 })));
+    phoneInput=field('tel',group.phone,value=>{group.phone=value;},{maxLength:60});fields.append(labelFor('電話（選填）',phoneInput));
     fields.append(labelFor('地址（選填）', field('text', group.address, value => { group.address = value; }, { maxLength: 300 })));
   }
   fields.append(labelFor('週報顯示', select([['public','顯示編號／遮蔽姓名'],['anonymous','匿名'],['unlisted','只計入總額']], group.publicChoice, value => { group.publicChoice = value; })));

@@ -32,3 +32,5 @@ html body .finance-tabs button[aria-current="page"]{background:#1b5140!important
 .finance-bag-check{display:flex;align-items:center;gap:12px;min-height:48px;margin-top:14px;line-height:1.5}.finance-bag-check input{width:24px;height:24px;flex-shrink:0}.finance-bag-footer input[readonly]{background:#f3f7f1!important;font-weight:800}
 
 .finance-bag-confirm-title{display:block;margin-top:18px}.finance-confirm-steps{padding-left:22px;line-height:1.7}.finance-confirmations .finance-check span{overflow-wrap:anywhere}
+
+.finance-member-state{display:block;line-height:1.6}.finance-member-error{color:#a63324}.finance-search-results button{width:100%;white-space:normal;text-align:left;overflow-wrap:anywhere}

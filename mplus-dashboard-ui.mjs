@@ -2,21 +2,26 @@ import {mountWorkProfile} from './work-profile.mjs?v=20261021-work-roles1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261021-work-roles1';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';
-import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261019-association1';
+import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261021-finance1';
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261012-readable2';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261019-workflow1';
-import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261020-shell2';
+import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261021-finance1';
 import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261021-routine-close1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 function hrefFor(key,file){const url=new URL(file||FUNCTION_CATALOG[key].file,location.href);url.searchParams.set('church','M+');return url.href;}
 function renderCounts(counts){const area=$('#summary');area.replaceChildren();for(const [key,label]of [['members','會友'],['groups','小組與聚會'],['prayers','待關懷代禱']]){if(counts[key]===undefined)continue;const card=make('article');card.append(make('strong',counts[key]===null?'—':String(counts[key])),make('span',label));area.append(card);}area.hidden=!area.children.length;}
+async function financeAccess(){
+ try{const response=await db.functions.invoke('finance-cash',{body:{action:'profile'}});
+  return !response.error&&response.data?.ok===true&&(response.data.owner===true||response.data.roles?.length>0);
+ }catch{return false;}
+}
 function wireSearch(allowed){const centers=visibleCenters(new Set(allowed)),items=Object.values(centers).flatMap(c=>c.cards.flatMap(([,links])=>links)),seen=new Set();for(const key of allowed){if(key!=='pastoral_workspace'&&!items.some(([,k])=>k===key))items.push([FUNCTION_CATALOG[key].title,key]);}$('#function-search').oninput=()=>{const term=$('#function-search').value.trim().toLocaleLowerCase('zh-TW'),area=$('#function-search-results');area.replaceChildren();area.hidden=!term;if(!term)return;seen.clear();for(const [label,key,file]of items){const href=hrefFor(key,file),id=label+href;if(seen.has(id)||!label.toLocaleLowerCase('zh-TW').includes(term))continue;seen.add(id);const a=make('a',label+' ›');a.href=href;if(key.startsWith('school'))a.onclick=e=>openSchool(e,href);area.append(a);}if(!area.children.length)area.append(make('p','找不到符合的可用功能。','muted'));};}
 async function load(){try{
  const {access,church:selected}=await dashboardAccess(db,preferred);if(selected!=='M+')throw Error('此入口僅適用 M+，請返回所屬堂會。');church=selected;
  const [settings,home]=await Promise.all([loadChurchCustomizations(db,church),dashboardHomePreferences(db,church)]);
- const [monitor,capabilities]=await Promise.all([db.rpc('get_my_system_monitor_access'),db.rpc('get_my_app_capabilities')]);home.system_monitor_access=!monitor.error&&monitor.data===true;home.is_owner=capabilities.data?.is_owner===true;
+ const [monitor,capabilities,canUseFinance]=await Promise.all([db.rpc('get_my_system_monitor_access'),db.rpc('get_my_app_capabilities'),financeAccess()]);home.system_monitor_access=!monitor.error&&monitor.data===true;home.is_owner=capabilities.data?.is_owner===true;home.financeCashAccess=canUseFinance;
  const allowed=availableFunctionKeys(access,church,home,settings);$('#welcome').textContent=access.user.name+'｜'+access.user.title;
  if(church==='M+'){mountMplusNavigation({allowed,hrefFor,openSchool});mountWeekCalendar({allowed:allowed.includes('pastoral_workspace')});}
  void mountWorkProfile({db,allowed,openSchool});

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-Hant" data-church="M+" data-app-shell="mplus"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>M+ 教會頁籤預覽</title><link rel="stylesheet" href="/mplus-navigation.css">
+</head><body class="mplus-navigation">
+<main class="member-page dashboard-page">
+  <header class="page-header"><div><a class="church-brand" href="#"><img src="/assets/brands/mplus-logo-white.png" alt="M＋"></a><h1>M＋同工工作台</h1><p id="welcome">示範同工｜版面驗證</p></div></header>
+  <nav class="mplus-top" aria-label="M+ 首頁與系統"></nav>
+  <section class="mplus-center" hidden aria-label="M＋功能中心"></section>
+</main>
+<nav class="mobile-app-nav mplus-dock" aria-label="M+ 五大入口"></nav>
+<script type="module">
+import {mountMplusNavigation,MPLUS_CENTERS} from '/mplus-navigation.mjs';
+import {FUNCTION_CATALOG} from '/app-function-definitions.mjs';
+const allowed=['church_settings',...new Set(Object.values(MPLUS_CENTERS).flatMap(center=>center.cards.flatMap(([,links])=>links.map(([,key])=>key))))];
+mountMplusNavigation({allowed,hrefFor:(key,file)=>new URL('/'+(file||FUNCTION_CATALOG[key].file),location.href).href,openSchool:event=>event.preventDefault()});
+</script></body></html>

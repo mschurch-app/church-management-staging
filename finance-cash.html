@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+  <title>主日奉獻登錄｜教會 OS</title>
+  <link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg">
+  <link rel="stylesheet" href="auth.css?v=20260922-ui1"><link rel="stylesheet" href="church-brand.css?v=20261008-header1">
+  <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1"><link rel="stylesheet" href="apple-ui.css?v=20260924-app2">
+  <link rel="stylesheet" href="app-design-tokens.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261012-readable2">
+  <link rel="stylesheet" href="finance-cash.css?v=20261021-a2">
+</head>
+<body class="finance-body"><main class="member-page finance-page">
+  <header class="page-header"><div><p class="eyebrow">M+ · 協會財務</p><h1>主日奉獻登錄</h1><p class="muted">逐袋記錄，同工送審，師母對現金，牧師複審。</p></div><a class="finance-home-link" href="mplus-dashboard.html?church=M%2B&amp;center=church">返回教會</a></header>
+  <p id="finance-status" class="finance-status" role="status" aria-live="polite">正在確認財務權限…</p>
+  <section id="finance-app" hidden>
+    <nav class="finance-tabs" aria-label="主日奉獻工作區"><button type="button" data-tab="batches" aria-current="page">奉獻批次</button><button type="button" data-tab="editor">逐袋登錄</button><button type="button" data-tab="roles" id="roles-tab" hidden>人員權限</button></nav>
+    <section id="batches-panel" class="finance-panel"><div class="finance-section-head"><div><h2>主日批次</h2><p>可查看草稿、待核對、待複審與已入帳紀錄。</p></div><button type="button" id="new-batch">＋ 新建批次</button></div><div id="batch-list" class="finance-list"></div></section>
+    <section id="editor-panel" class="finance-panel" hidden>
+      <div class="finance-section-head"><div><h2 id="editor-title">新建主日現金批次</h2><p id="editor-state">先輸入日期、點收者及每袋資料。</p></div><button type="button" id="back-to-list" class="secondary">返回批次</button></div>
+      <form id="cash-form">
+        <div class="finance-grid finance-summary"><label>奉獻日期<input id="offering-date" type="date" required></label><label>現金實點總額<input id="counted-cash" type="number" min="1" step="1" inputmode="numeric" required></label><label>點收同工 1<select id="counter-one" required></select></label><label>點收同工 2<select id="counter-two" required></select></label></div>
+        <div class="finance-section-head"><div><h3>逐位奉獻者與袋明細</h3><p>同一位奉獻者可新增多袋；袋內可填多個奉獻分類。</p></div><div class="finance-actions"><button type="button" id="add-donor" class="secondary">＋ 奉獻者</button><button type="button" id="add-anonymous" class="secondary">＋ 匿名現金</button></div></div>
+        <div id="donor-groups" class="finance-groups"></div>
+        <div class="finance-totals"><span>逐袋登錄合計：<strong id="entered-total">0</strong> 元</span><span>現金差額：<strong id="cash-difference">0</strong> 元</span></div>
+        <div class="finance-actions finance-save"><button type="submit" id="save-draft">儲存草稿</button><button type="button" id="submit-batch">送師母核對</button></div>
+      </form>
+      <section id="review-panel" class="finance-review" hidden><h3>審核與更正</h3><p id="review-message"></p><div id="review-actions" class="finance-actions"></div><ol id="review-history"></ol></section>
+    </section>
+    <section id="roles-panel" class="finance-panel" hidden><h2>財務人員權限</h2><p>由系統負責人指定登錄同工、師母核對帳號與牧師核准帳號。系統職稱不會自動授權。</p><div id="role-list" class="finance-list"></div></section>
+  </section>
+</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="finance-cash.mjs?v=20261021-a1"></script><script type="module" src="church-brand.mjs?v=20261012-readable2"></script><script type="module">import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261020-dock1';mountMplusFunctionNavigation({church:'M+',center:'church'});</script></body></html>

@@ -371,6 +371,7 @@ function syncRoleChecks(accounts) {
   for (const input of $('#role-list').querySelectorAll('input[data-role-key]')) {
     const assigned = byUser.get(input.dataset.userId);
     if (assigned) input.checked = assigned.has(input.dataset.roleKey);
+    const account=accounts.find(a=>a.userId===input.dataset.userId);input.dataset.inherited=String((account?.inheritedRoles||[]).includes(input.dataset.roleKey));
   }
 }
 
@@ -386,9 +387,11 @@ async function roles() {
     const person = document.createElement('div'); person.append(textNode('strong',account.name),textNode('small',account.title));
     const choices = document.createElement('div'); choices.className = 'finance-role-checks';
     const note = textNode('p','','finance-role-status'); note.setAttribute('role','status'); note.setAttribute('aria-live','polite'); person.append(note);
+    if((account.inheritedRoles||[]).includes('entry'))person.append(textNode('p','同工登錄：由「教會 → 財務會計」主責／共同參與繼承，請至同工帳號的事工分工調整。'+(account.legacyEntry?' 此人另有舊制個別登錄授權；移除分工後，該個別授權仍保留。':''),'finance-note'));
     for (const [role,label] of Object.entries(labels)) {
       const input = document.createElement('input'); input.type = 'checkbox'; input.checked = account.roles.includes(role);
       input.dataset.userId = account.userId; input.dataset.roleKey = role;
+      input.dataset.inherited=String((account.inheritedRoles||[]).includes(role));input.disabled=input.dataset.inherited==='true';
       input.addEventListener('change', () => {
         const enabled = input.checked;
         if (state.busy) { input.checked = !enabled; return; }
@@ -434,7 +437,7 @@ async function roles() {
             roleFeedback(note,warning || '已儲存。',warning ? 'warning' : 'success');
             status(warning || `${account.name}的${label}權限已儲存。`,warning ? 'error' : '',false);
           } finally {
-            if (!freeze) controls.forEach(control => { control.disabled = false; });
+            if (!freeze) controls.forEach(control => { control.disabled = control.dataset.inherited==='true'; });
             reload.disabled = false;
           }
         });

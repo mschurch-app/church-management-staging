@@ -42,3 +42,8 @@ test('點收同工只列一次且顯示 canonical 人員姓名', () => {
     { userId: sameName, name: '林同工' }
   ]);
 });
+
+test('財務會計分工的繼承登錄權限有來源標示，並與個別授權合併',()=>{
+ const rows=financeAccounts(verifiedRows,[{user_id:line,role_key:'entry',source_key:'accounting_assignment'},{user_id:line,role_key:'entry',source_key:'individual'},{user_id:line,role_key:'approve',source_key:'individual'}]);
+ assert.deepEqual(rows.find(r=>r.userId===line)?.roles,['entry','approve']);assert.deepEqual(rows.find(r=>r.userId===line)?.inheritedRoles,['entry']);assert.equal(rows.find(r=>r.userId===line)?.legacyEntry,true);
+});

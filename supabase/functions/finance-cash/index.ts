@@ -70,7 +70,7 @@ Deno.serve(async request => {
     if (!owner) return reply(origin, 403, { ok: false, code: 'forbidden' });
     const result = await userClient.rpc('list_admin_accounts_v4');
     if (result.error || !Array.isArray(result.data)) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
-    const assigned = await admin.from('finance_staff_roles').select('user_id,role_key');
+    const assigned = await admin.rpc('finance_effective_role_assignments');
     if (assigned.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
     return reply(origin, 200, { ok: true, accounts: financeAccounts(result.data, assigned.data || []) });
   }
@@ -90,7 +90,8 @@ Deno.serve(async request => {
 
   if (action === 'workers') {
     if (!canRead) return reply(origin, 403, { ok: false, code: 'forbidden' });
-    const workerIds = await admin.from('finance_staff_roles').select('user_id').eq('role_key', 'entry');
+    const effective = await admin.rpc('finance_effective_role_assignments');
+    const workerIds = {error:effective.error,data:(effective.data||[]).filter(row=>row.role_key==='entry')};
     if (workerIds.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
     const ids = [...new Set((workerIds.data || []).map(row => row.user_id))];
     if (!ids.length) return reply(origin, 200, { ok: true, workers: [] });

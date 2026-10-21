@@ -75,11 +75,12 @@ async function persistSocialImage(db:any,draftId:string,value:string){
 async function ensureApprovedSermonImage(db:any,draftId:string){
  const result=await db.from('sermon_social_drafts').select('status,review_stage,social_media_type,social_image_url').eq('id',draftId).single(),draft=result.data;
  if(result.error||!draft||draft.status!=='approved'||draft.review_stage!=='completed')throw new Error('sermon_image_migration_failed');
- if(draft.social_media_type==='reel')return;
+ if(draft.social_media_type==='reel')return draft.social_image_url;
  const url=await persistSocialImage(db,draftId,String(draft.social_image_url));
- if(url===draft.social_image_url)return;
+ if(url===draft.social_image_url)return url;
  const saved=await db.from('sermon_social_drafts').update({social_image_url:url,updated_at:new Date().toISOString()}).eq('id',draftId).eq('status','approved').eq('social_image_url',draft.social_image_url).select('id').maybeSingle();
  if(saved.error||!saved.data)throw new Error('sermon_image_migration_failed');
+ return url;
 }
 
 async function subtitleState(db:any,draftId:string,includeCues=true){const r=await db.from('sermon_subtitle_segments').select(includeCues?'segment_index,cues,reviewed_cues,review_status,review_error':'segment_index,review_status').eq('draft_id',draftId).order('segment_index');if(r.error)throw r.error;const rows=r.data||[];return {rows,ready:rows.length>0&&rows.every((x:any)=>x.review_status==='completed'),cues:rows.flatMap((x:any)=>x.review_status==='completed'&&Array.isArray(x.reviewed_cues)?x.reviewed_cues:Array.isArray(x.cues)?x.cues:[])};}
@@ -153,7 +154,13 @@ Deno.serve(async req=>{
   const connection=details&&draft.youtube_caption_requested!==false?(await db.from('youtube_oauth_connections').select('status').eq('church_id','M+').maybeSingle()).data:null;
   const sourceImage=draft.source_image_path?MEDIA+draft.source_image_path.split('/').map(encodeURIComponent).join('/'):null;
   const reelUrl=validReel(draft)?db.storage.from('church-website-public-media').getPublicUrl(draft.social_video_path).data.publicUrl:null;
-  return json(origin,200,{ok:true,draft:{...draft,source_image_url:sourceImage,social_video_url:reelUrl,subtitle_cues:subtitles.cues,subtitles_ready:subtitles.ready,subtitle_segments:subtitles.rows.map((x:any)=>({segment_index:x.segment_index,review_status:x.review_status,review_error:x.review_error,cue_count:Array.isArray(x.reviewed_cues)&&x.reviewed_cues.length?x.reviewed_cues.length:Array.isArray(x.cues)?x.cues.length:0}))},publication:await publicationForDraft(db,draft.id),youtube_workflow:workflow,youtube_connected:connection?.status==='connected',is_final_reviewer:isFinal,can_review_ig:canReviewIg,can_publish_direct:canDirect});
+  const publication=await publicationForDraft(db,draft.id);
+  let mediaPreparationError:string|null=null,mediaPrepared=false;
+  if(isFinal&&draft.status==='approved'&&draft.review_stage==='completed'&&draft.social_media_type!=='reel'&&publication?.status!=='published'){
+   try{const url=await ensureApprovedSermonImage(db,draft.id);mediaPrepared=url!==draft.social_image_url;draft.social_image_url=url;}
+   catch(error){mediaPreparationError=error instanceof Error?error.message:'sermon_image_migration_failed';}
+  }
+  return json(origin,200,{ok:true,draft:{...draft,source_image_url:sourceImage,social_video_url:reelUrl,subtitle_cues:subtitles.cues,subtitles_ready:subtitles.ready,subtitle_segments:subtitles.rows.map((x:any)=>({segment_index:x.segment_index,review_status:x.review_status,review_error:x.review_error,cue_count:Array.isArray(x.reviewed_cues)&&x.reviewed_cues.length?x.reviewed_cues.length:Array.isArray(x.cues)?x.cues.length:0}))},publication,media_prepared:mediaPrepared,media_preparation_error:mediaPreparationError,youtube_workflow:workflow,youtube_connected:connection?.status==='connected',is_final_reviewer:isFinal,can_review_ig:canReviewIg,can_publish_direct:canDirect});
  }
  if(['prepare_reel_upload','complete_reel_upload'].includes(body.action)){
   if(draft.social_media_type!=='reel'||!['processing','changes_requested'].includes(draft.status))return json(origin,409,{ok:false,error:'目前不能更換這支 Reel。'});

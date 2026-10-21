@@ -5,7 +5,7 @@ import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-s
 import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261021-finance1';
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261012-readable2';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261019-workflow1';
-import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261021-finance-entry1';
+import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261021-attendance-label1';
 import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261021-routine-close1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';

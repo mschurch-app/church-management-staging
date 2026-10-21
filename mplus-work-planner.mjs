@@ -1,4 +1,4 @@
-import {calendarApi} from './mplus-google-calendar.mjs?v=20261021-save-allday1';
+import {calendarApi} from './mplus-google-calendar.mjs?v=20261021-repeat-choice1';
 import {taipeiDate,addDay} from './mplus-week-model.mjs?v=20261021-work-timeline1';
 const node=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 export const plannerStatus=()=>calendarApi('routine-status');
@@ -25,16 +25,19 @@ export async function openRoutineWizard(date=addDay(taipeiDate(),1),onSaved=asyn
  const frequency=select(panels[0],'重複方式',[['weekly','每週固定星期'],['daily','每天'],['monthly','每月固定日期']],'weekly');
  const day=input(panels[1],'第一次日期','date',date),time=input(panels[1],'開始時間','time','09:00'),duration=select(panels[1],'預計時長',[30,60,90,120].map(n=>[String(n),n+' 分鐘']),'60');
  const allDay=input(panels[1],'全天','checkbox','',false);allDay.parentElement.classList.add('planner-check');allDay.parentElement.prepend(allDay);const syncTime=()=>{for(const i of [time,duration]){i.disabled=allDay.checked;i.parentElement.hidden=allDay.checked;}time.required=!allDay.checked;};allDay.onchange=syncTime;
- const days=document.createElement('fieldset');days.className='planner-weekdays';days.append(node('legend','每週哪幾天'));const weekday=new Date(date+'T12:00:00Z').getUTCDay();for(let d=0;d<7;d++){const l=node('label','週'+'日一二三四五六'[d]),c=document.createElement('input');c.type='checkbox';c.value=d;c.checked=d===weekday;l.prepend(c);days.append(l);}panels[1].append(days);
- day.onchange=()=>{const d=new Date(day.value+'T12:00:00Z').getUTCDay();days.querySelectorAll('input').forEach(c=>{c.checked=Number(c.value)===d;});};
+ const monthDay=select(panels[1],'每月幾號',Array.from({length:31},(_,i)=>[String(i+1),'每月 '+(i+1)+' 號']),String(Number(date.slice(-2))));let anchor=date;const repeatSummary=node('p','','planner-hint');
+ const days=document.createElement('fieldset');days.className='planner-weekdays';days.append(node('legend','每週星期幾（可複選）'));const weekday=new Date(date+'T12:00:00Z').getUTCDay();for(let d=0;d<7;d++){const l=node('label','週'+'日一二三四五六'[d]),c=document.createElement('input');c.type='checkbox';c.value=d;c.checked=d===weekday;l.prepend(c);days.append(l);}panels[1].append(days);
+ function alignDate(){const base=anchor||day.value;if(frequency.value==='weekly'){const selected=[...days.querySelectorAll('input:checked')].map(c=>Number(c.value));if(selected.length)for(let i=0;i<7;i++){const candidate=addDay(base,i);if(selected.includes(new Date(candidate+'T12:00:00Z').getUTCDay())){day.value=candidate;break;}}}else if(frequency.value==='monthly'){for(let i=0;i<24;i++){const [y,m]=base.split('-').map(Number),candidate=new Date(Date.UTC(y,m-1+i,Number(monthDay.value)));if(candidate.getUTCDate()!==Number(monthDay.value))continue;const value=candidate.toISOString().slice(0,10);if(value>=base){day.value=value;break;}}}updateSummary();}
+ function updateSummary(){repeatSummary.textContent=(frequency.value==='weekly'?'每週 '+[...days.querySelectorAll('input:checked')].map(c=>'星期'+'日一二三四五六'[Number(c.value)]).join('、'):frequency.value==='monthly'?'每月 '+monthDay.value+' 號':'每天')+'；第一次：'+day.value;}
+ days.onchange=alignDate;monthDay.onchange=alignDate;day.onchange=()=>{anchor=day.value;alignDate();};panels[1].append(repeatSummary);
  const until=input(panels[1],'結束日期（選填；留白持續到手動停止）','date','',false);panels[1].append(node('p','每月 29–31 日遇到沒有該日期的月份會略過。後續時段可能與其他安排重疊，請定期查看行事曆。','planner-hint'));
  const location=input(panels[2],'地點（選填）','text','',false);location.maxLength=500;let getPeople;try{getPeople=peopleFields(panels[2],people);}catch(e){ui.status.textContent=e.message;return;}
  const emergency=input(panels[2],'需安排在休息日或一般工時外（將依原有規則檢查）','checkbox','',false);emergency.checked=false;emergency.parentElement.classList.add('planner-check');emergency.parentElement.prepend(emergency);
  const actions=node('div','','planner-actions'),prev=button('上一步',()=>change(-1)),next=button('下一步',()=>change(1),'primary'),save=node('button','儲存這項例行工作','primary');save.type='submit';actions.append(prev,next,save);form.append(actions);
  let step=0,payload=null;
- function show(){panels.forEach((p,i)=>{p.hidden=i!==step;p.disabled=i!==step;});days.hidden=frequency.value!=='weekly';syncTime();prev.hidden=step===0;next.hidden=step===2;save.hidden=step!==2;steps.textContent=`第 ${step+1}/3 步 · `+['工作內容','重複時間','負責與協作同工'][step];}
+ function show(){panels.forEach((p,i)=>{p.hidden=i!==step;p.disabled=i!==step;});days.hidden=frequency.value!=='weekly';days.disabled=frequency.value!=='weekly';monthDay.parentElement.hidden=frequency.value!=='monthly';monthDay.disabled=frequency.value!=='monthly';syncTime();updateSummary();prev.hidden=step===0;next.hidden=step===2;save.hidden=step!==2;steps.textContent=`第 ${step+1}/3 步 · `+['工作內容','重複時間','負責與協作同工'][step];}
  function change(delta){if(delta>0&&!form.reportValidity())return;if(step===0&&delta>0&&!title.value.trim()){ui.status.textContent='請填寫例行工作名稱。';title.focus();return;}if(step===1&&delta>0&&frequency.value==='weekly'&&![...days.querySelectorAll('input:checked')].some(c=>Number(c.value)===new Date(day.value+'T12:00:00Z').getUTCDay())){ui.status.textContent='第一次日期必須包含在選取的星期中。';return;}step+=delta;ui.status.textContent='';show();}
- frequency.onchange=show;show();
+ frequency.onchange=()=>{alignDate();show();};show();
  const none=button('目前沒有例行工作',async()=>{if(!window.confirm('確認目前沒有例行工作？日後仍可新增。'))return;ui.busy(true);try{await api('finish-routine-setup',{noRoutines:true});ui.clean();ui.lock(false);ui.body.replaceChildren(node('p','設定已完成。日後可以在「例行工作」繼續新增。'),button('完成',()=>ui.close(),'primary'));ui.status.textContent='';}catch(e){ui.status.textContent=e.message;}finally{ui.busy(false);}});if(required)ui.body.append(none);
  form.onsubmit=async e=>{e.preventDefault();ui.status.textContent='';if(!form.reportValidity()){ui.status.textContent='請檢查這一步尚未填妥的欄位。';ui.status.scrollIntoView({block:'nearest'});return;}
   try{

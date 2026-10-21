@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="auth.css?v=20260922-ui1"><link rel="stylesheet" href="church-brand.css?v=20261008-header1">
   <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1"><link rel="stylesheet" href="apple-ui.css?v=20260924-app2">
   <link rel="stylesheet" href="app-design-tokens.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261012-readable2">
-  <link rel="stylesheet" href="finance-cash.css?v=20261021-mobile-tabs1">
+  <link rel="stylesheet" href="finance-cash.css?v=20261021-role-save1">
 </head>
 <body class="finance-body"><main class="member-page finance-page">
   <header class="page-header"><div><p class="eyebrow">M+ · 協會財務</p><h1>主日奉獻登錄</h1><p class="muted">逐筆登錄奉獻，同工送審，師母對現金，牧師複審。</p></div><a class="finance-home-link" href="mplus-dashboard.html?church=M%2B&amp;center=church">返回教會</a></header>
@@ -27,6 +27,6 @@
       </form>
       <section id="review-panel" class="finance-review" hidden><h3>審核與更正</h3><p id="review-message"></p><div id="review-actions" class="finance-actions"></div><ol id="review-history"></ol></section>
     </section>
-    <section id="roles-panel" class="finance-panel" hidden><h2>財務人員權限</h2><p>由系統負責人指定登錄同工、師母核對帳號與牧師核准帳號。系統職稱不會自動授權。</p><div id="role-list" class="finance-list"></div></section>
+    <section id="roles-panel" class="finance-panel" hidden><h2>財務人員權限</h2><p>由系統負責人指定登錄同工、師母核對帳號與牧師核准帳號。系統職稱不會自動授權。</p><p class="finance-role-help">勾選或取消後會立即儲存，不需另按儲存鈕；每張卡片會顯示儲存結果。</p><button type="button" id="reload-roles" class="secondary">重新讀取權限</button><div id="role-list" class="finance-list"></div></section>
   </section>
-</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="finance-cash.mjs?v=20261021-identity1"></script><script type="module" src="church-brand.mjs?v=20261012-readable2"></script><script type="module">import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261020-dock1';mountMplusFunctionNavigation({church:'M+',center:'church'});</script></body></html>
+</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="finance-cash.mjs?v=20261021-role-save1"></script><script type="module" src="church-brand.mjs?v=20261012-readable2"></script><script type="module">import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261020-dock1';mountMplusFunctionNavigation({church:'M+',center:'church'});</script></body></html>

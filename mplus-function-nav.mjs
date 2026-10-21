@@ -4,7 +4,7 @@ const base=new URL('.',import.meta.url);
 export function centerForPage(path=location.pathname){
  if(/schedules|service-signup/.test(path))return 'service';
  if(/website|bulletin|association-news|publishing|pastoral-content|todays-message|love-share|youtube|subtitle/.test(path))return 'website';
- if(/inventory|spaces|amenities|heat-camp|coworker-tools/.test(path))return 'admin';
+ if(/inventory|spaces|amenities|heat-camp|coworker-tools|finance-cash/.test(path))return 'admin';
  return 'church';
 }
 export function mountMplusFunctionNavigation({church,center}={}){

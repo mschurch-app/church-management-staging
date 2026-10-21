@@ -37,11 +37,11 @@ Deno.serve(async request=>{
   if(action==='content_update'){
     const source=body.values&&typeof body.values==='object'&&!Array.isArray(body.values)?body.values as Record<string,unknown>:null;if(!source)return json(origin,{ok:false,error:'invalid_request'},400);
     const allowed=['devotional_title','selected_scripture_reference','scripture_text','scripture_version','scripture_source','scripture_license_note','context_summary','key_points','reflection_questions','life_application','response_prayer'],values:Record<string,string>={};
-    for(const key of allowed){const value=clean(source[key],key==='devotional_title'||key==='selected_scripture_reference'?300:5000);if(!value)return json(origin,{ok:false,error:'required_field'},400);values[key]=value;}
+    for(const key of allowed){const value=clean(source[key],key==='devotional_title'||key==='selected_scripture_reference'?300:5000);if(!value&&!['scripture_version','scripture_source','scripture_license_note'].includes(key))return json(origin,{ok:false,error:'required_field'},400);values[key]=value;}
     const result=await db.rpc('update_daily_devotional_content',{p_id:id,p_editor:user.id,p_values:values});if(result.error)return json(origin,{ok:false,error:'update_failed'},409);return json(origin,{ok:true,item:result.data});
   }
   if(action==='content_review'){
-    const toStatus=clean(body.toStatus,30),comment=clean(body.comment,1000);if(!['spouse_review','final_review','approved','returned'].includes(toStatus))return json(origin,{ok:false,error:'invalid_transition'},400);
+    const toStatus=clean(body.toStatus,30),comment=clean(body.comment,1000);if(!['approved','returned'].includes(toStatus))return json(origin,{ok:false,error:'invalid_transition'},400);
     const result=await db.rpc('review_daily_devotional',{p_id:id,p_reviewer:user.id,p_to_status:toStatus,p_comment:comment||null});
     if(result.error){const message=String(result.error.message||'');const code=['wrong_reviewer','reviewers_not_configured','licensing_required','comment_required','invalid_transition'].find(value=>message.includes(value))||'review_failed';return json(origin,{ok:false,error:code},409);}return json(origin,{ok:true,item:result.data});
   }

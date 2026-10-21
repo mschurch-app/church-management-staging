@@ -5,7 +5,7 @@ import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261012-readable2';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261019-workflow1';
 import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261020-shell2';
-import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261021-save-allday1';
+import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261021-repeat-choice1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};

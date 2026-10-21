@@ -34,6 +34,10 @@ export function stoppedRecurrence(event,now=Date.now()){
 function fail(error,status=400){return {status,data:{ok:false,error}};}
 const ok=data=>({status:200,data:{ok:true,...data}});
 const checked=async query=>{const r=await query;if(r.error)throw Error('db');return r.data;};
+export function calendarEventTitle(title,primaryName){
+ const base=String(title||'').trim(),name=String(primaryName||'').trim(),suffix=`（${name}）`;
+ return name&&!base.endsWith(suffix)?base+suffix:base;
+}
 async function handle(c){
  const {body:b,staff:s,db}=c;const action=b.action;
  if(!['routine-status','save-routine','finish-routine-setup','stop-routine','report-event','assign-work','report-work'].includes(action))return null;
@@ -71,7 +75,7 @@ async function handle(c){
   const id=b.requestId.replaceAll('-','').toLowerCase();
   if(!row){const inserted=await db.from('mplus_work_routines').insert({id:b.requestId,created_by:s.id,primary_staff_id:primary,participant_ids:people.map(p=>p.id),title:d.summary,definition,fingerprint,google_event_id:id,status:'pending'});
    if(inserted.error){row=await checked(db.from('mplus_work_routines').select('*').eq('id',b.requestId).maybeSingle());if(!row||row.created_by!==s.id||row.fingerprint!==fingerprint)return fail('idempotency_conflict',409);}}
-  const event={id,summary:d.summary,location:d.location,start:d.allDay?{date:d.start}:{dateTime:d.start,timeZone:'Asia/Taipei'},end:d.allDay?{date:d.end}:{dateTime:d.end,timeZone:'Asia/Taipei'},recurrence:[d.rule],description:'共同參與同工：'+people.map(p=>p.display_name).join('、'),extendedProperties:{private:{pastoralParticipantIds:people.map(p=>p.id).sort().join(','),mplusRoutine:b.requestId,mplusCreator:s.id,mplusPrimary:primary,mplusFingerprint:fingerprint}}};
+  const event={id,summary:calendarEventTitle(d.summary,people[0].display_name),location:d.location,start:d.allDay?{date:d.start}:{dateTime:d.start,timeZone:'Asia/Taipei'},end:d.allDay?{date:d.end}:{dateTime:d.end,timeZone:'Asia/Taipei'},recurrence:[d.rule],description:'共同參與同工：'+people.map(p=>p.display_name).join('、'),extendedProperties:{private:{pastoralParticipantIds:people.map(p=>p.id).sort().join(','),mplusRoutine:b.requestId,mplusCreator:s.id,mplusPrimary:primary,mplusFingerprint:fingerprint}}};
   const saved=await google('', 'POST',event);
   if(saved.extendedProperties?.private?.mplusFingerprint!==fingerprint||saved.status==='cancelled')return fail('idempotency_conflict',409);
   await checked(db.from('mplus_work_routines').update({status:'active',updated_at:iso(now)}).eq('id',b.requestId).eq('created_by',s.id).eq('status','pending'));

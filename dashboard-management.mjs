@@ -1,4 +1,4 @@
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261009-stage1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261021-work-roles1';
 export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261010-season-test1';
 import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261010-season-test1';
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}

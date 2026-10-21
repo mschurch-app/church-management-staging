@@ -28,7 +28,6 @@ export function validateCashBag(bag) {
     total += line.amount;
     if (!Number.isSafeInteger(total)) throw new Error('袋合計超出可計算範圍。');
   }
-  if (bag.declaredTotal !== total) throw new Error(`第 ${bag.sequence} 筆金額與分類加總不符。`);
   return total;
 }
 
@@ -60,6 +59,7 @@ export function advanceCashBatch(batch, action, actor, { reason = '', now = new 
   if (!actor?.id || actor.capability !== rule.capability) throw new Error('操作者沒有此步驟權限。');
   if (action.startsWith('return') && !String(reason).trim()) throw new Error('退回須填寫原因。');
   if (action === 'submit' || action === 'verify_cash' || action === 'approve') validateCashBatch(batch);
+  if (action === 'submit' && batch.bags.some(bag=>!bag.confirmedBy||!bag.confirmedAt)) throw new Error('各筆奉獻須由一位同工確認。');
   if (action === 'submit' && !batch.counterUserIds.every(id => batch.counterConfirmations?.some(item => item.userId === id && item.confirmedAt))) {
     throw new Error('兩位點收同工都須親自確認後，才能送複審。');
   }

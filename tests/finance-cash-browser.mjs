@@ -79,7 +79,7 @@ try {
     const fields = await page.$$('.finance-category-grid input');
     await fields[0].type('1000');
     await fields[1].type('500');
-    await page.$eval('.finance-bag-footer input', el => { el.value = '1500'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+    assert.equal(await page.$eval('.finance-bag-total',el=>el.readOnly&&el.value==='1500'),true);
     assert.equal(await page.$eval('#entered-total', el => el.textContent), '1,500');
     assert.equal(await page.$eval('#counted-cash',el=>el.value),'1500');
     assert.equal(await page.$eval('#submit-batch',el=>el.disabled),true);

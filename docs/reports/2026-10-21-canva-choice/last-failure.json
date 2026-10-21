@@ -1,0 +1,4 @@
+{
+  "error": "Selection must survive its change handler and sync\n\nfalse !== true\n",
+  "completed": []
+}

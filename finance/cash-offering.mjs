@@ -60,6 +60,9 @@ export function advanceCashBatch(batch, action, actor, { reason = '', now = new 
   if (!actor?.id || actor.capability !== rule.capability) throw new Error('操作者沒有此步驟權限。');
   if (action.startsWith('return') && !String(reason).trim()) throw new Error('退回須填寫原因。');
   if (action === 'submit' || action === 'verify_cash' || action === 'approve') validateCashBatch(batch);
+  if (action === 'submit' && !batch.counterUserIds.every(id => batch.counterConfirmations?.some(item => item.userId === id && item.confirmedAt))) {
+    throw new Error('兩位點收同工都須親自確認後，才能送複審。');
+  }
   if (action === 'verify_cash' && batch.spouseVerifiedCash !== batch.countedCash) {
     throw new Error('師母核對現金與同工點收不符。');
   }
@@ -71,5 +74,5 @@ export function advanceCashBatch(batch, action, actor, { reason = '', now = new 
     at: now,
     ...(reason ? { reason: String(reason).trim() } : {})
   };
-  return { ...batch, status: rule.to, version: (batch.version ?? 0) + 1, events: [...(batch.events ?? []), event] };
+  return { ...batch, ...(action.startsWith('return') ? { counterConfirmations: [] } : {}), status: rule.to, version: (batch.version ?? 0) + 1, events: [...(batch.events ?? []), event] };
 }

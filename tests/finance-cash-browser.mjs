@@ -75,13 +75,14 @@ try {
     await page.click('.finance-group .finance-inline button');
     await page.waitForSelector('.finance-search-results button');
     await page.click('.finance-search-results button');
-    await page.$eval('#counted-cash', el => { el.value = '1500'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+    assert.equal(await page.$eval('#counted-cash',el=>el.readOnly),true);
     const fields = await page.$$('.finance-category-grid input');
     await fields[0].type('1000');
     await fields[1].type('500');
     await page.$eval('.finance-bag-footer input', el => { el.value = '1500'; el.dispatchEvent(new Event('input', { bubbles: true })); });
     assert.equal(await page.$eval('#entered-total', el => el.textContent), '1,500');
-    assert.equal(await page.$eval('#cash-difference', el => el.textContent), '0');
+    assert.equal(await page.$eval('#counted-cash',el=>el.value),'1500');
+    assert.equal(await page.$eval('#submit-batch',el=>el.disabled),true);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true, 'no horizontal overflow');
     await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
   }

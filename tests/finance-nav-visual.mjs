@@ -20,19 +20,22 @@ const browser = await puppeteer.launch({
   args: ['--no-first-run','--no-default-browser-check','--disable-background-networking']
 });
 try {
-  for (const [width, height, name] of [[390, 844, 'finance-nav-mobile'], [1440, 900, 'finance-nav-desktop']]) {
+  for (const [width, height, name] of [[390, 844, 'finance-admin-mobile'], [1440, 900, 'finance-admin-desktop']]) {
     const page = await browser.newPage();
     await page.setViewport({ width, height, deviceScaleFactor: 1, isMobile: width < 600, hasTouch: width < 600 });
     await page.goto('http://127.0.0.1:8781/tests/finance-nav-fixture.html', { waitUntil: 'networkidle0' });
     await page.click('[data-center="church"]');
-    const card = await page.$('.hub-tile:last-child');
+    assert.equal(await page.$$eval('.hub-tile',nodes=>nodes.some(node=>node.textContent.includes('奉獻與財務'))),false);
+    await page.click('[data-center="admin"]');
+    const card = await page.$('.hub-tile:nth-child(2)');
     assert(card);
+    assert.match(await card.evaluate(node => node.textContent), /同工行政/);
     assert.match(await card.evaluate(node => node.textContent), /奉獻與財務/);
     await card.evaluate(node => node.click());
     const dialog = await page.waitForSelector('.mplus-event-dialog[open]', { timeout: 3000 });
     assert(dialog);
-    assert.match(await dialog.evaluate(node => node.textContent), /主日奉獻/);
-    const href = await dialog.$eval('a', node => node.getAttribute('href'));
+    assert.match(await dialog.evaluate(node => node.textContent), /同工行政/);
+    const href = await dialog.$$eval('a',nodes=>nodes.find(node=>node.textContent.includes('奉獻與財務'))?.getAttribute('href'));
     assert.match(href, /finance-cash\.html/);
     await page.click('.mplus-dialog-close');
     if (width < 600) await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));

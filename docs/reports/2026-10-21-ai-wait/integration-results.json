@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "desktop: actual information page enqueues once and shows top progress",
+    "desktop: reopening project restores running status without new enqueue",
+    "desktop: confirmed result shows 100% and awaits deliberate adoption",
+    "phone: actual information page enqueues once and shows top progress",
+    "phone: reopening project restores running status without new enqueue",
+    "phone: confirmed result shows 100% and awaits deliberate adoption"
+  ],
+  "production_writes": false
+}

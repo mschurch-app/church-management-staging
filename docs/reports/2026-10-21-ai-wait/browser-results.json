@@ -1,0 +1,27 @@
+{
+  "passed": [
+    "desktop: queue shows spinner and 0%, no simulated generation during queue",
+    "desktop: running estimate advances and polling does not reset progress",
+    "desktop: no horizontal overflow or lost draft",
+    "desktop: long generation caps at 95% and explains delay",
+    "desktop: network uncertainty pauses with recovery message, next poll resumes same job",
+    "desktop: only confirmed completion reaches 100%",
+    "desktop: failed job stops spinner, retains input and never reports completion",
+    "desktop: immediate submit and recoverable failure feedback, request panel cleaned on acceptance",
+    "desktop: switching project clears old feedback and timers",
+    "desktop: returning to existing work restores elapsed time without enqueue",
+    "phone: queue shows spinner and 0%, no simulated generation during queue",
+    "phone: running estimate advances and polling does not reset progress",
+    "phone: no horizontal overflow or lost draft",
+    "phone: long generation caps at 95% and explains delay",
+    "phone: network uncertainty pauses with recovery message, next poll resumes same job",
+    "phone: only confirmed completion reaches 100%",
+    "phone: failed job stops spinner, retains input and never reports completion",
+    "phone: immediate submit and recoverable failure feedback, request panel cleaned on acceptance",
+    "phone: switching project clears old feedback and timers",
+    "phone: returning to existing work restores elapsed time without enqueue"
+  ],
+  "real_iphone": "not_tested",
+  "safari": "not_tested",
+  "production_data_writes": false
+}

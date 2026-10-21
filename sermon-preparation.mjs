@@ -1,3 +1,4 @@
+import {createSermonJobProgress} from './sermon-job-progress.mjs?v=20261021-aiwait1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 import {setStatus} from './app-ui.mjs?v=20261014-sermon3';
@@ -8,6 +9,7 @@ const stepNames={information:'信息',materials:'素材',outline:'大綱',manusc
 const jobNames={media:'影片下載與轉錄',search:'搜尋素材',detail:'讀取素材',guide:'三輪引導查找',outline:'提出大綱',manuscript:'分段講章',slides:'逐頁內容',backup:'NAS 版本備份'};
 const messages={forbidden:'尚未取得信息預備權限，需具備 M＋週報編輯權限及 LINE 綁定。',conflict:'已有較新的版本。你的輸入仍保留，請先下載或複製內容，再重新載入比對。',not_found:'找不到這份私人信息。',queue_limit:'目前排隊工作較多，請等已有工作完成後再試。',generation_limit:'已達今日生成上限，請先整理已有草稿。',invalid_guide:'這輪問答已更新，請重新載入後從目前題目繼續。',materials_need_review:'請先逐份核對已選素材，再勾選確認。',outline_required:'請先保存並確認至少三個主要段落。',manuscript_too_short:'正文尚未達指定字數，請補充後再整理投影片。',invalid_draft:'請確認必填資料、字數及內容格式。',invalid_outline:'大綱每行一個段落，最多 12 段。',invalid_slides:'投影片最多 20 頁，請確認各頁標題。',invalid_materials:'素材格式不完整，請重新選取或補充自己的素材。'};
 let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,authorized=false,access=null,pollTimer=null,opening=0;
+const jobProgress=createSermonJobProgress($('#ai-job-progress'));
 const processed=new Set(),pendingResults=new Set(),requestIds=new Map();
 const schedulePoll=delay=>{clearTimeout(pollTimer);pollTimer=setTimeout(poll,delay);};
 const el=(tag,text='',className='')=>{const n=document.createElement(tag);n.textContent=text;n.className=className;return n;};
@@ -112,6 +114,7 @@ function processResults(){
  }
 }
 function drawJobs(){
+ jobProgress.sync(project?.id,jobs);
  const openJobs=new Set([...$('#jobs').querySelectorAll('[data-job-id] details[open]')].map(d=>d.closest('[data-job-id]').dataset.jobId));
  $('#jobs').replaceChildren();
  for(const j of jobs){const card=el('article','','studio-job');card.dataset.jobId=j.id;card.append(el('strong',jobNames[j.kind]||j.kind));
@@ -144,10 +147,10 @@ async function saveDraft(){
 }
 async function save(){if(busy)return;lock(true);try{await saveDraft();message('新版本已儲存。NAS 備份會另行顯示回條。','success');}catch(e){message(e.message,'error');}finally{lock(false);}}
 async function queue(kind,options={}){
- if(busy||!project)return;lock(true);
+ if(busy||!project)return;lock(true);jobProgress.begin(kind);
  try{draft=collect();if(dirty)await saveDraft();generationReady(draft,kind);
- const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);drawJobs();if(kind==='guide'){drawGuide();schedulePoll(1000);}message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
- catch(e){message(messages[e.message]||e.message,'error');}finally{lock(false);}
+ const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);jobProgress.submitted();drawJobs();schedulePoll(1000);if(kind==='guide')drawGuide();message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
+ catch(e){const text=messages[e.message]||e.message;jobProgress.failed(text);message(text,'error');}finally{lock(false);}
 }
 async function adopt(job){
  if(busy)return;lock(true);try{
@@ -156,7 +159,7 @@ async function adopt(job){
 }
 async function poll(){
  if(!authorized)return;
- try{if(!document.hidden&&!busy){await loadList();if(project){const result=await api('load',{project_id:project.id});if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;drawBackup();processResults();if(changed){drawJobs();drawGuide();}}}}catch{/* Keep user edits and last known job state. */}
+ try{if(!document.hidden&&!busy){await loadList();if(project){const result=await api('load',{project_id:project.id});if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;jobProgress.sync(project.id,jobs);drawBackup();processResults();if(changed){drawJobs();drawGuide();}}}}catch{jobProgress.disconnected();/* Keep user edits and last known job state. */}
  finally{schedulePoll(jobs.some(j=>j.kind==='guide'&&['queued','running'].includes(j.status))?2000:jobs.some(j=>['queued','running'].includes(j.status))?8000:30000);}
 }
 function download(kind){
@@ -187,5 +190,5 @@ $('#personal-material').onclick=()=>{if(draft.materials.length>=24)return messag
 for(const kind of ['outline','manuscript','slides'])$('#generate-'+kind).onclick=()=>queue(kind);
 $('#download-manuscript').onclick=()=>download('manuscript');$('#download-slides').onclick=()=>download('slides');
 $('#restore-version').onclick=async()=>{if(busy||!mayLeave())return;lock(true);try{const result=await api('version',{project_id:project.id,version:Number($('#versions').value)});draft=validateDraft(result.payload);drawEditor();markDirty();message('舊版已讀入作為草稿；儲存後會建立新版本，原版本保留。');}catch(e){message(e.message,'error');}finally{lock(false);}};
-window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});window.addEventListener('pagehide',()=>clearTimeout(pollTimer));start();
+window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});window.addEventListener('pagehide',()=>{clearTimeout(pollTimer);jobProgress.stop();});window.addEventListener('pageshow',event=>{if(event.persisted&&authorized)schedulePoll(0);});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&authorized)schedulePoll(0);});start();
 

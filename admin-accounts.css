@@ -1,0 +1,35 @@
+/* Account management only; shared header, color and control contracts remain authoritative. */
+.admin-accounts-page .accounts-sections{display:flex;gap:8px;padding:6px;background:var(--app-surface-muted,#f6f8f5);border:1px solid var(--app-border,#dae3dc);border-radius:16px;margin-bottom:20px}
+.admin-accounts-page .accounts-sections button{flex:1;margin:0;min-height:48px;background:var(--app-surface,#fff);color:var(--app-ink,#203b30);border:1px solid transparent;box-shadow:none}
+.admin-accounts-page .accounts-sections button[aria-selected=true]{background:var(--app-accent,#173f34);color:var(--app-on-accent,#fff)}
+.admin-accounts-page .accounts-sections span{display:inline-block;min-width:24px;margin-left:6px;padding:2px 6px;border-radius:20px;background:#0000000d;font-size:13px}
+.admin-accounts-page .accounts-filter{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;padding:20px;background:var(--app-surface,#fff);border:1px solid var(--app-border,#dae3dc);border-radius:18px;margin-bottom:16px}
+.admin-accounts-page .accounts-filter label{margin:0}.admin-accounts-page .accounts-filter :is(input,select){min-height:48px}
+.admin-accounts-page .admin-account-card{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px}
+.admin-accounts-page .admin-profile-head{display:flex;align-items:center;gap:12px;min-width:0}.admin-accounts-page .admin-profile-copy{display:grid;gap:5px;min-width:0}.admin-accounts-page .admin-profile-copy strong{font-size:18px}.admin-accounts-page .admin-profile-copy small{display:block}
+.admin-accounts-page .account-overview{font-size:14px;color:var(--app-secondary,#61736a);margin:10px 0 0}.admin-accounts-page .status-badge{margin:0;white-space:normal}
+.admin-accounts-page .admin-card-actions{margin:0;flex-shrink:0}.admin-accounts-page .admin-card-actions :is(button,a){min-height:44px;margin:0}
+.admin-accounts-page .accounts-help,.admin-accounts-page .account-advanced{margin:24px 0 0;border:1px solid var(--app-border,#dae3dc);border-radius:16px;padding:0 18px;background:var(--app-surface,#fff)}
+.admin-accounts-page :is(.accounts-help,.account-advanced)>summary{min-height:48px;padding:14px 0}.admin-accounts-page .accounts-help :is(p,li){font-size:14px;line-height:1.8;color:var(--app-secondary,#61736a)}
+.admin-accounts-page .account-step{padding:22px;margin:18px 0;border:1px solid var(--app-border,#dae3dc);border-radius:18px;background:var(--app-surface,#fff)}
+.admin-accounts-page .account-step>h3{margin:0 0 8px}.admin-accounts-page .account-step>p{font-size:14px;line-height:1.7;color:var(--app-secondary,#61736a)}
+.admin-accounts-page .account-step fieldset{margin:12px 0}.admin-accounts-page .account-step .permission-matrix{display:block}.admin-accounts-page .account-step .permission-matrix>fieldset{border:0;padding:0;margin:0}.admin-accounts-page .account-step .permission-matrix>fieldset>legend{display:none}
+.admin-accounts-page .account-step .role-permission-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.admin-accounts-page .account-feature{border:1px solid var(--app-border,#dae3dc);border-radius:14px;background:var(--app-surface-muted,#f6f8f5);padding:12px;min-width:0}
+.admin-accounts-page .account-feature>.choice{margin:0;min-height:44px;border:0;background:transparent;padding:6px;color:var(--app-ink,#203b30)}
+.admin-accounts-page .account-operation-details{border-top:1px solid var(--app-border,#dae3dc);margin-top:6px}.admin-accounts-page .account-operation-details>summary{font-size:13px;min-height:44px;padding:12px 4px}
+.admin-accounts-page .account-operation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.admin-accounts-page .account-operation-grid label{display:flex;align-items:center;gap:8px;min-height:44px;margin:0;font-size:13px;padding:4px}
+.admin-accounts-page .account-step .work-profile-editor{border:0;padding:0}.admin-accounts-page .account-step .work-profile-editor>legend{display:none}
+.admin-accounts-page .account-editor-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px}.admin-accounts-page .account-editor-heading button{margin:0;min-height:44px}
+.admin-accounts-page .account-editor-note{font-size:14px;color:var(--app-secondary,#61736a);line-height:1.7}.admin-accounts-page .account-danger button{margin:8px 0 18px}
+.admin-accounts-page .editor-actions{position:sticky;bottom:calc(82px + env(safe-area-inset-bottom));z-index:4;padding:12px;margin-top:18px;border:1px solid var(--app-border,#dae3dc);border-radius:16px;gap:10px;background:var(--app-surface,#fff)}
+.admin-accounts-page .editor-actions button{margin:0;min-height:48px}.admin-accounts-page .account-step :is(input,select,textarea){font:inherit}
+@media(max-width:700px){.admin-accounts-page .accounts-filter{grid-template-columns:1fr 1fr;gap:12px;padding:16px}.admin-accounts-page .accounts-filter label:first-child{grid-column:1/-1}.admin-accounts-page .admin-account-card{align-items:flex-start;flex-direction:column;gap:14px;padding:18px}.admin-accounts-page .admin-card-actions{display:flex;width:100%}.admin-accounts-page .admin-card-actions>*{flex:1}.admin-accounts-page .account-step{padding:18px 14px}.admin-accounts-page .account-step .role-permission-grid{grid-template-columns:1fr}.admin-accounts-page .account-editor-heading{align-items:flex-start}.admin-accounts-page .editor-actions{bottom:calc(78px + env(safe-area-inset-bottom))}.admin-accounts-page .accounts-sections{gap:4px}.admin-accounts-page .accounts-sections button{padding:10px 8px}}
+
+html body.admin-accounts-page select{appearance:auto;-webkit-appearance:menulist;height:48px;min-height:48px;padding:10px 14px;width:100%;font:inherit;font-size:16px;line-height:1.4}
+html body.admin-accounts-page input:is([type=checkbox],[type=radio]){accent-color:var(--app-accent,#173f34)}
+
+.admin-accounts-page .account-function-library{margin-top:16px;border:1px dashed var(--app-border,#dae3dc);border-radius:14px;padding:0 14px}.admin-accounts-page .account-function-library>summary{min-height:48px;font-size:14px}.admin-accounts-page .account-function-library .role-permission-grid{margin:0 0 14px}
+
+/* An idle translucent toast must not leave a painted backdrop in Safari. */
+.admin-accounts-page .os-action-toast:not(.show){visibility:hidden}

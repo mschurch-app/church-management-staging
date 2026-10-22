@@ -1,5 +1,5 @@
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
-import {safeAppTarget} from './app-line-auth.mjs?v=20261022-coworker2';
+import {safeAppTarget} from './app-line-auth.mjs?v=20261022-line-sso1';
 const fragment=new URLSearchParams(location.hash.slice(1)),status=document.querySelector('#status');
 // The one-time capability is never included in this page's HTTP request/referrer.
 async function start(){

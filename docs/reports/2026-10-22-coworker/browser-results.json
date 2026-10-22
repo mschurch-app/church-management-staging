@@ -4,7 +4,7 @@
   "physical_iPhone": false,
   "checks": [
     "chromium: homepage removes email password and reset controls",
-    "chromium: separate credential and LINE App entries use requested wording",
+    "chromium: remembered-account and optional LINE App entries use clear wording",
     "chromium: homepage has application entry",
     "chromium: unauthenticated applicant sees LINE verification first",
     "chromium: application collects neither login credentials nor birthday",
@@ -26,7 +26,7 @@
     "chromium: explicit existing account link uses review API",
     "chromium: desktop application fits viewport",
     "webkit: homepage removes email password and reset controls",
-    "webkit: separate credential and LINE App entries use requested wording",
+    "webkit: remembered-account and optional LINE App entries use clear wording",
     "webkit: homepage has application entry",
     "webkit: unauthenticated applicant sees LINE verification first",
     "webkit: application collects neither login credentials nor birthday",

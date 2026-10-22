@@ -1,6 +1,6 @@
-import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261022-coworker2';
+import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261022-line-sso1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
-import {APPLICATION_PAGE,applicationRPC} from './coworker-application-api.mjs?v=20261022-coworker2';
+import {APPLICATION_PAGE,applicationRPC} from './coworker-application-api.mjs?v=20261022-coworker-review1';
 const $=s=>document.querySelector(s),form=$('#application-form'),status=$('#status'),line=$('#line-login');
 const bounded=(request)=>Promise.race([request,new Promise((_,reject)=>setTimeout(()=>reject(Error('登入確認逾時，請重試。')),15000))]);
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{global:{fetch:(input,options={})=>fetch(input,{...options,signal:options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(15000)]):AbortSignal.timeout(15000)})},auth:{storageKey:ADMIN_AUTH_STORAGE_KEY,storage:localStorage,persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit'}});

@@ -6,3 +6,6 @@
 .application-main,.coworker-applications{font-family:ui-sans-serif,system-ui,-apple-system,"Noto Sans TC",sans-serif}.application-main input,.application-main select,.application-main textarea,.application-review-form select,.application-review-form textarea{min-height:48px;font:inherit}.application-main .application-steps{line-height:1.7}
 
 .login-panel .login-method-help{font-size:14px;line-height:1.8;color:var(--app-secondary,#67716b);margin-top:14px}.login-panel .line-auto-login{width:100%;margin-top:18px;box-shadow:none}.application-main select,.application-review-form select{appearance:none;-webkit-appearance:none;min-height:48px;height:48px;padding:10px 14px}
+
+/* Keep approval choices compact; expose operation details only for selected functions. */
+.coworker-applications .application-review-form>section>h3{margin-top:24px}.coworker-applications .application-operation-details>summary{min-height:44px;font-size:13px;padding:12px 0}.coworker-applications .application-permission{border:1px solid var(--app-border,#dae3dc)}

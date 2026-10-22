@@ -1,0 +1,247 @@
+{
+  "base": "d3ce80e0a8b9446a2b881bc38c3edc12ee45c0d9",
+  "deviceDrafts": {
+    "checks": [
+      "chromium 390: device retention starts off",
+      "chromium 390: ordinary input is never persisted without opting in",
+      "chromium 390: unchanged blur does not rewrite the copy or move status back to waiting",
+      "chromium 390: incomplete required fields and dynamic edits are retained without loosening formal saves",
+      "chromium 390: opening shows the official version before deliberate restoration",
+      "chromium 390: restoration recovers all fields, stays dirty and performs no business write",
+      "chromium 390: incomplete restored values still require formal field validation",
+      "chromium 390: device controls and restored errors fit the viewport with readable contrast []",
+      "chromium 390: device actions maintain 44 px targets",
+      "chromium 390: 200 percent text preserves recovery actions",
+      "chromium 390: failed formal save keeps both copies",
+      "chromium 390: acknowledged save clears the copy and saves current dynamic edits once",
+      "chromium 1440: device retention starts off",
+      "chromium 1440: ordinary input is never persisted without opting in",
+      "chromium 1440: unchanged blur does not rewrite the copy or move status back to waiting",
+      "chromium 1440: incomplete required fields and dynamic edits are retained without loosening formal saves",
+      "chromium 1440: opening shows the official version before deliberate restoration",
+      "chromium 1440: restoration recovers all fields, stays dirty and performs no business write",
+      "chromium 1440: incomplete restored values still require formal field validation",
+      "chromium 1440: device controls and restored errors fit the viewport with readable contrast []",
+      "chromium 1440: device actions maintain 44 px targets",
+      "chromium 1440: 200 percent text preserves recovery actions",
+      "chromium 1440: failed formal save keeps both copies",
+      "chromium 1440: acknowledged save clears the copy and saves current dynamic edits once",
+      "chromium changed: failed permission, version, payload or read checks preserve both sources without a business write",
+      "chromium deleted: failed permission, version, payload or read checks preserve both sources without a business write",
+      "chromium readonly: failed permission, version, payload or read checks preserve both sources without a business write",
+      "chromium denied: failed permission, version, payload or read checks preserve both sources without a business write",
+      "chromium account: another account or new login cannot expose old login content",
+      "chromium session: another account or new login cannot expose old login content",
+      "chromium other_church: another church cannot display or remove the private copy",
+      "chromium refresh_token: same login token refresh keeps the copy accessible",
+      "chromium logout: logout hides private content and removes this login copy",
+      "chromium logout_restore: delayed restore verification cannot repopulate content after logout",
+      "chromium logout_load: late project read cannot reopen content after logout",
+      "chromium logout_save: late save receipt cannot restore private input or device data after logout",
+      "chromium concurrent: revision transaction refuses stale tab overwrites and keeps both inputs",
+      "chromium concurrent: stale tab cannot delete the newer copy",
+      "chromium expired: expired copies are pruned instead of restored",
+      "chromium invalid: failed permission, version, payload or read checks preserve both sources without a business write",
+      "chromium storage: unavailable device storage does not block ordinary editing",
+      "chromium write_storage: quota failure keeps the previous copy and reports new input is not retained",
+      "chromium clear_storage: device deletion failure is distinct from successful formal saving",
+      "chromium stop: declining stop retains the copy",
+      "chromium stop: confirmed stop deletes only the device copy",
+      "chromium switch: switching projects retains the previous device copy",
+      "chromium switch: a second project cannot silently replace the pending copy",
+      "chromium restore_read_fail: failed permission, version, payload or read checks preserve both sources without a business write",
+      "chromium cancel_restore: declining replacement retains current input and pending copy",
+      "chromium denied_save: restored save rechecks permissions and retains the copy until a valid receipt",
+      "chromium malformed_save: restored save rechecks permissions and retains the copy until a valid receipt",
+      "webkit 390: device retention starts off",
+      "webkit 390: ordinary input is never persisted without opting in",
+      "webkit 390: unchanged blur does not rewrite the copy or move status back to waiting",
+      "webkit 390: incomplete required fields and dynamic edits are retained without loosening formal saves",
+      "webkit 390: opening shows the official version before deliberate restoration",
+      "webkit 390: restoration recovers all fields, stays dirty and performs no business write",
+      "webkit 390: incomplete restored values still require formal field validation",
+      "webkit 390: device controls and restored errors fit the viewport with readable contrast []",
+      "webkit 390: device actions maintain 44 px targets",
+      "webkit 390: 200 percent text preserves recovery actions",
+      "webkit 390: failed formal save keeps both copies",
+      "webkit 390: acknowledged save clears the copy and saves current dynamic edits once",
+      "webkit 1440: device retention starts off",
+      "webkit 1440: ordinary input is never persisted without opting in",
+      "webkit 1440: unchanged blur does not rewrite the copy or move status back to waiting",
+      "webkit 1440: incomplete required fields and dynamic edits are retained without loosening formal saves",
+      "webkit 1440: opening shows the official version before deliberate restoration",
+      "webkit 1440: restoration recovers all fields, stays dirty and performs no business write",
+      "webkit 1440: incomplete restored values still require formal field validation",
+      "webkit 1440: device controls and restored errors fit the viewport with readable contrast []",
+      "webkit 1440: device actions maintain 44 px targets",
+      "webkit 1440: 200 percent text preserves recovery actions",
+      "webkit 1440: failed formal save keeps both copies",
+      "webkit 1440: acknowledged save clears the copy and saves current dynamic edits once",
+      "webkit changed: failed permission, version, payload or read checks preserve both sources without a business write",
+      "webkit deleted: failed permission, version, payload or read checks preserve both sources without a business write",
+      "webkit readonly: failed permission, version, payload or read checks preserve both sources without a business write",
+      "webkit denied: failed permission, version, payload or read checks preserve both sources without a business write",
+      "webkit account: another account or new login cannot expose old login content",
+      "webkit session: another account or new login cannot expose old login content",
+      "webkit other_church: another church cannot display or remove the private copy",
+      "webkit refresh_token: same login token refresh keeps the copy accessible",
+      "webkit logout: logout hides private content and removes this login copy",
+      "webkit logout_restore: delayed restore verification cannot repopulate content after logout",
+      "webkit logout_load: late project read cannot reopen content after logout",
+      "webkit logout_save: late save receipt cannot restore private input or device data after logout",
+      "webkit concurrent: revision transaction refuses stale tab overwrites and keeps both inputs",
+      "webkit concurrent: stale tab cannot delete the newer copy",
+      "webkit expired: expired copies are pruned instead of restored",
+      "webkit invalid: failed permission, version, payload or read checks preserve both sources without a business write",
+      "webkit storage: unavailable device storage does not block ordinary editing",
+      "webkit write_storage: quota failure keeps the previous copy and reports new input is not retained",
+      "webkit clear_storage: device deletion failure is distinct from successful formal saving",
+      "webkit stop: declining stop retains the copy",
+      "webkit stop: confirmed stop deletes only the device copy",
+      "webkit switch: switching projects retains the previous device copy",
+      "webkit switch: a second project cannot silently replace the pending copy",
+      "webkit restore_read_fail: failed permission, version, payload or read checks preserve both sources without a business write",
+      "webkit cancel_restore: declining replacement retains current input and pending copy",
+      "webkit denied_save: restored save rechecks permissions and retains the copy until a valid receipt",
+      "webkit malformed_save: restored save rechecks permissions and retains the copy until a valid receipt",
+      "Chromium process restart restores the device copy without a business write",
+      "no uncaught browser errors "
+    ],
+    "synthetic": true,
+    "productionWrites": false,
+    "realIPhone": false,
+    "macSafari": false
+  },
+  "editorRegression": {
+    "count": 135,
+    "passed": true
+  },
+  "sermonContract": {
+    "count": 12,
+    "passed": true
+  },
+  "qualityGate": {
+    "origin": "http://127.0.0.1:8769",
+    "apiMode": "isolated_synthetic",
+    "checks": [
+      {
+        "name": "frontend syntax",
+        "files": 200,
+        "passed": true
+      },
+      {
+        "name": "phase4/worker.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "app-catalog.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/definitions.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/database.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/line-provider.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-journey-db.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/browser.mjs",
+        "passed": true,
+        "seconds": 4,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/handoff.mjs",
+        "passed": true,
+        "seconds": 2,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/email-login.mjs",
+        "passed": true,
+        "seconds": 6,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/browser.mjs",
+        "passed": true,
+        "seconds": 18,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-list.mjs",
+        "passed": true,
+        "seconds": 27,
+        "exitCode": 0
+      },
+      {
+        "name": "phase3/browser.mjs",
+        "passed": true,
+        "seconds": 70,
+        "exitCode": 0
+      },
+      {
+        "name": "phase4/browser.mjs",
+        "passed": true,
+        "seconds": 37,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/regression.mjs",
+        "passed": true,
+        "seconds": 45,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/contrast.mjs",
+        "passed": true,
+        "seconds": 51,
+        "exitCode": 0
+      }
+    ],
+    "failures": 0
+  },
+  "contrast": {
+    "pages": 41,
+    "textChecks": 1512,
+    "failures": []
+  },
+  "macSafari": {
+    "os": "27.0.1",
+    "safari": "27.0.1",
+    "source": "local synthetic fixture",
+    "passed": [
+      "opt-in device retention",
+      "edit then step navigation",
+      "close tab and reopen",
+      "official version shown before restore",
+      "restore exact Safari manuscript",
+      "dirty state after restore",
+      "acknowledged synthetic save removes device copy"
+    ],
+    "productionWrites": false
+  },
+  "realIPhone": "pending",
+  "publication": "pending authorization"
+}

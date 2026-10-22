@@ -1,3 +1,4 @@
+import {createScheduleDraftRecovery,scheduleDraftFingerprint} from './schedule-draft-recovery.mjs?v=20261022-experience10';
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule,listRolePreferences,saveRolePreferences} from './schedule-management.mjs?v=20261003-access-guard1';
@@ -8,7 +9,10 @@ const draft=editorDraft(editor),roleDraft=editorDraft(roleSettings);
 function pageMessage(message,tone='neutral'){status.textContent=message;status.dataset.tone=tone;const inline=editor.querySelector('.editor-result');if(inline){inline.textContent=message;inline.dataset.tone=tone;}}
 const churchName=church==='M+'?'M＋大雅教會':'火樂教會';
 const logoSrc=church==='M+'?'assets/brands/mplus-logo-white.png':'assets/brands/shine-logo.png';
-let schedules=[],members=[],rolePreferences=[],busy=false;
+let schedules=[],members=[],rolePreferences=[],busy=false,opening=false,formGeneration=0,identityGeneration=0;
+const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
+const recoveryHost=el('section','','schedule-draft-recovery');recoveryHost.id='schedule-draft-recovery';recoveryHost.hidden=true;editor.before(recoveryHost);
+const deviceDraft=createScheduleDraftRecovery({db,church,host:recoveryHost,editor,message:pageMessage,isBusy:()=>busy,latest:async()=>{const [rows,preferences]=await Promise.all([listSchedules(db,church),listRolePreferences(db,church)]);return {rows,preferences};},onRestore:async(row,recovered,preferences)=>{rolePreferences=preferences;await openForm(row,{recovered});},onIdentityLost:()=>{identityGeneration++;formGeneration++;draft.dispose();roleDraft.dispose();editor.replaceChildren();editor.hidden=true;roleSettings.replaceChildren();roleSettings.hidden=true;document.querySelectorAll('.schedule-member-options').forEach(n=>n.remove());schedules=[];members=[];render();configureExports();$('#new').disabled=true;pageMessage('登入已變更，編輯內容已隱藏。請重新讀取以確認排班權限。','error');}});
 const preview=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('preview')==='1';
 const previewRows=[
   {id:0,church_id:church,service_date:'2026/09/20',event:'主日崇拜',speaker:'劉偉華 牧師',worship_leader:'敬拜團',tech_sound:'張育梓',tech_video:'曾軒佑',usher1:'雷亞蓁',usher2:'小喵',presider:'戴世華',prayer:'曾恩茹',sunday_school:'詹惠怡',sunday_school_ta:'曾以路'},
@@ -16,7 +20,6 @@ const previewRows=[
   {id:2,church_id:church,service_date:'2026-10-04',event:'主日崇拜｜恩典夠用',speaker:'特邀講員',worship_leader:'李承恩',tech_sound:'林嘉恩',tech_video:'陳以諾',usher1:'許家豪',usher2:'周美玲',presider:'邵鈺庭',prayer:'張心怡',sunday_school:'黃品恩',sunday_school_ta:'王雅真',singers:'林以樂、吳安琪',keyboard:'陳恩惠',guitar:'王子恩',bass:'張以諾',drums:'許家豪',ushers:'周美玲、黃品恩'},
   {id:3,church_id:church,service_date:'2026-10-11',event:'主日崇拜｜同心同行',speaker:'吳俊璋 牧師',worship_leader:'陳恩惠',tech_sound:'張以諾',tech_video:'林嘉恩',usher1:'黃品恩',usher2:'王雅真',presider:'李承恩',prayer:'邵鈺庭',sunday_school:'周美玲',sunday_school_ta:'張心怡',singers:'吳安琪、王子恩',keyboard:'林以樂',guitar:'許家豪',bass:'陳以諾',drums:'林嘉恩',ushers:'黃品恩、王雅真'}
 ];
-const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const labels={event:'聚會主題',speaker:'信息分享',worship_leader:church==='M+'?'敬拜讚美':'敬拜主領',tech_sound:'音控控台',tech_video:church==='M+'?'投影字幕／導播':'直播導播',usher1:'招待一',usher2:'招待二',presider:'司會',prayer:'主日公禱',sunday_school:'兒主老師',sunday_school_ta:'兒主助教',singers:'敬拜歌者',keyboard:'司琴鍵盤',guitar:'木／電吉他',bass:'貝斯手',drums:'爵士鼓手',ushers:'主日招待',transport:'交通服事',communion:'聖餐服事',communion_bread:'聖餐餅',communion_cup:'聖餐杯',wed_prayer:'週三禱告會'};
 const icons={speaker:'🎙️',worship_leader:'🎶',tech_sound:'🎚️',tech_video:'🎥',usher1:'👋',usher2:'🤝',presider:'🗣️',prayer:'🙏',sunday_school:'🧒',sunday_school_ta:'🌱',singers:'🎤',keyboard:'🎹',guitar:'🎸',bass:'🎸',drums:'🥁',ushers:'👋',transport:'🚐',communion:'✝️',communion_bread:'🍞',communion_cup:'🍷',wed_prayer:'🕊️'};
 const roleKeys=()=>['speaker','worship_leader','tech_sound','tech_video',...(church==='M+'?['usher1','usher2',...M_PLUS]:SHINE)];
@@ -59,8 +62,9 @@ function memberSelect(key,current=''){
  menu.hidden=true;document.body.append(menu);return input;
 }
 
-function openForm(row=null){
- if(busy||!draft.canLeave())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.replaceChildren();editor.hidden=false;
+async function openForm(row=null,{recovered=null}={}){
+ if(busy||opening||(!recovered&&!draft.canLeave()))return;opening=true;
+ try{const startingGeneration=formGeneration;if(!recovered&&!await deviceDraft.beforeOpen())return;if(startingGeneration!==formGeneration)return;const formToken=++formGeneration;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.replaceChildren();editor.hidden=false;
  const form=document.createElement('form'),heading=el('h2',row?'更正服事排班':'新增服事排班'),basic=el('fieldset','','schedule-form-section'),grid=el('div','','edit-grid'),date=document.createElement('input'),inputs={};
  heading.tabIndex=-1;basic.append(el('legend','1 · 聚會資料'));date.type='date';date.required=true;date.name='service_date';date.value=isoDate(row?.service_date)||'';
  let wrap=el('label','服事日期');wrap.append(date);grid.append(wrap);
@@ -80,10 +84,11 @@ function openForm(row=null){
  toolbar.addEventListener('input',event=>{event.stopPropagation();applyFilter();});toolbar.addEventListener('change',event=>{event.stopPropagation();applyFilter();});toolbar.addEventListener('keydown',event=>{if(event.key==='Enter')event.preventDefault();});
  clear.onclick=()=>{search.value='';filter.value='all';applyFilter();};
  roleGrid.addEventListener('input',summarize);roleGrid.addEventListener('change',summarize);applyFilter();assignments.append(toolbar,summary,roleGrid,empty);
- const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button',row?'儲存更正':'儲存排班');cancel.type='button';cancel.onclick=()=>{if(busy||!draft.canLeave())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;};save.type='submit';
+ const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button',row?'儲存更正':'儲存排班');cancel.type='button';cancel.onclick=async()=>{if(busy||!draft.canLeave()||!await deviceDraft.discard())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;};save.type='submit';
  const inline=el('p','','editor-result');inline.setAttribute('aria-live','off');actions.append(cancel,save);form.append(heading,basic,assignments,inline,actions);
- form.onsubmit=async e=>{e.preventDefault();if(busy||!form.reportValidity())return;busy=true;const unlock=lockControls(form);pageMessage('正在儲存服事安排，請稍候…','busy');try{const payload={...Object.fromEntries(roles().map(key=>[key,row?.[key]??''])),service_date:date.value,...Object.fromEntries(Object.entries(inputs).map(([k,v])=>[k,v.value]))};await saveSchedule(db,church,payload,row);draft.clear();draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;const loaded=await load();pageMessage(loaded?(row?'排班已更正。':'排班已儲存。'):'排班已儲存，但清單暫時無法更新；請重新讀取，勿再次新增。',loaded?'success':'warning');}catch(error){pageMessage(error.message,'error');}finally{unlock();busy=false;}};
- editor.append(form);draft.attach(form);const mobile=matchMedia('(pointer:coarse)').matches||innerWidth<760;editor.scrollIntoView({behavior:mobile?'auto':'smooth',block:'start'});(mobile?heading:date).focus({preventScroll:true});
+ form.onsubmit=async e=>{e.preventDefault();if(busy||!form.reportValidity())return;busy=true;const unlock=lockControls(form);pageMessage('正在儲存服事安排，請稍候…','busy');try{await deviceDraft.verify(form);if(formToken!==formGeneration)throw new Error('登入或編輯狀態已變更，尚未送出。');const payload={...Object.fromEntries(roles().map(key=>[key,row?.[key]??''])),service_date:date.value,...Object.fromEntries(Object.entries(inputs).map(([k,v])=>[k,v.value]))};await saveSchedule(db,church,payload,row);const cleared=await deviceDraft.saved();draft.clear();draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;const loaded=await load();pageMessage((loaded?(row?'排班已更正。':'排班已儲存。'):'排班已儲存，但清單暫時無法更新；請重新讀取，勿再次新增。')+(cleared?'':' 裝置草稿未能清除，請先核對正式排班再處理草稿。'),loaded&&cleared?'success':'warning');}catch(error){pageMessage(error.message,'error');}finally{unlock();busy=false;}};
+ editor.append(form);draft.attach(form);if(recovered){for(const [key,value]of Object.entries(recovered.fields)){if(key==='service_date')date.value=value;else if(inputs[key])inputs[key].value=value;}draft.mark();applyFilter();}const baselinePreferences=rolePreferences.map(p=>({...p}));deviceDraft.attach(form,{row,fields:()=>({service_date:date.value,...Object.fromEntries(Object.entries(inputs).map(([key,input])=>[key,input.value]))}),fingerprint:()=>scheduleDraftFingerprint(row,baselinePreferences),recovered});const mobile=matchMedia('(pointer:coarse)').matches||innerWidth<760;editor.scrollIntoView({behavior:mobile?'auto':'smooth',block:'start'});(mobile?heading:date).focus({preventScroll:true});
+ }finally{opening=false;}
 }
 
 function openRoleSettings(){
@@ -138,7 +143,7 @@ async function download(canvas,name){const blob=await new Promise(resolve=>canva
 async function exportWeekly(){const row=schedules.find(item=>item.service_date===$('#weekPick').value);if(!row)return toast('請先選擇要輸出的聚會日期。');setExportBusy(true);try{await download(await makeWeekly(row),churchName+'-'+row.service_date+'-本週服事表');toast('本週服事表 PNG 已完成下載。');}catch(error){toast(error.message);}finally{setExportBusy(false);}}
 async function exportMonthly(){const month=$('#monthPick').value,rows=schedules.filter(row=>isoDate(row.service_date).startsWith(month));if(!rows.length)return toast('這個月份目前沒有排班資料。');setExportBusy(true);try{await download(await makeMonthly(rows,month),churchName+'-'+month+'-本月服事表');toast('本月服事表 PNG 已完成下載。');}catch(error){toast(error.message);}finally{setExportBusy(false);}}
 function setExportBusy(value){$('#weekPng').disabled=value;$('#monthPng').disabled=value;status.textContent=value?'正在製作 PNG 圖片…':'共 '+schedules.length+' 筆排班。';}
-async function load(){pageMessage('正在載入…','busy');records.setAttribute('aria-busy','true');try{if(preview){schedules=previewRows;members=[];rolePreferences=previewPreferences();}else [schedules,members,rolePreferences]=await Promise.all([listSchedules(db,church),listScheduleMembers(db,church),listRolePreferences(db,church)]);render();configureExports();$('#new').disabled=false;pageMessage((preview?'版面預覽 · ':'共 ')+schedules.length+' 筆排班。');return true;}catch(error){pageMessage(error.message+' 原有清單保留，請重新讀取。','error');return false;}finally{records.removeAttribute('aria-busy');}}
+async function load(){const identityToken=identityGeneration;pageMessage('正在載入…','busy');records.setAttribute('aria-busy','true');try{if(preview){schedules=previewRows;members=[];rolePreferences=previewPreferences();}else {const loaded=await Promise.all([listSchedules(db,church),listScheduleMembers(db,church),listRolePreferences(db,church)]);if(identityToken!==identityGeneration)return false;[schedules,members,rolePreferences]=loaded;}render();configureExports();$('#new').disabled=false;pageMessage((preview?'版面預覽 · ':'共 ')+schedules.length+' 筆排班。');void deviceDraft.refresh();return true;}catch(error){if(identityToken!==identityGeneration)return false;pageMessage(error.message+' 原有清單保留，請重新讀取。','error');return false;}finally{records.removeAttribute('aria-busy');}}
 
 $('#title').textContent=churchName+' · 主日服事安排';
 $('#members').href='members.html?church='+encodeURIComponent(church||'');

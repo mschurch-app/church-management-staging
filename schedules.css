@@ -39,3 +39,11 @@
 .schedule-member-options{box-sizing:border-box}
 .schedule-member-option[aria-selected=true]{background:var(--app-surface-muted,#edf4ee);outline:2px solid var(--app-focus,#246fb2);outline-offset:-2px}
 @media(max-width:700px){.schedule-page .schedule-form-section{padding:14px 12px}.schedule-page .schedule-editor-filters{grid-template-columns:minmax(0,1fr) auto}.schedule-page .schedule-editor-filters label:first-child{grid-column:1/-1}.schedule-page .schedule-editor-roles{grid-template-columns:1fr}}
+
+/* Keep the editor and detached suggestions on the shared system font. */
+.schedule-page,.schedule-member-options{font-family:var(--app-font-body,system-ui,sans-serif)}
+/* Device recovery uses the same form surfaces and touch sizes. */
+.schedule-draft-recovery,.schedule-device-draft{padding:18px;border:1px solid var(--app-border,#dae3dc);border-radius:16px;background:var(--app-surface-muted,#f6f8f5);margin:16px 0;color:var(--app-ink,#203b30)}
+.schedule-draft-recovery h2{font-size:20px;margin:0 0 8px}.schedule-draft-recovery p,.schedule-device-draft p{font-size:14px;line-height:1.6;margin:8px 0;overflow-wrap:anywhere}
+.schedule-draft-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.schedule-device-draft button,.schedule-draft-actions button{min-height:44px;white-space:normal}.schedule-device-draft-status{color:var(--app-secondary,#61736a)}
+@media print{.schedule-draft-recovery,.schedule-device-draft{display:none!important}}

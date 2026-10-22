@@ -1,3 +1,4 @@
+import {createFieldGuidance,FieldValidationError} from './form-guidance.mjs?v=20261022-experience8';
 import { db } from './admin-db.mjs?v=20261012-readable2';
 import { normalizeOfferingCode } from './finance/bulletin.mjs';
 
@@ -17,6 +18,7 @@ const errors = {
 };
 const state = { roles: new Set(), owner: false, workers: [], batch: null, groups: [], busy: false, dirty: true, userId: null, pendingCounterUserId: null, needsRefresh: false };
 let nextGroupId = 1;
+const fieldGuidance=createFieldGuidance($('#cash-form'));$('#cash-form').noValidate=true;
 const number = value => Number.isSafeInteger(Number(value)) ? Number(value) : NaN;
 
 async function api(action, values = {}) {
@@ -37,8 +39,9 @@ function status(message, tone = '', announce = true) {
 async function work(task, pending = '正在讀取工作資料…') {
   if (state.busy) return;
   status(pending,'busy');state.busy = true; $('#finance-status').setAttribute('aria-busy','true');$('#cash-form').inert=true; $('#cash-form').setAttribute('aria-busy','true'); drawConfirmations();
-  try { await task(); } catch (error) { status(error.message || '操作未完成。', 'error'); }
-  finally { if($('#finance-status').textContent===pending)status('');$('#finance-status').removeAttribute('aria-busy');state.busy = false; $('#cash-form').inert=state.needsRefresh; $('#cash-form').removeAttribute('aria-busy'); drawConfirmations(); }
+  let focusFields=false;
+  try { await task(); } catch (error) { focusFields=error instanceof FieldValidationError;status(error.message || '操作未完成。', 'error'); }
+  finally { if($('#finance-status').textContent===pending)status('');$('#finance-status').removeAttribute('aria-busy');state.busy = false; $('#cash-form').inert=state.needsRefresh; $('#cash-form').removeAttribute('aria-busy'); drawConfirmations();if(focusFields&&!state.needsRefresh)fieldGuidance.focusFirst(); }
 }
 
 function tab(name) {
@@ -69,7 +72,7 @@ function canLeaveEditor(){
   return $('#cash-form').dataset.unsavedChanges!=='true'||confirm('還有尚未儲存的奉獻資料。要放棄修改並離開嗎？');
 }
 function clearEditor() {
-  if(!canLeaveEditor())return;
+  if(!canLeaveEditor())return;fieldGuidance.clear();
   state.needsRefresh=false;$('#recover-finance').hidden=true;$('#cash-form').dataset.unsavedChanges='false';
   if(!state.roles.has('entry')){status('此帳號沒有「同工登錄」權限，請由系統負責人於財務人員權限設定。','error');return;}
   state.batch = null; state.dirty = true; state.pendingCounterUserId=null; state.groups = [newGroup()];
@@ -141,10 +144,10 @@ function drawBag(group, bag, index) {
     confirmText.textContent=bag.confirmedAt?`${who}已確認 · ${new Date(bag.confirmedAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})}`:'我已核對本筆分類與自動加總金額（一位同工勾選即可）';
   }
   for(const category of group.anonymous?['一般／不具名奉獻']:categories){
-    const input=field('number',bag.amounts[category]??'',value=>{bag.amounts[category]=value;clearBagConfirmation(bag);refresh();totals();},{min:'0'});grid.append(labelFor(category,input));
+    const input=field('number',bag.amounts[category]??'',value=>{bag.amounts[category]=value;clearBagConfirmation(bag);refresh();totals();},{min:'0'});input.dataset.offeringCategory=category;grid.append(labelFor(category,input));
   }
   details.append(grid);
-  if(!group.anonymous)details.append(labelFor('指定奉獻用途',field('text',bag.designation,value=>{bag.designation=value;clearBagConfirmation(bag);refresh();},{maxLength:120})));
+  if(!group.anonymous){const purpose=field('text',bag.designation,value=>{bag.designation=value;clearBagConfirmation(bag);refresh();},{maxLength:120});purpose.dataset.offeringPurpose='true';details.append(labelFor('指定奉獻用途',purpose));}
   const footer=document.createElement('div');footer.className='finance-bag-footer';footer.append(labelFor('本筆奉獻總額（自動加總）',totalInput));
   const remove=textNode('button','移除這筆');remove.type='button';remove.className='secondary';remove.addEventListener('click',()=>{group.bags.splice(index,1);markDirty();drawGroups();totals();});footer.append(remove);
   confirm.addEventListener('change',()=>{bag.confirmed=confirm.checked;bag.confirmedBy=null;bag.confirmedAt=null;refresh();});
@@ -183,7 +186,7 @@ function drawGroup(group, index) {
     const codeNote = document.createElement('div');
     const codeStatus=textNode('strong',group.memberId?`已連結會友：${group.name} · 奉獻編號：${group.offeringCode||'待補（尚未設定）'}`:'尚未連結會友；輸入姓名後請點選搜尋結果。','finance-member-state');codeNote.append(codeStatus);
     if (group.memberId && !group.offeringCode) {
-      const input = field('text', '', () => {}, { maxLength: 4 }); input.placeholder = '四位數';
+      const input = field('text', '', () => {}, { maxLength: 4 }); input.placeholder = '四位數';input.setAttribute('aria-label','四位奉獻編號');
       const assign = textNode('button', '設定編號'); assign.type = 'button';
       assign.addEventListener('click', () => void work(async () => {
         const offeringCode = normalizeOfferingCode(input.value);
@@ -211,12 +214,36 @@ function drawGroup(group, index) {
   return card;
 }
 
-function drawGroups() { $('#donor-groups').replaceChildren(...state.groups.map(drawGroup)); }
+function drawGroups() { fieldGuidance.clear();$('#donor-groups').replaceChildren(...state.groups.map(drawGroup)); }
 function totals() {
   const entered = state.groups.reduce((sum,group)=>sum+group.bags.reduce((n,bag)=>n+bagTotal(group,bag),0),0);
   $('#counted-cash').value = entered;
   $('#entered-total').textContent = entered.toLocaleString('zh-TW');
 
+}
+
+function validateEditor(){
+ const issues=[],add=(control,message,anchor)=>issues.push({control,message,anchor});
+ const date=$('#offering-date'),one=$('#counter-one'),two=$('#counter-two');
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date.value)||!date.validity.valid)add(date,'奉獻日期：請選擇正確日期。');
+ if(!one.value)add(one,'點收同工 1：請選擇一位點收同工。');
+ if(!two.value)add(two,'點收同工 2：請選擇另一位點收同工。');else if(one.value===two.value)add(two,'點收同工 2：須與第一位不同。');
+ if(!state.groups.length)add($('#add-donor'),'請先新增一位奉獻者或一筆匿名現金。',$('#donor-groups'));
+ for(const [groupIndex,group]of state.groups.entries()){
+  const card=[...$('#donor-groups').children].find(node=>node.dataset.groupKey===String(group.key)),who=group.anonymous?'匿名現金 '+(groupIndex+1):'奉獻者 '+(groupIndex+1);
+  if(!group.name.trim())add(card.querySelector('.finance-member-query'),who+'：請填寫姓名。');
+  if(!group.bags.length)add(card.querySelector(':scope > button')||card.querySelector('.finance-group-head button'),who+'：請新增一筆明細，或移除空白資料。',card.querySelector('.finance-bags'));
+  if(group.memberId&&!group.offeringCode)add(card.querySelector('.finance-code-assignment input'),who+'：請先補上四位奉獻編號。');
+  for(const [bagIndex,bag]of group.bags.entries()){
+   const details=card.querySelectorAll('.finance-bag')[bagIndex],amounts=[...details.querySelectorAll('[data-offering-category]')],where=who+' · 第 '+(bagIndex+1)+' 筆',before=issues.length;
+   for(const input of amounts)if(input.validity.badInput||input.value!==''&&(!input.validity.valid||!Number.isSafeInteger(Number(input.value))||Number(input.value)<0))add(input,where+'：'+input.dataset.offeringCategory+'金額請填 0 或正整數。');
+   if(!amounts.some(input=>Number(input.value)>0))add(amounts[0],where+'：請至少填一項大於 0 的奉獻金額。');
+   const purpose=details.querySelector('[data-offering-purpose]');if(Number(bag.amounts['指定奉獻'])>0&&!bag.designation.trim())add(purpose,where+'：指定奉獻須填用途。');
+   if(!Number.isSafeInteger(bagTotal(group,bag)))add(amounts[0],where+'：合計超出可計算範圍，請檢查金額。');
+   if(issues.length===before&&bagTotal(group,bag)>0&&bag.confirmed!==true)add(details.querySelector('.finance-bag-confirm'),where+'：請核對本筆明細後勾選確認。');
+  }
+ }
+ if(fieldGuidance.report(issues))throw new FieldValidationError();
 }
 
 function makePayload() {
@@ -277,6 +304,7 @@ async function readAfterWrite(batch, message){
 }
 async function save() {
   if(state.needsRefresh)throw new Error('請先重新讀取已儲存紀錄，避免重複送出。');
+  validateEditor();
   const data = makePayload();
   const result = await api('save', { batchId: state.batch?.id || null, version: state.batch?.version || null, data });
   await readAfterWrite(result.batch,'草稿已儲存。');
@@ -304,7 +332,7 @@ async function transition(step) {
 async function openBatch(id) {
   if(state.batch?.id!==id&&!canLeaveEditor())return;
   const response = await api('get', { batchId: id }); const batch = response.batch;
-  state.needsRefresh=false;$('#recover-finance').hidden=true;
+  state.needsRefresh=false;$('#recover-finance').hidden=true;fieldGuidance.clear();
   state.batch = batch; state.dirty = false; state.pendingCounterUserId=null; $('#cash-form').dataset.unsavedChanges='false'; state.groups = [];
   const linked = new Map();
   for (const bag of response.bags) {

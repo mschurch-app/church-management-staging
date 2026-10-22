@@ -1,0 +1,4 @@
+/* Secondary copy must remain readable on each tinted settings heading. */
+html body .settings-group-heading{--app-secondary:#5b6b62}
+html body .camp-empty,html body .monitor-page .metric-card span{color:#5b6b62}
+html body .media-settings .connection-badge:not(.connected){color:#8c3022!important}

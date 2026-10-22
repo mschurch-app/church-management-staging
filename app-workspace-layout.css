@@ -1,0 +1,186 @@
+/* Visual workspace pilot: opt in per page, use the shared semantic tokens.
+   Keep data, permissions, drafts and action handlers in their existing modules. */
+body[data-app-layout=workspace]{
+  --workspace-gap:24px;
+  --workspace-radius:var(--app-radius-card,22px);
+  --workspace-panel:var(--app-surface,#fff);
+  font-family:var(--app-font-body,system-ui,sans-serif)!important;
+  line-height:1.65;
+}
+html body[data-app-layout=workspace] main.member-page{
+  width:100%;max-width:1440px;margin-inline:auto;padding:24px 32px 120px;
+  font-family:var(--app-font-body,system-ui,sans-serif)!important;
+}
+body[data-app-layout=workspace] :is(button,input,select,textarea){font-family:inherit}
+body[data-app-layout=workspace] :is(h1,h2,h3,h4,p,label,legend){overflow-wrap:anywhere}
+body[data-app-layout=workspace] :is(h2,h3){line-height:1.4;letter-spacing:-.025em}
+body[data-app-layout=workspace] h2{font-size:1.35rem}
+body[data-app-layout=workspace] h3{font-size:1.1rem}
+html body[data-app-layout=workspace] :is(.review-list,.review-preview,.review-actions,.review-panel,.studio-card,.finance-panel,.editor-panel){
+  min-width:0;border:1px solid var(--app-border);border-radius:var(--workspace-radius);
+  background:var(--workspace-panel);box-shadow:var(--app-shadow);padding:24px;
+}
+html body[data-app-layout=workspace] :is(button.secondary,a.secondary){
+  border-radius:var(--app-radius-field);box-shadow:none;text-decoration:none;
+}
+body[data-app-layout=workspace] :is(button,a.secondary){min-height:44px;white-space:normal;line-height:1.5}
+body[data-app-layout=workspace] :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+  min-width:0;max-width:100%;box-sizing:border-box;font-size:max(16px,1rem);border-radius:var(--app-radius-field);
+}
+body[data-app-layout=workspace] :is(.page-nav,.workflow-toolbar){
+  position:static;margin:16px 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;
+}
+body[data-app-layout=workspace] .page-nav{display:flex;flex-wrap:wrap;gap:8px}
+body[data-app-layout=workspace] .page-nav a{display:inline-flex;align-items:center;min-height:44px;margin:0;padding:8px 14px;border:1px solid var(--app-border);border-radius:12px;background:var(--workspace-panel);font-size:.9rem}
+body[data-app-layout=workspace] .workflow-summary{gap:14px;margin:16px 0;padding:16px 20px;border-radius:var(--workspace-radius);box-shadow:none}
+body[data-app-layout=workspace] .workflow-summary h2{font-size:1.1rem;margin:2px 0 4px}
+body[data-app-layout=workspace] .workflow-summary p{font-size:.9rem}
+body[data-app-layout=workspace] .workflow-toolbar label{min-width:0;margin:0;font-size:.9rem;gap:6px}
+body[data-app-layout=workspace] .workflow-toolbar :is(input,select){margin:0;min-height:46px}
+body[data-app-layout=workspace] :is(.section-heading,.finance-section-head){gap:12px;margin:0 0 18px;align-items:start}
+body[data-app-layout=workspace] .section-heading :is(h2,p){margin:4px 0}
+body[data-app-layout=workspace] :is(.review-queue-count,.studio-small,.devotional-device p,.finance-note){font-size:.9rem;line-height:1.65}
+/* Mac: a stable selection column beside the document, with bounded list scrolling. */
+body[data-app-layout=workspace] :is(.review-layout,.devotional-workspace,.studio-layout){
+  display:grid;grid-template-columns:300px minmax(0,1fr);gap:var(--workspace-gap);align-items:start;
+}
+body[data-app-layout=workspace] :is(.review-list,.devotional-sidebar,.studio-projects){position:sticky;top:20px}
+body[data-app-layout=workspace] :is(.review-list,.devotional-sidebar){padding:20px;background:var(--app-surface-muted);border:1px solid var(--app-border);border-radius:var(--workspace-radius)}
+body[data-app-layout=workspace] :is(.review-list-items,#devotional-records,#projects){max-height:60vh;overflow:auto;overscroll-behavior:contain;scroll-padding:4px;padding:4px;margin:12px -4px 0;gap:8px}
+body[data-app-layout=workspace] :is(.review-choice,.devotional-choice,.studio-project-choice){padding:12px;font-size:1rem;line-height:1.55;border-radius:14px;min-height:70px}
+body[data-app-layout=workspace] :is(.review-choice,.devotional-choice,.studio-project-choice) small{font-size:.85rem;line-height:1.5}
+body[data-app-layout=workspace] .review-list>h2{margin:0 0 6px}
+body[data-app-layout=workspace] .review-list>p.muted{font-size:.85rem;margin:0 0 16px}
+body[data-app-layout=workspace] .review-list .review-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+body[data-app-layout=workspace] .review-toolbar label{grid-column:1/-1}
+body[data-app-layout=workspace] .review-queue-count{margin:10px 0}
+body[data-app-layout=workspace] .review-item{grid-template-columns:minmax(100px,.35fr) minmax(0,1fr)}
+body[data-app-layout=workspace] .review-section{background:var(--app-surface-muted);padding:18px;border-radius:16px}
+body[data-app-layout=workspace] .review-preview>h2{margin:0 0 12px;font-size:1.6rem}
+body[data-app-layout=workspace] .review-meta{margin-bottom:16px}
+body[data-app-layout=workspace] .review-actions{margin-top:20px}
+body[data-app-layout=workspace] .review-actions label{display:grid;gap:8px}
+body[data-app-layout=workspace] .devotional-workspace{grid-template-columns:280px minmax(0,1fr)}
+body[data-app-layout=workspace] .devotional-sidebar .workflow-toolbar{display:grid;grid-template-columns:1fr;gap:12px}
+body[data-app-layout=workspace] .devotional-sidebar .section-heading{margin-bottom:8px}
+body[data-app-layout=workspace] .devotional-item{padding:20px;border-radius:18px}
+body[data-app-layout=workspace] .devotional-editor-nav{gap:8px;padding:8px}
+body[data-app-layout=workspace] .devotional-editor-nav button{flex:1 1 120px;padding:8px;font-size:.9rem}
+body[data-app-layout=workspace] .devotional-device{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;margin:16px 0;padding:16px;border-radius:16px}
+body[data-app-layout=workspace] .devotional-device h3{margin:0}
+body[data-app-layout=workspace] .devotional-device p{margin:0}
+body[data-app-layout=workspace] .devotional-device-actions{grid-column:2;grid-row:1/4;align-items:center;align-content:center;max-width:300px}
+body[data-app-layout=workspace] .studio-toolbar{margin:12px 0 16px}
+body[data-app-layout=workspace] .studio-toolbar p{margin:0}
+body[data-app-layout=workspace] .studio-steps{gap:8px;margin:16px 0}
+body[data-app-layout=workspace] .studio-steps button{font-size:.9rem;padding:10px 6px}
+body[data-app-layout=workspace] #manuscript{font-size:max(16px,1rem);line-height:1.9}
+body[data-app-layout=workspace] .studio-project-head{gap:14px}
+/* Home: on wide screens, personal work and the calendar are visible together. */
+body[data-app-layout=workspace] .mplus-week{padding:24px;border-radius:var(--workspace-radius)}
+body[data-app-layout=workspace] .mplus-work-focus{margin:0 0 20px;padding:18px;border-radius:18px}
+body[data-app-layout=workspace] .mplus-work-focus .work-focus-item{white-space:normal}
+body[data-app-layout=workspace] .mplus-week-note{margin-bottom:0}
+body[data-app-layout=workspace] .hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+body[data-app-layout=workspace] .hub-tile{flex-direction:column;align-items:flex-start;gap:12px;min-width:0;padding:20px}
+body[data-app-layout=workspace] .hub-tile b{display:none}
+body[data-app-layout=workspace] .hub-tile strong{font-size:1rem}
+/* Finance: save controls stay in document flow, never float over entry fields. */
+body[data-app-layout=workspace] .finance-save{position:static!important;box-shadow:none;bottom:auto;margin-top:24px}
+body[data-app-layout=workspace] .finance-section-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+body[data-app-layout=workspace] .finance-section-nav a{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid var(--app-border);border-radius:12px;color:var(--app-ink);text-decoration:none;font-size:.9rem}
+body[data-app-layout=workspace] .finance-section-nav a:focus-visible{outline:3px solid var(--app-focus);outline-offset:3px}
+body[data-app-layout=workspace] :is(#donor-groups,#counter-confirm-title,#save-draft){scroll-margin-block:24px}
+body[data-app-layout=workspace] .finance-summary{grid-template-columns:repeat(4,minmax(0,1fr));padding:20px}
+body[data-app-layout=workspace] .finance-summary label{font-size:.9rem}
+body[data-app-layout=workspace] .finance-category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+body[data-app-layout=workspace] .finance-group{background:var(--app-surface-muted)}
+body[data-app-layout=workspace] .schedule-form-section{margin:18px 0;background:var(--app-surface-muted)}
+body[data-app-layout=workspace] .schedule-editor-roles{gap:16px}
+@media(min-width:1200px){
+ body[data-app-layout=workspace] .mplus-week{display:grid;grid-template-columns:320px minmax(0,1fr);gap:0 24px}
+ body[data-app-layout=workspace] .mplus-week>*{grid-column:2;min-width:0}
+ body[data-app-layout=workspace] .mplus-week>.mplus-work-focus{grid-column:1;grid-row:1/span 10;margin:0;align-self:start}
+ body[data-app-layout=workspace] .mplus-work-focus .work-focus-filters{display:grid;grid-template-columns:1fr 1fr}
+ body[data-app-layout=workspace] .mplus-work-focus .work-focus-item{display:block}
+ body[data-app-layout=workspace] .work-focus-item small{display:block;margin-top:4px}
+ body[data-app-layout=workspace] .mplus-week-heading h2{font-size:1.35rem}
+ body[data-app-layout=workspace] .mplus-week-grid{gap:6px}
+ body[data-app-layout=workspace] .mplus-week-task{padding:10px 7px}
+}
+@media(max-width:1000px){
+ body[data-app-layout=workspace] :is(.review-layout,.devotional-workspace,.studio-layout){grid-template-columns:250px minmax(0,1fr);gap:18px}
+ body[data-app-layout=workspace] .finance-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:850px){
+ html body[data-app-layout=workspace] main.member-page{padding:16px 16px 120px}
+ body[data-app-layout=workspace]{--workspace-gap:16px;--workspace-radius:18px}
+ html body[data-app-layout=workspace] :is(.review-list,.review-preview,.review-actions,.review-panel,.studio-card,.finance-panel,.editor-panel){padding:16px}
+ body[data-app-layout=workspace] :is(.review-layout,.devotional-workspace,.studio-layout){grid-template-columns:minmax(0,1fr);gap:16px}
+ body[data-app-layout=workspace] :is(.review-list,.devotional-sidebar,.studio-projects){position:static;padding:16px}
+ body[data-app-layout=workspace] :is(.review-list-items,#devotional-records,#projects){display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:80%;max-height:none;gap:10px;overflow-x:auto;overflow-y:hidden;padding:4px 4px 12px;scroll-snap-type:x proximity}
+ body[data-app-layout=workspace] :is(.review-choice,.devotional-choice,.studio-project-choice){scroll-snap-align:start;align-content:start}
+ body[data-app-layout=workspace] .review-list .review-toolbar{grid-template-columns:1fr 1fr;margin:12px 0}
+ body[data-app-layout=workspace] .review-toolbar label{grid-column:auto}
+ body[data-app-layout=workspace] .review-toolbar label:first-child{grid-column:1/-1}
+ body[data-app-layout=workspace] .review-toolbar button{padding:8px;font-size:.9rem}
+ body[data-app-layout=workspace] .review-item{grid-template-columns:1fr;gap:4px}
+ body[data-app-layout=workspace] .workflow-summary{padding:14px 16px;gap:10px}
+ body[data-app-layout=workspace] .workflow-steps{gap:8px}
+ body[data-app-layout=workspace] .workflow-summary h2{font-size:1rem}
+ body[data-app-layout=workspace] .devotional-sidebar .workflow-toolbar{grid-template-columns:1fr 1fr;gap:10px}
+ body[data-app-layout=workspace] .devotional-sidebar .workflow-toolbar label:nth-child(2){grid-column:1/-1;grid-row:1}
+ body[data-app-layout=workspace] .devotional-sidebar .workflow-toolbar button{grid-column:1/-1}
+ body[data-app-layout=workspace] .devotional-item{padding:16px}
+ body[data-app-layout=workspace] .devotional-device{grid-template-columns:1fr;gap:8px;padding:14px}
+ body[data-app-layout=workspace] .devotional-device-actions{grid-column:auto;grid-row:auto;max-width:none}
+ body[data-app-layout=workspace] .devotional-editor-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ body[data-app-layout=workspace] .devotional-editor-nav button{font-size:.85rem;min-width:0}
+ body[data-app-layout=workspace] .studio-steps{position:static;gap:4px;padding:0}
+ body[data-app-layout=workspace] .studio-steps button{font-size:.8rem;padding:8px 2px}
+ body[data-app-layout=workspace] .studio-project-head{display:flex;align-items:start}
+ body[data-app-layout=workspace] .sermon-studio #save{width:auto;flex:1 1 130px;margin:0}
+ body[data-app-layout=workspace] .mplus-week{padding:16px}
+ body[data-app-layout=workspace] .mplus-work-focus{padding:14px}
+ body[data-app-layout=workspace] .mplus-week-toolbar{margin:12px 0}
+ body[data-app-layout=workspace] .hub-grid{gap:8px}
+ body[data-app-layout=workspace] .hub-tile{padding:14px 8px;gap:10px;align-items:center;text-align:center}
+ body[data-app-layout=workspace] .hub-symbol{padding:10px}
+ body[data-app-layout=workspace] .hub-tile strong{font-size:.9rem}
+ body[data-app-layout=workspace] .hub-tile small{font-size:.8rem}
+ body[data-app-layout=workspace] .finance-section-nav{gap:6px}
+ body[data-app-layout=workspace] .finance-section-nav a{flex:1;justify-content:center;padding:8px;font-size:.85rem}
+ body[data-app-layout=workspace] .finance-summary{grid-template-columns:minmax(0,1fr);padding:16px;gap:12px}
+ body[data-app-layout=workspace] .finance-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-app-layout=workspace] .finance-bag{padding:12px}
+ body[data-app-layout=workspace] .finance-group{padding:14px}
+}
+@media print{
+ body[data-app-layout=workspace] :is(.review-list-items,#devotional-records,#projects){display:block;max-height:none;overflow:visible}
+ body[data-app-layout=workspace] :is(.review-list,.devotional-sidebar,.studio-projects){position:static}
+ body[data-app-layout=workspace] .finance-section-nav{display:none}
+}
+/* Contrast on the populated calendar and entry hints, including tinted cards. */
+body[data-app-layout=workspace] :is(.mplus-week-empty,.mplus-week-state,.mplus-week-note,.mplus-week-task small,.finance-note){color:#52665a}
+/* Selection uses the current church accent, independently of permission logic. */
+html body[data-app-layout=workspace] :is(.review-choice[aria-pressed=true],.devotional-choice[aria-pressed=true],.studio-project-choice[aria-current=true]){background:var(--app-surface-muted)!important;border-color:var(--app-accent)!important;box-shadow:inset 3px 0 var(--app-accent)!important;color:var(--app-ink)!important}
+body[data-app-layout=workspace] .workflow-steps [aria-current=step]{color:var(--app-accent)}
+body[data-app-layout=workspace] .workflow-steps [aria-current=step] span{background:var(--app-accent);color:var(--app-on-accent)}
+body[data-app-layout=workspace] .studio-steps button[aria-pressed=true]{background:var(--app-accent)!important;color:var(--app-on-accent)!important;border-color:var(--app-accent)!important}
+/* Native WebKit select sizing needs an explicit appearance and padding. */
+body[data-app-layout=workspace] select:not([multiple]){
+  appearance:none;-webkit-appearance:none;min-height:46px;height:auto;padding:11px 34px 11px 12px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2352665a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:16px;
+}
+body[data-app-layout=workspace] .editor-actions{position:static!important;box-shadow:none}
+body[data-app-layout=workspace] :is(.review-choice,.devotional-choice,.studio-project-choice){text-align:left!important;justify-content:start!important}
+body.finance-body[data-app-layout=workspace]{--app-ink:#203c35;--app-secondary:#52665a;--app-border:#c8d9cc;--app-surface-muted:#f3f7f1}
+body[data-app-layout=workspace] .mplus-week-picker{grid-template-columns:repeat(7,minmax(44px,1fr));gap:2px;overflow-x:auto;scroll-padding:4px;padding-block:4px}
+html body[data-app-layout=workspace] .sermon-studio .studio-steps button[data-app-control=surface][aria-pressed=true]:is(:hover,:focus,:active){background:var(--app-accent)!important;color:var(--app-on-accent)!important;border-color:var(--app-accent)!important}
+/* Keep foreground/background state changes atomic, including legacy skins. */
+body[data-app-layout=workspace] :is(.studio-steps button,.review-choice,.devotional-choice,.studio-project-choice){transition:none!important}
+body[data-app-layout=workspace] .schedule-editor-roles label{line-height:1.5;gap:6px}
+body[data-app-layout=workspace] .schedule-editor-roles input{margin:0}
+body[data-app-layout=workspace] .schedule-editor-roles{gap:12px}
+body[data-app-layout=workspace] .hub-kicker{color:#52665a}

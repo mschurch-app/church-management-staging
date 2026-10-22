@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1"><link rel="stylesheet" href="apple-ui.css?v=20260924-app2">
   <link rel="stylesheet" href="app-design-tokens.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4">
   <link rel="stylesheet" href="finance-cash.css?v=20261022-review-only1">
-<link rel="stylesheet" href="app-experience.css?v=20261022-experience1"><link rel="stylesheet" href="form-guidance.css?v=20261022-experience8"></head>
-<body class="finance-body" data-action-feedback="off"><main class="member-page finance-page">
+<link rel="stylesheet" href="app-experience.css?v=20261022-experience1"><link rel="stylesheet" href="form-guidance.css?v=20261022-experience8"><link rel="stylesheet" href="app-workspace-layout.css?v=20261022-visual1"></head>
+<body data-app-layout="workspace" class="finance-body" data-action-feedback="off"><main class="member-page finance-page">
   <header class="page-header"><div><p class="eyebrow">M+ · 協會財務</p><h1>主日奉獻登錄</h1><p class="muted">逐筆登錄奉獻，同工送審，師母對現金，牧師複審。</p></div><a class="finance-home-link" href="mplus-dashboard.html?church=M%2B&amp;center=admin">返回行政</a></header>
   <p id="finance-status" class="finance-status" role="status" aria-live="polite">正在確認財務權限…</p>
   <button type="button" id="recover-finance" class="secondary" hidden>重新讀取已儲存紀錄</button>
@@ -19,7 +19,7 @@
     <section id="batches-panel" class="finance-panel"><div class="finance-section-head"><div><h2>當週奉獻紀錄</h2><p>可查看草稿、待核對、待複審與已入帳紀錄。</p></div><button type="button" id="new-batch">＋ 新增當週紀錄</button></div><div id="review-only-notice" class="finance-review-only" hidden><strong id="review-only-title">您的工作是審核奉獻紀錄</strong><p id="review-only-message"></p><button type="button" id="review-only-roles" class="secondary" hidden>查看人員權限</button></div><div id="batch-list" class="finance-list"></div></section>
     <section id="editor-panel" class="finance-panel" hidden>
       <div class="finance-section-head"><div><h2 id="editor-title">新增當週奉獻紀錄</h2><p id="editor-state">先輸入日期、點收同工及每筆奉獻資料。</p></div><button type="button" id="back-to-list" class="secondary">返回當週紀錄</button></div>
-      <form id="cash-form">
+      <nav class="finance-section-nav" aria-label="奉獻登錄區段"><a href="#donor-groups">奉獻明細</a><a href="#counter-confirm-title">點收確認</a><a href="#save-draft">儲存與送審</a></nav><form id="cash-form">
         <div class="finance-grid finance-summary"><label>奉獻日期<input id="offering-date" type="date" required></label><label>奉獻明細總額（自動加總）<input id="counted-cash" type="number" readonly aria-describedby="auto-total-note"><small id="auto-total-note">依每筆奉獻總額自動計算，不需手填。</small></label><label>點收同工 1<select id="counter-one" required></select></label><label>點收同工 2<select id="counter-two" required></select></label></div>
         <div class="finance-section-head"><div><h3>奉獻者與奉獻明細</h3><p>同一位奉獻者可新增多筆；每筆可填多個奉獻分類。</p></div><div class="finance-actions"><button type="button" id="add-donor" class="secondary">＋ 奉獻者</button><button type="button" id="add-anonymous" class="secondary">＋ 匿名現金</button></div></div>
         <div id="donor-groups" class="finance-groups"></div>

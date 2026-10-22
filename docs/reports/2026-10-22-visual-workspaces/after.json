@@ -1,0 +1,581 @@
+{
+  "mode": "after",
+  "baseCommit": "0cb1f582757d7fc7d0dee7978f95774e2ad71ae1",
+  "source": "synthetic local fixtures; existing page HTML and modules",
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "productionWrites": 0,
+  "results": [
+    {
+      "name": "home",
+      "engine": "chromium",
+      "width": 390,
+      "height": 1702,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 949,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 72,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home-functions",
+      "engine": "chromium",
+      "width": 390,
+      "height": 900,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 424,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 20,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "schedule",
+      "engine": "chromium",
+      "width": 390,
+      "height": 5572,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 444,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "sermon",
+      "engine": "chromium",
+      "width": 390,
+      "height": 2366,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 508,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 36,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "devotional",
+      "engine": "chromium",
+      "width": 390,
+      "height": 4607,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 1477,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 66,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "review",
+      "engine": "chromium",
+      "width": 390,
+      "height": 2503,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 998,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "finance",
+      "engine": "chromium",
+      "width": 390,
+      "height": 3885,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 361,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 59,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 1268,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 535,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 86,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home-functions",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 447,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 20,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "schedule",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 3554,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 435,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "sermon",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 1973,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 384,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 36,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "devotional",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 3739,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 819,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 66,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "review",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 1674,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 432,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "finance",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 2868,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 395,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 59,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home",
+      "engine": "webkit",
+      "width": 390,
+      "height": 1702,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 949,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 72,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home-functions",
+      "engine": "webkit",
+      "width": 390,
+      "height": 900,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 424,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 20,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "schedule",
+      "engine": "webkit",
+      "width": 390,
+      "height": 5574,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 444,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "sermon",
+      "engine": "webkit",
+      "width": 390,
+      "height": 2366,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 508,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 36,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "devotional",
+      "engine": "webkit",
+      "width": 390,
+      "height": 4607,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 1477,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 66,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "review",
+      "engine": "webkit",
+      "width": 390,
+      "height": 2502,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 998,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "finance",
+      "engine": "webkit",
+      "width": 390,
+      "height": 3834,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 361,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 59,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 1267,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 535,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 86,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home-functions",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 447,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 20,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "schedule",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 3556,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 435,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "sermon",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 1973,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 384,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 36,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "devotional",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 3739,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 819,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 66,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "review",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 1674,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 432,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "finance",
+      "engine": "webkit",
+      "width": 1440,
+      "height": 2868,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 395,
+      "headerHeight": 164,
+      "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang TC, Noto Sans TC, sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 59,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "checks": [
+    "home chromium 390: width, header, errors, contrast, no writes",
+    "home chromium 390: 200% text",
+    "home-functions chromium 390: width, header, errors, contrast, no writes",
+    "home-functions chromium 390: three columns, open and close category",
+    "home-functions chromium 390: 200% text",
+    "schedule chromium 390: width, header, errors, contrast, no writes",
+    "schedule chromium 390: 200% text",
+    "sermon chromium 390: width, header, errors, contrast, no writes",
+    "sermon chromium 390: selected step hover contrast",
+    "sermon chromium 390: 200% text",
+    "devotional chromium 390: width, header, errors, contrast, no writes",
+    "devotional chromium 390: 200% text",
+    "review chromium 390: width, header, errors, contrast, no writes",
+    "review chromium 390: 200% text",
+    "finance chromium 390: width, header, errors, contrast, no writes",
+    "finance chromium 390: 200% text",
+    "home chromium 1440: width, header, errors, contrast, no writes",
+    "home chromium 1440: 200% text",
+    "home-functions chromium 1440: width, header, errors, contrast, no writes",
+    "home-functions chromium 1440: three columns, open and close category",
+    "home-functions chromium 1440: 200% text",
+    "schedule chromium 1440: width, header, errors, contrast, no writes",
+    "schedule chromium 1440: 200% text",
+    "sermon chromium 1440: width, header, errors, contrast, no writes",
+    "sermon chromium 1440: selected step hover contrast",
+    "sermon chromium 1440: 200% text",
+    "devotional chromium 1440: width, header, errors, contrast, no writes",
+    "devotional chromium 1440: 200% text",
+    "review chromium 1440: width, header, errors, contrast, no writes",
+    "review chromium 1440: 200% text",
+    "finance chromium 1440: width, header, errors, contrast, no writes",
+    "finance chromium 1440: 200% text",
+    "home webkit 390: width, header, errors, contrast, no writes",
+    "home webkit 390: 200% text",
+    "home-functions webkit 390: width, header, errors, contrast, no writes",
+    "home-functions webkit 390: three columns, open and close category",
+    "home-functions webkit 390: 200% text",
+    "schedule webkit 390: width, header, errors, contrast, no writes",
+    "schedule webkit 390: 200% text",
+    "sermon webkit 390: width, header, errors, contrast, no writes",
+    "sermon webkit 390: selected step hover contrast",
+    "sermon webkit 390: 200% text",
+    "devotional webkit 390: width, header, errors, contrast, no writes",
+    "devotional webkit 390: 200% text",
+    "review webkit 390: width, header, errors, contrast, no writes",
+    "review webkit 390: 200% text",
+    "finance webkit 390: width, header, errors, contrast, no writes",
+    "finance webkit 390: 200% text",
+    "home webkit 1440: width, header, errors, contrast, no writes",
+    "home webkit 1440: 200% text",
+    "home-functions webkit 1440: width, header, errors, contrast, no writes",
+    "home-functions webkit 1440: three columns, open and close category",
+    "home-functions webkit 1440: 200% text",
+    "schedule webkit 1440: width, header, errors, contrast, no writes",
+    "schedule webkit 1440: 200% text",
+    "sermon webkit 1440: width, header, errors, contrast, no writes",
+    "sermon webkit 1440: selected step hover contrast",
+    "sermon webkit 1440: 200% text",
+    "devotional webkit 1440: width, header, errors, contrast, no writes",
+    "devotional webkit 1440: 200% text",
+    "review webkit 1440: width, header, errors, contrast, no writes",
+    "review webkit 1440: 200% text",
+    "finance webkit 1440: width, header, errors, contrast, no writes",
+    "finance webkit 1440: 200% text"
+  ],
+  "failures": []
+}

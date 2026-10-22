@@ -1,0 +1,338 @@
+{
+  "mode": "before",
+  "baseCommit": "0cb1f582757d7fc7d0dee7978f95774e2ad71ae1",
+  "source": "synthetic local fixtures; existing page HTML and modules",
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "productionWrites": 0,
+  "results": [
+    {
+      "name": "home",
+      "engine": "chromium",
+      "width": 390,
+      "height": 1734,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 972,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 72,
+        "failures": [
+          {
+            "selector": "small.",
+            "text": "18:00 · 待確認安排",
+            "color": "rgb(107, 123, 93)",
+            "backgrounds": [
+              [
+                237,
+                241,
+                238
+              ]
+            ],
+            "ratio": 3.99,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home-functions",
+      "engine": "chromium",
+      "width": 390,
+      "height": 933,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 420,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 23,
+        "failures": [
+          {
+            "selector": "p.hub-kicker",
+            "text": "M+ · 功能中心",
+            "color": "rgb(115, 133, 113)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 3.95,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "schedule",
+      "engine": "chromium",
+      "width": 390,
+      "height": 5531,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 393,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "sermon",
+      "engine": "chromium",
+      "width": 390,
+      "height": 2426,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 508,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 36,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "devotional",
+      "engine": "chromium",
+      "width": 390,
+      "height": 4948,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 1720,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 66,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "review",
+      "engine": "chromium",
+      "width": 390,
+      "height": 2976,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 1490,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "finance",
+      "engine": "chromium",
+      "width": 390,
+      "height": 4177,
+      "scrollWidth": 390,
+      "viewport": 390,
+      "contentTop": 343,
+      "headerHeight": 164,
+      "font": "Times",
+      "errors": [],
+      "contrast": {
+        "checked": 56,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 1593,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 857,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 86,
+        "failures": [
+          {
+            "selector": "p.mplus-week-empty",
+            "text": "這天沒有到期工作",
+            "color": "rgb(121, 132, 115)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 3.92,
+            "minimum": 4.5
+          },
+          {
+            "selector": "small.",
+            "text": "18:00 · 進行中",
+            "color": "rgb(107, 123, 93)",
+            "backgrounds": [
+              [
+                237,
+                241,
+                238
+              ]
+            ],
+            "ratio": 3.99,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "home-functions",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 442,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 23,
+        "failures": [
+          {
+            "selector": "p.hub-kicker",
+            "text": "M+ · 功能中心",
+            "color": "rgb(115, 133, 113)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 3.95,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "schedule",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 3584,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 444,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "sermon",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 2007,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 382,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 36,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "devotional",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 3946,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 1038,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 66,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "review",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 1879,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 661,
+      "headerHeight": 164,
+      "font": "-apple-system, \"system-ui\", \"SF Pro Text\", \"PingFang TC\", \"Noto Sans TC\", sans-serif",
+      "errors": [],
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "name": "finance",
+      "engine": "chromium",
+      "width": 1440,
+      "height": 2900,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "contentTop": 373,
+      "headerHeight": 164,
+      "font": "Times",
+      "errors": [],
+      "contrast": {
+        "checked": 56,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "checks": [],
+  "failures": []
+}

@@ -41,8 +41,8 @@ page.on('request',async req=>{
    else if(name==='list_church_schedules')data=[];
   }
   else if(url.pathname.includes('/functions/v1/daily-devotional-admin')){
-   if(body.action==='content_list'){if(failRead){code=503;data={ok:false,error:'unavailable'};}else{const records=body.from?.startsWith('2027-02')?Array.from({length:28},(_,n)=>({...daily()[0],id:'f'+n,devotional_date:`2027-02-${String(n+1).padStart(2,'0')}`,devotional_title:`二月測試 ${n+1}`})):items;data={ok:true,items:records.filter(row=>row.devotional_date>=body.from&&row.devotional_date<=body.to),reviewerStage:stage};}}
-   else if(await write()){const row=items.find(item=>item.id===body.id);if(body.action==='content_update'){Object.assign(row,body.values);row.review_status='approved';}else row.review_status=body.toStatus;data={ok:true};}
+   if(body.action==='content_list'){if(failRead){code=503;data={ok:false,error:'unavailable'};}else{const records=body.from?.startsWith('2027-02')?Array.from({length:28},(_,n)=>({...daily()[0],id:'f'+n,devotional_date:`2027-02-${String(n+1).padStart(2,'0')}`,devotional_title:`二月測試 ${n+1}`})):items;data={ok:true,items:records.filter(row=>row.devotional_date>=body.from&&row.devotional_date<=body.to),writeVersionContract:'devotional-version-v1',reviewerStage:stage};}}
+   else if(await write()){const row=items.find(item=>item.id===body.id);if(body.action==='content_update_v2'){Object.assign(row,body.values);row.review_status='approved';}else row.review_status=body.toStatus;row.version++;data={ok:true};}
   }
   else if(url.pathname.includes('/functions/v1/weekly-promo-review')){if(failPromoRead){code=503;data={error:'unavailable'};}else data={ok:true,items:[],promo:{status:'approved',snapshot:bulletins.find(r=>r.id===body.bulletinId)}};}
   else if(url.pathname.includes('/functions/v1/weekly-bulletin-review')){

@@ -1,6 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
-type Body={action?:unknown;from?:unknown;to?:unknown;id?:unknown;toStatus?:unknown;comment?:unknown;values?:unknown};
+type Body={action?:unknown;from?:unknown;to?:unknown;id?:unknown;toStatus?:unknown;comment?:unknown;values?:unknown;expectedVersion?:unknown};
 const allowedOrigins=new Set((Deno.env.get('ADMIN_ALLOWED_ORIGINS')||'https://mscos.mchurch.online,http://127.0.0.1:8000,http://localhost:8000').split(',').map(v=>v.trim()).filter(Boolean));
 const clean=(value:unknown,max=2000)=>String(value||'').trim().slice(0,max);
 const headers=(origin:string)=>({'access-control-allow-origin':allowedOrigins.has(origin)?origin:'https://mscos.mchurch.online','access-control-allow-headers':'authorization,content-type','access-control-allow-methods':'POST,OPTIONS','content-type':'application/json; charset=utf-8','cache-control':'no-store','vary':'Origin'});
@@ -21,7 +21,8 @@ Deno.serve(async request=>{
   if(userResult.error||!user||accessResult.error||permissionResult.error||!hasGrant)return json(origin,{ok:false,error:'forbidden'},403);
   const feature=Array.isArray(permissionResult.data)?permissionResult.data.find((row:{feature_key:string})=>row.feature_key==='tree_reading_admin'):null;
   if(feature?.view===false)return json(origin,{ok:false,error:'forbidden'},403);
-  const db=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}}),action=clean(body.action,30);
+  const db=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}}),requestAction=clean(body.action,30),action=requestAction==='content_update_v2'?'content_update':requestAction==='content_review_v2'?'content_review':requestAction;
+  if(['content_update','content_review'].includes(requestAction))return json(origin,{ok:false,error:'version_required'},428);
   if(action==='content_list'){
     const from=/^2027-\d{2}-\d{2}$/.test(clean(body.from,10))?clean(body.from,10):'2027-01-01',to=/^2027-\d{2}-\d{2}$/.test(clean(body.to,10))?clean(body.to,10):'2027-01-31';
     const [result,workflow]=await Promise.all([
@@ -30,20 +31,22 @@ Deno.serve(async request=>{
     ]);
     if(result.error||workflow.error)return json(origin,{ok:false,error:'unavailable'},503);
     const reviewerStage=user.id===workflow.data.initial_reviewer_id?'initial':user.id===workflow.data.second_reviewer_id?'second':user.id===workflow.data.final_reviewer_id?'final':'viewer';
-    return json(origin,{ok:true,items:result.data||[],reviewerStage});
+    return json(origin,{ok:true,items:result.data||[],writeVersionContract:'devotional-version-v1',reviewerStage});
   }
   if(feature?.approve===false&&['content_update','content_review'].includes(action))return json(origin,{ok:false,error:'forbidden'},403);
   const id=clean(body.id,50);if(!/^[0-9a-f-]{36}$/i.test(id))return json(origin,{ok:false,error:'invalid_request'},400);
+  if(['content_update','content_review'].includes(action)&&(!Number.isInteger(body.expectedVersion)||typeof body.expectedVersion!=='number'||body.expectedVersion<1||body.expectedVersion>2147483646))return json(origin,{ok:false,error:'version_required'},428);
+  const writeError=(error:{message?:string;code?:string},fallback:string)=>{const code=error.message?.includes('version_conflict')?'version_conflict':error.message?.includes('not_found')?'not_found':error.code==='PGRST202'?'schema_not_ready':fallback;return json(origin,{ok:false,error:code},code==='schema_not_ready'?503:409);};
   if(action==='content_update'){
     const source=body.values&&typeof body.values==='object'&&!Array.isArray(body.values)?body.values as Record<string,unknown>:null;if(!source)return json(origin,{ok:false,error:'invalid_request'},400);
     const allowed=['devotional_title','selected_scripture_reference','scripture_text','scripture_version','scripture_source','scripture_license_note','context_summary','key_points','reflection_questions','life_application','response_prayer'],values:Record<string,string>={};
     for(const key of allowed){const value=clean(source[key],key==='devotional_title'||key==='selected_scripture_reference'?300:5000);if(!value&&!['scripture_version','scripture_source','scripture_license_note'].includes(key))return json(origin,{ok:false,error:'required_field'},400);values[key]=value;}
-    const result=await db.rpc('update_daily_devotional_content',{p_id:id,p_editor:user.id,p_values:values});if(result.error)return json(origin,{ok:false,error:'update_failed'},409);return json(origin,{ok:true,item:result.data});
+    const result=await db.rpc('update_daily_devotional_content_v2',{p_id:id,p_editor:user.id,p_values:values,p_expected_version:body.expectedVersion});if(result.error)return writeError(result.error,'update_failed');return json(origin,{ok:true,item:result.data});
   }
   if(action==='content_review'){
     const toStatus=clean(body.toStatus,30),comment=clean(body.comment,1000);if(!['approved','returned'].includes(toStatus))return json(origin,{ok:false,error:'invalid_transition'},400);
-    const result=await db.rpc('review_daily_devotional',{p_id:id,p_reviewer:user.id,p_to_status:toStatus,p_comment:comment||null});
-    if(result.error){const message=String(result.error.message||'');const code=['wrong_reviewer','reviewers_not_configured','licensing_required','comment_required','invalid_transition'].find(value=>message.includes(value))||'review_failed';return json(origin,{ok:false,error:code},409);}return json(origin,{ok:true,item:result.data});
+    const result=await db.rpc('review_daily_devotional_v2',{p_id:id,p_reviewer:user.id,p_to_status:toStatus,p_comment:comment||null,p_expected_version:body.expectedVersion});
+    if(result.error){const message=String(result.error.message||'');const code=['wrong_reviewer','reviewers_not_configured','licensing_required','comment_required','invalid_transition'].find(value=>message.includes(value))||'review_failed';return writeError(result.error,code);}return json(origin,{ok:true,item:result.data});
   }
   return json(origin,{ok:false,error:'invalid_action'},400);
 });

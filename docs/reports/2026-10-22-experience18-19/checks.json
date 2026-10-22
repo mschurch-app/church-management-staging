@@ -1,0 +1,294 @@
+{
+  "localBase": "c6783dbefde5845cd451710e5ba0a28eb0fc055e",
+  "productionBase": "4a4e05b975d314ef32c5a94ed472b2e0784bf9d5",
+  "stages": [
+    18,
+    19
+  ],
+  "newChecks": 114,
+  "backend": {
+    "checks": [
+      "migration applies and can be repeated without changing existing data",
+      "matching edit increments version and creates exactly one audit entry",
+      "stale edit changes neither content nor audit",
+      "missing and invalid expected versions are rejected by SQL itself",
+      "unknown fields roll back without changing a version",
+      "existing direct approval and licensing rules remain unchanged",
+      "reviewer and required return comment rules remain enforced",
+      "return review increments the version exactly once",
+      "stale review is refused and current review increments version",
+      "two requests with the same base version yield exactly one winner",
+      "anon cannot execute either v2 function",
+      "authenticated cannot execute either v2 function",
+      "new functions remain security invoker with fixed search path",
+      "existing RLS remains enabled",
+      "audit failure atomically rolls back the content and version",
+      "list response advertises the versioned write contract",
+      "Edge rejects invalid expected version undefined before any write RPC",
+      "Edge rejects invalid expected version null before any write RPC",
+      "Edge rejects invalid expected version \"6\" before any write RPC",
+      "Edge rejects invalid expected version 0 before any write RPC",
+      "Edge rejects invalid expected version -1 before any write RPC",
+      "Edge rejects invalid expected version 1.5 before any write RPC",
+      "Edge rejects invalid expected version 2147483647 before any write RPC",
+      "legacy unversioned writes require a reload and never call SQL",
+      "Edge forwards expected version and uses the verified actor rather than supplied identity",
+      "real SQL conflict maps to HTTP 409 with no fallback overwrite",
+      "Edge rejects denied signedIn before privileged SQL",
+      "Edge rejects denied grant before privileged SQL",
+      "Edge rejects denied view before privileged SQL",
+      "Edge rejects denied approve before privileged SQL",
+      "unexpected origins cannot write",
+      "missing migration fails closed without falling back to unversioned RPC",
+      "deleted content is distinguished from retryable network failure",
+      "Edge review uses the protected RPC and increments its version",
+      "stale review cannot append a second approval"
+    ],
+    "synthetic": true,
+    "productionWrites": false,
+    "multiSessionPostgres": false
+  },
+  "browser": {
+    "checks": [
+      "chromium 390: save transmits the originally opened version to the v2 action",
+      "chromium 390: conflict preserves dirty text and blocks another formal write",
+      "chromium 390: disabled stale save cannot resend",
+      "chromium 390: comparison reads both versions without applying or sending changes",
+      "chromium 390: keyboard comparison restores focus to its live action",
+      "chromium 390: comparison follows continued local editing",
+      "chromium 390: populated conflict comparison meets contrast []",
+      "chromium 390: conflict actions meet 44 px targets",
+      "chromium 390: declining discard retains local text and the conflict lock",
+      "chromium 390: local text remains recoverable through its existing copy dialog",
+      "chromium 390: explicit discard opens a new editor from the latest version",
+      "chromium 390: using the latest record preserves chronological list order",
+      "chromium 390: new editing submits version two once rather than rebasing stale text",
+      "chromium 390: 200 percent text fits {\"page\":390,\"width\":390,\"font\":32}",
+      "chromium 1440: save transmits the originally opened version to the v2 action",
+      "chromium 1440: conflict preserves dirty text and blocks another formal write",
+      "chromium 1440: disabled stale save cannot resend",
+      "chromium 1440: comparison reads both versions without applying or sending changes",
+      "chromium 1440: keyboard comparison restores focus to its live action",
+      "chromium 1440: comparison follows continued local editing",
+      "chromium 1440: populated conflict comparison meets contrast []",
+      "chromium 1440: conflict actions meet 44 px targets",
+      "chromium 1440: declining discard retains local text and the conflict lock",
+      "chromium 1440: local text remains recoverable through its existing copy dialog",
+      "chromium 1440: explicit discard opens a new editor from the latest version",
+      "chromium 1440: using the latest record preserves chronological list order",
+      "chromium 1440: new editing submits version two once rather than rebasing stale text",
+      "chromium 1440: 200 percent text fits {\"page\":1440,\"width\":1440,\"font\":32}",
+      "chromium device: device preflight conflicts also enter the same recovery workflow",
+      "chromium missing_contract: missing version capability disables writes while preserving editing and copies",
+      "chromium missing_version: missing version capability disables writes while preserving editing and copies",
+      "chromium rollback: backend downgrade or missing schema fails closed without an unversioned retry",
+      "chromium schema_missing: backend downgrade or missing schema fails closed without an unversioned retry",
+      "chromium deleted: deletion provides copy recovery without recreating or applying content",
+      "chromium read_fail: failed comparison retains text and the write lock",
+      "chromium read_fail: comparison retry is read-only",
+      "chromium changed_again: a second server update requires another comparison before discarding local input",
+      "chromium review: approval uses its opened version and preserves stale review recovery",
+      "chromium logout: late comparison response cannot reveal content after sign out",
+      "webkit 390: save transmits the originally opened version to the v2 action",
+      "webkit 390: conflict preserves dirty text and blocks another formal write",
+      "webkit 390: disabled stale save cannot resend",
+      "webkit 390: comparison reads both versions without applying or sending changes",
+      "webkit 390: keyboard comparison restores focus to its live action",
+      "webkit 390: comparison follows continued local editing",
+      "webkit 390: populated conflict comparison meets contrast []",
+      "webkit 390: conflict actions meet 44 px targets",
+      "webkit 390: declining discard retains local text and the conflict lock",
+      "webkit 390: local text remains recoverable through its existing copy dialog",
+      "webkit 390: explicit discard opens a new editor from the latest version",
+      "webkit 390: using the latest record preserves chronological list order",
+      "webkit 390: new editing submits version two once rather than rebasing stale text",
+      "webkit 390: 200 percent text fits {\"page\":390,\"width\":390,\"font\":32}",
+      "webkit 1440: save transmits the originally opened version to the v2 action",
+      "webkit 1440: conflict preserves dirty text and blocks another formal write",
+      "webkit 1440: disabled stale save cannot resend",
+      "webkit 1440: comparison reads both versions without applying or sending changes",
+      "webkit 1440: keyboard comparison restores focus to its live action",
+      "webkit 1440: comparison follows continued local editing",
+      "webkit 1440: populated conflict comparison meets contrast []",
+      "webkit 1440: conflict actions meet 44 px targets",
+      "webkit 1440: declining discard retains local text and the conflict lock",
+      "webkit 1440: local text remains recoverable through its existing copy dialog",
+      "webkit 1440: explicit discard opens a new editor from the latest version",
+      "webkit 1440: using the latest record preserves chronological list order",
+      "webkit 1440: new editing submits version two once rather than rebasing stale text",
+      "webkit 1440: 200 percent text fits {\"page\":1440,\"width\":1440,\"font\":32}",
+      "webkit device: device preflight conflicts also enter the same recovery workflow",
+      "webkit missing_contract: missing version capability disables writes while preserving editing and copies",
+      "webkit missing_version: missing version capability disables writes while preserving editing and copies",
+      "webkit rollback: backend downgrade or missing schema fails closed without an unversioned retry",
+      "webkit schema_missing: backend downgrade or missing schema fails closed without an unversioned retry",
+      "webkit deleted: deletion provides copy recovery without recreating or applying content",
+      "webkit read_fail: failed comparison retains text and the write lock",
+      "webkit read_fail: comparison retry is read-only",
+      "webkit changed_again: a second server update requires another comparison before discarding local input",
+      "webkit review: approval uses its opened version and preserves stale review recovery",
+      "webkit logout: late comparison response cannot reveal content after sign out",
+      "no uncaught errors "
+    ],
+    "synthetic": true,
+    "productionWrites": false,
+    "iPhone": false,
+    "macSafari": false
+  },
+  "regressions": {
+    "editor": 91,
+    "device": 81,
+    "copy": 87
+  },
+  "gate": {
+    "path": "tests/phase4/results/gate/2026-10-22T14-58-36-575Z/summary.json",
+    "origin": "http://127.0.0.1:8769",
+    "apiMode": "isolated_synthetic",
+    "checks": [
+      {
+        "name": "frontend syntax",
+        "files": 204,
+        "passed": true
+      },
+      {
+        "name": "phase4/worker.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "app-catalog.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/definitions.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/database.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/line-provider.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-journey-db.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/browser.mjs",
+        "passed": true,
+        "seconds": 5,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/handoff.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/email-login.mjs",
+        "passed": true,
+        "seconds": 6,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/browser.mjs",
+        "passed": true,
+        "seconds": 18,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-list.mjs",
+        "passed": true,
+        "seconds": 26,
+        "exitCode": 0
+      },
+      {
+        "name": "phase3/browser.mjs",
+        "passed": true,
+        "seconds": 69,
+        "exitCode": 0
+      },
+      {
+        "name": "phase4/browser.mjs",
+        "passed": true,
+        "seconds": 37,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/regression.mjs",
+        "passed": true,
+        "seconds": 46,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/contrast.mjs",
+        "passed": true,
+        "seconds": 51,
+        "exitCode": 0
+      }
+    ],
+    "failures": 0
+  },
+  "contrast": {
+    "pages": 41,
+    "textChecks": 1513,
+    "failures": []
+  },
+  "macSafari": {
+    "macOS": "27.0.1",
+    "Safari": "27.0.1",
+    "localSynthetic": true,
+    "conflictPreservesInput": true,
+    "compareVersions": true,
+    "cancelDiscard": true,
+    "acceptLatest": true
+  },
+  "iPhone": "pending",
+  "realIndependentPostgresSessions": "pending",
+  "migrationAppliedToProduction": false,
+  "edgeDeployed": false,
+  "productionBusinessWrites": false,
+  "notificationsSent": false,
+  "advisorsBaseline": {
+    "infoRlsNoPolicy": 169,
+    "warnAnonDefiner": 4,
+    "warnAuthenticatedDefiner": 37,
+    "relevantFindings": [],
+    "postMigrationAdvisor": "pending authorized deployment"
+  },
+  "worker": {
+    "cache": "church-os-shell-20261022-experience19",
+    "assets": 84,
+    "liveVerification": "pending"
+  },
+  "sourceSha256": {
+    "church-os-sw.js": "ad5c5be139bd1f0232969410189f6b0f0a13938405446cae44344957a2104a6c",
+    "daily-devotional-admin.css": "73d2bf0035c0eae2a514f0c145e6699dedcf374d65f5020424c4d21181d8ce22",
+    "daily-devotional-admin.html": "7da29e3a61fd6b09bea46aa608b0c3e01c54aad44521cec840515febfe3e82af",
+    "daily-devotional-admin.mjs": "f6fab3244affb4f11ebc5e8f3a2279ac030d3d9bbc72804da13409d84ee49791",
+    "devotional-conflict.mjs": "0d89e2b3fdc4e626b326a8c95c1c8a567bfe7f4f2a3941947bcf5a99c58eb784",
+    "devotional-draft-recovery.mjs": "9135c369a47be136571be5f4bb7dd2ef30444f312c2437423d97f5ab33064cde",
+    "supabase/functions/daily-devotional-admin/index.ts": "b0a52521390174899407065d5114e6fdea4a73623ac5820080ee185f0ce4b562",
+    "supabase/migrations/20261022144927_devotional_versioned_writes.sql": "aeddddbba184f4c1320a06180961c63039fb7a531edbdb365066c1a0c3d260f0",
+    "tests/devotional-conflict-browser.mjs": "ab11c3dd03c7b4449a8851206268e3088b91bd211c28d8c8a687787a42c8b7c4",
+    "tests/devotional-draft-fixture.mjs": "134db373090feb63c5caba02aaab4f60074b6a703186581369a8f120a90f539f",
+    "tests/devotional-editor-browser.mjs": "750a25353ddae5f2bc7d439791ffb84dc931d674f5902b87ec9d975c63480a04",
+    "tests/devotional-version-backend.mjs": "b4006f90b27979db886cac101bbaddcaefd33f934475cca77177a11acf9ba978",
+    "tests/phase3/browser.mjs": "24f45d1c8ae974204886d0e9a185bf176eb06e8c50d903c9e7a4518aad4d5ff0",
+    "tests/phase3/fixtures.mjs": "7a6b8fa884843b04467eb4b9895a53a20c301d739b6cc867b2abd85688b92d3b"
+  }
+}

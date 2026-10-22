@@ -1,0 +1,23 @@
+{
+  "synthetic": true,
+  "production_writes": false,
+  "line_messages_sent": 0,
+  "checks": [
+    "fixture reproduces LINE login available while notification field is missing",
+    "backfill uses the explicit account UUID even when LINE nickname differs",
+    "same name without a linked LINE identity stays unbound",
+    "disabled accounts are not newly bound",
+    "an existing explicit notification identity is preserved",
+    "identity projection makes no changes to accounts, grants or owner rights",
+    "future staff approval projects an existing LINE login after staff creation",
+    "LINE identity attached after an account exists also projects automatically",
+    "changing LINE subject removes only the old matching projection and installs the new one",
+    "removing a LINE identity clears its matching notification target",
+    "removing a login cannot clear a separate explicit notification binding",
+    "an existing subject held by another staff record is not stolen or allowed to break registration",
+    "malformed and ambiguous identities fail closed without breaking account creation",
+    "a second distinct LINE identity clears a prior derived target until ambiguity is removed",
+    "repeated account/profile synchronization preserves the same staff ID and LINE identity",
+    "no public RPC or authenticated execution is exposed for the projection helpers"
+  ]
+}

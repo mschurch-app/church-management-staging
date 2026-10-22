@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {database} from './phase1/bootstrap.mjs';
+const db=await database(),checks=[];
+const uid=n=>'70000000-0000-4000-8000-'+String(n).padStart(12,'0');
+const subject=n=>'U'+String(n).padStart(32,'0');
+const q=async(sql,args=[])=>(await db.query(sql,args)).rows;
+const scalar=async(sql,args=[])=>Object.values((await q(sql,args))[0])[0];
+const test=async(name,fn)=>{await fn();checks.push(name);console.log('PASS',name);};
+const user=async(n,{active=true,name='合成同名',line=true}={})=>{const id=uid(n);await q('insert into auth.users(id) values($1)',[id]);if(line)await q("insert into auth.identities values($1,'custom:line-web',$2,'{\"name\":\"暱稱不是姓名\"}')",[id,subject(n)]);await q("insert into church_auth.accounts(user_id,is_active,display_name,job_title,invitation_state) values($1,$2,$3,'同工','active')",[id,active,name]);return id;};
+const staff=n=>q('select id,line_subject,is_active from public.pastoral_staff where app_user_id=$1',[uid(n)]).then(r=>r[0]);
+try{
+ await user(1);await user(2,{line:false});await user(3,{active:false});await user(4);
+ await q("update public.pastoral_staff set line_subject=$1 where app_user_id=$2",[subject(40),uid(4)]);
+ await test('fixture reproduces LINE login available while notification field is missing',async()=>{assert.equal((await staff(1)).line_subject,null);assert.equal(await scalar("select count(*)::int from auth.identities where user_id=$1 and provider='custom:line-web'",[uid(1)]),1);});
+ const accounts=await q('select * from church_auth.accounts order by user_id');
+ await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261022084848_sync_registered_staff_line_notification_identity.sql',import.meta.url),'utf8'));
+ await test('backfill uses the explicit account UUID even when LINE nickname differs',async()=>assert.equal((await staff(1)).line_subject,subject(1)));
+ await test('same name without a linked LINE identity stays unbound',async()=>assert.equal((await staff(2)).line_subject,null));
+ await test('disabled accounts are not newly bound',async()=>assert.equal((await staff(3)).line_subject,null));
+ await test('an existing explicit notification identity is preserved',async()=>assert.equal((await staff(4)).line_subject,subject(40)));
+ await test('identity projection makes no changes to accounts, grants or owner rights',async()=>{assert.deepEqual(await q('select * from church_auth.accounts order by user_id'),accounts);assert.equal(await scalar('select count(*)::int from church_auth.grants'),0);assert.equal(await scalar('select count(*)::int from church_auth.owners'),0);});
+ await test('future staff approval projects an existing LINE login after staff creation',async()=>{await user(5);assert.equal((await staff(5)).line_subject,subject(5));});
+ await test('LINE identity attached after an account exists also projects automatically',async()=>{await user(6,{line:false});await q("insert into auth.identities values($1,'custom:line-web',$2,'{}')",[uid(6),subject(6)]);assert.equal((await staff(6)).line_subject,subject(6));});
+ await test('changing LINE subject removes only the old matching projection and installs the new one',async()=>{await q("update auth.identities set provider_id=$1 where user_id=$2",[subject(60),uid(6)]);assert.equal((await staff(6)).line_subject,subject(60));});
+ await test('removing a LINE identity clears its matching notification target',async()=>{await q('delete from auth.identities where user_id=$1',[uid(6)]);assert.equal((await staff(6)).line_subject,null);});
+ await test('removing a login cannot clear a separate explicit notification binding',async()=>{await q('delete from auth.identities where user_id=$1',[uid(4)]);assert.equal((await staff(4)).line_subject,subject(40));});
+ await test('an existing subject held by another staff record is not stolen or allowed to break registration',async()=>{await q("insert into public.pastoral_staff(line_subject,display_name,role,is_active) values($1,'合成原有接收者','secretary',true)",[subject(7)]);await user(7);assert.equal((await staff(7)).line_subject,null);});
+ await test('malformed and ambiguous identities fail closed without breaking account creation',async()=>{await user(8,{line:false});await q("insert into auth.identities values($1,'custom:line-web','bad','{}')",[uid(8)]);assert.equal((await staff(8)).line_subject,null);await q("insert into auth.identities values($1,'custom:line-web',$2,'{}')",[uid(8),subject(8)]);assert.equal((await staff(8)).line_subject,null);});
+ await test('a second distinct LINE identity clears a prior derived target until ambiguity is removed',async()=>{await user(9);await q("insert into auth.identities values($1,'custom:line-web',$2,'{}')",[uid(9),subject(90)]);assert.equal((await staff(9)).line_subject,null);await q('delete from auth.identities where user_id=$1 and provider_id=$2',[uid(9),subject(90)]);assert.equal((await staff(9)).line_subject,subject(9));});
+ await test('repeated account/profile synchronization preserves the same staff ID and LINE identity',async()=>{const prior=await staff(5);await q("update church_auth.accounts set display_name='合成改名' where user_id=$1",[uid(5)]);assert.deepEqual(await staff(5),prior);});
+ await test('no public RPC or authenticated execution is exposed for the projection helpers',async()=>{const helpers=await q("select n.nspname,p.proname,has_function_privilege('authenticated',p.oid,'execute') as allowed from pg_proc p join pg_namespace n on n.oid=p.pronamespace where p.proname like 'sync_registered_staff_line_%'");assert.equal(helpers.length,3);assert(helpers.every(f=>f.nspname==='church_auth'&&!f.allowed));});
+ fs.mkdirSync('docs/reports/2026-10-22-staff-line-notification-sync',{recursive:true});fs.writeFileSync('docs/reports/2026-10-22-staff-line-notification-sync/database-results.json',JSON.stringify({synthetic:true,production_writes:false,line_messages_sent:0,checks},null,2));console.log('TOTAL',checks.length);
+}finally{await db.close();}

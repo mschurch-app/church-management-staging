@@ -8,18 +8,26 @@ const encode=bytes=>btoa(String.fromCharCode(...bytes));
 const decode=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0));
 export async function encryptHandoff(secret,value){const key=await crypto.subtle.importKey('raw',hexBytes(secret),'AES-GCM',false,['encrypt']);const iv=crypto.getRandomValues(new Uint8Array(12));const data=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(value)));return {iv:encode(iv),data:encode(new Uint8Array(data))};}
 export async function decryptHandoff(secret,cipher){const key=await crypto.subtle.importKey('raw',hexBytes(secret),'AES-GCM',false,['decrypt']);const data=await crypto.subtle.decrypt({name:'AES-GCM',iv:decode(cipher.iv)},key,decode(cipher.data));return JSON.parse(new TextDecoder().decode(data));}
-export async function handoffRequest(body,token){const response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json',apikey:SUPABASE_PUBLISHABLE_KEY,...(token?{authorization:'Bearer '+token}:{})},body:JSON.stringify(body),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(12000)});const data=await response.json();if(!response.ok)throw Error('登入同步暫時無法完成，請返回 App 再試一次。');return data;}
-export function pendingHandoff(){try{const value=JSON.parse(localStorage.getItem(HANDOFF_STORAGE)||'null');if(value&&value.expires>Date.now()&&/^[0-9a-f]{64}$/.test(value.secret))return value;}catch{}localStorage.removeItem(HANDOFF_STORAGE);return null;}
+export async function handoffRequest(body,token){const response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json',apikey:SUPABASE_PUBLISHABLE_KEY,...(token?{authorization:'Bearer '+token}:{})},body:JSON.stringify(body),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(12000)});const data=await response.json();const acknowledged=body.action==='complete'?data.ready===true:body.action==='finish'?data.finished===true:typeof data.ready==='boolean';if(!response.ok||!acknowledged)throw Error('登入同步暫時無法完成，請返回 App 再試一次。');return data;}
+export function pendingHandoff(){try{const value=JSON.parse(localStorage.getItem(HANDOFF_STORAGE)||'null');if(value&&/^[0-9a-f-]{36}$/i.test(value.id||'')&&value.expires>Date.now()&&/^[0-9a-f]{64}$/.test(value.secret))return value;localStorage.removeItem(HANDOFF_STORAGE);}catch{}return null;}
 export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboard.html',onResume}={}){
  let popup=null,polling=false,timer=null,resumed=false;
+ const nativeLaunch=flow==='login'&&(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)&&(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+ // A native external link leaves the installed App's own document in place.
+ // OAuth is started by the visible launcher in Safari, not by a WindowProxy.
+ if(nativeLaunch){const link=document.createElement('a');link.id=button.id;link.className=button.className;link.append(...button.childNodes);link.href='admin-line-launch.html';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText=button.style.cssText+';display:flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none';button.replaceWith(link);button=link;}
+ const originalLabel=button.innerHTML;
+ const setDisabled=value=>{button.disabled=value;button.setAttribute('aria-disabled',String(value));if(nativeLaunch){button.style.opacity=value?'.6':'';if(value)button.textContent='等待 LINE 登入完成…';else button.innerHTML=originalLabel;}};
+ const createPending=expectedUser=>({id:crypto.randomUUID(),secret:Array.from(crypto.getRandomValues(new Uint8Array(32))).map(n=>n.toString(16).padStart(2,'0')).join(''),expires:Date.now()+300000,next:safeAppTarget(next),expected_user:expectedUser||null});
+ const continueButton=document.createElement('button');continueButton.type='button';continueButton.className='secondary line-auth-resume';continueButton.textContent='我已完成 LINE 登入，接續進入 App';continueButton.hidden=true;status.after(continueButton);continueButton.onclick=()=>void resume();
  const stillPending=pending=>{const active=pendingHandoff();return active?.id===pending.id&&active.secret===pending.secret;};
  const cancel=document.createElement('button');cancel.type='button';cancel.className='secondary line-auth-cancel';cancel.textContent='取消這次 LINE 登入';cancel.hidden=true;status.after(cancel);
  cancel.onclick=()=>{if(cancel.disabled)return;localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);try{popup?.close();}catch{}reset();status.textContent='已取消，可重新選擇登入方式。';};
- const reset=()=>{cancel.disabled=false;cancel.hidden=true;button.disabled=false;button.removeAttribute('aria-busy');};
+ const reset=()=>{cancel.disabled=false;cancel.hidden=true;continueButton.hidden=true;setDisabled(false);button.removeAttribute('aria-busy');};
  async function resume(){
   if(polling||resumed||document.visibilityState==='hidden')return;
   const pending=pendingHandoff();if(!pending){reset();return;}
-  button.disabled=true;button.setAttribute('aria-busy','true');cancel.hidden=false;polling=true;
+  setDisabled(true);button.setAttribute('aria-busy','true');cancel.hidden=false;continueButton.hidden=false;continueButton.disabled=true;polling=true;
   try{
    const result=await handoffRequest({action:'read',id:pending.id,secret:pending.secret});
    if(!stillPending(pending))return;
@@ -37,24 +45,31 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
    status.textContent='登入成功，正在開啟教會 OS…';
    if(onResume)await onResume(session);else location.replace(safeAppTarget(pending.next));
   }catch(error){status.textContent=error.fatal?error.message:'連線暫時中斷，正在等待恢復；也可取消後重新登入。';if(error.fatal){localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);reset();}}
-  finally{polling=false;cancel.disabled=false;}
+  finally{polling=false;cancel.disabled=false;continueButton.disabled=false;}
  }
  function watch(){clearInterval(timer);timer=setInterval(()=>{if(!pendingHandoff()){clearInterval(timer);if(!resumed){status.textContent='LINE 登入等待已結束，請再按一次登入。';reset();}return;}void resume();},2000);void resume();}
  window.addEventListener('pageshow',()=>{if(pendingHandoff())watch();});
+ window.addEventListener('focus',()=>{if(pendingHandoff())watch();});
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&pendingHandoff())watch();});
  window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data?.type==='church-os-line-handoff-ready'&&event.data.id===pendingHandoff()?.id)void resume();});
- button.addEventListener('click',async()=>{
-  if(button.disabled)return;
+ button.addEventListener('click',async event=>{
+  if(button.disabled){event.preventDefault();return;}
+  if(nativeLaunch){
+   try{const pending=createPending();localStorage.setItem(HANDOFF_STORAGE,JSON.stringify(pending));const launch=new URL('admin-line-launch.html',location.href);launch.hash=new URLSearchParams({handoff:pending.id,handoff_key:pending.secret,next:pending.next,expires:String(pending.expires)}).toString();button.href=launch.href;setDisabled(true);button.setAttribute('aria-busy','true');cancel.hidden=false;continueButton.hidden=false;status.textContent='登入頁會在 Safari 開啟。完成 LINE 登入後，請切回這個教會 OS App。';setTimeout(watch,0);}
+   catch{event.preventDefault();reset();status.textContent='無法保留登入交接，請確認未封鎖網站儲存後再試。';}
+   return; // Let the user's native link action open the external launcher.
+  }
+  event.preventDefault();
   const installed=appMode();
   // Open a real visible page synchronously; never leave an about:blank App window.
   popup=installed?window.open('admin-line-launch.html','church-os-line-auth'):null;
   if(installed&&!popup){status.textContent='請允許此網站開啟登入視窗，再按 LINE 登入；App 會保留目前頁面。';return;}
-  button.disabled=true;button.setAttribute('aria-busy','true');status.textContent='正在開啟 LINE 安全登入…';
+  setDisabled(true);button.setAttribute('aria-busy','true');status.textContent='正在開啟 LINE 安全登入…';
   try{
    const callback=new URL('admin-line-callback.html',location.href);callback.searchParams.set('next',safeAppTarget(next));if(flow==='link')callback.searchParams.set('flow','link');
    if(installed){
     const current=flow==='link'?await db.auth.getUser():null;if(flow==='link'&&!current?.data.user)throw Error('原登入狀態已失效，請重新登入。');
-    const pending={id:crypto.randomUUID(),secret:Array.from(crypto.getRandomValues(new Uint8Array(32))).map(n=>n.toString(16).padStart(2,'0')).join(''),expires:Date.now()+300000,next:safeAppTarget(next),expected_user:current?.data.user?.id||null};
+    const pending=createPending(current?.data.user?.id);
     localStorage.setItem(HANDOFF_STORAGE,JSON.stringify(pending));callback.searchParams.set('return','app');callback.searchParams.set('handoff',pending.id);callback.searchParams.set('handoff_key',pending.secret);
    }
    const operation=flow==='link'?db.auth.linkIdentity.bind(db.auth):db.auth.signInWithOAuth.bind(db.auth);

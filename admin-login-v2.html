@@ -35,7 +35,7 @@
 </main>
 <script src="vendor/supabase-2.102.0.js"></script>
 <script type="module">
-import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261009-stage4';
+import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261022-app-line1';
 (()=>{
   const AUTH_URL='https://aqanuwilmvdtlzuqlrau.supabase.co',KEY='sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',STORAGE='church-staging-admin-v1';
   const form=document.getElementById('form'),button=document.getElementById('submit'),status=document.getElementById('status'),label=button.innerHTML;
@@ -65,7 +65,7 @@ import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=2
     }catch{status.textContent='登入狀態未能恢復，請使用 LINE 或 Email 重新登入。';}
   }
   void resumeExistingSession();
-  form.addEventListener('submit',async event=>{event.preventDefault();if(button.disabled)return;button.disabled=true;button.setAttribute('aria-busy','true');button.textContent='正在驗證帳號…';status.textContent='已收到點擊，正在連接教會登入服務…';try{
+  form.addEventListener('submit',async event=>{event.preventDefault();if(button.disabled)return;if(lineAuth.hasPending()){status.textContent='請先完成或取消這次 LINE 登入，再使用 Email 登入。';return;}button.disabled=true;button.setAttribute('aria-busy','true');button.textContent='正在驗證帳號…';status.textContent='已收到點擊，正在連接教會登入服務…';try{
     const response=await request(AUTH_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'content-type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value})},'登入連線逾時，請再試一次（D01）。');
     const session=await response.json().catch(()=>({}));if(!response.ok||!session.access_token||!session.user)throw new Error(response.status===400?'登入失敗，請確認帳號與密碼。':'登入服務暫時無法使用（D03）。');
     session.expires_at=session.expires_at||Math.floor(Date.now()/1000)+Number(session.expires_in||3600);localStorage.setItem(STORAGE,JSON.stringify(session));const hasLine=await hasLineForSession(session.user,session.access_token),hasWork=!hasLine&&await hasWorkForSession(session.user,session.access_token);status.textContent='密碼已驗證，正在確認管理權限…';button.textContent='正在載入權限…';

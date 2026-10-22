@@ -147,6 +147,7 @@ Deno.serve(async req=>{
  if(!isFinal&&staff.id!==INITIAL)return json(origin,403,{ok:false,error:'這份內容目前不是由您審核。'});
  const canReviewIg=draft.status==='pending_review'&&(initial?staff.id===INITIAL: draft.review_stage==='pastoral_confirmation'&&isFinal);
  const canDirect=canPublishDirect(staff.id,isFinal,draft);
+ const canEditIg=canReviewIg||canDirect;
 
  if(body.action==='get'){
   const details=isFinal&&!initial,subtitles=draft.youtube_caption_requested===false?{rows:[],ready:false,cues:[]}:await subtitleState(db,draft.id,details);let workflow=null;
@@ -160,7 +161,7 @@ Deno.serve(async req=>{
    try{const url=await ensureApprovedSermonImage(db,draft.id);mediaPrepared=url!==draft.social_image_url;draft.social_image_url=url;}
    catch(error){mediaPreparationError=error instanceof Error?error.message:'sermon_image_migration_failed';}
   }
-  return json(origin,200,{ok:true,draft:{...draft,source_image_url:sourceImage,social_video_url:reelUrl,subtitle_cues:subtitles.cues,subtitles_ready:subtitles.ready,subtitle_segments:subtitles.rows.map((x:any)=>({segment_index:x.segment_index,review_status:x.review_status,review_error:x.review_error,cue_count:Array.isArray(x.reviewed_cues)&&x.reviewed_cues.length?x.reviewed_cues.length:Array.isArray(x.cues)?x.cues.length:0}))},publication,media_prepared:mediaPrepared,media_preparation_error:mediaPreparationError,youtube_workflow:workflow,youtube_connected:connection?.status==='connected',is_final_reviewer:isFinal,can_review_ig:canReviewIg,can_publish_direct:canDirect});
+  return json(origin,200,{ok:true,draft:{...draft,source_image_url:sourceImage,social_video_url:reelUrl,subtitle_cues:subtitles.cues,subtitles_ready:subtitles.ready,subtitle_segments:subtitles.rows.map((x:any)=>({segment_index:x.segment_index,review_status:x.review_status,review_error:x.review_error,cue_count:Array.isArray(x.reviewed_cues)&&x.reviewed_cues.length?x.reviewed_cues.length:Array.isArray(x.cues)?x.cues.length:0}))},publication,media_prepared:mediaPrepared,media_preparation_error:mediaPreparationError,youtube_workflow:workflow,youtube_connected:connection?.status==='connected',is_final_reviewer:isFinal,can_review_ig:canReviewIg,can_edit_ig:canEditIg,can_publish_direct:canDirect});
  }
  if(['prepare_reel_upload','complete_reel_upload'].includes(body.action)){
   if(draft.social_media_type!=='reel'||!['processing','changes_requested'].includes(draft.status))return json(origin,409,{ok:false,error:'目前不能更換這支 Reel。'});
@@ -179,8 +180,9 @@ Deno.serve(async req=>{
   if(saved.error||!saved.data)return json(origin,409,{ok:false,error:'送初審失敗，請重新讀取草稿狀態。'});
   return json(origin,200,{ok:true,status:'pending_review'});
  }
- if(['save','reject','approve'].includes(body.action)&&!canReviewIg)return json(origin,409,{ok:false,error:initial?'這篇仍待邵鈺庭完成 IG 初審。':'目前不是您可處理的 IG 審核階段。'});
- if(body.action==='save'){let patch=cleaned(body,draft);if(draft.social_media_type!=='reel'&&String(body.socialImageUrl||'').trim()){try{patch.social_image_url=await persistSocialImage(db,draft.id,String(body.socialImageUrl).trim());}catch{return json(origin,503,{ok:false,error:'圖片轉存失敗，修改尚未儲存。'});}}const saved=await db.from('sermon_social_drafts').update(patch).eq('id',draft.id).select('*').single();return saved.error?json(origin,503,{ok:false,error:'修改未儲存。'}):json(origin,200,{ok:true,draft:saved.data});}
+ if(body.action==='save'&&!canEditIg)return json(origin,409,{ok:false,error:'目前不能修改這篇 IG 草稿。'});
+ if(['reject','approve'].includes(body.action)&&!canReviewIg)return json(origin,409,{ok:false,error:initial?'這篇仍待邵鈺庭完成 IG 初審。':'目前不是您可處理的 IG 審核階段。'});
+ if(body.action==='save'){let patch=cleaned(body,draft);if(draft.social_media_type!=='reel'&&String(body.socialImageUrl||'').trim()){try{patch.social_image_url=await persistSocialImage(db,draft.id,String(body.socialImageUrl).trim());}catch{return json(origin,503,{ok:false,error:'圖片轉存失敗，修改尚未儲存。'});}}const saved=await db.from('sermon_social_drafts').update(patch).eq('id',draft.id).eq('status','pending_review').eq('review_stage',draft.review_stage).eq('updated_at',draft.updated_at).select('*').maybeSingle();if(saved.error)return json(origin,503,{ok:false,error:'修改未儲存。'});if(!saved.data)return json(origin,409,{ok:false,error:'內容已由其他人更新，請重新載入後再修改。'});return json(origin,200,{ok:true,draft:saved.data});}
  if(body.action==='confirm_youtube_edit'){
   if(draft.youtube_caption_requested===false)return json(origin,409,{ok:false,error:'這支影片只發布 M+ Instagram，不處理 YouTube 字幕。'});
   if(!isFinal)return json(origin,403,{ok:false,error:'只有牧師或師母可以確認 YouTube 影片範圍。'});

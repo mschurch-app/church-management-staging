@@ -1,0 +1,10 @@
+.field-guidance{margin:16px 0;padding:16px;border:1px solid #dba99d;border-radius:14px;background:#fff4f0;color:#8d2e21;line-height:1.65;scroll-margin-block:100px}
+.field-guidance[hidden]{display:none!important}
+.field-guidance strong{display:block;font-size:1rem}
+.field-guidance ul{margin:8px 0 0;padding-left:22px}
+.field-guidance li{padding:3px 0}
+body .field-guidance .field-guidance-link{display:block;min-height:44px;width:100%;padding:6px 8px;margin:0;border:0!important;border-radius:8px;background:transparent!important;color:#8d2e21!important;box-shadow:none!important;font:inherit;line-height:1.6;white-space:normal;text-align:left;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+body .field-guidance .field-guidance-link:focus-visible{outline:3px solid var(--app-focus,#246fb2);outline-offset:2px}
+.field-guidance-note{grid-column:1/-1;margin:6px 0 12px;color:#8d2e21!important;font-size:.9rem;line-height:1.65;overflow-wrap:anywhere}
+:is(.finance-page,#weekly-two-track) [aria-invalid=true]{border-color:#a43727!important;box-shadow:0 0 0 1px #a43727!important;scroll-margin-block:110px 180px}
+@media print{.field-guidance{display:none}}

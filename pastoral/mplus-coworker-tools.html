@@ -9,8 +9,8 @@
   <title>M＋同工｜出勤請假與照片</title>
   <link rel="stylesheet" href="pastoral-assistant.css?v=20261003-department1">
   <link rel="stylesheet" href="coworker-tools.css?v=20261003-department1">
-<link rel="stylesheet" href="../church-palette.css?v=20261012-readable2"><script src="../mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="../mplus-theme.css?v=20261020-flat1"></head>
-<body class="collab-app">
+<link rel="stylesheet" href="../church-palette.css?v=20261012-readable2"><script src="../mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="../mplus-theme.css?v=20261020-flat1"><link rel="stylesheet" href="../app-experience.css?v=20261022-experience2"></head>
+<body class="collab-app" data-action-feedback="off" data-experience="workspace">
   <div class="collab-shell">
     <aside class="collab-sidebar" aria-label="M＋同工工具導覽">
       <a class="collab-brand" href="../mplus-dashboard.html?church=M%2B"><span class="brand-mark">M+</span><span><strong>M＋同工工具</strong><small>CHURCH TEAMWORK</small></span></a>
@@ -46,7 +46,7 @@
         <article class="card">
           <div class="card-heading"><div><p class="eyebrow">TODAY</p><h2>今天的出勤</h2></div><span id="attendance-date" class="tag"></span></div>
           <p id="attendance-status" class="muted">尚未打卡</p>
-          <div class="action-row"><button id="clock-in" class="button" type="button">上班打卡</button><button id="clock-out" class="button secondary" type="button">下班打卡</button></div>
+          <div class="action-row"><button id="clock-in" class="button" type="button">上班打卡</button><button id="refresh-clock" class="button secondary" type="button">重新讀取打卡狀態</button><button id="clock-out" class="button secondary" type="button">下班打卡</button></div>
           <p id="attendance-message" class="hint" role="status">系統只記錄打卡時間，不會追蹤位置。</p>
         </article>
         <article id="attendance-admin-card" class="card" hidden>
@@ -99,6 +99,6 @@
       </nav>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="mplus-coworker-tools.mjs?v=20261020-dock1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.js"></script><script type="module" src="mplus-coworker-tools.mjs?v=20261022-experience2"></script>
 </body>
 </html>

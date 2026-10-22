@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="church-brand.css?v=20261008-header1">
   <link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
   <link rel="stylesheet" href="schedules.css?v=20261002-member-search1">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261016-update-banner1"><script src="mplus-theme.js?v=20261020-schedule-green1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261020-schedule-green1"></head>
-<body>
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261016-update-banner1"><script src="mplus-theme.js?v=20261020-schedule-green1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261020-schedule-green1"><link rel="stylesheet" href="app-experience.css?v=20261022-experience2"></head>
+<body data-action-feedback="off" data-experience="workspace">
   <main class="member-page schedule-page">
     <header class="page-header schedule-hero">
       <div>
@@ -43,7 +43,7 @@
       <button id="manageRoles" class="secondary">管理服事項目</button>
     </section>
     <section id="roleSettings" class="role-settings-panel" hidden></section>
-    <p id="status" role="status" class="status-message"></p>
+    <p id="status" role="status" class="status-message"></p><button id="reload-schedules" type="button" class="secondary">重新讀取服事安排</button>
     <section id="editor" class="editor-panel" hidden></section>
     <section class="schedule-heading"><div><p class="eyebrow">UPCOMING SERVICES</p><h2>本週與未來服事</h2></div><span id="rangeNote"></span></section>
     <section id="records" class="schedule-list"></section>
@@ -53,7 +53,7 @@
     </details>
   </main>
   <script src="vendor/supabase-2.102.0.js"></script>
-  <script type="module" src="schedules-ui.mjs?v=20261020-mplus-output1"></script>
+  <script type="module" src="schedules-ui.mjs?v=20261022-experience2"></script>
   <script type="module" src="church-brand.mjs?v=20261012-readable2"></script>
 </body>
 </html>

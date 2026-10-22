@@ -1,9 +1,13 @@
+import {draftGuard,lockControls} from '../app-workflow.mjs?v=20261022-experience2';
 import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261009-stage4';
 import { PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TOOLS_ENDPOINT } from './config.mjs?v=20260930-1';
 
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
 let staff;
+let leaveBusy=false,clockBusy=false,leaveGeneration=0,attendanceGeneration=0;
+const leaveDraft=draftGuard(document.querySelector('#leave-form'));
+function toolMessage(selector,message,tone='neutral'){const node=document.querySelector(selector);node.textContent=message;node.dataset.tone=tone;}
 let entityKey = 'mplus';
 let entityKeys = [];
 
@@ -42,7 +46,7 @@ async function api(action, payload = {}) {
     body: JSON.stringify({ action, entityKey, ...payload }),
   });
   const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(errorText[result.error] || '服務暫時無法使用，請稍後再試。');
+  if (!response.ok||result.ok!==true) throw new Error(errorText[result.error] || '尚無法確認操作結果，請先重新讀取原紀錄，避免重複送出。');
   return result;
 }
 function setPhotoFormEnabled(enabled) {
@@ -105,7 +109,7 @@ tabs.forEach((button, index) => {
     if (target) { event.preventDefault(); activateTab(target.dataset.tab); target.focus(); }
   });
 });
-$('#entity').addEventListener('change', event => { entityKey = event.target.value; if(entityKey==='mplus'){const target=new URL('mplus-coworker-tools.html',location.href);target.searchParams.set('church','M+');target.searchParams.set('tab',$('.tabs [aria-selected="true"]')?.dataset.tab||'attendance');location.replace(target);return;} activateTab($('.tabs [aria-selected="true"]')?.dataset.tab || 'memo'); });
+$('#entity').addEventListener('change', event => {if(leaveBusy||clockBusy||!leaveDraft.canLeave()){event.target.value=entityKey;return;}leaveDraft.clear();$('#leave-form').reset();entityKey = event.target.value; if(entityKey==='mplus'){const target=new URL('mplus-coworker-tools.html',location.href);target.searchParams.set('church','M+');target.searchParams.set('tab',$('.tabs [aria-selected="true"]')?.dataset.tab||'attendance');location.replace(target);return;} activateTab($('.tabs [aria-selected="true"]')?.dataset.tab || 'memo'); });
 $('#sign-out').addEventListener('click', signOut);
 
 async function loadMemos() {
@@ -145,43 +149,39 @@ $('#memo-form').addEventListener('submit', async event => {
 $('#refresh-memos').addEventListener('click', loadMemos);
 
 async function loadAttendance() {
-  $('#attendance-date').textContent = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', dateStyle: 'full' });
-  try {
-    const { item } = await api('today-attendance');
-    const inTime = item?.clocked_in_at ? new Date(item.clocked_in_at).toLocaleTimeString('zh-TW', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' }) : '';
-    const outTime = item?.clocked_out_at ? new Date(item.clocked_out_at).toLocaleTimeString('zh-TW', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' }) : '';
-    $('#attendance-status').textContent = item ? `上班 ${inTime || '尚未打卡'} · 下班 ${outTime || '尚未打卡'}` : '今天尚未打卡';
-    $('#clock-in').disabled = Boolean(item);
-    $('#clock-out').disabled = !item?.clocked_in_at || Boolean(item?.clocked_out_at);
-  } catch (error) { $('#attendance-message').textContent = error.message; }
+  $('#attendance-date').textContent=new Date().toLocaleDateString('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'full'});
+  try{const {item}=await api('today-attendance');
+   const format=value=>value?new Date(value).toLocaleTimeString('zh-TW',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit'}):'';
+   $('#attendance-status').textContent=item?`上班 ${format(item.clocked_in_at)||'尚未打卡'} · 下班 ${format(item.clocked_out_at)||'尚未打卡'}`:'今天尚未打卡';
+   $('#clock-in').disabled=Boolean(item);$('#clock-out').disabled=!item?.clocked_in_at||Boolean(item?.clocked_out_at);return true;
+  }catch(error){$('#clock-in').disabled=true;$('#clock-out').disabled=true;toolMessage('#attendance-message','尚無法讀取打卡狀態，請按「重新讀取打卡狀態」，勿重複打卡。','warning');return false;}
 }
-$('#clock-in').addEventListener('click', async () => {
-  $('#clock-in').disabled = true;
-  try { await api('clock-in'); $('#attendance-message').textContent = '已記錄上班時間。'; await loadAttendance(); }
-  catch (error) { $('#attendance-message').textContent = error.message; await loadAttendance(); }
+async function clock(action){
+ if(clockBusy)return;clockBusy=true;const row=$('#clock-in').parentElement,unlock=lockControls(row);let saved=false,error=null;
+ toolMessage('#attendance-message',action==='clock-in'?'正在記錄上班時間…':'正在記錄下班時間…','busy');
+ try{await api(action);saved=true;}catch(e){error=e;}finally{unlock();row.setAttribute('aria-busy','true');}
+ try{const loaded=await loadAttendance();toolMessage('#attendance-message',saved?(loaded?(action==='clock-in'?'已記錄上班時間。':'已記錄下班時間。'):'打卡已記錄，但狀態尚未讀回；請重新讀取，勿再次打卡。'):(error?.message||'尚無法確認打卡結果，請重新讀取。'),saved&&loaded?'success':'warning');}
+ finally{clockBusy=false;row.removeAttribute('aria-busy');}
+}
+$('#clock-in').addEventListener('click',()=>void clock('clock-in'));
+$('#clock-out').addEventListener('click',()=>void clock('clock-out'));
+$('#refresh-clock').addEventListener('click',async()=>{if(clockBusy)return;clockBusy=true;$('#refresh-clock').disabled=true;try{if(await loadAttendance())toolMessage('#attendance-message','已重新讀取打卡狀態。','success');}finally{clockBusy=false;$('#refresh-clock').disabled=false;}});
+$('#leave-form').addEventListener('submit',async event=>{
+ event.preventDefault();const form=event.currentTarget;if(leaveBusy||!form.reportValidity())return;
+ if($('#leave-end').value<$('#leave-start').value){$('#leave-end').setCustomValidity('結束日期不可早於開始日期。');$('#leave-end').reportValidity();return;}
+ leaveBusy=true;const unlock=lockControls(form);toolMessage('#leave-status','正在送出請假申請，請勿重複送出…','busy');
+ try{await api('create-leave',{startDate:$('#leave-start').value,endDate:$('#leave-end').value,period:$('#leave-period').value,leaveType:$('#leave-type').value,reason:$('#leave-reason').value});form.reset();leaveDraft.clear();const loaded=await loadLeave();toolMessage('#leave-status',loaded?'申請已送出，原因只有你和核准同工可看。':'請假申請已送出，但紀錄尚未讀回；請重新整理請假紀錄，勿再送出。',loaded?'success':'warning');}
+ catch(error){toolMessage('#leave-status',error.message,'error');}
+ finally{unlock();leaveBusy=false;}
 });
-$('#clock-out').addEventListener('click', async () => {
-  $('#clock-out').disabled = true;
-  try { await api('clock-out'); $('#attendance-message').textContent = '已記錄下班時間。'; await loadAttendance(); }
-  catch (error) { $('#attendance-message').textContent = error.message; await loadAttendance(); }
-});
-$('#leave-form').addEventListener('submit', async event => {
-  event.preventDefault();
-  const form = event.currentTarget, button = form.querySelector('button[type="submit"]'); button.disabled = true;
-  $('#leave-status').textContent = '正在送出請假申請…';
-  try {
-    await api('create-leave', { startDate: $('#leave-start').value, endDate: $('#leave-end').value, period: $('#leave-period').value, leaveType: $('#leave-type').value, reason: $('#leave-reason').value });
-    form.reset(); $('#leave-status').textContent = '申請已送出，原因只有你和核准同工可看。'; await loadLeave();
-  } catch (error) { $('#leave-status').textContent = error.message; }
-  finally { button.disabled = false; }
-});
+for(const id of ['leave-start','leave-end'])$('#'+id).addEventListener('input',()=>$('#leave-end').setCustomValidity(''));
 const leaveLabels = { annual: '休假', personal: '事假', sick: '病假', family: '家庭照顧', other: '其他' };
 const leaveStatus = { pending: '等候核准', approved: '已核准', rejected: '未核准', cancelled: '已取消' };
 const periodLabels = { full_day: '全天', morning: '上午', afternoon: '下午' };
 async function loadLeave() {
-  const list = $('#leave-list'); list.replaceChildren();
+  const list = $('#leave-list'),ticket=++leaveGeneration;list.setAttribute('aria-busy','true');$('#refresh-leave').disabled=true;$('#refresh-leave').setAttribute('aria-busy','true');
   try {
-    const { items } = await api('list-leave');
+    const { items } = await api('list-leave');if(ticket!==leaveGeneration)return false;list.replaceChildren();
     showItems(list, items, '還沒有請假申請。');
     for (const item of items) {
       const card = newCard(`${item.staff_name ? item.staff_name + ' · ' : ''}${item.start_date}${item.end_date === item.start_date ? '' : ' 至 ' + item.end_date}`, item.reason || '（未填寫原因）');
@@ -193,23 +193,25 @@ async function loadLeave() {
         for (const [decision, label] of [['approved', '核准'], ['rejected', '暫不核准']]) {
           const button = document.createElement('button'); button.className = 'button secondary'; button.type = 'button'; button.textContent = label;
           button.addEventListener('click', async () => {
-            button.disabled = true;
-            try { await api('review-leave', { leaveId: item.id, decision }); await loadLeave(); }
-            catch (error) { $('#leave-status').textContent = error.message; button.disabled = false; }
+            if(actions.getAttribute('aria-busy')==='true')return;const unlock=lockControls(actions);let saved=false;toolMessage('#leave-status','正在儲存請假審核結果…','busy');
+            try{await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave();toolMessage('#leave-status',loaded?'請假審核結果已儲存。':'審核結果已儲存，請重新整理紀錄，勿再次審核。',loaded?'success':'warning');}
+            catch(error){toolMessage('#leave-status',error.message,'error');}
+            finally{unlock();if(saved&&actions.isConnected)actions.querySelectorAll('button').forEach(node=>node.disabled=true);}
           }); actions.append(button);
         }
         card.append(actions);
       }
       list.append(card);
     }
-  } catch (error) { list.textContent = error.message; }
+    return true;
+  }catch(error){if(ticket===leaveGeneration)toolMessage('#leave-status','請假紀錄暫時無法讀取，原有紀錄保留；請重新整理。','warning');return false;}finally{if(ticket===leaveGeneration){list.removeAttribute('aria-busy');$('#refresh-leave').disabled=false;$('#refresh-leave').removeAttribute('aria-busy');}}
 }
 $('#refresh-attendance').addEventListener('click', loadAttendanceAdmin);
 async function loadAttendanceAdmin() {
   const list = $('#attendance-list'); if (!list) return;
-  list.replaceChildren();
+  const ticket=++attendanceGeneration,key=entityKey;list.setAttribute('aria-busy','true');$('#refresh-attendance').disabled=true;
   try {
-    const { items } = await api('list-attendance');
+    const { items } = await api('list-attendance');if(ticket!==attendanceGeneration||key!==entityKey)return;list.replaceChildren();
     showItems(list, items, '最近七天尚無出勤紀錄。');
     for (const item of items) {
       const inTime = item.clocked_in_at ? new Date(item.clocked_in_at).toLocaleTimeString('zh-TW', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' }) : '未打卡';
@@ -218,7 +220,7 @@ async function loadAttendanceAdmin() {
       meta(card, `上班 ${inTime} · 下班 ${outTime}`);
       list.append(card);
     }
-  } catch (error) { list.textContent = error.message; }
+  }catch(error){if(ticket===attendanceGeneration){list.querySelector('[data-load-error]')?.remove();const note=document.createElement('p');note.dataset.loadError='true';note.textContent='出勤紀錄暫時無法讀取，原有內容保留；請重新整理。';list.prepend(note);}}finally{if(ticket===attendanceGeneration){list.removeAttribute('aria-busy');$('#refresh-attendance').disabled=false;}}
 }
 $('#refresh-leave').addEventListener('click', loadLeave);
 

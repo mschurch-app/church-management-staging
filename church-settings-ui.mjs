@@ -1,4 +1,4 @@
-import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20261009-stage1';
+import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20261022-experience5';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs?v=20261009-stage2';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261009-stage2';

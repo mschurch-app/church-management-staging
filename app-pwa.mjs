@@ -1,5 +1,5 @@
 let installPrompt=null,registrationTask=null;
-import {watchAppRegistration} from './app-runtime.mjs?v=20261022-home-resume1';
+import {watchAppRegistration} from './app-runtime.mjs?v=20261022-experience5';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {VAPID_PUBLIC_KEY} from './app-push-config.mjs';
 const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;

@@ -1,4 +1,4 @@
-import {canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
+import {canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261022-experience3';
 export * from './app-function-definitions.mjs?v=20261022-experience3';
 export function availableFunctionKeys(access,church,home={},settings={}) {

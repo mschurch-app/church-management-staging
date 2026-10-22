@@ -1,10 +1,10 @@
-import {installResumeRecovery} from './app-resume.mjs?v=20261022-home-resume1';
+import {installResumeRecovery,hasVisibleDialog} from './app-resume.mjs?v=20261022-experience5';
 // Shared device behavior. This module does not read sessions or send business data.
 let mounted=false,banner,copy,action,updateRegistration,updateActivated=false,activationRequested=false,activationTimer=0,onlineTimer=0,revision=0,approvedRevision=0,automaticActivation=false;
 const waitingRegistrations=new WeakSet();
 let openingUntil=Date.now()+8000,interacted=false,hiddenAt=0;
 const AUTO_RELOAD_KEY='church-os-auto-update-reload';
-const quietOpening=()=>isOnline()&&document.visibilityState!=='hidden'&&!interacted&&!hasDraft()&&!isBusy()&&!document.querySelector('dialog[open],[role="dialog"]:not([hidden])');
+const quietOpening=()=>isOnline()&&document.visibilityState!=='hidden'&&!interacted&&!hasDraft()&&!isBusy()&&!hasVisibleDialog();
 const recentlyReloaded=()=>{try{return Date.now()-Number(sessionStorage.getItem(AUTO_RELOAD_KEY)||0)<60000;}catch{return false;}};
 function reloadUpdated(){try{sessionStorage.setItem(AUTO_RELOAD_KEY,String(Date.now()));}catch{}reloadNow();}
 function updateOnOpening(){
@@ -91,7 +91,7 @@ function installPullToRefresh(){
   const indicator=el('div','↓ 下拉更新','app-pull-refresh');indicator.setAttribute('role','status');document.body.append(indicator);
   let startX=0,startY=0,distance=0,tracking=false;
   const reset=()=>{tracking=false;distance=0;indicator.className='app-pull-refresh';indicator.style.removeProperty('transform');};
-  const blocked=target=>scrollY>0||isBusy()||document.querySelector('dialog[open],[role=dialog]:not([hidden])')||target.closest('input,textarea,select,[contenteditable],dialog,[role=dialog],.app-hub-grid,.module-bar');
+  const blocked=target=>scrollY>0||isBusy()||hasVisibleDialog()||target.closest('input,textarea,select,[contenteditable],dialog,[role=dialog],.app-hub-grid,.module-bar');
   document.addEventListener('touchstart',event=>{reset();const target=event.target;if(event.touches.length!==1||blocked(target))return;for(let node=target;node&&node!==document.body;node=node.parentElement){const style=getComputedStyle(node);if(/auto|scroll/.test(style.overflowY)&&node.scrollHeight>node.clientHeight+1)return;}startX=event.touches[0].clientX;startY=event.touches[0].clientY;tracking=true;},{passive:true});
   document.addEventListener('touchmove',event=>{if(!tracking)return;if(event.touches.length!==1||blocked(event.target)){reset();return;}const touch=event.touches[0],dy=touch.clientY-startY,dx=Math.abs(touch.clientX-startX);if(dx>Math.abs(dy)&&dx>12||dy<0){reset();return;}distance=Math.max(0,Math.min(120,dy*.58));if(distance<=4)return;if(event.cancelable)event.preventDefault();indicator.classList.add('visible');indicator.classList.toggle('ready',distance>=72);indicator.style.transform=`translate(-50%,${distance-58}px)`;indicator.textContent=distance>=72?'↻ 放開立即更新':'↓ 下拉更新';},{passive:false});
   document.addEventListener('touchend',()=>{if(!tracking)return;const shouldRefresh=distance>=72;reset();if(shouldRefresh)refreshApp();},{passive:true});

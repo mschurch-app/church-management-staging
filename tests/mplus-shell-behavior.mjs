@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';
+const {chromium,webkit}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+const origin=process.env.CHURCH_TEST_ORIGIN||'http://127.0.0.1:8769',out=new URL('./phase4/results/shell-behavior/',import.meta.url);fs.mkdirSync(out,{recursive:true});const checks=[];
+for(const [engine,type] of [['chromium',chromium],['webkit',webkit]]){
+ const browser=await type.launch(engine==='chromium'?{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true}:{headless:true});
+ try{for(const width of [390,1440]){const page=await browser.newPage({viewport:{width,height:900},serviceWorkers:'block'});await page.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.abort());
+ const check=(value,label)=>{assert(value,engine+' '+width+': '+label);checks.push(engine+' '+width+': '+label);};
+ await page.goto(origin+'/tests/mplus-shell-fixture.html?church=M%2B&center=admin');await page.locator('.hub-tile').first().waitFor();
+ check(await page.locator('.mobile-app-nav [data-center]').count()===5,'five centers remain available');
+ const finance=page.locator('a.hub-tile').filter({hasText:'奉獻與財務'});check(await finance.count()===1,'finance is one direct category link');check(new URL(await finance.getAttribute('href'),origin).pathname==='/finance-cash.html','finance opens its existing destination');check(await page.locator('.mplus-event-dialog[open]').count()===0,'direct finance entry needs no extra modal');
+ await page.locator('.mobile-app-nav [data-center=church]').click();await page.getByRole('button',{name:/會友與關懷/}).click();await page.locator('.mplus-category-links').waitFor();check(await page.locator('.mplus-category-links a').count()===4,'multi-function category opens its four destinations');await page.getByRole('button',{name:'關閉視窗',exact:true}).click();check(await page.locator('.mplus-event-dialog[open]').count()===0,'category modal closes normally');
+ await page.goto(origin+'/tests/mplus-shell-fixture.html?church=M%2B&limited=1&center=admin');await page.getByText('你目前沒有此區的功能權限',{exact:false}).waitFor();check(await page.locator('.hub-tile').count()===0,'ungranted admin functions never appear');check(await page.locator('a[href*="finance-cash.html"]').count()===0,'limited user has no finance link');await page.locator('.mobile-app-nav [data-center=church]').click();await page.getByRole('button',{name:/小組與聚會/}).click();check(await page.locator('.mplus-category-links a').count()===1,'limited category exposes only its granted function');check((await page.locator('.mplus-category-links').textContent()).includes('小組安排'),'granted group destination remains usable');await page.close();console.log('PASS',engine,width,'shell behavior');
+ }}finally{await browser.close();}
+}
+fs.writeFileSync(new URL('checks.json',out),JSON.stringify({checks,synthetic:true,realIphone:false,macSafari:false,productionWrites:false},null,2));console.log('TOTAL',checks.length);

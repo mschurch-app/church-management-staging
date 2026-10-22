@@ -1,0 +1,66 @@
+/* The social review uses the shared tokens without the queue/list layout of weekly review. */
+body[data-app-layout="social-review"]{font-family:var(--app-font-body,system-ui,sans-serif)!important;line-height:1.65}
+html body[data-app-layout="social-review"] .sermon-review-page{width:100%;max-width:1440px;margin-inline:auto;padding:24px 32px 100px;font-family:inherit!important}
+body[data-app-layout="social-review"] :is(h1,h2,p,label,a){overflow-wrap:anywhere}
+body[data-app-layout="social-review"] :is(button,input,textarea){font-family:inherit}
+body[data-app-layout="social-review"] :is(button,a.secondary,.social-back-link,.social-review-nav a){min-height:44px;line-height:1.5;white-space:normal}
+body[data-app-layout="social-review"] :is(input:not([type=radio]),textarea){min-width:0;max-width:100%;font-size:max(16px,1rem);border-radius:var(--app-radius-field)}
+body[data-app-layout="social-review"] :is(.review-card,.social-review-workspace,#form,.social-media-column){min-width:0}
+body[data-app-layout="social-review"] .review-card{padding:24px;border:1px solid var(--app-border);border-radius:var(--app-radius-card);background:var(--app-surface);box-shadow:var(--app-shadow)}
+body[data-app-layout="social-review"] .review-card h2{font-size:1.25rem;line-height:1.5;margin:0 0 12px;letter-spacing:-.02em}
+body[data-app-layout="social-review"] .review-label{color:var(--app-accent);font-size:.8rem}
+body[data-app-layout="social-review"] .review-source h2{font-size:1.6rem;margin-top:8px}
+body[data-app-layout="social-review"] .review-source p{margin-bottom:0}
+body[data-app-layout="social-review"] :is(#content,#form,.social-media-column){display:grid;gap:20px}
+body[data-app-layout="social-review"] [hidden]{display:none!important}
+.social-review-nav{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0}
+.social-review-nav a,.social-back-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border:1px solid var(--app-border);border-radius:var(--app-radius-field);color:var(--app-ink);background:var(--app-surface);text-decoration:none;font-size:.9rem}
+.social-review-nav a:hover,.social-back-link:hover{background:var(--app-surface-muted)}
+.social-review-nav a:focus-visible,.social-back-link:focus-visible{outline:3px solid var(--app-accent);outline-offset:3px}
+.social-review-workspace{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1.5fr);gap:24px;align-items:start}
+.social-review-workspace:has(.social-media-column[hidden]){grid-template-columns:minmax(0,1fr)}
+body[data-app-layout="social-review"] :is(#review-media,#review-details,#review-outline,#review-caption,#review-decision,#youtube,#review-navigation){scroll-margin-block:24px}
+body[data-app-layout="social-review"] .artwork-review{display:block}
+body[data-app-layout="social-review"] .artwork-options{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:86%;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:4px 4px 12px}
+body[data-app-layout="social-review"] .artwork-option{min-width:0;margin:0;scroll-snap-align:start;border-color:var(--app-border);box-shadow:none}
+body[data-app-layout="social-review"] .artwork-option:has(input:checked){border-color:var(--app-accent);box-shadow:inset 0 0 0 1px var(--app-accent)}
+body[data-app-layout="social-review"] .artwork-option:focus-within{outline:3px solid var(--app-accent);outline-offset:1px}
+body[data-app-layout="social-review"] .artwork-option input{accent-color:var(--app-accent)}
+body[data-app-layout="social-review"] .artwork-option img{box-shadow:none}
+body[data-app-layout="social-review"] .reel-preview{grid-template-columns:minmax(0,1fr) minmax(0,.45fr);gap:10px}
+body[data-app-layout="social-review"] .reel-upload-fields{grid-template-columns:minmax(0,1fr)}
+body[data-app-layout="social-review"] .review-item{grid-template-columns:30px minmax(0,1fr);gap:10px}
+body[data-app-layout="social-review"] .review-item b{color:var(--app-accent);background:var(--app-surface-muted)}
+body[data-app-layout="social-review"] .review-item textarea{margin:0;min-height:110px;line-height:1.75}
+body[data-app-layout="social-review"] #caption{margin:0;line-height:1.85;min-height:320px;resize:vertical}
+.social-section-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-bottom:12px}
+body[data-app-layout="social-review"] .social-section-heading h2{margin:0}
+body[data-app-layout="social-review"] .social-section-heading label{font:inherit;margin:0;color:inherit}
+.social-caption-count{color:var(--app-secondary);font-size:.9rem;font-variant-numeric:tabular-nums}
+body[data-app-layout="social-review"] .review-actions{position:static;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:20px;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;backdrop-filter:none}
+body[data-app-layout="social-review"] .review-actions :is(p,#retry-instagram,#approve){grid-column:1/-1;grid-row:auto}
+body[data-app-layout="social-review"] .review-actions p:empty{display:none}
+body[data-app-layout="social-review"] .review-actions #approve{margin-top:8px}
+body[data-app-layout="social-review"] .subtitle-preview time{color:var(--app-secondary)}
+body[data-app-layout="social-review"] .youtube-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-app-layout="social-review"] .youtube-controls input{width:100%;margin:0}
+@media(max-width:850px){
+ html body[data-app-layout="social-review"] .sermon-review-page{padding:16px 16px 100px}
+ body[data-app-layout="social-review"] .review-card{padding:16px;border-radius:18px}
+ .social-review-workspace{grid-template-columns:minmax(0,1fr);gap:16px}
+ body[data-app-layout="social-review"] :is(#content,#form,.social-media-column){gap:16px}
+ .social-review-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .social-review-nav a{padding:8px 4px;font-size:.85rem;text-align:center}
+ body[data-app-layout="social-review"] .artwork-options{grid-auto-columns:78%}
+ body[data-app-layout="social-review"] .youtube-controls{grid-template-columns:minmax(0,1fr)}
+ body[data-app-layout="social-review"] .review-source h2{font-size:1.35rem}
+ body[data-app-layout="social-review"] .subtitle-preview>div{grid-template-columns:minmax(0,1fr);gap:4px}
+}
+@media print{
+ .social-review-nav,.social-back-link{display:none}
+ .social-review-workspace{display:block}
+ body[data-app-layout="social-review"] .artwork-options{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}
+}
+body[data-app-layout="social-review"] a.secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:var(--app-radius-field);text-decoration:none}
+/* The header already has a home link; omit the duplicate one-item module bar. */
+body[data-app-layout="social-review"] .module-bar:has(>a:only-child[href^="admin-dashboard.html"]){display:none}

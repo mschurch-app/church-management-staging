@@ -1,0 +1,63 @@
+{
+  "mode": "before",
+  "base": "3dbe5a94b415b01b7ee32e0a5be0baebea460f88",
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "results": [
+    {
+      "prefix": "image chromium 390",
+      "height": 4346,
+      "scrollWidth": 390,
+      "header": 164,
+      "captionTop": 2796,
+      "contrast": {
+        "checked": 68,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "reel chromium 390",
+      "height": 4264,
+      "scrollWidth": 390,
+      "header": 164,
+      "captionTop": 2735,
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "image chromium 1440",
+      "height": 4081,
+      "scrollWidth": 1440,
+      "header": 164,
+      "captionTop": 2669,
+      "contrast": {
+        "checked": 68,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "reel chromium 1440",
+      "height": 4243,
+      "scrollWidth": 1440,
+      "header": 164,
+      "captionTop": 2831,
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "checks": [],
+  "failures": []
+}

@@ -26,6 +26,14 @@
       <a class="current" href="schedules.html?church=M%2B">M＋服事</a>
       <a href="schedules.html?church=SHiNE">火樂服事</a>
     </nav>
+    <p id="status" role="status" class="status-message"></p><button id="reload-schedules" type="button" class="secondary">重新讀取服事安排</button>
+    <section id="editor" class="editor-panel" hidden></section>
+    <section class="schedule-heading"><div><p class="eyebrow">UPCOMING SERVICES</p><h2>本週與未來服事</h2></div><span id="rangeNote"></span></section>
+    <section id="records" class="schedule-list"></section>
+    <details id="history" class="schedule-history" hidden>
+      <summary><span><b>歷史排班</b><small id="historyCount"></small></span><i>展開查看</i></summary>
+      <section id="historyRecords" class="schedule-list schedule-list--history"></section>
+    </details>
     <section class="schedule-export" aria-labelledby="export-title">
       <div class="export-intro">
         <span class="export-icon" aria-hidden="true">✦</span>
@@ -43,14 +51,6 @@
       <button id="manageRoles" class="secondary">管理服事項目</button>
     </section>
     <section id="roleSettings" class="role-settings-panel" hidden></section>
-    <p id="status" role="status" class="status-message"></p><button id="reload-schedules" type="button" class="secondary">重新讀取服事安排</button>
-    <section id="editor" class="editor-panel" hidden></section>
-    <section class="schedule-heading"><div><p class="eyebrow">UPCOMING SERVICES</p><h2>本週與未來服事</h2></div><span id="rangeNote"></span></section>
-    <section id="records" class="schedule-list"></section>
-    <details id="history" class="schedule-history" hidden>
-      <summary><span><b>歷史排班</b><small id="historyCount"></small></span><i>展開查看</i></summary>
-      <section id="historyRecords" class="schedule-list schedule-list--history"></section>
-    </details>
   </main>
   <script src="vendor/supabase-2.102.0.js"></script>
   <script type="module" src="schedules-ui.mjs?v=20261022-experience2"></script>

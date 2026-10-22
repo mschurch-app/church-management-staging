@@ -1,3 +1,4 @@
+import {createSermonDraftRecovery} from './sermon-draft-recovery.mjs?v=20261022-experience13';
 import {createSermonJobProgress} from './sermon-job-progress.mjs?v=20261022-experience1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
@@ -9,7 +10,7 @@ const $=s=>document.querySelector(s),ENDPOINT='https://aqanuwilmvdtlzuqlrau.supa
 const stepNames={information:'信息',materials:'素材',outline:'大綱',manuscript:'講章',slides:'投影片'};
 const jobNames={media:'影片下載與轉錄',search:'搜尋素材',detail:'讀取素材',guide:'三輪引導查找',outline:'提出大綱',manuscript:'分段講章',slides:'逐頁內容',backup:'NAS 版本備份'};
 const messages={forbidden:'尚未取得信息預備權限，需具備 M＋週報編輯權限及 LINE 綁定。',conflict:'已有較新的版本。你的輸入仍保留，請先下載或複製內容，再重新載入比對。',not_found:'找不到這份私人信息。',queue_limit:'目前排隊工作較多，請等已有工作完成後再試。',generation_limit:'已達今日生成上限，請先整理已有草稿。',invalid_guide:'這輪問答已更新，請重新載入後從目前題目繼續。',materials_need_review:'請先逐份核對已選素材，再勾選確認。',outline_required:'請先保存並確認至少三個主要段落。',manuscript_too_short:'正文尚未達指定字數，請補充後再整理投影片。',invalid_draft:'請確認必填資料、字數及內容格式。',invalid_outline:'大綱每行一個段落，最多 12 段。',invalid_slides:'投影片最多 20 頁，請確認各頁標題。',invalid_materials:'素材格式不完整，請重新選取或補充自己的素材。'};
-let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,createDirty=false,pendingCreated=null,authorized=false,access=null,pollTimer=null,opening=0;
+let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,createDirty=false,pendingCreated=null,authorized=false,access=null,pollTimer=null,opening=0,identityGeneration=0;
 const jobProgress=createSermonJobProgress($('#ai-job-progress'));
 const processed=new Set(),pendingResults=new Set(),requestIds=new Map();
 const schedulePoll=delay=>{clearTimeout(pollTimer);pollTimer=setTimeout(poll,delay);};
@@ -17,9 +18,9 @@ const el=(tag,text='',className='')=>{const n=document.createElement(tag);n.text
 const button=(text,fn,secondary=true)=>{const b=el('button',text,secondary?'secondary':'');b.type='button';b.disabled=busy;b.onclick=fn;return b;};
 const message=(text,tone='neutral')=>setStatus($('#status'),text,{tone});
 function cleanDraft(){dirty=false;$('#draft-form').dataset.unsavedChanges='false';$('#dirty-status').textContent='已儲存';}
-function markDirty(){dirty=true;$('#draft-form').dataset.unsavedChanges='true';$('#dirty-status').textContent='尚有未儲存的修改';$('#word-count').textContent=characterCount($('#manuscript').value).toLocaleString()+' 字';}
+function markDirty(){dirty=true;$('#draft-form').dataset.unsavedChanges='true';$('#dirty-status').textContent='尚有未儲存的修改';$('#word-count').textContent=characterCount($('#manuscript').value).toLocaleString()+' 字';deviceDraft.changed();}
 function mayLeave(){return !dirty||confirm('還有未儲存的修改。確定放棄本次修改並讀取其他內容？');}
-function lock(value){busy=value;$('#content').setAttribute('aria-busy',String(value));document.querySelectorAll('#content button,#draft-form input,#draft-form textarea,#draft-form select,#create-form input,#create-form button').forEach(b=>b.disabled=value);if(!value){$('#new-project').disabled=$('#empty-create').disabled=!!pendingCreated||!canAction(access,'M+','website_weekly','create');$('#download-manuscript').disabled=$('#download-slides').disabled=!canAction(access,'M+','website_weekly','export');}}
+function lock(value){busy=value;$('#content').setAttribute('aria-busy',String(value));document.querySelectorAll('#content button,#draft-form input,#draft-form textarea,#draft-form select,#create-form input,#create-form button').forEach(b=>b.disabled=value);if(!value){$('#new-project').disabled=$('#empty-create').disabled=!!pendingCreated||!canAction(access,'M+','website_weekly','create');$('#download-manuscript').disabled=$('#download-slides').disabled=!canAction(access,'M+','website_weekly','export');}deviceDraft.render();}
 const correctionHost=el('section');$('#draft-form').before(correctionHost);
 const guidance=createFieldGuidance($('#draft-form'),{container:correctionHost,reveal:control=>{const panel=control.closest('[data-panel]');if(panel)showStep(panel.dataset.panel,false);}});
 function fail(error){message(messages[error.message]||error.message,'error');if(error instanceof FieldValidationError)queueMicrotask(()=>{if(!busy)guidance.focusFirst();});}
@@ -36,12 +37,14 @@ function checkGeneration(value,kind){
  try{generationReady(value,kind);}catch(error){const control=error.message==='outline_required'?($('#outline').value.split('\n').filter(line=>line.trim()).length<3?$('#outline'):$('#outline-confirmed')):error.message==='manuscript_too_short'?$('#manuscript'):error.message==='materials_need_review'?$('#materials input[type=checkbox]:not(:checked)'):null;if(!control)throw error;guidance.report([{control,message:messages[error.message]}]);throw new FieldValidationError('尚未開始生成，請先完成標示項目。');}
 }
 async function api(action,input={}){
- const session=await db.auth.getSession(),token=session.data.session?.access_token;
+ const epoch=identityGeneration,session=await db.auth.getSession(),token=session.data.session?.access_token;
+ if(epoch!==identityGeneration||!authorized)throw Error('登入狀態已變更，請重新載入。');
  if(!token)throw Error('登入已失效，請重新登入教會 OS。');
  const mutation=['create','enqueue'].includes(action),key=action+JSON.stringify(input);
  if(mutation&&!requestIds.has(key))requestIds.set(key,crypto.randomUUID());
  const response=await fetch(ENDPOINT,{method:'POST',credentials:'omit',cache:'no-store',headers:{Authorization:'Bearer '+token,'content-type':'application/json'},signal:AbortSignal.timeout(20000),body:JSON.stringify({action,church:'M+',...input,...(mutation?{request_id:requestIds.get(key)}:{})})});
  const result=await response.json().catch(()=>({}));
+ if(epoch!==identityGeneration||!authorized)throw Error('登入狀態已變更，請重新載入。');
  if(!response.ok||!result.ok)throw Error(messages[result.error]||'連線暫時無法完成。輸入保留，請重新載入確認工作與版本後再試。');
  if(mutation)requestIds.delete(key);return result;
 }
@@ -56,13 +59,13 @@ function showStep(step,record=true){
  document.querySelectorAll('[data-step]').forEach(b=>{b.dataset.appControl='surface';b.setAttribute('aria-pressed',String(b.dataset.step===step));if(b.dataset.step===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
  if(record&&draft&&draft.step!==step){draft.step=step;markDirty();}
 }
-function collect(){
- checkFields();
+function collect(validate=true){
+ if(validate)checkFields();
  const next=structuredClone(draft);
  next.information={title:$('#edit-title').value.trim(),speaker:$('#edit-speaker').value.trim(),scripture:$('#edit-scripture').value.trim(),service_date:$('#edit-date').value};
  next.notes=$('#notes').value;next.audience=$('#audience').value;next.bible_version=$('#bible-version').value;next.target_characters=Number($('#target').value);
  next.outline=$('#outline').value.split('\n').map(x=>x.trim()).filter(Boolean);next.outline_confirmed=$('#outline-confirmed').checked;next.manuscript=$('#manuscript').value;
- return validateDraft(next);
+ return validate?validateDraft(next):next;
 }
 function drawBackup(){
  $('#project-version').textContent='私人草稿 · 版本 '+project.version;
@@ -154,17 +157,17 @@ async function loadList(current=()=>true){
 }
 async function openProject(id,{confirmed=false}={}){
  if(busy||(!confirmed&&!mayLeave()))return false;lock(true);const seq=++opening;
- try{const result=await api('load',{project_id:id});if(seq!==opening)return false;const payload=validateDraft(result.payload);if(result.project?.id!==id||!Number.isSafeInteger(result.project.version))throw Error('信息讀取回條不完整，原本輸入仍保留。');project=result.project;draft=payload;jobs=result.jobs||[];versions=result.versions||[];processed.clear();pendingResults.clear();jobs.filter(j=>['search','detail'].includes(j.kind)&&['queued','running'].includes(j.status)).forEach(j=>pendingResults.add(j.id));$('#search-results').replaceChildren();drawEditor();if(pendingCreated===id)pendingCreated=null;drawProjects();drawJobs();drawGuide();message('信息已載入；可返回任一步驟繼續預備。','success');history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+id);return true;}
+ try{const result=await api('load',{project_id:id});if(seq!==opening)return false;const payload=validateDraft(result.payload);if(result.project?.id!==id||!Number.isSafeInteger(result.project.version))throw Error('信息讀取回條不完整，原本輸入仍保留。');await deviceDraft.opened(result.project);if(seq!==opening||!authorized)return false;project=result.project;draft=payload;jobs=result.jobs||[];versions=result.versions||[];processed.clear();pendingResults.clear();jobs.filter(j=>['search','detail'].includes(j.kind)&&['queued','running'].includes(j.status)).forEach(j=>pendingResults.add(j.id));$('#search-results').replaceChildren();drawEditor();if(pendingCreated===id)pendingCreated=null;drawProjects();drawJobs();drawGuide();message('信息已載入；可返回任一步驟繼續預備。','success');history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+id);return true;}
  catch(e){fail(e);return false;}finally{lock(false);}
 }
 async function saveDraft(){
- if(!project)throw Error('請先建立信息。');const payload=collect();
+ if(!project)throw Error('請先建立信息。');const payload=collect();await deviceDraft.verify();
  const result=await api('save',{project_id:project.id,base_version:project.version,payload});
  const saved=validateDraft(result.payload);if(result.project?.id!==project.id||!Number.isSafeInteger(result.project.version)||result.project.version<=project.version)throw Error('儲存回條不完整。輸入仍保留，請重新載入確認最新版本。');project=result.project;draft=saved;cleanDraft();versions.unshift({version:project.version,created_at:project.updated_at});drawBackup();const row=items.find(x=>x.id===project.id);if(row)Object.assign(row,project);drawProjects();
  $('#versions').replaceChildren(...versions.map(v=>{const option=el('option','版本 '+v.version);option.value=v.version;return option;}));
- return result;
+ const cleared=await deviceDraft.saved(project);return {...result,deviceDraftCleared:cleared};
 }
-async function save(){if(busy)return;lock(true);try{await saveDraft();message('新版本已儲存。NAS 備份會另行顯示回條。','success');}catch(e){fail(e);}finally{lock(false);}}
+async function save(){if(busy)return;lock(true);try{const result=await saveDraft();message(result.deviceDraftCleared?'新版本已儲存。NAS 備份會另行顯示回條。':'新版本已儲存，但裝置副本未能清除。請先核對正式版本，勿重複儲存。',result.deviceDraftCleared?'success':'warning');}catch(e){fail(e);}finally{lock(false);}}
 async function queue(kind,options={}){
  if(busy||!project)return;lock(true);jobProgress.begin(kind);
  try{const next=collect();checkGeneration(next,kind);draft=next;if(dirty)await saveDraft();
@@ -194,12 +197,13 @@ async function create(event){
  catch(e){if(pendingCreated)message('信息已建立，但清單尚未載入。請按「重新載入」確認；原本編輯內容仍保留，勿再次建立。','error');else $('#create-status').textContent=e.message;}finally{lock(false);}
 }
 async function start(){
- try{const church=new URLSearchParams(location.search).get('church')||'M+';if(church!=='M+')throw Error('信息預備目前提供 M＋同工使用，請切換 M＋。');const session=await db.auth.getSession();if(!session.data.session?.access_token){location.replace('admin-login.html?next='+encodeURIComponent(location.pathname+location.search));return;}
+ const epoch=identityGeneration;try{const church=new URLSearchParams(location.search).get('church')||'M+';if(church!=='M+')throw Error('信息預備目前提供 M＋同工使用，請切換 M＋。');const session=await db.auth.getSession();if(!session.data.session?.access_token){location.replace('admin-login.html?next='+encodeURIComponent(location.pathname+location.search));return;}
  access=await readAccess(db);if(!canOpen(access,'M+','website_weekly')||!canAction(access,'M+','website_weekly','edit'))throw Error(messages.forbidden);
- authorized=true;$('#content').hidden=false;if(matchMedia('(max-width:850px)').matches)$('#project-drawer').open=false;await loadList();lock(false);
+ if(epoch!==identityGeneration)return;authorized=true;await deviceDraft.refresh(session.data.session);if(epoch!==identityGeneration||!authorized)return;$('#content').hidden=false;if(matchMedia('(max-width:850px)').matches)$('#project-drawer').open=false;await loadList();lock(false);
  const requested=new URLSearchParams(location.search).get('project');if(requested&&items.some(p=>p.id===requested))await openProject(requested);else message('選一篇信息繼續預備，或建立新的信息。','success');pollTimer=setTimeout(poll,8000);
  }catch(e){message(e.message,'error');}
 }
+const deviceDraft=createSermonDraftRecovery({db,host:$('#sermon-device-draft'),readDraft:()=>collect(false),mayLeave,isBusy:()=>busy,setBusy:lock,loadLatest:id=>api('load',{project_id:id}),message,onRestore:(latest,payload)=>{opening++;project=latest.project;draft=payload;jobs=latest.jobs||[];versions=latest.versions||[];processed.clear();pendingResults.clear();drawEditor();markDirty();drawProjects();drawJobs();drawGuide();history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+project.id);},onIdentityLost:()=>{identityGeneration++;opening++;authorized=false;clearTimeout(pollTimer);jobProgress.stop();project=draft=null;items=[];jobs=[];versions=[];pendingCreated=null;dirty=createDirty=false;$('#draft-form').reset();$('#draft-form').dataset.unsavedChanges='false';$('#materials').replaceChildren();$('#slides').replaceChildren();$('#projects').replaceChildren();$('#jobs').replaceChildren();$('#create-form').reset();$('#create-dialog').close();$('#content').hidden=true;message('登入已變更，私人信息已隱藏。請重新登入並載入以確認權限。','error');}});
 $('#draft-form').addEventListener('submit',e=>e.preventDefault());for(const type of ['input','change'])$('#draft-form').addEventListener(type,event=>{if(event.target.closest('.studio-guide,.studio-keyword-search,.studio-video'))return;if(event.target.id==='outline')$('#outline-confirmed').checked=false;markDirty();});
 document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>showStep(b.dataset.step));
 $('#save').onclick=save;$('#new-project').onclick=$('#empty-create').onclick=openCreate;$('#close-create').onclick=closeCreate;$('#create-dialog').addEventListener('cancel',event=>{event.preventDefault();closeCreate();});$('#create-form').addEventListener('input',()=>{createDirty=true;$('#create-form').dataset.unsavedChanges='true';});$('#create-form').onsubmit=create;

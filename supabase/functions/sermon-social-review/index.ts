@@ -22,11 +22,19 @@ function validReel(draft:any){return draft.social_media_type==='reel'&&new RegEx
 async function reelAssetsExist(db:any,draft:any){if(!validReel(draft))return false;const cover=String(draft.social_image_url||''),prefix=MEDIA+'M%2B/sermons/'+draft.id+'/';if(!cover.startsWith(prefix)||!/[a-f0-9]{64}\.(?:jpg|jpeg|png|webp)$/i.test(cover.slice(prefix.length)))return false;const coverPath='M+/sermons/'+draft.id+'/'+decodeURIComponent(cover.slice(prefix.length));const [videoInfo,coverInfo]=await Promise.all([db.storage.from('church-website-public-media').info(draft.social_video_path),db.storage.from('church-website-public-media').info(coverPath)]);return !videoInfo.error&&!coverInfo.error&&Number(videoInfo.data?.size)>0&&Number(coverInfo.data?.size)>0;}
 function legacySocialImage(value:string){
  try{
-  const url=new URL(value),storage=new URL(Deno.env.get('SUPABASE_URL')||''),prefix='/storage/v1/object/public/church-media/';
-  if(url.protocol!=='https:'||url.origin!==storage.origin||url.search||url.hash||!url.pathname.startsWith(prefix))return null;
-  const path=decodeURIComponent(url.pathname.slice(prefix.length));
-  if(!/^sermon-social\/[a-z0-9_-]+\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp)$/i.test(path))return null;
-  return {path,mime:/\.png$/i.test(path)?'image/png':/\.webp$/i.test(path)?'image/webp':'image/jpeg'};
+  const url=new URL(value),storage=new URL(Deno.env.get('SUPABASE_URL')||'');
+  if(url.protocol!=='https:'||url.origin!==storage.origin||url.username||url.password||url.search||url.hash)return null;
+  const candidates=[
+   {bucket:'church-media',prefix:'/storage/v1/object/public/church-media/',pattern:/^sermon-social\/[a-z0-9_-]+\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp)$/i},
+   {bucket:'church-website-public-media',prefix:'/storage/v1/object/public/church-website-public-media/',pattern:/^M\+\/sermon-social\/\d{4}-\d{2}-\d{2}-[a-z0-9_-]+\/card-(?:knees-up-[ab]|half-body)\.(?:jpe?g|png|webp)$/i},
+  ];
+  for(const candidate of candidates){
+   if(!url.pathname.startsWith(candidate.prefix))continue;
+   const path=decodeURIComponent(url.pathname.slice(candidate.prefix.length));
+   if(!candidate.pattern.test(path))return null;
+   return {bucket:candidate.bucket,path,mime:/\.png$/i.test(path)?'image/png':/\.webp$/i.test(path)?'image/webp':'image/jpeg'};
+  }
+  return null;
  }catch{return null;}
 }
 function appSocialImage(value:string){
@@ -53,7 +61,7 @@ async function persistSocialImage(db:any,draftId:string,value:string){
  if(match){mime=match[1].toLowerCase();bytes=Uint8Array.from(atob(match[2]),c=>c.charCodeAt(0));}
  else if(legacy){
   mime=legacy!.mime;
-  const source=db.storage.from('church-media'),info=await source.info(legacy!.path);
+  const source=db.storage.from(legacy!.bucket),info=await source.info(legacy!.path);
   if(info.error||!info.data||Number(info.data.size)<1||Number(info.data.size)>5*1024*1024)throw new Error('sermon_image_invalid');
   const downloaded=await source.download(legacy!.path);
   if(downloaded.error||!downloaded.data)throw new Error('sermon_image_upload_failed');

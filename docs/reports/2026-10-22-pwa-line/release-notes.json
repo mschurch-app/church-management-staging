@@ -1,0 +1,43 @@
+{
+  "base_commit": "95d2d251e272f5edcb01563ed2cb0fd4e999bf06",
+  "scope": "existing installed iOS PWA; no native app or App Store route",
+  "changes": [
+    "Use same-window OAuth and in-scope callback on actual iOS standalone login. Remove native _blank launcher and manual continuation control.",
+    "Add per-request LINE disable_auto_login=true; web SSO or official LINE login page stays in the authorization browser. Existing provider and identity mapping preserved.",
+    "Bind callback to original local pending id and SHA256 state; no raw App capability secret in callback URL. Require fresh OAuth hash, server LINE identity, expected account and current attempt before persistent session.",
+    "Retire old unfinished handoff metadata only; recover retired standalone launch page to usable login.",
+    "One compact callback status panel; backend permission read failure does not send a false review notification."
+  ],
+  "validation": {
+    "pwa_scope_checks": 66,
+    "engines": [
+      "Chrome",
+      "WebKit"
+    ],
+    "scope_takeover_simulated": true,
+    "legacy_handoff_checks": 11,
+    "email_binding_checks": 12,
+    "worker_catalog": "passed",
+    "syntax_diff": "passed",
+    "live_authorize_redirect_probe": {
+      "status": 302,
+      "destination_host": "access.line.me",
+      "disable_auto_login": "true",
+      "credentials_submitted": false,
+      "configuration_changed": false
+    }
+  },
+  "acceptance": {
+    "real_iphone": false,
+    "real_line_authentication": false,
+    "automatic_return_on_user_phone": "not yet verified",
+    "overall_99_percent": "not claimed"
+  },
+  "user_visible_note": "On first use LINE may ask for sign-in on its official web page; native LINE app switching is intentionally avoided on iOS standalone only.",
+  "sources": [
+    "https://developers.line.biz/en/docs/line-login/integrate-line-login/",
+    "https://web.dev/learn/pwa/windows#authorization_flows",
+    "https://github.com/supabase/auth/blob/master/internal/api/external.go",
+    "https://github.com/supabase/auth/blob/master/internal/api/provider/custom_oauth.go"
+  ]
+}

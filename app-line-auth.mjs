@@ -1,6 +1,7 @@
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';
 export const HANDOFF_STORAGE='church-os-line-handoff-v1';
 const endpoint=SUPABASE_URL+'/functions/v1/app-auth-handoff';
+export async function scopeHandoffState(secret){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(secret)))).map(n=>n.toString(16).padStart(2,'0')).join('');}
 export const appMode=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||new URLSearchParams(location.search).get('source')==='app-v2';
 export function safeAppTarget(raw,fallback='admin-dashboard.html'){try{const url=new URL(raw||fallback,location.origin);if(url.origin===location.origin&&url.pathname.endsWith('.html')&&!url.pathname.includes('..'))return url.pathname+url.search+url.hash;}catch{}return '/'+fallback;}
 const hexBytes=hex=>Uint8Array.from(hex.match(/../g)||[],pair=>parseInt(pair,16));
@@ -12,22 +13,19 @@ export async function handoffRequest(body,token){const response=await fetch(endp
 export function pendingHandoff(){try{const value=JSON.parse(localStorage.getItem(HANDOFF_STORAGE)||'null');if(value&&/^[0-9a-f-]{36}$/i.test(value.id||'')&&value.expires>Date.now()&&/^[0-9a-f]{64}$/.test(value.secret))return value;localStorage.removeItem(HANDOFF_STORAGE);}catch{}return null;}
 export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboard.html',onResume}={}){
  let popup=null,polling=false,timer=null,resumed=false;
- const nativeLaunch=flow==='login'&&(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)&&(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
- // A native external link leaves the installed App's own document in place.
- // OAuth is started by the visible launcher in Safari, not by a WindowProxy.
- if(nativeLaunch){const link=document.createElement('a');link.id=button.id;link.className=button.className;link.append(...button.childNodes);link.href='admin-line-launch.html';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText=button.style.cssText+';display:flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none';button.replaceWith(link);button=link;}
- const originalLabel=button.innerHTML;
- const setDisabled=value=>{button.disabled=value;button.setAttribute('aria-disabled',String(value));if(nativeLaunch){button.style.opacity=value?'.6':'';if(value)button.textContent='等待 LINE 登入完成…';else button.innerHTML=originalLabel;}};
+ const scopeLogin=flow==='login'&&(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)&&(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+ const setDisabled=value=>{button.disabled=value;button.setAttribute('aria-disabled',String(value));};
  const createPending=expectedUser=>({id:crypto.randomUUID(),secret:Array.from(crypto.getRandomValues(new Uint8Array(32))).map(n=>n.toString(16).padStart(2,'0')).join(''),expires:Date.now()+300000,next:safeAppTarget(next),expected_user:expectedUser||null});
- const continueButton=document.createElement('button');continueButton.type='button';continueButton.className='secondary line-auth-resume';continueButton.textContent='我已完成 LINE 登入，接續進入 App';continueButton.hidden=true;status.after(continueButton);continueButton.onclick=()=>void resume();
  const stillPending=pending=>{const active=pendingHandoff();return active?.id===pending.id&&active.secret===pending.secret;};
  const cancel=document.createElement('button');cancel.type='button';cancel.className='secondary line-auth-cancel';cancel.textContent='取消這次 LINE 登入';cancel.hidden=true;status.after(cancel);
  cancel.onclick=()=>{if(cancel.disabled)return;localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);try{popup?.close();}catch{}reset();status.textContent='已取消，可重新選擇登入方式。';};
- const reset=()=>{cancel.disabled=false;cancel.hidden=true;continueButton.hidden=true;setDisabled(false);button.removeAttribute('aria-busy');};
+ const reset=()=>{cancel.disabled=false;cancel.hidden=true;setDisabled(false);button.removeAttribute('aria-busy');};
  async function resume(){
   if(polling||resumed||document.visibilityState==='hidden')return;
   const pending=pendingHandoff();if(!pending){reset();return;}
-  setDisabled(true);button.setAttribute('aria-busy','true');cancel.hidden=false;continueButton.hidden=false;continueButton.disabled=true;polling=true;
+  setDisabled(true);button.setAttribute('aria-busy','true');cancel.hidden=false;
+  if(pending.mode==='standalone-web'){status.textContent='請在 LINE 官方授權頁完成登入，系統會自動進入工作台。';return;}
+  polling=true;
   try{
    const result=await handoffRequest({action:'read',id:pending.id,secret:pending.secret});
    if(!stillPending(pending))return;
@@ -45,7 +43,7 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
    status.textContent='登入成功，正在開啟教會 OS…';
    if(onResume)await onResume(session);else location.replace(safeAppTarget(pending.next));
   }catch(error){status.textContent=error.fatal?error.message:'連線暫時中斷，正在等待恢復；也可取消後重新登入。';if(error.fatal){localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);reset();}}
-  finally{polling=false;cancel.disabled=false;continueButton.disabled=false;}
+  finally{polling=false;cancel.disabled=false;}
  }
  function watch(){clearInterval(timer);timer=setInterval(()=>{if(!pendingHandoff()){clearInterval(timer);if(!resumed){status.textContent='LINE 登入等待已結束，請再按一次登入。';reset();}return;}void resume();},2000);void resume();}
  window.addEventListener('pageshow',()=>{if(pendingHandoff())watch();});
@@ -54,10 +52,31 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
  window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data?.type==='church-os-line-handoff-ready'&&event.data.id===pendingHandoff()?.id)void resume();});
  button.addEventListener('click',async event=>{
   if(button.disabled){event.preventDefault();return;}
-  if(nativeLaunch){
-   try{const pending=createPending();localStorage.setItem(HANDOFF_STORAGE,JSON.stringify(pending));const launch=new URL('admin-line-launch.html',location.href);launch.hash=new URLSearchParams({handoff:pending.id,handoff_key:pending.secret,next:pending.next,expires:String(pending.expires)}).toString();button.href=launch.href;setDisabled(true);button.setAttribute('aria-busy','true');cancel.hidden=false;continueButton.hidden=false;status.textContent='登入頁會在 Safari 開啟。完成 LINE 登入後，請切回這個教會 OS App。';setTimeout(watch,0);}
-   catch{event.preventDefault();reset();status.textContent='無法保留登入交接，請確認未封鎖網站儲存後再試。';}
-   return; // Let the user's native link action open the external launcher.
+  if(scopeLogin){
+   event.preventDefault();
+   let pending,stored=false;
+   try{
+    pending={...createPending(),mode:'standalone-web'};
+    localStorage.setItem(HANDOFF_STORAGE,JSON.stringify(pending));stored=true;
+    setDisabled(true);button.setAttribute('aria-busy','true');cancel.hidden=false;
+    status.textContent='正在連接 LINE 官方授權頁…';
+    const callback=new URL('admin-line-callback.html',location.href);
+    callback.search=new URLSearchParams({return:'standalone',handoff:pending.id,handoff_state:await scopeHandoffState(pending.secret),next:pending.next}).toString();
+    if(!stillPending(pending))return;
+    const operation=db.auth.signInWithOAuth({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile',skipBrowserRedirect:true,queryParams:{disable_auto_login:'true'}}});
+    const result=await Promise.race([operation,new Promise((_,reject)=>setTimeout(()=>reject(Error('連接 LINE 逾時，請再試一次。')),15000))]);
+    if(!stillPending(pending))return;
+    if(result.error||!result.data?.url)throw result.error||Error('無法取得 LINE 登入頁，請再試一次。');
+    // Same-window navigation lets iOS retain its in-App authorization browser.
+    // An in-scope callback takes over this App document; no launcher or popup.
+    status.textContent='請在 LINE 官方頁完成驗證，完成後會自動進入教會 OS。';
+    watch();location.assign(result.data.url);
+   }catch(error){
+    if(stored&&!stillPending(pending))return;
+    try{localStorage.removeItem(HANDOFF_STORAGE);}catch{}
+    clearInterval(timer);reset();status.textContent=error.message||'LINE 登入暫時無法開啟，請再試一次。';
+   }
+   return;
   }
   event.preventDefault();
   const installed=appMode();
@@ -78,6 +97,7 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
    if(installed){popup.location.replace(result.data.url);watch();}else location.assign(result.data.url);
   }catch(error){try{popup?.close();}catch{}localStorage.removeItem(HANDOFF_STORAGE);reset();status.textContent=error.message||'LINE 登入暫時無法使用。';}
  });
+ if(scopeLogin){const old=pendingHandoff();if(old&&old.mode!=='standalone-web'){localStorage.removeItem(HANDOFF_STORAGE);status.textContent='登入流程已更新，請使用 LINE 登入。';}}
  if(pendingHandoff())watch();
  return {resume,hasPending:()=>Boolean(pendingHandoff())};
 }

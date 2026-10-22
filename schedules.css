@@ -25,3 +25,17 @@
 @media(max-width:760px){.role-settings-entry{align-items:stretch;padding:15px;flex-direction:column}.role-settings-entry>button{width:100%}.role-settings-panel{padding:15px 11px;border-radius:22px}.role-settings-heading{align-items:flex-start}.role-settings-copy p{line-height:1.55}.role-preference-row{grid-template-columns:30px 52px minmax(0,1fr) 82px;gap:7px;padding:9px}.role-order{width:27px;height:27px}.role-icon-input,.role-name-input{height:42px;min-height:42px;padding:7px}.role-visibility{justify-content:flex-end}.role-visibility>span:last-child{display:none}.role-moves{grid-column:3/5;justify-content:flex-end}.role-moves button{min-height:38px}.role-settings-actions{display:grid;grid-template-columns:1fr 1fr}.role-settings-actions button{min-height:48px}.role-grid{grid-template-columns:1fr 1fr}.role-item{min-height:72px}.role-item strong{padding-left:30px}.schedule-content{padding-top:16px}.schedule-title-row h3{line-height:1.35}}
 @media(max-width:340px){.role-grid{grid-template-columns:1fr}.role-preference-row{grid-template-columns:28px 48px minmax(0,1fr)}.role-visibility{grid-column:2/4;justify-content:flex-start;padding-left:3px}.role-moves{grid-column:2/4}}
 .schedule-member-options{position:fixed;z-index:1000;max-height:250px;overflow:auto;padding:7px;border:1px solid #b9dcd7;border-radius:14px;background:#fff;box-shadow:0 16px 40px rgba(22,70,73,.18)}.schedule-member-option{display:flex;width:100%;min-height:42px;margin:0;padding:9px 11px;align-items:center;justify-content:space-between;gap:12px;border:0;border-radius:9px;background:#fff;color:#23494b;text-align:left;box-shadow:none}.schedule-member-option:hover,.schedule-member-option:focus{background:#e9f7f4;color:#08766f;box-shadow:none}.schedule-member-option small{color:#728486;font-size:12px}.schedule-member-empty{margin:8px;padding:9px;color:#7a8989;font-size:13px}
+
+/* Keep long schedule forms searchable while preserving the configured role order. */
+.schedule-page .schedule-form-section{min-width:0;margin:20px 0;padding:18px;border:1px solid var(--app-border,#dce5dd);border-radius:16px;background:var(--app-surface,#fff)}
+.schedule-page .schedule-form-section legend{padding:0 8px;color:var(--app-ink,#203b30);font-size:1.05rem;font-weight:700}
+.schedule-page .schedule-form-section>p{margin:0 0 14px;line-height:1.7}
+.schedule-page .schedule-editor-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.45fr) auto;align-items:end;gap:12px;margin-bottom:14px}
+.schedule-page .schedule-editor-filters label{margin:0;min-width:0}
+.schedule-page .schedule-editor-filters :is(input,select,button){min-height:44px;margin-bottom:0}
+.schedule-page .schedule-editor-summary{color:var(--app-secondary,#566c60);font-size:.9rem;font-variant-numeric:tabular-nums}
+.schedule-page .schedule-editor-roles label{min-width:0;margin:0}
+.schedule-page .schedule-editor-empty{padding:16px;border:1px dashed var(--app-border,#dce5dd);border-radius:12px;color:var(--app-secondary,#566c60);line-height:1.7}
+.schedule-member-options{box-sizing:border-box}
+.schedule-member-option[aria-selected=true]{background:var(--app-surface-muted,#edf4ee);outline:2px solid var(--app-focus,#246fb2);outline-offset:-2px}
+@media(max-width:700px){.schedule-page .schedule-form-section{padding:14px 12px}.schedule-page .schedule-editor-filters{grid-template-columns:minmax(0,1fr) auto}.schedule-page .schedule-editor-filters label:first-child{grid-column:1/-1}.schedule-page .schedule-editor-roles{grid-template-columns:1fr}}

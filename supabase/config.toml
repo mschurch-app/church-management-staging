@@ -78,3 +78,7 @@ verify_jwt = false
 # Public learner church choice checks registration proof in its SQL RPC.
 [functions.heat-camp-church]
 verify_jwt = false
+
+# Staff JWT or secret registration capability is checked inside the function.
+[functions.heat-camp-receipt]
+verify_jwt = false

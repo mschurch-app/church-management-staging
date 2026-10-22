@@ -7,3 +7,9 @@ tests/phase2/results/
 tests/phase3/results/
 tests/phase4/results/
 tests/life-tree/results/
+
+# Receipt seal originals and rendered private documents stay off public hosting.
+private-receipt-assets/
+output/receipts/
+
+supabase/functions/heat-camp-receipt/seals.mjs

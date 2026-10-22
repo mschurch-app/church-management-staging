@@ -1,4 +1,4 @@
-import {installResumeRecovery} from './app-resume.mjs?v=20261022-experience1';
+import {installResumeRecovery} from './app-resume.mjs?v=20261022-home-resume1';
 // Shared device behavior. This module does not read sessions or send business data.
 let mounted=false,banner,copy,action,updateRegistration,updateActivated=false,activationRequested=false,activationTimer=0,onlineTimer=0,revision=0,approvedRevision=0,automaticActivation=false;
 const waitingRegistrations=new WeakSet();

@@ -1,4 +1,4 @@
-import {encryptHandoff,handoffRequest} from './app-line-auth.mjs?v=20261009-stage4';
+import {encryptHandoff,handoffRequest} from './app-line-auth.mjs?v=20261022-app-line1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 
 const status=document.querySelector('#status');
@@ -65,24 +65,11 @@ async function start(){
       try{window.opener?.postMessage({type:'church-os-line-handoff-ready',id},location.origin);}catch{}
       status.textContent='LINE 驗證完成。請切回教會 OS App，系統會自動接續登入；不用在這個網頁重新操作。';
       document.querySelector('.login-badge').textContent='LINE 驗證完成';document.querySelector('.login-visual h2').textContent='LINE 驗證完成，請返回教會 OS App';
-      document.querySelector('.login-panel h1').textContent='返回教會 OS App';
-      back.textContent='關閉登入視窗';back.href='#';back.hidden=false;
-      // Safari cannot reliably close or reopen an installed iOS App. The callback
-      // already has a verified persisted session; offer its authorized M+ entry.
-      let mplusAccess=false;
-      try{const result=await db.rpc('get_my_church_access');mplusAccess=!result.error&&Array.isArray(result.data)&&result.data.some(row=>row.church_id==='M+');}catch{}
-      if(mplusAccess){
-        status.textContent='LINE 驗證已完成，登入交接已送出。若沒有自動回到 App，請按下方按鈕直接進入 M+，不必重新登入或重置。';
-        document.querySelector('.login-visual h2').textContent='LINE 驗證完成';
-        document.querySelector('.login-panel h1').textContent='可以進入 M+ 了';
-        back.textContent='直接進入 M+ 工作台';back.href='mplus-dashboard.html?church=M%2B';back.className='secondary';
-        back.style.cssText='display:flex;align-items:center;justify-content:center;min-height:48px;margin-top:20px;text-decoration:none';
-        status.textContent='登入成功，正在進入 M＋工作台…';
-        location.replace('mplus-dashboard.html?church=M%2B');
-        return;
-      }else{
-        back.addEventListener('click',event=>{event.preventDefault();window.close();status.textContent='若視窗未關閉，請使用手機的 App 切換器返回教會 OS，或點主畫面的教會 OS 圖示。';});
-      }
+      document.querySelector('.login-panel h1').textContent='返回教會 OS App';document.querySelector('.login-panel .muted').textContent='請切回主畫面上的教會 OS；登入交接會在 App 內完成。';
+      // This document belongs to Safari. Do not silently turn it into the App.
+      back.textContent='繼續使用 Safari（不會返回 App）';back.href=safeNext()||'admin-dashboard.html';back.hidden=false;
+      back.style.cssText='display:flex;align-items:center;justify-content:center;min-height:48px;margin-top:20px;text-decoration:none';
+      status.textContent='LINE 登入已完成，已安全送出登入交接。請從 App 切換器或主畫面回到「教會 OS」；若沒有接續，請按 App 裡的「我已完成 LINE 登入」。';
       return;
     }
     status.textContent='LINE 身分已確認，正在載入管理權限…';

@@ -1,4 +1,4 @@
-import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261009-stage4';
+import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261022-app-line1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,hasVerifiedLine} from './admin-access.mjs?v=20261009-stage1';
 

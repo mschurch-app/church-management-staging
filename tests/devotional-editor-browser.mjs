@@ -10,9 +10,9 @@ const bootstrap=`<script>
 window.t={rows:${JSON.stringify(daily())},calls:[],readonly:window.fixtureMode==='readonly',denied:window.fixtureMode==='denied',writeFail:false,readFail:false,invalidAck:false,afterWriteFail:false,delay:0};
 window.fixtureDb={auth:{getSession:async()=>({data:{session:{access_token:'synthetic-only'}}}),signOut:async()=>{}}};
 window.fetch=async(url,init)=>{if(!String(url).includes('/functions/v1/daily-devotional-admin'))throw Error('Unexpected request');const body=JSON.parse(init.body);t.calls.push(body);
- if(body.action==='content_list'){if(t.readFail)return Response.json({ok:false,error:'unavailable'},{status:503});return Response.json({ok:true,items:t.rows,reviewerStage:'final'});}
+ if(body.action==='content_list'){if(t.readFail)return Response.json({ok:false,error:'unavailable'},{status:503});return Response.json({ok:true,items:t.rows,writeVersionContract:'devotional-version-v1',reviewerStage:'final'});}
  if(t.delay)await new Promise(r=>setTimeout(r,t.delay));if(t.writeFail)return Response.json({ok:false,error:'unavailable'},{status:503});if(t.invalidAck)return Response.json({});
- const row=t.rows.find(r=>r.id===body.id);Object.assign(row,body.values,{review_status:'approved'});if(t.afterWriteFail)t.readFail=true;return Response.json({ok:true,item:row});};
+ const row=t.rows.find(r=>r.id===body.id);Object.assign(row,body.values,{review_status:'approved',version:row.version+1});if(t.afterWriteFail)t.readFail=true;return Response.json({ok:true,item:row});};
 </script><script type="module" src="/daily-devotional-admin.mjs"></script>`;
 const stubs={'/admin-db.mjs':'export const db=window.fixtureDb;','/admin-access.mjs':'export const readAccess=async()=>({});export const canOpen=()=>!t.denied;export const canAction=()=>!t.readonly&&!t.denied;'};
 const server=createServer(async(req,res)=>{try{const file=new URL(req.url,'http://fixture').pathname;let data;

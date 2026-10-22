@@ -1,4 +1,4 @@
-import {readAccess} from './admin-access.mjs?v=20261021-work-roles1';
+import {readAccess} from './admin-access.mjs?v=20261022-experience5';
 export {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261022-experience3';
 import {PERMISSION_LABELS as PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES} from './app-function-definitions.mjs?v=20261022-experience3';
 async function signedIn(db){await readAccess(db);}

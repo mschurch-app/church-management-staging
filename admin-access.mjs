@@ -27,7 +27,25 @@ function serverProfile(value, fallback) {
 }
 
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-let accessCache=null,accessCachedAt=0,accessRequest=null;
+// Cache belongs to one client and its current verified identity, never the module.
+const clientAccess=new WeakMap();
+const accessChanged=()=>Object.assign(new Error('登入或權限已變更，請重新載入確認。'),{name:'AccessChangedError'});
+function accessState(db){
+  let state=clientAccess.get(db);if(state)return state;
+  state={cache:null,cachedAt:0,request:null,sequence:0,authRevision:0,actor:null};clientAccess.set(db,state);
+  const invalidate=()=>{state.cache=null;state.cachedAt=0;state.request=null;state.sequence++;state.authRevision++;};
+  // Keep the Auth callback synchronous; it must not request another Auth lock.
+  db.auth?.onAuthStateChange?.((event,session)=>{
+    const actor=session?.user?.id||null;
+    if(event==='SIGNED_OUT'){invalidate();state.actor=null;return;}
+    if(['INITIAL_SESSION','SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){
+      if(state.actor&&state.actor!==actor)invalidate();
+      if(event==='TOKEN_REFRESHED'||event==='USER_UPDATED'){state.cache=null;state.cachedAt=0;}
+      state.actor=actor;
+    }
+  });
+  return state;
+}
 
 export async function hasVerifiedLine(db,user){
   if((user?.identities||[]).some(identity=>identity.provider==='custom:line-web'))return true;
@@ -36,7 +54,7 @@ export async function hasVerifiedLine(db,user){
   return result.data?.has_line===true;
 }
 
-async function fetchAccess(db, { user: signedInUser = null, retry = true } = {}) {
+async function fetchAccess(db, { user: signedInUser = null, retry = true, onUser = ()=>{} } = {}) {
   let user = signedInUser;
   if (!user) {
     const verified = await db.auth.getUser();
@@ -44,6 +62,7 @@ async function fetchAccess(db, { user: signedInUser = null, retry = true } = {})
     user = verified.data.user;
   }
 
+  onUser(user);
   const hasLineIdentity=await hasVerifiedLine(db,user);
 
   let result, profileResult;
@@ -91,18 +110,21 @@ function withAccessDeadline(promise,milliseconds){
   return Promise.race([promise,deadline]).finally(()=>clearTimeout(timer));
 }
 export async function readAccess(db, options = {}) {
-  const fresh=options.fresh===true;
-  if(!fresh&&accessCache&&Date.now()-accessCachedAt<30000)return accessCache;
-  if(!fresh&&accessRequest)return accessRequest;
-  const request=withAccessDeadline(fetchAccess(db,options),options.timeoutMs||20000);
-  accessRequest=request;
-  try{
-    const value=await request;
-    accessCache=value;accessCachedAt=Date.now();
-    return value;
-  }finally{
-    if(accessRequest===request)accessRequest=null;
-  }
+  const state=accessState(db),hint=options.user?.id;
+  if(hint&&state.actor&&hint!==state.actor){state.cache=null;state.request=null;state.sequence++;state.authRevision++;state.actor=hint;}
+  const fresh=options.fresh===true,age=Date.now()-state.cachedAt;
+  if(!fresh&&state.cache&&age>=0&&age<30000)return state.cache;
+  if(!fresh&&state.request)return state.request;
+  if(fresh){state.cache=null;state.cachedAt=0;}
+  const ticket=++state.sequence,authRevision=state.authRevision;
+  const request=withAccessDeadline(fetchAccess(db,{...options,onUser:user=>{
+    if(state.authRevision!==authRevision||(state.actor&&state.actor!==user.id))throw accessChanged();
+    state.actor=user.id;
+  }}),options.timeoutMs||20000).then(value=>{
+    if(ticket!==state.sequence||authRevision!==state.authRevision)throw accessChanged();
+    state.cache=value;state.cachedAt=Date.now();return value;
+  }).finally(()=>{if(state.request===request)state.request=null;});
+  state.request=request;return request;
 }
 export function canOpen(access, church, tab) {
   const canonical=({private_prayers:'prayers',pastoral_chats:'pastoral'})[tab]||tab;

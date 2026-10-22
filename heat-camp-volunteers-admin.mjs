@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 
 const $=selector=>document.querySelector(selector);
 const labels={group_leader:'小隊輔',worship:'敬拜團',basketball_assistant:'籃球助教'};

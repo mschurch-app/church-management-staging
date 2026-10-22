@@ -1,7 +1,7 @@
 import {initWeeklyYoutube} from './weekly-youtube.mjs?v=20261021-weekly-link1';
 import {weeklyMetadata} from './weekly-youtube-content.mjs?v=20261021-weekly-link1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
-import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
+import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 
 import {workflowSummary,apiResult,uncertainWrite,lockControls,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';
 

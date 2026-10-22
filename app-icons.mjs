@@ -1,4 +1,4 @@
-import {FUNCTION_CATALOG,FUNCTION_ALIASES} from './app-function-definitions.mjs?v=20261019-workflow1';
+import {FUNCTION_CATALOG,FUNCTION_ALIASES} from './app-function-definitions.mjs?v=20261022-experience3';
 export const ICON_PATHS=Object.freeze({
   "mplus-book":"<path d=\"M12 5C8 2 4 3 2 4v15c4-2 7-1 10 1 3-2 6-3 10-1V4c-2-1-6-2-10 1Zm0 0v15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/>",
   "mplus-box":"<path d=\"m3 7 9-4 9 4v13H3Zm0 0h18M8 12h8M8 16h5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/>",

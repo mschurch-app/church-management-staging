@@ -28,5 +28,6 @@ export async function database(){
  await checked(fs.readFileSync(migration,'utf8'));
  await checked(fs.readFileSync(new URL('../../supabase/migrations/20261009150002_account_audit_foreign_key_indexes.sql',import.meta.url),'utf8'));
  await checked(fs.readFileSync(new URL('../../supabase/migrations/20261009150003_canonical_line_login_capabilities.sql',import.meta.url),'utf8'));
+ await checked(fs.readFileSync(new URL('../../supabase/migrations/20261022041349_home_preference_catalog_sync.sql',import.meta.url),'utf8'));
  return db;
 }

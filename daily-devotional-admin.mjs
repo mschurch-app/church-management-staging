@@ -1,6 +1,7 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 import {node as el,lockControls,workflowSummary,apiResult,uncertainWrite,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';
+import {createFieldGuidance} from './form-guidance.mjs?v=20261022-experience8';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/daily-devotional-admin';
 const $=selector=>document.querySelector(selector),labels={draft:'草稿',initial_review:'待初審',spouse_review:'待複審',final_review:'待終審',approved:'已核准',returned:'退回修改',archived:'已封存'};
@@ -21,17 +22,17 @@ function nextStep(item){
   const approved=item?.review_status==='approved',ready=approved&&Boolean(item.published_at),stage=ready?2:approved?1:0;
   workflowSummary($('#workflow'),{title:item?`${item.devotional_date} · ${labels[item.review_status]||item.review_status}`:'每日靈修工作區',description:recovery?'請重新載入確認最新結果，再繼續編輯。':ready?'已核准；依靈修日期對會友開放。':approved?'已核准；經文版本、來源與授權資料尚未齊全，暫不對會友顯示。':'內容可直接由牧師核准，不需初審或複審。',steps:['內容建立','已核准','可公開'],active:stage});
 }
-function field(form,label,key,value,multiline=true){const wrap=el('label',label),input=document.createElement(multiline?'textarea':'input');input.name=key;input.value=value||'';input.required=!['scripture_version','scripture_source','scripture_license_note'].includes(key);input.maxLength=['devotional_title','selected_scripture_reference'].includes(key)?300:5000;wrap.append(input);form.append(wrap);}
+function field(form,label,key,value,multiline=true){const optional=['scripture_version','scripture_source','scripture_license_note'].includes(key),wrap=el('label',label+(optional?'（選填）':'')),input=document.createElement(multiline?'textarea':'input');input.name=key;input.dataset.fieldLabel=label;input.value=value||'';input.required=!optional;input.maxLength=['devotional_title','selected_scripture_reference'].includes(key)?300:5000;wrap.append(input);form.append(wrap);}
 function editor(item,card){
   if(busy||recovery||!canManageContent)return;
-  const form=el('form','','devotional-editor');form.dataset.actionFeedback='off';form.append(el('p','請填寫內容欄位。經文版本、來源與授權可稍後補齊；未補齊前不對會友顯示。','muted'));
+  const form=el('form','','devotional-editor'),heading=el('h3',`編輯 ${item.devotional_date} 靈修`),nav=el('nav','','devotional-editor-nav');form.dataset.actionFeedback='off';form.noValidate=true;heading.tabIndex=-1;nav.setAttribute('aria-label','靈修編輯區段');form.append(heading,el('p','請填寫內容欄位。標示「選填」的經文版本、來源與授權可稍後補齊；未補齊前不對會友顯示。','muted'),nav);
   const groups=[['經文與出處',[['標題','devotional_title',false],['精選經文出處','selected_scripture_reference',false],['精選經文','scripture_text',true]]],['聖經版本與授權',[['聖經版本','scripture_version',false],['經文來源','scripture_source',false],['授權說明','scripture_license_note',true]]],['靈修內容',[['經文背景','context_summary',true],['三個重點','key_points',true],['反思問題','reflection_questions',true],['生活應用','life_application',true],['回應禱告','response_prayer',true]]]];
-  for(const [title,fields] of groups){const group=el('fieldset');group.append(el('legend',title));for(const [label,key,multi] of fields)field(group,label,key,item[key],multi);form.append(group);}
+  for(const [index,[title,fields]] of groups.entries()){const group=el('fieldset'),legend=el('legend',title),jump=el('button',title,'secondary');group.id='devotional-editor-section-'+index;legend.tabIndex=-1;jump.type='button';jump.dataset.appControl='surface';jump.setAttribute('aria-controls',group.id);jump.onclick=()=>{legend.scrollIntoView({block:'start',behavior:'auto'});legend.focus({preventScroll:true});};nav.append(jump);group.append(legend);for(const [label,key,multi] of fields)field(group,label,key,item[key],multi);form.append(group);}
   const actions=el('div','','devotional-actions'),save=el('button','儲存並直接核准'),cancel=el('button','取消編輯','secondary'),saveState=el('p','尚未修改','workflow-save-state');save.type='submit';cancel.type='button';actions.append(save,cancel);form.append(saveState,actions);card.append(form);
-
-  cancel.onclick=()=>{if(!busy&&guard.canLeave()){guard.clear();form.remove();card.querySelector('[data-edit]').focus();}};
-  form.onsubmit=async event=>{event.preventDefault();if(busy||recovery)return;const values=Object.fromEntries(new FormData(form));await mutate('content_update',{id:item.id,values},'內容已儲存並直接核准；經文授權資料齊全時依日期開放。');};
-  form.querySelector('input')?.focus();
+  const guidance=createFieldGuidance(form),detail=card.querySelector('.devotional-detail'),edit=card.querySelector('[data-edit]');detail.hidden=true;edit.disabled=true;
+  cancel.onclick=()=>{if(!busy&&guard.canLeave()){guidance.clear();guard.clear();form.remove();detail.hidden=false;edit.disabled=false;edit.focus();status('已取消編輯，保留原本已儲存的內容。');}};
+  form.onsubmit=async event=>{event.preventDefault();if(busy||recovery||!canManageContent)return;const issues=[];for(const control of form.querySelectorAll('input[name],textarea[name]')){const label=control.dataset.fieldLabel;if(control.required&&!control.value.trim())issues.push({control,message:label+'：請填寫內容。'});else if(control.value.length>control.maxLength)issues.push({control,message:label+'：請縮短至 '+control.maxLength+' 字以內。'});}if(guidance.report(issues)){status('尚未送出，請修正標示欄位。','error');guidance.focusFirst();return;}const values=Object.fromEntries(new FormData(form));await mutate('content_update',{id:item.id,values},'內容已儲存並直接核准；經文授權資料齊全時依日期開放。');};
+  form.scrollIntoView({block:'start',behavior:'auto'});(matchMedia('(pointer:coarse)').matches||innerWidth<760?heading:form.querySelector('input')).focus({preventScroll:true});
 }
 async function mutate(action,payload,message){
   if(busy||recovery)return;busy=true;const unlock=lockControls($('.review-panel'));status(action==='content_update'?'正在儲存靈修內容…':'正在更新審核狀態…');let committed=false;

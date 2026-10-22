@@ -1,0 +1,226 @@
+{
+  "baseline": "9b6b77850061e9cf715222a1cc0145a17c794e23",
+  "date": "2026-10-22",
+  "synthetic": true,
+  "productionWrites": false,
+  "devotionalEditor": {
+    "checks": [
+      "chromium 390: editor opening focuses its heading on mobile and first input on desktop",
+      "chromium 390: editor identifies the selected date and temporarily replaces its reading preview",
+      "chromium 390: keyboard section navigation neither submits nor creates a dirty draft",
+      "chromium 390: only the three existing licensing fields are optional",
+      "chromium 390: all missing or whitespace-only required fields are listed before any write",
+      "chromium 390: first missing field receives focus and an associated accessible explanation",
+      "chromium 390: correcting one field clears only its own obsolete error",
+      "chromium 390: error link reaches a later section without losing other text",
+      "chromium 390: visible correction and editor text meet contrast thresholds []",
+      "chromium 390: section and error controls retain 44 px touch areas",
+      "chromium 390: overlength content is identified before server truncation",
+      "chromium 390: server rejection retains current text and never marks valid fields as missing",
+      "chromium 390: valid retry preserves optional blanks and targets the original record once",
+      "chromium 390: acknowledged save restores reading view and reports the actual approval",
+      "chromium 390: cancelled record switch preserves the editor",
+      "chromium 390: cancelled discard keeps the editable text",
+      "chromium 390: confirmed cancel restores the original reading view and edit focus",
+      "chromium 390: switching records removes old correction messages",
+      "chromium 390: 200 percent text keeps editable content legible without page overflow {\"pageWidth\":390,\"viewport\":390,\"font\":32}",
+      "chromium 1440: editor opening focuses its heading on mobile and first input on desktop",
+      "chromium 1440: editor identifies the selected date and temporarily replaces its reading preview",
+      "chromium 1440: keyboard section navigation neither submits nor creates a dirty draft",
+      "chromium 1440: only the three existing licensing fields are optional",
+      "chromium 1440: all missing or whitespace-only required fields are listed before any write",
+      "chromium 1440: first missing field receives focus and an associated accessible explanation",
+      "chromium 1440: correcting one field clears only its own obsolete error",
+      "chromium 1440: error link reaches a later section without losing other text",
+      "chromium 1440: visible correction and editor text meet contrast thresholds []",
+      "chromium 1440: section and error controls retain 44 px touch areas",
+      "chromium 1440: overlength content is identified before server truncation",
+      "chromium 1440: server rejection retains current text and never marks valid fields as missing",
+      "chromium 1440: valid retry preserves optional blanks and targets the original record once",
+      "chromium 1440: acknowledged save restores reading view and reports the actual approval",
+      "chromium 1440: cancelled record switch preserves the editor",
+      "chromium 1440: cancelled discard keeps the editable text",
+      "chromium 1440: confirmed cancel restores the original reading view and edit focus",
+      "chromium 1440: switching records removes old correction messages",
+      "chromium 1440: 200 percent text keeps editable content legible without page overflow {\"pageWidth\":1440,\"viewport\":1440,\"font\":32}",
+      "chromium readonly: existing access rules expose no editor or write",
+      "chromium denied: existing access rules expose no editor or write",
+      "chromium unknown_ack: uncertain or acknowledged-but-unread result retains text and blocks another write",
+      "chromium unknown_ack: blocked retry cannot silently resubmit",
+      "chromium readback: uncertain or acknowledged-but-unread result retains text and blocks another write",
+      "chromium readback: blocked retry cannot silently resubmit",
+      "chromium readback: read-only recovery reveals the saved record without a second approval",
+      "webkit 390: editor opening focuses its heading on mobile and first input on desktop",
+      "webkit 390: editor identifies the selected date and temporarily replaces its reading preview",
+      "webkit 390: keyboard section navigation neither submits nor creates a dirty draft",
+      "webkit 390: only the three existing licensing fields are optional",
+      "webkit 390: all missing or whitespace-only required fields are listed before any write",
+      "webkit 390: first missing field receives focus and an associated accessible explanation",
+      "webkit 390: correcting one field clears only its own obsolete error",
+      "webkit 390: error link reaches a later section without losing other text",
+      "webkit 390: visible correction and editor text meet contrast thresholds []",
+      "webkit 390: section and error controls retain 44 px touch areas",
+      "webkit 390: overlength content is identified before server truncation",
+      "webkit 390: server rejection retains current text and never marks valid fields as missing",
+      "webkit 390: valid retry preserves optional blanks and targets the original record once",
+      "webkit 390: acknowledged save restores reading view and reports the actual approval",
+      "webkit 390: cancelled record switch preserves the editor",
+      "webkit 390: cancelled discard keeps the editable text",
+      "webkit 390: confirmed cancel restores the original reading view and edit focus",
+      "webkit 390: switching records removes old correction messages",
+      "webkit 390: 200 percent text keeps editable content legible without page overflow {\"pageWidth\":390,\"viewport\":390,\"font\":32}",
+      "webkit 1440: editor opening focuses its heading on mobile and first input on desktop",
+      "webkit 1440: editor identifies the selected date and temporarily replaces its reading preview",
+      "webkit 1440: keyboard section navigation neither submits nor creates a dirty draft",
+      "webkit 1440: only the three existing licensing fields are optional",
+      "webkit 1440: all missing or whitespace-only required fields are listed before any write",
+      "webkit 1440: first missing field receives focus and an associated accessible explanation",
+      "webkit 1440: correcting one field clears only its own obsolete error",
+      "webkit 1440: error link reaches a later section without losing other text",
+      "webkit 1440: visible correction and editor text meet contrast thresholds []",
+      "webkit 1440: section and error controls retain 44 px touch areas",
+      "webkit 1440: overlength content is identified before server truncation",
+      "webkit 1440: server rejection retains current text and never marks valid fields as missing",
+      "webkit 1440: valid retry preserves optional blanks and targets the original record once",
+      "webkit 1440: acknowledged save restores reading view and reports the actual approval",
+      "webkit 1440: cancelled record switch preserves the editor",
+      "webkit 1440: cancelled discard keeps the editable text",
+      "webkit 1440: confirmed cancel restores the original reading view and edit focus",
+      "webkit 1440: switching records removes old correction messages",
+      "webkit 1440: 200 percent text keeps editable content legible without page overflow {\"pageWidth\":1440,\"viewport\":1440,\"font\":32}",
+      "webkit readonly: existing access rules expose no editor or write",
+      "webkit denied: existing access rules expose no editor or write",
+      "webkit unknown_ack: uncertain or acknowledged-but-unread result retains text and blocks another write",
+      "webkit unknown_ack: blocked retry cannot silently resubmit",
+      "webkit readback: uncertain or acknowledged-but-unread result retains text and blocks another write",
+      "webkit readback: blocked retry cannot silently resubmit",
+      "webkit readback: read-only recovery reveals the saved record without a second approval",
+      "no uncaught browser errors "
+    ],
+    "synthetic": true,
+    "productionWrites": false,
+    "realIPhone": false,
+    "macSafari": false
+  },
+  "qualityGate": {
+    "origin": "http://127.0.0.1:8769",
+    "apiMode": "isolated_synthetic",
+    "checks": [
+      {
+        "name": "frontend syntax",
+        "files": 198,
+        "passed": true
+      },
+      {
+        "name": "phase4/worker.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "app-catalog.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/definitions.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/database.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/line-provider.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-journey-db.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/browser.mjs",
+        "passed": true,
+        "seconds": 4,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/handoff.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/email-login.mjs",
+        "passed": true,
+        "seconds": 6,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/browser.mjs",
+        "passed": true,
+        "seconds": 17,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-list.mjs",
+        "passed": true,
+        "seconds": 26,
+        "exitCode": 0
+      },
+      {
+        "name": "phase3/browser.mjs",
+        "passed": true,
+        "seconds": 69,
+        "exitCode": 0
+      },
+      {
+        "name": "phase4/browser.mjs",
+        "passed": true,
+        "seconds": 37,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/regression.mjs",
+        "passed": true,
+        "seconds": 46,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/contrast.mjs",
+        "passed": true,
+        "seconds": 50,
+        "exitCode": 0
+      }
+    ],
+    "failures": 0
+  },
+  "contrast": {
+    "pages": 41,
+    "textChecks": 1512,
+    "failures": []
+  },
+  "nativeSafari": {
+    "macOS": "27.0.1",
+    "safari": "27.0.1",
+    "scope": "localhost synthetic daily devotional editor",
+    "confirmed": [
+      "editor opening and shared font",
+      "two missing fields listed before submission",
+      "first missing field receives focus",
+      "correction link focuses response prayer",
+      "section control focuses licensing section"
+    ],
+    "realIPhone": false
+  },
+  "finalRefinement": "After the fixed phase3 suite, cancellation message was changed to clear obsolete validation status; the final devotional editor suite passed all 91 checks."
+}

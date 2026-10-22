@@ -33,17 +33,58 @@ const escapeFile=value=>value.replace(/[\\/:*?"<>|\s]+/g,'-');
 function memberSelect(key,current=''){
  const input=document.createElement('input'),menu=el('div','','schedule-member-options');
  input.type='search';input.value=current||'';input.maxLength=300;input.placeholder='輸入姓名搜尋';input.autocomplete='off';input.setAttribute('role','combobox');input.setAttribute('aria-autocomplete','list');input.setAttribute('aria-expanded','false');
+ menu.id='schedule-member-menu-'+key;menu.setAttribute('role','listbox');menu.setAttribute('aria-label',preferenceFor(key).label+'人員');input.setAttribute('aria-controls',menu.id);
+ let activeIndex=-1;
  const keyword={worship_leader:'主領',tech_sound:'音控',tech_video:'導播',usher1:'招待',usher2:'招待',presider:'司會',prayer:'禱告',keyboard:'司琴',guitar:'吉他',bass:'貝斯',drums:'鼓'}[key]||preferenceFor(key).label||'';
  const sorted=[...members].sort((a,b)=>Number((b.ministry||'').includes(keyword))-Number((a.ministry||'').includes(keyword))||a.name.localeCompare(b.name,'zh-TW'));
- const close=()=>{menu.hidden=true;input.setAttribute('aria-expanded','false');};
- const position=()=>{const box=input.getBoundingClientRect();menu.style.left=box.left+'px';menu.style.top=Math.min(box.bottom+4,window.innerHeight-260)+'px';menu.style.width=box.width+'px';};
- const choose=name=>{input.value=name;close();input.focus();input.dispatchEvent(new Event('change',{bubbles:true}));};
- const render=()=>{const term=input.value.trim().toLocaleLowerCase('zh-TW'),matches=sorted.filter(person=>person.name.toLocaleLowerCase('zh-TW').includes(term)).slice(0,30);menu.replaceChildren();const clear=el('button','－ 不安排','schedule-member-option');clear.type='button';clear.onclick=()=>choose('');menu.append(clear);for(const person of matches){const option=el('button','','schedule-member-option');option.type='button';option.append(el('strong',person.name),el('small',person.group_name||'未編組'));option.onclick=()=>choose(person.name);menu.append(option);}if(term&&!matches.length)menu.append(el('p','名冊找不到「'+input.value.trim()+'」，仍可直接使用這個姓名','schedule-member-empty'));position();menu.hidden=false;input.setAttribute('aria-expanded','true');};
- input.addEventListener('focus',render);input.addEventListener('input',render);input.addEventListener('keydown',event=>{if(event.key==='Escape')close();if(event.key==='ArrowDown'){event.preventDefault();menu.querySelector('button')?.focus();}});input.addEventListener('blur',()=>setTimeout(()=>{if(!menu.contains(document.activeElement))close();},120));
+ const close=()=>{menu.hidden=true;activeIndex=-1;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');};
+ const position=()=>{const box=input.getBoundingClientRect();menu.style.left=box.left+'px';menu.style.top=Math.max(8,Math.min(box.bottom+4,window.innerHeight-260))+'px';menu.style.width=box.width+'px';};
+ const choose=name=>{input.value=name;input.focus({preventScroll:true});close();input.dispatchEvent(new Event('change',{bubbles:true}));};
+ const highlight=index=>{const options=[...menu.querySelectorAll('[role=option]')];if(!options.length)return;activeIndex=(index+options.length)%options.length;options.forEach((option,i)=>option.setAttribute('aria-selected',String(i===activeIndex)));input.setAttribute('aria-activedescendant',options[activeIndex].id);options[activeIndex].scrollIntoView({block:'nearest'});};
+ const render=()=>{
+  const term=input.value.trim().toLocaleLowerCase('zh-TW'),matches=sorted.filter(person=>person.name.toLocaleLowerCase('zh-TW').includes(term)).slice(0,30);menu.replaceChildren();activeIndex=-1;input.removeAttribute('aria-activedescendant');
+  const option=(name,group,index)=>{const button=el('button','','schedule-member-option');button.type='button';button.tabIndex=-1;button.id=menu.id+'-'+index;button.dataset.name=name;button.setAttribute('role','option');button.setAttribute('aria-selected','false');button.append(el('strong',name||'－ 不安排'));if(name)button.append(el('small',group||'未編組'));button.addEventListener('mousedown',event=>event.preventDefault());button.onclick=()=>choose(name);menu.append(button);};
+  option('', '',0);matches.forEach((person,index)=>option(person.name,person.group_name,index+1));
+  if(term&&!matches.length)menu.append(el('p','名冊找不到「'+input.value.trim()+'」，仍可直接使用這個姓名','schedule-member-empty'));
+  position();menu.hidden=false;input.setAttribute('aria-expanded','true');
+ };
+ input.addEventListener('focus',render);input.addEventListener('input',render);
+ input.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){event.preventDefault();close();}
+  else if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();if(menu.hidden)render();highlight(activeIndex<0?(event.key==='ArrowDown'?0:-1):activeIndex+(event.key==='ArrowDown'?1:-1));}
+  else if(event.key==='Enter'){event.preventDefault();const selected=menu.hidden?null:menu.querySelector('[aria-selected=true]');if(selected)choose(selected.dataset.name);else close();}
+  else if(event.key==='Tab')close();
+ });
+ input.addEventListener('blur',close);
  menu.hidden=true;document.body.append(menu);return input;
 }
 
-function openForm(row=null){if(busy||!draft.canLeave())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.replaceChildren();editor.hidden=false;const form=document.createElement('form'),grid=el('div','','edit-grid'),date=document.createElement('input'),inputs={};date.type='date';date.required=true;date.value=row?.service_date||'';let wrap=el('label','服事日期');wrap.append(date);grid.append(wrap);for(const key of ['event',...visibleRoles()]){const input=['event','speaker','singers','ushers'].includes(key)?document.createElement('input'):memberSelect(key,row?.[key]||'');if(input.tagName==='INPUT'){input.value=row?.[key]||'';input.maxLength=300;}wrap=el('label',key==='event'?labels.event:preferenceFor(key).label);wrap.append(input);grid.append(wrap);inputs[key]=input;}const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button',row?'儲存更正':'儲存排班');cancel.type='button';cancel.onclick=()=>{if(busy||!draft.canLeave())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;};save.type='submit';const inline=el('p','','editor-result');inline.setAttribute('aria-live','off');actions.append(cancel,save);form.append(el('h2',row?'更正服事排班':'新增服事排班'),grid,inline,actions);form.onsubmit=async e=>{e.preventDefault();if(busy||!form.reportValidity())return;busy=true;const unlock=lockControls(form);pageMessage('正在儲存服事安排，請稍候…','busy');try{const payload={service_date:date.value,...Object.fromEntries(Object.entries(inputs).map(([k,v])=>[k,v.value]))};await saveSchedule(db,church,payload,row);draft.clear();draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;const loaded=await load();pageMessage(loaded?(row?'排班已更正。':'排班已儲存。'):'排班已儲存，但清單暫時無法更新；請重新讀取，勿再次新增。',loaded?'success':'warning');}catch(error){pageMessage(error.message,'error');}finally{unlock();busy=false;}};editor.append(form);draft.attach(form);editor.scrollIntoView({behavior:'smooth',block:'start'});date.focus();}
+function openForm(row=null){
+ if(busy||!draft.canLeave())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.replaceChildren();editor.hidden=false;
+ const form=document.createElement('form'),heading=el('h2',row?'更正服事排班':'新增服事排班'),basic=el('fieldset','','schedule-form-section'),grid=el('div','','edit-grid'),date=document.createElement('input'),inputs={};
+ heading.tabIndex=-1;basic.append(el('legend','1 · 聚會資料'));date.type='date';date.required=true;date.name='service_date';date.value=isoDate(row?.service_date)||'';
+ let wrap=el('label','服事日期');wrap.append(date);grid.append(wrap);
+ const eventInput=document.createElement('input');eventInput.name='event';eventInput.maxLength=300;eventInput.value=row?.event||'';wrap=el('label',labels.event);wrap.append(eventInput);grid.append(wrap);inputs.event=eventInput;basic.append(grid);
+ const assignments=el('fieldset','','schedule-form-section');assignments.append(el('legend','2 · 服事人員'),el('p','尚未確定的人員可先留空，之後再補齊。','muted'));
+ const toolbar=el('div','','schedule-editor-filters'),searchLabel=el('label','尋找服事項目或姓名'),search=document.createElement('input'),stateLabel=el('label','安排狀態'),filter=document.createElement('select'),clear=el('button','顯示全部','secondary'),summary=el('p','','schedule-editor-summary'),roleGrid=el('div','','edit-grid schedule-editor-roles'),empty=el('p','找不到符合的服事項目，請調整搜尋或安排狀態。','schedule-editor-empty');
+ search.type='search';search.id='schedule-role-search';search.placeholder='例如：音控、招待或姓名';search.autocomplete='off';searchLabel.append(search);
+ filter.id='schedule-role-filter';for(const [value,label] of [['all','全部項目'],['empty','尚未安排'],['filled','已安排']])filter.append(new Option(label,value));stateLabel.append(filter);clear.type='button';toolbar.append(searchLabel,stateLabel,clear);summary.setAttribute('role','status');summary.setAttribute('aria-live','polite');empty.hidden=true;
+ const roleRows=visibleRoles().map(key=>{
+  const input=['speaker','singers','ushers'].includes(key)?document.createElement('input'):memberSelect(key,row?.[key]||'');input.value=row?.[key]||'';input.maxLength=300;input.name=key;inputs[key]=input;
+  const label=el('label',preferenceFor(key).label);label.dataset.scheduleRole=key;label.append(input);roleGrid.append(label);return{label,input,title:preferenceFor(key).label};
+ });
+ const assigned=input=>!!input.value.trim()&&input.value.trim()!=='－';
+ const summarize=()=>{summary.textContent='已安排 '+roleRows.filter(({input})=>assigned(input)).length+' / '+roleRows.length+' 項 · 目前顯示 '+roleRows.filter(({label})=>!label.hidden).length+' 項';};
+ const applyFilter=()=>{const term=search.value.trim().toLocaleLowerCase('zh-TW');for(const {label,input,title}of roleRows)label.hidden=!(title+' '+input.value).toLocaleLowerCase('zh-TW').includes(term)||(filter.value==='empty'&&assigned(input))||(filter.value==='filled'&&!assigned(input));empty.hidden=roleRows.some(({label})=>!label.hidden);clear.disabled=!term&&filter.value==='all';summarize();};
+ // Filtering is navigation inside the form; it must not mark business data dirty or submit it.
+ toolbar.addEventListener('input',event=>{event.stopPropagation();applyFilter();});toolbar.addEventListener('change',event=>{event.stopPropagation();applyFilter();});toolbar.addEventListener('keydown',event=>{if(event.key==='Enter')event.preventDefault();});
+ clear.onclick=()=>{search.value='';filter.value='all';applyFilter();};
+ roleGrid.addEventListener('input',summarize);roleGrid.addEventListener('change',summarize);applyFilter();assignments.append(toolbar,summary,roleGrid,empty);
+ const actions=el('div','','editor-actions'),cancel=el('button','取消','secondary'),save=el('button',row?'儲存更正':'儲存排班');cancel.type='button';cancel.onclick=()=>{if(busy||!draft.canLeave())return;draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;};save.type='submit';
+ const inline=el('p','','editor-result');inline.setAttribute('aria-live','off');actions.append(cancel,save);form.append(heading,basic,assignments,inline,actions);
+ form.onsubmit=async e=>{e.preventDefault();if(busy||!form.reportValidity())return;busy=true;const unlock=lockControls(form);pageMessage('正在儲存服事安排，請稍候…','busy');try{const payload={...Object.fromEntries(roles().map(key=>[key,row?.[key]??''])),service_date:date.value,...Object.fromEntries(Object.entries(inputs).map(([k,v])=>[k,v.value]))};await saveSchedule(db,church,payload,row);draft.clear();draft.dispose();document.querySelectorAll('.schedule-member-options').forEach(node=>node.remove());editor.hidden=true;const loaded=await load();pageMessage(loaded?(row?'排班已更正。':'排班已儲存。'):'排班已儲存，但清單暫時無法更新；請重新讀取，勿再次新增。',loaded?'success':'warning');}catch(error){pageMessage(error.message,'error');}finally{unlock();busy=false;}};
+ editor.append(form);draft.attach(form);const mobile=matchMedia('(pointer:coarse)').matches||innerWidth<760;editor.scrollIntoView({behavior:mobile?'auto':'smooth',block:'start'});(mobile?heading:date).focus({preventScroll:true});
+}
 
 function openRoleSettings(){
   if(busy)return;if(!roleSettings.hidden){if(!roleDraft.canLeave())return;roleDraft.dispose();roleSettings.hidden=true;$('#manageRoles').textContent='管理服事項目';return;}

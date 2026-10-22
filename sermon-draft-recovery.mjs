@@ -1,3 +1,4 @@
+import {createDraftCopyDialog,sermonCopyText} from './draft-copy-dialog.mjs?v=20261022-experience14';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 import {validateDraft} from './sermon-preparation-contract.mjs?v=20261014-directuse1';
 import {createSermonDraftStore} from './sermon-draft-store.mjs?v=20261022-experience13';
@@ -18,20 +19,24 @@ export function validateDeviceSermon(value){
 const element=(tag,text='',className='')=>Object.assign(document.createElement(tag),{textContent:text,className});
 
 // One opt-in copy per verified login, independent of official versions, AI jobs and NAS.
-export function createSermonDraftRecovery({db,host,readDraft,mayLeave,isBusy,setBusy,loadLatest,onRestore,onIdentityLost,message,store=createSermonDraftStore()}){
+export function createSermonDraftRecovery({db,host,readDraft,canExport=()=>false,mayLeave,isBusy,setBusy,loadLatest,onRestore,onIdentityLost,message,store=createSermonDraftStore()}){
  let scope=null,pending=null,active=null,queue=Promise.resolve(),generation=0,working=false,timer=null,snapshot=null,lastSnapshot=null,inputRevision=0,snapshotRevision=0;
  const heading=element('h2','關閉後繼續預備'),copy=element('p','可選擇將這篇信息暫存在這個瀏覽器／App，24 小時內於同一次登入續填。共用裝置請勿開啟。','muted'),actions=element('div','','studio-actions'),toggle=element('button','在這台裝置保留草稿','secondary'),resume=element('button','繼續裝置草稿','secondary'),remove=element('button','刪除裝置草稿','secondary'),status=element('p','尚未開啟裝置草稿。','studio-device-status'),detail=element('p','','muted');
  for(const button of [toggle,resume,remove]){button.type='button';button.dataset.appControl='surface';}
  status.setAttribute('role','status');actions.append(toggle,resume,remove);host.append(heading,copy,detail,actions,status);
+ const viewer=createDraftCopyDialog(),inspect=element('button','查看裝置草稿','secondary'),pageCopy=element('button','取回本頁內容','secondary');
+ for(const button of [inspect,pageCopy]){button.type='button';button.dataset.appControl='surface';actions.append(button);}
  const say=text=>{status.textContent=text;};
  const live=epoch=>generation===epoch&&!!scope;
  const allowed=access=>canOpen(access,'M+','website_weekly')&&canAction(access,'M+','website_weekly','edit');
- async function identity(fresh=true){
+ async function identity(fresh=true,exportCopy=false){
   const access=await readAccess(db,{fresh}),result=await db.auth.getSession(),next=sessionScope(result.data?.session);
   if(result.error||!next||access.user?.id!==next.userId||!allowed(access))throw Error('無法確認目前登入與信息編輯權限，尚未套用草稿。');
+  if(exportCopy&&!canAction(access,'M+','website_weekly','export'))throw Error('目前沒有信息匯出權限，副本未開啟或下載。');
   return next;
  }
  function render(){
+  inspect.hidden=!pending||!canExport();pageCopy.hidden=!active||!canExport();inspect.disabled=pageCopy.disabled=working||isBusy();
   host.hidden=!scope;toggle.hidden=!active;toggle.disabled=resume.disabled=remove.disabled=working||isBusy();
   resume.hidden=!pending||!!active?.enabled;remove.hidden=!pending;
   toggle.textContent=active?.enabled?'停止保留並刪除裝置草稿':'在這台裝置保留草稿';
@@ -73,6 +78,24 @@ export function createSermonDraftRecovery({db,host,readDraft,mayLeave,isBusy,set
   let cleared=true;try{if(pending?.projectId===project.id){await store.remove(scope,active?.revision||pending.revision);pending=null;}}catch{cleared=false;}
   active={id:project.id,version:project.version,enabled:false,revision:null};render();say(cleared?'正式版本已儲存，這篇信息的裝置副本已清除。':'正式版本已儲存，但裝置副本未能清除；請先核對正式版本，勿重複儲存。');return cleared;
  }
+ async function inspectCopy(source){
+  if(working||isBusy()||!scope)return;working=true;setBusy(true);render();const epoch=generation;
+  try{
+   const verified=await identity(true,true);if(!live(epoch))return;if(!same(scope,verified))throw Error('登入已變更，副本未開啟。');await flush();if(!live(epoch))return;
+   let payload,baseVersion,sourceId,revision;
+   if(source==='device'){const row=await store.read(scope);if(!live(epoch))return;if(!row||row.revision!==pending?.revision)throw Error('裝置草稿已變更或到期，請重新載入後再查看。');payload=validateDeviceSermon(row.payload);baseVersion=row.baseVersion;sourceId=row.projectId;revision=row.revision;}
+   else{if(!active)throw Error('請先開啟一篇信息。');payload=validateDeviceSermon(readDraft());baseVersion=active.version;sourceId=active.id;}
+   const serialized=JSON.stringify(payload),data={format:'church-os-draft-copy-v1',kind:'sermon',source,baseVersion,payload};
+   viewer.open({title:source==='device'?'裝置信息草稿副本':'目前信息內容副本',text:sermonCopyText(payload,{source,baseVersion}),data,filename:(payload.information.title||'未填主題')+'-未送出副本',returnFocus:source==='device'?inspect:pageCopy,verify:async()=>{
+    try{const next=await identity(true,true);if(!live(epoch)||!same(scope,next))throw Error('登入已變更，副本未下載。');
+     if(source==='device'){const row=await store.read(scope);if(!live(epoch)||!row||row.revision!==revision)throw Error('裝置副本已變更或到期，請重新開啟檢視。');}
+     else if(active?.id!==sourceId||JSON.stringify(readDraft())!==serialized)throw Error('本頁內容已變更，請重新開啟副本。');
+    }catch(error){viewer.close();if(live(epoch))say(error.message);throw error;}
+   }});
+  }catch(error){if(live(epoch))say(error.message||'副本未能開啟，本頁輸入仍保留。');}
+  finally{working=false;setBusy(false);render();}
+ }
+ inspect.onclick=()=>void inspectCopy('device');pageCopy.onclick=()=>void inspectCopy('page');
  toggle.onclick=async()=>{
   if(working||isBusy()||!active)return;working=true;render();const selected=active,epoch=generation;
   try{
@@ -105,9 +128,9 @@ export function createSermonDraftRecovery({db,host,readDraft,mayLeave,isBusy,set
  const subscription=db.auth.onAuthStateChange?.((event,session)=>{
   if(!scope){if(event==='SIGNED_OUT'){generation++;onIdentityLost();}return;}const next=sessionScope(session);
   if(event==='SIGNED_OUT'||(['INITIAL_SESSION','SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event)&&!same(scope,next))){
-   const previous=scope;generation++;cancelTimer();if(active)active.enabled=false;scope=pending=active=snapshot=null;host.hidden=true;detail.textContent='';say('登入已變更。');onIdentityLost();queue=queue.catch(()=>{}).then(()=>store.clearSession(previous)).catch(()=>{});
+   const previous=scope;viewer.close();generation++;cancelTimer();if(active)active.enabled=false;scope=pending=active=snapshot=null;host.hidden=true;detail.textContent='';say('登入已變更。');onIdentityLost();queue=queue.catch(()=>{}).then(()=>store.clearSession(previous)).catch(()=>{});
   }
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)void flush();});window.addEventListener('pagehide',()=>void flush());
- return {refresh,opened,changed,verify,saved,render,flush,dispose(){generation++;cancelTimer();subscription?.data?.subscription?.unsubscribe?.();}};
+ return {refresh,opened,changed,verify,saved,render,flush,dispose(){viewer.close();generation++;cancelTimer();subscription?.data?.subscription?.unsubscribe?.();}};
 }

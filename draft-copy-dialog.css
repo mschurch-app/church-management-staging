@@ -1,0 +1,10 @@
+.draft-copy-dialog{box-sizing:border-box;width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--app-border,#d7e0da);border-radius:20px;padding:24px;background:var(--app-surface,#fff);color:var(--app-ink,#203b30);font-family:var(--app-font-body,system-ui,sans-serif);overscroll-behavior:contain}
+.draft-copy-dialog::backdrop{background:rgba(20,39,32,.5)}
+.draft-copy-dialog h2{font-family:inherit;font-size:1.35rem;color:var(--app-ink,#203b30);margin:0 0 12px}
+.draft-copy-dialog p{color:var(--app-secondary,#52665a);font-size:1rem;line-height:1.65;overflow-wrap:anywhere}
+.draft-copy-dialog label{display:grid;gap:8px;font-size:1rem;font-weight:650}
+.draft-copy-dialog textarea{box-sizing:border-box;width:100%;min-height:200px;max-height:42dvh;resize:vertical;font:400 max(1rem,16px)/1.65 var(--app-font-body,system-ui,sans-serif);color:var(--app-ink,#203b30);background:var(--app-surface-muted,#f6f8f5);border:1px solid var(--app-border,#d7e0da);border-radius:12px;padding:12px}
+.draft-copy-dialog .draft-copy-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.draft-copy-dialog .draft-copy-actions button{min-width:44px;min-height:44px;white-space:normal;font-size:1rem}
+.draft-copy-dialog .draft-copy-status{min-height:1.65em;margin-bottom:0}
+@media(max-width:600px){.draft-copy-dialog{padding:18px}.draft-copy-dialog .draft-copy-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.draft-copy-dialog .draft-copy-actions button{box-sizing:border-box;width:100%;min-width:44px}}

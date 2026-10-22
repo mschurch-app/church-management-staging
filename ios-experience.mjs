@@ -11,7 +11,7 @@ if(!window.__churchIosExperience){
   // Keep the loaded shared stylesheet attached: moving it can temporarily drop
   // its imported tokens and header rules while the browser reloads the sheet.
   if(consistency)document.head.insertBefore(stylesheet,consistency);
-  else{const shared=document.createElement('link');shared.rel='stylesheet';shared.dataset.appConsistency='1';shared.href=new URL('./app-consistency.css?v=20261012-readable2',import.meta.url).href;document.head.append(stylesheet,shared);}
+  else{const shared=document.createElement('link');shared.rel='stylesheet';shared.dataset.appConsistency='1';shared.href=new URL('./app-consistency.css?v=20261022-experience4',import.meta.url).href;document.head.append(stylesheet,shared);}
   document.documentElement.classList.add('church-ios');
   }
   if(/iPhone|iPad|iPod/.test(navigator.userAgent)||navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)document.documentElement.classList.add('church-ios-device');

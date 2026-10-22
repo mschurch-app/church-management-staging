@@ -42,15 +42,11 @@ async function work(task, pending = '正在讀取工作資料…') {
 }
 
 function tab(name) {
+  if(name==='editor'&&!state.roles.has('entry')&&!state.batch)name='batches';
   for (const key of ['batches','editor','roles']) {
     $(`#${key}-panel`).hidden = key !== name;
     const button = $(`[data-tab="${key}"]`);
     button.setAttribute('aria-current', key === name ? 'page' : 'false');
-  }
-  if(name==='editor'&&!state.roles.has('entry')){
-    $('#cash-form').querySelectorAll('input,select,button').forEach(control=>{control.disabled=true;});
-    $('#add-donor').disabled=true;$('#add-anonymous').disabled=true;
-    $('#editor-state').textContent='唯讀：此帳號目前沒有「同工登錄」權限，可依現有權限查看或複審。新增、搜尋會友與修改奉獻需由系統負責人授權「同工登錄」。';
   }
 }
 
@@ -331,7 +327,7 @@ async function openBatch(id) {
   $('#counted-cash').value = batch.counted_cash;
   $('#counter-one').value = batch.counter_1; $('#counter-two').value = batch.counter_2;
   $('#editor-title').textContent = `${batch.offering_date} 主日現金`;
-  $('#editor-state').textContent = `狀態：${statusLabel(batch.status)} · 版本 ${batch.version}`;
+  $('#editor-state').textContent = `狀態：${statusLabel(batch.status)} · 版本 ${batch.version}${state.roles.has('entry')?'':' · 您可查看並依權限複審，不能修改奉獻明細。'}`;
   drawGroups(); totals(); drawReview(response.events);
   const writable = state.roles.has('entry') && ['draft','returned'].includes(batch.status);
   $('#cash-form').querySelectorAll('input,select,button').forEach(control => { control.disabled = !writable; });
@@ -464,6 +460,7 @@ async function roles() {
 for (const button of document.querySelectorAll('[data-tab]')) button.addEventListener('click', () => void work(async () => {
   const name = button.dataset.tab; if (name === 'batches') await batches(); if (name === 'roles') await roles(); tab(name);
 }));
+$('#review-only-roles').addEventListener('click',()=>void work(async()=>{await roles();tab('roles');}));
 $('#reload-roles').addEventListener('click', () => void work(async () => { await roles(); await workers(); status('已重新讀取人員權限。'); }));
 $('#new-batch').addEventListener('click', clearEditor);
 $('#back-to-list').addEventListener('click', () => void work(async () => { await batches(); tab('batches'); }));
@@ -493,7 +490,15 @@ await work(async () => {
   const profile = await api('profile'); state.roles = new Set(profile.roles); state.owner = profile.owner; state.userId = profile.actorUserId || checked.data.user.id;
   if (!state.owner && !state.roles.size) throw new Error('此帳號尚未獲授權使用財務模組。');
   $('#finance-app').hidden = false; $('#roles-tab').hidden = !state.owner;
-  $('#new-batch').hidden = !state.roles.has('entry');
+  const canEnter=state.roles.has('entry');
+  $('#new-batch').hidden = !canEnter;
+  $('[data-tab="editor"]').hidden = !canEnter;
+  $('#review-only-notice').hidden = canEnter;
+  $('#review-only-roles').hidden = !state.owner || canEnter;
+  if(!canEnter){
+    $('#review-only-title').textContent=state.roles.has('approve')?'您的工作是牧師複審':'您的工作是核對奉獻紀錄';
+    $('#review-only-message').textContent=state.roles.has('approve')?'同工建立紀錄、師母核對現金後，狀態為「待牧師複審」時，請點下方的「查看當週紀錄」完成審核。您目前沒有新增奉獻的權限。':'同工建立紀錄後，請點下方的「查看當週紀錄」，依您的權限核對。您目前沒有新增奉獻的權限。';
+  }
   await workers(); await batches();
   status(state.roles.has('entry')?'已載入主日奉獻工作區。':'已載入主日奉獻工作區。此帳號未授權「同工登錄」，可依現有權限查看或複審。');
 });

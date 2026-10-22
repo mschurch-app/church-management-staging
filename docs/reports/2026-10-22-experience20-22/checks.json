@@ -1,0 +1,595 @@
+{
+  "title": "教會 OS 第二十至二十二階段驗收紀錄",
+  "base": {
+    "pr": 248,
+    "commit": "d90566b600ae1074356c402d411546bf88e906ea",
+    "stages16to19": "已上線，發布核對另見工作目錄 experience16-19-release.json"
+  },
+  "status": "本批已獲授權，整合驗證完成，待合併發布",
+  "stages": [
+    {
+      "number": 20,
+      "title": "審核意見保留與讀取恢復",
+      "commit": "666cd17",
+      "changes": [
+        "切換或重新載入前確認，讀取失敗與無效回條保留原意見及未送出標記。",
+        "完整核對選取 ID、堂會、日期、版本、標題與狀態後才替換內容。",
+        "區分明確失敗、寫入結果不明、已完成但讀回失敗；只讀重新載入不重送審核。"
+      ]
+    },
+    {
+      "number": 21,
+      "title": "登入隔離與媒體確認",
+      "commit": "760c383",
+      "changes": [
+        "登出或更換帳號清除頁面私有內容；所有審核與媒體請求在非同步前後檢查同一登入世代。",
+        "寫入前以 readAccess fresh 模式檢查身分與審核能力，Auth callback 保持同步，延後執行權限讀取。",
+        "返回頁面或同帳號權杖更新時只讀核對權限與目前審核分工，保留未送出意見。",
+        "Canva 確認判斷原本相反，修正為取消不建立工作，明確確認才建立一次。",
+        "YouTube 共用元件增加可選 request 注入，審核頁接入同一驗證；原編輯頁預設流程保留。",
+        "補強已確認審核後讀回期間登出的情況，舊成功提示不覆蓋登入失效提示。"
+      ]
+    },
+    {
+      "number": 22,
+      "title": "雙軌待審清單與可恢復選取",
+      "changes": [
+        "待審優先依主日日期排列，其餘紀錄新到舊；新增內容類別、狀態與多詞搜尋。",
+        "數量標示已載入及部分清單，篩選不清除目前內容或意見；隱藏目前選取時顯示提示。",
+        "清除篩選、方向鍵與 Enter 操作、aria-pressed 狀態、重新建立清單後還原鍵盤焦點。",
+        "選取紀錄消失時保留意見，提供明確確認後重新選擇紀錄的動線。",
+        "沿用語意色、系統字體、44 px 控制、大字與手機版面；HTML、模組與 Worker 版本同步。"
+      ]
+    }
+  ],
+  "verification": {
+    "newCounts": {
+      "recovery": 41,
+      "identity": 69,
+      "queue": 60
+    },
+    "newTotal": 170,
+    "checks": {
+      "recovery": {
+        "checks": [
+          "chromium 390: cancelled selection retains comment and dirty marker",
+          "chromium 390: failed selection retains original work and blocks stale decisions",
+          "chromium 390: failed reload does not consume discard confirmation or clear work",
+          "chromium 390: mismatched detail cannot replace current record or clear comment",
+          "chromium 390: validated replacement clears only after read succeeds",
+          "chromium 390: explicit rejected decision retains comment and allows retry",
+          "chromium 390: unknown write keeps recoverable comment and blocks duplicate submission",
+          "chromium 390: programmatic duplicate blocked during recovery",
+          "chromium 390: acknowledged decision with failed refresh is distinct and blocks resubmission",
+          "chromium 390: recovery reload sends only reads",
+          "chromium 1440: cancelled selection retains comment and dirty marker",
+          "chromium 1440: failed selection retains original work and blocks stale decisions",
+          "chromium 1440: failed reload does not consume discard confirmation or clear work",
+          "chromium 1440: mismatched detail cannot replace current record or clear comment",
+          "chromium 1440: validated replacement clears only after read succeeds",
+          "chromium 1440: explicit rejected decision retains comment and allows retry",
+          "chromium 1440: unknown write keeps recoverable comment and blocks duplicate submission",
+          "chromium 1440: programmatic duplicate blocked during recovery",
+          "chromium 1440: acknowledged decision with failed refresh is distinct and blocks resubmission",
+          "chromium 1440: recovery reload sends only reads",
+          "webkit 390: cancelled selection retains comment and dirty marker",
+          "webkit 390: failed selection retains original work and blocks stale decisions",
+          "webkit 390: failed reload does not consume discard confirmation or clear work",
+          "webkit 390: mismatched detail cannot replace current record or clear comment",
+          "webkit 390: validated replacement clears only after read succeeds",
+          "webkit 390: explicit rejected decision retains comment and allows retry",
+          "webkit 390: unknown write keeps recoverable comment and blocks duplicate submission",
+          "webkit 390: programmatic duplicate blocked during recovery",
+          "webkit 390: acknowledged decision with failed refresh is distinct and blocks resubmission",
+          "webkit 390: recovery reload sends only reads",
+          "webkit 1440: cancelled selection retains comment and dirty marker",
+          "webkit 1440: failed selection retains original work and blocks stale decisions",
+          "webkit 1440: failed reload does not consume discard confirmation or clear work",
+          "webkit 1440: mismatched detail cannot replace current record or clear comment",
+          "webkit 1440: validated replacement clears only after read succeeds",
+          "webkit 1440: explicit rejected decision retains comment and allows retry",
+          "webkit 1440: unknown write keeps recoverable comment and blocks duplicate submission",
+          "webkit 1440: programmatic duplicate blocked during recovery",
+          "webkit 1440: acknowledged decision with failed refresh is distinct and blocks resubmission",
+          "webkit 1440: recovery reload sends only reads",
+          "no uncaught fixture errors "
+        ],
+        "synthetic": true,
+        "productionWrites": false
+      },
+      "identity": {
+        "checks": [
+          "chromium logout-read: identity loss clears private detail, comments and list",
+          "chromium logout-read: identity loss closes editing without stale dirty markers",
+          "chromium logout-read: late completion cannot replace identity-loss feedback with success",
+          "chromium logout-read: stale hidden decision handler cannot reopen confirmation",
+          "chromium logout-session: logout while awaiting token prevents the outgoing write",
+          "chromium logout-session: identity loss clears private detail, comments and list",
+          "chromium logout-session: identity loss closes editing without stale dirty markers",
+          "chromium logout-session: late completion cannot replace identity-loss feedback with success",
+          "chromium logout-session: stale hidden decision handler cannot reopen confirmation",
+          "chromium logout-response: already sent request is never retried after logout",
+          "chromium logout-response: identity loss clears private detail, comments and list",
+          "chromium logout-response: identity loss closes editing without stale dirty markers",
+          "chromium logout-response: late completion cannot replace identity-loss feedback with success",
+          "chromium logout-response: stale hidden decision handler cannot reopen confirmation",
+          "chromium logout-refresh: logout during acknowledged-write refresh does not resend",
+          "chromium logout-refresh: identity loss clears private detail, comments and list",
+          "chromium logout-refresh: identity loss closes editing without stale dirty markers",
+          "chromium logout-refresh: late completion cannot replace identity-loss feedback with success",
+          "chromium logout-refresh: stale hidden decision handler cannot reopen confirmation",
+          "chromium change-user: identity loss clears private detail, comments and list",
+          "chromium change-user: identity loss closes editing without stale dirty markers",
+          "chromium change-user: late completion cannot replace identity-loss feedback with success",
+          "chromium change-user: stale hidden decision handler cannot reopen confirmation",
+          "chromium refresh: same identity refresh preserves work after fresh verification",
+          "chromium refresh: background verification performs only reads",
+          "chromium revoke-view: identity loss clears private detail, comments and list",
+          "chromium revoke-view: identity loss closes editing without stale dirty markers",
+          "chromium revoke-view: late completion cannot replace identity-loss feedback with success",
+          "chromium revoke-view: stale hidden decision handler cannot reopen confirmation",
+          "chromium revoke-approve: fresh feature permission blocks outgoing decision and retains comment",
+          "chromium revoke-decision: changed reviewer assignment retains comment and removes decision actions",
+          "chromium canva: Escape never starts a Canva job",
+          "chromium canva: cancel button never consumes Canva quota",
+          "chromium canva: explicit confirmation starts exactly one synthetic job",
+          "webkit logout-read: identity loss clears private detail, comments and list",
+          "webkit logout-read: identity loss closes editing without stale dirty markers",
+          "webkit logout-read: late completion cannot replace identity-loss feedback with success",
+          "webkit logout-read: stale hidden decision handler cannot reopen confirmation",
+          "webkit logout-session: logout while awaiting token prevents the outgoing write",
+          "webkit logout-session: identity loss clears private detail, comments and list",
+          "webkit logout-session: identity loss closes editing without stale dirty markers",
+          "webkit logout-session: late completion cannot replace identity-loss feedback with success",
+          "webkit logout-session: stale hidden decision handler cannot reopen confirmation",
+          "webkit logout-response: already sent request is never retried after logout",
+          "webkit logout-response: identity loss clears private detail, comments and list",
+          "webkit logout-response: identity loss closes editing without stale dirty markers",
+          "webkit logout-response: late completion cannot replace identity-loss feedback with success",
+          "webkit logout-response: stale hidden decision handler cannot reopen confirmation",
+          "webkit logout-refresh: logout during acknowledged-write refresh does not resend",
+          "webkit logout-refresh: identity loss clears private detail, comments and list",
+          "webkit logout-refresh: identity loss closes editing without stale dirty markers",
+          "webkit logout-refresh: late completion cannot replace identity-loss feedback with success",
+          "webkit logout-refresh: stale hidden decision handler cannot reopen confirmation",
+          "webkit change-user: identity loss clears private detail, comments and list",
+          "webkit change-user: identity loss closes editing without stale dirty markers",
+          "webkit change-user: late completion cannot replace identity-loss feedback with success",
+          "webkit change-user: stale hidden decision handler cannot reopen confirmation",
+          "webkit refresh: same identity refresh preserves work after fresh verification",
+          "webkit refresh: background verification performs only reads",
+          "webkit revoke-view: identity loss clears private detail, comments and list",
+          "webkit revoke-view: identity loss closes editing without stale dirty markers",
+          "webkit revoke-view: late completion cannot replace identity-loss feedback with success",
+          "webkit revoke-view: stale hidden decision handler cannot reopen confirmation",
+          "webkit revoke-approve: fresh feature permission blocks outgoing decision and retains comment",
+          "webkit revoke-decision: changed reviewer assignment retains comment and removes decision actions",
+          "webkit canva: Escape never starts a Canva job",
+          "webkit canva: cancel button never consumes Canva quota",
+          "webkit canva: explicit confirmation starts exactly one synthetic job",
+          "no uncaught identity errors "
+        ],
+        "synthetic": true,
+        "productionWrites": false
+      },
+      "queue": {
+        "checks": [
+          "queue prioritizes pending dates then recent history without mutating source",
+          "combined search normalizes case and fullwidth text",
+          "status aliases are searchable without changing authorization",
+          "chromium 390: filtering keeps the selected detail and unsent comment with an explicit hidden-selection note",
+          "chromium 390: clear restores results and returns keyboard focus to search",
+          "chromium 390: arrow and Enter select a record and restore focus after async DOM rebuild",
+          "chromium 390: exactly one selected record is exposed to assistive technology",
+          "chromium 390: empty track filter provides a visible recovery action",
+          "chromium 390: status filter combines with loaded queue without requests",
+          "chromium 390: all queue navigation and filtering remain read-only",
+          "chromium 390: partial source reports loaded counts instead of claiming all work was loaded",
+          "chromium 390: populated queue and selection meet text contrast []",
+          "chromium 390: queue controls meet 44 px targets",
+          "chromium 390: 200 percent text fits the viewport {\"width\":390,\"scroll\":390,\"input\":32}",
+          "chromium 390: missing selected record preserves comment and provides another-selection route",
+          "chromium 390: declining another selection retains unsent text",
+          "chromium 390: explicitly choosing another record recovers from a missing item without writes",
+          "chromium 1440: filtering keeps the selected detail and unsent comment with an explicit hidden-selection note",
+          "chromium 1440: clear restores results and returns keyboard focus to search",
+          "chromium 1440: arrow and Enter select a record and restore focus after async DOM rebuild",
+          "chromium 1440: exactly one selected record is exposed to assistive technology",
+          "chromium 1440: empty track filter provides a visible recovery action",
+          "chromium 1440: status filter combines with loaded queue without requests",
+          "chromium 1440: all queue navigation and filtering remain read-only",
+          "chromium 1440: partial source reports loaded counts instead of claiming all work was loaded",
+          "chromium 1440: populated queue and selection meet text contrast []",
+          "chromium 1440: queue controls meet 44 px targets",
+          "chromium 1440: 200 percent text fits the viewport {\"width\":1440,\"scroll\":1440,\"input\":32}",
+          "chromium 1440: missing selected record preserves comment and provides another-selection route",
+          "chromium 1440: declining another selection retains unsent text",
+          "chromium 1440: explicitly choosing another record recovers from a missing item without writes",
+          "webkit 390: filtering keeps the selected detail and unsent comment with an explicit hidden-selection note",
+          "webkit 390: clear restores results and returns keyboard focus to search",
+          "webkit 390: arrow and Enter select a record and restore focus after async DOM rebuild",
+          "webkit 390: exactly one selected record is exposed to assistive technology",
+          "webkit 390: empty track filter provides a visible recovery action",
+          "webkit 390: status filter combines with loaded queue without requests",
+          "webkit 390: all queue navigation and filtering remain read-only",
+          "webkit 390: partial source reports loaded counts instead of claiming all work was loaded",
+          "webkit 390: populated queue and selection meet text contrast []",
+          "webkit 390: queue controls meet 44 px targets",
+          "webkit 390: 200 percent text fits the viewport {\"width\":390,\"scroll\":390,\"input\":32}",
+          "webkit 390: missing selected record preserves comment and provides another-selection route",
+          "webkit 390: declining another selection retains unsent text",
+          "webkit 390: explicitly choosing another record recovers from a missing item without writes",
+          "webkit 1440: filtering keeps the selected detail and unsent comment with an explicit hidden-selection note",
+          "webkit 1440: clear restores results and returns keyboard focus to search",
+          "webkit 1440: arrow and Enter select a record and restore focus after async DOM rebuild",
+          "webkit 1440: exactly one selected record is exposed to assistive technology",
+          "webkit 1440: empty track filter provides a visible recovery action",
+          "webkit 1440: status filter combines with loaded queue without requests",
+          "webkit 1440: all queue navigation and filtering remain read-only",
+          "webkit 1440: partial source reports loaded counts instead of claiming all work was loaded",
+          "webkit 1440: populated queue and selection meet text contrast []",
+          "webkit 1440: queue controls meet 44 px targets",
+          "webkit 1440: 200 percent text fits the viewport {\"width\":1440,\"scroll\":1440,\"input\":32}",
+          "webkit 1440: missing selected record preserves comment and provides another-selection route",
+          "webkit 1440: declining another selection retains unsent text",
+          "webkit 1440: explicitly choosing another record recovers from a missing item without writes",
+          "no uncaught queue errors "
+        ],
+        "synthetic": true,
+        "productionWrites": false,
+        "iPhone": false,
+        "macSafari": false
+      }
+    },
+    "fixedGate": {
+      "origin": "http://127.0.0.1:8769",
+      "apiMode": "isolated_synthetic",
+      "checks": [
+        {
+          "name": "frontend syntax",
+          "files": 205,
+          "passed": true
+        },
+        {
+          "name": "phase4/worker.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "app-catalog.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/definitions.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/database.mjs",
+          "passed": true,
+          "seconds": 1,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/line-provider.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/service-signup-journey-db.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/browser.mjs",
+          "passed": true,
+          "seconds": 4,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/handoff.mjs",
+          "passed": true,
+          "seconds": 2,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/email-login.mjs",
+          "passed": true,
+          "seconds": 6,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/browser.mjs",
+          "passed": true,
+          "seconds": 17,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/service-signup-list.mjs",
+          "passed": true,
+          "seconds": 28,
+          "exitCode": 0
+        },
+        {
+          "name": "phase3/browser.mjs",
+          "passed": true,
+          "seconds": 70,
+          "exitCode": 0
+        },
+        {
+          "name": "phase4/browser.mjs",
+          "passed": true,
+          "seconds": 37,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/regression.mjs",
+          "passed": true,
+          "seconds": 46,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/contrast.mjs",
+          "passed": true,
+          "seconds": 50,
+          "exitCode": 0
+        }
+      ],
+      "failures": 0
+    },
+    "fixedGateSummary": "tests/phase4/results/gate/2026-10-22T15-27-42-417Z/summary.json",
+    "finalAffectedGate": {
+      "origin": "http://127.0.0.1:8769",
+      "apiMode": "isolated_synthetic",
+      "checks": [
+        {
+          "name": "phase3/browser.mjs",
+          "passed": true,
+          "seconds": 70,
+          "exitCode": 0
+        }
+      ],
+      "failures": 0
+    },
+    "finalAffectedGateSummary": "tests/phase4/results/gate/2026-10-22T15-31-54-340Z/summary.json",
+    "finalWorkflowChecks": 89,
+    "contrast": {
+      "pages": 41,
+      "textChecks": 1516,
+      "failures": 0
+    },
+    "worker": {
+      "cache": "church-os-shell-20261022-experience22",
+      "uniqueAssets": 88,
+      "allLocalPathsExist": true
+    },
+    "syntaxAndWhitespace": "修改模組 node --check 與 git diff --check 通過"
+  },
+  "environments": {
+    "node": "24.21.0",
+    "chrome": "155.0.8059.85",
+    "macOS": "27.0.1",
+    "Safari": "27.0.1",
+    "automated": [
+      "Chromium",
+      "WebKit"
+    ],
+    "viewports": [
+      390,
+      1440
+    ],
+    "fixedWorkflowWidths": [
+      390,
+      1280,
+      1440,
+      1920
+    ]
+  },
+  "nativeSafari": {
+    "syntheticOnly": true,
+    "passed": [
+      "輸入未送出意見後取消切換，原意見與原內容保留。",
+      "搜尋另一筆紀錄時顯示目前選取被篩掉，原意見仍在。",
+      "清除篩選後明確確認放棄，才載入另一筆紀錄並清除意見。",
+      "系統字體修正後目視確認。"
+    ],
+    "testTabClosed": true
+  },
+  "repairHistory": [
+    "首次執行 fixture 的 storage stub 少一個大括號，修正後兩引擎執行，未降低產品檢查。",
+    "WebKit 使用先前已安裝的 /private/tmp/church-webkit，沒有另行下載或改系統設定。",
+    "200% 字級檢查發現共用樣式 specificity 蓋過頁面字級，改以頁面專屬 selector 後保留 32 px 門檻通過。",
+    "Safari 目視發現共用 inherit 覆蓋字體，補上頁面專屬系統字體；最終 60 項重新通過。",
+    "固定清單執行中完成小幅字體修正；其後補強讀回期間登出檢查，最終 69 項與受影響工作區 89 項回歸及語法檢查通過。",
+    "發布前主分支已先合併 #249，僅 Worker 衝突；保留 84 個遠端資源並加入本批 4 項。整合固定清單 14 組通過，見證頁表頭連結對比失敗；加共用 secondary class 後原對比清單通過，沒有降低門檻或刪除失敗紀錄。"
+  ],
+  "limits": [
+    "審核意見仍只保留於目前頁面，沒有裝置持久保存或跨登入還原；頁面關閉可能失去未送出意見。",
+    "已送到後端的請求無法因前端登出而撤回；此批防止後續送出、重試及過期畫面回填。",
+    "權限撤回依下次返回、權杖事件、重新載入或寫入前新檢查反映，並非即時推播撤權。",
+    "iPhone 17 主畫面 App、Safari、LINE 入口、VoiceOver、實際弱網與正式多人流程仍待驗收。",
+    "未執行真實 Canva 製圖、Instagram／YouTube 發布或 LINE 通知；本輪未更改通知路由、資料庫或 Edge Function。",
+    "前批正式 PostgreSQL 獨立連線多人驗收及 Safari 原生下載驗收仍待完成；本批不將它們計為通過。"
+  ],
+  "references": {
+    "SupabaseAuthEvents": "https://supabase.com/docs/reference/javascript/auth-onauthstatechange",
+    "SupabaseVerifiedUser": "https://supabase.com/docs/reference/javascript/auth-getuser",
+    "changelog": "https://supabase.com/changelog.md"
+  },
+  "sourceSha256": {
+    "church-os-sw.js": "b5d2c473ad50ff49bd0a65f46f852d60d04e9439881d9bf65703ad4ccc3eaf4c",
+    "weekly-bulletin-review.html": "73c3091af56c32836a07f96023367a6953106de04a0902ec89c09ef758b59a5d",
+    "weekly-bulletin-review.mjs": "94f2e326f451e0480ed509f685485eb9fde653dcff28ad05c8477f482754d6b7",
+    "weekly-youtube.mjs": "54a11b46652c4d9b085d69cced914f822806e6ce172fe3d98fe2040ed7f36308",
+    "weekly-review-queue.mjs": "e60adfa7d7f5d7263da39675359607607daced5bef63e047f90f353873313553",
+    "weekly-review-workspace.css": "b6ede964e1b46fad6894b1c4a1a7b906e497b5ad702a807d87fb4387569a15d7",
+    "tests/weekly-review-fixture.mjs": "11bf47c2e8b84f8e4c82330cd77bf5eedc12731647fdc53471820fd8df0b8e8b",
+    "tests/weekly-review-recovery-browser.mjs": "820223708dbff83c3299e3c81c8dc47241b9f3a5fa76c486c6bedf31b571b93a",
+    "tests/weekly-review-identity-browser.mjs": "0f38685619216626efce5d2fad0a32d2e736f62e67d89c8ba84f23d9a265e107",
+    "tests/weekly-review-queue-browser.mjs": "2985ca6eecb218e29d1bcd7373833bc4dc8ef665157f888cd28b7744c05cfe0d",
+    "testimony-admin.html": "50024d7fe1bfc6e4d3f09e66bb615645b6b1e371c9444c3c85e5ae989d8e5d3f"
+  },
+  "safety": {
+    "allAccountsAndContentSynthetic": true,
+    "productionBusinessWrites": false,
+    "realNotifications": false,
+    "realMediaJobs": false,
+    "modelChanged": false
+  },
+  "publication": {
+    "candidateFiles": 14,
+    "backendUpdateNeeded": false,
+    "previousAuthorizationScope": "第十六至十九階段",
+    "thisBatchAuthorization": "使用者已回覆授權發佈",
+    "compatibilityAddition": "整合已上線 #249 後，對比門檻發現 testimony-admin.html 開啟投稿頁連結為同色；僅補上既有 secondary class，總計 14 檔。"
+  },
+  "publicationIntegration": {
+    "baseCommit": "ae05af9bf18315d5bf25f593db01ed4e3022176a",
+    "basePR": 249,
+    "sourceScope": "保留 #249 全部內容，僅整合 Worker 資源及修正表頭連結樣式。",
+    "worker": {
+      "cache": "church-os-shell-20261022-experience22",
+      "assets": 88,
+      "remote84AssetsAllPreserved": true,
+      "definitionsVersion": "20261022-testimonies1"
+    },
+    "fullGateSummary": "tests/phase4/results/gate/2026-10-22T15-37-45-448Z/summary.json",
+    "fullGate": {
+      "origin": "http://127.0.0.1:8769",
+      "apiMode": "isolated_synthetic",
+      "checks": [
+        {
+          "name": "frontend syntax",
+          "files": 207,
+          "passed": true
+        },
+        {
+          "name": "phase4/worker.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "app-catalog.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/definitions.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/database.mjs",
+          "passed": true,
+          "seconds": 1,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/line-provider.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/service-signup-journey-db.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/browser.mjs",
+          "passed": true,
+          "seconds": 4,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/handoff.mjs",
+          "passed": true,
+          "seconds": 1,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/email-login.mjs",
+          "passed": true,
+          "seconds": 6,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/browser.mjs",
+          "passed": true,
+          "seconds": 17,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/service-signup-list.mjs",
+          "passed": true,
+          "seconds": 28,
+          "exitCode": 0
+        },
+        {
+          "name": "phase3/browser.mjs",
+          "passed": true,
+          "seconds": 70,
+          "exitCode": 0
+        },
+        {
+          "name": "phase4/browser.mjs",
+          "passed": true,
+          "seconds": 37,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/regression.mjs",
+          "passed": true,
+          "seconds": 46,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/contrast.mjs",
+          "passed": false,
+          "seconds": 50,
+          "exitCode": 1
+        }
+      ],
+      "failures": 1
+    },
+    "failure": {
+      "file": "testimony-admin.html",
+      "text": "開啟投稿頁 ↗",
+      "ratio": 1,
+      "minimum": 4.5,
+      "fix": "表頭連結加既有 secondary class"
+    },
+    "repairGateSummary": "tests/phase4/results/gate/2026-10-22T15-43-13-849Z/summary.json",
+    "repairGate": {
+      "origin": "http://127.0.0.1:8769",
+      "apiMode": "isolated_synthetic",
+      "checks": [
+        {
+          "name": "phase2/contrast.mjs",
+          "passed": true,
+          "seconds": 50,
+          "exitCode": 0
+        }
+      ],
+      "failures": 0
+    },
+    "combinedResult": {
+      "passedSuites": 15,
+      "totalSuites": 15,
+      "syntaxFiles": 207,
+      "contrastPages": 42,
+      "textChecks": 1533,
+      "contrastFailures": 0
+    }
+  }
+}

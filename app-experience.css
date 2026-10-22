@@ -31,3 +31,19 @@ html.mplus-theme body[data-workflow-page="weekly"] :is(.website-hint,.weekly-sub
 @media print{.finance-save{position:static;box-shadow:none}.work-focus-filters{display:none}}
 
 .finance-contact-options{grid-column:1/-1;padding:10px 12px;border:1px solid #dce5dd;border-radius:12px;background:#fff}.finance-contact-options summary{min-height:44px;padding:10px 0;cursor:pointer;color:#315342;font-weight:600}.finance-contact-options label{margin:10px 0}.finance-contact-options summary::marker{color:#566c60}
+/* Rollout 2: member editing, schedules and staff attendance/leave. */
+body[data-experience="workspace"] [hidden]{display:none!important}
+body[data-experience="workspace"] .editor-actions{position:sticky;bottom:calc(var(--app-dock-height,66px) + env(safe-area-inset-bottom) + 10px);z-index:20;display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:20px;padding:14px;background:var(--app-surface,#fff);border:1px solid var(--app-border,#dce5dd);border-radius:14px;box-shadow:0 6px 24px #173f3410}
+body[data-experience="workspace"] .editor-actions button{min-height:48px;min-width:110px}
+body[data-experience="workspace"] .editor-result{padding:12px 14px;border:1px solid var(--app-border,#dce5dd);border-radius:12px;background:var(--app-surface-muted,#f2f5ee);line-height:1.6;color:var(--app-ink,#203b30)}
+body[data-experience="workspace"] .editor-result:empty{display:none}
+body[data-experience="workspace"] [data-tone="error"]{background:#fff1ee;color:#96291e}
+body[data-experience="workspace"] [data-tone="warning"]{background:#fff0d9;color:#71481c}
+body[data-experience="workspace"] [data-tone="success"]{background:#eaf5ee;color:#245c3b}
+body[data-experience="workspace"] [data-tone="busy"]:before{content:"";display:inline-block;width:12px;height:12px;margin-right:8px;border:2px solid #afc1b5;border-top-color:var(--app-accent,#173f34);border-radius:50%;vertical-align:-2px;animation:experience-spin 1s linear infinite}
+body[data-experience="workspace"] :is(input:not([type=checkbox]):not([type=radio]),textarea,select){font-size:16px;min-width:0;max-width:100%;box-sizing:border-box}
+body[data-experience="workspace"] .form-row>*{min-width:0}
+.ios-keyboard-open body[data-experience="workspace"] .editor-actions{position:static}
+@media(max-width:700px){body[data-experience="workspace"] .editor-actions button{flex:1 1 110px}body[data-experience="workspace"] .action-row{flex-wrap:wrap;gap:8px}}
+@media(prefers-reduced-motion:reduce){body[data-experience="workspace"] [data-tone="busy"]:before{animation:none}}
+@media print{body[data-experience="workspace"] .editor-actions{position:static;box-shadow:none}}

@@ -28,10 +28,16 @@ export function draftGuard(form,onChange=()=>{}){
   let dirty=false;
   const mark=()=>{dirty=true;form.dataset.unsavedChanges='true';onChange(true);};
   const clear=()=>{dirty=false;form.dataset.unsavedChanges='false';onChange(false);};
+  const beforeLeave=event=>{if(dirty){event.preventDefault();event.returnValue='';}};
   window.addEventListener('church:discard-drafts',clear);
   form.addEventListener('input',mark);form.addEventListener('change',mark);
-  window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
-  return{get dirty(){return dirty;},mark,clear,canLeave(){return!dirty||confirm('還有尚未儲存的修改。要放棄這些修改並切換嗎？');}};
+  window.addEventListener('beforeunload',beforeLeave);
+  return{get dirty(){return dirty;},mark,clear,canLeave(){return!dirty||confirm('還有尚未儲存的修改。要放棄這些修改並切換嗎？');},dispose(){clear();window.removeEventListener('church:discard-drafts',clear);window.removeEventListener('beforeunload',beforeLeave);form.removeEventListener('input',mark);form.removeEventListener('change',mark);}};
+}
+// One guard per editor; opening another record must explicitly ask before attach.
+export function editorDraft(host){
+ let current=null;
+ return{get dirty(){return current?.dirty===true;},canLeave(){return current?.canLeave()??true;},attach(form){current?.dispose();current=draftGuard(form);return current;},mark(){current?.mark();},clear(){current?.clear();},dispose(){current?.dispose();current=null;}};
 }
 
 export function reviewDialog({title,description,label='補充說明（選填）',required=false,confirmLabel='確認',withNote=true}){

@@ -1,0 +1,6 @@
+import assert from 'node:assert/strict';
+import {validateSubmission,matchesMagic} from '../../supabase/functions/testimony-intake/validation.mjs';
+const base={name:'測試',contact:'qa@example.test',title:'真實的恩典',body:'文字',displayMode:'anonymous',category:'其他',consent:true,mediaConsent:false,files:[]};
+let checks=0;const ok=v=>{assert.ok(v);checks++;},bad=change=>{assert.throws(()=>validateSubmission({...base,...change}));checks++;};
+ok(validateSubmission(base).display_name==='匿名分享');bad({consent:false});bad({body:''});bad({contact:'aaa'});bad({displayMode:'admin'});bad({files:[{type:'text/html',size:1}]});bad({files:[{type:'video/mp4',size:52428801}],mediaConsent:true});bad({files:[{type:'image/jpeg',size:4}]});ok(validateSubmission({...base,body:'',files:[{type:'image/jpeg',size:4}],mediaConsent:true}).media.length===1);bad({files:Array(9).fill({type:'image/jpeg',size:4}),mediaConsent:true});bad({files:Array(2).fill({type:'video/mp4',size:4}),mediaConsent:true});ok(!matchesMagic(new TextEncoder().encode('<html>'),'image/jpeg'));ok(matchesMagic(new Uint8Array([255,216,255,0]),'image/jpeg'));ok(matchesMagic(new TextEncoder().encode('....ftypisom....'),'video/mp4'));
+console.log(JSON.stringify({checks,passed:true}));

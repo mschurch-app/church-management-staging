@@ -1,0 +1,29 @@
+{
+  "checks": 88,
+  "results": [
+    {
+      "browser": "chrome",
+      "width": 390,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "browser": "chrome",
+      "width": 1440,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "browser": "webkit",
+      "width": 390,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "browser": "webkit",
+      "width": 1440,
+      "errors": [],
+      "passed": true
+    }
+  ]
+}

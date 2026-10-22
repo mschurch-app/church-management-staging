@@ -31,14 +31,14 @@ async function scenario({linked=true,grants=[{church_id:'M+',permission:'schedul
   await req.continue();
  });
  await page.goto(base+(linkPage?'/admin-line-link.html':'/admin-login-v2.html'),{waitUntil:'networkidle0'});
- if(!resume&&!linkPage){await page.type('#email',user.email);await page.type('#password','synthetic-password');await page.click('#submit');}return {page,context};
+ return {page,context};
 }
 try{
- await check('Email password login with approved LINE alias reaches dashboard',async()=>{const {page,context}=await scenario();await page.waitForFunction(()=>location.pathname.endsWith('/admin-dashboard.html'));await context.close();});
- await check('Email login without approved LINE alias opens binding page',async()=>{const {page,context}=await scenario({linked:false});await page.waitForFunction(()=>location.pathname.endsWith('/admin-line-link.html'));await context.close();});
- await check('reopened Email session with approved alias resumes dashboard',async()=>{const {page,context}=await scenario({resume:true});await page.waitForFunction(()=>location.pathname.endsWith('/admin-dashboard.html'));await context.close();});
- await check('Email login without grants stays recoverable and unlocks button',async()=>{const {page,context}=await scenario({grants:[]});await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('D05'));assert.equal(await page.$eval('#submit',n=>n.disabled),false);await context.close();});
- await check('Email login capability outage keeps page usable',async()=>{const {page,context}=await scenario({offline:true});await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('稍後重試'));assert.equal(await page.$eval('#submit',n=>n.disabled),false);await context.close();});
+ await check('homepage uses LINE and removes Email password controls',async()=>{const {page,context}=await scenario();assert.equal(await page.$('#email'),null);assert.equal(await page.$('#password'),null);assert.equal(await page.$eval('#apply-account',n=>n.textContent.includes('申請同工帳號')),true);await context.close();});
+ await check('reopened canonical Email session with approved LINE alias resumes dashboard',async()=>{const {page,context}=await scenario({resume:true});await page.waitForFunction(()=>location.pathname.endsWith('/admin-dashboard.html'));await context.close();});
+ await check('existing Email session without LINE alias offers LINE login',async()=>{const {page,context}=await scenario({linked:false,resume:true});await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('請使用 LINE 登入'));assert.equal(await page.$eval('#line-login',n=>n.disabled),false);await context.close();});
+ await check('LINE-backed session without grants offers account application',async()=>{const {page,context}=await scenario({grants:[],resume:true});await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('申請同工帳號'));assert.equal(await page.$eval('#line-login',n=>n.disabled),false);await context.close();});
+ await check('canonical capability outage keeps LINE entry usable',async()=>{const {page,context}=await scenario({offline:true,resume:true});await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('無法恢復'));assert.equal(await page.$eval('#line-login',n=>n.disabled),false);await context.close();});
  await check('binding page recognizes an existing approved canonical alias',async()=>{const {page,context}=await scenario({linkPage:true,resume:true});await page.waitForFunction(()=>location.pathname.endsWith('/admin-dashboard.html'));await context.close();});
  await check('binding page capability outage offers explicit retry',async()=>{const {page,context}=await scenario({linkPage:true,resume:true,offline:true});assert.equal(await page.$eval('#status button',n=>n.textContent),'重新確認');assert.equal(await page.$eval('#link-line',n=>n.disabled),true);await context.close();});
  await check('Email and binding scenarios have no uncaught browser errors',async()=>assert.deepEqual(errors,[]));

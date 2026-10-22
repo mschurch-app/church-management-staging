@@ -33,3 +33,5 @@ html body.admin-accounts-page input:is([type=checkbox],[type=radio]){accent-colo
 
 /* An idle translucent toast must not leave a painted backdrop in Safari. */
 .admin-accounts-page .os-action-toast:not(.show){visibility:hidden}
+
+.admin-accounts-page .line-identity-facts{display:grid;grid-template-columns:minmax(100px,auto) 1fr;gap:12px 18px;margin:20px 0}.admin-accounts-page .line-identity-facts dt{color:var(--app-secondary,#61736a)}.admin-accounts-page .line-identity-facts dd{margin:0;font-weight:600;overflow-wrap:anywhere}.admin-accounts-page .admin-card-actions a.secondary{display:flex;align-items:center;justify-content:center;padding:10px 16px;border:1px solid var(--app-border,#dae3dc);border-radius:16px;text-decoration:none}

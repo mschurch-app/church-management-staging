@@ -1,10 +1,11 @@
+import {mountLineIdentityReview} from './admin-line-identity-review.mjs?v=20261022-line-identity1';
 import {mountCoworkerApplications} from './admin-coworker-review.mjs?v=20261022-experience6';
 import {applicationRPC} from './coworker-application-api.mjs?v=20261022-coworker-review1';
 import {createWorkProfileEditor} from './work-profile.mjs?v=20261022-accounts-layout1';
 import {FUNCTION_CATALOG,FUNCTION_GROUPS} from './app-function-definitions.mjs?v=20261022-experience3';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,removeAdminAccount,saveAdminBundle} from './admin-accounts-management.mjs?v=20261021-work-roles1';
-const search=new URLSearchParams(location.search),church=search.get('church')||'M+',reviewUser=/^[0-9a-f-]{36}$/i.test(search.get('review_user')||'')?search.get('review_user'):'',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false;
+const search=new URLSearchParams(location.search),church=search.get('church')||'M+',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false,reviewUser=/^[0-9a-f-]{36}$/i.test(search.get('review_user')||'')?search.get('review_user'):'';
 const el=(tag,value='',cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
 const churchName=value=>value==='M+'?'M＋大雅教會':'火樂教會';
 const timeout=(promise,message)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),15000))]);
@@ -186,13 +187,21 @@ function render(){
   card.append(copy,actions);area.append(card);
  }
 }
-async function lineReview(){if(!reviewUser)return;const area=$('#editor');area.hidden=false;area.replaceChildren(el('h2','正在載入 LINE 身分核對…'));area.scrollIntoView({block:'start'});const result=await db.rpc('get_line_admin_access_review',{p_user:reviewUser});if(result.error||!result.data)throw new Error('無法載入待核對的 LINE 身分。');const detail=result.data;area.replaceChildren();area.append(el('h2','核對 LINE 登入身分'),el('p',`LINE 顯示名稱：${detail.line_name||'LINE 同工'}`,'muted'));if(detail.approved){area.append(el('p',`已完成權限對接${detail.account_name?'：'+detail.account_name:''}。`,'status-message success'));return;}const label=el('label','這個 LINE 身分是誰？'),select=document.createElement('select'),approve=el('button','確認並套用既有權限');select.append(new Option('請選擇既有同工',''));for(const item of detail.candidates||[]){const option=document.createElement('option');option.value=item.user_id;option.textContent=`${item.display_name||item.email}｜${item.job_title||'管理同工'}${item.email?'｜'+item.email:''}`;select.append(option);}label.append(select);approve.disabled=true;select.onchange=()=>approve.disabled=!select.value;approve.onclick=async()=>{if(busy||!select.value||!confirm('確認這個 LINE 身分與「'+select.selectedOptions[0].textContent+'」是同一位同工？核對後會使用此人的既有權限。'))return;busy=true;approve.disabled=true;approve.textContent='正在對接權限…';try{const saved=await db.rpc('approve_line_admin_access_review',{p_user:reviewUser,p_source_user:select.value});if(saved.error||saved.data!==true)throw saved.error||new Error();await load();$('#status').textContent='LINE 身分與既有同工權限已完成對接。';}catch{$('#status').textContent='權限對接失敗，請重新整理後再試。';approve.disabled=false;approve.textContent='確認並套用既有權限';}finally{busy=false;}};area.append(label,approve,el('p','請確認是同一位同工。核對後會連結兩種登入身分，堂會、權限與服事類別同步；名冊與登入帳號保留。','muted'));}
+async function lineReview(){
+ if(!reviewUser)return;
+ const area=$('#editor');area.hidden=false;$('#status').textContent='請核對同工姓名與 LINE 暱稱，再確認是否為本人。';
+ await mountLineIdentityReview(db,area,reviewUser,{
+  onBack:()=>{reviewUser='';const url=new URL(location.href);url.searchParams.delete('review_user');history.replaceState(null,'',url);close(true);showDirectory('accounts',true);},
+  onSaved:async()=>{rows=await listAdminAccounts(db);render();}
+ });
+ if(reviewUser)revealEditor(area);
+}
 async function load(){
  const generation=++directoryGeneration;close(true);$('#status').textContent='正在確認帳號管理權限…';
  const applicationsRequest=applicationRPC(db,'list_coworker_applications').then(data=>({data}),error=>({error}));
  try{rows=await listAdminAccounts(db);if(generation!==directoryGeneration)return;render();$('#status').textContent='請選擇待審申請，或從名單找到要設定的同工。';
   void mountCoworkerApplications(db,$('#applications'),{accounts:rows,applicationsRequest,onSaved:load,onLoaded:count=>{if(generation!==directoryGeneration)return;$('#application-count').textContent=String(count);if(!directorySelected)showDirectory(count?'applications':'accounts');}});
-  if(reviewUser){await lineReview();$('#accounts-directory').hidden=true;}
+  if(reviewUser){await lineReview();if(reviewUser)$('#accounts-directory').hidden=true;}
  }catch(error){$('#items').replaceChildren();$('#applications').replaceChildren();$('#accounts-directory').hidden=true;$('#status').textContent=error.message;}
 }
 $('#members').href='church-settings.html?church='+encodeURIComponent(church);

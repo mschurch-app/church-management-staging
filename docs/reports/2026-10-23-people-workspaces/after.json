@@ -1,0 +1,1215 @@
+{
+  "mode": "after",
+  "base": "f2e7ebb83cbbc74591e3fcf76e6c1259e01874b8",
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "visuals": [
+    {
+      "prefix": "members-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3213,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 121,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4833,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 145,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1604,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2471,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 49,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1915,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2951,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3234,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 116,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4925,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 140,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1539,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2453,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1850,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3007,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1685,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 121,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2982,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 145,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1324,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1687,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 49,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1953,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1953,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1633,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 116,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2930,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 140,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1274,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1638,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1901,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1901,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3213,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 121,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4833,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 145,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1604,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2471,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 49,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1915,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2953,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3234,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 116,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4925,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 140,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1539,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2453,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 1850,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3009,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1685,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 121,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2982,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 145,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1324,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1687,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 49,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1953,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1953,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1633,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 116,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "members-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2930,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 140,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1274,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "groups-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1638,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1901,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "attendance-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1901,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "checks": [
+    "members-chromium-390-mplus list width",
+    "members-chromium-390-mplus list header",
+    "members-chromium-390-mplus list contrast []",
+    "members-chromium-390-mplus list touch targets []",
+    "members-chromium-390-mplus editor width",
+    "members-chromium-390-mplus editor header",
+    "members-chromium-390-mplus editor contrast []",
+    "members-chromium-390-mplus editor touch targets []",
+    "members-chromium-390-mplus 200% text",
+    "members-chromium-390-mplus cancel preserves unsaved member",
+    "members-chromium-390-mplus compact view preserves editor and width",
+    "members-chromium-390-mplus member selection exposes batch bar",
+    "members-chromium-390-mplus no page errors or external requests []",
+    "groups-chromium-390-mplus list width",
+    "groups-chromium-390-mplus list header",
+    "groups-chromium-390-mplus list contrast []",
+    "groups-chromium-390-mplus list touch targets []",
+    "groups-chromium-390-mplus editor width",
+    "groups-chromium-390-mplus editor header",
+    "groups-chromium-390-mplus editor contrast []",
+    "groups-chromium-390-mplus editor touch targets []",
+    "groups-chromium-390-mplus 200% text",
+    "groups-chromium-390-mplus local group location search",
+    "groups-chromium-390-mplus explicit empty search",
+    "groups-chromium-390-mplus cancel and new protect group edits",
+    "groups-chromium-390-mplus failed group save retains values",
+    "groups-chromium-390-mplus acknowledged group save suppresses duplicate and closes draft",
+    "groups-chromium-390-mplus group refresh only reads",
+    "groups-chromium-390-mplus failed archive-list read preserves active state",
+    "groups-chromium-390-mplus archive reports actual operation",
+    "groups-chromium-390-mplus archived list disables new",
+    "groups-chromium-390-mplus restore returns item to active list",
+    "groups-chromium-390-mplus no page errors or external requests []",
+    "attendance-chromium-390-mplus list width",
+    "attendance-chromium-390-mplus list header",
+    "attendance-chromium-390-mplus list contrast []",
+    "attendance-chromium-390-mplus list touch targets []",
+    "attendance-chromium-390-mplus editor width",
+    "attendance-chromium-390-mplus editor header",
+    "attendance-chromium-390-mplus editor contrast []",
+    "attendance-chromium-390-mplus editor touch targets []",
+    "attendance-chromium-390-mplus 200% text",
+    "attendance-chromium-390-mplus local attendance filter and scoped rate",
+    "attendance-chromium-390-mplus combined record filters",
+    "attendance-chromium-390-mplus view-only roster search does not dirty data",
+    "attendance-chromium-390-mplus roster search keeps genuine unsaved marker",
+    "attendance-chromium-390-mplus search retains offscreen selections and historic name",
+    "attendance-chromium-390-mplus group change requires discard confirmation",
+    "attendance-chromium-390-mplus attendance cancel protects changes",
+    "attendance-chromium-390-mplus failed save retains hidden attendance choices",
+    "attendance-chromium-390-mplus all filtered and historical names saved once",
+    "attendance-chromium-390-mplus new record uses Taipei local date",
+    "attendance-chromium-390-mplus no page errors or external requests []",
+    "members-chromium-390-shine list width",
+    "members-chromium-390-shine list header",
+    "members-chromium-390-shine list contrast []",
+    "members-chromium-390-shine list touch targets []",
+    "members-chromium-390-shine editor width",
+    "members-chromium-390-shine editor header",
+    "members-chromium-390-shine editor contrast []",
+    "members-chromium-390-shine editor touch targets []",
+    "members-chromium-390-shine 200% text",
+    "members-chromium-390-shine cancel preserves unsaved member",
+    "members-chromium-390-shine compact view preserves editor and width",
+    "members-chromium-390-shine member selection exposes batch bar",
+    "members-chromium-390-shine no page errors or external requests []",
+    "groups-chromium-390-shine list width",
+    "groups-chromium-390-shine list header",
+    "groups-chromium-390-shine list contrast []",
+    "groups-chromium-390-shine list touch targets []",
+    "groups-chromium-390-shine editor width",
+    "groups-chromium-390-shine editor header",
+    "groups-chromium-390-shine editor contrast []",
+    "groups-chromium-390-shine editor touch targets []",
+    "groups-chromium-390-shine 200% text",
+    "groups-chromium-390-shine local group location search",
+    "groups-chromium-390-shine explicit empty search",
+    "groups-chromium-390-shine cancel and new protect group edits",
+    "groups-chromium-390-shine failed group save retains values",
+    "groups-chromium-390-shine acknowledged group save suppresses duplicate and closes draft",
+    "groups-chromium-390-shine group refresh only reads",
+    "groups-chromium-390-shine failed archive-list read preserves active state",
+    "groups-chromium-390-shine archive reports actual operation",
+    "groups-chromium-390-shine archived list disables new",
+    "groups-chromium-390-shine restore returns item to active list",
+    "groups-chromium-390-shine no page errors or external requests []",
+    "attendance-chromium-390-shine list width",
+    "attendance-chromium-390-shine list header",
+    "attendance-chromium-390-shine list contrast []",
+    "attendance-chromium-390-shine list touch targets []",
+    "attendance-chromium-390-shine editor width",
+    "attendance-chromium-390-shine editor header",
+    "attendance-chromium-390-shine editor contrast []",
+    "attendance-chromium-390-shine editor touch targets []",
+    "attendance-chromium-390-shine 200% text",
+    "attendance-chromium-390-shine local attendance filter and scoped rate",
+    "attendance-chromium-390-shine combined record filters",
+    "attendance-chromium-390-shine view-only roster search does not dirty data",
+    "attendance-chromium-390-shine roster search keeps genuine unsaved marker",
+    "attendance-chromium-390-shine search retains offscreen selections and historic name",
+    "attendance-chromium-390-shine group change requires discard confirmation",
+    "attendance-chromium-390-shine attendance cancel protects changes",
+    "attendance-chromium-390-shine failed save retains hidden attendance choices",
+    "attendance-chromium-390-shine all filtered and historical names saved once",
+    "attendance-chromium-390-shine new record uses Taipei local date",
+    "attendance-chromium-390-shine no page errors or external requests []",
+    "members-chromium-1440-mplus list width",
+    "members-chromium-1440-mplus list header",
+    "members-chromium-1440-mplus list contrast []",
+    "members-chromium-1440-mplus list touch targets []",
+    "members-chromium-1440-mplus editor width",
+    "members-chromium-1440-mplus editor header",
+    "members-chromium-1440-mplus editor contrast []",
+    "members-chromium-1440-mplus editor touch targets []",
+    "members-chromium-1440-mplus 200% text",
+    "members-chromium-1440-mplus cancel preserves unsaved member",
+    "members-chromium-1440-mplus compact view preserves editor and width",
+    "members-chromium-1440-mplus member selection exposes batch bar",
+    "members-chromium-1440-mplus no page errors or external requests []",
+    "groups-chromium-1440-mplus list width",
+    "groups-chromium-1440-mplus list header",
+    "groups-chromium-1440-mplus list contrast []",
+    "groups-chromium-1440-mplus list touch targets []",
+    "groups-chromium-1440-mplus editor width",
+    "groups-chromium-1440-mplus editor header",
+    "groups-chromium-1440-mplus editor contrast []",
+    "groups-chromium-1440-mplus editor touch targets []",
+    "groups-chromium-1440-mplus 200% text",
+    "groups-chromium-1440-mplus local group location search",
+    "groups-chromium-1440-mplus explicit empty search",
+    "groups-chromium-1440-mplus cancel and new protect group edits",
+    "groups-chromium-1440-mplus failed group save retains values",
+    "groups-chromium-1440-mplus acknowledged group save suppresses duplicate and closes draft",
+    "groups-chromium-1440-mplus group refresh only reads",
+    "groups-chromium-1440-mplus failed archive-list read preserves active state",
+    "groups-chromium-1440-mplus archive reports actual operation",
+    "groups-chromium-1440-mplus archived list disables new",
+    "groups-chromium-1440-mplus restore returns item to active list",
+    "groups-chromium-1440-mplus no page errors or external requests []",
+    "attendance-chromium-1440-mplus list width",
+    "attendance-chromium-1440-mplus list header",
+    "attendance-chromium-1440-mplus list contrast []",
+    "attendance-chromium-1440-mplus list touch targets []",
+    "attendance-chromium-1440-mplus editor width",
+    "attendance-chromium-1440-mplus editor header",
+    "attendance-chromium-1440-mplus editor contrast []",
+    "attendance-chromium-1440-mplus editor touch targets []",
+    "attendance-chromium-1440-mplus 200% text",
+    "attendance-chromium-1440-mplus local attendance filter and scoped rate",
+    "attendance-chromium-1440-mplus combined record filters",
+    "attendance-chromium-1440-mplus view-only roster search does not dirty data",
+    "attendance-chromium-1440-mplus roster search keeps genuine unsaved marker",
+    "attendance-chromium-1440-mplus search retains offscreen selections and historic name",
+    "attendance-chromium-1440-mplus group change requires discard confirmation",
+    "attendance-chromium-1440-mplus attendance cancel protects changes",
+    "attendance-chromium-1440-mplus failed save retains hidden attendance choices",
+    "attendance-chromium-1440-mplus all filtered and historical names saved once",
+    "attendance-chromium-1440-mplus new record uses Taipei local date",
+    "attendance-chromium-1440-mplus no page errors or external requests []",
+    "members-chromium-1440-shine list width",
+    "members-chromium-1440-shine list header",
+    "members-chromium-1440-shine list contrast []",
+    "members-chromium-1440-shine list touch targets []",
+    "members-chromium-1440-shine editor width",
+    "members-chromium-1440-shine editor header",
+    "members-chromium-1440-shine editor contrast []",
+    "members-chromium-1440-shine editor touch targets []",
+    "members-chromium-1440-shine 200% text",
+    "members-chromium-1440-shine cancel preserves unsaved member",
+    "members-chromium-1440-shine compact view preserves editor and width",
+    "members-chromium-1440-shine member selection exposes batch bar",
+    "members-chromium-1440-shine no page errors or external requests []",
+    "groups-chromium-1440-shine list width",
+    "groups-chromium-1440-shine list header",
+    "groups-chromium-1440-shine list contrast []",
+    "groups-chromium-1440-shine list touch targets []",
+    "groups-chromium-1440-shine editor width",
+    "groups-chromium-1440-shine editor header",
+    "groups-chromium-1440-shine editor contrast []",
+    "groups-chromium-1440-shine editor touch targets []",
+    "groups-chromium-1440-shine 200% text",
+    "groups-chromium-1440-shine local group location search",
+    "groups-chromium-1440-shine explicit empty search",
+    "groups-chromium-1440-shine cancel and new protect group edits",
+    "groups-chromium-1440-shine failed group save retains values",
+    "groups-chromium-1440-shine acknowledged group save suppresses duplicate and closes draft",
+    "groups-chromium-1440-shine group refresh only reads",
+    "groups-chromium-1440-shine failed archive-list read preserves active state",
+    "groups-chromium-1440-shine archive reports actual operation",
+    "groups-chromium-1440-shine archived list disables new",
+    "groups-chromium-1440-shine restore returns item to active list",
+    "groups-chromium-1440-shine no page errors or external requests []",
+    "attendance-chromium-1440-shine list width",
+    "attendance-chromium-1440-shine list header",
+    "attendance-chromium-1440-shine list contrast []",
+    "attendance-chromium-1440-shine list touch targets []",
+    "attendance-chromium-1440-shine editor width",
+    "attendance-chromium-1440-shine editor header",
+    "attendance-chromium-1440-shine editor contrast []",
+    "attendance-chromium-1440-shine editor touch targets []",
+    "attendance-chromium-1440-shine 200% text",
+    "attendance-chromium-1440-shine local attendance filter and scoped rate",
+    "attendance-chromium-1440-shine combined record filters",
+    "attendance-chromium-1440-shine view-only roster search does not dirty data",
+    "attendance-chromium-1440-shine roster search keeps genuine unsaved marker",
+    "attendance-chromium-1440-shine search retains offscreen selections and historic name",
+    "attendance-chromium-1440-shine group change requires discard confirmation",
+    "attendance-chromium-1440-shine attendance cancel protects changes",
+    "attendance-chromium-1440-shine failed save retains hidden attendance choices",
+    "attendance-chromium-1440-shine all filtered and historical names saved once",
+    "attendance-chromium-1440-shine new record uses Taipei local date",
+    "attendance-chromium-1440-shine no page errors or external requests []",
+    "members-webkit-390-mplus list width",
+    "members-webkit-390-mplus list header",
+    "members-webkit-390-mplus list contrast []",
+    "members-webkit-390-mplus list touch targets []",
+    "members-webkit-390-mplus editor width",
+    "members-webkit-390-mplus editor header",
+    "members-webkit-390-mplus editor contrast []",
+    "members-webkit-390-mplus editor touch targets []",
+    "members-webkit-390-mplus 200% text",
+    "members-webkit-390-mplus cancel preserves unsaved member",
+    "members-webkit-390-mplus compact view preserves editor and width",
+    "members-webkit-390-mplus member selection exposes batch bar",
+    "members-webkit-390-mplus no page errors or external requests []",
+    "groups-webkit-390-mplus list width",
+    "groups-webkit-390-mplus list header",
+    "groups-webkit-390-mplus list contrast []",
+    "groups-webkit-390-mplus list touch targets []",
+    "groups-webkit-390-mplus editor width",
+    "groups-webkit-390-mplus editor header",
+    "groups-webkit-390-mplus editor contrast []",
+    "groups-webkit-390-mplus editor touch targets []",
+    "groups-webkit-390-mplus 200% text",
+    "groups-webkit-390-mplus local group location search",
+    "groups-webkit-390-mplus explicit empty search",
+    "groups-webkit-390-mplus cancel and new protect group edits",
+    "groups-webkit-390-mplus failed group save retains values",
+    "groups-webkit-390-mplus acknowledged group save suppresses duplicate and closes draft",
+    "groups-webkit-390-mplus group refresh only reads",
+    "groups-webkit-390-mplus failed archive-list read preserves active state",
+    "groups-webkit-390-mplus archive reports actual operation",
+    "groups-webkit-390-mplus archived list disables new",
+    "groups-webkit-390-mplus restore returns item to active list",
+    "groups-webkit-390-mplus no page errors or external requests []",
+    "attendance-webkit-390-mplus list width",
+    "attendance-webkit-390-mplus list header",
+    "attendance-webkit-390-mplus list contrast []",
+    "attendance-webkit-390-mplus list touch targets []",
+    "attendance-webkit-390-mplus editor width",
+    "attendance-webkit-390-mplus editor header",
+    "attendance-webkit-390-mplus editor contrast []",
+    "attendance-webkit-390-mplus editor touch targets []",
+    "attendance-webkit-390-mplus 200% text",
+    "attendance-webkit-390-mplus local attendance filter and scoped rate",
+    "attendance-webkit-390-mplus combined record filters",
+    "attendance-webkit-390-mplus view-only roster search does not dirty data",
+    "attendance-webkit-390-mplus roster search keeps genuine unsaved marker",
+    "attendance-webkit-390-mplus search retains offscreen selections and historic name",
+    "attendance-webkit-390-mplus group change requires discard confirmation",
+    "attendance-webkit-390-mplus attendance cancel protects changes",
+    "attendance-webkit-390-mplus failed save retains hidden attendance choices",
+    "attendance-webkit-390-mplus all filtered and historical names saved once",
+    "attendance-webkit-390-mplus new record uses Taipei local date",
+    "attendance-webkit-390-mplus no page errors or external requests []",
+    "members-webkit-390-shine list width",
+    "members-webkit-390-shine list header",
+    "members-webkit-390-shine list contrast []",
+    "members-webkit-390-shine list touch targets []",
+    "members-webkit-390-shine editor width",
+    "members-webkit-390-shine editor header",
+    "members-webkit-390-shine editor contrast []",
+    "members-webkit-390-shine editor touch targets []",
+    "members-webkit-390-shine 200% text",
+    "members-webkit-390-shine cancel preserves unsaved member",
+    "members-webkit-390-shine compact view preserves editor and width",
+    "members-webkit-390-shine member selection exposes batch bar",
+    "members-webkit-390-shine no page errors or external requests []",
+    "groups-webkit-390-shine list width",
+    "groups-webkit-390-shine list header",
+    "groups-webkit-390-shine list contrast []",
+    "groups-webkit-390-shine list touch targets []",
+    "groups-webkit-390-shine editor width",
+    "groups-webkit-390-shine editor header",
+    "groups-webkit-390-shine editor contrast []",
+    "groups-webkit-390-shine editor touch targets []",
+    "groups-webkit-390-shine 200% text",
+    "groups-webkit-390-shine local group location search",
+    "groups-webkit-390-shine explicit empty search",
+    "groups-webkit-390-shine cancel and new protect group edits",
+    "groups-webkit-390-shine failed group save retains values",
+    "groups-webkit-390-shine acknowledged group save suppresses duplicate and closes draft",
+    "groups-webkit-390-shine group refresh only reads",
+    "groups-webkit-390-shine failed archive-list read preserves active state",
+    "groups-webkit-390-shine archive reports actual operation",
+    "groups-webkit-390-shine archived list disables new",
+    "groups-webkit-390-shine restore returns item to active list",
+    "groups-webkit-390-shine no page errors or external requests []",
+    "attendance-webkit-390-shine list width",
+    "attendance-webkit-390-shine list header",
+    "attendance-webkit-390-shine list contrast []",
+    "attendance-webkit-390-shine list touch targets []",
+    "attendance-webkit-390-shine editor width",
+    "attendance-webkit-390-shine editor header",
+    "attendance-webkit-390-shine editor contrast []",
+    "attendance-webkit-390-shine editor touch targets []",
+    "attendance-webkit-390-shine 200% text",
+    "attendance-webkit-390-shine local attendance filter and scoped rate",
+    "attendance-webkit-390-shine combined record filters",
+    "attendance-webkit-390-shine view-only roster search does not dirty data",
+    "attendance-webkit-390-shine roster search keeps genuine unsaved marker",
+    "attendance-webkit-390-shine search retains offscreen selections and historic name",
+    "attendance-webkit-390-shine group change requires discard confirmation",
+    "attendance-webkit-390-shine attendance cancel protects changes",
+    "attendance-webkit-390-shine failed save retains hidden attendance choices",
+    "attendance-webkit-390-shine all filtered and historical names saved once",
+    "attendance-webkit-390-shine new record uses Taipei local date",
+    "attendance-webkit-390-shine no page errors or external requests []",
+    "members-webkit-1440-mplus list width",
+    "members-webkit-1440-mplus list header",
+    "members-webkit-1440-mplus list contrast []",
+    "members-webkit-1440-mplus list touch targets []",
+    "members-webkit-1440-mplus editor width",
+    "members-webkit-1440-mplus editor header",
+    "members-webkit-1440-mplus editor contrast []",
+    "members-webkit-1440-mplus editor touch targets []",
+    "members-webkit-1440-mplus 200% text",
+    "members-webkit-1440-mplus cancel preserves unsaved member",
+    "members-webkit-1440-mplus compact view preserves editor and width",
+    "members-webkit-1440-mplus member selection exposes batch bar",
+    "members-webkit-1440-mplus no page errors or external requests []",
+    "groups-webkit-1440-mplus list width",
+    "groups-webkit-1440-mplus list header",
+    "groups-webkit-1440-mplus list contrast []",
+    "groups-webkit-1440-mplus list touch targets []",
+    "groups-webkit-1440-mplus editor width",
+    "groups-webkit-1440-mplus editor header",
+    "groups-webkit-1440-mplus editor contrast []",
+    "groups-webkit-1440-mplus editor touch targets []",
+    "groups-webkit-1440-mplus 200% text",
+    "groups-webkit-1440-mplus local group location search",
+    "groups-webkit-1440-mplus explicit empty search",
+    "groups-webkit-1440-mplus cancel and new protect group edits",
+    "groups-webkit-1440-mplus failed group save retains values",
+    "groups-webkit-1440-mplus acknowledged group save suppresses duplicate and closes draft",
+    "groups-webkit-1440-mplus group refresh only reads",
+    "groups-webkit-1440-mplus failed archive-list read preserves active state",
+    "groups-webkit-1440-mplus archive reports actual operation",
+    "groups-webkit-1440-mplus archived list disables new",
+    "groups-webkit-1440-mplus restore returns item to active list",
+    "groups-webkit-1440-mplus no page errors or external requests []",
+    "attendance-webkit-1440-mplus list width",
+    "attendance-webkit-1440-mplus list header",
+    "attendance-webkit-1440-mplus list contrast []",
+    "attendance-webkit-1440-mplus list touch targets []",
+    "attendance-webkit-1440-mplus editor width",
+    "attendance-webkit-1440-mplus editor header",
+    "attendance-webkit-1440-mplus editor contrast []",
+    "attendance-webkit-1440-mplus editor touch targets []",
+    "attendance-webkit-1440-mplus 200% text",
+    "attendance-webkit-1440-mplus local attendance filter and scoped rate",
+    "attendance-webkit-1440-mplus combined record filters",
+    "attendance-webkit-1440-mplus view-only roster search does not dirty data",
+    "attendance-webkit-1440-mplus roster search keeps genuine unsaved marker",
+    "attendance-webkit-1440-mplus search retains offscreen selections and historic name",
+    "attendance-webkit-1440-mplus group change requires discard confirmation",
+    "attendance-webkit-1440-mplus attendance cancel protects changes",
+    "attendance-webkit-1440-mplus failed save retains hidden attendance choices",
+    "attendance-webkit-1440-mplus all filtered and historical names saved once",
+    "attendance-webkit-1440-mplus new record uses Taipei local date",
+    "attendance-webkit-1440-mplus no page errors or external requests []",
+    "members-webkit-1440-shine list width",
+    "members-webkit-1440-shine list header",
+    "members-webkit-1440-shine list contrast []",
+    "members-webkit-1440-shine list touch targets []",
+    "members-webkit-1440-shine editor width",
+    "members-webkit-1440-shine editor header",
+    "members-webkit-1440-shine editor contrast []",
+    "members-webkit-1440-shine editor touch targets []",
+    "members-webkit-1440-shine 200% text",
+    "members-webkit-1440-shine cancel preserves unsaved member",
+    "members-webkit-1440-shine compact view preserves editor and width",
+    "members-webkit-1440-shine member selection exposes batch bar",
+    "members-webkit-1440-shine no page errors or external requests []",
+    "groups-webkit-1440-shine list width",
+    "groups-webkit-1440-shine list header",
+    "groups-webkit-1440-shine list contrast []",
+    "groups-webkit-1440-shine list touch targets []",
+    "groups-webkit-1440-shine editor width",
+    "groups-webkit-1440-shine editor header",
+    "groups-webkit-1440-shine editor contrast []",
+    "groups-webkit-1440-shine editor touch targets []",
+    "groups-webkit-1440-shine 200% text",
+    "groups-webkit-1440-shine local group location search",
+    "groups-webkit-1440-shine explicit empty search",
+    "groups-webkit-1440-shine cancel and new protect group edits",
+    "groups-webkit-1440-shine failed group save retains values",
+    "groups-webkit-1440-shine acknowledged group save suppresses duplicate and closes draft",
+    "groups-webkit-1440-shine group refresh only reads",
+    "groups-webkit-1440-shine failed archive-list read preserves active state",
+    "groups-webkit-1440-shine archive reports actual operation",
+    "groups-webkit-1440-shine archived list disables new",
+    "groups-webkit-1440-shine restore returns item to active list",
+    "groups-webkit-1440-shine no page errors or external requests []",
+    "attendance-webkit-1440-shine list width",
+    "attendance-webkit-1440-shine list header",
+    "attendance-webkit-1440-shine list contrast []",
+    "attendance-webkit-1440-shine list touch targets []",
+    "attendance-webkit-1440-shine editor width",
+    "attendance-webkit-1440-shine editor header",
+    "attendance-webkit-1440-shine editor contrast []",
+    "attendance-webkit-1440-shine editor touch targets []",
+    "attendance-webkit-1440-shine 200% text",
+    "attendance-webkit-1440-shine local attendance filter and scoped rate",
+    "attendance-webkit-1440-shine combined record filters",
+    "attendance-webkit-1440-shine view-only roster search does not dirty data",
+    "attendance-webkit-1440-shine roster search keeps genuine unsaved marker",
+    "attendance-webkit-1440-shine search retains offscreen selections and historic name",
+    "attendance-webkit-1440-shine group change requires discard confirmation",
+    "attendance-webkit-1440-shine attendance cancel protects changes",
+    "attendance-webkit-1440-shine failed save retains hidden attendance choices",
+    "attendance-webkit-1440-shine all filtered and historical names saved once",
+    "attendance-webkit-1440-shine new record uses Taipei local date",
+    "attendance-webkit-1440-shine no page errors or external requests []"
+  ],
+  "failures": [],
+  "source_sha256": {
+    "members.html": "503c7a7b3265428966c629f9e0db726032d4e502aeb119665a53e37c54340bb9",
+    "members-ui.mjs": "6df3bfe4b16f0b0a92139389d7b735799a5cce4024de38b1fb48b15e565cc736",
+    "groups.html": "18c52671e948c99fd79862f936d3784f54306fd6fb5e58d3be8d25b97eeec06b",
+    "groups-ui.mjs": "e43d20142a27ad57bb191caf565da2ef1337ee3f0377a6a37e49d526c468548a",
+    "attendance.html": "556472c8a0411e4edef15cc1ed4b5103e5ff63bebd3d1edd0312c2bf987b2082",
+    "attendance-ui.mjs": "7002000b3a3055929719f7835066decf4f4d880c5c671a269046a5f7c6c65e71",
+    "people-workspace.css": "63fc208a1dec4bcbc3bab79ac72f061d139c08c03c72ecf1b51c552389906e07",
+    "church-os-sw.js": "f0173f05e6c216e4423add08a7574cdaf634838538a1b90c97fcf39e9dbae9a6",
+    "tests/people-workspaces-browser.mjs": "58a4a21756d654c133467ff51c68cf178b9fb911985420edc03563e01fc1228c"
+  }
+}

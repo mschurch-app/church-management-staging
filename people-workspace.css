@@ -1,0 +1,75 @@
+/* Members, groups and attendance share a list/editor workspace and existing tokens. */
+body[data-app-layout=people]{font-family:var(--app-font-body,system-ui,sans-serif)!important;line-height:1.65}
+html body[data-app-layout=people] .page-header .admin-identity span{color:#fff!important}
+html body[data-app-layout=people] main.member-page{width:100%;max-width:1440px;margin-inline:auto;padding:24px 32px 120px;font-family:inherit!important}
+body[data-app-layout=people] :is(h1,h2,h3,p,label,dt,dd,summary){overflow-wrap:anywhere}
+body[data-app-layout=people] :is(button,input,textarea,select){font-family:inherit}
+body[data-app-layout=people] :is(button,a.secondary,summary,.member-pick,.choice){min-height:44px;line-height:1.5;white-space:normal}
+body[data-app-layout=people] :is(input:not([type=checkbox]),select,textarea){font-size:max(16px,1rem);min-width:0;max-width:100%;border-radius:var(--app-radius-field)}
+body[data-app-layout=people] :is(.toolbar,.people-query,.editor-panel,.member-card,.audit-card){min-width:0;padding:22px;border:1px solid var(--app-border);border-radius:var(--app-radius-card);background:var(--app-surface);box-shadow:var(--app-shadow)}
+body[data-app-layout=people] :is(.member-card,.audit-card) h3{font-size:1.15rem;margin:0 0 10px}
+body[data-app-layout=people] :is(.member-card,.audit-card) p{margin:8px 0}
+body[data-app-layout=people] .page-nav{position:static;display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;background:none;border:0;box-shadow:none;padding:0}
+body[data-app-layout=people] .module-bar{position:static}
+body[data-app-layout=people] .page-nav :is(a,button){display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;margin:0;font-size:.9rem;border-radius:var(--app-radius-field)}
+body[data-app-layout=people] .toolbar{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(250px,1fr);gap:24px;align-items:start}
+body[data-app-layout=people] .toolbar-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
+body[data-app-layout=people] .toolbar-actions button{margin:0;font-size:.9rem}
+body[data-app-layout=people] .search-row{display:flex;align-items:stretch;gap:8px}
+body[data-app-layout=people] .search-row input{flex:1;min-width:0;margin:0}
+body[data-app-layout=people] .search-row button{margin:0;flex:0 0 auto}
+.people-filters{margin-top:12px;border-top:1px solid var(--app-border);padding-top:8px}
+.people-filters summary{cursor:pointer;padding:10px 0;font-weight:650}
+body[data-app-layout=people] .filter-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center}
+body[data-app-layout=people] .check-row{padding:8px 0;min-height:44px;margin:0;line-height:1.5}
+body[data-app-layout=people] .people-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+body[data-app-layout=people] :is(.people-workspace>*,.edit-grid>*,.card-head>div){min-width:0}
+body[data-app-layout=people] .member-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+body[data-app-layout=people] .editor-panel{margin:0}
+body[data-app-layout=people] .editor-panel :is(input,select,textarea){margin:0}
+body[data-app-layout=people] .editor-panel label{display:grid;align-content:start;gap:6px;line-height:1.5}
+html body[data-app-layout=people] .editor-panel .check-panel{color:var(--app-ink)!important}
+body[data-app-layout=people] .editor-panel label.choice{display:flex;align-items:center;padding:10px;gap:10px}
+body[data-app-layout=people] .editor-panel .edit-grid{gap:16px;margin-bottom:20px}
+body[data-app-layout=people] .editor-actions{position:static!important;display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;padding:0;border:0;background:none;box-shadow:none}
+body[data-app-layout=people] .editor-actions button{flex:1;margin:0}
+body[data-app-layout=people] .member-card .card-actions{display:flex;flex-wrap:wrap;gap:8px}
+body[data-app-layout=people] .member-pick{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:0;border:1px solid var(--app-border);border-radius:12px}
+body[data-app-layout=people] .member-pick input{margin:0}
+body[data-app-layout=people] .member-card button{margin:0}
+body[data-app-layout=people] .member-card .people-card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+body[data-app-layout=people] .batch-actions{position:static;display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;border-radius:18px}
+body[data-app-layout=people] .batch-actions>*{min-width:0}
+body[data-app-layout=people] .people-query{margin:16px 0}
+.people-filter-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+body[data-app-layout=people] .people-filter-grid :is(label,select,button){margin:0;min-width:0}
+body[data-app-layout=people] .people-filter-grid label{display:grid;gap:6px}
+body[data-app-layout=people] .audit-list{display:grid;gap:16px}
+body[data-app-layout=people] .audit-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+body[data-app-layout=people] .people-query p{font-size:.9rem;margin:12px 0 0}
+body[data-app-layout=people] .attendance-roster-summary{font-weight:650;color:var(--app-ink);background:var(--app-surface-muted);padding:12px;border-radius:12px}
+body[data-app-layout=people] .roster-search{margin:12px 0}
+body[data-app-layout=people] .people-empty{grid-column:1/-1;padding:24px;text-align:center;background:var(--app-surface-muted);border-radius:16px;color:var(--app-secondary)}
+body[data-app-layout=people] [hidden]{display:none!important}
+body[data-app-layout=people] select:not([multiple]){appearance:none;-webkit-appearance:none;min-height:46px;height:auto;padding:11px 32px 11px 12px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2352665a' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px}
+@media(min-width:1100px){
+ body[data-app-layout=people] .people-workspace:has(>#editor:not([hidden])){grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+ body[data-app-layout=people] .people-workspace:has(>#editor:not([hidden])) .member-grid{grid-template-columns:minmax(0,1fr)}
+ body[data-app-layout=people] .people-workspace:has(>#editor:not([hidden])) .compact-member-list .member-card{grid-template-columns:minmax(0,1fr);gap:10px}
+ body[data-app-layout=people] .people-workspace:has(>#editor:not([hidden]))>#groups{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:1099px){body[data-app-layout=people] .member-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+ html body[data-app-layout=people] main.member-page{padding:16px 16px 120px}
+ body[data-app-layout=people] :is(.toolbar,.people-query,.editor-panel,.member-card,.audit-card){padding:16px;border-radius:18px}
+ body[data-app-layout=people] .toolbar{grid-template-columns:minmax(0,1fr);gap:16px}
+ body[data-app-layout=people] .member-grid{grid-template-columns:minmax(0,1fr)}
+ body[data-app-layout=people] .people-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-app-layout=people] .people-filter-grid button{grid-column:1/-1}
+ body[data-app-layout=people] .edit-grid{grid-template-columns:minmax(0,1fr)!important}
+ body[data-app-layout=people] .batch-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ body[data-app-layout=people] .member-card dl{grid-template-columns:5.5rem minmax(0,1fr)}
+ body[data-app-layout=people] .member-card dd{overflow-wrap:anywhere}
+ body[data-app-layout=people] .choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media print{.people-filters{display:block}body[data-app-layout=people] .people-workspace{display:block}}

@@ -25,9 +25,9 @@ page.on('request',async req=>{
   else if(url.pathname==='/auth/v1/token')data=session;
   else if(url.pathname.includes('/rpc/')){
    const name=url.pathname.split('/').pop();
-   if(name==='get_my_church_access')data=(mode==='denied'?[]:permissions).map(permission=>({church_id:'M+',permission}));
+   if(name==='get_my_church_access')data=(mode==='denied'?[]:permissions).flatMap(permission=>['M+','SHiNE'].map(church_id=>({church_id,permission})));
    else if(name==='get_my_admin_profile')data=[{display_name:'測試同工',job_title:'行政同工'}];
-   else if(name==='get_my_feature_permissions')data=permissions.map(feature_key=>({church_id:'M+',feature_key,view:true,create:mode!=='readonly',edit:mode!=='readonly',delete:mode!=='readonly',approve:mode!=='readonly',manage:mode!=='readonly',export:true}));
+   else if(name==='get_my_feature_permissions')data=permissions.flatMap(feature_key=>['M+','SHiNE'].map(church_id=>({church_id,feature_key,view:true,create:mode!=='readonly',edit:mode!=='readonly',delete:mode!=='readonly',approve:mode!=='readonly',manage:mode!=='readonly',export:true})));
    else if(name==='get_my_app_capabilities')data={is_owner:mode==='owner',has_line:true};
    else if(name==='get_my_home_preferences')data={home_modules:['members','newcomer_care','tree_reading_admin']};
    else if(name==='get_my_system_monitor_access')data=mode==='owner';
@@ -72,8 +72,8 @@ page.on('request',async req=>{
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const metrics=[];
 function ok(name,value=true){assert.ok(value,name);checks.push(name);console.log('PASS '+name);}
-async function goto(file){await page.goto(base+'/'+file+'?church=M%2B',{waitUntil:'networkidle0'});await pause(150);}
-async function runtime(code){return page.evaluate(async code=>{const module=await import('/app-runtime.mjs?v=20261021-startup-update1');return new Function('module',code)(module);},code);}
+async function goto(file){await page.goto(base+'/'+file+'?church='+(file==='admin-dashboard.html'?'SHiNE':'M%2B'),{waitUntil:'networkidle0'});await pause(150);}
+async function runtime(code){return page.evaluate(async code=>{const module=await import('/app-runtime.mjs?v=20261022-experience5');return new Function('module',code)(module);},code);}
 const active=()=>page.$eval('.notification-ticker-item.is-active',n=>n.dataset.notificationId);
 try{
  for(const file of ['admin-dashboard.html','church-settings.html','daily-devotional-admin.html','weekly-bulletin-review.html','website-maintenance.html','service-signup-admin.html']){
@@ -84,7 +84,7 @@ try{
   const large=await page.evaluate(()=>({header:document.querySelector('.page-header').getBoundingClientRect().height,overflow:document.documentElement.scrollWidth>innerWidth+2,titleSize:parseFloat(getComputedStyle(document.querySelector('h1')).fontSize),mode:document.documentElement.classList.contains('app-large-text')}));metrics.push({file,normal,large});
   ok(file+' 200% text mode and no horizontal overflow',large.mode&&large.titleSize>=40&&!large.overflow);
   if(file==='admin-dashboard.html')ok('large favorite labels scale with text',await page.$eval('#quick-links .function-open strong',n=>parseFloat(getComputedStyle(n).fontSize)>=27));
-  ok(file+' large text contrast',(await page.evaluate(contrastMetrics)).failures.length===0);
+  const contrast=await page.evaluate(contrastMetrics);if(contrast.failures.length)console.error('CONTRAST',file,JSON.stringify(contrast.failures));ok(file+' large text contrast',contrast.failures.length===0);
   await page.screenshot({path:out+file.replace('.html','')+'-large.png',fullPage:true});
  }
  await goto('website-maintenance.html');
@@ -115,7 +115,7 @@ try{
  await page.$eval('#runtime-test-form',n=>n.reset());ok('reset clears draft',await page.$eval('#runtime-test-form',n=>n.dataset.unsavedChanges==='false'));
  await page.$eval('#runtime-test-form',n=>n.setAttribute('aria-busy','true'));ok('refresh blocked during an active operation',await runtime('return module.refreshApp()===false'));
  await page.$eval('#runtime-test-form',n=>n.removeAttribute('aria-busy'));
- await page.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261021-startup-update1'),reg=new EventTarget();window.updateMessages=[];reg.waiting={postMessage:m=>window.updateMessages.push(m)};module.watchAppRegistration(reg);module.watchAppRegistration(reg);});
+ await page.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261022-experience5'),reg=new EventTarget();window.updateMessages=[];reg.waiting={postMessage:m=>window.updateMessages.push(m)};module.watchAppRegistration(reg);module.watchAppRegistration(reg);});
  ok('update never displays unsolicited banner',await page.$eval('.app-system-banner',n=>n.hidden));
  await page.$eval('#runtime-test-form input',n=>n.dispatchEvent(new Event('input',{bubbles:true})));answers.push(false);ok('cancel manual update preserves draft',await runtime('return module.refreshApp()===false')&&await page.evaluate(()=>updateMessages.length===0));
  answers.push(true);await runtime('return module.refreshApp()');ok('manual update activates exactly once',await page.evaluate(()=>updateMessages.length===1&&updateMessages[0].type==='CHURCH_ACTIVATE_UPDATE'));
@@ -144,8 +144,8 @@ try{
  // Both tabs otherwise replace the same worker registration with competing URLs.
  const swContext=await browser.createBrowserContext();
  const swPage=await swContext.newPage();await swPage.goto(base+'/app-offline.html',{waitUntil:'networkidle0'});
- await swPage.evaluate(async()=>{await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4',{scope:'/'});await navigator.serviceWorker.ready;});
- await swPage.waitForFunction(()=>navigator.serviceWorker.controller!==null);
+ await swPage.evaluate(async()=>{await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4',{scope:'/'});});
+ await swPage.waitForFunction(()=>navigator.serviceWorker.controller!==null,{timeout:15000});
  ok('real service worker installs and controls browser');
  const workerTarget=swContext.targets().find(target=>target.type()==='service_worker'&&target.url().startsWith(base+'/church-os-sw.js'));
  const workerCDP=await workerTarget.createCDPSession();await workerCDP.send('Network.enable');await workerCDP.send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
@@ -159,7 +159,7 @@ try{
  await Promise.all([swPage.waitForNavigation({waitUntil:'networkidle0'}),swPage.click('#retry')]);
  ok('retry opens original resource after network returns',!await swPage.$('#retry')&&swPage.url().includes('apple-ui.css?offline-probe=1'));
  await swPage.goto(base+'/app-offline.html',{waitUntil:'networkidle0'});
- await swPage.evaluate(async()=>{await import('/app-runtime.mjs?v=20261021-startup-update1');const module=await import('/app-runtime.mjs?v=20261021-startup-update1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4&update-probe=1',{scope:'/'});module.watchAppRegistration(reg);});
+ await swPage.evaluate(async()=>{await import('/app-runtime.mjs?v=20261022-experience5');const module=await import('/app-runtime.mjs?v=20261022-experience5');const reg=await navigator.serviceWorker.register('/church-os-sw.js?v=20261009-stage4&update-probe=1',{scope:'/'});module.watchAppRegistration(reg);});
  await swPage.waitForFunction(()=>navigator.serviceWorker.controller?.scriptURL.includes('update-probe'));
  await swPage.waitForFunction(()=>sessionStorage.getItem('church-os-auto-update-reload')!==null);
  ok('real updated worker activates automatically on opening',await swPage.evaluate(()=>navigator.serviceWorker.controller.scriptURL.includes('update-probe')));

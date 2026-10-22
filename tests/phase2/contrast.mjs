@@ -12,7 +12,6 @@ const assigned=['members','tree_reading_admin','school_students'];let publicSett
 const rolePermissions=()=>mode==='leader'?['schedules']:mode==='notification'?['members','notification_settings']:mode==='facilities'?['spaces','inventory']:permissions;
 fs.mkdirSync(out,{recursive:true});
 const browser=await puppeteer.launch({executablePath:process.env.CHROME_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--no-first-run','--no-default-browser-check','--disable-background-networking','--disable-component-update','--disable-sync'],userDataDir:out+'/chrome'});
-const context=await browser.createBrowserContext();
 async function setup(page,{signedIn=true}={}){
  await page.setViewport({width:390,height:844,deviceScaleFactor:1,isMobile:true,hasTouch:true});
  await page.evaluateOnNewDocument((session,signedIn)=>{navigator.serviceWorker?.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(signedIn)localStorage.setItem('church-staging-admin-v1',JSON.stringify(session));else localStorage.removeItem('church-staging-admin-v1');},session,signedIn);
@@ -39,6 +38,7 @@ async function setup(page,{signedIn=true}={}){
     else if(name.startsWith('set_')||name.startsWith('save_')||name.startsWith('remove_')||name.startsWith('mark_')){writes.push({name,body});data=['save_admin_account_bundle','save_review_workflow_setting'].includes(name)?{saved:true,version:'fixture-version'}:true;}
    }else if(url.pathname.endsWith('/church_customizations'))data={church_id:fixtureChurch,feature_modules:[],welcome_fields:[],catalogs:{},version:1,updated_at:new Date().toISOString()};
    else if(url.pathname.endsWith('/church_public_settings')){if(req.method()==='PATCH'){writes.push({name:'church_public_settings',body});if(failSave){status=503;data={message:'fixture unavailable'};}else{publicSettings={...publicSettings,...body};data=[{church_id:fixtureChurch}];}}else data={church_id:fixtureChurch,...publicSettings};}
+   else if(url.pathname.includes('/functions/v1/weekly-bulletin-review')||url.pathname.includes('/functions/v1/weekly-promo-review'))data={ok:true,items:[]};
    else if(url.pathname.includes('/functions/'))data={ok:true,items:[],drafts:[],people:[],settings:{},connections:{},ministries:[]};
    await req.respond({status,contentType:'application/json',headers:{'access-control-allow-origin':'*','access-control-allow-methods':'GET,POST,PATCH,DELETE,HEAD,OPTIONS','access-control-allow-headers':'*','content-range':'0-0/1'},body:JSON.stringify(data)});return;
   }
@@ -46,11 +46,13 @@ async function setup(page,{signedIn=true}={}){
   await req.continue();
  });
 }
-const page=await context.newPage();await setup(page);const results=[];
+const results=[];
 const files=fs.readdirSync(root).filter(f=>f.endsWith('.html')&&fs.readFileSync(path.join(root,f),'utf8').includes('class="member-page'));
 for(const file of files){
- await page.goto(base+'/'+file+'?church=M%2B',{waitUntil:'networkidle0'});await new Promise(r=>setTimeout(r,350));
- if(!page.url().includes(file))continue;
+ console.log('CHECK',file);fixtureChurch=file==='admin-dashboard.html'?'SHiNE':'M+';
+ const scanContext=await browser.createBrowserContext(),page=await scanContext.newPage();await setup(page);
+ await page.goto(base+'/'+file+'?church='+encodeURIComponent(fixtureChurch),{waitUntil:'networkidle0'});await new Promise(r=>setTimeout(r,350));
+ assert(new URL(page.url()).pathname.endsWith('/'+file),'expected page '+file);
  if(file==='admin-accounts.html'){try{await page.click('.admin-account-card button');await new Promise(r=>setTimeout(r,250));}catch{}}
  const metrics=await page.evaluate(()=>{
   document.querySelectorAll('details').forEach(n=>n.open=true);
@@ -67,7 +69,7 @@ for(const file of files){
    const selector=n.tagName.toLowerCase()+'.'+n.className,key=selector+s.color+backgrounds.toString();if(ratio+.01<minimum&&!seen.has(key)){seen.add(key);failures.push({selector,text:value.slice(0,45),color:s.color,backgrounds,ratio:Math.round(ratio*100)/100,minimum});}
   }
   const h=document.querySelector('.member-page>.page-header');return{checked,failures,header:h?.getBoundingClientRect().height,headerClipped:h?[...h.querySelectorAll('h1,.admin-identity,.header-tools')].some(n=>n.getBoundingClientRect().bottom>h.getBoundingClientRect().bottom):false};
- });results.push({file,...metrics});
+ });results.push({file,...metrics});await scanContext.close();
 }
 fs.writeFileSync(out+'/contrast-audit.json',JSON.stringify(results,null,2));await browser.close();assert(results.length===files.length);assert(results.every(r=>r.failures.length===0&&!r.headerClipped));console.log(JSON.stringify({pages:results.length,textChecks:results.reduce((n,r)=>n+r.checked,0),failures:results.filter(r=>r.failures.length||r.headerClipped)}));
 

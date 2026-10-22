@@ -30,6 +30,8 @@ page.on('request',async req=>{
    else if(name==='get_my_feature_permissions')data=perms.map(feature_key=>({church_id:'M+',feature_key,view:true,create:true,edit:true,manage:true}));
    else if(name==='get_my_app_capabilities')data={is_owner:true};
    else if(name==='list_admin_accounts_v4')data=await q('select public.list_admin_accounts_v4()');
+   else if(name==='get_work_profile')data={can_edit:true,profile:{church_role:'事工領袖',assignments:[],oversight_domains:[],reminder_route:'personal',version:0}};
+   else if(name==='list_coworker_applications')data=[];
    else if(name==='get_service_signup_scopes')data=body.p_church==='M+'?['media']:['welcome'];
    else if(name==='save_admin_account_bundle'){
     saveRequests.push(body);
@@ -41,7 +43,7 @@ page.on('request',async req=>{
    memberRequests.push(body);
    if(memberMode==='offline')return await respond({ok:false,error:'unavailable'},503);
    if(memberMode==='launchPending')data={ok:true,launchPending:true};
-   else if(memberMode==='signup')data={ok:true,member:{name:'合成會友'},seasons:[],registrations:[]};
+   else if(memberMode==='signup')data={ok:true,binding_status:'approved',member:{name:'合成會友'},seasons:[],registrations:[]};
    else data={ok:true,item:{devotional_title:'合成靈修標題',key_points:'測試',reflection_questions:'測試'},progress:[]};
   }else if(url.pathname.includes('/church_customizations'))data={church_id:'M+',catalogs:{},feature_modules:[]};
   else if(url.pathname.includes('/church_public_settings'))data={church_id:'M+',brand_color:'#a83929'};
@@ -55,7 +57,7 @@ async function check(name,fn){await fn();checks.push({name,status:'passed'});con
 try{
  await page.goto(base+'/admin-accounts.html?church=M%2B',{waitUntil:'networkidle0'});
  await check('verified Email/LINE accounts appear as one editable row',async()=>assert.equal(await page.$$eval('#items .admin-account-card',ns=>ns.length),2));
- await page.$$eval('#items button',ns=>ns.find(n=>n.textContent==='編輯資料與權限').click());await page.waitForSelector('#editor form');
+ await page.click('#accounts-tab');await page.click('#items button[aria-label="設定 測試同工"]');await page.waitForSelector('#editor form');await page.waitForFunction(()=>document.querySelector('#editor form')._workProfile.ready()&&document.querySelector('#editor form')._serviceScopes.ready());
  await page.$eval('#editor input:not([type])',n=>{n.value='保留輸入';});
  await page.$eval('#editor form',f=>f.requestSubmit());await page.waitForFunction(()=>document.querySelector('.form-message')?.textContent.includes('尚未確認'));
  await page.screenshot({path:out+'/account-retry-390.png',fullPage:false});
@@ -63,11 +65,12 @@ try{
  await page.$eval('#editor form',f=>f.requestSubmit());await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('已儲存'));
  await check('retry reuses request ID and succeeds without a second change',async()=>{assert.equal(saveRequests.length,2);assert.equal(saveRequests[0].p_request_id,saveRequests[1].p_request_id);await db.exec('reset role');assert.equal(await q("select count(*)::int from church_auth.account_change_audit where action='save'"),1);await db.exec('set role authenticated');});
  await page.waitForFunction(()=>document.querySelector('#editor').hidden);
- await page.$$eval('#items button',ns=>ns.find(n=>n.textContent==='編輯資料與權限').click());await page.waitForSelector('#editor form');
- await check('administrative coordinator scope remains selectable and exclusive',async()=>{assert(await page.$('input[data-scope=all]'));await page.click('input[data-scope=all]');assert.equal(await page.$$eval('input[data-scope]:checked',ns=>ns.map(n=>n.value).join(',')),'all');});
+ await page.click('#accounts-tab');await page.click('#items button[aria-label="設定 保留輸入"]');await page.waitForSelector('#editor form');await page.waitForFunction(()=>document.querySelector('#editor form')._workProfile.ready()&&document.querySelector('#editor form')._serviceScopes.ready());
+ await page.$eval('input[data-scope=all]',n=>n.closest('details').open=true);
+ await check('coordinator selection is exclusive and cannot expand an unassigned worker to all ministries',async()=>{await page.click('input[data-scope=all]');assert.equal(await page.$$eval('input[data-scope]:checked',ns=>ns.map(n=>n.value).join(',')),'all');await page.$eval('#editor form',f=>f.requestSubmit());await page.waitForFunction(()=>document.querySelector('.form-message')?.textContent.includes('全部事工統整僅限'));assert.equal(saveRequests.length,2);await page.click('input[data-scope=media]');assert.equal(await page.$$eval('input[data-scope]:checked',ns=>ns.map(n=>n.value).join(',')),'media');});
  await page.$eval('#editor button[type=submit]',n=>n.click());await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('已儲存'));
  await page.waitForFunction(()=>document.querySelector('#editor').hidden);
- page.on('dialog',async dialog=>dialog.accept());await page.$$eval('#items button',ns=>ns.find(n=>n.textContent==='移除教會 OS 權限').click());await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('已移除'));
+ await page.click('#accounts-tab');await page.click('#items button[aria-label="設定 保留輸入"]');await page.waitForSelector('#editor form');await page.$eval('#editor .account-danger',n=>n.open=true);page.on('dialog',async dialog=>dialog.accept());await page.$$eval('#editor button',ns=>ns.find(n=>n.textContent==='移除教會 OS 權限').click());await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('已移除'));
  await check('revocation removes the one combined card and both principals',async()=>{assert.equal(await page.$$eval('#items .admin-account-card',ns=>ns.length),1);assert.equal((await q('select public.list_admin_accounts_v4()')).length,1);});
 }catch(e){console.error('UI FAIL',e.message);process.exitCode=1;}
 // Public LINE member pages use isolated synthetic credentials and API content only.

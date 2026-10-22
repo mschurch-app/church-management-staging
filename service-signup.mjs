@@ -61,7 +61,7 @@ async function api(action,extra={}){
 function season(){return data.seasons?.[0];}
 function setBusy(value){
   busy=value;app.setAttribute('aria-busy',String(value));
-  if(value){lockedControls=[...app.querySelectorAll('button,input')].map(node=>({node,disabled:node.disabled}));lockedControls.forEach(({node})=>node.disabled=true);}
+  if(value){lockedControls=[...app.querySelectorAll('button,input,select,textarea')].map(node=>({node,disabled:node.disabled}));lockedControls.forEach(({node})=>node.disabled=true);}
   else{lockedControls.forEach(({node,disabled})=>{if(node.isConnected)node.disabled=disabled;});lockedControls=[];}
 }
 function chosenRoles(){return [...selectedRoles];}
@@ -90,7 +90,8 @@ function returnToChoice(selector){render();app.querySelector(selector)?.focus({p
 function shell(title,copy,body,actions=''){
   const isForm=view==='form'&&data.binding_status==='approved';
   const steps=isForm?`<nav class="serve-steps" aria-label="填寫進度"><ol>${['認識你','一起參與','留點時間','送出心意'].map((label,index)=>`<li class="${index+1<step?'complete':index+1===step?'current':''}" ${index+1===step?'aria-current="step"':''}><span>${index+1<step?'✓':index+1}</span><small>${label}</small></li>`).join('')}</ol></nav>`:'';
-  app.innerHTML=`${steps}<section class="panel form-panel"><h2>${title}</h2><p>${copy}</p>${body}${actions?`<div class="actions">${actions}</div>`:''}</section>`;
+  app.innerHTML=`${isForm?journeyCard(data,currentJourneyYear()):''}${steps}<section class="panel form-panel"><h2>${title}</h2><p>${copy}</p>${body}${actions?`<div class="actions">${actions}</div>`:''}</section>`;
+  if(isForm)bindJourneyYear();
   if(view==='form'&&canReturnToList){
     const back=document.createElement('button');back.type='button';back.className='list-return';back.textContent='返回我的登記';
     back.onclick=()=>{if(!busy){view='list';render();}};

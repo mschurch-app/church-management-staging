@@ -14,6 +14,7 @@ function harness(){
 }
 async function test(name,fn){await fn();checks.push({name,status:'passed'});console.log('PASS',name);}
 const h=harness();await h.event('install');
+await test('precache contains each URL once so Cache.addAll can install atomically',()=>assert.equal(new Set(h.log.shell).size,h.log.shell.length));
 await test('install precaches recovery and shared runtime without forcing activation',()=>{assert(h.log.shell.includes('/app-offline.html'));assert(h.log.shell.some(path=>path.includes('app-runtime.mjs')));assert.equal(h.log.skip,0);});
 await test('unknown message cannot activate an update',async()=>{await h.event('message',{data:{type:'other'}});assert.equal(h.log.skip,0);});
 await test('explicit update message activates once',async()=>{await h.event('message',{data:{type:'CHURCH_ACTIVATE_UPDATE'}});assert.equal(h.log.skip,1);});

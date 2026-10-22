@@ -23,7 +23,7 @@ npm run phase1:regression
 
 可用 CHURCH_TEST_ORIGIN 與 CHROME_EXECUTABLE 指定測試來源與瀏覽器。結果寫入 `phase2/results/`，不提交 Chrome profile。
 
-- definitions：功能 metadata、同一份角色建議、31 個既有伺服器首頁 key、分類／SVG／路由、權限與堂會。
+- definitions：功能 metadata、同一份角色建議、33 個伺服器首頁 key（含協會網站與信息預備）、分類／SVG／路由、權限與堂會。
 - browser：四類設定、搜尋、唯讀／錯誤／儲存重試、常用移除／加回、長按滑動取消、實際 CDP touchcancel、鍵盤排序、空偏好、全部入口完整性、圖示配色、375／390／430／1280／1440／1920 CSS px。
 - contrast：35 個管理頁可見文字，採 computed color 與背景／漸層端點計算；一般文字 4.5:1、大字 3:1，檢查表頭裁切。
 

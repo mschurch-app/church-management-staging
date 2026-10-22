@@ -217,7 +217,9 @@ export const FUNCTION_CATALOG=freezeTree({
     "group": "media",
     "symbol": "globe",
     "configurableHome": true,
-    "searchTerms": ["協會", "最新消息", "tcsc.org.tw", "上稿"]
+    "searchTerms": ["協會", "最新消息", "tcsc.org.tw", "上稿"],
+    "settingsId": "association-news",
+    "settingsGroup": "content"
   },
   "website_group_resources": {
     "permission": "website_group_resources",

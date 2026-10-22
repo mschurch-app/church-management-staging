@@ -1,6 +1,6 @@
 import {mountCoworkerApplications} from './admin-coworker-review.mjs?v=20261022-coworker2';
 import {createWorkProfileEditor} from './work-profile.mjs?v=20261022-accounting1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS} from './app-function-definitions.mjs?v=20261010-season-test1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS} from './app-function-definitions.mjs?v=20261022-experience3';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,inviteAdmin,addExistingAdmin,removeAdminAccount,resendAdminInvite,saveAdminBundle} from './admin-accounts-management.mjs?v=20261021-work-roles1';
 const search=new URLSearchParams(location.search),church=search.get('church')||'M+',reviewUser=/^[0-9a-f-]{36}$/i.test(search.get('review_user')||'')?search.get('review_user'):'',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false;

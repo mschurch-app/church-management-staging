@@ -1,0 +1,17 @@
+{
+  "results": [
+    "390: personal pending queue excludes another worker",
+    "390: overdue filter preserves keyboard focus",
+    "390: no horizontal overflow and 44px controls",
+    "390: read failure retains last loaded work with warning",
+    "390: switching category and returning restores home scroll",
+    "1440: personal pending queue excludes another worker",
+    "1440: overdue filter preserves keyboard focus",
+    "1440: no horizontal overflow and 44px controls",
+    "1440: read failure retains last loaded work with warning",
+    "1440: switching category and returning restores home scroll"
+  ],
+  "real_iphone": false,
+  "safari": false,
+  "production_writes": false
+}

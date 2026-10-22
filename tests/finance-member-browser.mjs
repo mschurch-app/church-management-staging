@@ -24,7 +24,7 @@ await new Promise((resolve, reject) => {
 let browser;
 try {
   browser = await puppeteer.launch({ executablePath: process.env.CHROME_EXECUTABLE || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true, args: ['--no-first-run','--no-default-browser-check','--disable-background-networking'], userDataDir: fs.mkdtempSync(path.join(os.tmpdir(), 'finance-cash-browser-')) });
-  const page = await browser.newPage();
+  const page = await browser.newPage();page.on('dialog',dialog=>dialog.accept());
   const consoleErrors = [];
   page.on('pageerror', error => consoleErrors.push(error.message));
   await page.evaluateOnNewDocument(session => localStorage.setItem('church-staging-admin-v1', JSON.stringify(session)), session);

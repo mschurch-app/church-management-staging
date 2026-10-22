@@ -48,7 +48,7 @@ export function installResumeRecovery({hasDraft,isBusy}){
         const panel=document.createElement('aside');panel.dataset.resumeRecovery='true';
         panel.style.cssText='position:fixed;inset:auto 16px calc(24px + env(safe-area-inset-bottom));z-index:2147483646;padding:20px;border:1px solid #d6dfda;border-radius:18px;background:#fff;color:#173e35;font:16px system-ui;box-shadow:0 8px 32px #0002';
         const text=document.createElement('p');text.setAttribute('role','status');text.textContent=hadProtectedWork||protectedWork()?'畫面尚未恢復。已保留此頁內容，請確認目前操作後再重新整理。':'畫面尚未恢復，請重新整理。';
-        const button=document.createElement('button');button.type='button';button.textContent='重新整理';button.style.cssText='min-height:44px;padding:8px 20px';button.onclick=()=>{if(protectedWork()){if(isBusy()){text.textContent='目前操作尚未完成，請等候結果，避免重複送出。';return;}if(!confirm('還有尚未儲存的修改。要放棄修改並重新載入嗎？'))return;}location.reload();};
+        const button=document.createElement('button');button.type='button';button.textContent='重新整理';button.style.cssText='min-height:44px;padding:8px 20px';button.onclick=()=>{if(protectedWork()){if(isBusy()){text.textContent='目前操作尚未完成，請等候結果，避免重複送出。';return;}if(!confirm('還有尚未儲存的修改。要放棄修改並重新載入嗎？'))return;window.dispatchEvent(new Event('church:discard-drafts'));document.querySelectorAll('[data-unsaved-changes="true"]').forEach(node=>node.dataset.unsavedChanges='false');}location.reload();};
         panel.append(text,button);body.append(panel);
       }
     }else document.querySelector('[data-resume-recovery]')?.remove();

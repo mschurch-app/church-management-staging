@@ -1,5 +1,5 @@
 // Public client configuration; access is enforced by Auth and RLS.
-import './action-feedback.mjs?v=20261009-app-audit2';
+import './action-feedback.mjs?v=20261022-experience1';
 import './ios-experience.mjs?v=20261016-update-banner1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 export {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';

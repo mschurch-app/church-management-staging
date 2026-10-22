@@ -1,4 +1,4 @@
-import {createSermonJobProgress} from './sermon-job-progress.mjs?v=20261021-aiwait1';
+import {createSermonJobProgress} from './sermon-job-progress.mjs?v=20261022-experience1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261009-stage1';
 import {setStatus} from './app-ui.mjs?v=20261014-sermon3';

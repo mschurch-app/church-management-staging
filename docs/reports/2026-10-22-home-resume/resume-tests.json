@@ -1,0 +1,27 @@
+{
+  "checks": [
+    "ordinary iPhone return rebuilds a clean document even with intact DOM",
+    "blank restored content reloads once",
+    "recovery leaves stored session untouched",
+    "clean iOS frozen-page restore rebuilds document",
+    "healthy desktop BFCache restore is retained",
+    "frozen restore preserves unsaved form",
+    "active operation never reloads or resubmits",
+    "blank recovery retains hidden draft",
+    "protected blank document offers explicit recovery",
+    "explicit discard recovery asks once before reloading",
+    "repeat restore is protected against reload loop",
+    "payment and auth callback are not replayed",
+    "offline restore preserves cached document",
+    "initial pageshow never reloads",
+    "non-form editor changes also block automatic recovery reload",
+    "iOS blur/focus return recovers without visibility event",
+    "ordinary foreground return protects editable work",
+    "rapid repeated returns cannot enter reload loop",
+    "safe reload restores scroll position without storing form data",
+    "one-time scroll receipt is consumed after recovery"
+  ],
+  "mode": "local Chrome with simulated iOS user agent and lifecycle events",
+  "real_iphone": false,
+  "production_writes": false
+}

@@ -47,3 +47,5 @@ body[data-experience="workspace"] .form-row>*{min-width:0}
 @media(max-width:700px){body[data-experience="workspace"] .editor-actions button{flex:1 1 110px}body[data-experience="workspace"] .action-row{flex-wrap:wrap;gap:8px}}
 @media(prefers-reduced-motion:reduce){body[data-experience="workspace"] [data-tone="busy"]:before{animation:none}}
 @media print{body[data-experience="workspace"] .editor-actions{position:static;box-shadow:none}}
+
+.mplus-work-focus .work-focus-older{margin-top:14px;border-top:1px solid #cdd8ce;padding-top:8px}.mplus-work-focus .work-focus-older>summary{min-height:44px;display:list-item;align-content:center;cursor:pointer;font-weight:600;color:#315342}.mplus-work-focus .work-focus-older .work-focus-item{margin-top:10px}

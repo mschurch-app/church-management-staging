@@ -28,7 +28,7 @@ export function mountMplusNavigation({allowed,hrefFor,openSchool}){
   const dismiss=()=>{dialog.close();dialog.remove();};close.onclick=dismiss;dialog.addEventListener('cancel',e=>{e.preventDefault();dismiss();});dialog.addEventListener('close',()=>dialog.remove(),{once:true});document.body.append(dialog);dialog.showModal();
  }
  function show(key){
-  if(activeCenter)positions.set(activeCenter,scrollY);activeCenter=key;
+  if(activeCenter)positions.set(activeCenter,scrollY);activeCenter=key;const url=new URL(location.href);if(key==='home')url.searchParams.delete('center');else url.searchParams.set('center',key);history.replaceState(null,'',url);
   for(const n of homeNodes){if(!n.dataset.mplusOriginalHidden)n.dataset.mplusOriginalHidden=String(n.hidden);n.hidden=key!=='home'||n.dataset.mplusOriginalHidden==='true';}
   panel.hidden=key==='home';dock.querySelectorAll('button').forEach(b=>b.setAttribute('aria-current',b.dataset.center===key?'page':'false'));home.classList.toggle('active',key==='home');
   if(key==='home'){requestAnimationFrame(()=>window.scrollTo(0,positions.get(key)||0));return;}

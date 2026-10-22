@@ -1,3 +1,4 @@
+import {createDraftCopyDialog,scheduleCopyText} from './draft-copy-dialog.mjs?v=20261022-experience14';
 import * as accessApi from './admin-access.mjs?v=20261022-experience5';
 import {createScheduleDraftStore} from './schedule-draft-store.mjs?v=20261022-experience10';
 const node=(tag,text='',className='')=>Object.assign(document.createElement(tag),{textContent:text,className});
@@ -13,8 +14,9 @@ export async function scheduleDraftFingerprint(row,preferences){
 }
 function validFields(fields,allowed){return fields&&typeof fields==='object'&&!Array.isArray(fields)&&Object.keys(fields).length<=200&&Object.entries(fields).every(([key,value])=>allowed.has(key)&&typeof value==='string'&&value.length<=300)&&typeof fields.service_date==='string'&&(!fields.service_date||/^\d{4}-\d{2}-\d{2}$/.test(fields.service_date));}
 // One optional draft per verified login and church. Restoring never submits it.
-export function createScheduleDraftRecovery({db,church,host,editor,latest,onRestore,onIdentityLost,message,isBusy=()=>false,store=createScheduleDraftStore()}){
+export function createScheduleDraftRecovery({db,church,host,editor,latest,onRestore,onIdentityLost,message,isBusy=()=>false,setCopyBusy=()=>{},allowedFields=()=>[],fieldLabels=()=>({}),store=createScheduleDraftStore()}){
  let scope=null,pending=null,active=null,queue=Promise.resolve(),generation=0,working=false,pruned=false;
+ const viewer=createDraftCopyDialog();
  const report=error=>message(error?.name==='DraftConflictError'?error.message:'裝置草稿未能更新；這一頁的輸入仍保留，請勿直接關閉。','error');
  const actionAllowed=(access,row)=>typeof accessApi.canAction==='function'&&accessApi.canAction(access,church,'schedules',row?'edit':'create');
  async function identity(fresh=false){
@@ -28,7 +30,8 @@ export function createScheduleDraftRecovery({db,church,host,editor,latest,onRest
   if(host.hidden)return;
   const title=node('h2','這台裝置有一份排班草稿'),copy=node('p','尚未送出，24 小時內可在同一次登入繼續填寫。'),time=node('p',new Date(pending.updatedAt).toLocaleString('zh-TW')+' · '+(pending.fields?.service_date||'日期未填'),'muted'),actions=node('div','','schedule-draft-actions'),resume=node('button','繼續填寫'),discard=node('button','刪除裝置草稿','secondary');
   resume.type=discard.type='button';resume.disabled=discard.disabled=working||isBusy();resume.onclick=()=>void restore();discard.onclick=async()=>{if(working||isBusy()||!confirm('刪除這台裝置尚未送出的排班草稿？正式排班不受影響。'))return;try{await discardDraft();}catch(error){report(error);}};
-  actions.append(resume,discard);host.append(title,copy,time,actions);
+  const inspect=node('button','查看裝置草稿','secondary');inspect.type='button';inspect.dataset.draftCopy='device';inspect.disabled=working||isBusy();inspect.onclick=()=>void inspectCopy('device');
+  actions.append(resume,inspect,discard);host.append(title,copy,time,actions);
  }
  async function refresh(){
   if(active?.form.isConnected)return;
@@ -50,7 +53,7 @@ export function createScheduleDraftRecovery({db,church,host,editor,latest,onRest
  function attach(form,{row,fields,fingerprint,recovered=null}){
   const current={form,row,fields,fingerprint,enabled:!!recovered,restored:!!recovered,epoch:generation,revision:recovered?.revision||null,lastSnapshot:recovered?JSON.stringify(recovered.fields):null};active=current;if(recovered)pending=recovered;
   const section=node('aside','','schedule-device-draft'),copy=node('p','可選擇將排班姓名暫存在這個瀏覽器／App，24 小時內續填。共用裝置請勿開啟；重新登入後不能續填。'),button=node('button',recovered?'停止保留並刪除裝置草稿':'在這台裝置保留草稿','secondary'),status=node('p',recovered?'已帶回裝置草稿，尚未儲存正式排班。':'尚未開啟裝置草稿。','schedule-device-draft-status');
-  button.type='button';status.setAttribute('role','status');section.append(copy,button,status);form.querySelector('h2').after(section);
+  button.type='button';status.setAttribute('role','status');const inspect=node('button','取回本頁內容','secondary');inspect.type='button';inspect.dataset.draftCopy='page';inspect.onclick=()=>void inspectCopy('page');const actions=node('div','','schedule-draft-actions');actions.append(button,inspect);section.append(copy,actions,status);form.querySelector('h2').after(section);
   const live=()=>active===current&&current.epoch===generation&&form.isConnected;
   const write=()=>{
    if(!current.enabled||!live())return;
@@ -74,6 +77,27 @@ export function createScheduleDraftRecovery({db,church,host,editor,latest,onRest
   form.addEventListener('input',write);form.addEventListener('change',write);
   render();return {write};
  }
+ function validateCopy(fields){
+  const allowed=new Set([...allowedFields(),...Object.keys(fields||{}).filter(key=>/^custom_[a-f0-9]{16}$/.test(key))]);
+  if(!validFields(fields,allowed))throw new Error('草稿欄位格式不完整，副本未開啟。');return structuredClone(fields);
+ }
+ async function inspectCopy(source){
+  if(working||isBusy())return;working=true;setCopyBusy(true);render();const epoch=generation;
+  try{
+   const verified=await identity(true);if(epoch!==generation)return;if(scope&&!sameScope(scope,verified.scope))throw new Error('登入已變更，副本未開啟。');if(!accessApi.canAction(verified.access,church,'schedules','export'))throw new Error('目前沒有排班匯出權限，副本未開啟。');scope=verified.scope;
+   await queue;if(epoch!==generation)return;let fields,revision,form;
+   if(source==='device'){const saved=await store.read(scope);if(epoch!==generation)return;if(!saved||saved.revision!==pending?.revision)throw new Error('裝置草稿已變更或到期，請重新讀取後再查看。');fields=validateCopy(saved.fields);revision=saved.revision;}
+   else{if(!active?.form.isConnected)throw new Error('請先開啟一份排班。');fields=validateCopy(active.fields());form=active.form;}
+   const serialized=JSON.stringify(fields),data={format:'church-os-draft-copy-v1',kind:'schedule',church,source,fields};
+   viewer.open({title:source==='device'?'裝置排班草稿副本':'目前排班內容副本',text:scheduleCopyText(fields,{church,labels:fieldLabels()}),data,filename:(fields.service_date||'未填日期')+'-排班未送出副本',returnFocus:()=>source==='device'?host.querySelector('[data-draft-copy=device]'):form?.querySelector('[data-draft-copy=page]'),verify:async()=>{
+    try{const next=await identity(true);if(epoch!==generation||!sameScope(scope,next.scope))throw new Error('登入已變更，副本未下載。');if(!accessApi.canAction(next.access,church,'schedules','export'))throw new Error('目前沒有排班匯出權限，副本未下載。');
+     if(source==='device'){const row=await store.read(scope);if(epoch!==generation||!row||row.revision!==revision)throw new Error('裝置副本已變更或到期，請重新開啟檢視。');}
+     else if(active?.form!==form||!form.isConnected||JSON.stringify(active.fields())!==serialized)throw new Error('本頁內容已變更，請重新開啟副本。');
+    }catch(error){viewer.close();if(epoch===generation)message(error.message,'error');throw error;}
+   }});
+  }catch(error){if(epoch===generation)message(error.message||'副本未能開啟，本頁輸入仍保留。','error');}
+  finally{working=false;setCopyBusy(false);render();}
+ }
  async function restore(){
   if(working||isBusy()||!pending)return;working=true;render();const current=++generation,selected=pending;
   try{
@@ -93,11 +117,11 @@ export function createScheduleDraftRecovery({db,church,host,editor,latest,onRest
   finally{working=false;render();}
  }
  const subscription=db.auth?.onAuthStateChange?.((event,session)=>{
-  if(!scope)return;const next=sessionScope(session,church);
+  if(!scope){if(event==='SIGNED_OUT'){viewer.close();generation++;onIdentityLost();}return;}const next=sessionScope(session,church);
   if(event==='SIGNED_OUT'||(['INITIAL_SESSION','SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event)&&!sameScope(scope,next))){
-   const previousScope=scope;generation++;if(active)active.enabled=false;active=null;pending=null;scope=null;pruned=false;host.hidden=true;host.replaceChildren();onIdentityLost();
+   const previousScope=scope;viewer.close();generation++;if(active)active.enabled=false;active=null;pending=null;scope=null;pruned=false;host.hidden=true;host.replaceChildren();onIdentityLost();
    queue=queue.catch(()=>{}).then(()=>store.clearSession(previousScope)).catch(()=>{});
   }
  });
- return {refresh,beforeOpen,attach,async verify(form){const current=active;if(!current||current.form!==form)throw new Error('編輯狀態已變更，請重新開啟排班。');if(!current.restored)return;const epoch=generation,verified=await identity(true);if(epoch!==generation||!sameScope(scope,verified.scope)||!actionAllowed(verified.access,current.row))throw new Error('登入或排班權限已變更，尚未送出。');const data=await latest(),row=current.row?data.rows.find(r=>String(r.id)===String(current.row.id)):null;if(epoch!==generation||await scheduleDraftFingerprint(row,data.preferences)!==await current.fingerprint())throw new Error('正式排班或服事項目已更新，尚未送出。請核對最新安排。');},async discard(){try{await discardDraft();return true;}catch(error){report(error);return false;}},async saved(){try{await discardDraft();return true;}catch{active=null;return false;}},dispose(){generation++;subscription?.data?.subscription?.unsubscribe?.();},get working(){return working;}};
+ return {refresh,beforeOpen,attach,async verify(form){const current=active;if(!current||current.form!==form)throw new Error('編輯狀態已變更，請重新開啟排班。');if(!current.restored)return;const epoch=generation,verified=await identity(true);if(epoch!==generation||!sameScope(scope,verified.scope)||!actionAllowed(verified.access,current.row))throw new Error('登入或排班權限已變更，尚未送出。');const data=await latest(),row=current.row?data.rows.find(r=>String(r.id)===String(current.row.id)):null;if(epoch!==generation||await scheduleDraftFingerprint(row,data.preferences)!==await current.fingerprint())throw new Error('正式排班或服事項目已更新，尚未送出。請核對最新安排。');},async discard(){try{await discardDraft();return true;}catch(error){report(error);return false;}},async saved(){try{await discardDraft();return true;}catch{active=null;return false;}},dispose(){viewer.close();generation++;subscription?.data?.subscription?.unsubscribe?.();},get working(){return working;}};
 }

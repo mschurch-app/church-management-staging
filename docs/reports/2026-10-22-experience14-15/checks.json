@@ -1,0 +1,330 @@
+{
+  "base": "a0c4b2b1c461e1cde0f11f3b289703ce4d0df239",
+  "stages": {
+    "14": {
+      "checks": [
+        "chromium 390: incomplete page draft opens read-only without a business write or clearing dirty state",
+        "chromium 390: draft text is never interpreted as HTML",
+        "chromium 390: copy dialog meets contrast thresholds []",
+        "chromium 390: copy actions retain 44 px areas and fit the dialog",
+        "chromium 390: select all uses the system copy flow without clipboard permission",
+        "chromium 390: complete copy retains incomplete fields without authentication or storage identifiers",
+        "chromium 390: text download preserves readable content without enabling device storage",
+        "chromium 390: 200 percent text remains usable",
+        "chromium 390: Escape closes the copy, restores focus and releases background scroll",
+        "chromium 1440: incomplete page draft opens read-only without a business write or clearing dirty state",
+        "chromium 1440: draft text is never interpreted as HTML",
+        "chromium 1440: copy dialog meets contrast thresholds []",
+        "chromium 1440: copy actions retain 44 px areas and fit the dialog",
+        "chromium 1440: select all uses the system copy flow without clipboard permission",
+        "chromium 1440: complete copy retains incomplete fields without authentication or storage identifiers",
+        "chromium 1440: text download preserves readable content without enabling device storage",
+        "chromium 1440: 200 percent text remains usable",
+        "chromium 1440: Escape closes the copy, restores focus and releases background scroll",
+        "chromium version: old copy remains retrievable after formal version change or deletion without applying it",
+        "chromium delete: old copy remains retrievable after formal version change or deletion without applying it",
+        "chromium noexport: fresh export restriction blocks opening without deleting the copy",
+        "chromium revoke: revoked, replaced or cancelled source never produces a stale download",
+        "chromium logout: logout immediately closes private copy content",
+        "chromium logout_open: late verification cannot open a copy after logout",
+        "chromium logout_download: revoked, replaced or cancelled source never produces a stale download",
+        "chromium cancel_download: revoked, replaced or cancelled source never produces a stale download",
+        "chromium changed_copy: revoked, replaced or cancelled source never produces a stale download",
+        "chromium expired: invalid, expired or unreadable data never opens or writes",
+        "chromium invalid: invalid, expired or unreadable data never opens or writes",
+        "chromium storage: invalid, expired or unreadable data never opens or writes",
+        "chromium save_conflict: conflicted formal save retains page input and allows an independent copy",
+        "chromium stale_page: revoked, replaced or cancelled source never produces a stale download",
+        "webkit 390: incomplete page draft opens read-only without a business write or clearing dirty state",
+        "webkit 390: draft text is never interpreted as HTML",
+        "webkit 390: copy dialog meets contrast thresholds []",
+        "webkit 390: copy actions retain 44 px areas and fit the dialog",
+        "webkit 390: select all uses the system copy flow without clipboard permission",
+        "webkit 390: complete copy retains incomplete fields without authentication or storage identifiers",
+        "webkit 390: text download preserves readable content without enabling device storage",
+        "webkit 390: 200 percent text remains usable",
+        "webkit 390: Escape closes the copy, restores focus and releases background scroll",
+        "webkit 1440: incomplete page draft opens read-only without a business write or clearing dirty state",
+        "webkit 1440: draft text is never interpreted as HTML",
+        "webkit 1440: copy dialog meets contrast thresholds []",
+        "webkit 1440: copy actions retain 44 px areas and fit the dialog",
+        "webkit 1440: select all uses the system copy flow without clipboard permission",
+        "webkit 1440: complete copy retains incomplete fields without authentication or storage identifiers",
+        "webkit 1440: text download preserves readable content without enabling device storage",
+        "webkit 1440: 200 percent text remains usable",
+        "webkit 1440: Escape closes the copy, restores focus and releases background scroll",
+        "webkit version: old copy remains retrievable after formal version change or deletion without applying it",
+        "webkit delete: old copy remains retrievable after formal version change or deletion without applying it",
+        "webkit noexport: fresh export restriction blocks opening without deleting the copy",
+        "webkit revoke: revoked, replaced or cancelled source never produces a stale download",
+        "webkit logout: logout immediately closes private copy content",
+        "webkit logout_open: late verification cannot open a copy after logout",
+        "webkit logout_download: revoked, replaced or cancelled source never produces a stale download",
+        "webkit cancel_download: revoked, replaced or cancelled source never produces a stale download",
+        "webkit changed_copy: revoked, replaced or cancelled source never produces a stale download",
+        "webkit expired: invalid, expired or unreadable data never opens or writes",
+        "webkit invalid: invalid, expired or unreadable data never opens or writes",
+        "webkit storage: invalid, expired or unreadable data never opens or writes",
+        "webkit save_conflict: conflicted formal save retains page input and allows an independent copy",
+        "webkit stale_page: revoked, replaced or cancelled source never produces a stale download",
+        "no uncaught browser errors "
+      ],
+      "synthetic": true,
+      "productionWrites": false,
+      "realIPhone": false
+    },
+    "15": {
+      "checks": [
+        "chromium 390 M+: incomplete page copy is read-only and retains input without a business write",
+        "chromium 390 M+: text copy uses the current church and role labels",
+        "chromium 390 M+: complete copy retains incomplete fields without login or storage metadata",
+        "chromium 390 M+: copy dialog has readable contrast and 44 px actions []",
+        "chromium 390 M+: system copy can select the entire draft",
+        "chromium 390 M+: 200 percent copy text fits the dialog",
+        "chromium 390 M+: Escape returns focus and releases background scroll",
+        "chromium 390 M+: copying never enables device retention or clears the current form",
+        "chromium 390 SHiNE: incomplete page copy is read-only and retains input without a business write",
+        "chromium 390 SHiNE: text copy uses the current church and role labels",
+        "chromium 390 SHiNE: complete copy retains incomplete fields without login or storage metadata",
+        "chromium 390 SHiNE: copy dialog has readable contrast and 44 px actions []",
+        "chromium 390 SHiNE: system copy can select the entire draft",
+        "chromium 390 SHiNE: 200 percent copy text fits the dialog",
+        "chromium 390 SHiNE: Escape returns focus and releases background scroll",
+        "chromium 390 SHiNE: copying never enables device retention or clears the current form",
+        "chromium 1440 M+: incomplete page copy is read-only and retains input without a business write",
+        "chromium 1440 M+: text copy uses the current church and role labels",
+        "chromium 1440 M+: complete copy retains incomplete fields without login or storage metadata",
+        "chromium 1440 M+: copy dialog has readable contrast and 44 px actions []",
+        "chromium 1440 M+: system copy can select the entire draft",
+        "chromium 1440 M+: 200 percent copy text fits the dialog",
+        "chromium 1440 M+: Escape returns focus and releases background scroll",
+        "chromium 1440 M+: copying never enables device retention or clears the current form",
+        "chromium 1440 SHiNE: incomplete page copy is read-only and retains input without a business write",
+        "chromium 1440 SHiNE: text copy uses the current church and role labels",
+        "chromium 1440 SHiNE: complete copy retains incomplete fields without login or storage metadata",
+        "chromium 1440 SHiNE: copy dialog has readable contrast and 44 px actions []",
+        "chromium 1440 SHiNE: system copy can select the entire draft",
+        "chromium 1440 SHiNE: 200 percent copy text fits the dialog",
+        "chromium 1440 SHiNE: Escape returns focus and releases background scroll",
+        "chromium 1440 SHiNE: copying never enables device retention or clears the current form",
+        "chromium changed: old fields remain retrievable after official data or role changes without applying them",
+        "chromium deleted: old fields remain retrievable after official data or role changes without applying them",
+        "chromium roles: old fields remain retrievable after official data or role changes without applying them",
+        "chromium noexport: missing permission or invalid storage blocks copy without submitting",
+        "chromium revoke: revoked, changed or cancelled copy never downloads stale content",
+        "chromium logout: logout immediately closes the private dialog",
+        "chromium logout_open: late identity check cannot expose private copy after logout",
+        "chromium logout_download: revoked, changed or cancelled copy never downloads stale content",
+        "chromium cancel_download: revoked, changed or cancelled copy never downloads stale content",
+        "chromium changed_copy: revoked, changed or cancelled copy never downloads stale content",
+        "chromium invalid: missing permission or invalid storage blocks copy without submitting",
+        "chromium storage: missing permission or invalid storage blocks copy without submitting",
+        "chromium expired: missing permission or invalid storage blocks copy without submitting",
+        "chromium stale_page: revoked, changed or cancelled copy never downloads stale content",
+        "chromium save_fail: failed formal save retains the form and device copy while allowing recovery",
+        "chromium other_church: another church cannot expose or erase the pending copy",
+        "webkit 390 M+: incomplete page copy is read-only and retains input without a business write",
+        "webkit 390 M+: text copy uses the current church and role labels",
+        "webkit 390 M+: complete copy retains incomplete fields without login or storage metadata",
+        "webkit 390 M+: copy dialog has readable contrast and 44 px actions []",
+        "webkit 390 M+: system copy can select the entire draft",
+        "webkit 390 M+: 200 percent copy text fits the dialog",
+        "webkit 390 M+: Escape returns focus and releases background scroll",
+        "webkit 390 M+: copying never enables device retention or clears the current form",
+        "webkit 390 SHiNE: incomplete page copy is read-only and retains input without a business write",
+        "webkit 390 SHiNE: text copy uses the current church and role labels",
+        "webkit 390 SHiNE: complete copy retains incomplete fields without login or storage metadata",
+        "webkit 390 SHiNE: copy dialog has readable contrast and 44 px actions []",
+        "webkit 390 SHiNE: system copy can select the entire draft",
+        "webkit 390 SHiNE: 200 percent copy text fits the dialog",
+        "webkit 390 SHiNE: Escape returns focus and releases background scroll",
+        "webkit 390 SHiNE: copying never enables device retention or clears the current form",
+        "webkit 1440 M+: incomplete page copy is read-only and retains input without a business write",
+        "webkit 1440 M+: text copy uses the current church and role labels",
+        "webkit 1440 M+: complete copy retains incomplete fields without login or storage metadata",
+        "webkit 1440 M+: copy dialog has readable contrast and 44 px actions []",
+        "webkit 1440 M+: system copy can select the entire draft",
+        "webkit 1440 M+: 200 percent copy text fits the dialog",
+        "webkit 1440 M+: Escape returns focus and releases background scroll",
+        "webkit 1440 M+: copying never enables device retention or clears the current form",
+        "webkit 1440 SHiNE: incomplete page copy is read-only and retains input without a business write",
+        "webkit 1440 SHiNE: text copy uses the current church and role labels",
+        "webkit 1440 SHiNE: complete copy retains incomplete fields without login or storage metadata",
+        "webkit 1440 SHiNE: copy dialog has readable contrast and 44 px actions []",
+        "webkit 1440 SHiNE: system copy can select the entire draft",
+        "webkit 1440 SHiNE: 200 percent copy text fits the dialog",
+        "webkit 1440 SHiNE: Escape returns focus and releases background scroll",
+        "webkit 1440 SHiNE: copying never enables device retention or clears the current form",
+        "webkit changed: old fields remain retrievable after official data or role changes without applying them",
+        "webkit deleted: old fields remain retrievable after official data or role changes without applying them",
+        "webkit roles: old fields remain retrievable after official data or role changes without applying them",
+        "webkit noexport: missing permission or invalid storage blocks copy without submitting",
+        "webkit revoke: revoked, changed or cancelled copy never downloads stale content",
+        "webkit logout: logout immediately closes the private dialog",
+        "webkit logout_open: late identity check cannot expose private copy after logout",
+        "webkit logout_download: revoked, changed or cancelled copy never downloads stale content",
+        "webkit cancel_download: revoked, changed or cancelled copy never downloads stale content",
+        "webkit changed_copy: revoked, changed or cancelled copy never downloads stale content",
+        "webkit invalid: missing permission or invalid storage blocks copy without submitting",
+        "webkit storage: missing permission or invalid storage blocks copy without submitting",
+        "webkit expired: missing permission or invalid storage blocks copy without submitting",
+        "webkit stale_page: revoked, changed or cancelled copy never downloads stale content",
+        "webkit save_fail: failed formal save retains the form and device copy while allowing recovery",
+        "webkit other_church: another church cannot expose or erase the pending copy",
+        "no uncaught browser errors "
+      ],
+      "synthetic": true,
+      "productionWrites": false,
+      "realIPhone": false
+    }
+  },
+  "regression": {
+    "sermonDeviceDrafts": 104,
+    "scheduleDeviceDrafts": 100,
+    "scheduleEditor": 188,
+    "sermonEditor": 135,
+    "sermonContract": 12,
+    "allPassed": true
+  },
+  "qualityGate": {
+    "origin": "http://127.0.0.1:8769",
+    "apiMode": "isolated_synthetic",
+    "checks": [
+      {
+        "name": "frontend syntax",
+        "files": 201,
+        "passed": true
+      },
+      {
+        "name": "phase4/worker.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "app-catalog.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/definitions.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/database.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/line-provider.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-journey-db.mjs",
+        "passed": true,
+        "seconds": 0,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/browser.mjs",
+        "passed": true,
+        "seconds": 4,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/handoff.mjs",
+        "passed": true,
+        "seconds": 1,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/email-login.mjs",
+        "passed": true,
+        "seconds": 7,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/browser.mjs",
+        "passed": true,
+        "seconds": 17,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/service-signup-list.mjs",
+        "passed": true,
+        "seconds": 28,
+        "exitCode": 0
+      },
+      {
+        "name": "phase3/browser.mjs",
+        "passed": true,
+        "seconds": 70,
+        "exitCode": 0
+      },
+      {
+        "name": "phase4/browser.mjs",
+        "passed": true,
+        "seconds": 37,
+        "exitCode": 0
+      },
+      {
+        "name": "phase1/regression.mjs",
+        "passed": true,
+        "seconds": 45,
+        "exitCode": 0
+      },
+      {
+        "name": "phase2/contrast.mjs",
+        "passed": true,
+        "seconds": 49,
+        "exitCode": 0
+      }
+    ],
+    "failures": 0
+  },
+  "contrast": {
+    "pages": 41,
+    "textChecks": 1512,
+    "failures": []
+  },
+  "macSafari": {
+    "os": "27.0.1",
+    "safari": "27.0.1",
+    "source": "local synthetic fixtures",
+    "passed": [
+      "open unsaved sermon copy",
+      "close sermon copy retains original text and focus",
+      "open unsaved schedule copy",
+      "close schedule copy retains original text and focus"
+    ],
+    "nativeDownload": "pending: site download permission prompt was cancelled",
+    "screenReader": "pending"
+  },
+  "earlierFailures": [
+    {
+      "check": "WebKit copy dialog return focus",
+      "resolution": "explicit return trigger and wait for close event; final 65 passed"
+    },
+    {
+      "check": "schedule populated state contrast",
+      "resolution": "use scoped shared secondary token; final 97 passed"
+    },
+    {
+      "check": "WebKit initial sermon device retention revision conflict during development",
+      "resolution": "independent complete 104 passed with fixed source; root cause not established; no claim of product fix"
+    },
+    {
+      "check": "mobile copy actions wrapped to four rows",
+      "resolution": "two-column grid; final 65 and 97 passed"
+    }
+  ],
+  "realIPhone": "pending",
+  "publication": "pending combined authorization",
+  "productionWrites": false
+}

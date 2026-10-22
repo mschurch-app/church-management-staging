@@ -47,3 +47,6 @@
 .schedule-draft-recovery h2{font-size:20px;margin:0 0 8px}.schedule-draft-recovery p,.schedule-device-draft p{font-size:14px;line-height:1.6;margin:8px 0;overflow-wrap:anywhere}
 .schedule-draft-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.schedule-device-draft button,.schedule-draft-actions button{min-height:44px;white-space:normal}.schedule-device-draft-status{color:var(--app-secondary,#61736a)}
 @media print{.schedule-draft-recovery,.schedule-device-draft{display:none!important}}
+
+/* Keep populated schedules and draft instructions readable on their actual surfaces. */
+html body .schedule-page :is(.schedule-device-draft p,.schedule-draft-recovery p,#rangeNote,.role-label){color:var(--app-secondary,#52665a)}

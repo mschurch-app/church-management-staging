@@ -78,3 +78,7 @@ verify_jwt = false
 # Public learner church choice checks registration proof in its SQL RPC.
 [functions.heat-camp-church]
 verify_jwt = false
+
+# Public testimony intake uses scoped submission capabilities; admin actions verify the user JWT and live grants.
+[functions.testimony-intake]
+verify_jwt = false

@@ -1,6 +1,12 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
+  "testimony_review": {
+    "permission":"website_weekly","file":"testimony-admin.html","church":"M+",
+    "icon":"☁","title":"雲彩見證","description":"文字、影片與照片投稿審核",
+    "key":"testimony_review","group":"media","symbol":"book","configurableHome":false,
+    "searchTerms":["見證","投稿","分享","審核"],"settingsId":"testimony-review","settingsGroup":"content"
+  },
   "review_workflows": {
     "permission": "notification_settings",
     "file": "review-workflow-settings.html",
@@ -683,6 +689,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "title": "內容與發布",
     "note": "靈修、週報、教材與社群內容",
     "keys": [
+      "testimony_review",
       "tree_reading_admin",
       "life_tree_festivals",
       "website_weekly",
@@ -764,6 +771,7 @@ export const SETTINGS_GROUPS=freezeTree([
     "title": "內容與發布",
     "note": "主日、靈修、表單與社群內容",
     "keys": [
+      "testimony_review",
       "website_weekly",
       "association_news",
       "website_group_resources",

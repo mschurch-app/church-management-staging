@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "production_writes": false,
+  "checks": [
+    "ordinary staff cannot inspect or confirm identity, including themselves",
+    "authenticated cannot read confirmation receipts or invoke private helper",
+    "revoked owner sessions cannot confirm identities",
+    "review separates real name, application name, and different LINE nickname",
+    "stale and omitted review versions are rejected",
+    "owner can confirm independent LINE identity without copying or changing any account rights",
+    "confirmed identity clears the review flag and is visible as complete",
+    "exact confirmation retry creates one receipt with the original owner and no duplicate",
+    "inactive and non-LINE targets cannot be confirmed",
+    "changing the real name invalidates old confirmation and requires a fresh review version",
+    "changing the LINE subject invalidates old confirmation",
+    "the separate existing-account linking path remains supported",
+    "new public RPC is invoker, anon is denied, receipts use RLS and private helpers are not directly exposed"
+  ]
+}

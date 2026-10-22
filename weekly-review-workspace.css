@@ -1,0 +1,18 @@
+html body[data-workflow-page=weekly-review]{font-family:var(--app-font-body,-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif)!important}
+.review-list,.review-preview,.review-actions{min-width:0}
+.review-choice{min-height:44px;overflow-wrap:anywhere;font:inherit}
+.review-choice strong{font-size:1rem}
+.review-choice small{font-size:.9rem}
+.review-choice:focus-visible{outline:3px solid var(--app-accent,#a83d2e);outline-offset:3px}
+.review-queue-count,.review-draft-state,.review-selection-note{font-size:1rem;line-height:1.65;color:var(--app-secondary,#5f655f);overflow-wrap:anywhere}
+.review-draft-state[data-dirty=true],.review-selection-note{padding:12px;border:1px solid var(--app-border,#dce4de);border-radius:14px;background:var(--app-surface,#fff)}
+.review-toolbar label,.review-toolbar input,.review-toolbar select{min-width:0;max-width:100%;font-size:1rem}
+.review-toolbar input,.review-toolbar select,.review-toolbar button{min-height:44px}
+.review-toolbar label{flex:1 1 160px}
+.review-toolbar button{font:inherit}
+.review-layout [hidden]{display:none!important}
+.review-actions textarea{font-size:1rem;min-height:120px}
+html body[data-workflow-page=weekly-review] :is(#review-search,#review-filter,#review-track,#review-comment){font-size:1rem}
+.review-actions button{font-size:1rem;min-height:44px}
+.review-choice[aria-pressed=true]{border-color:var(--app-accent,#a83d2e);background:#fff4ef}
+@media(max-width:780px){.review-toolbar{display:flex;flex-wrap:wrap}.review-toolbar label{flex-basis:100%}.review-toolbar button{flex:1 1 140px}.review-list-items{grid-template-columns:1fr}.review-buttons button{flex:1 1 180px}}

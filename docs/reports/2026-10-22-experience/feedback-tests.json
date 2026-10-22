@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "shared feedback never replaces global fetch",
+    "click has immediate local activity",
+    "HTTP 200 with business failure cannot invent success",
+    "instructions containing completion words cannot report success",
+    "slow work shows uncertainty instead of failure",
+    "slow work preserves form input",
+    "print does not pretend a dialog opened after 900ms",
+    "real page error ends activity and displays error",
+    "actual saved result displays success",
+    "actual result releases only owned activity",
+    "self-managed flows do not duplicate notifications"
+  ],
+  "production_writes": false
+}

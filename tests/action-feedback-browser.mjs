@@ -1,0 +1,21 @@
+import {createServer} from 'node:http';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {chromium} from '/Users/james-codex/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const root=path.resolve(import.meta.dirname,'..'),checks=[];
+const fixture=`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><main><button id="save">儲存</button><button id="print">列印</button><p id="status" role="status"></p><input value="草稿保留"><div data-action-feedback="off"><button id="quiet">儲存</button><p id="quiet-status" role="status"></p></div></main><script>window.originalFetch=fetch;</script><script type="module">import '/action-feedback.mjs';window.ready=true;</script>`;
+const server=createServer(async(req,res)=>{if(req.url==='/fixture'){res.setHeader('content-type','text/html; charset=utf-8');return res.end(fixture);}if(req.url==='/business-error'){res.setHeader('content-type','application/json');return res.end('{"ok":false}');}res.setHeader('content-type','text/javascript');res.end(await readFile(path.join(root,'action-feedback.mjs')));});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+try{const page=await browser.newPage();await page.clock.install();await page.goto('http://127.0.0.1:'+server.address().port+'/fixture');await page.waitForFunction(()=>window.ready);
+const check=(yes,name)=>{assert(yes,name);checks.push(name);};
+check(await page.evaluate(()=>fetch===originalFetch),'shared feedback never replaces global fetch');
+await page.click('#save');check(await page.locator('#save').getAttribute('aria-busy')==='true','click has immediate local activity');await page.evaluate(()=>fetch('/business-error'));await page.clock.fastForward(1000);check(!await page.locator('.os-action-toast').evaluate(n=>n.classList.contains('success')),'HTTP 200 with business failure cannot invent success');
+await page.evaluate(()=>document.querySelector('#status').textContent='請完成欄位後再儲存');await page.clock.fastForward(100);check(!await page.locator('.os-action-toast').evaluate(n=>n.classList.contains('success')),'instructions containing completion words cannot report success');
+await page.clock.fastForward(20000);check(await page.locator('.os-action-toast').textContent().then(s=>s.includes('仍未收到')),'slow work shows uncertainty instead of failure');check(await page.locator('input').inputValue()==='草稿保留','slow work preserves form input');
+await page.click('#print');await page.clock.fastForward(1000);check(!await page.locator('.os-action-toast').evaluate(n=>n.classList.contains('success')),'print does not pretend a dialog opened after 900ms');
+await page.click('#save');await page.evaluate(()=>{const s=document.querySelector('#status');s.dataset.tone='error';s.textContent='送審未完成，請保留資料';});await page.clock.fastForward(100);check(await page.locator('.os-action-toast').evaluate(n=>n.classList.contains('error')),'real page error ends activity and displays error');
+await page.click('#save');await page.evaluate(()=>{const s=document.querySelector('#status');s.dataset.tone='success';s.textContent='草稿已儲存。';});await page.clock.fastForward(100);check(await page.locator('.os-action-toast').evaluate(n=>n.classList.contains('success')),'actual saved result displays success');check(await page.locator('#save').getAttribute('aria-busy')===null,'actual result releases only owned activity');
+await page.clock.fastForward(4000);await page.click('#quiet');await page.evaluate(()=>document.querySelector('#quiet-status').textContent='已更新');await page.clock.fastForward(100);check(!await page.locator('.os-action-toast').evaluate(n=>n.classList.contains('show')),'self-managed flows do not duplicate notifications');
+console.log(JSON.stringify({passed:checks.length,checks},null,2));await mkdir(path.join(root,'docs/reports/2026-10-22-experience'),{recursive:true});await writeFile(path.join(root,'docs/reports/2026-10-22-experience/feedback-tests.json'),JSON.stringify({checks,production_writes:false},null,2));
+}finally{await browser.close();server.close();}

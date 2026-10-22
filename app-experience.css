@@ -1,0 +1,33 @@
+/* Shared interaction polish for the three pilot workspaces. Business permissions
+   and church branding remain in their existing controllers. */
+:where(html[data-app-shell="mplus"],html.mplus-theme,html:has(.finance-body)){
+ --app-experience-ink:#203b30;--app-experience-muted:#566c60;--app-experience-line:#dce5dd;
+ --app-experience-soft:#f2f5ee;--app-experience-accent:#173f34;--app-experience-focus:#246fb2;
+}
+:where(.mplus-navigation,.finance-body,html.mplus-theme body) :is(button,a,input,select,textarea){-webkit-tap-highlight-color:#173f341c;}
+:where(.mplus-navigation,.finance-body,html.mplus-theme body) button{transition:background-color 140ms,border-color 140ms,box-shadow 140ms,transform 140ms;}
+:where(.mplus-navigation,.finance-body,html.mplus-theme body) button:not(:disabled):active{transform:scale(.985);}
+:where(.mplus-navigation,.finance-body,html.mplus-theme body) :is(button,a,input,select,textarea):focus-visible{outline:3px solid var(--app-experience-focus);outline-offset:3px;}
+:where(.mplus-navigation,.finance-body,html.mplus-theme body) :is(input,select,textarea){scroll-margin-block:110px 180px;}
+:where(.mplus-navigation,.finance-body,html.mplus-theme body) :is(input,textarea)[aria-invalid="true"]{border-color:#a63324;}
+.mplus-work-focus{margin:0 0 24px;padding:18px;border-radius:16px;background:var(--app-experience-soft);color:var(--app-experience-ink);border:1px solid var(--app-experience-line)}
+.mplus-work-focus h3{margin:0 0 12px;font-size:20px}.work-focus-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.mplus-work-focus .work-focus-filters button{min-height:44px;padding:9px 12px;border:1px solid #bdcbbf;background:#fff;color:#315342;font:600 13px/1.5 system-ui;border-radius:12px;box-shadow:none}
+.mplus-work-focus .work-focus-filters button[aria-pressed="true"]{background:#173f34;border-color:#173f34;color:#fff}
+.mplus-work-focus .work-focus-item{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:62px;text-align:left;padding:13px 14px;margin:8px 0;border:1px solid #dce5dd;border-radius:12px;background:#fff;color:#203b30;box-shadow:none;white-space:normal}
+.work-focus-item strong{font-size:16px;line-height:1.5;overflow-wrap:anywhere}.work-focus-item small{flex-shrink:0;font-size:12px;color:#566c60;line-height:1.5}
+.work-focus-note,.work-focus-empty{font-size:13px;line-height:1.7;color:#566c60;margin:12px 0 0}.mplus-week-note,.mplus-week-state{color:#566c60;font-size:13px}
+.finance-status:empty,#finance-save-feedback:empty{display:none}.finance-status[data-tone="warning"],#finance-save-feedback[data-tone="warning"]{color:#71481c;background:#fff0d9}
+.finance-status[data-tone="success"]{color:#245c3b;background:#eaf5ee}.finance-status[data-tone="busy"]:before{content:"";display:inline-block;width:13px;height:13px;margin-right:10px;border:2px solid #b6c8bd;border-top-color:#173f34;border-radius:50%;vertical-align:-2px;animation:experience-spin 1s linear infinite}
+.finance-save{position:sticky;bottom:calc(var(--app-dock-height,66px) + env(safe-area-inset-bottom) + 10px);z-index:15;padding:14px;background:#fff;border:1px solid #dce5dd;border-radius:16px;box-shadow:0 6px 24px #173f3412}
+#finance-save-feedback{flex-basis:100%;margin:0 0 5px;color:#566c60;font-size:13px;line-height:1.6;border-radius:8px}#finance-save-feedback[data-tone="error"]{color:#96291e}
+.finance-page .finance-save button{flex:1 1 160px;min-height:48px}.finance-page .finance-save button:disabled{opacity:.55;box-shadow:none}
+.ios-keyboard-open .finance-save{position:static}.finance-page .finance-totals{font-size:17px;color:#203b30;background:#f2f5ee;border-radius:12px}.finance-page .finance-totals strong{font-variant-numeric:tabular-nums}
+html.mplus-theme body[data-workflow-page="weekly"] .website-form-actions{border:1px solid #dce5dd;border-radius:14px;background:#fff;box-shadow:0 6px 24px #173f3410;padding:14px;gap:10px}
+html.mplus-theme body[data-workflow-page="weekly"] :is(.website-hint,.weekly-submit-state){line-height:1.7;color:#566c60}
+@keyframes experience-spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.mplus-work-focus{padding:14px}.work-focus-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.mplus-work-focus .work-focus-filters button{padding:9px 6px}.mplus-work-focus .work-focus-item{display:block}.work-focus-item small{display:block;margin-top:4px}.finance-save{padding:12px;gap:8px}.finance-page .finance-save button{flex-basis:135px;font-size:14px;line-height:1.5}}
+@media(prefers-reduced-motion:reduce){:where(.mplus-navigation,.finance-body,html.mplus-theme body) button{transition:none;transform:none!important}.finance-status[data-tone="busy"]:before{animation:none}}
+@media print{.finance-save{position:static;box-shadow:none}.work-focus-filters{display:none}}
+
+.finance-contact-options{grid-column:1/-1;padding:10px 12px;border:1px solid #dce5dd;border-radius:12px;background:#fff}.finance-contact-options summary{min-height:44px;padding:10px 0;cursor:pointer;color:#315342;font-weight:600}.finance-contact-options label{margin:10px 0}.finance-contact-options summary::marker{color:#566c60}

@@ -15,7 +15,7 @@ const errors = {
   invalid_transition: '目前狀態不能執行此步驟。', reason_required: '退回時請填寫原因。',
   target_not_mplus_admin: '該帳號沒有 M+ 管理權限。', service_unavailable: '服務暫時無法使用，請稍後再試。'
 };
-const state = { roles: new Set(), owner: false, workers: [], batch: null, groups: [], busy: false, dirty: true, userId: null, pendingCounterUserId: null };
+const state = { roles: new Set(), owner: false, workers: [], batch: null, groups: [], busy: false, dirty: true, userId: null, pendingCounterUserId: null, needsRefresh: false };
 let nextGroupId = 1;
 const number = value => Number.isSafeInteger(Number(value)) ? Number(value) : NaN;
 
@@ -31,14 +31,14 @@ async function api(action, values = {}) {
 }
 
 function status(message, tone = '', announce = true) {
-  const element = $('#finance-status'); element.setAttribute('aria-live',announce ? 'polite' : 'off'); element.textContent = message; element.dataset.tone = tone;
+  const element = $('#finance-status'); element.setAttribute('aria-live',announce ? 'polite' : 'off'); element.textContent = message; element.dataset.tone = tone;const footer=$('#finance-save-feedback');if(footer){footer.textContent=message;footer.dataset.tone=tone;}
 }
 
-async function work(task) {
+async function work(task, pending = '正在讀取工作資料…') {
   if (state.busy) return;
-  state.busy = true; $('#cash-form').inert=true; $('#cash-form').setAttribute('aria-busy','true'); drawConfirmations();
+  status(pending,'busy');state.busy = true; $('#finance-status').setAttribute('aria-busy','true');$('#cash-form').inert=true; $('#cash-form').setAttribute('aria-busy','true'); drawConfirmations();
   try { await task(); } catch (error) { status(error.message || '操作未完成。', 'error'); }
-  finally { state.busy = false; $('#cash-form').inert=false; $('#cash-form').removeAttribute('aria-busy'); drawConfirmations(); }
+  finally { if($('#finance-status').textContent===pending)status('');$('#finance-status').removeAttribute('aria-busy');state.busy = false; $('#cash-form').inert=state.needsRefresh; $('#cash-form').removeAttribute('aria-busy'); drawConfirmations(); }
 }
 
 function tab(name) {
@@ -69,7 +69,12 @@ function mostRecentSunday() {
   return day.toISOString().slice(0, 10);
 }
 
+function canLeaveEditor(){
+  return $('#cash-form').dataset.unsavedChanges!=='true'||confirm('還有尚未儲存的奉獻資料。要放棄修改並離開嗎？');
+}
 function clearEditor() {
+  if(!canLeaveEditor())return;
+  state.needsRefresh=false;$('#recover-finance').hidden=true;$('#cash-form').dataset.unsavedChanges='false';
   if(!state.roles.has('entry')){status('此帳號沒有「同工登錄」權限，請由系統負責人於財務人員權限設定。','error');return;}
   state.batch = null; state.dirty = true; state.pendingCounterUserId=null; state.groups = [newGroup()];
   $('#offering-date').value = mostRecentSunday();
@@ -192,8 +197,7 @@ function drawGroup(group, index) {
       const row = document.createElement('div'); row.className = 'finance-inline finance-code-assignment'; row.append(input, assign); codeNote.append(row);
     }
     fields.append(codeNote);
-    phoneInput=field('tel',group.phone,value=>{group.phone=value;},{maxLength:60});fields.append(labelFor('電話（選填）',phoneInput));
-    fields.append(labelFor('地址（選填）', field('text', group.address, value => { group.address = value; }, { maxLength: 300 })));
+    phoneInput=field('tel',group.phone,value=>{group.phone=value;},{maxLength:60});const contact=document.createElement('details');contact.className='finance-contact-options';contact.append(textNode('summary','聯絡資料（選填）'),labelFor('電話（選填）',phoneInput),labelFor('地址（選填）',field('text',group.address,value=>{group.address=value;},{maxLength:300})));fields.append(contact);
   }
   fields.append(labelFor('週報顯示', select([['public','顯示編號／遮蔽姓名'],['anonymous','匿名'],['unlisted','只計入總額']], group.publicChoice, value => { group.publicChoice = value; })));
   fields.append(labelFor('收據偏好', select([['annual','年度收據'],['single','單次收據'],['none','不開收據']], group.receiptPreference, value => { group.receiptPreference = value; })));
@@ -242,13 +246,13 @@ function makePayload() {
   return { offeringDate: $('#offering-date').value, counterUserIds: counters, countedCash, counterConfirmed:state.pendingCounterUserId===state.userId, bags };
 }
 
-function markDirty(){state.dirty=true;state.pendingCounterUserId=null;drawConfirmations();}
+function markDirty(){state.dirty=true;$('#cash-form').dataset.unsavedChanges='true';state.pendingCounterUserId=null;drawConfirmations();}
 function bothConfirmed(){
   const b=state.batch;
   return !!b&&!!b.counter_1_confirmed_at&&!!b.counter_2_confirmed_at&&b.counter_1_confirmed_by===b.counter_1&&b.counter_2_confirmed_by===b.counter_2;
 }
 function drawConfirmations(){
-  const b=state.batch,clean=!!b&&!state.dirty,editable=state.roles.has('entry')&&(!b||['draft','returned'].includes(b.status)),bagsConfirmed=state.groups.length>0&&state.groups.every(group=>group.bags.length>0&&group.bags.every(bag=>bag.confirmed===true));
+  const b=state.batch,clean=!!b&&!state.dirty,editable=!state.needsRefresh&&state.roles.has('entry')&&(!b||['draft','returned'].includes(b.status)),bagsConfirmed=state.groups.length>0&&state.groups.every(group=>group.bags.length>0&&group.bags.every(bag=>bag.confirmed===true));
   for(const [n,key] of [[1,'one'],[2,'two']]){
     const input=$('#confirm-counter-'+key);if(!input)return;
     const userId=$('#counter-'+key).value,confirmed=clean&&!!b?.['counter_'+n+'_confirmed_at'],pending=state.pendingCounterUserId===userId;
@@ -258,6 +262,7 @@ function drawConfirmations(){
     const time=confirmed?new Date(b['counter_'+n+'_confirmed_at']).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'';
     $('#confirm-counter-'+key+'-label').textContent='點收同工 '+n+'：'+(worker?.name||'尚未選擇')+(confirmed?' · 已確認 '+time:pending?' · 已勾選，請儲存草稿':' · 我已核對整批明細與總額（本人勾選）');
   }
+  $('#save-draft').disabled=state.busy||!editable;
   $('#submit-batch').disabled=!clean||!editable||state.busy||!bagsConfirmed||!bothConfirmed();
   $('#reload-confirmations').disabled=!clean||state.busy;
   $('#counter-confirm-note').textContent=!bagsConfirmed?'請先完成各筆奉獻的單人確認。':!clean?'第一位同工可勾選本人確認後儲存；第二位以自己的帳號核對、勾選後送審。修改明細後需重新確認。':bothConfirmed()?'兩位點收同工已確認，可送師母複審。':'請由兩位點收同工各自登入核對並勾選，不能代勾。另一位完成後，按「重新讀取確認」。';
@@ -266,13 +271,19 @@ async function confirmCounter(confirmed){
   if(!state.batch||state.dirty){state.pendingCounterUserId=confirmed?state.userId:null;status(confirmed?'已勾選本人確認，請儲存草稿。':'已取消本次本人確認勾選。');return;}
   status('正在儲存本人點收確認…');
   const result=await api('confirm_counter',{batchId:state.batch.id,version:state.batch.version,confirmed});
-  await openBatch(result.batch.id);status(confirmed?'本人點收確認已儲存。':'已取消本人點收確認。');
+  await readAfterWrite(result.batch,confirmed?'本人點收確認已儲存。':'已取消本人點收確認。');
 }
 
+async function readAfterWrite(batch, message){
+  state.batch=batch;state.dirty=false;$('#cash-form').dataset.unsavedChanges='false';
+  try{await openBatch(batch.id);status(message,'success');}
+  catch{state.needsRefresh=true;$('#recover-finance').hidden=false;status('資料已儲存，但最新紀錄暫時無法讀回。請按「重新讀取已儲存紀錄」，勿再次送出。','warning');}
+}
 async function save() {
+  if(state.needsRefresh)throw new Error('請先重新讀取已儲存紀錄，避免重複送出。');
   const data = makePayload();
   const result = await api('save', { batchId: state.batch?.id || null, version: state.batch?.version || null, data });
-  state.batch = result.batch; await openBatch(result.batch.id); status('草稿已儲存。');
+  await readAfterWrite(result.batch,'草稿已儲存。');
 }
 
 async function transition(step) {
@@ -291,11 +302,13 @@ async function transition(step) {
     if (!reason.trim()) throw new Error(errors.reason_required);
   }
   const result = await api('transition', { batchId: state.batch.id, version: state.batch.version, step, verifiedCash, reason });
-  await openBatch(result.batch.id); status('狀態已更新。');
+  await readAfterWrite(result.batch,'狀態已更新。');
 }
 
 async function openBatch(id) {
+  if(state.batch?.id!==id&&!canLeaveEditor())return;
   const response = await api('get', { batchId: id }); const batch = response.batch;
+  state.needsRefresh=false;$('#recover-finance').hidden=true;
   state.batch = batch; state.dirty = false; state.pendingCounterUserId=null; $('#cash-form').dataset.unsavedChanges='false'; state.groups = [];
   const linked = new Map();
   for (const bag of response.bags) {
@@ -471,8 +484,8 @@ for(const key of ['one','two'])$('#confirm-counter-'+key).addEventListener('chan
   void work(()=>confirmCounter(confirmed));
 });
 $('#reload-confirmations').addEventListener('click',()=>void work(async()=>{if(state.dirty||!state.batch)throw new Error('請先儲存草稿。');await openBatch(state.batch.id);status('已重新讀取點收確認。');}));
-$('#cash-form').addEventListener('submit', event => { event.preventDefault(); void work(save); });
-$('#submit-batch').addEventListener('click', () => void work(() => transition('submit')));
+$('#cash-form').addEventListener('submit', event => { event.preventDefault(); void work(save,'正在儲存奉獻草稿，請稍候…'); });
+$('#submit-batch').addEventListener('click', () => void work(() => transition('submit'),'正在送師母複審，請勿重複送出…'));
 
 await work(async () => {
   const checked = await db.auth.getUser();
@@ -484,3 +497,6 @@ await work(async () => {
   await workers(); await batches();
   status(state.roles.has('entry')?'已載入主日奉獻工作區。':'已載入主日奉獻工作區。此帳號未授權「同工登錄」，可依現有權限查看或複審。');
 });
+
+$('#recover-finance').addEventListener('click',()=>void work(async()=>{if(!state.batch)return;await openBatch(state.batch.id);status('已重新讀取已儲存紀錄。','success');}));
+window.addEventListener('beforeunload',event=>{if($('#cash-form').dataset.unsavedChanges==='true'){event.preventDefault();event.returnValue='';}});

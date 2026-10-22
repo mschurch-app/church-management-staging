@@ -13,7 +13,7 @@ async function fixture(setup=''){
   window.messages=[];window.clockOffset=0;const now=Date.now;Date.now=()=>now()+clockOffset;
   const sw=new EventTarget();sw.getRegistration=async()=>undefined;Object.defineProperty(navigator,'serviceWorker',{value:sw,configurable:true});
   window.reg=new EventTarget();reg.waiting={postMessage:message=>messages.push(message)};
-  new Function(setup)();window.runtime=await import('/app-runtime.mjs?v=20261022-resume1');
+  new Function(setup)();window.runtime=await import('/app-runtime.mjs?v=20261022-experience1');
  },setup);return page;
 }
 const count=p=>p.evaluate(()=>messages.length);
@@ -34,7 +34,7 @@ try{
  const context=await browser.createBrowserContext();p=await context.newPage();
  await p.goto(origin+'/app-offline.html');await p.evaluate(async()=>{await navigator.serviceWorker.register('/church-os-sw.js?startup-baseline',{scope:'/'});await navigator.serviceWorker.ready;});await p.waitForFunction(()=>navigator.serviceWorker.controller!==null);ok(true,'real worker installs and controls page');
  const navigation=p.waitForNavigation({waitUntil:'networkidle0'});
- await p.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261022-resume1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?startup-updated',{scope:'/'});module.watchAppRegistration(reg);});
+ await p.evaluate(async()=>{const module=await import('/app-runtime.mjs?v=20261022-experience1');const reg=await navigator.serviceWorker.register('/church-os-sw.js?startup-updated',{scope:'/'});module.watchAppRegistration(reg);});
  await navigation;ok(await p.evaluate(()=>navigator.serviceWorker.controller?.scriptURL.includes('startup-updated')),'real waiting worker activates and page reloads automatically');ok(await silent(p),'real update reload shows no banner');
  const stamp=await p.evaluate(()=>sessionStorage.getItem('church-os-auto-update-reload'));await p.reload({waitUntil:'networkidle0'});ok(await p.evaluate(()=>sessionStorage.getItem('church-os-auto-update-reload'))===stamp,'reopening after update does not create reload loop');await context.close();
  console.log('TOTAL',checks);

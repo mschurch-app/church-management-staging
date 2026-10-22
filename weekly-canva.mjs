@@ -1,4 +1,4 @@
-import {createMediaProgress} from './weekly-media-progress.mjs?v=20261010-media-progress1';
+import {createMediaProgress} from './weekly-media-progress.mjs?v=20261022-experience1';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-canva';
 const ERRORS={
   configuration_required:'請管理員先完成 Canva 連線設定。',connection_required:'Canva 授權已失效，請管理員重新連線。',
@@ -41,7 +41,7 @@ export function initWeeklyCanva({db,church,getContext,run,onImages,onStatus}){
     $('canva-resume').hidden=!pendingId||job?.status==='ready';
     $('canva-refresh-images').hidden=!job?.canReexport;
     for(const kind of ['home','ig'])$('canva-edit-'+kind).hidden=!job?.outputs?.[kind]?.designId;
-    if(job&&progress.active)progress.update({label:'Canva 製圖中…',description:Object.entries(job.outputs).map(([kind,o])=>`${kind==='home'?'預告圖':'IG 圖'}：${STAGES[o.stage]||'處理中'}`).join('\n')});
+    if(job&&progress.active)progress.update({percent:Object.values(job.outputs).length?Math.floor(Object.values(job.outputs).filter(o=>o.stage==='ready'&&o.path).length/Object.values(job.outputs).length*100):undefined,label:'Canva 製圖中…',description:Object.entries(job.outputs).map(([kind,o])=>`${kind==='home'?'預告圖':'IG 圖'}：${STAGES[o.stage]||'處理中'}`).join('\n')});
     if(job?.status==='ready'&&!jobs.some(item=>item.id===job.id))jobs=[...jobs,job].slice(-2);
     if(jobs.length||job?.status==='ready'){if(refreshOptions)renderOptions();}else if($('canva-options'))$('canva-options').hidden=true;
     if(job&&updateStatus){status(job.status==='blocked'?message({code:job.error}):Object.entries(job.outputs).map(([kind,o])=>`${kind.includes('ig')?'IG 圖':'預告圖'}：${STAGES[o.stage]||'處理中'}`).join(' · '));}

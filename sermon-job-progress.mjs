@@ -1,4 +1,4 @@
-import {createMediaProgress} from './weekly-media-progress.mjs?v=20261021-aiwait1';
+import {createMediaProgress} from './weekly-media-progress.mjs?v=20261022-experience1';
 
 const names={media:'影片文字素材',search:'搜尋素材',detail:'讀取素材',guide:'AI 引導問答',outline:'信息大綱',manuscript:'講章',slides:'投影片內容'};
 const seconds={media:900,search:30,detail:30,guide:90,outline:180,manuscript:600,slides:180};
@@ -20,7 +20,7 @@ export function createSermonJobProgress(host){
       const label=names[job.kind],progress=entry.progress;
       if(pending){
         if(!progress.active)progress.start({history:'sermon:'+job.kind,workId:job.id,baselineSeconds:seconds[job.kind],recordHistory:false});
-        progress.update({label:job.status==='queued'?`${label}已排隊，請稍候…`:`${label}產生中，請稍候…`,description:job.progress|| (job.status==='queued'?'等待本機接續處理；可以繼續編輯，不必重複送出。':'正在等待 AI 回應，完成後會顯示在下方「預備中的工作」。'),estimateProgress:job.status==='running',hint:job.status==='queued'?'排隊時間無法預估；工作開始後才顯示預估進度。':'百分比為預估，收到完整結果後才會顯示 100%。'});
+        progress.update({label:job.status==='queued'?`${label}已排隊，請稍候…`:`${label}產生中，請稍候…`,description:job.progress|| (job.status==='queued'?'等待本機接續處理；可以繼續編輯，不必重複送出。':'正在等待 AI 回應，完成後會顯示在下方「預備中的工作」。'),estimateProgress:job.status==='running',hint:job.status==='queued'?'等待本機接續，無須重複送出。':'正在查詢同一筆工作；收到完整結果後顯示完成。'});
       }else if(entry.state!==job.status){
         if(job.status==='completed')progress.finish(`${label}已完成，請到下方「預備中的工作」查看結果。`);
         else progress.fail(job.error||`${label}未完成。原有內容保留，請先查看工作紀錄再重試。`);

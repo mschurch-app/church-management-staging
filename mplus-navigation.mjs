@@ -12,6 +12,7 @@ const hubIcons={church:'home',school:'mplus-book',admin:'mplus-box',service:'mpl
 const node=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 export function mountMplusNavigation({allowed,hrefFor,openSchool}){
  const centers=visibleCenters(new Set(allowed)),main=document.querySelector('main');
+ const positions=new Map();let activeCenter=null;
  const panel=document.querySelector('.mplus-center')||node('section','','mplus-center');panel.hidden=true;if(!panel.isConnected)main.append(panel);
  const top=document.querySelector('.mplus-top')||node('nav','','mplus-top');top.setAttribute('aria-label','M+ 首頁與系統');top.replaceChildren();
  const home=node('button','首頁');home.type='button';home.onclick=()=>show('home');top.append(home);
@@ -27,14 +28,15 @@ export function mountMplusNavigation({allowed,hrefFor,openSchool}){
   const dismiss=()=>{dialog.close();dialog.remove();};close.onclick=dismiss;dialog.addEventListener('cancel',e=>{e.preventDefault();dismiss();});dialog.addEventListener('close',()=>dialog.remove(),{once:true});document.body.append(dialog);dialog.showModal();
  }
  function show(key){
+  if(activeCenter)positions.set(activeCenter,scrollY);activeCenter=key;
   for(const n of homeNodes){if(!n.dataset.mplusOriginalHidden)n.dataset.mplusOriginalHidden=String(n.hidden);n.hidden=key!=='home'||n.dataset.mplusOriginalHidden==='true';}
   panel.hidden=key==='home';dock.querySelectorAll('button').forEach(b=>b.setAttribute('aria-current',b.dataset.center===key?'page':'false'));home.classList.toggle('active',key==='home');
-  if(key==='home'){window.scrollTo(0,0);return;}
+  if(key==='home'){requestAnimationFrame(()=>window.scrollTo(0,positions.get(key)||0));return;}
   panel.replaceChildren();const center=centers[key],heading=node('div','','hub-heading');heading.append(node('p','M+ · 功能中心','hub-kicker'),node('h1',center.title),node('p',hubNotes[key]));panel.append(heading);
   const grid=node('div','','hub-grid');for(const [title,links]of center.cards){const direct=links.length===1&&links[0][1]==='finance_cash',tile=node(direct?'a':'button','','hub-tile'),symbol=node('span','','hub-symbol'),copy=node('span','','hub-copy');if(direct)tile.href=hrefFor(links[0][1],links[0][2]);else tile.type='button';symbol.append(createAppIcon(hubIcons[key],'mplus-icon'));copy.append(node('strong',title),node('small',links.map(([label])=>label).join('、')));tile.append(symbol,copy,node('b','›'));if(!direct)tile.onclick=()=>openCategory(key,title,links);grid.append(tile);}panel.append(grid);
   if(!center.cards.length)panel.append(node('p','你目前沒有此區的功能權限，請聯繫管理同工。','muted'));
   if(key==='admin')panel.append(node('p','行政功能逐步開放；籃球隊維持獨立 App。','hub-note'));
-  window.scrollTo(0,0);
+  requestAnimationFrame(()=>window.scrollTo(0,positions.get(key)||0));
  }
  const requestedCenter=new URLSearchParams(location.search).get('center');
  show(Object.hasOwn(centers,requestedCenter)?requestedCenter:'home');return {show};

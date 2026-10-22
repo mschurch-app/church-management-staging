@@ -3,21 +3,38 @@ import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 import {setStatus} from './app-ui.mjs?v=20261014-sermon3';
 import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-directuse1';
+import {createFieldGuidance,FieldValidationError} from './form-guidance.mjs?v=20261022-experience8';
 
 const $=s=>document.querySelector(s),ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-preparation';
 const stepNames={information:'信息',materials:'素材',outline:'大綱',manuscript:'講章',slides:'投影片'};
 const jobNames={media:'影片下載與轉錄',search:'搜尋素材',detail:'讀取素材',guide:'三輪引導查找',outline:'提出大綱',manuscript:'分段講章',slides:'逐頁內容',backup:'NAS 版本備份'};
 const messages={forbidden:'尚未取得信息預備權限，需具備 M＋週報編輯權限及 LINE 綁定。',conflict:'已有較新的版本。你的輸入仍保留，請先下載或複製內容，再重新載入比對。',not_found:'找不到這份私人信息。',queue_limit:'目前排隊工作較多，請等已有工作完成後再試。',generation_limit:'已達今日生成上限，請先整理已有草稿。',invalid_guide:'這輪問答已更新，請重新載入後從目前題目繼續。',materials_need_review:'請先逐份核對已選素材，再勾選確認。',outline_required:'請先保存並確認至少三個主要段落。',manuscript_too_short:'正文尚未達指定字數，請補充後再整理投影片。',invalid_draft:'請確認必填資料、字數及內容格式。',invalid_outline:'大綱每行一個段落，最多 12 段。',invalid_slides:'投影片最多 20 頁，請確認各頁標題。',invalid_materials:'素材格式不完整，請重新選取或補充自己的素材。'};
-let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,authorized=false,access=null,pollTimer=null,opening=0;
+let project=null,draft=null,items=[],jobs=[],versions=[],busy=false,dirty=false,createDirty=false,pendingCreated=null,authorized=false,access=null,pollTimer=null,opening=0;
 const jobProgress=createSermonJobProgress($('#ai-job-progress'));
 const processed=new Set(),pendingResults=new Set(),requestIds=new Map();
 const schedulePoll=delay=>{clearTimeout(pollTimer);pollTimer=setTimeout(poll,delay);};
 const el=(tag,text='',className='')=>{const n=document.createElement(tag);n.textContent=text;n.className=className;return n;};
 const button=(text,fn,secondary=true)=>{const b=el('button',text,secondary?'secondary':'');b.type='button';b.disabled=busy;b.onclick=fn;return b;};
 const message=(text,tone='neutral')=>setStatus($('#status'),text,{tone});
-function markDirty(){dirty=true;$('#dirty-status').textContent='尚有未儲存的修改';$('#word-count').textContent=characterCount($('#manuscript').value).toLocaleString()+' 字';}
+function cleanDraft(){dirty=false;$('#draft-form').dataset.unsavedChanges='false';$('#dirty-status').textContent='已儲存';}
+function markDirty(){dirty=true;$('#draft-form').dataset.unsavedChanges='true';$('#dirty-status').textContent='尚有未儲存的修改';$('#word-count').textContent=characterCount($('#manuscript').value).toLocaleString()+' 字';}
 function mayLeave(){return !dirty||confirm('還有未儲存的修改。確定放棄本次修改並讀取其他內容？');}
-function lock(value){busy=value;document.querySelectorAll('#content button,#draft-form input,#draft-form textarea,#draft-form select,#create-form input,#create-form button').forEach(b=>b.disabled=value);if(!value){$('#new-project').disabled=$('#empty-create').disabled=!canAction(access,'M+','website_weekly','create');$('#download-manuscript').disabled=$('#download-slides').disabled=!canAction(access,'M+','website_weekly','export');}}
+function lock(value){busy=value;$('#content').setAttribute('aria-busy',String(value));document.querySelectorAll('#content button,#draft-form input,#draft-form textarea,#draft-form select,#create-form input,#create-form button').forEach(b=>b.disabled=value);if(!value){$('#new-project').disabled=$('#empty-create').disabled=!!pendingCreated||!canAction(access,'M+','website_weekly','create');$('#download-manuscript').disabled=$('#download-slides').disabled=!canAction(access,'M+','website_weekly','export');}}
+const correctionHost=el('section');$('#draft-form').before(correctionHost);
+const guidance=createFieldGuidance($('#draft-form'),{container:correctionHost,reveal:control=>{const panel=control.closest('[data-panel]');if(panel)showStep(panel.dataset.panel,false);}});
+function fail(error){message(messages[error.message]||error.message,'error');if(error instanceof FieldValidationError)queueMicrotask(()=>{if(!busy)guidance.focusFirst();});}
+function checkFields(){
+ const issues=[];
+ for(const [id,label,required] of [['edit-title','信息主題',true],['edit-scripture','經文章節',true],['edit-speaker','講員姓名',true],['notes','領受與筆記'],['audience','對象'],['bible-version','聖經版本'],['manuscript','完整講章']]){const control=$('#'+id);if(required&&!control.value.trim())issues.push({control,message:label+'：請填寫內容。'});else if(control.value.length>control.maxLength)issues.push({control,message:label+'：請縮短至 '+control.maxLength.toLocaleString()+' 字以內。'});}
+ if($('#edit-date').validity.badInput)issues.push({control:$('#edit-date'),message:'聚會日期：請填寫完整日期，或清空此選填欄位。'});
+ const outline=$('#outline').value.split('\n').map(x=>x.trim()).filter(Boolean);if(outline.length>12||outline.some(line=>line.length>3000))issues.push({control:$('#outline'),message:'信息大綱：最多 12 段，每段不超過 3,000 字。'});else if($('#outline-confirmed').checked&&outline.length<3)issues.push({control:$('#outline'),message:'信息大綱：確認前請至少填寫三個主要段落。'});
+ for(const [index,card] of [...$('#slides').children].entries())for(const control of card.querySelectorAll('input,textarea')){const label=control.getAttribute('aria-label')||'第 '+(index+1)+' 頁';if(control.tagName==='INPUT'&&!control.value.trim())issues.push({control,message:label+'：請填寫內容。'});else if(control.value.length>control.maxLength)issues.push({control,message:label+'：請縮短至 '+control.maxLength.toLocaleString()+' 字以內。'});}
+ for(const control of $('#materials').querySelectorAll('textarea'))if(control.value.length>control.maxLength)issues.push({control,message:(control.getAttribute('aria-label')||'素材')+'：請縮短至 '+control.maxLength.toLocaleString()+' 字以內。'});
+ if(guidance.report(issues))throw new FieldValidationError('尚未送出，請修正標示欄位。');
+}
+function checkGeneration(value,kind){
+ try{generationReady(value,kind);}catch(error){const control=error.message==='outline_required'?($('#outline').value.split('\n').filter(line=>line.trim()).length<3?$('#outline'):$('#outline-confirmed')):error.message==='manuscript_too_short'?$('#manuscript'):error.message==='materials_need_review'?$('#materials input[type=checkbox]:not(:checked)'):null;if(!control)throw error;guidance.report([{control,message:messages[error.message]}]);throw new FieldValidationError('尚未開始生成，請先完成標示項目。');}
+}
 async function api(action,input={}){
  const session=await db.auth.getSession(),token=session.data.session?.access_token;
  if(!token)throw Error('登入已失效，請重新登入教會 OS。');
@@ -31,15 +48,16 @@ async function api(action,input={}){
 function drawProjects(){
  $('#projects').replaceChildren();
  if(!items.length)$('#projects').append(el('p','尚未建立信息。','muted'));
- for(const p of items){const b=button('',()=>openProject(p.id));b.className='studio-project-choice';b.setAttribute('aria-current',String(p.id===project?.id));b.append(el('strong',p.title),el('small',p.scripture+' · '+p.speaker),el('small','版本 '+p.version));$('#projects').append(b);}
+ for(const p of items){const b=button('',()=>openProject(p.id));b.className='studio-project-choice';b.dataset.appControl='surface';b.setAttribute('aria-pressed',String(p.id===project?.id));b.setAttribute('aria-current',String(p.id===project?.id));b.append(el('strong',p.title),el('small',p.scripture+' · '+p.speaker),el('small','版本 '+p.version));$('#projects').append(b);}
 }
 function showStep(step,record=true){
  if(!STEPS.includes(step))return;
  document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==step);
- document.querySelectorAll('[data-step]').forEach(b=>{if(b.dataset.step===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
+ document.querySelectorAll('[data-step]').forEach(b=>{b.dataset.appControl='surface';b.setAttribute('aria-pressed',String(b.dataset.step===step));if(b.dataset.step===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
  if(record&&draft&&draft.step!==step){draft.step=step;markDirty();}
 }
 function collect(){
+ checkFields();
  const next=structuredClone(draft);
  next.information={title:$('#edit-title').value.trim(),speaker:$('#edit-speaker').value.trim(),scripture:$('#edit-scripture').value.trim(),service_date:$('#edit-date').value};
  next.notes=$('#notes').value;next.audience=$('#audience').value;next.bible_version=$('#bible-version').value;next.target_characters=Number($('#target').value);
@@ -52,11 +70,12 @@ function drawBackup(){
  $('#backup-status').textContent=project.backup_version>=project.version?'此版本已回存 QNAP 與 Synology，內容指紋一致。':'教會 OS 已保存；此版本正在等待 NAS 備份回條。';
 }
 function drawEditor(){
+ guidance.clear();
  const info=draft.information;for(const [id,key] of [['edit-title','title'],['edit-speaker','speaker'],['edit-scripture','scripture'],['edit-date','service_date']])$('#'+id).value=info[key];
  $('#notes').value=draft.notes;$('#audience').value=draft.audience;$('#bible-version').value=draft.bible_version;$('#target').value=String(draft.target_characters);$('#outline').value=draft.outline.join('\n');$('#outline-confirmed').checked=draft.outline_confirmed;$('#manuscript').value=draft.manuscript;
  $('#word-count').textContent=characterCount(draft.manuscript).toLocaleString()+' 字';
  drawMaterials();drawSlides();drawChecklist();drawBackup();showStep(draft.step,false);
- $('#workspace').hidden=false;$('#empty-workspace').hidden=true;dirty=false;$('#dirty-status').textContent='已儲存';
+ $('#workspace').hidden=false;$('#empty-workspace').hidden=true;cleanDraft();
  $('#versions').replaceChildren(...versions.map(v=>{const option=el('option','版本 '+v.version+' · '+new Date(v.created_at).toLocaleString('zh-TW'));option.value=String(v.version);return option;}));
  if(busy)lock(true);
 }
@@ -66,9 +85,9 @@ function drawMaterials(){
  for(const m of draft.materials){const card=el('article','','studio-material'),title=el('h4',m.title),meta=el('p',m.kind==='archive'?(m.speaker?'講員：'+m.speaker+' · ':'')+(m.source_kind==='video_transcript'?'AI 影片轉譯，可直接使用':'來源摘錄，可直接使用'):m.kind==='transcript'?'AI 影片轉譯，可直接使用 · 講員與範圍待確認':'自己提供的素材','source-meta');
  card.append(title,meta);if(m.url)card.append(sourceLink(m));
  const content=el('p',m.content);card.append(content);
- if(m.kind==='personal'){const editor=el('textarea');editor.value=m.content;editor.maxLength=6000;editor.rows=5;editor.setAttribute('aria-label','自己的素材內容');editor.oninput=()=>{m.content=editor.value;m.reviewed=false;card.querySelector('input[type=checkbox]').checked=false;markDirty();};card.append(editor);}
- const note=el('textarea');note.value=m.note;note.maxLength=3000;note.rows=3;note.placeholder='這份素材觸動我的是……';note.setAttribute('aria-label','素材領受與筆記');note.oninput=()=>{m.note=note.value;markDirty();};
- card.append(note);if(m.kind==='personal'){const label=el('label','','studio-check'),check=el('input');check.type='checkbox';check.checked=m.reviewed;check.onchange=()=>{m.reviewed=check.checked;markDirty();};label.append(check,el('span','已確認使用這份自有素材'));card.append(label);}
+ if(m.kind==='personal'){const editor=el('textarea');editor.value=m.content;editor.maxLength=6000;editor.rows=5;editor.setAttribute('aria-label','自己的素材內容');editor.oninput=()=>{const current=draft.materials.find(item=>item.id===m.id);if(!current)return;current.content=editor.value;current.reviewed=false;card.querySelector('input[type=checkbox]').checked=false;markDirty();};card.append(editor);}
+ const note=el('textarea');note.value=m.note;note.maxLength=3000;note.rows=3;note.placeholder='這份素材觸動我的是……';note.setAttribute('aria-label','素材領受與筆記');note.oninput=()=>{const current=draft.materials.find(item=>item.id===m.id);if(!current)return;current.note=note.value;markDirty();};
+ card.append(note);if(m.kind==='personal'){const label=el('label','','studio-check'),check=el('input');check.type='checkbox';check.checked=m.reviewed;check.onchange=()=>{const current=draft.materials.find(item=>item.id===m.id);if(!current)return;current.reviewed=check.checked;markDirty();};label.append(check,el('span','已確認使用這份自有素材'));card.append(label);}
  card.append(button('這次不用',()=>{draft.materials=draft.materials.filter(x=>x.id!==m.id);markDirty();drawMaterials();}));$('#materials').append(card);}
 }
 function drawSearch(result){
@@ -103,7 +122,7 @@ function drawGuide(){
 }
 function drawSlides(){
  $('#slides').replaceChildren();
- draft.slides.forEach((s,i)=>{const card=el('article','','studio-slide');card.append(el('small','第 '+(i+1)+' 頁'));for(const [key,label,max] of [['title','頁面標題',200],['content','畫面文字',2000],['notes','講員備註',5000]]){const input=el(key==='title'?'input':'textarea');input.value=s[key];input.maxLength=max;input.setAttribute('aria-label','第 '+(i+1)+' 頁'+label);input.oninput=()=>{s[key]=input.value;markDirty();};card.append(input);}$('#slides').append(card);});
+ draft.slides.forEach((s,i)=>{const card=el('article','','studio-slide');card.append(el('small','第 '+(i+1)+' 頁'));for(const [key,label,max] of [['title','頁面標題',200],['content','畫面文字',2000],['notes','講員備註',5000]]){const input=el(key==='title'?'input':'textarea');input.value=s[key];input.maxLength=max;input.setAttribute('aria-label','第 '+(i+1)+' 頁'+label);input.oninput=()=>{if(!draft.slides[i])return;draft.slides[i][key]=input.value;markDirty();};card.append(input);}$('#slides').append(card);});
 }
 function drawChecklist(){const root=$('#source-checklist');root.replaceChildren();if(draft.source_checklist.length){root.append(el('h4','來源與待查證清單'));const list=el('ul');draft.source_checklist.forEach(x=>list.append(el('li',x)));root.append(list);}}
 function addMaterial(item){if(busy)return;if(draft.materials.length>=24){message('素材最多 24 份，請先整理已選內容。','error');return;}if(!draft.materials.some(m=>m.id===item.id)){draft.materials.push(structuredClone(item));markDirty();drawMaterials();}}
@@ -129,49 +148,50 @@ function drawJobs(){
  $('#jobs').append(card);}
  if(!jobs.length)$('#jobs').append(el('p','目前沒有排隊工作。','muted'));
 }
-async function loadList(){
- const result=await api('list');items=result.items||[];drawProjects();const w=result.worker,c=w?.summary?.counts;
+async function loadList(current=()=>true){
+ const result=await api('list');if(!current())return;items=result.items||[];drawProjects();const w=result.worker,c=w?.summary?.counts;
  $('#worker-status').textContent=w?.online?'Mini 已連線'+(c?' · 已收錄 '+Number(c.web_documents||0).toLocaleString()+' 個來源頁面／PDF':''):'Mini 尚未回報或暫時離線；可以繼續編輯保存，搜尋與生成會等連線恢復。';
 }
-async function openProject(id){
- if(busy||!mayLeave())return;lock(true);const seq=++opening;
- try{const result=await api('load',{project_id:id});if(seq!==opening)return;project=result.project;draft=validateDraft(result.payload);jobs=result.jobs||[];versions=result.versions||[];processed.clear();pendingResults.clear();jobs.filter(j=>['search','detail'].includes(j.kind)&&['queued','running'].includes(j.status)).forEach(j=>pendingResults.add(j.id));$('#search-results').replaceChildren();drawEditor();drawProjects();drawJobs();drawGuide();message('信息已載入；可返回任一步驟繼續預備。','success');history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+id);}
- catch(e){message(e.message,'error');}finally{lock(false);}
+async function openProject(id,{confirmed=false}={}){
+ if(busy||(!confirmed&&!mayLeave()))return false;lock(true);const seq=++opening;
+ try{const result=await api('load',{project_id:id});if(seq!==opening)return false;const payload=validateDraft(result.payload);if(result.project?.id!==id||!Number.isSafeInteger(result.project.version))throw Error('信息讀取回條不完整，原本輸入仍保留。');project=result.project;draft=payload;jobs=result.jobs||[];versions=result.versions||[];processed.clear();pendingResults.clear();jobs.filter(j=>['search','detail'].includes(j.kind)&&['queued','running'].includes(j.status)).forEach(j=>pendingResults.add(j.id));$('#search-results').replaceChildren();drawEditor();if(pendingCreated===id)pendingCreated=null;drawProjects();drawJobs();drawGuide();message('信息已載入；可返回任一步驟繼續預備。','success');history.replaceState(null,'','sermon-preparation.html?church=M%2B&project='+id);return true;}
+ catch(e){fail(e);return false;}finally{lock(false);}
 }
 async function saveDraft(){
  if(!project)throw Error('請先建立信息。');const payload=collect();
  const result=await api('save',{project_id:project.id,base_version:project.version,payload});
- project=result.project;draft=result.payload;dirty=false;versions.unshift({version:project.version,created_at:project.updated_at});drawBackup();$('#dirty-status').textContent='已儲存';const row=items.find(x=>x.id===project.id);if(row)Object.assign(row,project);drawProjects();
+ const saved=validateDraft(result.payload);if(result.project?.id!==project.id||!Number.isSafeInteger(result.project.version)||result.project.version<=project.version)throw Error('儲存回條不完整。輸入仍保留，請重新載入確認最新版本。');project=result.project;draft=saved;cleanDraft();versions.unshift({version:project.version,created_at:project.updated_at});drawBackup();const row=items.find(x=>x.id===project.id);if(row)Object.assign(row,project);drawProjects();
  $('#versions').replaceChildren(...versions.map(v=>{const option=el('option','版本 '+v.version);option.value=v.version;return option;}));
  return result;
 }
-async function save(){if(busy)return;lock(true);try{await saveDraft();message('新版本已儲存。NAS 備份會另行顯示回條。','success');}catch(e){message(e.message,'error');}finally{lock(false);}}
+async function save(){if(busy)return;lock(true);try{await saveDraft();message('新版本已儲存。NAS 備份會另行顯示回條。','success');}catch(e){fail(e);}finally{lock(false);}}
 async function queue(kind,options={}){
  if(busy||!project)return;lock(true);jobProgress.begin(kind);
- try{draft=collect();if(dirty)await saveDraft();generationReady(draft,kind);
+ try{const next=collect();checkGeneration(next,kind);draft=next;if(dirty)await saveDraft();
  const result=await api('enqueue',{project_id:project.id,base_version:project.version,kind,options});if(['search','detail'].includes(kind))pendingResults.add(result.job.id);jobs.unshift(result.job);jobProgress.submitted();drawJobs();schedulePoll(1000);if(kind==='guide')drawGuide();message(jobNames[kind]+'已排入佇列；可繼續閱讀或稍後回來查看。','success');}
- catch(e){const text=messages[e.message]||e.message;jobProgress.failed(text);message(text,'error');}finally{lock(false);}
+ catch(e){const text=messages[e.message]||e.message;jobProgress.failed(text);fail(e);}finally{lock(false);}
 }
 async function adopt(job){
  if(busy)return;lock(true);try{
   if(dirty)await saveDraft();if(job.base_version&&job.base_version!==project.version&&!confirm('此草稿依版本 '+job.base_version+' 生成，目前是版本 '+project.version+'。確定採用並更新對應內容？'))return;draft=applyGenerated(collect(),job.kind,job.result);drawEditor();markDirty();await saveDraft();drawEditor();message('草稿已採用並保存新版本，請繼續人工核對。','success');
- }catch(e){message(messages[e.message]||e.message,'error');}finally{lock(false);}
+ }catch(e){fail(e);}finally{lock(false);}
 }
 async function poll(){
  if(!authorized)return;
- try{if(!document.hidden&&!busy){await loadList();if(project){const result=await api('load',{project_id:project.id});if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;jobProgress.sync(project.id,jobs);drawBackup();processResults();if(changed){drawJobs();drawGuide();}}}}catch{jobProgress.disconnected();/* Keep user edits and last known job state. */}
+ try{if(!document.hidden&&!busy){const selected=project,seq=opening,current=()=>!busy&&project===selected&&opening===seq;await loadList(current);if(!current())return;if(project){const version=project.version,result=await api('load',{project_id:project.id});if(!current()||version!==project.version)return;if(result.project.version!==project.version)message('這份信息在另一個視窗有新版本。你的輸入保留，請先保存副本再重新載入比對。','error');project.backup_version=result.project.backup_version;const nextJobs=result.jobs||[],changed=JSON.stringify(nextJobs)!==JSON.stringify(jobs);jobs=nextJobs;jobProgress.sync(project.id,jobs);drawBackup();processResults();if(changed){drawJobs();drawGuide();}}}}catch{jobProgress.disconnected();/* Keep user edits and last known job state. */}
  finally{schedulePoll(jobs.some(j=>j.kind==='guide'&&['queued','running'].includes(j.status))?2000:jobs.some(j=>['queued','running'].includes(j.status))?8000:30000);}
 }
 function download(kind){
  if(!project||!canAction(access,'M+','website_weekly','export'))return;
  try{const data=collect();const text=kind==='manuscript'?'# '+data.information.title+'\n\n'+data.information.scripture+' · '+data.information.speaker+'\n\n'+data.manuscript+'\n\n## 來源與待查證\n'+data.source_checklist.join('\n'):JSON.stringify({title:data.information.title,scripture:data.information.scripture,slides:data.slides},null,2);
- const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),a=el('a');a.href=url;a.download=data.information.title.replace(/[\\/:*?"<>|]/g,'_')+(kind==='slides'?'-逐頁內容.json':'-講章.md');a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message('已準備下載，請確認瀏覽器的下載紀錄。');}catch(e){message(messages[e.message]||e.message,'error');}
+ const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),a=el('a');a.href=url;a.download=data.information.title.replace(/[\\/:*?"<>|]/g,'_')+(kind==='slides'?'-逐頁內容.json':'-講章.md');a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message('已準備下載，請確認瀏覽器的下載紀錄。');}catch(e){fail(e);}
 }
-function openCreate(){if(busy||!mayLeave())return;$('#create-status').textContent='';$('#create-dialog').showModal();$('#new-title').focus();}
+function openCreate(){if(busy||pendingCreated||!mayLeave())return;$('#create-status').textContent='';$('#create-dialog').showModal();$('#new-title').focus();}
+function closeCreate(){if(busy||createDirty&&!confirm('建立信息的資料尚未送出。要放棄這次輸入嗎？'))return;$('#create-form').reset();createDirty=false;$('#create-form').dataset.unsavedChanges='false';$('#create-dialog').close();}
 async function create(event){
  event.preventDefault();if(busy)return;lock(true);
- try{const values={title:$('#new-title').value.trim(),scripture:$('#new-scripture').value.trim(),speaker:$('#new-speaker').value.trim(),service_date:$('#new-date').value};const result=await api('create',values);$('#create-dialog').close();dirty=false;lock(false);await loadList();await openProject(result.project.id);}
- catch(e){$('#create-status').textContent=e.message;}finally{lock(false);}
+ try{const values={title:$('#new-title').value.trim(),scripture:$('#new-scripture').value.trim(),speaker:$('#new-speaker').value.trim(),service_date:$('#new-date').value};const result=await api('create',values);pendingCreated=result.project.id;createDirty=false;$('#create-form').dataset.unsavedChanges='false';$('#create-form').reset();$('#create-dialog').close();await loadList();lock(false);if(!await openProject(pendingCreated,{confirmed:true}))message('信息已建立，但內容尚未載入。請按「重新載入」確認；原本編輯內容仍保留，勿再次建立。','error');}
+ catch(e){if(pendingCreated)message('信息已建立，但清單尚未載入。請按「重新載入」確認；原本編輯內容仍保留，勿再次建立。','error');else $('#create-status').textContent=e.message;}finally{lock(false);}
 }
 async function start(){
  try{const church=new URLSearchParams(location.search).get('church')||'M+';if(church!=='M+')throw Error('信息預備目前提供 M＋同工使用，請切換 M＋。');const session=await db.auth.getSession();if(!session.data.session?.access_token){location.replace('admin-login.html?next='+encodeURIComponent(location.pathname+location.search));return;}
@@ -180,15 +200,15 @@ async function start(){
  const requested=new URLSearchParams(location.search).get('project');if(requested&&items.some(p=>p.id===requested))await openProject(requested);else message('選一篇信息繼續預備，或建立新的信息。','success');pollTimer=setTimeout(poll,8000);
  }catch(e){message(e.message,'error');}
 }
-$('#draft-form').addEventListener('submit',e=>e.preventDefault());$('#draft-form').addEventListener('input',event=>{if(event.target.closest('.studio-guide,.studio-keyword-search,.studio-video'))return;if(event.target.id==='outline')$('#outline-confirmed').checked=false;markDirty();});
+$('#draft-form').addEventListener('submit',e=>e.preventDefault());for(const type of ['input','change'])$('#draft-form').addEventListener(type,event=>{if(event.target.closest('.studio-guide,.studio-keyword-search,.studio-video'))return;if(event.target.id==='outline')$('#outline-confirmed').checked=false;markDirty();});
 document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>showStep(b.dataset.step));
-$('#save').onclick=save;$('#new-project').onclick=$('#empty-create').onclick=openCreate;$('#close-create').onclick=()=>{if(!busy)$('#create-dialog').close();};$('#create-form').onsubmit=create;
-$('#reload').onclick=async()=>{if(busy||!mayLeave())return;dirty=false;try{await loadList();if(project)await openProject(project.id);}catch(e){message(e.message,'error');}};
+$('#save').onclick=save;$('#new-project').onclick=$('#empty-create').onclick=openCreate;$('#close-create').onclick=closeCreate;$('#create-dialog').addEventListener('cancel',event=>{event.preventDefault();closeCreate();});$('#create-form').addEventListener('input',()=>{createDirty=true;$('#create-form').dataset.unsavedChanges='true';});$('#create-form').onsubmit=create;
+$('#reload').onclick=async()=>{if(busy||!mayLeave())return;const id=pendingCreated||project?.id;lock(true);try{await loadList();lock(false);if(id)await openProject(id,{confirmed:true});}catch(e){fail(e);}finally{lock(false);}};
 $('#queue-video').onclick=()=>{try{void queue('media',{url:videoUrl($('#video-url').value.trim())});}catch{message('請貼上有效的 YouTube 單支影片 HTTPS 網址。','error');}};
 $('#search').onclick=()=>queue('search',{query:$('#query').value.trim()});$('#query').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();void queue('search',{query:$('#query').value.trim()});}};
 $('#personal-material').onclick=()=>{if(draft.materials.length>=24)return message('素材最多 24 份，請先整理已選內容。','error');draft.materials.push({kind:'personal',id:crypto.randomUUID(),title:'自己的素材',speaker:project.speaker,content:'',note:'',reviewed:false});drawMaterials();markDirty();};
 for(const kind of ['outline','manuscript','slides'])$('#generate-'+kind).onclick=()=>queue(kind);
 $('#download-manuscript').onclick=()=>download('manuscript');$('#download-slides').onclick=()=>download('slides');
 $('#restore-version').onclick=async()=>{if(busy||!mayLeave())return;lock(true);try{const result=await api('version',{project_id:project.id,version:Number($('#versions').value)});draft=validateDraft(result.payload);drawEditor();markDirty();message('舊版已讀入作為草稿；儲存後會建立新版本，原版本保留。');}catch(e){message(e.message,'error');}finally{lock(false);}};
-window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});window.addEventListener('pagehide',()=>{clearTimeout(pollTimer);jobProgress.stop();});window.addEventListener('pageshow',event=>{if(event.persisted&&authorized)schedulePoll(0);});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&authorized)schedulePoll(0);});start();
+window.addEventListener('church:discard-drafts',()=>{cleanDraft();createDirty=false;$('#create-form').dataset.unsavedChanges='false';});window.addEventListener('beforeunload',event=>{if(dirty||createDirty){event.preventDefault();event.returnValue='';}});window.addEventListener('pagehide',()=>{clearTimeout(pollTimer);jobProgress.stop();});window.addEventListener('pageshow',event=>{if(event.persisted&&authorized)schedulePoll(0);});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&authorized)schedulePoll(0);});start();
 

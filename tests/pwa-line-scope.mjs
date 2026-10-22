@@ -26,7 +26,7 @@ const factory=`(()=>{
    setSession:async s=>{event('setSession',{persistent});session={...s,user};if(persistent)localStorage.setItem(key,JSON.stringify(session));return {data:{session,user},error:null};},
    signInWithOAuth:async p=>{event('oauth');localStorage.setItem('fixture-oauth-options',JSON.stringify(p));const o=options();if(o.oauthDelay)await new Promise(r=>setTimeout(r,o.oauthDelay));if(o.oauthError)return {data:{url:null},error:{message:'Synthetic OAuth unavailable'}};return {data:{url:location.origin+(o.holdProvider?'/fixture-hold':'/fixture-provider')+'?to='+encodeURIComponent(p.options.redirectTo)}};},
    signOut:async()=>{session=null;localStorage.removeItem(key);return {error:null};}
-  },rpc:async()=>({data:[{church_id:'M+',permission:'members'}],error:null}),functions:{invoke:async()=>({data:{ok:true},error:null})}};
+  },rpc:async name=>({data:name==='get_my_coworker_application'?null:name==='get_my_app_capabilities'?{has_line:true}:options().noGrants?[]:[{church_id:'M+',permission:'members'}],error:null}),functions:{invoke:async()=>({data:{ok:true},error:null})}};
  }};
 })();`;
 
@@ -82,6 +82,14 @@ try{
  for(const engine of ['chromium','webkit']){
   const browser=await (engine==='webkit'?webkit:chromium).launch(engine==='chromium'?{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'}:{});
   try{
+   await scenario(engine,browser,'installed account application',async()=>{
+    const app=await setup(browser,{options:{noGrants:true}});try{
+     await app.page.goto(origin+'/admin-login-v2.html?source=app-v2&next=coworker-apply.html');
+     await app.page.click('#line-login');await app.page.locator('#application-form:not([hidden])').waitFor();
+     check(new URL(app.page.url()).pathname==='/coworker-apply.html',engine+': original installed App reaches application after fresh LINE callback');
+     check(await app.page.locator('#full-name').isVisible()&&await app.page.locator('#status').textContent().then(s=>s.includes('身分已確認')),engine+': verified applicant without admin grants can fill request');
+    }finally{await app.context.close();}
+   });
    await scenario(engine,browser,'same-window success',async()=>{
     const app=await setup(browser);try{
      await login(app);check(await app.page.locator('button#line-login').count()===1,engine+': installed LINE control remains a button');
@@ -90,6 +98,7 @@ try{
      const details=await app.page.evaluate(()=>({oauth:JSON.parse(localStorage.getItem('fixture-oauth-options')),pending:localStorage.getItem('church-os-line-handoff-v1'),events:JSON.parse(localStorage.getItem('fixture-events'))}));
      const callback=new URL(details.oauth.options.redirectTo);
      check(details.oauth.options.queryParams?.disable_auto_login==='true',engine+': iOS request disables native LINE auto login');
+     check(details.oauth.options.queryParams?.prompt==='login',engine+': default credential entry explicitly requests LINE authentication');
      check(callback.searchParams.get('return')==='standalone'&&/^[0-9a-f]{64}$/.test(callback.searchParams.get('handoff_state')||'')&&!callback.searchParams.has('handoff_key'),engine+': callback carries one-time hash state rather than raw App secret');
      check(!details.events.some(e=>e.type==='window.open')&&app.popupCount()===0&&!app.requests.includes('/admin-line-launch.html'),engine+': same-page scope round trip creates no popup or launcher');
      const verify=details.events.findIndex(e=>e.type==='getUser'&&e.fresh),persist=details.events.findIndex(e=>e.type==='persist');
@@ -146,6 +155,29 @@ try{
     const app=await setup(browser,{options:{oauthDelay:800}});try{
      await login(app);await app.page.click('#line-login');await app.page.locator('.line-auth-cancel:not([hidden])').click();await app.page.waitForTimeout(1100);
      check(app.page.url().includes('/admin-login-v2')&&await app.page.evaluate(key=>localStorage.getItem(key)===null,pendingKey)&&await app.page.locator('#line-login').isEnabled(),engine+': cancel before OAuth URL resolves prevents late navigation and permits retry');
+    }finally{await app.context.close();}
+   });
+   await scenario(engine,browser,'optional LINE App automatic browser entry',async()=>{
+    const app=await setup(browser,{standalone:false});try{
+     await login(app);await app.page.click('#line-auto-login');await app.page.locator('#destination').waitFor();
+     const options=await app.page.evaluate(()=>JSON.parse(localStorage.getItem('fixture-oauth-options')));
+     check(!options.options.queryParams?.disable_auto_login&&!options.options.queryParams?.prompt,engine+': optional LINE App entry permits LINE auto login');
+    }finally{await app.context.close();}
+   });
+   await scenario(engine,browser,'installed automatic popup blocked',async()=>{
+    const app=await setup(browser);try{
+     await login(app);await app.page.click('#line-auto-login');
+     check(await app.page.locator('#line-login').isEnabled()&&await app.page.locator('#line-auto-login').isEnabled()&&await app.page.evaluate(key=>!localStorage.getItem(key),pendingKey),engine+': blocked automatic login keeps credential entry usable and does not leave pending state');
+    }finally{await app.context.close();}
+   });
+   await scenario(engine,browser,'optional automatic flow cancellation',async()=>{
+    const app=await setup(browser,{options:{oauthDelay:700}});try{
+     await login(app);
+     await app.page.evaluate(()=>{window.open=()=>({close:()=>{},location:{replace:url=>localStorage.setItem('fixture-popup-navigation',url)}});});
+     await app.page.click('#line-auto-login');await app.page.locator('.line-auth-cancel:not([hidden])').waitFor();
+     check(await app.page.locator('#line-login').isDisabled()&&await app.page.locator('#line-auto-login').isDisabled(),engine+': both login entries share one pending attempt');
+     await app.page.locator('.line-auth-cancel').click();await app.page.waitForTimeout(1000);
+     check(await app.page.evaluate(()=>!localStorage.getItem('fixture-popup-navigation')&&!localStorage.getItem('church-os-line-handoff-v1'))&&await app.page.locator('#line-login').isEnabled(),engine+': cancelling automatic login prevents a late popup redirect');
     }finally{await app.context.close();}
    });
    await scenario(engine,browser,'ordinary Safari',async()=>{

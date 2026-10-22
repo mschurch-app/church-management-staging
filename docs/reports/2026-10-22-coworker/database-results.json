@@ -1,0 +1,29 @@
+{
+  "synthetic": true,
+  "production_writes": false,
+  "checks": [
+    "non-LINE identities cannot submit or inspect an application",
+    "first application has no account or grants and needs no birthday or phone",
+    "exact submit retry preserves version and creates one review notification",
+    "applicants cannot read other requests or private audit tables",
+    "applicants cannot approve themselves",
+    "changed content requires the current version",
+    "edit pending application updates it without granting privileges",
+    "owner can read structured application details",
+    "approval with a stale application version is rejected",
+    "approval validates grants and rolls back the newly created account on error",
+    "cross-church grant injection fails atomically",
+    "owner approval creates exactly the explicitly selected rights",
+    "a second approval cannot overwrite a completed decision",
+    "approved applicant sees authorized status and cannot reapply",
+    "revoked approval is not shown as current authorization",
+    "rejection requires a reason",
+    "owner rejection grants nothing and can be corrected by applicant",
+    "legacy M+ review cannot approve a SHiNE application",
+    "LINE linking cannot grant another church through the wrong account",
+    "owner can link a verified applicant to an explicit existing coworker",
+    "all new public RPCs use security invoker and anon has no execute",
+    "legacy M+ form retains its own birthday while the new form omits it",
+    "audit records both applicant edits and owner decisions"
+  ]
+}

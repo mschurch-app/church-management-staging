@@ -1,4 +1,4 @@
-import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261022-pwa-line2';
+import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261022-coworker2';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 
 const status=document.querySelector('#status');
@@ -124,14 +124,19 @@ async function start(){
       status.textContent='LINE 驗證已送出，正在等待原本的 App 核對登入結果。';
       return;
     }
+    // Account applications require a verified LINE identity, but no admin grants.
+    const requestedTarget=standaloneNext||safeNext();
+    if(requestedTarget&&new URL(requestedTarget,location.origin).pathname==='/coworker-apply.html'){
+      const verified=await db.auth.getUser();
+      if(verified.error||!verified.data?.user?.identities?.some(i=>i.provider==='custom:line-web'))throw Error('請先完成 LINE 身分驗證。');
+      status.textContent='LINE 身分已確認，正在開啟申請頁…';location.replace('/coworker-apply.html');return;
+    }
     status.textContent='LINE 身分已確認，正在載入管理權限…';
     const access=await Promise.race([db.rpc('get_my_church_access'),new Promise((_,reject)=>setTimeout(()=>reject(Error('權限載入逾時，請返回登入頁重試。')),15000))]);
     if(access.error||!Array.isArray(access.data))throw Error('管理權限暫時無法讀取，請稍後重試；尚未送出權限審核通知。');
     if(!access.data.length){
-      status.textContent='權限尚未建立，正在通知管理員審核…';
-      const notified=await db.functions.invoke('app-push',{body:{action:'request-admin-access-review'}});
-      if(notified.error)throw Error('LINE 已登入，但權限尚未建立；審核通知暫時無法送達，請稍後重試。');
-      throw new Error('LINE 已登入，權限審核通知已送給管理員。核准後請重新登入。');
+      status.textContent='尚未取得同工權限，正在開啟申請頁…';
+      location.replace('/coworker-apply.html');return;
     }
     const churches=[...new Set(access.data.map(row=>row.church_id).filter(value=>['M+','SHiNE'].includes(value)))];
     if(!churches.length)throw new Error('帳號尚未設定可使用的堂會。');

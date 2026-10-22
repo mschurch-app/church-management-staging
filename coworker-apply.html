@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#ad3c2a"><link rel="manifest" href="app.webmanifest">
+  <meta name="robots" content="noindex,nofollow">
+  <title>申請同工帳號｜教會 OS</title>
+  <link rel="icon" href="assets/app/church-os-icon.svg">
+  <link rel="stylesheet" href="auth.css?v=20261007-direct1">
+  <link rel="stylesheet" href="church-brand.css?v=20261007-direct1">
+  <link rel="stylesheet" href="theme-vitality.css?v=20261007-direct1">
+  <link rel="stylesheet" href="apple-ui.css?v=20261007-direct1">
+  <link rel="stylesheet" href="church-palette.css?v=20261012-readable2">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261016-update-banner1"><script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261020-flat1"><link rel="stylesheet" href="coworker-application.css?v=20261022-coworker2"></head>
+<body>
+<main class="application-main">
+  <p class="eyebrow">CHURCH OS · 同工申請</p>
+  <h1>申請同工帳號</h1>
+  <p class="muted">使用你的 LINE 確認身分，管理員核准後即可使用教會 OS。</p>
+  <ol class="application-steps"><li>使用 LINE 驗證身分</li><li>填寫申請資料</li><li>管理員確認身分與功能權限</li></ol>
+  <button id="line-login" class="line-login-button" type="button" hidden>使用 LINE 驗證身分 <span aria-hidden="true">→</span></button>
+  <p id="status" role="status" aria-live="polite">正在確認登入狀態…</p>
+  <p id="review-note"></p>
+  <form id="application-form" hidden>
+    <p class="application-required">必填：真實姓名、所屬教會、預計服事的事工。</p>
+    <label for="full-name">真實姓名<input id="full-name" name="full_name" autocomplete="name" maxlength="60" required></label>
+    <label for="application-church">所屬教會<select id="application-church" name="church_id" required><option value="M+">M＋大雅教會</option><option value="SHiNE">火樂教會</option></select></label>
+    <label for="application-ministry">預計服事的事工<input id="application-ministry" name="ministry" maxlength="120" placeholder="例如：影音、接待、財務會計、營隊同工" required></label>
+    <label for="application-mobile">手機（選填）<input id="application-mobile" name="mobile" type="tel" autocomplete="tel" maxlength="30" placeholder="供管理員核對與聯絡"></label>
+    <label for="application-note">補充說明（選填）<textarea id="application-note" name="applicant_note" maxlength="500" placeholder="例如：邀請你加入的同工、需要協助的工作"></textarea></label>
+    <p class="muted">資料僅供帳號管理員核對同工身分與申請。申請不會自動建立會友資料，也不會自動授予功能權限。</p>
+    <button id="submit-application" type="submit">送出同工申請</button>
+  </form>
+  <div class="form-actions"><button id="edit-application" class="secondary" type="button" hidden>修改申請資料</button><button id="refresh-application" class="secondary" type="button">查詢申請進度</button><a id="enter-workspace" class="secondary" href="admin-login-v2.html" hidden>進入工作台</a></div>
+  <p class="login-note"><a href="admin-login-v2.html">返回登入頁</a></p>
+</main>
+<script src="vendor/supabase-2.102.0.js"></script>
+<script type="module" src="coworker-apply.mjs?v=20261022-coworker2"></script>
+</body></html>

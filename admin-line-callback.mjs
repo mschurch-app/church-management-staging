@@ -1,4 +1,4 @@
-import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261022-coworker2';
+import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261022-line-sso1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 
 const status=document.querySelector('#status');

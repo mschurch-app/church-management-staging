@@ -66,7 +66,9 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
     const callback=new URL('admin-line-callback.html',location.href);
     callback.search=new URLSearchParams({return:'standalone',handoff:pending.id,handoff_state:await scopeHandoffState(pending.secret),next:pending.next}).toString();
     if(!stillPending(pending))return;
-    const operation=db.auth.signInWithOAuth({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile',skipBrowserRedirect:true,queryParams:{disable_auto_login:'true',...(webDefault?{prompt:'login'}:{})}}});
+    // Keep the browser round trip while allowing LINE's remembered-account SSO.
+    // prompt=login would force reauthentication even with a valid LINE session.
+    const operation=db.auth.signInWithOAuth({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile',skipBrowserRedirect:true,queryParams:{disable_auto_login:'true'}}});
     const result=await Promise.race([operation,new Promise((_,reject)=>setTimeout(()=>reject(Error('連接 LINE 逾時，請再試一次。')),15000))]);
     if(!stillPending(pending))return;
     if(result.error||!result.data?.url)throw result.error||Error('無法取得 LINE 登入頁，請再試一次。');
@@ -96,7 +98,7 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
     localStorage.setItem(HANDOFF_STORAGE,JSON.stringify(pending));callback.searchParams.set('return','app');callback.searchParams.set('handoff',pending.id);callback.searchParams.set('handoff_key',pending.secret);
    }
    const operation=flow==='link'?db.auth.linkIdentity.bind(db.auth):db.auth.signInWithOAuth.bind(db.auth);
-   const result=await Promise.race([operation({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile',skipBrowserRedirect:true,...(!useNative&&webDefault?{queryParams:{disable_auto_login:'true',prompt:'login'}}:{})}}),new Promise((_,reject)=>setTimeout(()=>reject(Error('連接 LINE 逾時，請重試。')),15000))]);
+   const result=await Promise.race([operation({provider:'custom:line-web',options:{redirectTo:callback.href,scopes:'profile',skipBrowserRedirect:true,...(!useNative&&webDefault?{queryParams:{disable_auto_login:'true'}}:{})}}),new Promise((_,reject)=>setTimeout(()=>reject(Error('連接 LINE 逾時，請重試。')),15000))]);
    if(generation!==attempt)return;
    if(result.error||!result.data?.url)throw result.error||Error('無法取得 LINE 登入頁。');
    if(installed){attemptPopup.location.replace(result.data.url);watch();}else location.assign(result.data.url);

@@ -1,4 +1,4 @@
-import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261022-coworker2';
+import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261022-line-sso1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 const status=document.querySelector('#status'),line=document.querySelector('#line-login');
 const next=safeAppTarget(new URLSearchParams(location.search).get('next'));
@@ -6,7 +6,7 @@ const boundedFetch=(input,options={})=>fetch(input,{...options,signal:options.si
 const bounded=(request)=>Promise.race([request,new Promise((_,reject)=>setTimeout(()=>reject(Error('登入確認逾時，請重試。')),15000))]);
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{global:{fetch:boundedFetch},auth:{storageKey:ADMIN_AUTH_STORAGE_KEY,storage:localStorage,detectSessionInUrl:false,persistSession:true,autoRefreshToken:true,flowType:'implicit'}});
 wireLineAuth(db,line,status,{next,nativeButton:document.querySelector('#line-auto-login'),webDefault:true});
-navigator.serviceWorker?.register('/church-os-sw.js?v=20261022-coworker2').then(reg=>reg.update()).catch(()=>{});
+navigator.serviceWorker?.register('/church-os-sw.js?v=20261022-line-sso1').then(reg=>reg.update()).catch(()=>{});
 async function resume(){
  if(pendingHandoff())return;
  try{

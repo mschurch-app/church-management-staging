@@ -98,7 +98,7 @@ try{
      const details=await app.page.evaluate(()=>({oauth:JSON.parse(localStorage.getItem('fixture-oauth-options')),pending:localStorage.getItem('church-os-line-handoff-v1'),events:JSON.parse(localStorage.getItem('fixture-events'))}));
      const callback=new URL(details.oauth.options.redirectTo);
      check(details.oauth.options.queryParams?.disable_auto_login==='true',engine+': iOS request disables native LINE auto login');
-     check(details.oauth.options.queryParams?.prompt==='login',engine+': default credential entry explicitly requests LINE authentication');
+     check(!Object.hasOwn(details.oauth.options.queryParams,'prompt'),engine+': default browser entry allows remembered-account SSO without forced authentication');
      check(callback.searchParams.get('return')==='standalone'&&/^[0-9a-f]{64}$/.test(callback.searchParams.get('handoff_state')||'')&&!callback.searchParams.has('handoff_key'),engine+': callback carries one-time hash state rather than raw App secret');
      check(!details.events.some(e=>e.type==='window.open')&&app.popupCount()===0&&!app.requests.includes('/admin-line-launch.html'),engine+': same-page scope round trip creates no popup or launcher');
      const verify=details.events.findIndex(e=>e.type==='getUser'&&e.fresh),persist=details.events.findIndex(e=>e.type==='persist');
@@ -167,7 +167,7 @@ try{
    await scenario(engine,browser,'installed automatic popup blocked',async()=>{
     const app=await setup(browser);try{
      await login(app);await app.page.click('#line-auto-login');
-     check(await app.page.locator('#line-login').isEnabled()&&await app.page.locator('#line-auto-login').isEnabled()&&await app.page.evaluate(key=>!localStorage.getItem(key),pendingKey),engine+': blocked automatic login keeps credential entry usable and does not leave pending state');
+     check(await app.page.locator('#line-login').isEnabled()&&await app.page.locator('#line-auto-login').isEnabled()&&await app.page.evaluate(key=>!localStorage.getItem(key),pendingKey),engine+': blocked automatic login keeps browser login usable and does not leave pending state');
     }finally{await app.context.close();}
    });
    await scenario(engine,browser,'optional automatic flow cancellation',async()=>{
@@ -185,6 +185,7 @@ try{
      await login(app);await app.page.click('#line-login');await app.page.locator('#destination').waitFor();
      const detail=await app.page.evaluate(key=>({pending:localStorage.getItem(key),oauth:JSON.parse(localStorage.getItem('fixture-oauth-options'))}),pendingKey);
      check(detail.pending===null&&new URL(detail.oauth.options.redirectTo).searchParams.get('return')!=='standalone',engine+': ordinary Safari login retains its existing browser flow');
+     check(detail.oauth.options.queryParams?.disable_auto_login==='true'&&!Object.hasOwn(detail.oauth.options.queryParams,'prompt'),engine+': ordinary Safari also allows remembered-account confirmation without forcing credentials');
     }finally{await app.context.close();}
    });
    await scenario(engine,browser,'retired pending migration',async()=>{

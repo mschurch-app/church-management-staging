@@ -1,8 +1,11 @@
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
-import {safeAppTarget} from './app-line-auth.mjs?v=20261022-app-line1';
+import {safeAppTarget} from './app-line-auth.mjs?v=20261022-pwa-line2';
 const fragment=new URLSearchParams(location.hash.slice(1)),status=document.querySelector('#status');
 // The one-time capability is never included in this page's HTTP request/referrer.
 async function start(){
+ // Recover App documents left on the retired launcher by the earlier release.
+ const installed=(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true)&&(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+ if(installed&&!window.opener){history.replaceState(null,'',location.pathname);location.replace('admin-login-v2.html?source=app-v2');return;}
  const id=fragment.get('handoff'),secret=fragment.get('handoff_key'),expires=Number(fragment.get('expires'));
  if(!id&&!secret)return; // Existing non-iOS launcher compatibility.
  history.replaceState(null,'',location.pathname);

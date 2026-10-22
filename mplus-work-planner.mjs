@@ -78,5 +78,5 @@ export function openTaskDetails(task,onSaved=async()=>{},{api=calendarApi}={}){
   if(task.canReportProgress)ui.body.append(act('回報進度','progress'));
   if(task.canComplete)ui.body.append(act('完成並回報','completed'));
   if((task.createdByMe||task.canCancel)&&['pending','approved'].includes(task.status))ui.body.append(act('取消這項工作','cancelled'));
- }else if(task.actionUrl){const a=node('a','開啟這項工作的處理頁');a.href=task.actionUrl;ui.body.append(a);}
+ }else if(task.actionUrl){const a=node('a',task.workflow==='sermon_social_initial_review'?'開啟 IG 內容並修改':'開啟這項工作的處理頁');a.href=task.actionUrl;ui.body.append(a);}
 }

@@ -44,7 +44,7 @@ html body .member-page>.page-header :is(#welcome,#identity,.admin-identity){font
 html body .member-page>.page-header .church-brand{display:inline-flex;align-items:center;max-width:120px;padding:4px 7px;margin:0 0 5px;background:#ffffff12;border-radius:10px}
 html body .member-page>.page-header .church-brand img{height:25px!important;max-width:104px;object-fit:contain}
 html body .member-page>.page-header .header-tools{position:static!important;display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:7px;max-width:116px;margin:0!important}
-html body .member-page>.page-header :is(button,.header-action,.secondary){min-height:36px!important;font-size:11px!important;padding:8px 10px!important;margin:0!important;white-space:normal}
+html body .member-page>.page-header :is(button,.header-action,.secondary),html body .member-page>.page-header .header-tools :is(button,.header-action,.secondary){min-height:44px!important;min-width:44px;font-size:11px!important;padding:8px 10px!important;margin:0!important;white-space:normal}
 html body .member-page>.page-header>.secondary{max-width:100px;flex-shrink:0}
 html body .member-page>.page-header .church-switcher{position:static!important;margin:0;padding:3px;background:#ffffff15}
 html body .member-page>.page-header .church-switcher a{font-size:10px;min-width:37px;padding:5px 7px;color:#fff!important}

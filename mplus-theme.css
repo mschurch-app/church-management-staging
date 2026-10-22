@@ -2,11 +2,10 @@
 html.mplus-theme{--app-accent:#173f34;--app-accent-end:#173f34;--app-ink:#203b30;--app-secondary:#61736a;--app-border:#dae3dc;--app-surface:#fff;--app-surface-muted:#f6f8f5;--accent:#173f34;--muted:#61736a;--border:#dae3dc;color:#203b30;background:#f6f8f5}
 html.mplus-theme body{background:#f6f8f5!important;color:#203b30!important}
 html.mplus-theme main.member-page{background:transparent;border:0;border-radius:0;box-shadow:none;width:100%;max-width:1120px;margin:auto;padding:20px 20px 100px}
-html.mplus-theme .member-page>.page-header{background:#173f34!important;box-shadow:none;border-radius:14px!important;height:auto!important;min-height:124px!important;padding:20px!important}
+html.mplus-theme .member-page>.page-header{background:#173f34!important;box-shadow:none;border-radius:14px!important}
 html.mplus-theme .page-header::before,html.mplus-theme .page-header::after,html.mplus-theme main.member-page::before{display:none}
 html.mplus-theme .page-header .church-brand{background:none;border:0;box-shadow:none;padding:0}
 html.mplus-theme .page-header .church-brand img{height:28px}
-html.mplus-theme .page-header h1{font-size:24px!important}
 html.mplus-theme .login-visual{background:#173f34;color:#fff}
 html.mplus-theme .login-badge{color:#173f34;background:#e9f1eb}
 html.mplus-theme .login-app{border:0;border-radius:16px;box-shadow:none}
@@ -23,7 +22,7 @@ html.mplus-theme .operations-overview article{box-shadow:none;border-radius:8px}
 html.mplus-theme .collab-topbar{background:#173f34;color:#fff;box-shadow:none}
 html.mplus-theme :is(input,select,textarea){border-color:#dae3dc;background:#fff;color:#203b30}
 html.mplus-theme :is(button,.button){box-shadow:none}
-@media(max-width:760px){html.mplus-theme main.member-page{padding:14px 16px 100px}html.mplus-theme .member-page>.page-header h1{font-size:22px!important}html.mplus-theme .editor-panel{padding:16px 0}html.mplus-theme .mplus-center{display:block}html.mplus-theme .mplus-center-card{padding:18px 0}}
+@media(max-width:760px){html.mplus-theme main.member-page{padding:14px 16px 100px}html.mplus-theme .editor-panel{padding:16px 0}html.mplus-theme .mplus-center{display:block}html.mplus-theme .mplus-center-card{padding:18px 0}}
 
 html.mplus-theme .login-visual :is(h1,h2,h3,p,.login-mark){color:#fff!important}
 html.mplus-theme button.mplus-week-task{width:100%;text-align:left;margin:7px 0;box-shadow:none;background:#eef4e6;color:#214535;border:1px solid #dce7d2}

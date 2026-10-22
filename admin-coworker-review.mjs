@@ -3,11 +3,11 @@ import {PERMISSION_LABELS,ROLE_TEMPLATES,HOME_TEMPLATES,FEATURE_ACTIONS} from '.
 const el=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 const labeled=(text,input)=>{const n=el('label',text);n.append(input);return n;};
 const churchName=key=>key==='M+'?'M＋大雅教會':'火樂教會';
-export async function mountCoworkerApplications(db,area,{accounts=[],onSaved=()=>{},onLoaded=()=>{}}={}){
+export async function mountCoworkerApplications(db,area,{accounts=[],applicationsRequest=null,onSaved=()=>{},onLoaded=()=>{}}={}){
  area.replaceChildren(el('h2','LINE 同工帳號申請'));area.className='coworker-applications';
  const status=el('p','正在讀取待審核申請…','muted');status.setAttribute('role','status');status.setAttribute('aria-live','polite');area.append(status);
  let applications;
- try{applications=await applicationRPC(db,'list_coworker_applications');if(!Array.isArray(applications))throw Error('申請名單暫時無法讀取。');}
+ try{const result=applicationsRequest?await applicationsRequest:{data:await applicationRPC(db,'list_coworker_applications')};if(result.error)throw result.error;applications=result.data;if(!Array.isArray(applications))throw Error('申請名單暫時無法讀取。');}
  catch(error){status.textContent=error.message;const retry=el('button','重新讀取申請','secondary');retry.type='button';retry.onclick=()=>void mountCoworkerApplications(db,area,{accounts,onSaved,onLoaded});area.append(retry);return;}
  onLoaded(applications.length);
  status.textContent=applications.length?`共 ${applications.length} 筆待審核。請核對本人身分，再指定權限或連結既有同工。`:'目前沒有待審核的申請。';

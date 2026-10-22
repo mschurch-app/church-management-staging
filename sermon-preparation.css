@@ -17,3 +17,9 @@
 .sermon-studio .studio-keyword-search{margin:14px 0 20px}.sermon-studio .studio-keyword-search>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:650}
 @media(max-width:520px){.sermon-studio .studio-guide-choices{grid-template-columns:1fr}.sermon-studio .studio-guide .studio-section-head{align-items:flex-start;gap:8px}.sermon-studio .studio-guide-progress{white-space:normal}}
 
+
+/* Corrections remain visible across the existing information/material/outline steps. */
+.sermon-studio,.studio-dialog{font-family:var(--app-font-body,system-ui,sans-serif)}
+.sermon-studio #draft-form :is(input:not([type=checkbox]),select,textarea),.studio-dialog input{font-size:max(16px,1rem)}
+.sermon-studio #draft-form [aria-invalid=true]{border-color:var(--app-error,#96291e)!important;box-shadow:0 0 0 1px var(--app-error,#96291e)!important;scroll-margin-block:210px 100px}
+.sermon-studio .field-guidance{scroll-margin-block:200px}.sermon-studio .field-guidance-note{margin:2px 0 10px}.sermon-studio #materials .field-guidance-note{color:var(--app-error,#96291e)!important}

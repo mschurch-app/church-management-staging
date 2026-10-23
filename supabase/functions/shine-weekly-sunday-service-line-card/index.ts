@@ -161,13 +161,14 @@ Deno.serve(async request => {
   if(!route.line){
     const succeeded=['sent','stored'].includes(app.status);
     await db.rpc('finish_shine_weekly_service_line_delivery',{target_sunday:sunday,succeeded,delivery_details:`App ${app.status}; LINE disabled`});
-    return json({ok:succeeded,sunday,cardCount:messages.length,channels:{app:app.status,line:'disabled'}},succeeded?200:503);
+    return json({ok:succeeded,sunday,cardCount:0,channels:{app:app.status,line:'disabled'}},succeeded?200:503);
   }
 
   try {
     const png=await createServiceSchedulePng({churchName:'火樂教會',mark:'SHiNE',dateText:service.date,eventText:service.eventText,entries:service.entries,accent:'#D85E62'});
     const imageUrl=await uploadServiceSchedulePng(db,`service-schedules/shine/${sunday}.png`,png);
-    const messages=[{type:'image',originalContentUrl:imageUrl,previewImageUrl:imageUrl},{type:'text',text:`火樂主日服事表｜${service.date}\n可長按圖片儲存或直接轉傳。`}];
+    // The date and service details are already on the primary card; send one bubble only.
+    const messages=[{type:'image',originalContentUrl:imageUrl,previewImageUrl:imageUrl}];
     const botInfo = await fetch('https://api.line.me/v2/bot/info',{headers:{authorization:`Bearer ${lineToken}`},signal:AbortSignal.timeout(10000)});
     if (!botInfo.ok) {
       const details = await botInfo.text();

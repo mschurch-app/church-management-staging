@@ -98,12 +98,17 @@ Deno.serve(async request=>{
     .eq('group_id',groupId).gte('occurred_at',start).lt('occurred_at',end)
     .order('occurred_at',{ascending:true}).limit(1000);
   if(found.error)return json(503,{ok:false,error:'message_query_failed'});
-  const rows=found.data||[];
+  const rows=(found.data||[]).filter((row:any)=>row.message_type==='text'&&String(row.message_text||'').trim());
   let report='',model:string|null=null,status='generated';
   try{
     if(rows.length===0){
-      report=`【M+ 青年教會群組日報｜${date}】\n今日沒有可整理的文字討論。`;
-      status='no_messages';
+      // Empty reports add no information: record the skip without AI, App or LINE delivery.
+      const saved=await client.from('line_group_daily_summaries').upsert({
+        group_id:groupId,summary_date:date,message_count:0,summary_text:'',
+        model:null,status:'no_messages',sent_at:null,error_code:null,updated_at:new Date().toISOString()
+      },{onConflict:'group_id,summary_date'});
+      if(saved.error)return json(503,{ok:false,error:'no_messages_state_failed'});
+      return json(200,{ok:true,date,message_count:0,status:'no_messages',skipped:'no_text_messages',channels:{appStatus:'skipped',lineStatus:'skipped'}});
     }else{
       const lines=rows.map((r:any)=>{
         const time=new Intl.DateTimeFormat('zh-TW',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(r.occurred_at));
@@ -120,11 +125,11 @@ Deno.serve(async request=>{
       }
     }
     const delivered=await notifyChurchDual({db:client,churchId:'M+',eventKey:'line_group_summary',sourceKey:`line-group-summary:${date}`,title:`M+ 群組討論日報｜${date}`,body:report.slice(0,900),url:'/admin-dashboard.html?church=M%2B',lineGroupId:groupId,lineMessage:report.slice(0,4900),permission:'notification_settings'});
-    if(delivered.status!=='sent')throw new Error(`app:${delivered.appStatus};line:${delivered.lineStatus}`);
-    status='sent';
+    if(!['sent','queued'].includes(delivered.status))throw new Error(`app:${delivered.appStatus};line:${delivered.lineStatus}`);
+    status=delivered.status;
     await client.from('line_group_daily_summaries').upsert({
       group_id:groupId,summary_date:date,message_count:rows.length,summary_text:report,
-      model,status,sent_at:new Date().toISOString(),error_code:null,updated_at:new Date().toISOString()
+      model,status,sent_at:status==='sent'?new Date().toISOString():null,error_code:status==='queued'?'queued_overnight':null,updated_at:new Date().toISOString()
     },{onConflict:'group_id,summary_date'});
     return json(200,{ok:true,date,message_count:rows.length,status,channels:delivered});
   }catch(error){

@@ -1,0 +1,7 @@
+{
+  "inventory.html": "e93721f01d0abe348481e60907f83502f440a4159e589e4f199126f1ade108db",
+  "inventory.css": "56fc8f13c1b29caa19a1b0d37d0692c3e9361e5db6ae3a05c62c9ce18410e4bb",
+  "inventory.mjs": "9bbf4861134d469e5a4c4c109babc319246ce1148a4e3fd1b2c4feaf670cbeb1",
+  "church-os-sw.js": "4d75ed7cb05720902766128fe990c611a6204bb7c8fa69eea2db8118fd6f39d9",
+  "tests/inventory/print-browser.mjs": "bfa6db1e3cddf0edf66867814afbc68247bc64ebf53a315c2521f32cb2b14dc1"
+}

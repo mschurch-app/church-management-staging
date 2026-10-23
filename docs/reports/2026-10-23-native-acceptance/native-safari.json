@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-23",
+  "kind": "native_macos_safari",
+  "environment": {
+    "macOS": "27.0.1",
+    "Safari": "27.0.1",
+    "keyboard": "current Safari preference; Option+Tab includes buttons",
+    "print": "A4 portrait, 100%; browser headers/footers enabled; no printer selected"
+  },
+  "sourceBase": "b2d906b88de5fb09e8b8310a48c991aef4f1a7dc",
+  "data": "local_synthetic_only",
+  "isolation": "existing test fixtures; connect-src self; no production data writes",
+  "observations": [
+    {
+      "id": "file-cancel",
+      "passed": true,
+      "observed": "取消原生選檔後，主題與文字完整保留，仍未選取檔案。"
+    },
+    {
+      "id": "file-select-preview",
+      "passed": true,
+      "observed": "原生選檔選取合成 PNG，顯示1張照片及圖片預覽。"
+    },
+    {
+      "id": "upload-failure-retains",
+      "passed": true,
+      "observed": "模擬照片上傳失敗，主題、文字、檔案與預覽保留，按鈕可重試。"
+    },
+    {
+      "id": "upload-retry",
+      "passed": true,
+      "observed": "恢復模擬上傳後重試，清單2→3則，取得明確回應後才清空草稿。"
+    },
+    {
+      "id": "inventory-native-print",
+      "passed": true,
+      "observed": "原生 A4 預覽1頁，含物品清冊、M+大雅教會、1/2項、搜尋無線；只見符合物品。"
+    },
+    {
+      "id": "inventory-print-cancel",
+      "passed": true,
+      "observed": "取消原生列印後，搜尋無線及1/2項保留，原頁操作恢復。"
+    },
+    {
+      "id": "inventory-detail-print",
+      "passed": true,
+      "observed": "原生 A4 預覽1頁，只含單一物品明細、數量、狀態、備註及借用紀錄。"
+    },
+    {
+      "id": "inventory-detail-restore",
+      "passed": true,
+      "observed": "取消明細列印並 Escape 關閉明細後，原搜尋無線與1/2項保留。"
+    },
+    {
+      "id": "schedule-picker-keyboard",
+      "passed": true,
+      "observed": "音控欄輸入搜尋、Down選到不安排、Enter套用空值；2/2→1/2，焦點在欄位。"
+    },
+    {
+      "id": "schedule-copy-native-download",
+      "passed": true,
+      "observed": "Option+Shift+Tab到下載文字副本，Enter下載216位元組 TXT；檔案日期、主題、信息分享及空音控正確。"
+    },
+    {
+      "id": "schedule-copy-escape-focus",
+      "passed": true,
+      "observed": "Escape關閉副本，焦點回到取回本頁內容，未儲存的音控改動保留。"
+    },
+    {
+      "id": "schedule-discard-cancel",
+      "passed": true,
+      "observed": "取消編輯顯示原生放棄確認，選取消仍保留改動；最後確認放棄，合成音控恢復。"
+    }
+  ],
+  "beforeFix": [
+    {
+      "id": "inventory-list-print",
+      "observed": "導覽與重新載入按鈕印入，缺少清冊標題。",
+      "resolution": "fixed and native retested"
+    },
+    {
+      "id": "inventory-detail-print",
+      "observed": "明細列印2頁並帶背景主頁與編輯按鈕。",
+      "resolution": "fixed and native retested"
+    }
+  ],
+  "humanLineReceipt": "pending",
+  "phoneAcceptance": "only previous user-confirmed publishing draft reload/cancel and background return; other native phone cases pending",
+  "artifacts": "Native UI screenshots and AX observations are in this task tool history; local screenshots/PDF are browser simulation and are labelled separately."
+}

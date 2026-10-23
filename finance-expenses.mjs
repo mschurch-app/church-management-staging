@@ -1,3 +1,4 @@
+import {scanInvoiceQr,mergeInvoiceRecognition} from './finance/receipt-qr.mjs?v=20261023-qr1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {element as node} from './app-ui.mjs?v=20261019-workflow1';
 import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261021-finance-admin1';
@@ -61,7 +62,7 @@ async function uploadPhoto(photo){
 function applyOcrValue(key,value,overwrite=false){const control=form.elements.namedItem(key);if(!value||!control||control.disabled)return false;if(!overwrite&&control.value.trim())return false;control.value=value;markDirty();return true;}
 function showOcr(photo,automatic=false){
  const result=photo.ocr,suggestions=receiptOcrSuggestions(result),area=$('#receipt-ocr-result');area.replaceChildren();area.hidden=false;area.dataset.receiptId=photo.id;
- area.append(node('h4','發票辨識結果 · '+photo.name),node('p','請核對原始照片；辨識不會自動儲存或送審。','finance-note'));
+ area.append(node('h4','發票辨識結果 · '+photo.name),node('p',(result.source==='qr'?'已讀取電子發票 QR Code。':'')+'請核對原始照片；辨識不會自動儲存或送審。','finance-note'));
  const fields=[['voucherRef','發票號碼',suggestions.voucherRef],['amount','支出總金額（元）',suggestions.amount],['purpose','品項／用途摘要',suggestions.purpose]];
  const filled=[];for(const [key,label,value]of fields){const line=node('div','','receipt-ocr-field');line.append(node('strong',label),node('p',value||'未能確定，請手動填寫。'));if(value){if(automatic&&state.photos[0]===photo&&applyOcrValue(key,value))filled.push(label);const button=node('button',form.elements.namedItem(key).value.trim()?'採用此辨識值':'帶入欄位');button.type='button';button.className='secondary';button.dataset.ocrApply=key;button.onclick=()=>{applyOcrValue(key,value,true);status(label+'已帶入，請核對後儲存。');};line.append(button);}area.append(line);}
  if(result.items?.length){const details=node('details'),summary=node('summary','完整辨識品項');details.append(summary);const list=node('ul');for(const item of result.items)list.append(node('li',item.name+(item.quantity?' × '+item.quantity:'')));details.append(list);area.append(details);}
@@ -70,7 +71,7 @@ function showOcr(photo,automatic=false){
  if(automatic)photo.ocrMessage=filled.length?'已帶入空白欄位：'+filled.join('、')+'。請核對後儲存。':'已辨識；現有欄位內容保留，可選擇採用辨識值。';
 }
 function handleOcrResult(photo,response,automatic){
- if(response.ocr.status==='ready'&&response.ocr.result){photo.ocr=response.ocr.result;const fill=automatic&&$('#auto-receipt-ocr').checked;showOcr(photo,fill);if(!fill)photo.ocrMessage='辨識完成，請核對後選擇帶入欄位。';$('#receipt-feedback').textContent=photo.ocrMessage;status(photo.ocrMessage);drawPhotos();return true;}
+ if(response.ocr.status==='ready'&&response.ocr.result){photo.cloudReady=true;photo.ocr=mergeInvoiceRecognition(photo.qr,response.ocr.result);const fill=automatic&&$('#auto-receipt-ocr').checked;showOcr(photo,fill);if(!fill)photo.ocrMessage='辨識完成，請核對後選擇帶入欄位。';$('#receipt-feedback').textContent=photo.ocrMessage;status(photo.ocrMessage);drawPhotos();return true;}
  if(response.ocr.status==='failed'){const message=errors[response.ocr.error]||'辨識未完成，照片已保留；可重試或手動填寫。';photo.ocrMessage=message;$('#receipt-feedback').textContent=message;drawPhotos();return true;}
  return false;
 }
@@ -86,7 +87,7 @@ function pollOcr(photo,automatic,started=Date.now()){
 }
 async function recognizePhoto(photo,automatic){
  clearTimeout(photo.ocrPoll);$('#receipt-feedback').textContent='正在啟動發票辨識…';
- try{const response=await api(photo.ocr?'receipt_ocr_result':'recognize_receipt',{id:state.row?.id||state.draftId,receiptId:photo.id});
+ try{if(!photo.qrChecked){photo.qrChecked=true;photo.qr=await scanInvoiceQr(photo.file);if(!state.photos.includes(photo)||$('#editor-panel').hidden)return;if(photo.qr){photo.ocr=photo.qr;showOcr(photo,automatic&&$('#auto-receipt-ocr').checked);}}if(photo.qr?.itemsComplete){showOcr(photo,automatic&&$('#auto-receipt-ocr').checked);drawPhotos();return;}const response=await api(photo.cloudReady?'receipt_ocr_result':'recognize_receipt',{id:state.row?.id||state.draftId,receiptId:photo.id});
  if(!handleOcrResult(photo,response,automatic)){photo.ocrMessage='正在背景辨識，可繼續填寫其他欄位，請核對辨識結果後再儲存。';$('#receipt-feedback').textContent=photo.ocrMessage;status(photo.ocrMessage);pollOcr(photo,automatic);}
  }catch(error){photo.ocrMessage=error.message;$('#receipt-feedback').textContent=error.message;status('照片已上傳；'+error.message,'error');}
  drawPhotos();

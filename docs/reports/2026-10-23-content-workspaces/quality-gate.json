@@ -1,0 +1,105 @@
+{
+  "apiMode": "isolated_synthetic",
+  "checks": [
+    {
+      "name": "frontend syntax",
+      "files": 209,
+      "passed": true
+    },
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "app-catalog.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/definitions.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/database.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/line-provider.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/service-signup-journey-db.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/browser.mjs",
+      "passed": true,
+      "seconds": 5,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true,
+      "seconds": 6,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/browser.mjs",
+      "passed": true,
+      "seconds": 18,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/service-signup-list.mjs",
+      "passed": true,
+      "seconds": 27,
+      "exitCode": 0
+    },
+    {
+      "name": "phase3/browser.mjs",
+      "passed": true,
+      "seconds": 69,
+      "exitCode": 0
+    },
+    {
+      "name": "phase4/browser.mjs",
+      "passed": true,
+      "seconds": 36,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1/regression.mjs",
+      "passed": true,
+      "seconds": 46,
+      "exitCode": 0
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true,
+      "seconds": 50,
+      "exitCode": 0
+    }
+  ],
+  "failures": 0,
+  "initialFailure": "phase2/contrast.mjs: contextual pastoral navigation used legacy gradient; the scoped current-state colors and transition were fixed, and the full 42-page contrast suite passed on rerun.",
+  "finalChangedModuleSyntax": "7 modified/new runtime JavaScript files rechecked successfully",
+  "real_iPhone": false,
+  "real_Mac_Safari": false
+}

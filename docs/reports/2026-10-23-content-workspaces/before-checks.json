@@ -1,0 +1,888 @@
+{
+  "mode": "before",
+  "base": "58acc38d6ad77671f5cad3a879154d4871b1b451",
+  "sourceHashes": {
+    "todays-message-settings.html": "9b48c1957ece79357180e497f6d3d78237ade058a58b31fbbc548ad821c2a7e8",
+    "love-share-settings.html": "dc908456bd9dde8673d29fa107f4f5cbe44d6c5940476a6878843cd2248bd2b0",
+    "pastoral-content.html": "1fb34c50a71085a2d6264c9f1301e6d838eee8440ab64d505701277ecda53856",
+    "youtube-subtitle-library.html": "c722f48c0624b30b6e5c0e3468138db093a815f747d0cfabcf0e003805c3edcd",
+    "association-news.html": "d2b64833f2a404b696179322ab4e604bea83db7f9a7371758419bf934a879873",
+    "line-content-settings.mjs": "f8758a61bd127d3714da5eb09fb3e25a1ac7498ca302c42fb820e14819a7f81d",
+    "pastoral-content-ui.mjs": "05e4b8407f994d777639e3abac899e3abe2d89d6de41e5d7cc2464f5ff232b71",
+    "youtube-subtitle-library.mjs": "dc9a8be206d5e7bfdecaffe3e271d398c451b9484295e69d74599638ed8c5a6c",
+    "association-news.mjs": "335f31fff5eac62b45bca1ab8fd1573b1818aa8a356199ae0ed4dc8b457efd00",
+    "pastoral-content-management.mjs": "49a376ebd142ec624081523ed2a16ee721ec4b8b6a34cf19aee1b803075df9a7",
+    "church-os-sw.js": "1c292705800dc7a735f8b5537278514f15045448ebbf909f6ad944d298fe3c47"
+  },
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "checks": [],
+  "visuals": [
+    {
+      "prefix": "todays-message-settings-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 169,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 176,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 29,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 38,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 26,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 32,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-subtitle-library-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [
+          {
+            "selector": "span.arrow",
+            "text": "→",
+            "color": "rgb(166, 154, 145)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 2.74,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-subtitle-library-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 54,
+        "failures": [
+          {
+            "selector": "span.arrow",
+            "text": "→",
+            "color": "rgb(166, 154, 145)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 2.74,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.eyebrow",
+            "text": "SUBTITLE TERM",
+            "color": "rgb(7, 135, 127)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.39,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "association-news-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "association-news-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 164,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.library-note",
+            "text": "這是隔離測試內容：願你在每一天經歷平安與盼望。",
+            "color": "rgb(107, 129, 135)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.11,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 171,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.library-note",
+            "text": "這是隔離測試內容：願你在每一天經歷平安與盼望。",
+            "color": "rgb(107, 129, 135)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.11,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 24,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 33,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 27,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 169,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 176,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 29,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 38,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 26,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 32,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-subtitle-library-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [
+          {
+            "selector": "span.arrow",
+            "text": "→",
+            "color": "rgb(166, 154, 145)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 2.74,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-subtitle-library-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 54,
+        "failures": [
+          {
+            "selector": "span.arrow",
+            "text": "→",
+            "color": "rgb(166, 154, 145)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 2.74,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.eyebrow",
+            "text": "SUBTITLE TERM",
+            "color": "rgb(7, 135, 127)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.39,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "association-news-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "association-news-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 164,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.library-note",
+            "text": "這是隔離測試內容：願你在每一天經歷平安與盼望。",
+            "color": "rgb(107, 129, 135)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.11,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "todays-message-settings-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 171,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.library-note",
+            "text": "這是隔離測試內容：願你在每一天經歷平安與盼望。",
+            "color": "rgb(107, 129, 135)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.11,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 24,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "love-share-settings-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 33,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-content-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 27,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "headerClipped": false
+      }
+    }
+  ],
+  "failures": []
+}

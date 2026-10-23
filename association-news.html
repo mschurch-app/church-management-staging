@@ -8,18 +8,18 @@
   <link rel="stylesheet" href="auth.css"><link rel="stylesheet" href="church-brand.css"><link rel="stylesheet" href="theme-vitality.css"><link rel="stylesheet" href="apple-ui.css">
   <link rel="stylesheet" href="app-design-tokens.css"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css">
   <link rel="stylesheet" href="association-news.css">
-<script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"></head>
-<body><main class="member-page association-page">
+<script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"><link rel="stylesheet" href="content-workspace.css?v=20261023-content1"></head>
+<body data-app-layout="content" data-action-feedback="off"><main class="member-page association-page">
   <header class="page-header"><div><p class="eyebrow">協會網站 · WWW.TCSC.ORG.TW</p><h1>最新消息上稿</h1><p class="muted">填好主題、照片與內容後按「發佈」，會直接顯示在協會首頁，不經初審。</p></div><a class="header-action" href="admin-dashboard.html?church=M%2B">返回教會 OS</a></header>
   <p id="status" class="status-message" role="status" aria-live="polite">正在確認權限…</p>
-  <div class="news-layout"><aside class="news-panel news-list-panel"><div class="panel-heading"><div><p class="eyebrow">已發佈</p><h2>最新消息</h2></div><button id="new" type="button" class="secondary">＋ 新增</button></div><div id="items" class="news-items"></div><a class="site-link" href="https://www.tcsc.org.tw/" target="_blank" rel="noopener noreferrer">開啟協會正式首頁 ↗</a></aside>
+  <div class="news-layout"><aside class="news-panel news-list-panel"><div class="panel-heading"><div><p class="eyebrow">已發佈</p><h2>最新消息</h2></div><button id="new" data-write type="button" class="secondary">＋ 新增</button></div><label class="news-search">搜尋已發布主題<input id="search" type="search" placeholder="輸入主題關鍵字"></label><p id="result-count" class="muted" role="status"></p><button id="reload" type="button" class="secondary">重新載入</button><div id="items" class="news-items"></div><a class="site-link" href="https://www.tcsc.org.tw/" target="_blank" rel="noopener noreferrer">開啟協會正式首頁 ↗</a></aside>
   <section class="news-panel"><div class="panel-heading"><div><p class="eyebrow">協會網站</p><h2 id="form-heading">新增消息</h2></div><span class="publish-badge">發佈後立即公開</span></div>
     <form id="form" novalidate><label for="title">主題 <span aria-hidden="true">＊</span></label><input id="title" name="title" maxlength="160" required placeholder="例如：課輔班活動消息" autocomplete="off">
       <label for="summary">內容重點 <span class="optional">選填，首頁摘要</span></label><textarea id="summary" name="summary" maxlength="360" rows="3" placeholder="用兩三句話讓讀者了解這則消息"></textarea>
       <label for="body">文字內容 <span aria-hidden="true">＊</span></label><textarea id="body" name="body" maxlength="20000" rows="12" required placeholder="完整消息內容；換行會保留在公開頁面"></textarea>
       <label for="photos">照片 <span class="optional">最多 5 張，JPG／PNG／WebP，每張不超過 8 MB</span></label><input id="photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><div id="photo-preview" class="photo-preview" aria-live="polite"></div>
       <p class="form-note">第一張照片會作為首頁封面。請先確認照片取得公開使用同意，並勿上傳孩子的私人資料。</p>
-      <div class="form-actions"><button id="publish" type="submit">發佈到協會首頁</button><button id="reset" type="button" class="secondary">清空表單</button></div>
+      <p data-editor-result class="status-message" role="status" hidden></p><div class="form-actions"><button id="publish" data-write type="submit">發佈到協會首頁</button><button id="reset" type="button" class="secondary">清空表單</button></div>
     </form>
   </section></div>
-</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="association-news.mjs?v=20261019-1"></script><script type="module" src="church-brand.mjs"></script></body></html>
+</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="association-news.mjs?v=20261023-content1"></script><script type="module" src="church-brand.mjs"></script></body></html>

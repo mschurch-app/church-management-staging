@@ -1,0 +1,71 @@
+/* Content libraries and publishing editors share the existing church design tokens. */
+body[data-app-layout=content]{font-family:var(--app-font-body,system-ui,sans-serif)!important;line-height:1.65}
+html body[data-app-layout=content] main.member-page{width:100%;max-width:1440px;margin-inline:auto;padding:24px 32px 120px}
+body[data-app-layout=content] :is(h1,h2,h3,p,strong,label,small,button,span){overflow-wrap:anywhere}
+body[data-app-layout=content] :is(button,input,select,textarea){min-width:0;max-width:100%;font-family:inherit}
+body[data-app-layout=content] :is(button,input:not([type=checkbox]),select){min-height:44px}
+body[data-app-layout=content] :is(button,.site-link){white-space:normal;line-height:1.5}
+body[data-app-layout=content] :is(input,select,textarea){font-size:max(16px,1rem)}
+body[data-app-layout=content] :is(.module-bar,.page-nav){position:static}
+body[data-app-layout=content] .page-nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;padding:0;border:0;background:none;box-shadow:none}
+body[data-app-layout=content] .page-nav a{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border-radius:12px}
+body[data-app-layout=content] .page-header .admin-identity span{color:#fff!important}
+body[data-app-layout=content] :is(.content-workspace,.news-layout){display:grid;gap:24px;grid-template-columns:minmax(0,1fr);align-items:start}
+body[data-app-layout=content] :is(.content-results,.news-panel,.content-workspace>*,.news-layout>*){min-width:0}
+html body[data-app-layout=content] :is(.editor-panel,.library-card,.content-card,.library-toolbar,.library-insight,.library-help,.knowledge-card,.news-panel,.content-query){background:var(--app-surface)!important;color:var(--app-ink)!important;border:1px solid var(--app-border)!important;border-radius:var(--app-radius-card)!important;box-shadow:var(--app-shadow)!important;padding:22px;min-width:0}
+html body[data-app-layout=content] :is(.library-insight,.library-help,.check-row,.news-item,.scripture-copy,.status-message){background:var(--app-surface-muted)!important;color:var(--app-ink)!important;border-color:var(--app-border)!important}
+body[data-app-layout=content] .library-insight{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-block:18px}
+body[data-app-layout=content] .library-insight p{flex:1 1 260px;margin:0}
+body[data-app-layout=content] :is(.library-insight strong,.library-summary strong){color:var(--app-accent)!important}
+html body[data-app-layout=content] :is(.status-badge,.knowledge-badge,.publish-badge){background:var(--app-surface-muted)!important;color:var(--app-accent)!important;border:1px solid var(--app-border)!important;white-space:normal}
+body[data-app-layout=content] :is(.knowledge-meta,.knowledge-pair .arrow,.knowledge-pair .correct,.library-note,.field-hint,.optional,.form-note,.news-item small,.site-link,.library-summary span,.check-row small){color:var(--app-secondary)!important}
+body[data-app-layout=content] :is(.library-card.is-inactive,.knowledge-card.inactive){opacity:1}
+body[data-app-layout=content] :is(.library-toolbar,.content-query){display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,.7fr);gap:16px;align-items:end;margin:18px 0}
+body[data-app-layout=content] .content-query{grid-template-columns:minmax(0,1fr) auto}
+body[data-app-layout=content] label{display:grid;min-width:0;gap:6px;align-content:start}
+body[data-app-layout=content] label :is(input,textarea,select){width:100%;margin:0;box-sizing:border-box}
+body[data-app-layout=content] :is(.edit-grid,.scenario-form){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body[data-app-layout=content] .full-width{grid-column:1/-1}
+body[data-app-layout=content] :is(.editor-actions,.library-card-actions,.dialog-actions,.form-actions){display:flex;flex-wrap:wrap;gap:10px;position:static;margin-top:20px;background:none;box-shadow:none;padding:0}
+body[data-app-layout=content] :is(.editor-actions,.dialog-actions)>button{flex:1}
+body[data-app-layout=content] .editor-panel{margin:0 0 20px}
+body[data-app-layout=content] :is(.editor-panel,dialog) textarea{min-height:160px;resize:vertical}
+body[data-app-layout=content] :is(.library-grid,.member-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+body[data-app-layout=content] :is(.content-copy,.scripture-copy,.library-note){white-space:pre-wrap;line-height:1.75}
+body[data-app-layout=content] .scripture-copy{padding:14px;border-radius:12px;margin:12px 0}
+body[data-app-layout=content] .library-image{width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:var(--app-surface-muted)}
+body[data-app-layout=content] .section-heading{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+body[data-app-layout=content] .section-heading h2{font-size:1.1rem}
+body[data-app-layout=content] .content-card>button{margin:10px 8px 0 0}
+body[data-app-layout=content] .content-tabs{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap}
+body[data-app-layout=content] .content-tabs button[aria-pressed=true]{border:2px solid var(--app-accent)!important;background:var(--app-surface-muted)!important;color:var(--app-accent)!important}
+body[data-app-layout=content] .knowledge-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-app-layout=content] .knowledge-card{grid-template-columns:minmax(0,1fr);align-content:start}
+body[data-app-layout=content] .knowledge-card button{justify-self:start}
+body[data-app-layout=content] .knowledge-dialog{max-width:760px;width:calc(100% - 32px);box-sizing:border-box;max-height:calc(100dvh - 32px);overflow:auto;background:var(--app-surface);color:var(--app-ink)}
+body[data-app-layout=content] .knowledge-dialog .icon-button{min-width:44px;min-height:44px;flex:0 0 44px}
+body[data-app-layout=content] .knowledge-dialog .eyebrow{color:var(--app-ink)!important}
+body[data-app-layout=content] label.check-row{display:flex;align-items:center;min-height:44px;gap:12px}
+body[data-app-layout=content] .check-row input{flex:0 0 22px;width:22px;height:22px;accent-color:var(--app-accent)}
+body[data-app-layout=content] .news-layout{grid-template-columns:minmax(250px,.7fr) minmax(0,1.3fr)}
+body[data-app-layout=content] .news-panel .panel-heading{flex-wrap:wrap}
+body[data-app-layout=content] .news-panel label{color:var(--app-ink)}
+body[data-app-layout=content] .news-search{margin-bottom:12px}
+body[data-app-layout=content] .news-items{margin-top:16px}
+body[data-app-layout=content] .site-link{min-height:44px;display:inline-flex;align-items:center}
+body[data-app-layout=content] select:not([multiple]){appearance:none;-webkit-appearance:none;height:auto;min-height:46px;padding:11px 32px 11px 12px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2352665a' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px}
+body[data-app-layout=content] [hidden]{display:none!important}
+@media(min-width:1100px){body[data-app-layout=content] .content-workspace:has(>#editor:not([hidden])){grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}body[data-app-layout=content] .content-workspace:has(>#editor:not([hidden])) :is(.library-grid,.member-grid){grid-template-columns:1fr}}
+@media(max-width:1000px){body[data-app-layout=content] :is(.library-grid,.member-grid){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){html body[data-app-layout=content] main.member-page{padding:16px 16px 120px}body[data-app-layout=content] :is(.library-toolbar,.content-query,.edit-grid,.scenario-form,.library-grid,.member-grid,.knowledge-list,.news-layout){grid-template-columns:minmax(0,1fr)}html body[data-app-layout=content] :is(.editor-panel,.library-card,.content-card,.library-toolbar,.library-insight,.library-help,.knowledge-card,.news-panel,.content-query){padding:16px;border-radius:18px!important}body[data-app-layout=content] .news-list-panel{order:2}body[data-app-layout=content] .editor-actions{display:grid;grid-template-columns:minmax(0,1fr)}}
+/* WebKit's selected option can paint past its control even when its box fits. */
+body[data-app-layout=content] select{overflow:hidden;text-overflow:ellipsis}
+body[data-app-layout=content] .content-card{display:block}
+body[data-app-layout=content] .content-card>button{display:inline-flex}
+body[data-app-layout=content] .editor-actions{border:0}
+body[data-app-layout=content] .association-page #form>label{display:block}
+body[data-app-layout=content] .news-panel .eyebrow{color:var(--app-accent)!important}
+/* Keep the contextual current item readable while shared navigation styles load. */
+html body[data-app-layout=content] .module-bar a.current{background:var(--app-accent)!important;color:#fff!important;transition:none!important}
+html body[data-app-layout=content] .module-bar a.current span{color:inherit!important}
+@media(max-width:760px){body[data-app-layout=content] .knowledge-dialog[open]{width:100%;max-width:none;max-height:min(88dvh,760px);padding:0}}

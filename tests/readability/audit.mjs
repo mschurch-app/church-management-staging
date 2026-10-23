@@ -67,6 +67,10 @@ async function setup(page,{signedIn=true}={}){
    else if(url.pathname.endsWith('/functions/v1/member-access'))data={state:'unbound'};
    else if(url.pathname.endsWith('/functions/v1/prayer-wall'))data={ok:true,prayers:[{id:1,author_name:'測試家人',title:'平安與盼望',content:'願主帶領我們',hands_count:2,halo_level:1,comments:[],created_at:new Date().toISOString()}]};
    else if(url.pathname.endsWith('/functions/v1/tree-reading-october-test')){const result=await treeFixture().call(body.action||'me');data=result;delete data.status;}
+   else if(url.pathname.endsWith('/functions/v1/media-publishing-settings'))data={ok:true,settings:Object.fromEntries(['sermon_analysis_enabled','youtube_captions_enabled','instagram_sermon_enabled','instagram_weekly_reel_enabled','instagram_weekday_reel_enabled','instagram_holiday_reel_enabled'].map(k=>[k,true])),connections:{}};
+   else if(url.pathname.endsWith('/functions/v1/instagram-publishing')||url.pathname.endsWith('/functions/v1/youtube-oauth'))data={ok:true,connection:null};
+   else if(url.pathname.endsWith('/functions/v1/heat-camp-volunteer'))data={ok:true,items:[],selected_counts:{group_leader:0,worship:0,basketball_assistant:0}};
+   else if(url.pathname.endsWith('/functions/v1/tree-reading-admin'))data={ok:true,members:[],active_challenges:0,challenge_count:0,resolved_challenges:0};
    else if(url.pathname.includes('/functions/')){data={ok:true,items:[],drafts:[],people:[],settings:{},connections:{},ministries:[]};if(url.pathname.endsWith('/daily-devotional-admin'))data={ok:true,items:daily(),reviewerStage:'initial'};if(url.pathname.endsWith('/weekly-bulletin-review'))data={ok:true,items:weekly()};}
    await req.respond({status,contentType:'application/json',headers:{'access-control-allow-origin':'*','access-control-allow-methods':'GET,POST,PATCH,DELETE,HEAD,OPTIONS','access-control-allow-headers':'*','content-range':'0-0/1'},body:JSON.stringify(data)});return;
   }

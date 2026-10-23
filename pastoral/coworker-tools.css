@@ -3,3 +3,6 @@
 @media(max-width:760px){.tools-heading{align-items:stretch;flex-direction:column}.entity-field{width:100%}.tool-panel .card{padding:22px}.tool-panel .form-row{grid-template-columns:1fr}.action-row .button{flex:1}.tabs{gap:14px;overflow:auto}.tabs button{white-space:nowrap}}
 @media(max-width:900px){.collab-main .tool-panel,.collab-main #panel-attendance,.collab-main #panel-photos{grid-template-columns:1fr}}
 @media(max-width:620px){.collab-topbar .entity-field.compact{grid-template-columns:1fr;gap:2px;font-size:9px}.collab-topbar .entity-field.compact select{min-width:140px;min-height:34px;padding:5px 8px}.collab-main .tools-heading h1{font-size:25px}}
+
+/* Dark navigation labels need their own foreground after the shared theme. */
+body.collab-app .collab-sidebar .collab-brand small,body.collab-app .collab-sidebar .collab-nav>p,body.collab-app .collab-topbar>div>p{color:#dcebe5}

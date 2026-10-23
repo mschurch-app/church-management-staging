@@ -1,0 +1,59 @@
+{
+  "macOS": "27.0.1",
+  "Safari": "27.0.1",
+  "origin": "http://127.0.0.1:8778",
+  "data": "synthetic only",
+  "checks": [
+    {
+      "id": "mac-media-switch",
+      "result": "passed",
+      "evidence": "Safari AX switch changes from on to off."
+    },
+    {
+      "id": "mac-media-reload-dialog",
+      "result": "passed",
+      "evidence": "Native confirmation shown before discarding draft."
+    },
+    {
+      "id": "mac-media-cancel-preserves",
+      "result": "passed",
+      "evidence": "Cancel leaves sermon publishing switch off."
+    },
+    {
+      "id": "mac-media-save",
+      "result": "passed",
+      "evidence": "Saved acknowledgement visible after synthetic submit."
+    },
+    {
+      "id": "mac-tree-search",
+      "result": "passed",
+      "evidence": "Chinese input filters two rows to one."
+    },
+    {
+      "id": "mac-tree-table-focus",
+      "result": "passed",
+      "evidence": "Tab focuses scrollable progress table."
+    },
+    {
+      "id": "mac-tree-native-download",
+      "result": "passed",
+      "evidence": "User authorized localhost download permission; Safari completed CSV download."
+    },
+    {
+      "id": "mac-tree-downloaded-content",
+      "result": "passed",
+      "evidence": "Read downloaded CSV: header and one filtered synthetic person, 143 bytes."
+    }
+  ],
+  "download": {
+    "fileName": "Mplus-讀經生命樹進度.csv",
+    "bytes": 143,
+    "sha256": "d13b21f591b5d9ddb3a54e0932aba0d5f340612743a3d7d1a6847820cbe5ea34",
+    "rows": 2
+  },
+  "pending": [
+    "Other workspaces native file selection, print and keyboard workflows",
+    "Actual production accounts and flows",
+    "iPhone 17 physical acceptance"
+  ]
+}

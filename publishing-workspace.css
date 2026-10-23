@@ -1,0 +1,18 @@
+body[data-app-layout="publishing"] .page-nav{position:static;flex-wrap:wrap}
+body[data-app-layout="publishing"] :is(.media-settings,.ig-connect-card,.yt-card){width:100%;max-width:1000px;box-sizing:border-box}
+body[data-app-layout="publishing"] :is(.media-card,.ig-connect-card,.yt-card){min-width:0;border-color:var(--app-border);box-shadow:none}
+body[data-app-layout="publishing"] :is(.media-card p,.media-switch-copy span,.connection-copy span,.ig-note,.yt-note,.ig-status span,.yt-state span){color:var(--app-secondary);overflow-wrap:anywhere}
+body[data-app-layout="publishing"] :is(.connection-row,.ig-status,.yt-state){background:var(--app-surface-muted,#f5f6f4);min-width:0}
+body[data-app-layout="publishing"] :is(.connection-copy,.ig-status>div,.yt-state>div){min-width:0;overflow-wrap:anywhere}
+body[data-app-layout="publishing"] .settings-actions{position:static;grid-column:1/-1;box-shadow:none;backdrop-filter:none;flex-wrap:wrap}
+body[data-app-layout="publishing"] .switch{min-height:44px;min-width:52px;align-items:center}
+body[data-app-layout="publishing"] .switch input:checked+span{background:var(--app-accent)}
+body[data-app-layout="publishing"] .switch input:disabled+span{opacity:.55}
+body[data-app-layout="publishing"] .switch input:focus-visible+span{outline:3px solid var(--app-accent)}
+body[data-app-layout="publishing"] :is(.ig-status-mark,.yt-mark){flex-shrink:0}
+body[data-app-layout="publishing"] .media-card-head{align-items:flex-start}
+body[data-app-layout="publishing"] .settings-result{flex-basis:100%;margin:0;line-height:1.7;color:var(--app-ink)}
+@media(min-width:1100px){body[data-app-layout="publishing"] .media-settings{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){body[data-app-layout="publishing"] :is(.ig-actions,.yt-actions){display:grid;grid-template-columns:1fr}body[data-app-layout="publishing"] .media-card{padding:18px}body[data-app-layout="publishing"] .media-switch{gap:12px}}
+
+body[data-app-layout="publishing"] .connection-row a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border-radius:12px;white-space:nowrap}body[data-app-layout="publishing"] .media-card{align-self:start}

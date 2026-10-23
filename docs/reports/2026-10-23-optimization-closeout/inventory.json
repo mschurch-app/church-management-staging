@@ -1,0 +1,329 @@
+{
+  "entries": [
+    {
+      "key": "testimony_review",
+      "title": "雲彩見證",
+      "file": "testimony-admin.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "review_workflows",
+      "title": "審核流程",
+      "file": "review-workflow-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "members",
+      "title": "會友",
+      "file": "members.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "newcomer_care",
+      "title": "新朋友",
+      "file": "newcomer-care.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "pastoral_workspace",
+      "title": "同工工作區",
+      "file": "pastoral/workspace.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "pastoral_workflow_survey",
+      "title": "同工工作流程調查",
+      "file": "pastoral/workflow-survey.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "private_prayers",
+      "title": "代禱與關懷",
+      "file": "prayers.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "pastoral_chats",
+      "title": "關懷訊息",
+      "file": "pastoral-inbox.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "attendance",
+      "title": "出席登記",
+      "file": "attendance.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "groups",
+      "title": "小組與小家",
+      "file": "groups.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "schedules",
+      "title": "服事安排",
+      "file": "schedules.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "spaces",
+      "title": "場地與設備",
+      "file": "spaces.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "inventory",
+      "title": "物品與借用",
+      "file": "inventory.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "heat_camp",
+      "title": "熱火籃球營",
+      "file": "heat-camp-admin.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "website_weekly",
+      "title": "主日週報",
+      "file": "website-maintenance.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "association_news",
+      "title": "協會網站",
+      "file": "association-news.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "website_group_resources",
+      "title": "小組教材",
+      "file": "group-resources-management.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "tree_reading_admin",
+      "title": "生命樹",
+      "file": "daily-devotional-admin.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "life_tree_festivals",
+      "title": "生命樹節慶預覽",
+      "file": "life-tree-festivals.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "binding_review",
+      "title": "LINE 身分確認",
+      "file": "binding-review.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "notification_settings",
+      "title": "通知設定",
+      "file": "notification-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "school",
+      "title": "課輔",
+      "file": "https://school.mchurch.online/",
+      "scope": "external"
+    },
+    {
+      "key": "school_checkin",
+      "title": "課輔打卡",
+      "file": "https://school.mchurch.online/?tab=checkin",
+      "scope": "external"
+    },
+    {
+      "key": "school_schedules",
+      "title": "課輔安排",
+      "file": "https://school.mchurch.online/?tab=schedules",
+      "scope": "external"
+    },
+    {
+      "key": "school_rollcall",
+      "title": "課輔出席",
+      "file": "https://school.mchurch.online/?tab=rollcall",
+      "scope": "external"
+    },
+    {
+      "key": "school_students",
+      "title": "學生",
+      "file": "https://school.mchurch.online/?tab=students",
+      "scope": "external"
+    },
+    {
+      "key": "school_counseling",
+      "title": "個別輔導",
+      "file": "https://school.mchurch.online/?tab=counseling",
+      "scope": "external"
+    },
+    {
+      "key": "school_reports",
+      "title": "課輔報表",
+      "file": "https://school.mchurch.online/?tab=print-center",
+      "scope": "external"
+    },
+    {
+      "key": "basketball",
+      "title": "籃球隊",
+      "file": "https://mschurch-app.github.io/m-plus-basketball/",
+      "scope": "external"
+    },
+    {
+      "key": "basketball_gamecenter",
+      "title": "比賽紀錄",
+      "file": "https://mschurch-app.github.io/m-plus-basketball/?tab=gamecenter",
+      "scope": "external"
+    },
+    {
+      "key": "basketball_tactics",
+      "title": "籃球戰術",
+      "file": "https://mschurch-app.github.io/m-plus-basketball/?tab=tactics",
+      "scope": "external"
+    },
+    {
+      "key": "basketball_assignments",
+      "title": "球員作業",
+      "file": "https://mschurch-app.github.io/m-plus-basketball/?tab=assignments",
+      "scope": "external"
+    },
+    {
+      "key": "basketball_schedule",
+      "title": "球隊行程",
+      "file": "https://mschurch-app.github.io/m-plus-basketball/?tab=schedule",
+      "scope": "external"
+    },
+    {
+      "key": "basketball_daily",
+      "title": "每日狀態",
+      "file": "https://mschurch-app.github.io/m-plus-basketball/?tab=dailystatus",
+      "scope": "external"
+    },
+    {
+      "key": "system_monitor",
+      "title": "系統狀況",
+      "file": "system-monitor.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "church_settings",
+      "title": "教會設定",
+      "file": "church-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "pastoral_content",
+      "title": "牧養圖卡",
+      "file": "pastoral-content.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "todays_message",
+      "title": "給今天的你",
+      "file": "todays-message-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "love_share",
+      "title": "把愛傳出去",
+      "file": "love-share-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "line_preview",
+      "title": "LINE 服務預覽",
+      "file": "line-preview.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "customization",
+      "title": "首頁與表單",
+      "file": "customization-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "admin_accounts",
+      "title": "同工帳號與權限",
+      "file": "admin-accounts.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "media_publishing",
+      "title": "社群發布",
+      "file": "media-publishing-settings.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "sermon_preparation",
+      "title": "信息預備",
+      "file": "sermon-preparation.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "subtitle_library",
+      "title": "字幕詞庫",
+      "file": "youtube-subtitle-library.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "service_signups",
+      "title": "服事意願與協調",
+      "file": "service-signup-admin.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "finance_cash",
+      "title": "主日奉獻",
+      "file": "finance-cash.html",
+      "scope": "church-os"
+    },
+    {
+      "key": "service_quick_match",
+      "title": "服事快速適配",
+      "file": "service-signup-admin.html?match=1",
+      "scope": "church-os"
+    }
+  ],
+  "localPages": [
+    "testimony-admin.html",
+    "review-workflow-settings.html",
+    "members.html",
+    "newcomer-care.html",
+    "pastoral/workspace.html",
+    "pastoral/workflow-survey.html",
+    "prayers.html",
+    "pastoral-inbox.html",
+    "attendance.html",
+    "groups.html",
+    "schedules.html",
+    "spaces.html",
+    "inventory.html",
+    "heat-camp-admin.html",
+    "website-maintenance.html",
+    "association-news.html",
+    "group-resources-management.html",
+    "daily-devotional-admin.html",
+    "life-tree-festivals.html",
+    "binding-review.html",
+    "notification-settings.html",
+    "system-monitor.html",
+    "church-settings.html",
+    "pastoral-content.html",
+    "todays-message-settings.html",
+    "love-share-settings.html",
+    "line-preview.html",
+    "customization-settings.html",
+    "admin-accounts.html",
+    "media-publishing-settings.html",
+    "sermon-preparation.html",
+    "youtube-subtitle-library.html",
+    "service-signup-admin.html",
+    "finance-cash.html"
+  ],
+  "failures": []
+}

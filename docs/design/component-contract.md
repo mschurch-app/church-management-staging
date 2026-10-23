@@ -166,3 +166,9 @@ Chrome 模擬資料與 viewport 檢查用於回歸；iPhone 17、LINE 內開啟�
 - 業務通知設定遵循 M+ LINE、火樂不通知的既有使用者決策。火樂通知及審核設定目前唯讀，監控頁不可啟用火樂通知排程；App 系統事件維持既有系統管理。前端發布不會自動改寫路由或發送通知。
 - 監控僅頁面顯示且資料有效時排程更新；排程寫入需確認，寫入與讀取共用忙碌狀態。圖表提供標籤、圖紋與數值表，不以顏色作為唯一辨識。
 - 資源版本 `20261023-settings1`；沒有資料庫遷移。合成截圖及互動對照僅留本機。iPhone、Mac Safari 與正式通知仍待實機／正式流程驗收。
+
+## 發布連線與舊讀經清單收尾（2026-10-23）
+
+發布設定、Instagram 與 YouTube 連線以 `data-app-layout="publishing"` 接入 `publishing-workspace.css`；共用 `settingsWorkflow` 保護當前頁面草稿與寫入。重新載入入口保持可找，已確認的成功回覆及無法確認的結果分開處理。連線資料列存在不等於連線有效，必須核對 `status`；授權導向限定 Google 官方 OAuth 路徑。權杖不持久保存。
+
+舊 `tree-reading-admin.html` 維持 M+ 專用，加入搜尋、重試與依目前清單匯出，遵守 export 權限；CSV 姓名防止公式解讀。共用主目錄仍導向新版每日靈修工作區。資源版本 `20261023-closeout1`，具體盤點與實機待驗收見 `docs/reports/2026-10-23-optimization-closeout/`。

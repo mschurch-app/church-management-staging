@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {startFixture} from './closeout-server.mjs';
+import {pages} from './closeout-fixture.mjs';
+import {contrastMetrics} from './phase3/contrast.mjs';
+const {chromium,webkit}=await import(process.env.PLAYWRIGHT_MODULE||'/Users/james-codex/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
+const {server,origin}=await startFixture(),out=new URL('./phase4/results/closeout/',import.meta.url).pathname;await mkdir(out,{recursive:true});
+const checks=[],failures=[],visuals=[];const check=(ok,name)=>{assert(ok,name);checks.push(name);};
+try{for(const engine of process.env.CLOSEOUT_ENGINE?[process.env.CLOSEOUT_ENGINE]:['chromium','webkit']){const browser=await(engine==='chromium'?chromium:webkit).launch(engine==='chromium'?{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'}:{});try{for(const width of [390,1440])for(const name of pages){const context=await browser.newContext({viewport:{width,height:900},timezoneId:'Asia/Taipei',reducedMotion:'reduce',serviceWorkers:'block'}),page=await context.newPage(),errors=[],blocked=[],prefix=[name,engine,width].join('-');page.setDefaultTimeout(4000);await context.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!==origin&&u.protocol!=='data:'){blocked.push(u.origin);return r.abort();}return r.continue();});page.on('pageerror',e=>errors.push(e.message));let acceptDialog=false;page.on('dialog',d=>acceptDialog?d.accept():d.dismiss());const settle=()=>page.waitForFunction(()=>!document.querySelector('main').hasAttribute('aria-busy'));
+try{
+ await page.goto(origin+'/'+name+'.html?church=M%2B');await settle();await page.locator('.admin-identity').waitFor();
+ const metrics=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,header:document.querySelector('.page-header').getBoundingClientRect().height})),contrast=await page.evaluate(contrastMetrics);visuals.push({prefix,metrics,contrast});check(metrics.scroll<=metrics.width+1,prefix+' no overflow');check(Math.round(metrics.header)===164,prefix+' header');check(!contrast.failures.length,prefix+' contrast '+JSON.stringify(contrast.failures));await page.screenshot({path:out+prefix+'.png',fullPage:true});
+ await page.evaluate(()=>document.documentElement.style.fontSize='32px');check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),prefix+' 200% text');await page.evaluate(()=>document.documentElement.style.fontSize='');
+ if(name==='media-publishing-settings'){
+  await page.locator('label').filter({has:page.locator('#instagram-sermon')}).click();await page.locator('#reload').click();check(!await page.locator('#instagram-sermon').isChecked(),prefix+' reload cancellation preserves draft');
+  await page.evaluate(()=>t.writeFail=true);await page.locator('#save').click();await settle();check(!await page.locator('#instagram-sermon').isChecked(),prefix+' failed write preserves draft');check(!await page.locator('#save').isDisabled(),prefix+' failure can retry');
+  await page.evaluate(()=>{t.writeFail=false;t.delay=200;});await page.locator('#save').evaluate(n=>{n.click();n.click();});await settle();check(await page.evaluate(()=>t.calls.filter(c=>c.action==='save').length)===2,prefix+' double click only one save');check((await page.locator('#status').textContent()).includes('已儲存'),prefix+' confirmed save');
+  await page.evaluate(()=>t.unknown=true);await page.locator('label').filter({has:page.locator('#instagram-sermon')}).click();await page.locator('#save').click();await settle();check(await page.locator('#save').isDisabled(),prefix+' unknown save locks retry');check(await page.locator('#instagram-sermon').isChecked(),prefix+' unknown save keeps draft');
+ }else if(name==='tree-reading-admin'){
+  await page.locator('#search').fill('合成同工甲');check(await page.locator('#members tr').count()===1,prefix+' search');
+  const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#export').click()]);const stream=await download.createReadStream();let csv='';for await(const chunk of stream)csv+=chunk;check(csv.includes('合成同工甲')&&!csv.includes('=合成測試名稱'),prefix+' CSV respects filter');
+  await page.locator('#search').fill('');const [all]=await Promise.all([page.waitForEvent('download'),page.locator('#export').click()]);let full='';for await(const chunk of await all.createReadStream())full+=chunk;check(full.includes("'=合成測試名稱"),prefix+' CSV formula escaped');
+  await page.locator('#search').fill('不存在');check(await page.locator('#export').isDisabled(),prefix+' empty search disables export');
+ }else{
+  check((await page.locator('#connection strong').textContent()).includes('失效'),prefix+' expired connection not connected');check(await page.locator('#connect').isVisible(),prefix+' reconnect available');
+  if(name==='instagram-publishing-settings'){
+   await page.locator('#access-token').fill('synthetic-token-not-real');await page.locator('#reload').click();check(await page.locator('#access-token').inputValue()==='synthetic-token-not-real',prefix+' token draft retained after cancel');
+   await page.evaluate(()=>t.writeFail=true);await page.locator('#connect').click();await settle();check(await page.locator('#access-token').inputValue()==='synthetic-token-not-real',prefix+' rejected token retained');
+   await page.evaluate(()=>{t.writeFail=false;t.delay=200;});await page.locator('#connect').evaluate(n=>{n.click();n.click();});await settle();check(await page.evaluate(()=>t.calls.filter(c=>c.action==='connect').length)===2,prefix+' single connect');check(await page.locator('#access-token').inputValue()==='',prefix+' token cleared after connect');
+  }else{await page.evaluate(()=>t.badUrl=true);await page.locator('#connect').click();await settle();check(page.url().startsWith(origin),prefix+' invalid OAuth destination rejected');check(await page.locator('#connect').isDisabled(),prefix+' invalid authorization locks until reload');await page.locator('#reload').click();await settle();}
+  acceptDialog=true;await page.evaluate(()=>t.unknown=true);await page.locator('#disconnect').click();await settle();check(await page.locator('#disconnect').isDisabled(),prefix+' unknown disconnect locks retry');check(!(await page.locator('#status').textContent()).includes('已中斷'),prefix+' no false disconnect success');
+ }
+ acceptDialog=true;await page.evaluate(()=>{t.unknown=false;t.readFail=true;});await page.locator('#reload').click();await settle();check(!(await page.locator('#status').textContent()).includes('已載入'),prefix+' read failure visible');check(!await page.locator('#reload').isDisabled(),prefix+' retry always available');
+ await page.evaluate(()=>{t.readFail=false;t.delay=20;});await page.locator('#reload').click();await settle();check(!(await page.locator('#status').textContent()).includes('暫時'),prefix+' recover load');
+ await page.evaluate(()=>t.delay=150);await page.locator('#reload').click();await page.evaluate(()=>fireAuth('SIGNED_OUT'));await settle();check((await page.locator('#status').textContent()).includes('登入狀態已變更'),prefix+' late load ignored');if(name==='tree-reading-admin')check(!await page.locator('#members').textContent().then(t=>t.includes('合成同工')),prefix+' private rows cleared');else check(await page.locator(name==='media-publishing-settings'?'#form':name==='instagram-publishing-settings'?'#connect-form':'.yt-actions').isHidden(),prefix+' account change clears actions');
+ await page.goto(origin+'/'+name+'.html?church=SHiNE');await settle();if(['instagram-publishing-settings','youtube-settings','tree-reading-admin'].includes(name))check((await page.locator('#status').textContent()).includes('僅提供 M+'),prefix+' church restriction');
+ check(!errors.length&&!blocked.length,prefix+' no errors or external requests '+JSON.stringify({errors,blocked}));
+}catch(e){failures.push({prefix,error:e.message,errors});console.error(prefix,e.message);}finally{await context.close();}}
+}finally{await browser.close();}}
+}finally{server.close();await writeFile(out+'checks.json',JSON.stringify({checks,failures,visuals,productionWrites:0,realIPhone:false,realMacSafari:false},null,2));}
+console.log(JSON.stringify({checks:checks.length,failures},null,2));assert.equal(failures.length,0);

@@ -1,7 +1,7 @@
 // Shared, side-effect-free checks for the Sunday cash workflow. The API must
 // repeat these checks in a database transaction and persist the returned event.
 export const CASH_STATES = Object.freeze(['draft', 'spouse_review', 'pastor_review', 'booked', 'returned']);
-const categories = new Set(['十一奉獻', '感恩奉獻', '宣教奉獻', '建堂奉獻', '慈惠奉獻', '指定奉獻', '一般／不具名奉獻']);
+const categories = new Set(['十一奉獻', '感恩奉獻', '宣教奉獻', '建堂奉獻', '慈惠奉獻','兒童主日學奉獻', '指定奉獻', '一般／不具名奉獻']);
 const actions = Object.freeze({
   submit: { from: ['draft', 'returned'], to: 'spouse_review', capability: 'offering_entry' },
   verify_cash: { from: ['spouse_review'], to: 'pastor_review', capability: 'cash_verify' },

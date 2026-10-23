@@ -1,0 +1,1 @@
+{"provider":"Google Gemini","model":"gemini-3.5-flash-lite","syntheticOnly":true,"elapsedMs":2007,"result":{"invoiceNumber":"AB12345678","amountTwd":1500,"items":[{"name":"A4 Paper","quantity":"2"}]},"cashTendered":2000,"change":500,"ledgerWrites":0,"temporaryDiagnosticRemoved":true,"realReceiptAccuracyBenchmark":false}

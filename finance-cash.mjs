@@ -3,10 +3,10 @@ import { db } from './admin-db.mjs?v=20261012-readable2';
 import { normalizeOfferingCode } from './finance/bulletin.mjs';
 
 const $ = selector => document.querySelector(selector);
-const categories = ['十一奉獻','感恩奉獻','宣教奉獻','建堂奉獻','慈惠奉獻','指定奉獻'];
+const categories = ['十一奉獻','感恩奉獻','宣教奉獻','建堂奉獻','慈惠奉獻','兒童主日學奉獻','指定奉獻'];
 const labels = { entry: '同工登錄', cash_verify: '師母對現金', approve: '牧師複審' };
 const errors = {
- client_update_required:'此紀錄已有轉帳或線上奉獻，請重新整理頁面後再編輯。',invalid_payment_method:'請確認收款方式。',
+ client_update_required:'此紀錄包含新版奉獻資料，請重新整理頁面後再編輯。',invalid_payment_method:'請確認收款方式。',
   bag_confirmations_required: '請先由一位同工核對並確認每筆奉獻，再儲存。', invalid_bag_confirmation: '逐筆確認資料已變更，請重新讀取。',
   counter_confirmations_required: '請由任一位指定點收同工確認後，再送複審。', counter_confirmation_forbidden: '只能由指定的點收同工本人確認。', invalid_confirmation: '確認狀態不正確。',
   forbidden: '沒有此操作權限。', login_required: '登入已過期，請重新登入。',
@@ -84,7 +84,7 @@ function clearEditor() {
   $('#editor-state').textContent = '儲存後，任一位指定點收同工確認，即可送師母複審。';
   $('#review-panel').hidden = true;
   $('#cash-form').querySelectorAll('input,select,button').forEach(control => { control.disabled = false; });
-  $('#add-donor').disabled = false; $('#add-anonymous').disabled = false;$('#add-transfer').disabled=false;$('#add-online').disabled=false;
+  $('#add-donor').disabled = false; $('#add-anonymous').disabled = false;$('#add-transfer').disabled=false;$('#add-online').disabled=false;$('#add-children').disabled=false;
   $('#submit-batch').hidden = false;
   drawGroups(); totals(); drawConfirmations(); tab('editor');
 }
@@ -273,7 +273,7 @@ function makePayload() {
   }));
   const countedCash = number($('#counted-cash').value);
   if (!Number.isSafeInteger(countedCash) || countedCash < 0 || !bags.some(bag=>bag.declaredTotal>0)) throw new Error('請先填寫每筆奉獻金額。');
-  return { offeringDate: $('#offering-date').value, counterUserIds: counters, countedCash, counterConfirmed:state.pendingCounterUserId===state.userId, bags };
+  return { supportsChildrenOffering:true,offeringDate: $('#offering-date').value, counterUserIds: counters, countedCash, counterConfirmed:state.pendingCounterUserId===state.userId, bags };
 }
 
 function markDirty(){state.dirty=true;$('#cash-form').dataset.unsavedChanges='true';state.pendingCounterUserId=null;drawConfirmations();}
@@ -369,7 +369,7 @@ async function openBatch(id) {
   $('#counter-line-status').textContent=delivery?({pending:'LINE 補勾邀請待傳送。',processing:'LINE 補勾邀請傳送中。',sent:'LINE 已受理補勾邀請；另一位可登入閱覽補勾。',failed:delivery.attempt_count>=5?'LINE 邀請傳送未完成，請洽管理員確認 LINE 綁定；不影響審核。':'LINE 邀請暫未完成，系統將重試；不影響審核。',cancelled:'補勾邀請已結束（已確認或資料已退回修正）。'}[delivery.status]||''):'';
   const writable = state.roles.has('entry') && ['draft','returned'].includes(batch.status);
   $('#cash-form').querySelectorAll('input,select,button').forEach(control => { control.disabled = !writable; });
-  $('#add-donor').disabled = !writable; $('#add-anonymous').disabled = !writable;$('#add-transfer').disabled=!writable;$('#add-online').disabled=!writable;
+  $('#add-donor').disabled = !writable; $('#add-anonymous').disabled = !writable;$('#add-transfer').disabled=!writable;$('#add-online').disabled=!writable;$('#add-children').disabled=!writable;
   drawConfirmations(); tab('editor');
 }
 
@@ -503,6 +503,7 @@ $('#reload-roles').addEventListener('click', () => void work(async () => { await
 $('#new-batch').addEventListener('click', clearEditor);
 $('#back-to-list').addEventListener('click', () => void work(async () => { await batches(); tab('batches'); }));
 for(const method of ['transfer','online'])$('#add-'+method).addEventListener('click',()=>{state.groups.push(newGroup(false,method));markDirty();drawGroups();totals();});
+$('#add-children').addEventListener('click',()=>{const group=newGroup();group.name='兒童主日學';state.groups.push(group);markDirty();drawGroups();totals();$('#donor-groups').lastElementChild.querySelector('[data-offering-category="兒童主日學奉獻"]').focus();});
 $('#add-donor').addEventListener('click', () => { state.groups.push(newGroup()); markDirty(); drawGroups(); totals(); });
 $('#add-anonymous').addEventListener('click', () => { if (!state.groups.some(group => group.anonymous)) state.groups.push(newGroup(true)); markDirty(); drawGroups(); totals(); });
 function editorChanged(event){

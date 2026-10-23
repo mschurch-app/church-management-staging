@@ -11,12 +11,13 @@ async function setup(){
  await db.exec(await read('supabase/migrations/20261021135307_cash_bag_auto_totals_and_confirmation.sql'));
  await db.exec(await read('supabase/migrations/20261023080455_finance_single_counter_confirmation.sql'));
  await db.exec(await read('supabase/migrations/20261023085637_offering_payment_methods.sql'));
+ await db.exec(await read('supabase/migrations/20261023090601_children_sunday_offering.sql'));
  for(const id of ids){await db.query('insert into auth.users values($1)',[id]);await db.query('insert into church_auth.accounts values($1,true)',[id]);await db.query("insert into church_auth.grants values($1,'M+','members')",[id]);}
  for(const id of ids.slice(0,3))await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'entry',$1)",[id]);
  await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'cash_verify',$1),($2,'approve',$2)",[ids[3],ids[4]]);
  return db;
 }
-const payload=()=>({offeringDate:'2026-10-18',counterUserIds:ids.slice(0,2),countedCash:999999,bags:[{bagName:'測試奉獻者',confirmed:true,declaredTotal:999999,lines:[{category:'十一奉獻',amount:1000},{category:'感恩奉獻',amount:500}]}]});
+const payload=()=>({supportsChildrenOffering:true,offeringDate:'2026-10-18',counterUserIds:ids.slice(0,2),countedCash:999999,bags:[{bagName:'測試奉獻者',confirmed:true,declaredTotal:999999,lines:[{category:'兒童主日學奉獻',amount:1000},{category:'感恩奉獻',amount:500}]}]});
 const save=async(db,state,data=payload())=>(await db.query('select public.finance_save_cash_batch($1,$2,$3,$4::jsonb) as result',[ids[0],state?.id||null,state?.version||null,JSON.stringify(data)])).rows[0].result;
 const confirm=async(db,state,actor,checked=true)=>(await db.query('select public.finance_confirm_cash_batch($1,$2,$3,$4) as result',[actor,state.id,state.version,checked])).rows[0].result;
 const move=async(db,state,actor,action,total=null,reason=null)=>(await db.query('select public.finance_transition_cash_batch($1,$2,$3,$4,$5,$6) as result',[actor,state.id,state.version,action,total,reason])).rows[0].result;

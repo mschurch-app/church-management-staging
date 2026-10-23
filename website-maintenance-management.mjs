@@ -1,4 +1,4 @@
-import {ACCOUNTING_SECTION_KEY,ensureAccountingSection,previousSunday,accountingItems} from './finance/weekly-offering.mjs?v=20261022-dual1';
+import {ACCOUNTING_SECTION_KEY,ensureAccountingSection,previousSunday,accountingItems} from './finance/weekly-offering.mjs?v=20261023-children1';
 import {programAssignment} from './weekly-program-autofill.mjs?v=20261012-schedule1';
 import {initWeeklyYoutube} from './weekly-youtube.mjs?v=20261021-weekly-link1';
 import {initWeeklyCanva} from './weekly-canva.mjs?v=20261022-experience1';

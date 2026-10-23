@@ -1,7 +1,7 @@
 // Produces public-only offering data. The caller must supply booked donations
 // from the authorized server-side ledger, never a browser-side member query.
 export const OFFERING_CATEGORIES = Object.freeze([
-  '十一奉獻', '感恩奉獻', '宣教奉獻', '建堂奉獻', '慈惠奉獻', '指定奉獻', '一般／不具名奉獻'
+  '十一奉獻', '感恩奉獻', '宣教奉獻', '建堂奉獻', '慈惠奉獻','兒童主日學奉獻', '指定奉獻', '一般／不具名奉獻'
 ]);
 
 const categorySet = new Set(OFFERING_CATEGORIES);

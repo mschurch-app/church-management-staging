@@ -10,6 +10,7 @@ async function setup(){
  await db.exec(await read('supabase/migrations/20261021132134_cash_counter_confirmations.sql'));
  await db.exec(await read('supabase/migrations/20261021135307_cash_bag_auto_totals_and_confirmation.sql'));
  await db.exec(await read('supabase/migrations/20261023080455_finance_single_counter_confirmation.sql'));
+ await db.exec(await read('supabase/migrations/20261023085637_offering_payment_methods.sql'));
  for(const id of ids){await db.query('insert into auth.users values($1)',[id]);await db.query('insert into church_auth.accounts values($1,true)',[id]);await db.query("insert into church_auth.grants values($1,'M+','members')",[id]);}
  for(const id of ids.slice(0,3))await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'entry',$1)",[id]);
  await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'cash_verify',$1),($2,'approve',$2)",[ids[3],ids[4]]);

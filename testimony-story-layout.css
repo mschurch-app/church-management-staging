@@ -1,0 +1,61 @@
+/* Keep these reading styles identical in the website and Church OS preview. */
+.testimony-story{container: testimony-story / inline-size;max-width:820px;margin:0 auto;color:#193f35;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;font-size:17px;font-weight:400;line-height:1.95;text-align:left;overflow-wrap:anywhere}
+.testimony-story *{box-sizing:border-box}
+.testimony-story .testimony-story__header{padding:10px 0 28px;margin:0 0 28px;border-bottom:1px solid #d9e1d6;background:none}
+.testimony-story .testimony-story__category{margin:0 0 12px;color:#7b5934;font-size:13px;font-weight:650;letter-spacing:.12em;line-height:1.8}
+.testimony-story .testimony-story__title{font:650 clamp(27px,4vw,38px)/1.5 -apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;letter-spacing:.02em;color:#193f35;margin:0 0 18px}
+.testimony-story .testimony-story__byline{font-size:14px;color:#53675b;margin:0;line-height:1.8}
+.testimony-story__flow{display:flow-root}
+.testimony-story .testimony-story__paragraph{font:inherit;line-height:1.95;margin:0 0 1.4em;white-space:pre-wrap;color:#28493e;text-wrap:pretty}
+.testimony-story .testimony-story__figure{padding:0;margin:0 0 24px;break-inside:avoid}
+.testimony-story .testimony-story__figure--right{clear:both;float:right;width:40%;margin:6px 0 24px 30px}
+.testimony-story .testimony-story__figure--left{clear:both;float:left;width:33%;margin:6px 30px 24px 0}
+.testimony-story .testimony-story__figure--wide{clear:both;width:78%;margin:32px auto}
+.testimony-story__figure a{display:block;min-height:44px;border-radius:10px;color:#315747;text-decoration:none}
+.testimony-story__figure a:focus-visible{outline:3px solid #a0713f;outline-offset:5px}
+.testimony-story .testimony-story__figure :is(img,video){display:block;width:auto;max-width:100%;height:auto;max-height:390px;object-fit:contain;border-radius:10px;margin:0 auto;background:transparent}
+.testimony-story .testimony-story__figure--wide :is(img,video){max-height:410px}
+.testimony-story__pair{clear:both;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:center;margin:28px auto;width:90%}
+.testimony-story .testimony-story__pair .testimony-story__figure{float:none;clear:none;width:100%;margin:0}
+.testimony-story .testimony-story__pair :is(img,video){max-height:280px}
+.testimony-story__media-error{display:block;padding:20px;background:#eef2e9;font-size:14px;line-height:1.8}
+.testimony-story__figure img[hidden]{display:none}
+.testimony-reader{box-sizing:border-box;margin:auto;width:calc(100vw - 40px);max-width:1020px;max-height:calc(100dvh - 48px);padding:0;border:1px solid #dce4d8;border-radius:22px;background:#faf8f1;color:#193f35;overflow:auto;overscroll-behavior:contain}
+.testimony-reader::backdrop{background:#193f35b8;backdrop-filter:blur(3px)}
+.testimony-reader__bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 24px;background:#faf8f1f5;border-bottom:1px solid #e2e6dc;font:600 13px/1.8 -apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;color:#53675b;backdrop-filter:blur(12px)}
+.testimony-reader .testimony-reader__close{float:none;position:static;display:grid;place-items:center;flex:none;min-width:44px;min-height:44px;margin:0;padding:6px;border:1px solid #cdd8cc;border-radius:50%;color:#193f35;background:#fff;font:26px/1 sans-serif;cursor:pointer}
+.testimony-reader__close:focus-visible{outline:3px solid #a0713f;outline-offset:3px}
+.testimony-reader__body{padding:28px 48px 48px}
+body.testimony-reading-open{overflow:hidden}
+@container testimony-story (max-width:560px){
+ .testimony-story .testimony-story__figure--right{float:none;width:76%;margin:22px 0 26px auto}
+ .testimony-story .testimony-story__figure--left{float:none;width:64%;margin:22px auto 26px 0}
+ .testimony-story .testimony-story__figure--wide{width:100%;margin:28px auto}
+ .testimony-story .testimony-story__figure :is(img,video){max-height:310px}
+ .testimony-story__pair{width:100%;gap:12px}
+ .testimony-story .testimony-story__pair :is(img,video){max-height:230px}
+}
+@media(max-width:600px){
+ .testimony-reader{width:calc(100vw - 16px);max-height:calc(100dvh - 24px);border-radius:16px}
+ .testimony-reader__bar{padding:10px 16px}
+ .testimony-reader__body{padding:20px 22px 32px}
+ .testimony-story{font-size:16px;line-height:1.9}
+ .testimony-story .testimony-story__header{padding:4px 0 22px;margin-bottom:24px}
+}
+@media(prefers-reduced-transparency:reduce){.testimony-reader__bar{background:#faf8f1}}
+
+.testimony-story__figure--illustration figcaption{margin-top:9px;color:#53675b;font-size:12px;line-height:1.7;text-align:center}
+.testimony-shares{margin:0 0 28px;padding:0 0 22px;border-bottom:1px solid #d9e1d6}
+.testimony-story .testimony-shares__label{margin:0 0 10px;font-size:13px;color:#53675b}
+.testimony-shares__actions{display:flex;flex-wrap:wrap;gap:10px}
+.testimony-story .testimony-shares__actions :is(a,button),.testimony-share-dialog>button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-width:72px;min-height:44px;margin:0;padding:9px 16px;border:1px solid #bacbbd;border-radius:12px;background:#fff;color:#193f35;font:600 14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;text-decoration:none;cursor:pointer}
+.testimony-shares__actions :is(a,button):focus-visible,.testimony-share-dialog>button:focus-visible{outline:3px solid #a0713f;outline-offset:3px}
+.testimony-shares__actions button:disabled{opacity:.55;cursor:default}
+.testimony-shares__actions [hidden]{display:none!important}
+.testimony-share-dialog{box-sizing:border-box;margin:auto;width:calc(100vw - 32px);max-width:540px;max-height:calc(100dvh - 40px);padding:24px;border:1px solid #cdd8cc;border-radius:20px;background:#faf8f1;color:#193f35;overflow:auto;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif}
+.testimony-share-dialog::backdrop{background:#193f35b8}
+.testimony-share-dialog h3{margin:0 0 12px;font-size:22px}
+.testimony-share-dialog img{display:block;width:180px;max-width:100%;height:auto;margin:16px auto}
+.testimony-share-dialog img[hidden]{display:none}
+.testimony-share-dialog textarea{box-sizing:border-box;width:100%;min-height:130px;padding:12px;margin:12px 0;border:1px solid #bacbbd;border-radius:10px;background:#fff;color:#28493e;font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif}
+.testimony-share-status{min-height:28px;color:#53675b;font-size:13px}

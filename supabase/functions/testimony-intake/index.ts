@@ -1,5 +1,6 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.102.0';
 import {validateSubmission,matchesMagic,UUID} from './validation.mjs';
+import {buildStoryPresentation} from './layout-plan.mjs';
 const url=Deno.env.get('SUPABASE_URL')!,key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
 const bucket='testimony-private';
@@ -33,15 +34,15 @@ Deno.serve(async req=>{
   if(!reader)return reply(400,{error:'invalid_input'});
   while(true){const {done,value}=await reader.read();if(done)break;total+=value.byteLength;if(total>60000){await reader.cancel();return reply(413,{error:'invalid_input'});}raw+=decoder.decode(value,{stream:true});}
   const input=JSON.parse(raw),action=input.action;
-  if(['list','review','admin_media'].includes(action)){
+  if(['list','review','initial_review','admin_media'].includes(action)){
    const token=(req.headers.get('authorization')||'').replace(/^Bearer /,'');
    if(!token)return reply(401,{error:'unauthorized'});
    const {data,error}=await db.auth.getUser(token);
    if(error||!data.user)return reply(401,{error:'unauthorized'});
    const actor=data.user.id;
-   if(action==='review'){
+   if(action==='review'||action==='initial_review'){
     if(!UUID.test(input.id||'')||!Number.isSafeInteger(input.version))throw Error('invalid_input');
-    return reply(200,{ok:true,...await rpc('review',{actor,id:input.id,version:input.version,review:input.review})});
+    return reply(200,{ok:true,...await rpc(action,{actor,id:input.id,version:input.version,review:input.review})});
    }
    if(action==='admin_media'){
     if(!UUID.test(input.id||''))throw Error('invalid_input');
@@ -49,7 +50,12 @@ Deno.serve(async req=>{
     const result=await Promise.all(media.map(async(m:any)=>{const signed=await db.storage.from(bucket).createSignedUrl(m.path,300);if(signed.error)throw Error('media_unavailable');return {...m,url:signed.data.signedUrl};}));
     return reply(200,{ok:true,media:result});
    }
-   return reply(200,{ok:true,...await rpc('list',{actor})});
+   let result=await rpc('list',{actor});
+   // Bring older submissions into the same saved composition before showing the reviewer.
+   const legacy=result.items.filter((s:any)=>!s.payload.presentation);
+   for(const s of legacy)await rpc('format_legacy',{actor,id:s.id,version:s.version,presentation:buildStoryPresentation(s.payload.body,s.payload.media)});
+   if(legacy.length)result=await rpc('list',{actor});
+   return reply(200,{ok:true,...result});
   }
   if(!UUID.test(input.id||'')||!/^[0-9a-f]{64}$/.test(input.token||''))throw Error('invalid_input');
   const capability_hash=await digest(input.token),cap={id:input.id,capability_hash};
@@ -81,12 +87,15 @@ Deno.serve(async req=>{
      if(!matchesMagic(prefix.subarray(0,count),m.type))throw Error('invalid_media');
     }
    }
-   const result=await rpc('submit',cap);return reply(200,{ok:true,id:result.id,status:result.status});
+   // The database stores this plan atomically before entering pending / queuing LINE.
+   if(current.status==='uploading'&&typeof current.layout_body!=='string')throw Error('layout_required');
+   const presentation=current.status==='uploading'?buildStoryPresentation(current.layout_body,current.media):undefined;
+   const result=await rpc('submit',{...cap,presentation});return reply(200,{ok:true,id:result.id,status:result.status});
   }
   throw Error('invalid_action');
  }catch(error){
   const message=error instanceof Error?error.message:'unavailable';
-  const known=['invalid_input','invalid_contact','invalid_files','content_required','consent_required','not_found','expired','request_conflict','version_conflict','rate_limited','upload_incomplete','invalid_media','forbidden','note_required','invalid_state','media_unavailable','upload_unavailable'];
+  const known=['invalid_action','invalid_input','invalid_contact','invalid_files','content_required','consent_required','not_found','expired','request_conflict','version_conflict','rate_limited','upload_incomplete','invalid_media','forbidden','note_required','invalid_state','initial_review_required','layout_required','media_unavailable','upload_unavailable'];
   const code=known.find(x=>message===x)||'unavailable';
   return reply(code==='forbidden'?403:code==='rate_limited'?429:code==='unavailable'?503:400,{ok:false,error:code});
  }

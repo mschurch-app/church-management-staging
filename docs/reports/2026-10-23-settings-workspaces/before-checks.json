@@ -1,0 +1,476 @@
+{
+  "mode": "before",
+  "base": "e81f129064150e884275a9bf73e23b481781f1e3",
+  "sourceHashes": {
+    "admin-dashboard-ui.mjs": "24819bd8776dfcb659e79220a6a5760bc639fbb45e4fd39711beb29f5ebe91f5",
+    "attendance-ui.mjs": "7002000b3a3055929719f7835066decf4f4d880c5c671a269046a5f7c6c65e71",
+    "church-brand.mjs": "483942a85a028b1b1e5ab73e3fa8c5ea80f0556e47314fb773378dfc1a8db6bf",
+    "church-customizations.mjs": "6a7ea4e3f5aae060af5056a6208381c6982d27ce2da6c5c4d0ce245cc1854169",
+    "church-os-sw.js": "61b7624122d25914f4fb955a4656e2e7c19da204cb4414a6d7e047f68f690c8d",
+    "church-settings-management.mjs": "deceaaaea6991bbfd4f1f87bfe5d301b362f1c59d4bf722f1f8443bda4534df2",
+    "church-settings-ui.mjs": "d18318d4ca945ad31bbfda6f93be6d2591cc030721ed7654837bb23f18486df8",
+    "church-settings.html": "5fbb29a9eca135b4da000fc2d5b32a2142987163c371fddbe20aad67bdc6f0a1",
+    "customization-settings-ui.mjs": "f42649216dcd0d4ea089c292f555421c993171e7a271a7e14815333a4b2b37f0",
+    "customization-settings.html": "503011c9d492964fbc92adf40070a9292b71619bf8285b7db1afd0212bdae2a8",
+    "groups-ui.mjs": "e43d20142a27ad57bb191caf565da2ef1337ee3f0377a6a37e49d526c468548a",
+    "member-options.mjs": "c2ca4e8c014ce2e51bddb6f2745f32c6b10aa57624aa4b02a0b65c9ff0aab605",
+    "members-ui.mjs": "6df3bfe4b16f0b0a92139389d7b735799a5cce4024de38b1fb48b15e565cc736",
+    "ministry-settings.mjs": "01444b131bdc396d5e339e032d86ce6e2f16c7b3e6589cab7c880a47f027cdcd",
+    "mplus-dashboard-ui.mjs": "4e99f2acea633ed260995625e8d8ec7c2bc37015db24fb9d568d2801cc1dce3b",
+    "notification-settings.html": "62938edd3fe82f4a8b3f16580fcada173827198c1ca1da61af07d1b76ec7c78b",
+    "notification-settings.mjs": "0eea9e1beede36266d444cbe9d3da90c8295cf857b133675f26efca201bb1504",
+    "prayers-ui.mjs": "b3f4fbc2b0517f127dba8aa778db8c08139be90fdbddae6cc4063903428cbe0b",
+    "review-workflow-settings.html": "54f38992284e49f9f1818d6b07e42b136d9ceb4050899429f3ed9430f083a325",
+    "review-workflow-settings.mjs": "86cd68aa3e04606638e037a2a1a6d9961585c8e66b509713933b44c249efcb04",
+    "system-monitor.html": "50c7e8aaa8961cf47c1ad45fe6f7789926e4e7cc1cb510ff8a33daac6a47f10d",
+    "system-monitor.mjs": "6ea8dd3518eae28fcd8fbbd95855ef08a32b2946b99914539c69f62ffca12820",
+    "welcome-original-ui.mjs": "4e481c3d792ad6f6f47184cf706b426eff96f92d43731679080d00f384aea1de"
+  },
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "checks": [],
+  "visuals": [
+    {
+      "prefix": "church-settings-chromium-390-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 80,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "customization-settings-chromium-390-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "notification-settings-chromium-390-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "review-workflow-settings-chromium-390-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "system-monitor-chromium-390-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "church-settings-chromium-390-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "customization-settings-chromium-390-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 46,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "notification-settings-chromium-390-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "review-workflow-settings-chromium-390-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "system-monitor-chromium-390-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 115,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "church-settings-chromium-1440-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 80,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "customization-settings-chromium-1440-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 54,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "notification-settings-chromium-1440-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "review-workflow-settings-chromium-1440-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 40,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "system-monitor-chromium-1440-mplus",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#173f34"
+      },
+      "contrast": {
+        "checked": 120,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "church-settings-chromium-1440-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "customization-settings-chromium-1440-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 49,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "notification-settings-chromium-1440-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "review-workflow-settings-chromium-1440-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "system-monitor-chromium-1440-shine",
+      "state": "overview",
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164,
+        "accent": "#a83929"
+      },
+      "contrast": {
+        "checked": 115,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "failures": []
+}

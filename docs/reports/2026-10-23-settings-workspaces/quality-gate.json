@@ -1,0 +1,278 @@
+{
+  "final": [
+    {
+      "name": "frontend syntax",
+      "files": 210,
+      "passed": true,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase4/worker.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "app-catalog.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase2/definitions.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase1/database.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase1/line-provider.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase2/service-signup-journey-db.mjs",
+      "passed": true,
+      "seconds": 0,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase1/browser.mjs",
+      "passed": true,
+      "seconds": 4,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase1/handoff.mjs",
+      "passed": true,
+      "seconds": 1,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase1/email-login.mjs",
+      "passed": true,
+      "seconds": 6,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase2/browser.mjs",
+      "passed": true,
+      "seconds": 18,
+      "exitCode": 0,
+      "run": "2026-10-23T01-55-02-992Z"
+    },
+    {
+      "name": "phase2/service-signup-list.mjs",
+      "passed": true,
+      "seconds": 26,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase3/browser.mjs",
+      "passed": true,
+      "seconds": 68,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase4/browser.mjs",
+      "passed": true,
+      "seconds": 37,
+      "exitCode": 0,
+      "run": "2026-10-23T01-50-14-124Z"
+    },
+    {
+      "name": "phase1/regression.mjs",
+      "passed": true,
+      "seconds": 45,
+      "exitCode": 0,
+      "run": "2026-10-23T01-56-36-429Z"
+    },
+    {
+      "name": "phase2/contrast.mjs",
+      "passed": true,
+      "seconds": 51,
+      "exitCode": 0,
+      "run": "2026-10-23T01-59-44-323Z"
+    }
+  ],
+  "failures": 0,
+  "runs": [
+    {
+      "run": "2026-10-23T01-50-14-124Z",
+      "checks": [
+        {
+          "name": "frontend syntax",
+          "files": 210,
+          "passed": true
+        },
+        {
+          "name": "phase4/worker.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "app-catalog.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/definitions.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/database.mjs",
+          "passed": true,
+          "seconds": 1,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/line-provider.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/service-signup-journey-db.mjs",
+          "passed": true,
+          "seconds": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/browser.mjs",
+          "passed": true,
+          "seconds": 4,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/handoff.mjs",
+          "passed": true,
+          "seconds": 1,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/email-login.mjs",
+          "passed": true,
+          "seconds": 6,
+          "exitCode": 0
+        },
+        {
+          "name": "phase2/browser.mjs",
+          "passed": false,
+          "seconds": 32,
+          "exitCode": 1
+        },
+        {
+          "name": "phase2/service-signup-list.mjs",
+          "passed": true,
+          "seconds": 26,
+          "exitCode": 0
+        },
+        {
+          "name": "phase3/browser.mjs",
+          "passed": true,
+          "seconds": 68,
+          "exitCode": 0
+        },
+        {
+          "name": "phase4/browser.mjs",
+          "passed": true,
+          "seconds": 37,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/regression.mjs",
+          "passed": false,
+          "seconds": 5,
+          "exitCode": 1
+        },
+        {
+          "name": "phase2/contrast.mjs",
+          "passed": true,
+          "seconds": 50,
+          "exitCode": 0
+        }
+      ],
+      "failures": 2
+    },
+    {
+      "run": "2026-10-23T01-53-13-727Z",
+      "checks": [
+        {
+          "name": "phase2/browser.mjs",
+          "passed": false,
+          "seconds": 6,
+          "exitCode": 1
+        }
+      ],
+      "failures": 1
+    },
+    {
+      "run": "2026-10-23T01-55-02-992Z",
+      "checks": [
+        {
+          "name": "phase2/browser.mjs",
+          "passed": true,
+          "seconds": 18,
+          "exitCode": 0
+        },
+        {
+          "name": "phase1/regression.mjs",
+          "passed": false,
+          "seconds": 6,
+          "exitCode": 1
+        }
+      ],
+      "failures": 1
+    },
+    {
+      "run": "2026-10-23T01-56-36-429Z",
+      "checks": [
+        {
+          "name": "phase1/regression.mjs",
+          "passed": true,
+          "seconds": 45,
+          "exitCode": 0
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "run": "2026-10-23T01-59-44-323Z",
+      "checks": [
+        {
+          "name": "phase2/contrast.mjs",
+          "passed": true,
+          "seconds": 51,
+          "exitCode": 0
+        }
+      ],
+      "failures": 0
+    }
+  ],
+  "notes": [
+    "固定清單維持 15 組，另加語法檢查。",
+    "設定初始化重試選擇器改為固定重新載入按鈕；保留原有恢復斷言。",
+    "審核回歸改驗火樂唯讀、M+ 實際 POST 使用 LINE；OPTIONS 預檢不再誤計為寫入。"
+  ]
+}

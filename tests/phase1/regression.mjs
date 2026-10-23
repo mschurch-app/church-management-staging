@@ -36,7 +36,7 @@ async function setup(page,{signedIn=true}={}){
     else if(name==='list_coworker_applications')data=[];
     else if(name==='get_service_signup_scopes')data=[];
     else if(name==='list_my_app_notifications')data=[{id:'1',title:'測試通知',body:'測試通知內容\n'.repeat(40),read_at:null,created_at:new Date().toISOString(),target_url:'members.html'}];
-    else if(name.startsWith('set_')||name.startsWith('save_')||name.startsWith('remove_')||name.startsWith('mark_')){writes.push({name,body});data=['save_admin_account_bundle','save_review_workflow_setting'].includes(name)?{saved:true,version:'fixture-version'}:true;}
+    else if(name.startsWith('set_')||name.startsWith('save_')||name.startsWith('remove_')||name.startsWith('mark_')){if(req.method()==='POST')writes.push({name,body});data=['save_admin_account_bundle','save_review_workflow_setting'].includes(name)?{saved:true,version:'fixture-version'}:true;}
    }else if(url.pathname.endsWith('/church_customizations'))data={church_id:'SHiNE',feature_modules:[],welcome_fields:[],catalogs:{},version:1,updated_at:new Date().toISOString()};
    else if(url.pathname.endsWith('/church_public_settings'))data={church_id:'SHiNE',brand_color:'#AD3C2A',logo_url:'',service_info:'每週主日聚會',address:'測試地址',map_url:'',updated_at:new Date().toISOString()};
    else if(url.pathname.includes('/functions/'))data={ok:true,items:[],drafts:[],people:[],settings:{},connections:{},ministries:[]};
@@ -60,7 +60,8 @@ await new Promise(r=>setTimeout(r,1300));assert(await page.$('#quick-links [data
 await page.goto(base+'/church-settings.html?church=SHiNE',{waitUntil:'networkidle0'});assert(await page.$eval('#review-workflows',n=>!n.hidden));assert((await page.$eval('#review-workflows',n=>n.href)).includes('church=SHiNE'));
 await page.screenshot({path:out+'/settings-390.png',fullPage:true});
 await page.goto(base+'/review-workflow-settings.html?church=SHiNE',{waitUntil:'networkidle0'});await page.waitForSelector('.workflow-card');
-await page.click('.workflow-card>button');await new Promise(r=>setTimeout(r,100));assert(writes.some(w=>w.name==='save_review_workflow_setting'));
+assert.equal(await page.$eval('.workflow-card>button',n=>n.disabled),true);assert(!writes.some(w=>w.name==='save_review_workflow_setting'));
+await page.goto(base+'/review-workflow-settings.html?church=M%2B',{waitUntil:'networkidle0'});await page.waitForSelector('.workflow-card');await page.click('.workflow-card>button');await page.waitForFunction(()=>document.querySelector('#status').dataset.tone==='success');const reviewWrite=writes.find(w=>w.name==='save_review_workflow_setting');assert(reviewWrite);assert.equal(reviewWrite.body.p_church,'M+');assert.equal(reviewWrite.body.p_app,false);assert.equal(reviewWrite.body.p_line,true);
 await page.screenshot({path:out+'/review-390.png',fullPage:true});
 await page.goto(base+'/admin-accounts.html?church=SHiNE',{waitUntil:'networkidle0'});await page.waitForSelector('.admin-account-card button');await page.click('.admin-account-card button');await page.waitForSelector('.home-library-item');await page.waitForFunction(()=>document.querySelector('#editor form')._workProfile.ready());await page.$eval('.home-library-item',n=>n.closest('details').open=true);
 assert.equal(await page.$eval('.home-library-item small',n=>{const probe=document.createElement('span');probe.style.color='var(--app-ink)';n.append(probe);const matches=getComputedStyle(probe).color===getComputedStyle(n).color;probe.remove();return matches;}),true);assert.equal(await page.$eval('.home-library-item',n=>getComputedStyle(n).backgroundColor),'rgb(255, 255, 255)');assert(await page.$('.home-library-item [data-ios-symbol]'));

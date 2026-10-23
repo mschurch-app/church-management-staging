@@ -1,6 +1,6 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
-import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20260922-min2';
+import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20261023-settings1';
 const church=new URLSearchParams(location.search).get('church'),status=document.querySelector('#status'),area=document.querySelector('#options'),add=document.querySelector('#add'),save=document.querySelector('#save');
 let options=[],busy=false,dirty=false;
 const churchName=church==='M+'?'M＋大雅教會':church==='SHiNE'?'火樂教會':'';

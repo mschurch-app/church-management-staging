@@ -1,0 +1,2308 @@
+{
+  "mode": "after",
+  "base": "8bf879970eae6ce9b03d184d6b4e617325770618",
+  "sourceHashes": {
+    "group-members.html": "93f431337302f1f5401208caf7d2c592d3cf1936b4b983d9cd929c7aff996df6",
+    "newcomer-care.html": "d019d1cf0ca4705e08708a62b84d73fdd505f0c79311502676eafae47681967a",
+    "binding-review.html": "c6f32f868647ff30149274e9d4f4f3078d7a3fd4788345f1e004712f488ba936",
+    "member-audit.html": "2b7074d535aef4fc65249022aff003917677473db86521b179b1aeecc10271d0",
+    "prayers.html": "e75b9b02932337c0cc71c2574f6cde4493118138243828971844e67b404b4341",
+    "group-members.mjs": "21c9ea5197085c76acd5feba897d7df09bd3183bce06171d998cf99b2660fa2d",
+    "newcomer-care-ui.mjs": "9f0b95aeb5ff187e1231fa83b0faf4635004a39d1f18065f8eaf7e7e03b2ce71",
+    "binding-review-ui.js": "9296305ca9f3a39750856f8f47c9a4785013d4805d218673b1675fd75dcd9d85",
+    "member-audit.mjs": "e44520ebd9f74b933b2adf26edbef3867d7b415cd48b253207729810c84b62ba",
+    "prayers-ui.mjs": "b3f4fbc2b0517f127dba8aa778db8c08139be90fdbddae6cc4063903428cbe0b",
+    "care-workspace.css": "9048150f41200313bf5e104b24b0cf42b3d50109cdcde129538d41c96cd83bd7",
+    "church-os-sw.js": "43fe41a6f4577d8e2e3aa57ca2eb674f5c32ea008407e384de0266a247c2ce4f",
+    "tests/care-workspaces-browser.mjs": "6053a5938baa568b8a811685898b3ad5a34b1cecfc2642b938ff377eeb8ede2c",
+    "tests/care-workspaces-scenarios.mjs": "0d7d5dbf73d25cf69c2dc5b3186b7a0e56fe2694e0716b3ec14c49b7fa6cdff9"
+  },
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "checks": [
+    "group-members-chromium-390-mplus list touch targets []",
+    "group-members-chromium-390-mplus list width",
+    "group-members-chromium-390-mplus list header",
+    "group-members-chromium-390-mplus list contrast []",
+    "group-members-chromium-390-mplus editor touch targets []",
+    "group-members-chromium-390-mplus editor width",
+    "group-members-chromium-390-mplus editor header",
+    "group-members-chromium-390-mplus editor contrast []",
+    "group-members-chromium-390-mplus 200% text",
+    "group-members-chromium-390-mplus explicit member selection required",
+    "group-members-chromium-390-mplus current member search",
+    "group-members-chromium-390-mplus available member search",
+    "group-members-chromium-390-mplus search stays local",
+    "group-members-chromium-390-mplus cancel move sends nothing",
+    "group-members-chromium-390-mplus duplicate move guarded",
+    "group-members-chromium-390-mplus acknowledged move separated from refresh failure",
+    "group-members-chromium-390-mplus stale list cannot mutate",
+    "group-members-chromium-390-mplus read retry reflects saved membership without resend",
+    "group-members-chromium-390-mplus failed leader change preserves leader",
+    "group-members-chromium-390-mplus remove member result reflected",
+    "group-members-chromium-390-mplus permission denial clears loaded records",
+    "group-members-chromium-390-mplus sign-out clears records and ignores pending read",
+    "group-members-chromium-390-mplus sign-out clears private contents",
+    "group-members-chromium-390-mplus no page errors or external requests []",
+    "newcomer-care-chromium-390-mplus list touch targets []",
+    "newcomer-care-chromium-390-mplus list width",
+    "newcomer-care-chromium-390-mplus list header",
+    "newcomer-care-chromium-390-mplus list contrast []",
+    "newcomer-care-chromium-390-mplus editor touch targets []",
+    "newcomer-care-chromium-390-mplus editor width",
+    "newcomer-care-chromium-390-mplus editor header",
+    "newcomer-care-chromium-390-mplus editor contrast []",
+    "newcomer-care-chromium-390-mplus 200% text",
+    "newcomer-care-chromium-390-mplus Taipei local time retained",
+    "newcomer-care-chromium-390-mplus cancel filter preserves editor and filter",
+    "newcomer-care-chromium-390-mplus cancel changing case preserves selection",
+    "newcomer-care-chromium-390-mplus cancel discard preserves input",
+    "newcomer-care-chromium-390-mplus failed save preserves draft",
+    "newcomer-care-chromium-390-mplus double save adds one service call",
+    "newcomer-care-chromium-390-mplus saved draft cleared even when read fails",
+    "newcomer-care-chromium-390-mplus stale case cannot append another log",
+    "newcomer-care-chromium-390-mplus care payload retains date and summary",
+    "newcomer-care-chromium-390-mplus refresh never repeats saved care log",
+    "newcomer-care-chromium-390-mplus case search applies locally",
+    "newcomer-care-chromium-390-mplus cancel completion sends nothing",
+    "newcomer-care-chromium-390-mplus completion hides case from open filter",
+    "newcomer-care-chromium-390-mplus permission denial clears loaded records",
+    "newcomer-care-chromium-390-mplus sign-out clears records and ignores pending read",
+    "newcomer-care-chromium-390-mplus sign-out clears private contents",
+    "newcomer-care-chromium-390-mplus no page errors or external requests []",
+    "binding-review-chromium-390-mplus list touch targets []",
+    "binding-review-chromium-390-mplus list width",
+    "binding-review-chromium-390-mplus list header",
+    "binding-review-chromium-390-mplus list contrast []",
+    "binding-review-chromium-390-mplus editor touch targets []",
+    "binding-review-chromium-390-mplus editor width",
+    "binding-review-chromium-390-mplus editor header",
+    "binding-review-chromium-390-mplus editor contrast []",
+    "binding-review-chromium-390-mplus 200% text",
+    "binding-review-chromium-390-mplus no approval without candidate and verification",
+    "binding-review-chromium-390-mplus candidate not automatically selected",
+    "binding-review-chromium-390-mplus changing candidate resets verification",
+    "binding-review-chromium-390-mplus local search preserves reviewed selection",
+    "binding-review-chromium-390-mplus status filter",
+    "binding-review-chromium-390-mplus stale candidate response discarded after name change",
+    "binding-review-chromium-390-mplus failed approval preserves reviewed inputs",
+    "binding-review-chromium-390-mplus approval single dispatch with acknowledged refresh failure",
+    "binding-review-chromium-390-mplus failed refresh removes stale binding actions",
+    "binding-review-chromium-390-mplus binding retry only reads",
+    "binding-review-chromium-390-mplus revoke requires explicit checkbox",
+    "binding-review-chromium-390-mplus confirmed revoke dispatches",
+    "binding-review-chromium-390-mplus permission denial clears loaded records",
+    "binding-review-chromium-390-mplus sign-out clears records and ignores pending read",
+    "binding-review-chromium-390-mplus sign-out clears private contents",
+    "binding-review-chromium-390-mplus no page errors or external requests []",
+    "member-audit-chromium-390-mplus list touch targets []",
+    "member-audit-chromium-390-mplus list width",
+    "member-audit-chromium-390-mplus list header",
+    "member-audit-chromium-390-mplus list contrast []",
+    "member-audit-chromium-390-mplus editor touch targets []",
+    "member-audit-chromium-390-mplus editor width",
+    "member-audit-chromium-390-mplus editor header",
+    "member-audit-chromium-390-mplus editor contrast []",
+    "member-audit-chromium-390-mplus 200% text",
+    "member-audit-chromium-390-mplus initial recent fifty",
+    "member-audit-chromium-390-mplus audit never displays old or new private values",
+    "member-audit-chromium-390-mplus audit filters locally",
+    "member-audit-chromium-390-mplus action and exact member ID combined",
+    "member-audit-chromium-390-mplus member ID is exact match",
+    "member-audit-chromium-390-mplus failed pagination preserves last loaded page",
+    "member-audit-chromium-390-mplus pagination stops at service maximum",
+    "member-audit-chromium-390-mplus audit browsing sends no writes",
+    "member-audit-chromium-390-mplus permission denial clears loaded records",
+    "member-audit-chromium-390-mplus sign-out clears records and ignores pending read",
+    "member-audit-chromium-390-mplus sign-out clears private contents",
+    "member-audit-chromium-390-mplus no page errors or external requests []",
+    "prayers-chromium-390-mplus list touch targets []",
+    "prayers-chromium-390-mplus list width",
+    "prayers-chromium-390-mplus list header",
+    "prayers-chromium-390-mplus list contrast []",
+    "prayers-chromium-390-mplus editor touch targets []",
+    "prayers-chromium-390-mplus editor width",
+    "prayers-chromium-390-mplus editor header",
+    "prayers-chromium-390-mplus editor contrast []",
+    "prayers-chromium-390-mplus 200% text",
+    "prayers-chromium-390-mplus dirty reload cancelled",
+    "prayers-chromium-390-mplus dirty new record cancelled",
+    "prayers-chromium-390-mplus list search preserves editor",
+    "prayers-chromium-390-mplus dirty cancel requires confirmation",
+    "prayers-chromium-390-mplus failed prayer save preserves notes",
+    "prayers-chromium-390-mplus single prayer save and acknowledged draft cleared",
+    "prayers-chromium-390-mplus prayer acknowledgement survives failed refresh",
+    "prayers-chromium-390-mplus edit retains private notes field without changing visibility",
+    "prayers-chromium-390-mplus prayer refresh does not resend",
+    "prayers-chromium-390-mplus failed create preserves private choice and retry ID",
+    "prayers-chromium-390-mplus create retry retains ID and private visibility",
+    "prayers-chromium-390-mplus permission denial clears loaded records",
+    "prayers-chromium-390-mplus sign-out clears records and ignores pending read",
+    "prayers-chromium-390-mplus sign-out clears private contents",
+    "prayers-chromium-390-mplus no page errors or external requests []",
+    "group-members-chromium-390-shine list touch targets []",
+    "group-members-chromium-390-shine list width",
+    "group-members-chromium-390-shine list header",
+    "group-members-chromium-390-shine list contrast []",
+    "group-members-chromium-390-shine editor touch targets []",
+    "group-members-chromium-390-shine editor width",
+    "group-members-chromium-390-shine editor header",
+    "group-members-chromium-390-shine editor contrast []",
+    "group-members-chromium-390-shine 200% text",
+    "group-members-chromium-390-shine explicit member selection required",
+    "group-members-chromium-390-shine current member search",
+    "group-members-chromium-390-shine available member search",
+    "group-members-chromium-390-shine search stays local",
+    "group-members-chromium-390-shine cancel move sends nothing",
+    "group-members-chromium-390-shine duplicate move guarded",
+    "group-members-chromium-390-shine acknowledged move separated from refresh failure",
+    "group-members-chromium-390-shine stale list cannot mutate",
+    "group-members-chromium-390-shine read retry reflects saved membership without resend",
+    "group-members-chromium-390-shine failed leader change preserves leader",
+    "group-members-chromium-390-shine remove member result reflected",
+    "group-members-chromium-390-shine permission denial clears loaded records",
+    "group-members-chromium-390-shine sign-out clears records and ignores pending read",
+    "group-members-chromium-390-shine sign-out clears private contents",
+    "group-members-chromium-390-shine no page errors or external requests []",
+    "newcomer-care-chromium-390-shine list touch targets []",
+    "newcomer-care-chromium-390-shine list width",
+    "newcomer-care-chromium-390-shine list header",
+    "newcomer-care-chromium-390-shine list contrast []",
+    "newcomer-care-chromium-390-shine editor touch targets []",
+    "newcomer-care-chromium-390-shine editor width",
+    "newcomer-care-chromium-390-shine editor header",
+    "newcomer-care-chromium-390-shine editor contrast []",
+    "newcomer-care-chromium-390-shine 200% text",
+    "newcomer-care-chromium-390-shine Taipei local time retained",
+    "newcomer-care-chromium-390-shine cancel filter preserves editor and filter",
+    "newcomer-care-chromium-390-shine cancel changing case preserves selection",
+    "newcomer-care-chromium-390-shine cancel discard preserves input",
+    "newcomer-care-chromium-390-shine failed save preserves draft",
+    "newcomer-care-chromium-390-shine double save adds one service call",
+    "newcomer-care-chromium-390-shine saved draft cleared even when read fails",
+    "newcomer-care-chromium-390-shine stale case cannot append another log",
+    "newcomer-care-chromium-390-shine care payload retains date and summary",
+    "newcomer-care-chromium-390-shine refresh never repeats saved care log",
+    "newcomer-care-chromium-390-shine case search applies locally",
+    "newcomer-care-chromium-390-shine cancel completion sends nothing",
+    "newcomer-care-chromium-390-shine completion hides case from open filter",
+    "newcomer-care-chromium-390-shine permission denial clears loaded records",
+    "newcomer-care-chromium-390-shine sign-out clears records and ignores pending read",
+    "newcomer-care-chromium-390-shine sign-out clears private contents",
+    "newcomer-care-chromium-390-shine no page errors or external requests []",
+    "binding-review-chromium-390-shine list touch targets []",
+    "binding-review-chromium-390-shine list width",
+    "binding-review-chromium-390-shine list header",
+    "binding-review-chromium-390-shine list contrast []",
+    "binding-review-chromium-390-shine editor touch targets []",
+    "binding-review-chromium-390-shine editor width",
+    "binding-review-chromium-390-shine editor header",
+    "binding-review-chromium-390-shine editor contrast []",
+    "binding-review-chromium-390-shine 200% text",
+    "binding-review-chromium-390-shine no approval without candidate and verification",
+    "binding-review-chromium-390-shine candidate not automatically selected",
+    "binding-review-chromium-390-shine changing candidate resets verification",
+    "binding-review-chromium-390-shine local search preserves reviewed selection",
+    "binding-review-chromium-390-shine status filter",
+    "binding-review-chromium-390-shine stale candidate response discarded after name change",
+    "binding-review-chromium-390-shine failed approval preserves reviewed inputs",
+    "binding-review-chromium-390-shine approval single dispatch with acknowledged refresh failure",
+    "binding-review-chromium-390-shine failed refresh removes stale binding actions",
+    "binding-review-chromium-390-shine binding retry only reads",
+    "binding-review-chromium-390-shine revoke requires explicit checkbox",
+    "binding-review-chromium-390-shine confirmed revoke dispatches",
+    "binding-review-chromium-390-shine permission denial clears loaded records",
+    "binding-review-chromium-390-shine sign-out clears records and ignores pending read",
+    "binding-review-chromium-390-shine sign-out clears private contents",
+    "binding-review-chromium-390-shine no page errors or external requests []",
+    "member-audit-chromium-390-shine list touch targets []",
+    "member-audit-chromium-390-shine list width",
+    "member-audit-chromium-390-shine list header",
+    "member-audit-chromium-390-shine list contrast []",
+    "member-audit-chromium-390-shine editor touch targets []",
+    "member-audit-chromium-390-shine editor width",
+    "member-audit-chromium-390-shine editor header",
+    "member-audit-chromium-390-shine editor contrast []",
+    "member-audit-chromium-390-shine 200% text",
+    "member-audit-chromium-390-shine initial recent fifty",
+    "member-audit-chromium-390-shine audit never displays old or new private values",
+    "member-audit-chromium-390-shine audit filters locally",
+    "member-audit-chromium-390-shine action and exact member ID combined",
+    "member-audit-chromium-390-shine member ID is exact match",
+    "member-audit-chromium-390-shine failed pagination preserves last loaded page",
+    "member-audit-chromium-390-shine pagination stops at service maximum",
+    "member-audit-chromium-390-shine audit browsing sends no writes",
+    "member-audit-chromium-390-shine permission denial clears loaded records",
+    "member-audit-chromium-390-shine sign-out clears records and ignores pending read",
+    "member-audit-chromium-390-shine sign-out clears private contents",
+    "member-audit-chromium-390-shine no page errors or external requests []",
+    "prayers-chromium-390-shine list touch targets []",
+    "prayers-chromium-390-shine list width",
+    "prayers-chromium-390-shine list header",
+    "prayers-chromium-390-shine list contrast []",
+    "prayers-chromium-390-shine editor touch targets []",
+    "prayers-chromium-390-shine editor width",
+    "prayers-chromium-390-shine editor header",
+    "prayers-chromium-390-shine editor contrast []",
+    "prayers-chromium-390-shine 200% text",
+    "prayers-chromium-390-shine dirty reload cancelled",
+    "prayers-chromium-390-shine dirty new record cancelled",
+    "prayers-chromium-390-shine list search preserves editor",
+    "prayers-chromium-390-shine dirty cancel requires confirmation",
+    "prayers-chromium-390-shine failed prayer save preserves notes",
+    "prayers-chromium-390-shine single prayer save and acknowledged draft cleared",
+    "prayers-chromium-390-shine prayer acknowledgement survives failed refresh",
+    "prayers-chromium-390-shine edit retains private notes field without changing visibility",
+    "prayers-chromium-390-shine prayer refresh does not resend",
+    "prayers-chromium-390-shine failed create preserves private choice and retry ID",
+    "prayers-chromium-390-shine create retry retains ID and private visibility",
+    "prayers-chromium-390-shine permission denial clears loaded records",
+    "prayers-chromium-390-shine sign-out clears records and ignores pending read",
+    "prayers-chromium-390-shine sign-out clears private contents",
+    "prayers-chromium-390-shine no page errors or external requests []",
+    "group-members-chromium-1440-mplus list touch targets []",
+    "group-members-chromium-1440-mplus list width",
+    "group-members-chromium-1440-mplus list header",
+    "group-members-chromium-1440-mplus list contrast []",
+    "group-members-chromium-1440-mplus editor touch targets []",
+    "group-members-chromium-1440-mplus editor width",
+    "group-members-chromium-1440-mplus editor header",
+    "group-members-chromium-1440-mplus editor contrast []",
+    "group-members-chromium-1440-mplus 200% text",
+    "group-members-chromium-1440-mplus desktop 1280",
+    "group-members-chromium-1440-mplus desktop 1920",
+    "group-members-chromium-1440-mplus explicit member selection required",
+    "group-members-chromium-1440-mplus current member search",
+    "group-members-chromium-1440-mplus available member search",
+    "group-members-chromium-1440-mplus search stays local",
+    "group-members-chromium-1440-mplus cancel move sends nothing",
+    "group-members-chromium-1440-mplus duplicate move guarded",
+    "group-members-chromium-1440-mplus acknowledged move separated from refresh failure",
+    "group-members-chromium-1440-mplus stale list cannot mutate",
+    "group-members-chromium-1440-mplus read retry reflects saved membership without resend",
+    "group-members-chromium-1440-mplus failed leader change preserves leader",
+    "group-members-chromium-1440-mplus remove member result reflected",
+    "group-members-chromium-1440-mplus permission denial clears loaded records",
+    "group-members-chromium-1440-mplus sign-out clears records and ignores pending read",
+    "group-members-chromium-1440-mplus sign-out clears private contents",
+    "group-members-chromium-1440-mplus no page errors or external requests []",
+    "newcomer-care-chromium-1440-mplus list touch targets []",
+    "newcomer-care-chromium-1440-mplus list width",
+    "newcomer-care-chromium-1440-mplus list header",
+    "newcomer-care-chromium-1440-mplus list contrast []",
+    "newcomer-care-chromium-1440-mplus editor touch targets []",
+    "newcomer-care-chromium-1440-mplus editor width",
+    "newcomer-care-chromium-1440-mplus editor header",
+    "newcomer-care-chromium-1440-mplus editor contrast []",
+    "newcomer-care-chromium-1440-mplus 200% text",
+    "newcomer-care-chromium-1440-mplus desktop 1280",
+    "newcomer-care-chromium-1440-mplus desktop 1920",
+    "newcomer-care-chromium-1440-mplus Taipei local time retained",
+    "newcomer-care-chromium-1440-mplus cancel filter preserves editor and filter",
+    "newcomer-care-chromium-1440-mplus cancel changing case preserves selection",
+    "newcomer-care-chromium-1440-mplus cancel discard preserves input",
+    "newcomer-care-chromium-1440-mplus failed save preserves draft",
+    "newcomer-care-chromium-1440-mplus double save adds one service call",
+    "newcomer-care-chromium-1440-mplus saved draft cleared even when read fails",
+    "newcomer-care-chromium-1440-mplus stale case cannot append another log",
+    "newcomer-care-chromium-1440-mplus care payload retains date and summary",
+    "newcomer-care-chromium-1440-mplus refresh never repeats saved care log",
+    "newcomer-care-chromium-1440-mplus case search applies locally",
+    "newcomer-care-chromium-1440-mplus cancel completion sends nothing",
+    "newcomer-care-chromium-1440-mplus completion hides case from open filter",
+    "newcomer-care-chromium-1440-mplus permission denial clears loaded records",
+    "newcomer-care-chromium-1440-mplus sign-out clears records and ignores pending read",
+    "newcomer-care-chromium-1440-mplus sign-out clears private contents",
+    "newcomer-care-chromium-1440-mplus no page errors or external requests []",
+    "binding-review-chromium-1440-mplus list touch targets []",
+    "binding-review-chromium-1440-mplus list width",
+    "binding-review-chromium-1440-mplus list header",
+    "binding-review-chromium-1440-mplus list contrast []",
+    "binding-review-chromium-1440-mplus editor touch targets []",
+    "binding-review-chromium-1440-mplus editor width",
+    "binding-review-chromium-1440-mplus editor header",
+    "binding-review-chromium-1440-mplus editor contrast []",
+    "binding-review-chromium-1440-mplus 200% text",
+    "binding-review-chromium-1440-mplus desktop 1280",
+    "binding-review-chromium-1440-mplus desktop 1920",
+    "binding-review-chromium-1440-mplus no approval without candidate and verification",
+    "binding-review-chromium-1440-mplus candidate not automatically selected",
+    "binding-review-chromium-1440-mplus changing candidate resets verification",
+    "binding-review-chromium-1440-mplus local search preserves reviewed selection",
+    "binding-review-chromium-1440-mplus status filter",
+    "binding-review-chromium-1440-mplus stale candidate response discarded after name change",
+    "binding-review-chromium-1440-mplus failed approval preserves reviewed inputs",
+    "binding-review-chromium-1440-mplus approval single dispatch with acknowledged refresh failure",
+    "binding-review-chromium-1440-mplus failed refresh removes stale binding actions",
+    "binding-review-chromium-1440-mplus binding retry only reads",
+    "binding-review-chromium-1440-mplus revoke requires explicit checkbox",
+    "binding-review-chromium-1440-mplus confirmed revoke dispatches",
+    "binding-review-chromium-1440-mplus permission denial clears loaded records",
+    "binding-review-chromium-1440-mplus sign-out clears records and ignores pending read",
+    "binding-review-chromium-1440-mplus sign-out clears private contents",
+    "binding-review-chromium-1440-mplus no page errors or external requests []",
+    "member-audit-chromium-1440-mplus list touch targets []",
+    "member-audit-chromium-1440-mplus list width",
+    "member-audit-chromium-1440-mplus list header",
+    "member-audit-chromium-1440-mplus list contrast []",
+    "member-audit-chromium-1440-mplus editor touch targets []",
+    "member-audit-chromium-1440-mplus editor width",
+    "member-audit-chromium-1440-mplus editor header",
+    "member-audit-chromium-1440-mplus editor contrast []",
+    "member-audit-chromium-1440-mplus 200% text",
+    "member-audit-chromium-1440-mplus desktop 1280",
+    "member-audit-chromium-1440-mplus desktop 1920",
+    "member-audit-chromium-1440-mplus initial recent fifty",
+    "member-audit-chromium-1440-mplus audit never displays old or new private values",
+    "member-audit-chromium-1440-mplus audit filters locally",
+    "member-audit-chromium-1440-mplus action and exact member ID combined",
+    "member-audit-chromium-1440-mplus member ID is exact match",
+    "member-audit-chromium-1440-mplus failed pagination preserves last loaded page",
+    "member-audit-chromium-1440-mplus pagination stops at service maximum",
+    "member-audit-chromium-1440-mplus audit browsing sends no writes",
+    "member-audit-chromium-1440-mplus permission denial clears loaded records",
+    "member-audit-chromium-1440-mplus sign-out clears records and ignores pending read",
+    "member-audit-chromium-1440-mplus sign-out clears private contents",
+    "member-audit-chromium-1440-mplus no page errors or external requests []",
+    "prayers-chromium-1440-mplus list touch targets []",
+    "prayers-chromium-1440-mplus list width",
+    "prayers-chromium-1440-mplus list header",
+    "prayers-chromium-1440-mplus list contrast []",
+    "prayers-chromium-1440-mplus editor touch targets []",
+    "prayers-chromium-1440-mplus editor width",
+    "prayers-chromium-1440-mplus editor header",
+    "prayers-chromium-1440-mplus editor contrast []",
+    "prayers-chromium-1440-mplus 200% text",
+    "prayers-chromium-1440-mplus desktop 1280",
+    "prayers-chromium-1440-mplus desktop 1920",
+    "prayers-chromium-1440-mplus dirty reload cancelled",
+    "prayers-chromium-1440-mplus dirty new record cancelled",
+    "prayers-chromium-1440-mplus list search preserves editor",
+    "prayers-chromium-1440-mplus dirty cancel requires confirmation",
+    "prayers-chromium-1440-mplus failed prayer save preserves notes",
+    "prayers-chromium-1440-mplus single prayer save and acknowledged draft cleared",
+    "prayers-chromium-1440-mplus prayer acknowledgement survives failed refresh",
+    "prayers-chromium-1440-mplus edit retains private notes field without changing visibility",
+    "prayers-chromium-1440-mplus prayer refresh does not resend",
+    "prayers-chromium-1440-mplus failed create preserves private choice and retry ID",
+    "prayers-chromium-1440-mplus create retry retains ID and private visibility",
+    "prayers-chromium-1440-mplus permission denial clears loaded records",
+    "prayers-chromium-1440-mplus sign-out clears records and ignores pending read",
+    "prayers-chromium-1440-mplus sign-out clears private contents",
+    "prayers-chromium-1440-mplus no page errors or external requests []",
+    "group-members-chromium-1440-shine list touch targets []",
+    "group-members-chromium-1440-shine list width",
+    "group-members-chromium-1440-shine list header",
+    "group-members-chromium-1440-shine list contrast []",
+    "group-members-chromium-1440-shine editor touch targets []",
+    "group-members-chromium-1440-shine editor width",
+    "group-members-chromium-1440-shine editor header",
+    "group-members-chromium-1440-shine editor contrast []",
+    "group-members-chromium-1440-shine 200% text",
+    "group-members-chromium-1440-shine desktop 1280",
+    "group-members-chromium-1440-shine desktop 1920",
+    "group-members-chromium-1440-shine explicit member selection required",
+    "group-members-chromium-1440-shine current member search",
+    "group-members-chromium-1440-shine available member search",
+    "group-members-chromium-1440-shine search stays local",
+    "group-members-chromium-1440-shine cancel move sends nothing",
+    "group-members-chromium-1440-shine duplicate move guarded",
+    "group-members-chromium-1440-shine acknowledged move separated from refresh failure",
+    "group-members-chromium-1440-shine stale list cannot mutate",
+    "group-members-chromium-1440-shine read retry reflects saved membership without resend",
+    "group-members-chromium-1440-shine failed leader change preserves leader",
+    "group-members-chromium-1440-shine remove member result reflected",
+    "group-members-chromium-1440-shine permission denial clears loaded records",
+    "group-members-chromium-1440-shine sign-out clears records and ignores pending read",
+    "group-members-chromium-1440-shine sign-out clears private contents",
+    "group-members-chromium-1440-shine no page errors or external requests []",
+    "newcomer-care-chromium-1440-shine list touch targets []",
+    "newcomer-care-chromium-1440-shine list width",
+    "newcomer-care-chromium-1440-shine list header",
+    "newcomer-care-chromium-1440-shine list contrast []",
+    "newcomer-care-chromium-1440-shine editor touch targets []",
+    "newcomer-care-chromium-1440-shine editor width",
+    "newcomer-care-chromium-1440-shine editor header",
+    "newcomer-care-chromium-1440-shine editor contrast []",
+    "newcomer-care-chromium-1440-shine 200% text",
+    "newcomer-care-chromium-1440-shine desktop 1280",
+    "newcomer-care-chromium-1440-shine desktop 1920",
+    "newcomer-care-chromium-1440-shine Taipei local time retained",
+    "newcomer-care-chromium-1440-shine cancel filter preserves editor and filter",
+    "newcomer-care-chromium-1440-shine cancel changing case preserves selection",
+    "newcomer-care-chromium-1440-shine cancel discard preserves input",
+    "newcomer-care-chromium-1440-shine failed save preserves draft",
+    "newcomer-care-chromium-1440-shine double save adds one service call",
+    "newcomer-care-chromium-1440-shine saved draft cleared even when read fails",
+    "newcomer-care-chromium-1440-shine stale case cannot append another log",
+    "newcomer-care-chromium-1440-shine care payload retains date and summary",
+    "newcomer-care-chromium-1440-shine refresh never repeats saved care log",
+    "newcomer-care-chromium-1440-shine case search applies locally",
+    "newcomer-care-chromium-1440-shine cancel completion sends nothing",
+    "newcomer-care-chromium-1440-shine completion hides case from open filter",
+    "newcomer-care-chromium-1440-shine permission denial clears loaded records",
+    "newcomer-care-chromium-1440-shine sign-out clears records and ignores pending read",
+    "newcomer-care-chromium-1440-shine sign-out clears private contents",
+    "newcomer-care-chromium-1440-shine no page errors or external requests []",
+    "binding-review-chromium-1440-shine list touch targets []",
+    "binding-review-chromium-1440-shine list width",
+    "binding-review-chromium-1440-shine list header",
+    "binding-review-chromium-1440-shine list contrast []",
+    "binding-review-chromium-1440-shine editor touch targets []",
+    "binding-review-chromium-1440-shine editor width",
+    "binding-review-chromium-1440-shine editor header",
+    "binding-review-chromium-1440-shine editor contrast []",
+    "binding-review-chromium-1440-shine 200% text",
+    "binding-review-chromium-1440-shine desktop 1280",
+    "binding-review-chromium-1440-shine desktop 1920",
+    "binding-review-chromium-1440-shine no approval without candidate and verification",
+    "binding-review-chromium-1440-shine candidate not automatically selected",
+    "binding-review-chromium-1440-shine changing candidate resets verification",
+    "binding-review-chromium-1440-shine local search preserves reviewed selection",
+    "binding-review-chromium-1440-shine status filter",
+    "binding-review-chromium-1440-shine stale candidate response discarded after name change",
+    "binding-review-chromium-1440-shine failed approval preserves reviewed inputs",
+    "binding-review-chromium-1440-shine approval single dispatch with acknowledged refresh failure",
+    "binding-review-chromium-1440-shine failed refresh removes stale binding actions",
+    "binding-review-chromium-1440-shine binding retry only reads",
+    "binding-review-chromium-1440-shine revoke requires explicit checkbox",
+    "binding-review-chromium-1440-shine confirmed revoke dispatches",
+    "binding-review-chromium-1440-shine permission denial clears loaded records",
+    "binding-review-chromium-1440-shine sign-out clears records and ignores pending read",
+    "binding-review-chromium-1440-shine sign-out clears private contents",
+    "binding-review-chromium-1440-shine no page errors or external requests []",
+    "member-audit-chromium-1440-shine list touch targets []",
+    "member-audit-chromium-1440-shine list width",
+    "member-audit-chromium-1440-shine list header",
+    "member-audit-chromium-1440-shine list contrast []",
+    "member-audit-chromium-1440-shine editor touch targets []",
+    "member-audit-chromium-1440-shine editor width",
+    "member-audit-chromium-1440-shine editor header",
+    "member-audit-chromium-1440-shine editor contrast []",
+    "member-audit-chromium-1440-shine 200% text",
+    "member-audit-chromium-1440-shine desktop 1280",
+    "member-audit-chromium-1440-shine desktop 1920",
+    "member-audit-chromium-1440-shine initial recent fifty",
+    "member-audit-chromium-1440-shine audit never displays old or new private values",
+    "member-audit-chromium-1440-shine audit filters locally",
+    "member-audit-chromium-1440-shine action and exact member ID combined",
+    "member-audit-chromium-1440-shine member ID is exact match",
+    "member-audit-chromium-1440-shine failed pagination preserves last loaded page",
+    "member-audit-chromium-1440-shine pagination stops at service maximum",
+    "member-audit-chromium-1440-shine audit browsing sends no writes",
+    "member-audit-chromium-1440-shine permission denial clears loaded records",
+    "member-audit-chromium-1440-shine sign-out clears records and ignores pending read",
+    "member-audit-chromium-1440-shine sign-out clears private contents",
+    "member-audit-chromium-1440-shine no page errors or external requests []",
+    "prayers-chromium-1440-shine list touch targets []",
+    "prayers-chromium-1440-shine list width",
+    "prayers-chromium-1440-shine list header",
+    "prayers-chromium-1440-shine list contrast []",
+    "prayers-chromium-1440-shine editor touch targets []",
+    "prayers-chromium-1440-shine editor width",
+    "prayers-chromium-1440-shine editor header",
+    "prayers-chromium-1440-shine editor contrast []",
+    "prayers-chromium-1440-shine 200% text",
+    "prayers-chromium-1440-shine desktop 1280",
+    "prayers-chromium-1440-shine desktop 1920",
+    "prayers-chromium-1440-shine dirty reload cancelled",
+    "prayers-chromium-1440-shine dirty new record cancelled",
+    "prayers-chromium-1440-shine list search preserves editor",
+    "prayers-chromium-1440-shine dirty cancel requires confirmation",
+    "prayers-chromium-1440-shine failed prayer save preserves notes",
+    "prayers-chromium-1440-shine single prayer save and acknowledged draft cleared",
+    "prayers-chromium-1440-shine prayer acknowledgement survives failed refresh",
+    "prayers-chromium-1440-shine edit retains private notes field without changing visibility",
+    "prayers-chromium-1440-shine prayer refresh does not resend",
+    "prayers-chromium-1440-shine failed create preserves private choice and retry ID",
+    "prayers-chromium-1440-shine create retry retains ID and private visibility",
+    "prayers-chromium-1440-shine permission denial clears loaded records",
+    "prayers-chromium-1440-shine sign-out clears records and ignores pending read",
+    "prayers-chromium-1440-shine sign-out clears private contents",
+    "prayers-chromium-1440-shine no page errors or external requests []",
+    "group-members-webkit-390-mplus list touch targets []",
+    "group-members-webkit-390-mplus list width",
+    "group-members-webkit-390-mplus list header",
+    "group-members-webkit-390-mplus list contrast []",
+    "group-members-webkit-390-mplus editor touch targets []",
+    "group-members-webkit-390-mplus editor width",
+    "group-members-webkit-390-mplus editor header",
+    "group-members-webkit-390-mplus editor contrast []",
+    "group-members-webkit-390-mplus 200% text",
+    "group-members-webkit-390-mplus explicit member selection required",
+    "group-members-webkit-390-mplus current member search",
+    "group-members-webkit-390-mplus available member search",
+    "group-members-webkit-390-mplus search stays local",
+    "group-members-webkit-390-mplus cancel move sends nothing",
+    "group-members-webkit-390-mplus duplicate move guarded",
+    "group-members-webkit-390-mplus acknowledged move separated from refresh failure",
+    "group-members-webkit-390-mplus stale list cannot mutate",
+    "group-members-webkit-390-mplus read retry reflects saved membership without resend",
+    "group-members-webkit-390-mplus failed leader change preserves leader",
+    "group-members-webkit-390-mplus remove member result reflected",
+    "group-members-webkit-390-mplus permission denial clears loaded records",
+    "group-members-webkit-390-mplus sign-out clears records and ignores pending read",
+    "group-members-webkit-390-mplus sign-out clears private contents",
+    "group-members-webkit-390-mplus no page errors or external requests []",
+    "newcomer-care-webkit-390-mplus list touch targets []",
+    "newcomer-care-webkit-390-mplus list width",
+    "newcomer-care-webkit-390-mplus list header",
+    "newcomer-care-webkit-390-mplus list contrast []",
+    "newcomer-care-webkit-390-mplus editor touch targets []",
+    "newcomer-care-webkit-390-mplus editor width",
+    "newcomer-care-webkit-390-mplus editor header",
+    "newcomer-care-webkit-390-mplus editor contrast []",
+    "newcomer-care-webkit-390-mplus 200% text",
+    "newcomer-care-webkit-390-mplus Taipei local time retained",
+    "newcomer-care-webkit-390-mplus cancel filter preserves editor and filter",
+    "newcomer-care-webkit-390-mplus cancel changing case preserves selection",
+    "newcomer-care-webkit-390-mplus cancel discard preserves input",
+    "newcomer-care-webkit-390-mplus failed save preserves draft",
+    "newcomer-care-webkit-390-mplus double save adds one service call",
+    "newcomer-care-webkit-390-mplus saved draft cleared even when read fails",
+    "newcomer-care-webkit-390-mplus stale case cannot append another log",
+    "newcomer-care-webkit-390-mplus care payload retains date and summary",
+    "newcomer-care-webkit-390-mplus refresh never repeats saved care log",
+    "newcomer-care-webkit-390-mplus case search applies locally",
+    "newcomer-care-webkit-390-mplus cancel completion sends nothing",
+    "newcomer-care-webkit-390-mplus completion hides case from open filter",
+    "newcomer-care-webkit-390-mplus permission denial clears loaded records",
+    "newcomer-care-webkit-390-mplus sign-out clears records and ignores pending read",
+    "newcomer-care-webkit-390-mplus sign-out clears private contents",
+    "newcomer-care-webkit-390-mplus no page errors or external requests []",
+    "binding-review-webkit-390-mplus list touch targets []",
+    "binding-review-webkit-390-mplus list width",
+    "binding-review-webkit-390-mplus list header",
+    "binding-review-webkit-390-mplus list contrast []",
+    "binding-review-webkit-390-mplus editor touch targets []",
+    "binding-review-webkit-390-mplus editor width",
+    "binding-review-webkit-390-mplus editor header",
+    "binding-review-webkit-390-mplus editor contrast []",
+    "binding-review-webkit-390-mplus 200% text",
+    "binding-review-webkit-390-mplus no approval without candidate and verification",
+    "binding-review-webkit-390-mplus candidate not automatically selected",
+    "binding-review-webkit-390-mplus changing candidate resets verification",
+    "binding-review-webkit-390-mplus local search preserves reviewed selection",
+    "binding-review-webkit-390-mplus status filter",
+    "binding-review-webkit-390-mplus stale candidate response discarded after name change",
+    "binding-review-webkit-390-mplus failed approval preserves reviewed inputs",
+    "binding-review-webkit-390-mplus approval single dispatch with acknowledged refresh failure",
+    "binding-review-webkit-390-mplus failed refresh removes stale binding actions",
+    "binding-review-webkit-390-mplus binding retry only reads",
+    "binding-review-webkit-390-mplus revoke requires explicit checkbox",
+    "binding-review-webkit-390-mplus confirmed revoke dispatches",
+    "binding-review-webkit-390-mplus permission denial clears loaded records",
+    "binding-review-webkit-390-mplus sign-out clears records and ignores pending read",
+    "binding-review-webkit-390-mplus sign-out clears private contents",
+    "binding-review-webkit-390-mplus no page errors or external requests []",
+    "member-audit-webkit-390-mplus list touch targets []",
+    "member-audit-webkit-390-mplus list width",
+    "member-audit-webkit-390-mplus list header",
+    "member-audit-webkit-390-mplus list contrast []",
+    "member-audit-webkit-390-mplus editor touch targets []",
+    "member-audit-webkit-390-mplus editor width",
+    "member-audit-webkit-390-mplus editor header",
+    "member-audit-webkit-390-mplus editor contrast []",
+    "member-audit-webkit-390-mplus 200% text",
+    "member-audit-webkit-390-mplus initial recent fifty",
+    "member-audit-webkit-390-mplus audit never displays old or new private values",
+    "member-audit-webkit-390-mplus audit filters locally",
+    "member-audit-webkit-390-mplus action and exact member ID combined",
+    "member-audit-webkit-390-mplus member ID is exact match",
+    "member-audit-webkit-390-mplus failed pagination preserves last loaded page",
+    "member-audit-webkit-390-mplus pagination stops at service maximum",
+    "member-audit-webkit-390-mplus audit browsing sends no writes",
+    "member-audit-webkit-390-mplus permission denial clears loaded records",
+    "member-audit-webkit-390-mplus sign-out clears records and ignores pending read",
+    "member-audit-webkit-390-mplus sign-out clears private contents",
+    "member-audit-webkit-390-mplus no page errors or external requests []",
+    "prayers-webkit-390-mplus list touch targets []",
+    "prayers-webkit-390-mplus list width",
+    "prayers-webkit-390-mplus list header",
+    "prayers-webkit-390-mplus list contrast []",
+    "prayers-webkit-390-mplus editor touch targets []",
+    "prayers-webkit-390-mplus editor width",
+    "prayers-webkit-390-mplus editor header",
+    "prayers-webkit-390-mplus editor contrast []",
+    "prayers-webkit-390-mplus 200% text",
+    "prayers-webkit-390-mplus dirty reload cancelled",
+    "prayers-webkit-390-mplus dirty new record cancelled",
+    "prayers-webkit-390-mplus list search preserves editor",
+    "prayers-webkit-390-mplus dirty cancel requires confirmation",
+    "prayers-webkit-390-mplus failed prayer save preserves notes",
+    "prayers-webkit-390-mplus single prayer save and acknowledged draft cleared",
+    "prayers-webkit-390-mplus prayer acknowledgement survives failed refresh",
+    "prayers-webkit-390-mplus edit retains private notes field without changing visibility",
+    "prayers-webkit-390-mplus prayer refresh does not resend",
+    "prayers-webkit-390-mplus failed create preserves private choice and retry ID",
+    "prayers-webkit-390-mplus create retry retains ID and private visibility",
+    "prayers-webkit-390-mplus permission denial clears loaded records",
+    "prayers-webkit-390-mplus sign-out clears records and ignores pending read",
+    "prayers-webkit-390-mplus sign-out clears private contents",
+    "prayers-webkit-390-mplus no page errors or external requests []",
+    "group-members-webkit-390-shine list touch targets []",
+    "group-members-webkit-390-shine list width",
+    "group-members-webkit-390-shine list header",
+    "group-members-webkit-390-shine list contrast []",
+    "group-members-webkit-390-shine editor touch targets []",
+    "group-members-webkit-390-shine editor width",
+    "group-members-webkit-390-shine editor header",
+    "group-members-webkit-390-shine editor contrast []",
+    "group-members-webkit-390-shine 200% text",
+    "group-members-webkit-390-shine explicit member selection required",
+    "group-members-webkit-390-shine current member search",
+    "group-members-webkit-390-shine available member search",
+    "group-members-webkit-390-shine search stays local",
+    "group-members-webkit-390-shine cancel move sends nothing",
+    "group-members-webkit-390-shine duplicate move guarded",
+    "group-members-webkit-390-shine acknowledged move separated from refresh failure",
+    "group-members-webkit-390-shine stale list cannot mutate",
+    "group-members-webkit-390-shine read retry reflects saved membership without resend",
+    "group-members-webkit-390-shine failed leader change preserves leader",
+    "group-members-webkit-390-shine remove member result reflected",
+    "group-members-webkit-390-shine permission denial clears loaded records",
+    "group-members-webkit-390-shine sign-out clears records and ignores pending read",
+    "group-members-webkit-390-shine sign-out clears private contents",
+    "group-members-webkit-390-shine no page errors or external requests []",
+    "newcomer-care-webkit-390-shine list touch targets []",
+    "newcomer-care-webkit-390-shine list width",
+    "newcomer-care-webkit-390-shine list header",
+    "newcomer-care-webkit-390-shine list contrast []",
+    "newcomer-care-webkit-390-shine editor touch targets []",
+    "newcomer-care-webkit-390-shine editor width",
+    "newcomer-care-webkit-390-shine editor header",
+    "newcomer-care-webkit-390-shine editor contrast []",
+    "newcomer-care-webkit-390-shine 200% text",
+    "newcomer-care-webkit-390-shine Taipei local time retained",
+    "newcomer-care-webkit-390-shine cancel filter preserves editor and filter",
+    "newcomer-care-webkit-390-shine cancel changing case preserves selection",
+    "newcomer-care-webkit-390-shine cancel discard preserves input",
+    "newcomer-care-webkit-390-shine failed save preserves draft",
+    "newcomer-care-webkit-390-shine double save adds one service call",
+    "newcomer-care-webkit-390-shine saved draft cleared even when read fails",
+    "newcomer-care-webkit-390-shine stale case cannot append another log",
+    "newcomer-care-webkit-390-shine care payload retains date and summary",
+    "newcomer-care-webkit-390-shine refresh never repeats saved care log",
+    "newcomer-care-webkit-390-shine case search applies locally",
+    "newcomer-care-webkit-390-shine cancel completion sends nothing",
+    "newcomer-care-webkit-390-shine completion hides case from open filter",
+    "newcomer-care-webkit-390-shine permission denial clears loaded records",
+    "newcomer-care-webkit-390-shine sign-out clears records and ignores pending read",
+    "newcomer-care-webkit-390-shine sign-out clears private contents",
+    "newcomer-care-webkit-390-shine no page errors or external requests []",
+    "binding-review-webkit-390-shine list touch targets []",
+    "binding-review-webkit-390-shine list width",
+    "binding-review-webkit-390-shine list header",
+    "binding-review-webkit-390-shine list contrast []",
+    "binding-review-webkit-390-shine editor touch targets []",
+    "binding-review-webkit-390-shine editor width",
+    "binding-review-webkit-390-shine editor header",
+    "binding-review-webkit-390-shine editor contrast []",
+    "binding-review-webkit-390-shine 200% text",
+    "binding-review-webkit-390-shine no approval without candidate and verification",
+    "binding-review-webkit-390-shine candidate not automatically selected",
+    "binding-review-webkit-390-shine changing candidate resets verification",
+    "binding-review-webkit-390-shine local search preserves reviewed selection",
+    "binding-review-webkit-390-shine status filter",
+    "binding-review-webkit-390-shine stale candidate response discarded after name change",
+    "binding-review-webkit-390-shine failed approval preserves reviewed inputs",
+    "binding-review-webkit-390-shine approval single dispatch with acknowledged refresh failure",
+    "binding-review-webkit-390-shine failed refresh removes stale binding actions",
+    "binding-review-webkit-390-shine binding retry only reads",
+    "binding-review-webkit-390-shine revoke requires explicit checkbox",
+    "binding-review-webkit-390-shine confirmed revoke dispatches",
+    "binding-review-webkit-390-shine permission denial clears loaded records",
+    "binding-review-webkit-390-shine sign-out clears records and ignores pending read",
+    "binding-review-webkit-390-shine sign-out clears private contents",
+    "binding-review-webkit-390-shine no page errors or external requests []",
+    "member-audit-webkit-390-shine list touch targets []",
+    "member-audit-webkit-390-shine list width",
+    "member-audit-webkit-390-shine list header",
+    "member-audit-webkit-390-shine list contrast []",
+    "member-audit-webkit-390-shine editor touch targets []",
+    "member-audit-webkit-390-shine editor width",
+    "member-audit-webkit-390-shine editor header",
+    "member-audit-webkit-390-shine editor contrast []",
+    "member-audit-webkit-390-shine 200% text",
+    "member-audit-webkit-390-shine initial recent fifty",
+    "member-audit-webkit-390-shine audit never displays old or new private values",
+    "member-audit-webkit-390-shine audit filters locally",
+    "member-audit-webkit-390-shine action and exact member ID combined",
+    "member-audit-webkit-390-shine member ID is exact match",
+    "member-audit-webkit-390-shine failed pagination preserves last loaded page",
+    "member-audit-webkit-390-shine pagination stops at service maximum",
+    "member-audit-webkit-390-shine audit browsing sends no writes",
+    "member-audit-webkit-390-shine permission denial clears loaded records",
+    "member-audit-webkit-390-shine sign-out clears records and ignores pending read",
+    "member-audit-webkit-390-shine sign-out clears private contents",
+    "member-audit-webkit-390-shine no page errors or external requests []",
+    "prayers-webkit-390-shine list touch targets []",
+    "prayers-webkit-390-shine list width",
+    "prayers-webkit-390-shine list header",
+    "prayers-webkit-390-shine list contrast []",
+    "prayers-webkit-390-shine editor touch targets []",
+    "prayers-webkit-390-shine editor width",
+    "prayers-webkit-390-shine editor header",
+    "prayers-webkit-390-shine editor contrast []",
+    "prayers-webkit-390-shine 200% text",
+    "prayers-webkit-390-shine dirty reload cancelled",
+    "prayers-webkit-390-shine dirty new record cancelled",
+    "prayers-webkit-390-shine list search preserves editor",
+    "prayers-webkit-390-shine dirty cancel requires confirmation",
+    "prayers-webkit-390-shine failed prayer save preserves notes",
+    "prayers-webkit-390-shine single prayer save and acknowledged draft cleared",
+    "prayers-webkit-390-shine prayer acknowledgement survives failed refresh",
+    "prayers-webkit-390-shine edit retains private notes field without changing visibility",
+    "prayers-webkit-390-shine prayer refresh does not resend",
+    "prayers-webkit-390-shine failed create preserves private choice and retry ID",
+    "prayers-webkit-390-shine create retry retains ID and private visibility",
+    "prayers-webkit-390-shine permission denial clears loaded records",
+    "prayers-webkit-390-shine sign-out clears records and ignores pending read",
+    "prayers-webkit-390-shine sign-out clears private contents",
+    "prayers-webkit-390-shine no page errors or external requests []",
+    "group-members-webkit-1440-mplus list touch targets []",
+    "group-members-webkit-1440-mplus list width",
+    "group-members-webkit-1440-mplus list header",
+    "group-members-webkit-1440-mplus list contrast []",
+    "group-members-webkit-1440-mplus editor touch targets []",
+    "group-members-webkit-1440-mplus editor width",
+    "group-members-webkit-1440-mplus editor header",
+    "group-members-webkit-1440-mplus editor contrast []",
+    "group-members-webkit-1440-mplus 200% text",
+    "group-members-webkit-1440-mplus desktop 1280",
+    "group-members-webkit-1440-mplus desktop 1920",
+    "group-members-webkit-1440-mplus explicit member selection required",
+    "group-members-webkit-1440-mplus current member search",
+    "group-members-webkit-1440-mplus available member search",
+    "group-members-webkit-1440-mplus search stays local",
+    "group-members-webkit-1440-mplus cancel move sends nothing",
+    "group-members-webkit-1440-mplus duplicate move guarded",
+    "group-members-webkit-1440-mplus acknowledged move separated from refresh failure",
+    "group-members-webkit-1440-mplus stale list cannot mutate",
+    "group-members-webkit-1440-mplus read retry reflects saved membership without resend",
+    "group-members-webkit-1440-mplus failed leader change preserves leader",
+    "group-members-webkit-1440-mplus remove member result reflected",
+    "group-members-webkit-1440-mplus permission denial clears loaded records",
+    "group-members-webkit-1440-mplus sign-out clears records and ignores pending read",
+    "group-members-webkit-1440-mplus sign-out clears private contents",
+    "group-members-webkit-1440-mplus no page errors or external requests []",
+    "newcomer-care-webkit-1440-mplus list touch targets []",
+    "newcomer-care-webkit-1440-mplus list width",
+    "newcomer-care-webkit-1440-mplus list header",
+    "newcomer-care-webkit-1440-mplus list contrast []",
+    "newcomer-care-webkit-1440-mplus editor touch targets []",
+    "newcomer-care-webkit-1440-mplus editor width",
+    "newcomer-care-webkit-1440-mplus editor header",
+    "newcomer-care-webkit-1440-mplus editor contrast []",
+    "newcomer-care-webkit-1440-mplus 200% text",
+    "newcomer-care-webkit-1440-mplus desktop 1280",
+    "newcomer-care-webkit-1440-mplus desktop 1920",
+    "newcomer-care-webkit-1440-mplus Taipei local time retained",
+    "newcomer-care-webkit-1440-mplus cancel filter preserves editor and filter",
+    "newcomer-care-webkit-1440-mplus cancel changing case preserves selection",
+    "newcomer-care-webkit-1440-mplus cancel discard preserves input",
+    "newcomer-care-webkit-1440-mplus failed save preserves draft",
+    "newcomer-care-webkit-1440-mplus double save adds one service call",
+    "newcomer-care-webkit-1440-mplus saved draft cleared even when read fails",
+    "newcomer-care-webkit-1440-mplus stale case cannot append another log",
+    "newcomer-care-webkit-1440-mplus care payload retains date and summary",
+    "newcomer-care-webkit-1440-mplus refresh never repeats saved care log",
+    "newcomer-care-webkit-1440-mplus case search applies locally",
+    "newcomer-care-webkit-1440-mplus cancel completion sends nothing",
+    "newcomer-care-webkit-1440-mplus completion hides case from open filter",
+    "newcomer-care-webkit-1440-mplus permission denial clears loaded records",
+    "newcomer-care-webkit-1440-mplus sign-out clears records and ignores pending read",
+    "newcomer-care-webkit-1440-mplus sign-out clears private contents",
+    "newcomer-care-webkit-1440-mplus no page errors or external requests []",
+    "binding-review-webkit-1440-mplus list touch targets []",
+    "binding-review-webkit-1440-mplus list width",
+    "binding-review-webkit-1440-mplus list header",
+    "binding-review-webkit-1440-mplus list contrast []",
+    "binding-review-webkit-1440-mplus editor touch targets []",
+    "binding-review-webkit-1440-mplus editor width",
+    "binding-review-webkit-1440-mplus editor header",
+    "binding-review-webkit-1440-mplus editor contrast []",
+    "binding-review-webkit-1440-mplus 200% text",
+    "binding-review-webkit-1440-mplus desktop 1280",
+    "binding-review-webkit-1440-mplus desktop 1920",
+    "binding-review-webkit-1440-mplus no approval without candidate and verification",
+    "binding-review-webkit-1440-mplus candidate not automatically selected",
+    "binding-review-webkit-1440-mplus changing candidate resets verification",
+    "binding-review-webkit-1440-mplus local search preserves reviewed selection",
+    "binding-review-webkit-1440-mplus status filter",
+    "binding-review-webkit-1440-mplus stale candidate response discarded after name change",
+    "binding-review-webkit-1440-mplus failed approval preserves reviewed inputs",
+    "binding-review-webkit-1440-mplus approval single dispatch with acknowledged refresh failure",
+    "binding-review-webkit-1440-mplus failed refresh removes stale binding actions",
+    "binding-review-webkit-1440-mplus binding retry only reads",
+    "binding-review-webkit-1440-mplus revoke requires explicit checkbox",
+    "binding-review-webkit-1440-mplus confirmed revoke dispatches",
+    "binding-review-webkit-1440-mplus permission denial clears loaded records",
+    "binding-review-webkit-1440-mplus sign-out clears records and ignores pending read",
+    "binding-review-webkit-1440-mplus sign-out clears private contents",
+    "binding-review-webkit-1440-mplus no page errors or external requests []",
+    "member-audit-webkit-1440-mplus list touch targets []",
+    "member-audit-webkit-1440-mplus list width",
+    "member-audit-webkit-1440-mplus list header",
+    "member-audit-webkit-1440-mplus list contrast []",
+    "member-audit-webkit-1440-mplus editor touch targets []",
+    "member-audit-webkit-1440-mplus editor width",
+    "member-audit-webkit-1440-mplus editor header",
+    "member-audit-webkit-1440-mplus editor contrast []",
+    "member-audit-webkit-1440-mplus 200% text",
+    "member-audit-webkit-1440-mplus desktop 1280",
+    "member-audit-webkit-1440-mplus desktop 1920",
+    "member-audit-webkit-1440-mplus initial recent fifty",
+    "member-audit-webkit-1440-mplus audit never displays old or new private values",
+    "member-audit-webkit-1440-mplus audit filters locally",
+    "member-audit-webkit-1440-mplus action and exact member ID combined",
+    "member-audit-webkit-1440-mplus member ID is exact match",
+    "member-audit-webkit-1440-mplus failed pagination preserves last loaded page",
+    "member-audit-webkit-1440-mplus pagination stops at service maximum",
+    "member-audit-webkit-1440-mplus audit browsing sends no writes",
+    "member-audit-webkit-1440-mplus permission denial clears loaded records",
+    "member-audit-webkit-1440-mplus sign-out clears records and ignores pending read",
+    "member-audit-webkit-1440-mplus sign-out clears private contents",
+    "member-audit-webkit-1440-mplus no page errors or external requests []",
+    "prayers-webkit-1440-mplus list touch targets []",
+    "prayers-webkit-1440-mplus list width",
+    "prayers-webkit-1440-mplus list header",
+    "prayers-webkit-1440-mplus list contrast []",
+    "prayers-webkit-1440-mplus editor touch targets []",
+    "prayers-webkit-1440-mplus editor width",
+    "prayers-webkit-1440-mplus editor header",
+    "prayers-webkit-1440-mplus editor contrast []",
+    "prayers-webkit-1440-mplus 200% text",
+    "prayers-webkit-1440-mplus desktop 1280",
+    "prayers-webkit-1440-mplus desktop 1920",
+    "prayers-webkit-1440-mplus dirty reload cancelled",
+    "prayers-webkit-1440-mplus dirty new record cancelled",
+    "prayers-webkit-1440-mplus list search preserves editor",
+    "prayers-webkit-1440-mplus dirty cancel requires confirmation",
+    "prayers-webkit-1440-mplus failed prayer save preserves notes",
+    "prayers-webkit-1440-mplus single prayer save and acknowledged draft cleared",
+    "prayers-webkit-1440-mplus prayer acknowledgement survives failed refresh",
+    "prayers-webkit-1440-mplus edit retains private notes field without changing visibility",
+    "prayers-webkit-1440-mplus prayer refresh does not resend",
+    "prayers-webkit-1440-mplus failed create preserves private choice and retry ID",
+    "prayers-webkit-1440-mplus create retry retains ID and private visibility",
+    "prayers-webkit-1440-mplus permission denial clears loaded records",
+    "prayers-webkit-1440-mplus sign-out clears records and ignores pending read",
+    "prayers-webkit-1440-mplus sign-out clears private contents",
+    "prayers-webkit-1440-mplus no page errors or external requests []",
+    "group-members-webkit-1440-shine list touch targets []",
+    "group-members-webkit-1440-shine list width",
+    "group-members-webkit-1440-shine list header",
+    "group-members-webkit-1440-shine list contrast []",
+    "group-members-webkit-1440-shine editor touch targets []",
+    "group-members-webkit-1440-shine editor width",
+    "group-members-webkit-1440-shine editor header",
+    "group-members-webkit-1440-shine editor contrast []",
+    "group-members-webkit-1440-shine 200% text",
+    "group-members-webkit-1440-shine desktop 1280",
+    "group-members-webkit-1440-shine desktop 1920",
+    "group-members-webkit-1440-shine explicit member selection required",
+    "group-members-webkit-1440-shine current member search",
+    "group-members-webkit-1440-shine available member search",
+    "group-members-webkit-1440-shine search stays local",
+    "group-members-webkit-1440-shine cancel move sends nothing",
+    "group-members-webkit-1440-shine duplicate move guarded",
+    "group-members-webkit-1440-shine acknowledged move separated from refresh failure",
+    "group-members-webkit-1440-shine stale list cannot mutate",
+    "group-members-webkit-1440-shine read retry reflects saved membership without resend",
+    "group-members-webkit-1440-shine failed leader change preserves leader",
+    "group-members-webkit-1440-shine remove member result reflected",
+    "group-members-webkit-1440-shine permission denial clears loaded records",
+    "group-members-webkit-1440-shine sign-out clears records and ignores pending read",
+    "group-members-webkit-1440-shine sign-out clears private contents",
+    "group-members-webkit-1440-shine no page errors or external requests []",
+    "newcomer-care-webkit-1440-shine list touch targets []",
+    "newcomer-care-webkit-1440-shine list width",
+    "newcomer-care-webkit-1440-shine list header",
+    "newcomer-care-webkit-1440-shine list contrast []",
+    "newcomer-care-webkit-1440-shine editor touch targets []",
+    "newcomer-care-webkit-1440-shine editor width",
+    "newcomer-care-webkit-1440-shine editor header",
+    "newcomer-care-webkit-1440-shine editor contrast []",
+    "newcomer-care-webkit-1440-shine 200% text",
+    "newcomer-care-webkit-1440-shine desktop 1280",
+    "newcomer-care-webkit-1440-shine desktop 1920",
+    "newcomer-care-webkit-1440-shine Taipei local time retained",
+    "newcomer-care-webkit-1440-shine cancel filter preserves editor and filter",
+    "newcomer-care-webkit-1440-shine cancel changing case preserves selection",
+    "newcomer-care-webkit-1440-shine cancel discard preserves input",
+    "newcomer-care-webkit-1440-shine failed save preserves draft",
+    "newcomer-care-webkit-1440-shine double save adds one service call",
+    "newcomer-care-webkit-1440-shine saved draft cleared even when read fails",
+    "newcomer-care-webkit-1440-shine stale case cannot append another log",
+    "newcomer-care-webkit-1440-shine care payload retains date and summary",
+    "newcomer-care-webkit-1440-shine refresh never repeats saved care log",
+    "newcomer-care-webkit-1440-shine case search applies locally",
+    "newcomer-care-webkit-1440-shine cancel completion sends nothing",
+    "newcomer-care-webkit-1440-shine completion hides case from open filter",
+    "newcomer-care-webkit-1440-shine permission denial clears loaded records",
+    "newcomer-care-webkit-1440-shine sign-out clears records and ignores pending read",
+    "newcomer-care-webkit-1440-shine sign-out clears private contents",
+    "newcomer-care-webkit-1440-shine no page errors or external requests []",
+    "binding-review-webkit-1440-shine list touch targets []",
+    "binding-review-webkit-1440-shine list width",
+    "binding-review-webkit-1440-shine list header",
+    "binding-review-webkit-1440-shine list contrast []",
+    "binding-review-webkit-1440-shine editor touch targets []",
+    "binding-review-webkit-1440-shine editor width",
+    "binding-review-webkit-1440-shine editor header",
+    "binding-review-webkit-1440-shine editor contrast []",
+    "binding-review-webkit-1440-shine 200% text",
+    "binding-review-webkit-1440-shine desktop 1280",
+    "binding-review-webkit-1440-shine desktop 1920",
+    "binding-review-webkit-1440-shine no approval without candidate and verification",
+    "binding-review-webkit-1440-shine candidate not automatically selected",
+    "binding-review-webkit-1440-shine changing candidate resets verification",
+    "binding-review-webkit-1440-shine local search preserves reviewed selection",
+    "binding-review-webkit-1440-shine status filter",
+    "binding-review-webkit-1440-shine stale candidate response discarded after name change",
+    "binding-review-webkit-1440-shine failed approval preserves reviewed inputs",
+    "binding-review-webkit-1440-shine approval single dispatch with acknowledged refresh failure",
+    "binding-review-webkit-1440-shine failed refresh removes stale binding actions",
+    "binding-review-webkit-1440-shine binding retry only reads",
+    "binding-review-webkit-1440-shine revoke requires explicit checkbox",
+    "binding-review-webkit-1440-shine confirmed revoke dispatches",
+    "binding-review-webkit-1440-shine permission denial clears loaded records",
+    "binding-review-webkit-1440-shine sign-out clears records and ignores pending read",
+    "binding-review-webkit-1440-shine sign-out clears private contents",
+    "binding-review-webkit-1440-shine no page errors or external requests []",
+    "member-audit-webkit-1440-shine list touch targets []",
+    "member-audit-webkit-1440-shine list width",
+    "member-audit-webkit-1440-shine list header",
+    "member-audit-webkit-1440-shine list contrast []",
+    "member-audit-webkit-1440-shine editor touch targets []",
+    "member-audit-webkit-1440-shine editor width",
+    "member-audit-webkit-1440-shine editor header",
+    "member-audit-webkit-1440-shine editor contrast []",
+    "member-audit-webkit-1440-shine 200% text",
+    "member-audit-webkit-1440-shine desktop 1280",
+    "member-audit-webkit-1440-shine desktop 1920",
+    "member-audit-webkit-1440-shine initial recent fifty",
+    "member-audit-webkit-1440-shine audit never displays old or new private values",
+    "member-audit-webkit-1440-shine audit filters locally",
+    "member-audit-webkit-1440-shine action and exact member ID combined",
+    "member-audit-webkit-1440-shine member ID is exact match",
+    "member-audit-webkit-1440-shine failed pagination preserves last loaded page",
+    "member-audit-webkit-1440-shine pagination stops at service maximum",
+    "member-audit-webkit-1440-shine audit browsing sends no writes",
+    "member-audit-webkit-1440-shine permission denial clears loaded records",
+    "member-audit-webkit-1440-shine sign-out clears records and ignores pending read",
+    "member-audit-webkit-1440-shine sign-out clears private contents",
+    "member-audit-webkit-1440-shine no page errors or external requests []",
+    "prayers-webkit-1440-shine list touch targets []",
+    "prayers-webkit-1440-shine list width",
+    "prayers-webkit-1440-shine list header",
+    "prayers-webkit-1440-shine list contrast []",
+    "prayers-webkit-1440-shine editor touch targets []",
+    "prayers-webkit-1440-shine editor width",
+    "prayers-webkit-1440-shine editor header",
+    "prayers-webkit-1440-shine editor contrast []",
+    "prayers-webkit-1440-shine 200% text",
+    "prayers-webkit-1440-shine desktop 1280",
+    "prayers-webkit-1440-shine desktop 1920",
+    "prayers-webkit-1440-shine dirty reload cancelled",
+    "prayers-webkit-1440-shine dirty new record cancelled",
+    "prayers-webkit-1440-shine list search preserves editor",
+    "prayers-webkit-1440-shine dirty cancel requires confirmation",
+    "prayers-webkit-1440-shine failed prayer save preserves notes",
+    "prayers-webkit-1440-shine single prayer save and acknowledged draft cleared",
+    "prayers-webkit-1440-shine prayer acknowledgement survives failed refresh",
+    "prayers-webkit-1440-shine edit retains private notes field without changing visibility",
+    "prayers-webkit-1440-shine prayer refresh does not resend",
+    "prayers-webkit-1440-shine failed create preserves private choice and retry ID",
+    "prayers-webkit-1440-shine create retry retains ID and private visibility",
+    "prayers-webkit-1440-shine permission denial clears loaded records",
+    "prayers-webkit-1440-shine sign-out clears records and ignores pending read",
+    "prayers-webkit-1440-shine sign-out clears private contents",
+    "prayers-webkit-1440-shine no page errors or external requests []"
+  ],
+  "visuals": [
+    {
+      "prefix": "group-members-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 56,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 70,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 56,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 70,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 56,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 70,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 56,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 274,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 70,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共載入 3 位新朋友的關懷資料。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 51,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "操作日誌已更新。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 269,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "failures": []
+}

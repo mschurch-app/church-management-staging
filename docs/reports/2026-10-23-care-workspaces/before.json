@@ -1,0 +1,1051 @@
+{
+  "mode": "before",
+  "base": "8bf879970eae6ce9b03d184d6b4e617325770618",
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "checks": [],
+  "visuals": [
+    {
+      "prefix": "group-members-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 33,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 33,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 270,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 270,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 70,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 28,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 28,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 16,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 16,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 265,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 265,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 33,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 33,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 270,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 270,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 60,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 70,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 28,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-members-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 28,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 16,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "newcomer-care-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "Cannot set properties of null (setting 'href')",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 16,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "binding-review-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "共 3 筆申請，待處理 2 筆。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 265,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "member-audit-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示最近 50 筆操作。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 265,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "prayers-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 3 筆；私密內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "failures": []
+}

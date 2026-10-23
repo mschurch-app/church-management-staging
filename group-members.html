@@ -1,3 +1,71 @@
-<!doctype html><html lang="zh-Hant"><head><link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1"><link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>小組成員管理</title><link rel="stylesheet" href="auth.css?v=20260923-aurora1"><link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4"><script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"></head><body><main class="member-page"><header class="page-header"><div><p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p><h1 id="title">成員管理</h1><p class="muted">調整成員所屬群體與主要負責同工。</p></div></header><nav class="page-nav"><a id="back" href="groups.html">返回小組與小家</a></nav><section class="toolbar"><label>選擇小組／小家<select id="group"></select></label></section><p id="status" role="status" class="status-message"></p><section id="current" class="audit-list"></section><section class="editor-panel"><h2>調入成員</h2><select id="available"></select><button id="assign">調入</button></section></main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="group-members.mjs?v=20261012-readable2"></script><script type="module" src="church-brand.mjs?v=20261012-readable2"></script>
-</body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>小組成員管理</title>
+<link rel="stylesheet" href="auth.css?v=20260923-aurora1">
+<link rel="stylesheet" href="church-brand.css?v=20261008-header1">
+<link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
+<link rel="stylesheet" href="church-palette.css?v=20261012-readable2">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4">
+<script src="mplus-theme.js?v=20261020-flat1">
+</script>
+<link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4">
+<link rel="stylesheet" href="care-workspace.css?v=20261023-care1">
+</head>
+<body data-app-layout="care" data-care-page="group-members" data-action-feedback="off">
+<main class="member-page">
+<header class="page-header">
+<div>
+<p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p>
+<h1 id="title">成員管理</h1>
+<p class="muted">調整成員所屬群體與主要負責同工。</p>
+</div>
+</header>
+<nav class="page-nav">
+<a id="back" href="groups.html">返回小組與小家</a>
+</nav>
+<section class="toolbar">
+<label>選擇小組／小家<select id="group">
+</select>
+</label>
+</section>
+<section class="care-query">
+<label>搜尋目前成員<input id="current-search" type="search" maxlength="80" placeholder="姓名或電話">
+</label>
+<button id="reload" type="button" class="secondary">重新讀取</button>
+<p id="group-count" role="status">
+</p>
+</section>
+<p id="status" role="status" class="status-message">
+</p>
+<div class="care-workspace group-workspace">
+<section id="current" class="audit-list">
+</section>
+<section class="editor-panel">
+<h2>調入成員</h2>
+<p class="muted">先選擇上方的小組／小家，再選取要調入的成員。</p>
+<label>搜尋可調入成員<input id="available-search" type="search" maxlength="80" placeholder="姓名、電話或原小組">
+</label>
+<label>選擇成員<select id="available">
+</select>
+</label>
+<p id="available-count" role="status">
+</p>
+<button id="assign" type="button" disabled>調入</button>
+</section>
+</div>
+</main>
+<script src="vendor/supabase-2.102.0.js">
+</script>
+<script type="module" src="group-members.mjs?v=20261023-care1">
+</script>
+<script type="module" src="church-brand.mjs?v=20261012-readable2">
+</script>
+</body>
+</html>

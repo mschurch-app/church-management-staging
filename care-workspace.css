@@ -1,0 +1,49 @@
+/* Five care administration pages use the existing Church OS semantic tokens. */
+body[data-app-layout=care]{font-family:var(--app-font-body,system-ui,sans-serif)!important;line-height:1.65}
+html body[data-app-layout=care] main.member-page{max-width:1440px;width:100%;margin-inline:auto;padding:24px 32px 120px}
+html body[data-app-layout=care] .page-header .admin-identity span{color:#fff!important}
+body[data-app-layout=care] :is(h1,h2,h3,p,label,summary,strong,small){overflow-wrap:anywhere}
+body[data-app-layout=care] :is(input,textarea,select,button){font-family:inherit;max-width:100%;min-width:0}
+body[data-app-layout=care] :is(input:not([type=checkbox]),textarea,select){font-size:max(16px,1rem)}
+body[data-app-layout=care] :is(button,summary,.care-choice){min-height:44px;white-space:normal;line-height:1.5}
+body[data-app-layout=care] .module-bar{position:static}
+body[data-app-layout=care] .page-nav{position:static;display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;background:none;padding:0;border:0;box-shadow:none}
+body[data-app-layout=care] .page-nav :is(button,a){display:inline-flex;align-items:center;min-height:44px;margin:0;padding:8px 12px;border-radius:12px;font-size:.9rem}
+body[data-app-layout=care] :is(.toolbar,.care-query,.editor-panel,.audit-card,.care-card,.review-grid>article){min-width:0;padding:22px;background:var(--app-surface);border:1px solid var(--app-border);border-radius:var(--app-radius-card);box-shadow:var(--app-shadow)}
+body[data-app-layout=care] :is(.care-query,.prayer-toolbar){display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:16px;align-items:end;margin:16px 0}
+body[data-app-layout=care] :is(.care-query,.prayer-toolbar)>p{grid-column:1/-1;margin:0;color:var(--app-secondary);font-size:.9rem}
+body[data-app-layout=care] label{display:grid;align-content:start;gap:6px;line-height:1.5}
+body[data-app-layout=care] :is(label input,label select,label textarea,.care-query button){margin:0}
+body[data-app-layout=care] label.care-choice{display:flex;align-items:center;gap:10px;padding:12px;background:var(--app-surface-muted);border-radius:12px}
+body[data-app-layout=care] label.care-choice input{width:22px;height:22px;flex:0 0 22px;margin:0}
+body[data-app-layout=care] .care-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+body[data-app-layout=care] :is(.care-workspace>*,.care-form>*,.audit-head>*){min-width:0}
+body[data-app-layout=care] .editor-panel{margin:0}
+body[data-app-layout=care] .editor-panel form>label{margin:16px 0}
+body[data-app-layout=care] .editor-panel textarea{min-height:110px;resize:vertical}
+body[data-app-layout=care] :is(.card-actions,.care-actions,.editor-actions,.review-actions){display:flex;flex-wrap:wrap;gap:10px;position:static!important;padding:0;margin-top:20px;border:0;background:none;box-shadow:none}
+body[data-app-layout=care] :is(.card-actions,.care-actions,.editor-actions,.review-actions)>button{margin:0;flex:1}
+body[data-app-layout=care] .audit-list{display:grid;gap:16px}
+body[data-app-layout=care] .audit-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+body[data-app-layout=care] .audit-card p{margin:10px 0}
+body[data-app-layout=care] .care-list{gap:14px}
+body[data-app-layout=care] .care-card[data-selected=true]{border:2px solid var(--app-accent)}
+body[data-app-layout=care] .care-head{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+body[data-app-layout=care] .care-meta{display:grid;gap:8px;margin:12px 0}
+body[data-app-layout=care] .care-meta span{border-radius:10px;padding:7px 10px;overflow-wrap:anywhere}
+body[data-app-layout=care] .care-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body[data-app-layout=care] .care-form :is(h2,.wide,.care-actions,.editor-result){grid-column:1/-1}
+body[data-app-layout=care] .care-form label{margin:0!important}
+body[data-app-layout=care] .history{margin-top:20px}
+body[data-app-layout=care] .history summary{padding:10px 0}
+body[data-app-layout=care] .review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+body[data-app-layout=care] .review-grid>article>label{margin:16px 0}
+body[data-app-layout=care] .review-grid>article h2{font-size:1.2rem;margin:0 0 12px}
+body[data-app-layout=care] .care-empty{grid-column:1/-1;padding:24px;border-radius:16px;background:var(--app-surface-muted);color:var(--app-secondary)}
+body[data-care-page=member-audit] #audit-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-app-layout=care] .prayer-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0}
+body[data-app-layout=care] .prayer-summary article{min-width:0;padding:14px;border:1px solid var(--app-border);border-radius:16px;background:var(--app-surface)}
+body[data-app-layout=care] [hidden]{display:none!important}
+body[data-app-layout=care] select:not([multiple]){appearance:none;-webkit-appearance:none;min-height:46px;height:auto;padding:11px 32px 11px 12px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2352665a' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px}
+@media(min-width:1100px){body[data-app-layout=care] .group-workspace{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}body[data-app-layout=care] .case-workspace:has(>#care-editor:not([hidden])){grid-template-columns:minmax(300px,.7fr) minmax(0,1.3fr)}body[data-app-layout=care] .prayer-workspace:has(>#editor:not([hidden])){grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
+@media(max-width:700px){html body[data-app-layout=care] main.member-page{padding:16px 16px 120px}body[data-app-layout=care] :is(.toolbar,.care-query,.editor-panel,.audit-card,.care-card,.review-grid>article){padding:16px;border-radius:18px}body[data-app-layout=care] :is(.care-query,.prayer-toolbar,.review-grid,.care-form),body[data-care-page=member-audit] #audit-list{grid-template-columns:minmax(0,1fr)}body[data-app-layout=care] .prayer-summary{grid-template-columns:repeat(3,minmax(0,1fr))}body[data-app-layout=care] :is(.care-actions,.editor-actions){display:grid;grid-template-columns:minmax(0,1fr)}body[data-app-layout=care] .care-summary span{font-size:.8rem}}

@@ -1,0 +1,932 @@
+{
+  "mode": "before",
+  "base": "9289615474aae3425fddc07795ac493379bf333b",
+  "sourceHashes": {
+    "spaces.html": "e1e9198c3a010f6229b11297ee704b3fdad2c8665b4276610fcaf2b0be6b11c4",
+    "amenities.html": "4f81554d68be6ec768ad50ba44a40876a4681da6d1d0040b7c448496b379679b",
+    "inventory.html": "faae3f1eed3ec2bf84751bf615c3e8e487f937eaf248e8d9e3c3b682bffa6577",
+    "pastoral-inbox.html": "256b31d153d255ce9a716201a9918a0c69212aeddb10228a45b50029581e439a",
+    "group-resources-management.html": "eed3f8cde3c4a573dc1346969bb259db9e1d893adfc5be95d5f44e0b175a504b",
+    "spaces-ui.mjs": "5979881d4e993fab86aecfadc635e629fda1d5e4d95c68bd2a509c99ab1a388a",
+    "amenities.mjs": "5d8145ff150a46d753027d006bc9f5828e875b967fd27a57221fe31e41052841",
+    "inventory.mjs": "b068019df9bc8959d4059809656709b2bd514b0ca82864c4ec78821fde38d3f7",
+    "pastoral-inbox-ui.mjs": "5b1b72d46d64e208a7af009c7787a35671342be3a385b9312f2c754fe3c580ae",
+    "group-resources-management.mjs": "f4e1f7d7f83ecefcc0583015c1a4afce071c66a4c2875cea8438b0c07a4370d6",
+    "operations-workspace.css": "818719fbf3058a30434bd50a22969fc895309ec73568022245c158eff6d8314c",
+    "operations-workflow.mjs": "85a1fcc20d12c50a392bc2a0934ba50c523234cb38aae09c8c3dacfcd80dc28f",
+    "church-os-sw.js": "1c292705800dc7a735f8b5537278514f15045448ebbf909f6ad944d298fe3c47",
+    "tests/operations-workspaces-browser.mjs": "fe2438f5dbfdc0c5dd8e17fcba17d7e6fef4f14295f0f6553b761ef19650857f",
+    "tests/operations-workspaces-scenarios.mjs": "4d57dd75ccfe93f688f933ecf9f9b6a454c15e9c30a36393af9d5f9ce55e67c8"
+  },
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "checks": [],
+  "visuals": [
+    {
+      "prefix": "spaces-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 26,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 31,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 52,
+        "failures": [
+          {
+            "selector": "span.inventory-category",
+            "text": "音響與樂器",
+            "color": "rgb(97, 115, 106)",
+            "backgrounds": [
+              [
+                242,
+                237,
+                232
+              ]
+            ],
+            "ratio": 4.33,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 72,
+        "failures": [
+          {
+            "selector": "span.inventory-category",
+            "text": "音響與樂器",
+            "color": "rgb(97, 115, 106)",
+            "backgrounds": [
+              [
+                242,
+                237,
+                232
+              ]
+            ],
+            "ratio": 4.33,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.eyebrow",
+            "text": "步驟 2／登記物品",
+            "color": "rgb(7, 135, 127)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.39,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "已載入 2 份小組聚會資源。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "已載入 2 份小組聚會資源。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 43,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 53,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 26,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 26,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 31,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 52,
+        "failures": [
+          {
+            "selector": "span.inventory-category",
+            "text": "音響與樂器",
+            "color": "rgb(97, 115, 106)",
+            "backgrounds": [
+              [
+                242,
+                237,
+                232
+              ]
+            ],
+            "ratio": 4.33,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 72,
+        "failures": [
+          {
+            "selector": "span.inventory-category",
+            "text": "音響與樂器",
+            "color": "rgb(97, 115, 106)",
+            "backgrounds": [
+              [
+                242,
+                237,
+                232
+              ]
+            ],
+            "ratio": 4.33,
+            "minimum": 4.5
+          },
+          {
+            "selector": "p.eyebrow",
+            "text": "步驟 2／登記物品",
+            "color": "rgb(7, 135, 127)",
+            "backgrounds": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "ratio": 4.39,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 39,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 47,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "已載入 2 份小組聚會資源。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "已載入 2 份小組聚會資源。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 43,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 個、停用 1 個空間；共 2 筆預約。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 53,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 21,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "使用中 2 項、停用 1 項設備。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 26,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 65,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 34,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "顯示 2 筆；訊息內容僅限獲授權同工。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [
+          {
+            "selector": "span.",
+            "text": "測試管理",
+            "color": "rgb(255, 242, 210)",
+            "backgrounds": [
+              [
+                173,
+                60,
+                42
+              ],
+              [
+                201,
+                75,
+                53
+              ]
+            ],
+            "ratio": 4.16,
+            "minimum": 4.5
+          }
+        ],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "failures": []
+}

@@ -1,3 +1,72 @@
-<!doctype html><html lang="zh-Hant"><head><link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1"><link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>關懷訊息｜教牧管理</title><link rel="stylesheet" href="auth.css?v=20260923-aurora1"><link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4"><script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"></head><body><main class="member-page"><header class="page-header"><div><p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p><h1 id="title">關懷訊息</h1><p class="muted">追蹤一對一關懷訊息；不顯示 LINE ID，也不會從本頁發送訊息。</p></div><button id="reload" class="secondary">重新載入</button></header><nav class="page-nav"><a id="members" href="members.html">會友名冊</a><a href="pastoral-inbox.html?church=M%2B">M＋訊息</a><a href="pastoral-inbox.html?church=SHiNE">火樂訊息</a></nav><section class="toolbar prayer-toolbar"><label>搜尋姓名、訊息或備註<input id="search" type="search" placeholder="輸入關鍵字"></label><label>處理狀態<select id="state"><option value="all">全部</option><option value="待回覆">待回覆</option><option value="處理中">處理中</option><option value="已完成">已完成</option></select></label></section><p id="status" role="status" class="status-message"></p><section id="editor" class="editor-panel" hidden></section><section id="summary" class="prayer-summary inbox-summary" aria-label="訊息統計"></section><section id="items" class="audit-list"></section></main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="pastoral-inbox-ui.mjs?v=20261012-readable2"></script><script type="module" src="church-brand.mjs?v=20261012-readable2"></script>
-</body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>關懷訊息｜教牧管理</title>
+<link rel="stylesheet" href="auth.css?v=20260923-aurora1">
+<link rel="stylesheet" href="church-brand.css?v=20261008-header1">
+<link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
+<link rel="stylesheet" href="church-palette.css?v=20261012-readable2">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4">
+<script src="mplus-theme.js?v=20261020-flat1">
+</script>
+<link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4">
+<link rel="stylesheet" href="operations-workspace.css?v=20261023-operations1">
+</head>
+<body data-app-layout="operations" data-operations-page="pastoral-inbox" data-action-feedback="off">
+<main class="member-page">
+<header class="page-header">
+<div>
+<p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p>
+<h1 id="title">關懷訊息</h1>
+<p class="muted">追蹤一對一關懷訊息；不顯示 LINE ID，也不會從本頁發送訊息。</p>
+</div>
+<button id="reload" class="secondary">重新載入</button>
+</header>
+<nav class="page-nav">
+<a id="members" href="members.html">會友名冊</a>
+<a href="pastoral-inbox.html?church=M%2B">M＋訊息</a>
+<a href="pastoral-inbox.html?church=SHiNE">火樂訊息</a>
+</nav>
+<section class="toolbar prayer-toolbar">
+<label>搜尋姓名、訊息或備註<input id="search" type="search" placeholder="輸入關鍵字">
+</label>
+<label>處理狀態<select id="state">
+<option value="all">全部</option>
+<option value="待回覆">待回覆</option>
+<option value="處理中">處理中</option>
+<option value="已完成">已完成</option>
+</select>
+</label>
+<button id="clear-filter" type="button" class="secondary">清除篩選</button>
+<p>顯示最近 200 筆訊息；搜尋與統計以已載入內容為準。</p>
+</section>
+<p id="status" role="status" class="status-message">
+</p>
+<p id="count" role="status" class="muted">
+</p>
+<div class="operations-workspace">
+<section id="editor" class="editor-panel" tabindex="-1" hidden>
+</section>
+<div class="operations-results">
+<section id="summary" class="prayer-summary inbox-summary" aria-label="訊息統計">
+</section>
+<section id="items" class="audit-list">
+</section>
+</div>
+</div>
+</main>
+<script src="vendor/supabase-2.102.0.js">
+</script>
+<script type="module" src="pastoral-inbox-ui.mjs?v=20261023-operations1">
+</script>
+<script type="module" src="church-brand.mjs?v=20261012-readable2">
+</script>
+</body>
+</html>

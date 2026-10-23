@@ -1,3 +1,64 @@
-<!doctype html><html lang="zh-Hant"><head><link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1"><link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>設備管理｜教牧管理</title><link rel="stylesheet" href="auth.css?v=20260923-aurora1"><link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
-<link rel="stylesheet" href="apple-ui.css?v=20260924-app1"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4"><script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"></head><body><main class="member-page"><header class="page-header"><div><p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p><h1 id="title">設備管理</h1><p class="muted">管理場地可使用的設備與數量。</p></div><button id="new">＋ 新增設備</button></header><nav class="page-nav"><a id="back" href="spaces.html">返回場地與設備</a></nav><p id="status" role="status" class="status-message"></p><section id="editor" class="editor-panel" hidden></section><div class="section-heading"><h2>設備清單</h2><button id="toggle" class="secondary">查看停用設備</button></div><section id="items" class="amenity-grid"></section></main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="amenities.mjs?v=20261012-readable2"></script><script type="module" src="church-brand.mjs?v=20261012-readable2"></script>
-</body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>設備管理｜教牧管理</title>
+<link rel="stylesheet" href="auth.css?v=20260923-aurora1">
+<link rel="stylesheet" href="church-brand.css?v=20261008-header1">
+<link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
+<link rel="stylesheet" href="church-palette.css?v=20261012-readable2">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4">
+<script src="mplus-theme.js?v=20261020-flat1">
+</script>
+<link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4">
+<link rel="stylesheet" href="operations-workspace.css?v=20261023-operations1">
+</head>
+<body data-app-layout="operations" data-operations-page="amenities" data-action-feedback="off">
+<main class="member-page">
+<header class="page-header">
+<div>
+<p class="eyebrow">CHURCH MANAGEMENT · 教會管理系統</p>
+<h1 id="title">設備管理</h1>
+<p class="muted">管理場地可使用的設備與數量。</p>
+</div>
+<button data-write type="button" id="new">＋ 新增設備</button>
+</header>
+<nav class="page-nav">
+<a id="back" href="spaces.html">返回場地與設備</a>
+</nav>
+<p id="status" role="status" class="status-message">
+</p>
+<section class="operations-query">
+<label>搜尋設備名稱<input id="search" type="search" placeholder="輸入關鍵字">
+</label>
+<button id="reload" type="button" class="secondary">重新載入</button>
+<button id="clear-filter" type="button" class="secondary">清除篩選</button>
+<p id="count" role="status">
+</p>
+</section>
+<div class="operations-workspace">
+<section id="editor" class="editor-panel" tabindex="-1" hidden>
+</section>
+<div class="operations-results">
+<div class="section-heading">
+<h2>設備清單</h2>
+<button id="toggle" class="secondary">查看停用設備</button>
+</div>
+<section id="items" class="amenity-grid">
+</section>
+</div>
+</div>
+</main>
+<script src="vendor/supabase-2.102.0.js">
+</script>
+<script type="module" src="amenities.mjs?v=20261023-operations1">
+</script>
+<script type="module" src="church-brand.mjs?v=20261012-readable2">
+</script>
+</body>
+</html>

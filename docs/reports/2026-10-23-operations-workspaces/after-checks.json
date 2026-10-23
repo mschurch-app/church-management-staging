@@ -1,0 +1,2050 @@
+{
+  "mode": "after",
+  "base": "9289615474aae3425fddc07795ac493379bf333b",
+  "sourceHashes": {
+    "spaces.html": "e1e9198c3a010f6229b11297ee704b3fdad2c8665b4276610fcaf2b0be6b11c4",
+    "amenities.html": "4f81554d68be6ec768ad50ba44a40876a4681da6d1d0040b7c448496b379679b",
+    "inventory.html": "faae3f1eed3ec2bf84751bf615c3e8e487f937eaf248e8d9e3c3b682bffa6577",
+    "pastoral-inbox.html": "256b31d153d255ce9a716201a9918a0c69212aeddb10228a45b50029581e439a",
+    "group-resources-management.html": "eed3f8cde3c4a573dc1346969bb259db9e1d893adfc5be95d5f44e0b175a504b",
+    "spaces-ui.mjs": "9cb8c5d2a4aa10046ee11d09dedf7e3f63597e25d0ad240c1dbbefe302abba55",
+    "amenities.mjs": "5d8145ff150a46d753027d006bc9f5828e875b967fd27a57221fe31e41052841",
+    "inventory.mjs": "bd08f1f3228778e41bed0781742e07d1e5d35c65d8d1b27ae09eebbe7e7dba9d",
+    "pastoral-inbox-ui.mjs": "d61d49ba99c68c9c95fa76035d16cfdfc110ea6017c0e3014b977d077aec5380",
+    "group-resources-management.mjs": "f4e1f7d7f83ecefcc0583015c1a4afce071c66a4c2875cea8438b0c07a4370d6",
+    "operations-workspace.css": "ad2545162bf1d997521940fbf89c5d14b9a4b922afad738b8213adc31d98bf96",
+    "operations-workflow.mjs": "bd9ad486fa09e36cd9569104e98624aebddb52bd93d638e864ada1583fb10a2b",
+    "church-os-sw.js": "1c292705800dc7a735f8b5537278514f15045448ebbf909f6ad944d298fe3c47",
+    "tests/operations-workspaces-browser.mjs": "4bdf76d0b7011c2db2de58c1e171d7bcb6e132c5740e5fa06eb4cbb6c5f97671",
+    "tests/operations-workspaces-scenarios.mjs": "c89b97eecd11c0eee7c645e188e6736b7226d43653af7aaa209a8c571963531f"
+  },
+  "productionWrites": 0,
+  "real_iPhone": false,
+  "real_Mac_Safari": false,
+  "checks": [
+    "spaces-chromium-390-mplus list touch targets []",
+    "spaces-chromium-390-mplus list width",
+    "spaces-chromium-390-mplus list header",
+    "spaces-chromium-390-mplus list contrast []",
+    "spaces-chromium-390-mplus editor touch targets []",
+    "spaces-chromium-390-mplus editor width",
+    "spaces-chromium-390-mplus editor header",
+    "spaces-chromium-390-mplus editor contrast []",
+    "spaces-chromium-390-mplus 200% text",
+    "spaces-chromium-390-mplus cancelled dirty reload retains draft",
+    "spaces-chromium-390-mplus cancel requires draft confirmation",
+    "spaces-chromium-390-mplus local filter preserves open draft",
+    "spaces-chromium-390-mplus failed write preserves fields",
+    "spaces-chromium-390-mplus one acknowledged save despite double submission and failed refresh",
+    "spaces-chromium-390-mplus write success distinguished from refresh failure",
+    "spaces-chromium-390-mplus recovery only reads",
+    "spaces-chromium-390-mplus booking status filter",
+    "spaces-chromium-390-mplus clear filters restores bookings",
+    "spaces-chromium-390-mplus end before start rejected",
+    "spaces-chromium-390-mplus valid booking uses existing service",
+    "spaces-chromium-390-mplus permission denial clears data",
+    "spaces-chromium-390-mplus sign out clears private content",
+    "spaces-chromium-390-mplus late read cannot restore signed out data",
+    "spaces-chromium-390-mplus no page errors or external requests []",
+    "amenities-chromium-390-mplus list touch targets []",
+    "amenities-chromium-390-mplus list width",
+    "amenities-chromium-390-mplus list header",
+    "amenities-chromium-390-mplus list contrast []",
+    "amenities-chromium-390-mplus editor touch targets []",
+    "amenities-chromium-390-mplus editor width",
+    "amenities-chromium-390-mplus editor header",
+    "amenities-chromium-390-mplus editor contrast []",
+    "amenities-chromium-390-mplus 200% text",
+    "amenities-chromium-390-mplus cancelled dirty reload retains draft",
+    "amenities-chromium-390-mplus cancel requires draft confirmation",
+    "amenities-chromium-390-mplus local filter preserves open draft",
+    "amenities-chromium-390-mplus failed write preserves fields",
+    "amenities-chromium-390-mplus one acknowledged save despite double submission and failed refresh",
+    "amenities-chromium-390-mplus write success distinguished from refresh failure",
+    "amenities-chromium-390-mplus recovery only reads",
+    "amenities-chromium-390-mplus inactive equipment filter",
+    "amenities-chromium-390-mplus permission denial clears data",
+    "amenities-chromium-390-mplus sign out clears private content",
+    "amenities-chromium-390-mplus late read cannot restore signed out data",
+    "amenities-chromium-390-mplus no page errors or external requests []",
+    "inventory-chromium-390-mplus list touch targets []",
+    "inventory-chromium-390-mplus list width",
+    "inventory-chromium-390-mplus list header",
+    "inventory-chromium-390-mplus list contrast []",
+    "inventory-chromium-390-mplus editor touch targets []",
+    "inventory-chromium-390-mplus editor width",
+    "inventory-chromium-390-mplus editor header",
+    "inventory-chromium-390-mplus editor contrast []",
+    "inventory-chromium-390-mplus 200% text",
+    "inventory-chromium-390-mplus cancelled dirty reload retains draft",
+    "inventory-chromium-390-mplus cancel requires draft confirmation",
+    "inventory-chromium-390-mplus failed write preserves fields",
+    "inventory-chromium-390-mplus one acknowledged save despite double submission and failed refresh",
+    "inventory-chromium-390-mplus write success distinguished from refresh failure",
+    "inventory-chromium-390-mplus recovery only reads",
+    "inventory-chromium-390-mplus needs attention filter",
+    "inventory-chromium-390-mplus clear inventory filters",
+    "inventory-chromium-390-mplus permission denial clears data",
+    "inventory-chromium-390-mplus sign out clears private content",
+    "inventory-chromium-390-mplus late read cannot restore signed out data",
+    "inventory-chromium-390-mplus no page errors or external requests []",
+    "group-resources-management-chromium-390-mplus list touch targets []",
+    "group-resources-management-chromium-390-mplus list width",
+    "group-resources-management-chromium-390-mplus list header",
+    "group-resources-management-chromium-390-mplus list contrast []",
+    "group-resources-management-chromium-390-mplus editor touch targets []",
+    "group-resources-management-chromium-390-mplus editor width",
+    "group-resources-management-chromium-390-mplus editor header",
+    "group-resources-management-chromium-390-mplus editor contrast []",
+    "group-resources-management-chromium-390-mplus 200% text",
+    "group-resources-management-chromium-390-mplus cancelled dirty reload retains draft",
+    "group-resources-management-chromium-390-mplus cancel requires draft confirmation",
+    "group-resources-management-chromium-390-mplus local filter preserves open draft",
+    "group-resources-management-chromium-390-mplus failed write preserves fields",
+    "group-resources-management-chromium-390-mplus one acknowledged save despite double submission and failed refresh",
+    "group-resources-management-chromium-390-mplus write success distinguished from refresh failure",
+    "group-resources-management-chromium-390-mplus recovery only reads",
+    "group-resources-management-chromium-390-mplus publication status filter",
+    "group-resources-management-chromium-390-mplus resource write scoped to church and content type",
+    "group-resources-management-chromium-390-mplus permission denial clears data",
+    "group-resources-management-chromium-390-mplus sign out clears private content",
+    "group-resources-management-chromium-390-mplus late read cannot restore signed out data",
+    "group-resources-management-chromium-390-mplus no page errors or external requests []",
+    "spaces-chromium-390-shine list touch targets []",
+    "spaces-chromium-390-shine list width",
+    "spaces-chromium-390-shine list header",
+    "spaces-chromium-390-shine list contrast []",
+    "spaces-chromium-390-shine editor touch targets []",
+    "spaces-chromium-390-shine editor width",
+    "spaces-chromium-390-shine editor header",
+    "spaces-chromium-390-shine editor contrast []",
+    "spaces-chromium-390-shine 200% text",
+    "spaces-chromium-390-shine cancelled dirty reload retains draft",
+    "spaces-chromium-390-shine cancel requires draft confirmation",
+    "spaces-chromium-390-shine local filter preserves open draft",
+    "spaces-chromium-390-shine failed write preserves fields",
+    "spaces-chromium-390-shine one acknowledged save despite double submission and failed refresh",
+    "spaces-chromium-390-shine write success distinguished from refresh failure",
+    "spaces-chromium-390-shine recovery only reads",
+    "spaces-chromium-390-shine booking status filter",
+    "spaces-chromium-390-shine clear filters restores bookings",
+    "spaces-chromium-390-shine end before start rejected",
+    "spaces-chromium-390-shine valid booking uses existing service",
+    "spaces-chromium-390-shine permission denial clears data",
+    "spaces-chromium-390-shine sign out clears private content",
+    "spaces-chromium-390-shine late read cannot restore signed out data",
+    "spaces-chromium-390-shine no page errors or external requests []",
+    "amenities-chromium-390-shine list touch targets []",
+    "amenities-chromium-390-shine list width",
+    "amenities-chromium-390-shine list header",
+    "amenities-chromium-390-shine list contrast []",
+    "amenities-chromium-390-shine editor touch targets []",
+    "amenities-chromium-390-shine editor width",
+    "amenities-chromium-390-shine editor header",
+    "amenities-chromium-390-shine editor contrast []",
+    "amenities-chromium-390-shine 200% text",
+    "amenities-chromium-390-shine cancelled dirty reload retains draft",
+    "amenities-chromium-390-shine cancel requires draft confirmation",
+    "amenities-chromium-390-shine local filter preserves open draft",
+    "amenities-chromium-390-shine failed write preserves fields",
+    "amenities-chromium-390-shine one acknowledged save despite double submission and failed refresh",
+    "amenities-chromium-390-shine write success distinguished from refresh failure",
+    "amenities-chromium-390-shine recovery only reads",
+    "amenities-chromium-390-shine inactive equipment filter",
+    "amenities-chromium-390-shine permission denial clears data",
+    "amenities-chromium-390-shine sign out clears private content",
+    "amenities-chromium-390-shine late read cannot restore signed out data",
+    "amenities-chromium-390-shine no page errors or external requests []",
+    "inventory-chromium-390-shine list touch targets []",
+    "inventory-chromium-390-shine list width",
+    "inventory-chromium-390-shine list header",
+    "inventory-chromium-390-shine list contrast []",
+    "inventory-chromium-390-shine editor touch targets []",
+    "inventory-chromium-390-shine editor width",
+    "inventory-chromium-390-shine editor header",
+    "inventory-chromium-390-shine editor contrast []",
+    "inventory-chromium-390-shine 200% text",
+    "inventory-chromium-390-shine cancelled dirty reload retains draft",
+    "inventory-chromium-390-shine cancel requires draft confirmation",
+    "inventory-chromium-390-shine failed write preserves fields",
+    "inventory-chromium-390-shine one acknowledged save despite double submission and failed refresh",
+    "inventory-chromium-390-shine write success distinguished from refresh failure",
+    "inventory-chromium-390-shine recovery only reads",
+    "inventory-chromium-390-shine needs attention filter",
+    "inventory-chromium-390-shine clear inventory filters",
+    "inventory-chromium-390-shine permission denial clears data",
+    "inventory-chromium-390-shine sign out clears private content",
+    "inventory-chromium-390-shine late read cannot restore signed out data",
+    "inventory-chromium-390-shine no page errors or external requests []",
+    "spaces-chromium-1440-mplus list touch targets []",
+    "spaces-chromium-1440-mplus list width",
+    "spaces-chromium-1440-mplus list header",
+    "spaces-chromium-1440-mplus list contrast []",
+    "spaces-chromium-1440-mplus editor touch targets []",
+    "spaces-chromium-1440-mplus editor width",
+    "spaces-chromium-1440-mplus editor header",
+    "spaces-chromium-1440-mplus editor contrast []",
+    "spaces-chromium-1440-mplus 200% text",
+    "spaces-chromium-1440-mplus desktop 1280",
+    "spaces-chromium-1440-mplus desktop 1920",
+    "spaces-chromium-1440-mplus cancelled dirty reload retains draft",
+    "spaces-chromium-1440-mplus cancel requires draft confirmation",
+    "spaces-chromium-1440-mplus local filter preserves open draft",
+    "spaces-chromium-1440-mplus failed write preserves fields",
+    "spaces-chromium-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "spaces-chromium-1440-mplus write success distinguished from refresh failure",
+    "spaces-chromium-1440-mplus recovery only reads",
+    "spaces-chromium-1440-mplus booking status filter",
+    "spaces-chromium-1440-mplus clear filters restores bookings",
+    "spaces-chromium-1440-mplus end before start rejected",
+    "spaces-chromium-1440-mplus valid booking uses existing service",
+    "spaces-chromium-1440-mplus permission denial clears data",
+    "spaces-chromium-1440-mplus sign out clears private content",
+    "spaces-chromium-1440-mplus late read cannot restore signed out data",
+    "spaces-chromium-1440-mplus no page errors or external requests []",
+    "amenities-chromium-1440-mplus list touch targets []",
+    "amenities-chromium-1440-mplus list width",
+    "amenities-chromium-1440-mplus list header",
+    "amenities-chromium-1440-mplus list contrast []",
+    "amenities-chromium-1440-mplus editor touch targets []",
+    "amenities-chromium-1440-mplus editor width",
+    "amenities-chromium-1440-mplus editor header",
+    "amenities-chromium-1440-mplus editor contrast []",
+    "amenities-chromium-1440-mplus 200% text",
+    "amenities-chromium-1440-mplus desktop 1280",
+    "amenities-chromium-1440-mplus desktop 1920",
+    "amenities-chromium-1440-mplus cancelled dirty reload retains draft",
+    "amenities-chromium-1440-mplus cancel requires draft confirmation",
+    "amenities-chromium-1440-mplus local filter preserves open draft",
+    "amenities-chromium-1440-mplus failed write preserves fields",
+    "amenities-chromium-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "amenities-chromium-1440-mplus write success distinguished from refresh failure",
+    "amenities-chromium-1440-mplus recovery only reads",
+    "amenities-chromium-1440-mplus inactive equipment filter",
+    "amenities-chromium-1440-mplus permission denial clears data",
+    "amenities-chromium-1440-mplus sign out clears private content",
+    "amenities-chromium-1440-mplus late read cannot restore signed out data",
+    "amenities-chromium-1440-mplus no page errors or external requests []",
+    "inventory-chromium-1440-mplus list touch targets []",
+    "inventory-chromium-1440-mplus list width",
+    "inventory-chromium-1440-mplus list header",
+    "inventory-chromium-1440-mplus list contrast []",
+    "inventory-chromium-1440-mplus editor touch targets []",
+    "inventory-chromium-1440-mplus editor width",
+    "inventory-chromium-1440-mplus editor header",
+    "inventory-chromium-1440-mplus editor contrast []",
+    "inventory-chromium-1440-mplus 200% text",
+    "inventory-chromium-1440-mplus desktop 1280",
+    "inventory-chromium-1440-mplus desktop 1920",
+    "inventory-chromium-1440-mplus cancelled dirty reload retains draft",
+    "inventory-chromium-1440-mplus cancel requires draft confirmation",
+    "inventory-chromium-1440-mplus failed write preserves fields",
+    "inventory-chromium-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "inventory-chromium-1440-mplus write success distinguished from refresh failure",
+    "inventory-chromium-1440-mplus recovery only reads",
+    "inventory-chromium-1440-mplus needs attention filter",
+    "inventory-chromium-1440-mplus clear inventory filters",
+    "inventory-chromium-1440-mplus permission denial clears data",
+    "inventory-chromium-1440-mplus sign out clears private content",
+    "inventory-chromium-1440-mplus late read cannot restore signed out data",
+    "inventory-chromium-1440-mplus no page errors or external requests []",
+    "group-resources-management-chromium-1440-mplus list touch targets []",
+    "group-resources-management-chromium-1440-mplus list width",
+    "group-resources-management-chromium-1440-mplus list header",
+    "group-resources-management-chromium-1440-mplus list contrast []",
+    "group-resources-management-chromium-1440-mplus editor touch targets []",
+    "group-resources-management-chromium-1440-mplus editor width",
+    "group-resources-management-chromium-1440-mplus editor header",
+    "group-resources-management-chromium-1440-mplus editor contrast []",
+    "group-resources-management-chromium-1440-mplus 200% text",
+    "group-resources-management-chromium-1440-mplus desktop 1280",
+    "group-resources-management-chromium-1440-mplus desktop 1920",
+    "group-resources-management-chromium-1440-mplus cancelled dirty reload retains draft",
+    "group-resources-management-chromium-1440-mplus cancel requires draft confirmation",
+    "group-resources-management-chromium-1440-mplus local filter preserves open draft",
+    "group-resources-management-chromium-1440-mplus failed write preserves fields",
+    "group-resources-management-chromium-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "group-resources-management-chromium-1440-mplus write success distinguished from refresh failure",
+    "group-resources-management-chromium-1440-mplus recovery only reads",
+    "group-resources-management-chromium-1440-mplus publication status filter",
+    "group-resources-management-chromium-1440-mplus resource write scoped to church and content type",
+    "group-resources-management-chromium-1440-mplus permission denial clears data",
+    "group-resources-management-chromium-1440-mplus sign out clears private content",
+    "group-resources-management-chromium-1440-mplus late read cannot restore signed out data",
+    "group-resources-management-chromium-1440-mplus no page errors or external requests []",
+    "spaces-chromium-1440-shine list touch targets []",
+    "spaces-chromium-1440-shine list width",
+    "spaces-chromium-1440-shine list header",
+    "spaces-chromium-1440-shine list contrast []",
+    "spaces-chromium-1440-shine editor touch targets []",
+    "spaces-chromium-1440-shine editor width",
+    "spaces-chromium-1440-shine editor header",
+    "spaces-chromium-1440-shine editor contrast []",
+    "spaces-chromium-1440-shine 200% text",
+    "spaces-chromium-1440-shine desktop 1280",
+    "spaces-chromium-1440-shine desktop 1920",
+    "spaces-chromium-1440-shine cancelled dirty reload retains draft",
+    "spaces-chromium-1440-shine cancel requires draft confirmation",
+    "spaces-chromium-1440-shine local filter preserves open draft",
+    "spaces-chromium-1440-shine failed write preserves fields",
+    "spaces-chromium-1440-shine one acknowledged save despite double submission and failed refresh",
+    "spaces-chromium-1440-shine write success distinguished from refresh failure",
+    "spaces-chromium-1440-shine recovery only reads",
+    "spaces-chromium-1440-shine booking status filter",
+    "spaces-chromium-1440-shine clear filters restores bookings",
+    "spaces-chromium-1440-shine end before start rejected",
+    "spaces-chromium-1440-shine valid booking uses existing service",
+    "spaces-chromium-1440-shine permission denial clears data",
+    "spaces-chromium-1440-shine sign out clears private content",
+    "spaces-chromium-1440-shine late read cannot restore signed out data",
+    "spaces-chromium-1440-shine no page errors or external requests []",
+    "amenities-chromium-1440-shine list touch targets []",
+    "amenities-chromium-1440-shine list width",
+    "amenities-chromium-1440-shine list header",
+    "amenities-chromium-1440-shine list contrast []",
+    "amenities-chromium-1440-shine editor touch targets []",
+    "amenities-chromium-1440-shine editor width",
+    "amenities-chromium-1440-shine editor header",
+    "amenities-chromium-1440-shine editor contrast []",
+    "amenities-chromium-1440-shine 200% text",
+    "amenities-chromium-1440-shine desktop 1280",
+    "amenities-chromium-1440-shine desktop 1920",
+    "amenities-chromium-1440-shine cancelled dirty reload retains draft",
+    "amenities-chromium-1440-shine cancel requires draft confirmation",
+    "amenities-chromium-1440-shine local filter preserves open draft",
+    "amenities-chromium-1440-shine failed write preserves fields",
+    "amenities-chromium-1440-shine one acknowledged save despite double submission and failed refresh",
+    "amenities-chromium-1440-shine write success distinguished from refresh failure",
+    "amenities-chromium-1440-shine recovery only reads",
+    "amenities-chromium-1440-shine inactive equipment filter",
+    "amenities-chromium-1440-shine permission denial clears data",
+    "amenities-chromium-1440-shine sign out clears private content",
+    "amenities-chromium-1440-shine late read cannot restore signed out data",
+    "amenities-chromium-1440-shine no page errors or external requests []",
+    "inventory-chromium-1440-shine list touch targets []",
+    "inventory-chromium-1440-shine list width",
+    "inventory-chromium-1440-shine list header",
+    "inventory-chromium-1440-shine list contrast []",
+    "inventory-chromium-1440-shine editor touch targets []",
+    "inventory-chromium-1440-shine editor width",
+    "inventory-chromium-1440-shine editor header",
+    "inventory-chromium-1440-shine editor contrast []",
+    "inventory-chromium-1440-shine 200% text",
+    "inventory-chromium-1440-shine desktop 1280",
+    "inventory-chromium-1440-shine desktop 1920",
+    "inventory-chromium-1440-shine cancelled dirty reload retains draft",
+    "inventory-chromium-1440-shine cancel requires draft confirmation",
+    "inventory-chromium-1440-shine failed write preserves fields",
+    "inventory-chromium-1440-shine one acknowledged save despite double submission and failed refresh",
+    "inventory-chromium-1440-shine write success distinguished from refresh failure",
+    "inventory-chromium-1440-shine recovery only reads",
+    "inventory-chromium-1440-shine needs attention filter",
+    "inventory-chromium-1440-shine clear inventory filters",
+    "inventory-chromium-1440-shine permission denial clears data",
+    "inventory-chromium-1440-shine sign out clears private content",
+    "inventory-chromium-1440-shine late read cannot restore signed out data",
+    "inventory-chromium-1440-shine no page errors or external requests []",
+    "spaces-webkit-390-mplus list touch targets []",
+    "spaces-webkit-390-mplus list width",
+    "spaces-webkit-390-mplus list header",
+    "spaces-webkit-390-mplus list contrast []",
+    "spaces-webkit-390-mplus editor touch targets []",
+    "spaces-webkit-390-mplus editor width",
+    "spaces-webkit-390-mplus editor header",
+    "spaces-webkit-390-mplus editor contrast []",
+    "spaces-webkit-390-mplus 200% text",
+    "spaces-webkit-390-mplus cancelled dirty reload retains draft",
+    "spaces-webkit-390-mplus cancel requires draft confirmation",
+    "spaces-webkit-390-mplus local filter preserves open draft",
+    "spaces-webkit-390-mplus failed write preserves fields",
+    "spaces-webkit-390-mplus one acknowledged save despite double submission and failed refresh",
+    "spaces-webkit-390-mplus write success distinguished from refresh failure",
+    "spaces-webkit-390-mplus recovery only reads",
+    "spaces-webkit-390-mplus booking status filter",
+    "spaces-webkit-390-mplus clear filters restores bookings",
+    "spaces-webkit-390-mplus end before start rejected",
+    "spaces-webkit-390-mplus valid booking uses existing service",
+    "spaces-webkit-390-mplus permission denial clears data",
+    "spaces-webkit-390-mplus sign out clears private content",
+    "spaces-webkit-390-mplus late read cannot restore signed out data",
+    "spaces-webkit-390-mplus no page errors or external requests []",
+    "amenities-webkit-390-mplus list touch targets []",
+    "amenities-webkit-390-mplus list width",
+    "amenities-webkit-390-mplus list header",
+    "amenities-webkit-390-mplus list contrast []",
+    "amenities-webkit-390-mplus editor touch targets []",
+    "amenities-webkit-390-mplus editor width",
+    "amenities-webkit-390-mplus editor header",
+    "amenities-webkit-390-mplus editor contrast []",
+    "amenities-webkit-390-mplus 200% text",
+    "amenities-webkit-390-mplus cancelled dirty reload retains draft",
+    "amenities-webkit-390-mplus cancel requires draft confirmation",
+    "amenities-webkit-390-mplus local filter preserves open draft",
+    "amenities-webkit-390-mplus failed write preserves fields",
+    "amenities-webkit-390-mplus one acknowledged save despite double submission and failed refresh",
+    "amenities-webkit-390-mplus write success distinguished from refresh failure",
+    "amenities-webkit-390-mplus recovery only reads",
+    "amenities-webkit-390-mplus inactive equipment filter",
+    "amenities-webkit-390-mplus permission denial clears data",
+    "amenities-webkit-390-mplus sign out clears private content",
+    "amenities-webkit-390-mplus late read cannot restore signed out data",
+    "amenities-webkit-390-mplus no page errors or external requests []",
+    "inventory-webkit-390-mplus list touch targets []",
+    "inventory-webkit-390-mplus list width",
+    "inventory-webkit-390-mplus list header",
+    "inventory-webkit-390-mplus list contrast []",
+    "inventory-webkit-390-mplus editor touch targets []",
+    "inventory-webkit-390-mplus editor width",
+    "inventory-webkit-390-mplus editor header",
+    "inventory-webkit-390-mplus editor contrast []",
+    "inventory-webkit-390-mplus 200% text",
+    "inventory-webkit-390-mplus cancelled dirty reload retains draft",
+    "inventory-webkit-390-mplus cancel requires draft confirmation",
+    "inventory-webkit-390-mplus failed write preserves fields",
+    "inventory-webkit-390-mplus one acknowledged save despite double submission and failed refresh",
+    "inventory-webkit-390-mplus write success distinguished from refresh failure",
+    "inventory-webkit-390-mplus recovery only reads",
+    "inventory-webkit-390-mplus needs attention filter",
+    "inventory-webkit-390-mplus clear inventory filters",
+    "inventory-webkit-390-mplus permission denial clears data",
+    "inventory-webkit-390-mplus sign out clears private content",
+    "inventory-webkit-390-mplus late read cannot restore signed out data",
+    "inventory-webkit-390-mplus no page errors or external requests []",
+    "group-resources-management-webkit-390-mplus list touch targets []",
+    "group-resources-management-webkit-390-mplus list width",
+    "group-resources-management-webkit-390-mplus list header",
+    "group-resources-management-webkit-390-mplus list contrast []",
+    "group-resources-management-webkit-390-mplus editor touch targets []",
+    "group-resources-management-webkit-390-mplus editor width",
+    "group-resources-management-webkit-390-mplus editor header",
+    "group-resources-management-webkit-390-mplus editor contrast []",
+    "group-resources-management-webkit-390-mplus 200% text",
+    "group-resources-management-webkit-390-mplus cancelled dirty reload retains draft",
+    "group-resources-management-webkit-390-mplus cancel requires draft confirmation",
+    "group-resources-management-webkit-390-mplus local filter preserves open draft",
+    "group-resources-management-webkit-390-mplus failed write preserves fields",
+    "group-resources-management-webkit-390-mplus one acknowledged save despite double submission and failed refresh",
+    "group-resources-management-webkit-390-mplus write success distinguished from refresh failure",
+    "group-resources-management-webkit-390-mplus recovery only reads",
+    "group-resources-management-webkit-390-mplus publication status filter",
+    "group-resources-management-webkit-390-mplus resource write scoped to church and content type",
+    "group-resources-management-webkit-390-mplus permission denial clears data",
+    "group-resources-management-webkit-390-mplus sign out clears private content",
+    "group-resources-management-webkit-390-mplus late read cannot restore signed out data",
+    "group-resources-management-webkit-390-mplus no page errors or external requests []",
+    "spaces-webkit-390-shine list touch targets []",
+    "spaces-webkit-390-shine list width",
+    "spaces-webkit-390-shine list header",
+    "spaces-webkit-390-shine list contrast []",
+    "spaces-webkit-390-shine editor touch targets []",
+    "spaces-webkit-390-shine editor width",
+    "spaces-webkit-390-shine editor header",
+    "spaces-webkit-390-shine editor contrast []",
+    "spaces-webkit-390-shine 200% text",
+    "spaces-webkit-390-shine cancelled dirty reload retains draft",
+    "spaces-webkit-390-shine cancel requires draft confirmation",
+    "spaces-webkit-390-shine local filter preserves open draft",
+    "spaces-webkit-390-shine failed write preserves fields",
+    "spaces-webkit-390-shine one acknowledged save despite double submission and failed refresh",
+    "spaces-webkit-390-shine write success distinguished from refresh failure",
+    "spaces-webkit-390-shine recovery only reads",
+    "spaces-webkit-390-shine booking status filter",
+    "spaces-webkit-390-shine clear filters restores bookings",
+    "spaces-webkit-390-shine end before start rejected",
+    "spaces-webkit-390-shine valid booking uses existing service",
+    "spaces-webkit-390-shine permission denial clears data",
+    "spaces-webkit-390-shine sign out clears private content",
+    "spaces-webkit-390-shine late read cannot restore signed out data",
+    "spaces-webkit-390-shine no page errors or external requests []",
+    "amenities-webkit-390-shine list touch targets []",
+    "amenities-webkit-390-shine list width",
+    "amenities-webkit-390-shine list header",
+    "amenities-webkit-390-shine list contrast []",
+    "amenities-webkit-390-shine editor touch targets []",
+    "amenities-webkit-390-shine editor width",
+    "amenities-webkit-390-shine editor header",
+    "amenities-webkit-390-shine editor contrast []",
+    "amenities-webkit-390-shine 200% text",
+    "amenities-webkit-390-shine cancelled dirty reload retains draft",
+    "amenities-webkit-390-shine cancel requires draft confirmation",
+    "amenities-webkit-390-shine local filter preserves open draft",
+    "amenities-webkit-390-shine failed write preserves fields",
+    "amenities-webkit-390-shine one acknowledged save despite double submission and failed refresh",
+    "amenities-webkit-390-shine write success distinguished from refresh failure",
+    "amenities-webkit-390-shine recovery only reads",
+    "amenities-webkit-390-shine inactive equipment filter",
+    "amenities-webkit-390-shine permission denial clears data",
+    "amenities-webkit-390-shine sign out clears private content",
+    "amenities-webkit-390-shine late read cannot restore signed out data",
+    "amenities-webkit-390-shine no page errors or external requests []",
+    "inventory-webkit-390-shine list touch targets []",
+    "inventory-webkit-390-shine list width",
+    "inventory-webkit-390-shine list header",
+    "inventory-webkit-390-shine list contrast []",
+    "inventory-webkit-390-shine editor touch targets []",
+    "inventory-webkit-390-shine editor width",
+    "inventory-webkit-390-shine editor header",
+    "inventory-webkit-390-shine editor contrast []",
+    "inventory-webkit-390-shine 200% text",
+    "inventory-webkit-390-shine cancelled dirty reload retains draft",
+    "inventory-webkit-390-shine cancel requires draft confirmation",
+    "inventory-webkit-390-shine failed write preserves fields",
+    "inventory-webkit-390-shine one acknowledged save despite double submission and failed refresh",
+    "inventory-webkit-390-shine write success distinguished from refresh failure",
+    "inventory-webkit-390-shine recovery only reads",
+    "inventory-webkit-390-shine needs attention filter",
+    "inventory-webkit-390-shine clear inventory filters",
+    "inventory-webkit-390-shine permission denial clears data",
+    "inventory-webkit-390-shine sign out clears private content",
+    "inventory-webkit-390-shine late read cannot restore signed out data",
+    "inventory-webkit-390-shine no page errors or external requests []",
+    "spaces-webkit-1440-mplus list touch targets []",
+    "spaces-webkit-1440-mplus list width",
+    "spaces-webkit-1440-mplus list header",
+    "spaces-webkit-1440-mplus list contrast []",
+    "spaces-webkit-1440-mplus editor touch targets []",
+    "spaces-webkit-1440-mplus editor width",
+    "spaces-webkit-1440-mplus editor header",
+    "spaces-webkit-1440-mplus editor contrast []",
+    "spaces-webkit-1440-mplus 200% text",
+    "spaces-webkit-1440-mplus desktop 1280",
+    "spaces-webkit-1440-mplus desktop 1920",
+    "spaces-webkit-1440-mplus cancelled dirty reload retains draft",
+    "spaces-webkit-1440-mplus cancel requires draft confirmation",
+    "spaces-webkit-1440-mplus local filter preserves open draft",
+    "spaces-webkit-1440-mplus failed write preserves fields",
+    "spaces-webkit-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "spaces-webkit-1440-mplus write success distinguished from refresh failure",
+    "spaces-webkit-1440-mplus recovery only reads",
+    "spaces-webkit-1440-mplus booking status filter",
+    "spaces-webkit-1440-mplus clear filters restores bookings",
+    "spaces-webkit-1440-mplus end before start rejected",
+    "spaces-webkit-1440-mplus valid booking uses existing service",
+    "spaces-webkit-1440-mplus permission denial clears data",
+    "spaces-webkit-1440-mplus sign out clears private content",
+    "spaces-webkit-1440-mplus late read cannot restore signed out data",
+    "spaces-webkit-1440-mplus no page errors or external requests []",
+    "amenities-webkit-1440-mplus list touch targets []",
+    "amenities-webkit-1440-mplus list width",
+    "amenities-webkit-1440-mplus list header",
+    "amenities-webkit-1440-mplus list contrast []",
+    "amenities-webkit-1440-mplus editor touch targets []",
+    "amenities-webkit-1440-mplus editor width",
+    "amenities-webkit-1440-mplus editor header",
+    "amenities-webkit-1440-mplus editor contrast []",
+    "amenities-webkit-1440-mplus 200% text",
+    "amenities-webkit-1440-mplus desktop 1280",
+    "amenities-webkit-1440-mplus desktop 1920",
+    "amenities-webkit-1440-mplus cancelled dirty reload retains draft",
+    "amenities-webkit-1440-mplus cancel requires draft confirmation",
+    "amenities-webkit-1440-mplus local filter preserves open draft",
+    "amenities-webkit-1440-mplus failed write preserves fields",
+    "amenities-webkit-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "amenities-webkit-1440-mplus write success distinguished from refresh failure",
+    "amenities-webkit-1440-mplus recovery only reads",
+    "amenities-webkit-1440-mplus inactive equipment filter",
+    "amenities-webkit-1440-mplus permission denial clears data",
+    "amenities-webkit-1440-mplus sign out clears private content",
+    "amenities-webkit-1440-mplus late read cannot restore signed out data",
+    "amenities-webkit-1440-mplus no page errors or external requests []",
+    "inventory-webkit-1440-mplus list touch targets []",
+    "inventory-webkit-1440-mplus list width",
+    "inventory-webkit-1440-mplus list header",
+    "inventory-webkit-1440-mplus list contrast []",
+    "inventory-webkit-1440-mplus editor touch targets []",
+    "inventory-webkit-1440-mplus editor width",
+    "inventory-webkit-1440-mplus editor header",
+    "inventory-webkit-1440-mplus editor contrast []",
+    "inventory-webkit-1440-mplus 200% text",
+    "inventory-webkit-1440-mplus desktop 1280",
+    "inventory-webkit-1440-mplus desktop 1920",
+    "inventory-webkit-1440-mplus cancelled dirty reload retains draft",
+    "inventory-webkit-1440-mplus cancel requires draft confirmation",
+    "inventory-webkit-1440-mplus failed write preserves fields",
+    "inventory-webkit-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "inventory-webkit-1440-mplus write success distinguished from refresh failure",
+    "inventory-webkit-1440-mplus recovery only reads",
+    "inventory-webkit-1440-mplus needs attention filter",
+    "inventory-webkit-1440-mplus clear inventory filters",
+    "inventory-webkit-1440-mplus permission denial clears data",
+    "inventory-webkit-1440-mplus sign out clears private content",
+    "inventory-webkit-1440-mplus late read cannot restore signed out data",
+    "inventory-webkit-1440-mplus no page errors or external requests []",
+    "group-resources-management-webkit-1440-mplus list touch targets []",
+    "group-resources-management-webkit-1440-mplus list width",
+    "group-resources-management-webkit-1440-mplus list header",
+    "group-resources-management-webkit-1440-mplus list contrast []",
+    "group-resources-management-webkit-1440-mplus editor touch targets []",
+    "group-resources-management-webkit-1440-mplus editor width",
+    "group-resources-management-webkit-1440-mplus editor header",
+    "group-resources-management-webkit-1440-mplus editor contrast []",
+    "group-resources-management-webkit-1440-mplus 200% text",
+    "group-resources-management-webkit-1440-mplus desktop 1280",
+    "group-resources-management-webkit-1440-mplus desktop 1920",
+    "group-resources-management-webkit-1440-mplus cancelled dirty reload retains draft",
+    "group-resources-management-webkit-1440-mplus cancel requires draft confirmation",
+    "group-resources-management-webkit-1440-mplus local filter preserves open draft",
+    "group-resources-management-webkit-1440-mplus failed write preserves fields",
+    "group-resources-management-webkit-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "group-resources-management-webkit-1440-mplus write success distinguished from refresh failure",
+    "group-resources-management-webkit-1440-mplus recovery only reads",
+    "group-resources-management-webkit-1440-mplus publication status filter",
+    "group-resources-management-webkit-1440-mplus resource write scoped to church and content type",
+    "group-resources-management-webkit-1440-mplus permission denial clears data",
+    "group-resources-management-webkit-1440-mplus sign out clears private content",
+    "group-resources-management-webkit-1440-mplus late read cannot restore signed out data",
+    "group-resources-management-webkit-1440-mplus no page errors or external requests []",
+    "spaces-webkit-1440-shine list touch targets []",
+    "spaces-webkit-1440-shine list width",
+    "spaces-webkit-1440-shine list header",
+    "spaces-webkit-1440-shine list contrast []",
+    "spaces-webkit-1440-shine editor touch targets []",
+    "spaces-webkit-1440-shine editor width",
+    "spaces-webkit-1440-shine editor header",
+    "spaces-webkit-1440-shine editor contrast []",
+    "spaces-webkit-1440-shine 200% text",
+    "spaces-webkit-1440-shine desktop 1280",
+    "spaces-webkit-1440-shine desktop 1920",
+    "spaces-webkit-1440-shine cancelled dirty reload retains draft",
+    "spaces-webkit-1440-shine cancel requires draft confirmation",
+    "spaces-webkit-1440-shine local filter preserves open draft",
+    "spaces-webkit-1440-shine failed write preserves fields",
+    "spaces-webkit-1440-shine one acknowledged save despite double submission and failed refresh",
+    "spaces-webkit-1440-shine write success distinguished from refresh failure",
+    "spaces-webkit-1440-shine recovery only reads",
+    "spaces-webkit-1440-shine booking status filter",
+    "spaces-webkit-1440-shine clear filters restores bookings",
+    "spaces-webkit-1440-shine end before start rejected",
+    "spaces-webkit-1440-shine valid booking uses existing service",
+    "spaces-webkit-1440-shine permission denial clears data",
+    "spaces-webkit-1440-shine sign out clears private content",
+    "spaces-webkit-1440-shine late read cannot restore signed out data",
+    "spaces-webkit-1440-shine no page errors or external requests []",
+    "amenities-webkit-1440-shine list touch targets []",
+    "amenities-webkit-1440-shine list width",
+    "amenities-webkit-1440-shine list header",
+    "amenities-webkit-1440-shine list contrast []",
+    "amenities-webkit-1440-shine editor touch targets []",
+    "amenities-webkit-1440-shine editor width",
+    "amenities-webkit-1440-shine editor header",
+    "amenities-webkit-1440-shine editor contrast []",
+    "amenities-webkit-1440-shine 200% text",
+    "amenities-webkit-1440-shine desktop 1280",
+    "amenities-webkit-1440-shine desktop 1920",
+    "amenities-webkit-1440-shine cancelled dirty reload retains draft",
+    "amenities-webkit-1440-shine cancel requires draft confirmation",
+    "amenities-webkit-1440-shine local filter preserves open draft",
+    "amenities-webkit-1440-shine failed write preserves fields",
+    "amenities-webkit-1440-shine one acknowledged save despite double submission and failed refresh",
+    "amenities-webkit-1440-shine write success distinguished from refresh failure",
+    "amenities-webkit-1440-shine recovery only reads",
+    "amenities-webkit-1440-shine inactive equipment filter",
+    "amenities-webkit-1440-shine permission denial clears data",
+    "amenities-webkit-1440-shine sign out clears private content",
+    "amenities-webkit-1440-shine late read cannot restore signed out data",
+    "amenities-webkit-1440-shine no page errors or external requests []",
+    "inventory-webkit-1440-shine list touch targets []",
+    "inventory-webkit-1440-shine list width",
+    "inventory-webkit-1440-shine list header",
+    "inventory-webkit-1440-shine list contrast []",
+    "inventory-webkit-1440-shine editor touch targets []",
+    "inventory-webkit-1440-shine editor width",
+    "inventory-webkit-1440-shine editor header",
+    "inventory-webkit-1440-shine editor contrast []",
+    "inventory-webkit-1440-shine 200% text",
+    "inventory-webkit-1440-shine desktop 1280",
+    "inventory-webkit-1440-shine desktop 1920",
+    "inventory-webkit-1440-shine cancelled dirty reload retains draft",
+    "inventory-webkit-1440-shine cancel requires draft confirmation",
+    "inventory-webkit-1440-shine failed write preserves fields",
+    "inventory-webkit-1440-shine one acknowledged save despite double submission and failed refresh",
+    "inventory-webkit-1440-shine write success distinguished from refresh failure",
+    "inventory-webkit-1440-shine recovery only reads",
+    "inventory-webkit-1440-shine needs attention filter",
+    "inventory-webkit-1440-shine clear inventory filters",
+    "inventory-webkit-1440-shine permission denial clears data",
+    "inventory-webkit-1440-shine sign out clears private content",
+    "inventory-webkit-1440-shine late read cannot restore signed out data",
+    "inventory-webkit-1440-shine no page errors or external requests []",
+    "pastoral-inbox-chromium-390-mplus list church colors consistent",
+    "pastoral-inbox-chromium-390-mplus list touch targets []",
+    "pastoral-inbox-chromium-390-mplus list width",
+    "pastoral-inbox-chromium-390-mplus list header",
+    "pastoral-inbox-chromium-390-mplus list contrast []",
+    "pastoral-inbox-chromium-390-mplus editor church colors consistent",
+    "pastoral-inbox-chromium-390-mplus editor touch targets []",
+    "pastoral-inbox-chromium-390-mplus editor width",
+    "pastoral-inbox-chromium-390-mplus editor header",
+    "pastoral-inbox-chromium-390-mplus editor contrast []",
+    "pastoral-inbox-chromium-390-mplus 200% text",
+    "pastoral-inbox-chromium-390-mplus cancelled dirty reload retains draft",
+    "pastoral-inbox-chromium-390-mplus cancel requires draft confirmation",
+    "pastoral-inbox-chromium-390-mplus local filter preserves open draft",
+    "pastoral-inbox-chromium-390-mplus background masks private editor",
+    "pastoral-inbox-chromium-390-mplus authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-chromium-390-mplus failed write preserves fields",
+    "pastoral-inbox-chromium-390-mplus one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-chromium-390-mplus write success distinguished from refresh failure",
+    "pastoral-inbox-chromium-390-mplus recovery only reads",
+    "pastoral-inbox-chromium-390-mplus care status filter",
+    "pastoral-inbox-chromium-390-mplus clear care filters",
+    "pastoral-inbox-chromium-390-mplus care changes do not dispatch notifications",
+    "pastoral-inbox-chromium-390-mplus permission denial clears data",
+    "pastoral-inbox-chromium-390-mplus sign out clears private content",
+    "pastoral-inbox-chromium-390-mplus late read cannot restore signed out data",
+    "pastoral-inbox-chromium-390-mplus no page errors or external requests []",
+    "pastoral-inbox-chromium-390-shine list church colors consistent",
+    "pastoral-inbox-chromium-390-shine list touch targets []",
+    "pastoral-inbox-chromium-390-shine list width",
+    "pastoral-inbox-chromium-390-shine list header",
+    "pastoral-inbox-chromium-390-shine list contrast []",
+    "pastoral-inbox-chromium-390-shine editor church colors consistent",
+    "pastoral-inbox-chromium-390-shine editor touch targets []",
+    "pastoral-inbox-chromium-390-shine editor width",
+    "pastoral-inbox-chromium-390-shine editor header",
+    "pastoral-inbox-chromium-390-shine editor contrast []",
+    "pastoral-inbox-chromium-390-shine 200% text",
+    "pastoral-inbox-chromium-390-shine cancelled dirty reload retains draft",
+    "pastoral-inbox-chromium-390-shine cancel requires draft confirmation",
+    "pastoral-inbox-chromium-390-shine local filter preserves open draft",
+    "pastoral-inbox-chromium-390-shine background masks private editor",
+    "pastoral-inbox-chromium-390-shine authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-chromium-390-shine failed write preserves fields",
+    "pastoral-inbox-chromium-390-shine one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-chromium-390-shine write success distinguished from refresh failure",
+    "pastoral-inbox-chromium-390-shine recovery only reads",
+    "pastoral-inbox-chromium-390-shine care status filter",
+    "pastoral-inbox-chromium-390-shine clear care filters",
+    "pastoral-inbox-chromium-390-shine care changes do not dispatch notifications",
+    "pastoral-inbox-chromium-390-shine permission denial clears data",
+    "pastoral-inbox-chromium-390-shine sign out clears private content",
+    "pastoral-inbox-chromium-390-shine late read cannot restore signed out data",
+    "pastoral-inbox-chromium-390-shine no page errors or external requests []",
+    "pastoral-inbox-chromium-1440-mplus list church colors consistent",
+    "pastoral-inbox-chromium-1440-mplus list touch targets []",
+    "pastoral-inbox-chromium-1440-mplus list width",
+    "pastoral-inbox-chromium-1440-mplus list header",
+    "pastoral-inbox-chromium-1440-mplus list contrast []",
+    "pastoral-inbox-chromium-1440-mplus editor church colors consistent",
+    "pastoral-inbox-chromium-1440-mplus editor touch targets []",
+    "pastoral-inbox-chromium-1440-mplus editor width",
+    "pastoral-inbox-chromium-1440-mplus editor header",
+    "pastoral-inbox-chromium-1440-mplus editor contrast []",
+    "pastoral-inbox-chromium-1440-mplus 200% text",
+    "pastoral-inbox-chromium-1440-mplus desktop 1280",
+    "pastoral-inbox-chromium-1440-mplus desktop 1920",
+    "pastoral-inbox-chromium-1440-mplus cancelled dirty reload retains draft",
+    "pastoral-inbox-chromium-1440-mplus cancel requires draft confirmation",
+    "pastoral-inbox-chromium-1440-mplus local filter preserves open draft",
+    "pastoral-inbox-chromium-1440-mplus background masks private editor",
+    "pastoral-inbox-chromium-1440-mplus authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-chromium-1440-mplus failed write preserves fields",
+    "pastoral-inbox-chromium-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-chromium-1440-mplus write success distinguished from refresh failure",
+    "pastoral-inbox-chromium-1440-mplus recovery only reads",
+    "pastoral-inbox-chromium-1440-mplus care status filter",
+    "pastoral-inbox-chromium-1440-mplus clear care filters",
+    "pastoral-inbox-chromium-1440-mplus care changes do not dispatch notifications",
+    "pastoral-inbox-chromium-1440-mplus permission denial clears data",
+    "pastoral-inbox-chromium-1440-mplus sign out clears private content",
+    "pastoral-inbox-chromium-1440-mplus late read cannot restore signed out data",
+    "pastoral-inbox-chromium-1440-mplus no page errors or external requests []",
+    "pastoral-inbox-chromium-1440-shine list church colors consistent",
+    "pastoral-inbox-chromium-1440-shine list touch targets []",
+    "pastoral-inbox-chromium-1440-shine list width",
+    "pastoral-inbox-chromium-1440-shine list header",
+    "pastoral-inbox-chromium-1440-shine list contrast []",
+    "pastoral-inbox-chromium-1440-shine editor church colors consistent",
+    "pastoral-inbox-chromium-1440-shine editor touch targets []",
+    "pastoral-inbox-chromium-1440-shine editor width",
+    "pastoral-inbox-chromium-1440-shine editor header",
+    "pastoral-inbox-chromium-1440-shine editor contrast []",
+    "pastoral-inbox-chromium-1440-shine 200% text",
+    "pastoral-inbox-chromium-1440-shine desktop 1280",
+    "pastoral-inbox-chromium-1440-shine desktop 1920",
+    "pastoral-inbox-chromium-1440-shine cancelled dirty reload retains draft",
+    "pastoral-inbox-chromium-1440-shine cancel requires draft confirmation",
+    "pastoral-inbox-chromium-1440-shine local filter preserves open draft",
+    "pastoral-inbox-chromium-1440-shine background masks private editor",
+    "pastoral-inbox-chromium-1440-shine authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-chromium-1440-shine failed write preserves fields",
+    "pastoral-inbox-chromium-1440-shine one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-chromium-1440-shine write success distinguished from refresh failure",
+    "pastoral-inbox-chromium-1440-shine recovery only reads",
+    "pastoral-inbox-chromium-1440-shine care status filter",
+    "pastoral-inbox-chromium-1440-shine clear care filters",
+    "pastoral-inbox-chromium-1440-shine care changes do not dispatch notifications",
+    "pastoral-inbox-chromium-1440-shine permission denial clears data",
+    "pastoral-inbox-chromium-1440-shine sign out clears private content",
+    "pastoral-inbox-chromium-1440-shine late read cannot restore signed out data",
+    "pastoral-inbox-chromium-1440-shine no page errors or external requests []",
+    "pastoral-inbox-webkit-390-mplus list church colors consistent",
+    "pastoral-inbox-webkit-390-mplus list touch targets []",
+    "pastoral-inbox-webkit-390-mplus list width",
+    "pastoral-inbox-webkit-390-mplus list header",
+    "pastoral-inbox-webkit-390-mplus list contrast []",
+    "pastoral-inbox-webkit-390-mplus editor church colors consistent",
+    "pastoral-inbox-webkit-390-mplus editor touch targets []",
+    "pastoral-inbox-webkit-390-mplus editor width",
+    "pastoral-inbox-webkit-390-mplus editor header",
+    "pastoral-inbox-webkit-390-mplus editor contrast []",
+    "pastoral-inbox-webkit-390-mplus 200% text",
+    "pastoral-inbox-webkit-390-mplus cancelled dirty reload retains draft",
+    "pastoral-inbox-webkit-390-mplus cancel requires draft confirmation",
+    "pastoral-inbox-webkit-390-mplus local filter preserves open draft",
+    "pastoral-inbox-webkit-390-mplus background masks private editor",
+    "pastoral-inbox-webkit-390-mplus authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-webkit-390-mplus failed write preserves fields",
+    "pastoral-inbox-webkit-390-mplus one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-webkit-390-mplus write success distinguished from refresh failure",
+    "pastoral-inbox-webkit-390-mplus recovery only reads",
+    "pastoral-inbox-webkit-390-mplus care status filter",
+    "pastoral-inbox-webkit-390-mplus clear care filters",
+    "pastoral-inbox-webkit-390-mplus care changes do not dispatch notifications",
+    "pastoral-inbox-webkit-390-mplus permission denial clears data",
+    "pastoral-inbox-webkit-390-mplus sign out clears private content",
+    "pastoral-inbox-webkit-390-mplus late read cannot restore signed out data",
+    "pastoral-inbox-webkit-390-mplus no page errors or external requests []",
+    "pastoral-inbox-webkit-390-shine list church colors consistent",
+    "pastoral-inbox-webkit-390-shine list touch targets []",
+    "pastoral-inbox-webkit-390-shine list width",
+    "pastoral-inbox-webkit-390-shine list header",
+    "pastoral-inbox-webkit-390-shine list contrast []",
+    "pastoral-inbox-webkit-390-shine editor church colors consistent",
+    "pastoral-inbox-webkit-390-shine editor touch targets []",
+    "pastoral-inbox-webkit-390-shine editor width",
+    "pastoral-inbox-webkit-390-shine editor header",
+    "pastoral-inbox-webkit-390-shine editor contrast []",
+    "pastoral-inbox-webkit-390-shine 200% text",
+    "pastoral-inbox-webkit-390-shine cancelled dirty reload retains draft",
+    "pastoral-inbox-webkit-390-shine cancel requires draft confirmation",
+    "pastoral-inbox-webkit-390-shine local filter preserves open draft",
+    "pastoral-inbox-webkit-390-shine background masks private editor",
+    "pastoral-inbox-webkit-390-shine authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-webkit-390-shine failed write preserves fields",
+    "pastoral-inbox-webkit-390-shine one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-webkit-390-shine write success distinguished from refresh failure",
+    "pastoral-inbox-webkit-390-shine recovery only reads",
+    "pastoral-inbox-webkit-390-shine care status filter",
+    "pastoral-inbox-webkit-390-shine clear care filters",
+    "pastoral-inbox-webkit-390-shine care changes do not dispatch notifications",
+    "pastoral-inbox-webkit-390-shine permission denial clears data",
+    "pastoral-inbox-webkit-390-shine sign out clears private content",
+    "pastoral-inbox-webkit-390-shine late read cannot restore signed out data",
+    "pastoral-inbox-webkit-390-shine no page errors or external requests []",
+    "pastoral-inbox-webkit-1440-mplus list church colors consistent",
+    "pastoral-inbox-webkit-1440-mplus list touch targets []",
+    "pastoral-inbox-webkit-1440-mplus list width",
+    "pastoral-inbox-webkit-1440-mplus list header",
+    "pastoral-inbox-webkit-1440-mplus list contrast []",
+    "pastoral-inbox-webkit-1440-mplus editor church colors consistent",
+    "pastoral-inbox-webkit-1440-mplus editor touch targets []",
+    "pastoral-inbox-webkit-1440-mplus editor width",
+    "pastoral-inbox-webkit-1440-mplus editor header",
+    "pastoral-inbox-webkit-1440-mplus editor contrast []",
+    "pastoral-inbox-webkit-1440-mplus 200% text",
+    "pastoral-inbox-webkit-1440-mplus desktop 1280",
+    "pastoral-inbox-webkit-1440-mplus desktop 1920",
+    "pastoral-inbox-webkit-1440-mplus cancelled dirty reload retains draft",
+    "pastoral-inbox-webkit-1440-mplus cancel requires draft confirmation",
+    "pastoral-inbox-webkit-1440-mplus local filter preserves open draft",
+    "pastoral-inbox-webkit-1440-mplus background masks private editor",
+    "pastoral-inbox-webkit-1440-mplus authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-webkit-1440-mplus failed write preserves fields",
+    "pastoral-inbox-webkit-1440-mplus one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-webkit-1440-mplus write success distinguished from refresh failure",
+    "pastoral-inbox-webkit-1440-mplus recovery only reads",
+    "pastoral-inbox-webkit-1440-mplus care status filter",
+    "pastoral-inbox-webkit-1440-mplus clear care filters",
+    "pastoral-inbox-webkit-1440-mplus care changes do not dispatch notifications",
+    "pastoral-inbox-webkit-1440-mplus permission denial clears data",
+    "pastoral-inbox-webkit-1440-mplus sign out clears private content",
+    "pastoral-inbox-webkit-1440-mplus late read cannot restore signed out data",
+    "pastoral-inbox-webkit-1440-mplus no page errors or external requests []",
+    "pastoral-inbox-webkit-1440-shine list church colors consistent",
+    "pastoral-inbox-webkit-1440-shine list touch targets []",
+    "pastoral-inbox-webkit-1440-shine list width",
+    "pastoral-inbox-webkit-1440-shine list header",
+    "pastoral-inbox-webkit-1440-shine list contrast []",
+    "pastoral-inbox-webkit-1440-shine editor church colors consistent",
+    "pastoral-inbox-webkit-1440-shine editor touch targets []",
+    "pastoral-inbox-webkit-1440-shine editor width",
+    "pastoral-inbox-webkit-1440-shine editor header",
+    "pastoral-inbox-webkit-1440-shine editor contrast []",
+    "pastoral-inbox-webkit-1440-shine 200% text",
+    "pastoral-inbox-webkit-1440-shine desktop 1280",
+    "pastoral-inbox-webkit-1440-shine desktop 1920",
+    "pastoral-inbox-webkit-1440-shine cancelled dirty reload retains draft",
+    "pastoral-inbox-webkit-1440-shine cancel requires draft confirmation",
+    "pastoral-inbox-webkit-1440-shine local filter preserves open draft",
+    "pastoral-inbox-webkit-1440-shine background masks private editor",
+    "pastoral-inbox-webkit-1440-shine authorized return restores unsaved care draft without writing",
+    "pastoral-inbox-webkit-1440-shine failed write preserves fields",
+    "pastoral-inbox-webkit-1440-shine one acknowledged save despite double submission and failed refresh",
+    "pastoral-inbox-webkit-1440-shine write success distinguished from refresh failure",
+    "pastoral-inbox-webkit-1440-shine recovery only reads",
+    "pastoral-inbox-webkit-1440-shine care status filter",
+    "pastoral-inbox-webkit-1440-shine clear care filters",
+    "pastoral-inbox-webkit-1440-shine care changes do not dispatch notifications",
+    "pastoral-inbox-webkit-1440-shine permission denial clears data",
+    "pastoral-inbox-webkit-1440-shine sign out clears private content",
+    "pastoral-inbox-webkit-1440-shine late read cannot restore signed out data",
+    "pastoral-inbox-webkit-1440-shine no page errors or external requests []"
+  ],
+  "visuals": [
+    {
+      "prefix": "spaces-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 53,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 63,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 75,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 68,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 53,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 63,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 75,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 68,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 53,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 63,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 75,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 68,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 53,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 63,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 35,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 55,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "M+ 大雅教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 75,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "group-resources-management-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "spaces-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 25,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "amenities-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 30,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 48,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "inventory-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "火樂教會清冊已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 68,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 50,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 50,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-chromium-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-390-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-390-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 50,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-390-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-390-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 390,
+        "scrollWidth": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-1440-mplus",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 42,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-1440-mplus",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 50,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-1440-shine",
+      "state": "list",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 37,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "pastoral-inbox-webkit-1440-shine",
+      "state": "editor",
+      "metrics": {
+        "status": "資料已載入。",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 45,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "failures": [],
+  "verificationNotes": "Full five-page run followed by all eight pastoral inbox environments after a CSS correction scoped exclusively to pastoral-inbox. Includes 16 explicit church-color checks."
+}

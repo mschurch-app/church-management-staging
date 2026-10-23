@@ -23,6 +23,7 @@ try{
  page.on('request',async req=>{
   try{
    const url=new URL(req.url()),name=url.pathname.slice(1);
+   if(url.protocol==='data:'&&url.pathname.startsWith('image/svg+xml,'))return req.continue();
    if(url.origin===base){
     const file=process.env.INVENTORY_BASELINE_DIR&&path.join(process.env.INVENTORY_BASELINE_DIR,name);
     if(baseline&&['inventory.html','inventory.css','inventory.mjs'].includes(name)&&file&&fs.existsSync(file))return req.respond({status:200,contentType:types[path.extname(name)],body:fs.readFileSync(file)});

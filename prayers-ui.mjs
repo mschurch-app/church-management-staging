@@ -1,6 +1,6 @@
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {listPrayers,savePrayerCare} from './prayer-management.mjs?v=20261010-care-orbs1';
-import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';
+import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261023-settings1';
 
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
 import {createPrayerForm} from './care-prayer-compose.mjs?v=20261010-care-orbs1';

@@ -26,7 +26,7 @@ export async function saveChurchCustomizations(db,church,draft,previous){
   const catalogs={};for(const [key,values] of Object.entries(draft.catalogs||{})){const clean=uniqueStrings(values);if(!clean.length)throw new Error('每組選項至少保留一項。');catalogs[key]=clean;}
   const payload={feature_modules,welcome_fields,catalogs,version:Number(previous.version)+1,updated_at:new Date().toISOString()};
   const {data,error}=await db.from('church_customizations').update(payload).eq('church_id',church).eq('version',previous.version).select('church_id,feature_modules,welcome_fields,catalogs,version,updated_at');
-  if(error||!Array.isArray(data)||data.length!==1)throw new Error('設定未儲存，可能已有其他管理員更新，請重新載入。');
+  if(error)throw error;if(!Array.isArray(data))throw Object.assign(new Error('未收到儲存確認。'),{name:'InvalidResponseError'});if(data.length!==1)throw new Error('設定未儲存，可能已有其他管理員更新，請重新載入。');
   return data[0];
 }
 

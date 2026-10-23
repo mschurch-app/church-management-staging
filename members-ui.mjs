@@ -2,8 +2,8 @@ import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,FIELDS} from './member-management.mjs?v=20261003-access-guard1';
-import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20260924-custom2';
-import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261009-stage2';
+import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20261023-settings1';
+import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261023-settings1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
 const $=s=>document.querySelector(s),status=$('#status'),list=$('#list'),editor=$('#editor');
 const draft=editorDraft(editor);let editorOwnerId=null,viewerId=null,restoreEditor=false,resumeInFlight=false,privateSuspended=false;

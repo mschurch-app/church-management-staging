@@ -17,7 +17,7 @@ npm run quality:gate
 
 可設定 `CHURCH_TEST_ORIGIN`、`CHROME_EXECUTABLE`；預設本機來源 `http://127.0.0.1:8769` 與 Mac Google Chrome。使用 `node quality-gate.mjs phase4/worker.mjs phase4/browser.mjs` 可只重跑指定清單，這不代表完整驗收。
 
-清單包括前端語法、41 個功能目錄／權限定義、登入與 LINE 返回、管理員、公開服事登記與恩典腳蹤、四個業務工作區、35 個管理頁版面及文字對比、裝置恢復／更新。每份結果與 log 置於被忽略的 `phase4/results/`；固定清單有一項失敗就傳回非零 exit code，保留成功與失敗輸出。
+清單包括前端語法、功能目錄／權限定義（目前 48 個入口）、登入與 LINE 返回、管理員、公開服事登記與恩典腳蹤、四個業務工作區、管理頁版面及文字對比（目前 42 頁）、裝置恢復／更新。每份結果與 log 置於被忽略的 `phase4/results/`；固定清單有一項失敗就傳回非零 exit code，保留成功與失敗輸出。
 
 ## 第四階段個別驗收
 
@@ -29,3 +29,9 @@ npm run quality:gate
 - 第四階段 Chrome 真實 Worker 測試仍是桌面 Chromium；不等於 iPhone 主畫面或 Mac Safari。Safari WebDriver 未允許遠端自動化時保留待驗收，不修改使用者系統設定。
 
 新功能必須另加自己的真實業務與角色情境。合成 viewport／API 不能宣稱全部操作、真機、真實 LINE 或 99% 已完成。
+
+## 2026-10-23 收尾補查
+
+`closeout-browser.mjs` 另驗證社群發布、IG／YouTube 連線及舊讀經管理。採目前頁面的真實處理器與全合成資料替身；Chromium／WebKit 各 390／1440 px。使用本機既有 Playwright，可透過 `PLAYWRIGHT_MODULE` 及 `PLAYWRIGHT_BROWSERS_PATH` 指定依賴。此腳本不屬於原固定 15 組，不混稱已執行全部實機驗收。
+
+`node tests/closeout-server.mjs` 提供 `127.0.0.1:8778` 的合成頁面，僅供本機原生 Safari 驗收。CSP 限制外部連線；不登入正式帳號，不填真實平台權杖。

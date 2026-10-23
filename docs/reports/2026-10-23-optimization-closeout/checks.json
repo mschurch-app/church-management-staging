@@ -1,0 +1,506 @@
+{
+  "checks": [
+    "media-publishing-settings-chromium-390 no overflow",
+    "media-publishing-settings-chromium-390 header",
+    "media-publishing-settings-chromium-390 contrast []",
+    "media-publishing-settings-chromium-390 200% text",
+    "media-publishing-settings-chromium-390 reload cancellation preserves draft",
+    "media-publishing-settings-chromium-390 failed write preserves draft",
+    "media-publishing-settings-chromium-390 failure can retry",
+    "media-publishing-settings-chromium-390 double click only one save",
+    "media-publishing-settings-chromium-390 confirmed save",
+    "media-publishing-settings-chromium-390 unknown save locks retry",
+    "media-publishing-settings-chromium-390 unknown save keeps draft",
+    "media-publishing-settings-chromium-390 read failure visible",
+    "media-publishing-settings-chromium-390 retry always available",
+    "media-publishing-settings-chromium-390 recover load",
+    "media-publishing-settings-chromium-390 late load ignored",
+    "media-publishing-settings-chromium-390 account change clears actions",
+    "media-publishing-settings-chromium-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "instagram-publishing-settings-chromium-390 no overflow",
+    "instagram-publishing-settings-chromium-390 header",
+    "instagram-publishing-settings-chromium-390 contrast []",
+    "instagram-publishing-settings-chromium-390 200% text",
+    "instagram-publishing-settings-chromium-390 expired connection not connected",
+    "instagram-publishing-settings-chromium-390 reconnect available",
+    "instagram-publishing-settings-chromium-390 token draft retained after cancel",
+    "instagram-publishing-settings-chromium-390 rejected token retained",
+    "instagram-publishing-settings-chromium-390 single connect",
+    "instagram-publishing-settings-chromium-390 token cleared after connect",
+    "instagram-publishing-settings-chromium-390 unknown disconnect locks retry",
+    "instagram-publishing-settings-chromium-390 no false disconnect success",
+    "instagram-publishing-settings-chromium-390 read failure visible",
+    "instagram-publishing-settings-chromium-390 retry always available",
+    "instagram-publishing-settings-chromium-390 recover load",
+    "instagram-publishing-settings-chromium-390 late load ignored",
+    "instagram-publishing-settings-chromium-390 account change clears actions",
+    "instagram-publishing-settings-chromium-390 church restriction",
+    "instagram-publishing-settings-chromium-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "youtube-settings-chromium-390 no overflow",
+    "youtube-settings-chromium-390 header",
+    "youtube-settings-chromium-390 contrast []",
+    "youtube-settings-chromium-390 200% text",
+    "youtube-settings-chromium-390 expired connection not connected",
+    "youtube-settings-chromium-390 reconnect available",
+    "youtube-settings-chromium-390 invalid OAuth destination rejected",
+    "youtube-settings-chromium-390 invalid authorization locks until reload",
+    "youtube-settings-chromium-390 unknown disconnect locks retry",
+    "youtube-settings-chromium-390 no false disconnect success",
+    "youtube-settings-chromium-390 read failure visible",
+    "youtube-settings-chromium-390 retry always available",
+    "youtube-settings-chromium-390 recover load",
+    "youtube-settings-chromium-390 late load ignored",
+    "youtube-settings-chromium-390 account change clears actions",
+    "youtube-settings-chromium-390 church restriction",
+    "youtube-settings-chromium-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "tree-reading-admin-chromium-390 no overflow",
+    "tree-reading-admin-chromium-390 header",
+    "tree-reading-admin-chromium-390 contrast []",
+    "tree-reading-admin-chromium-390 200% text",
+    "tree-reading-admin-chromium-390 search",
+    "tree-reading-admin-chromium-390 CSV respects filter",
+    "tree-reading-admin-chromium-390 CSV formula escaped",
+    "tree-reading-admin-chromium-390 empty search disables export",
+    "tree-reading-admin-chromium-390 read failure visible",
+    "tree-reading-admin-chromium-390 retry always available",
+    "tree-reading-admin-chromium-390 recover load",
+    "tree-reading-admin-chromium-390 late load ignored",
+    "tree-reading-admin-chromium-390 private rows cleared",
+    "tree-reading-admin-chromium-390 church restriction",
+    "tree-reading-admin-chromium-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "media-publishing-settings-chromium-1440 no overflow",
+    "media-publishing-settings-chromium-1440 header",
+    "media-publishing-settings-chromium-1440 contrast []",
+    "media-publishing-settings-chromium-1440 200% text",
+    "media-publishing-settings-chromium-1440 reload cancellation preserves draft",
+    "media-publishing-settings-chromium-1440 failed write preserves draft",
+    "media-publishing-settings-chromium-1440 failure can retry",
+    "media-publishing-settings-chromium-1440 double click only one save",
+    "media-publishing-settings-chromium-1440 confirmed save",
+    "media-publishing-settings-chromium-1440 unknown save locks retry",
+    "media-publishing-settings-chromium-1440 unknown save keeps draft",
+    "media-publishing-settings-chromium-1440 read failure visible",
+    "media-publishing-settings-chromium-1440 retry always available",
+    "media-publishing-settings-chromium-1440 recover load",
+    "media-publishing-settings-chromium-1440 late load ignored",
+    "media-publishing-settings-chromium-1440 account change clears actions",
+    "media-publishing-settings-chromium-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "instagram-publishing-settings-chromium-1440 no overflow",
+    "instagram-publishing-settings-chromium-1440 header",
+    "instagram-publishing-settings-chromium-1440 contrast []",
+    "instagram-publishing-settings-chromium-1440 200% text",
+    "instagram-publishing-settings-chromium-1440 expired connection not connected",
+    "instagram-publishing-settings-chromium-1440 reconnect available",
+    "instagram-publishing-settings-chromium-1440 token draft retained after cancel",
+    "instagram-publishing-settings-chromium-1440 rejected token retained",
+    "instagram-publishing-settings-chromium-1440 single connect",
+    "instagram-publishing-settings-chromium-1440 token cleared after connect",
+    "instagram-publishing-settings-chromium-1440 unknown disconnect locks retry",
+    "instagram-publishing-settings-chromium-1440 no false disconnect success",
+    "instagram-publishing-settings-chromium-1440 read failure visible",
+    "instagram-publishing-settings-chromium-1440 retry always available",
+    "instagram-publishing-settings-chromium-1440 recover load",
+    "instagram-publishing-settings-chromium-1440 late load ignored",
+    "instagram-publishing-settings-chromium-1440 account change clears actions",
+    "instagram-publishing-settings-chromium-1440 church restriction",
+    "instagram-publishing-settings-chromium-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "youtube-settings-chromium-1440 no overflow",
+    "youtube-settings-chromium-1440 header",
+    "youtube-settings-chromium-1440 contrast []",
+    "youtube-settings-chromium-1440 200% text",
+    "youtube-settings-chromium-1440 expired connection not connected",
+    "youtube-settings-chromium-1440 reconnect available",
+    "youtube-settings-chromium-1440 invalid OAuth destination rejected",
+    "youtube-settings-chromium-1440 invalid authorization locks until reload",
+    "youtube-settings-chromium-1440 unknown disconnect locks retry",
+    "youtube-settings-chromium-1440 no false disconnect success",
+    "youtube-settings-chromium-1440 read failure visible",
+    "youtube-settings-chromium-1440 retry always available",
+    "youtube-settings-chromium-1440 recover load",
+    "youtube-settings-chromium-1440 late load ignored",
+    "youtube-settings-chromium-1440 account change clears actions",
+    "youtube-settings-chromium-1440 church restriction",
+    "youtube-settings-chromium-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "tree-reading-admin-chromium-1440 no overflow",
+    "tree-reading-admin-chromium-1440 header",
+    "tree-reading-admin-chromium-1440 contrast []",
+    "tree-reading-admin-chromium-1440 200% text",
+    "tree-reading-admin-chromium-1440 search",
+    "tree-reading-admin-chromium-1440 CSV respects filter",
+    "tree-reading-admin-chromium-1440 CSV formula escaped",
+    "tree-reading-admin-chromium-1440 empty search disables export",
+    "tree-reading-admin-chromium-1440 read failure visible",
+    "tree-reading-admin-chromium-1440 retry always available",
+    "tree-reading-admin-chromium-1440 recover load",
+    "tree-reading-admin-chromium-1440 late load ignored",
+    "tree-reading-admin-chromium-1440 private rows cleared",
+    "tree-reading-admin-chromium-1440 church restriction",
+    "tree-reading-admin-chromium-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "media-publishing-settings-webkit-390 no overflow",
+    "media-publishing-settings-webkit-390 header",
+    "media-publishing-settings-webkit-390 contrast []",
+    "media-publishing-settings-webkit-390 200% text",
+    "media-publishing-settings-webkit-390 reload cancellation preserves draft",
+    "media-publishing-settings-webkit-390 failed write preserves draft",
+    "media-publishing-settings-webkit-390 failure can retry",
+    "media-publishing-settings-webkit-390 double click only one save",
+    "media-publishing-settings-webkit-390 confirmed save",
+    "media-publishing-settings-webkit-390 unknown save locks retry",
+    "media-publishing-settings-webkit-390 unknown save keeps draft",
+    "media-publishing-settings-webkit-390 read failure visible",
+    "media-publishing-settings-webkit-390 retry always available",
+    "media-publishing-settings-webkit-390 recover load",
+    "media-publishing-settings-webkit-390 late load ignored",
+    "media-publishing-settings-webkit-390 account change clears actions",
+    "media-publishing-settings-webkit-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "instagram-publishing-settings-webkit-390 no overflow",
+    "instagram-publishing-settings-webkit-390 header",
+    "instagram-publishing-settings-webkit-390 contrast []",
+    "instagram-publishing-settings-webkit-390 200% text",
+    "instagram-publishing-settings-webkit-390 expired connection not connected",
+    "instagram-publishing-settings-webkit-390 reconnect available",
+    "instagram-publishing-settings-webkit-390 token draft retained after cancel",
+    "instagram-publishing-settings-webkit-390 rejected token retained",
+    "instagram-publishing-settings-webkit-390 single connect",
+    "instagram-publishing-settings-webkit-390 token cleared after connect",
+    "instagram-publishing-settings-webkit-390 unknown disconnect locks retry",
+    "instagram-publishing-settings-webkit-390 no false disconnect success",
+    "instagram-publishing-settings-webkit-390 read failure visible",
+    "instagram-publishing-settings-webkit-390 retry always available",
+    "instagram-publishing-settings-webkit-390 recover load",
+    "instagram-publishing-settings-webkit-390 late load ignored",
+    "instagram-publishing-settings-webkit-390 account change clears actions",
+    "instagram-publishing-settings-webkit-390 church restriction",
+    "instagram-publishing-settings-webkit-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "youtube-settings-webkit-390 no overflow",
+    "youtube-settings-webkit-390 header",
+    "youtube-settings-webkit-390 contrast []",
+    "youtube-settings-webkit-390 200% text",
+    "youtube-settings-webkit-390 expired connection not connected",
+    "youtube-settings-webkit-390 reconnect available",
+    "youtube-settings-webkit-390 invalid OAuth destination rejected",
+    "youtube-settings-webkit-390 invalid authorization locks until reload",
+    "youtube-settings-webkit-390 unknown disconnect locks retry",
+    "youtube-settings-webkit-390 no false disconnect success",
+    "youtube-settings-webkit-390 read failure visible",
+    "youtube-settings-webkit-390 retry always available",
+    "youtube-settings-webkit-390 recover load",
+    "youtube-settings-webkit-390 late load ignored",
+    "youtube-settings-webkit-390 account change clears actions",
+    "youtube-settings-webkit-390 church restriction",
+    "youtube-settings-webkit-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "tree-reading-admin-webkit-390 no overflow",
+    "tree-reading-admin-webkit-390 header",
+    "tree-reading-admin-webkit-390 contrast []",
+    "tree-reading-admin-webkit-390 200% text",
+    "tree-reading-admin-webkit-390 search",
+    "tree-reading-admin-webkit-390 CSV respects filter",
+    "tree-reading-admin-webkit-390 CSV formula escaped",
+    "tree-reading-admin-webkit-390 empty search disables export",
+    "tree-reading-admin-webkit-390 read failure visible",
+    "tree-reading-admin-webkit-390 retry always available",
+    "tree-reading-admin-webkit-390 recover load",
+    "tree-reading-admin-webkit-390 late load ignored",
+    "tree-reading-admin-webkit-390 private rows cleared",
+    "tree-reading-admin-webkit-390 church restriction",
+    "tree-reading-admin-webkit-390 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "media-publishing-settings-webkit-1440 no overflow",
+    "media-publishing-settings-webkit-1440 header",
+    "media-publishing-settings-webkit-1440 contrast []",
+    "media-publishing-settings-webkit-1440 200% text",
+    "media-publishing-settings-webkit-1440 reload cancellation preserves draft",
+    "media-publishing-settings-webkit-1440 failed write preserves draft",
+    "media-publishing-settings-webkit-1440 failure can retry",
+    "media-publishing-settings-webkit-1440 double click only one save",
+    "media-publishing-settings-webkit-1440 confirmed save",
+    "media-publishing-settings-webkit-1440 unknown save locks retry",
+    "media-publishing-settings-webkit-1440 unknown save keeps draft",
+    "media-publishing-settings-webkit-1440 read failure visible",
+    "media-publishing-settings-webkit-1440 retry always available",
+    "media-publishing-settings-webkit-1440 recover load",
+    "media-publishing-settings-webkit-1440 late load ignored",
+    "media-publishing-settings-webkit-1440 account change clears actions",
+    "media-publishing-settings-webkit-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "instagram-publishing-settings-webkit-1440 no overflow",
+    "instagram-publishing-settings-webkit-1440 header",
+    "instagram-publishing-settings-webkit-1440 contrast []",
+    "instagram-publishing-settings-webkit-1440 200% text",
+    "instagram-publishing-settings-webkit-1440 expired connection not connected",
+    "instagram-publishing-settings-webkit-1440 reconnect available",
+    "instagram-publishing-settings-webkit-1440 token draft retained after cancel",
+    "instagram-publishing-settings-webkit-1440 rejected token retained",
+    "instagram-publishing-settings-webkit-1440 single connect",
+    "instagram-publishing-settings-webkit-1440 token cleared after connect",
+    "instagram-publishing-settings-webkit-1440 unknown disconnect locks retry",
+    "instagram-publishing-settings-webkit-1440 no false disconnect success",
+    "instagram-publishing-settings-webkit-1440 read failure visible",
+    "instagram-publishing-settings-webkit-1440 retry always available",
+    "instagram-publishing-settings-webkit-1440 recover load",
+    "instagram-publishing-settings-webkit-1440 late load ignored",
+    "instagram-publishing-settings-webkit-1440 account change clears actions",
+    "instagram-publishing-settings-webkit-1440 church restriction",
+    "instagram-publishing-settings-webkit-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "youtube-settings-webkit-1440 no overflow",
+    "youtube-settings-webkit-1440 header",
+    "youtube-settings-webkit-1440 contrast []",
+    "youtube-settings-webkit-1440 200% text",
+    "youtube-settings-webkit-1440 expired connection not connected",
+    "youtube-settings-webkit-1440 reconnect available",
+    "youtube-settings-webkit-1440 invalid OAuth destination rejected",
+    "youtube-settings-webkit-1440 invalid authorization locks until reload",
+    "youtube-settings-webkit-1440 unknown disconnect locks retry",
+    "youtube-settings-webkit-1440 no false disconnect success",
+    "youtube-settings-webkit-1440 read failure visible",
+    "youtube-settings-webkit-1440 retry always available",
+    "youtube-settings-webkit-1440 recover load",
+    "youtube-settings-webkit-1440 late load ignored",
+    "youtube-settings-webkit-1440 account change clears actions",
+    "youtube-settings-webkit-1440 church restriction",
+    "youtube-settings-webkit-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}",
+    "tree-reading-admin-webkit-1440 no overflow",
+    "tree-reading-admin-webkit-1440 header",
+    "tree-reading-admin-webkit-1440 contrast []",
+    "tree-reading-admin-webkit-1440 200% text",
+    "tree-reading-admin-webkit-1440 search",
+    "tree-reading-admin-webkit-1440 CSV respects filter",
+    "tree-reading-admin-webkit-1440 CSV formula escaped",
+    "tree-reading-admin-webkit-1440 empty search disables export",
+    "tree-reading-admin-webkit-1440 read failure visible",
+    "tree-reading-admin-webkit-1440 retry always available",
+    "tree-reading-admin-webkit-1440 recover load",
+    "tree-reading-admin-webkit-1440 late load ignored",
+    "tree-reading-admin-webkit-1440 private rows cleared",
+    "tree-reading-admin-webkit-1440 church restriction",
+    "tree-reading-admin-webkit-1440 no errors or external requests {\"errors\":[],\"blocked\":[]}"
+  ],
+  "failures": [],
+  "visuals": [
+    {
+      "prefix": "media-publishing-settings-chromium-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "instagram-publishing-settings-chromium-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 23,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-settings-chromium-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 24,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "tree-reading-admin-chromium-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "media-publishing-settings-chromium-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "instagram-publishing-settings-chromium-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 23,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-settings-chromium-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 24,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "tree-reading-admin-chromium-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "media-publishing-settings-webkit-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "instagram-publishing-settings-webkit-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 23,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-settings-webkit-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 24,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "tree-reading-admin-webkit-390",
+      "metrics": {
+        "width": 390,
+        "scroll": 390,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "media-publishing-settings-webkit-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 44,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "instagram-publishing-settings-webkit-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 23,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "youtube-settings-webkit-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 24,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    },
+    {
+      "prefix": "tree-reading-admin-webkit-1440",
+      "metrics": {
+        "width": 1440,
+        "scroll": 1440,
+        "header": 164
+      },
+      "contrast": {
+        "checked": 58,
+        "failures": [],
+        "header": 164,
+        "headerClipped": false
+      }
+    }
+  ],
+  "productionWrites": 0,
+  "realIPhone": false,
+  "realMacSafari": false
+}

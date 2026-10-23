@@ -1,0 +1,210 @@
+[
+  {
+    "file": "admin-accounts.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "請選擇待審申請，或從名單找到要設定的同工。"
+  },
+  {
+    "file": "admin-accounts.html",
+    "width": 390,
+    "state": "account-editor",
+    "errors": [],
+    "failures": [],
+    "status": "已開啟同工基本資料。"
+  },
+  {
+    "file": "heat-camp-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "資料已更新。"
+  },
+  {
+    "file": "heat-camp-volunteers-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "志工報名資料已更新。"
+  },
+  {
+    "file": "instagram-publishing-settings.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 Instagram。"
+  },
+  {
+    "file": "media-publishing-settings.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "設定已載入。"
+  },
+  {
+    "file": "service-signup-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "全部服事類別已載入。"
+  },
+  {
+    "file": "testimony-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "已載入正式投稿。只有按下「核准並公開」後才會出現在教會網站。"
+  },
+  {
+    "file": "tree-reading-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "讀經紀錄已載入。"
+  },
+  {
+    "file": "website-maintenance.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "週報已核准並發布。"
+  },
+  {
+    "file": "youtube-settings.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 YouTube。"
+  },
+  {
+    "file": "pastoral/workspace.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "正在載入你的工作台…"
+  },
+  {
+    "file": "pastoral/coworker-tools.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": ""
+  },
+  {
+    "file": "admin-accounts.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "請選擇待審申請，或從名單找到要設定的同工。"
+  },
+  {
+    "file": "admin-accounts.html",
+    "width": 1440,
+    "state": "account-editor",
+    "errors": [],
+    "failures": [],
+    "status": "已開啟同工基本資料。"
+  },
+  {
+    "file": "heat-camp-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "資料已更新。"
+  },
+  {
+    "file": "heat-camp-volunteers-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "志工報名資料已更新。"
+  },
+  {
+    "file": "instagram-publishing-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 Instagram。"
+  },
+  {
+    "file": "media-publishing-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "設定已載入。"
+  },
+  {
+    "file": "service-signup-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "全部服事類別已載入。"
+  },
+  {
+    "file": "testimony-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "已載入正式投稿。只有按下「核准並公開」後才會出現在教會網站。"
+  },
+  {
+    "file": "tree-reading-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "讀經紀錄已載入。"
+  },
+  {
+    "file": "website-maintenance.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "週報已核准並發布。"
+  },
+  {
+    "file": "youtube-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 YouTube。"
+  },
+  {
+    "file": "pastoral/workspace.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "正在載入你的工作台…"
+  },
+  {
+    "file": "pastoral/coworker-tools.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": ""
+  }
+]

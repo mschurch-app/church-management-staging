@@ -1,0 +1,261 @@
+[
+  {
+    "file": "admin-accounts.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "請選擇待審申請，或從名單找到要設定的同工。"
+  },
+  {
+    "file": "admin-accounts.html",
+    "width": 390,
+    "state": "account-editor",
+    "errors": [],
+    "failures": [],
+    "status": "已開啟同工基本資料。"
+  },
+  {
+    "file": "heat-camp-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "資料已更新。"
+  },
+  {
+    "file": "heat-camp-volunteers-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "Cannot read properties of undefined (reading 'group_leader')",
+    "error": "Rendered runtime error: Cannot read properties of undefined (reading 'group_leader')"
+  },
+  {
+    "file": "instagram-publishing-settings.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 Instagram。"
+  },
+  {
+    "file": "media-publishing-settings.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "發布設定已載入。"
+  },
+  {
+    "file": "service-signup-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "全部服事類別已載入。"
+  },
+  {
+    "file": "testimony-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "已載入正式投稿。只有按下「核准並公開」後才會出現在教會網站。"
+  },
+  {
+    "file": "tree-reading-admin.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "已使用教會帳號驗證｜測試同工"
+  },
+  {
+    "file": "website-maintenance.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "週報已核准並發布。"
+  },
+  {
+    "file": "youtube-settings.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 YouTube。"
+  },
+  {
+    "file": "pastoral/workspace.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "正在載入你的工作台…"
+  },
+  {
+    "file": "pastoral/coworker-tools.html",
+    "width": 390,
+    "state": "initial",
+    "errors": [],
+    "failures": [
+      {
+        "selector": "p.",
+        "text": "團隊工具",
+        "color": "rgb(124, 141, 136)",
+        "backgrounds": [
+          [
+            23,
+            63,
+            52
+          ]
+        ],
+        "ratio": 3.35,
+        "minimum": 4.5
+      }
+    ],
+    "status": ""
+  },
+  {
+    "file": "admin-accounts.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "請選擇待審申請，或從名單找到要設定的同工。"
+  },
+  {
+    "file": "admin-accounts.html",
+    "width": 1440,
+    "state": "account-editor",
+    "errors": [],
+    "failures": [],
+    "status": "已開啟同工基本資料。"
+  },
+  {
+    "file": "heat-camp-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "資料已更新。"
+  },
+  {
+    "file": "heat-camp-volunteers-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "Cannot read properties of undefined (reading 'group_leader')",
+    "error": "Rendered runtime error: Cannot read properties of undefined (reading 'group_leader')"
+  },
+  {
+    "file": "instagram-publishing-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 Instagram。"
+  },
+  {
+    "file": "media-publishing-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "發布設定已載入。"
+  },
+  {
+    "file": "service-signup-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "全部服事類別已載入。"
+  },
+  {
+    "file": "testimony-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "已載入正式投稿。只有按下「核准並公開」後才會出現在教會網站。"
+  },
+  {
+    "file": "tree-reading-admin.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "已使用教會帳號驗證｜測試同工"
+  },
+  {
+    "file": "website-maintenance.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "週報已核准並發布。"
+  },
+  {
+    "file": "youtube-settings.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "尚未連結 YouTube。"
+  },
+  {
+    "file": "pastoral/workspace.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [],
+    "status": "正在載入你的工作台…"
+  },
+  {
+    "file": "pastoral/coworker-tools.html",
+    "width": 1440,
+    "state": "initial",
+    "errors": [],
+    "failures": [
+      {
+        "selector": "small.",
+        "text": "CHURCH TEAMWORK",
+        "color": "rgb(97, 115, 106)",
+        "backgrounds": [
+          [
+            23,
+            63,
+            57
+          ],
+          [
+            18,
+            54,
+            48
+          ]
+        ],
+        "ratio": 2.31,
+        "minimum": 4.5
+      },
+      {
+        "selector": "p.",
+        "text": "團隊工具",
+        "color": "rgb(124, 141, 136)",
+        "backgrounds": [
+          [
+            23,
+            63,
+            52
+          ]
+        ],
+        "ratio": 3.35,
+        "minimum": 4.5
+      }
+    ],
+    "status": ""
+  }
+]

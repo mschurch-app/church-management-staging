@@ -86,3 +86,7 @@ verify_jwt = false
 # Finance LINE delivery validates the existing cron secret in the function.
 [functions.finance-cash-notifications]
 verify_jwt = false
+
+# Expense actions verify bearer tokens and independent live role grants.
+[functions.finance-expenses]
+verify_jwt = false

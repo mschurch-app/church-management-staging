@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261022-testimonies1';
-export * from './app-function-definitions.mjs?v=20261022-testimonies1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261023-expenses1';
+export * from './app-function-definitions.mjs?v=20261023-expenses1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const configured=new Map((settings.feature_modules||[]).map(item=>[canonicalFunctionKey(item.key),item]));
  const assigned=new Set((home.home_modules||[]).map(canonicalFunctionKey));
@@ -8,6 +8,7 @@ export function availableFunctionKeys(access,church,home={},settings={}) {
   const item=FUNCTION_CATALOG[key];
   if(item.church&&item.church!==church)return false;
   if(item.financeAccess&&!home.financeCashAccess)return false;
+  if(item.expenseAccess&&!home.financeExpenseAccess&&!home.is_owner)return false;
   if(configured.get(key)?.enabled===false)return false;
   if(item.permission&&!canOpen(access,church,item.permission))return false;
   if(item.action&&!canAction(access,church,item.permission,item.action))return false;

@@ -16,7 +16,7 @@
   <a id="finance-login" class="finance-home-link" hidden>登入後返回這筆奉獻紀錄</a>
   <button type="button" id="recover-finance" class="secondary" hidden>重新讀取已儲存紀錄</button>
   <section id="finance-app" hidden>
-    <nav class="finance-tabs" aria-label="主日奉獻工作區"><button type="button" data-tab="batches" aria-current="page">當週奉獻紀錄</button><button type="button" data-tab="editor">逐筆登錄奉獻</button><button type="button" data-tab="roles" id="roles-tab" hidden>人員權限</button></nav>
+    <nav class="finance-tabs" aria-label="主日奉獻工作區"><a class="finance-home-link" href="finance-expenses.html?church=M%2B">支出記帳</a><button type="button" data-tab="batches" aria-current="page">當週奉獻紀錄</button><button type="button" data-tab="editor">逐筆登錄奉獻</button><button type="button" data-tab="roles" id="roles-tab" hidden>人員權限</button></nav>
     <section id="batches-panel" class="finance-panel"><div class="finance-section-head"><div><h2>當週奉獻紀錄</h2><p>可查看草稿、待核對、待複審與已入帳紀錄。</p></div><button type="button" id="new-batch">＋ 新增當週紀錄</button></div><div id="review-only-notice" class="finance-review-only" hidden><strong id="review-only-title">您的工作是審核奉獻紀錄</strong><p id="review-only-message"></p><button type="button" id="review-only-roles" class="secondary" hidden>查看人員權限</button></div><div id="batch-list" class="finance-list"></div></section>
     <section id="editor-panel" class="finance-panel" hidden>
       <div class="finance-section-head"><div><h2 id="editor-title">新增當週奉獻紀錄</h2><p id="editor-state">先輸入日期、點收同工及每筆奉獻資料。</p></div><button type="button" id="back-to-list" class="secondary">返回當週紀錄</button></div>

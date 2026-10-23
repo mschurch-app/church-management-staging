@@ -623,6 +623,13 @@ export const FUNCTION_CATALOG=freezeTree({
     "configurableHome": false,
     "searchTerms": []
   },
+  "finance_expenses": {
+    "church": "M+", "expenseAccess": true,
+    "file": "finance-expenses.html", "icon": "📋", "title": "支出記帳",
+    "description": "費用提報、憑證核對、審核與付款紀錄",
+    "key": "finance_expenses", "group": "finance", "symbol": "clipboard",
+    "configurableHome": false, "searchTerms": ["支出", "費用", "記帳", "核銷", "付款", "零用金"]
+  },
   "finance_cash": {
     "church": "M+",
     "financeAccess": true,
@@ -681,8 +688,8 @@ export const FUNCTION_GROUPS=freezeTree([
   {
     "key": "finance",
     "title": "教會財務",
-    "note": "M＋主日奉獻登錄與核對",
-    "keys": ["finance_cash"]
+    "note": "M＋奉獻收入、支出記帳與核對",
+    "keys": ["finance_cash", "finance_expenses"]
   },
   {
     "key": "media",

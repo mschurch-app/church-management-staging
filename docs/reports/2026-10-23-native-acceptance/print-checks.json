@@ -1,0 +1,26 @@
+{
+  "checks": [
+    "chromium M+ filtered print has scope/count/filter and no navigation or controls",
+    "chromium M+ leaving print retains filter and restores controls",
+    "chromium M+ detail print contains all records and excludes background/actions/clipping",
+    "chromium M+ actual PDF includes last of 30 records across pages",
+    "chromium M+ Escape closes detail and restores original filter",
+    "chromium SHiNE filtered print has scope/count/filter and no navigation or controls",
+    "chromium SHiNE leaving print retains filter and restores controls",
+    "chromium SHiNE detail print contains all records and excludes background/actions/clipping",
+    "chromium SHiNE actual PDF includes last of 30 records across pages",
+    "chromium SHiNE Escape closes detail and restores original filter",
+    "chromium empty school scope prints correct unit and zero count",
+    "webkit M+ filtered print has scope/count/filter and no navigation or controls",
+    "webkit M+ leaving print retains filter and restores controls",
+    "webkit M+ detail print contains all records and excludes background/actions/clipping",
+    "webkit M+ Escape closes detail and restores original filter",
+    "webkit SHiNE filtered print has scope/count/filter and no navigation or controls",
+    "webkit SHiNE leaving print retains filter and restores controls",
+    "webkit SHiNE detail print contains all records and excludes background/actions/clipping",
+    "webkit SHiNE Escape closes detail and restores original filter",
+    "webkit empty school scope prints correct unit and zero count",
+    "no browser script errors"
+  ],
+  "errors": []
+}

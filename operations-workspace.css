@@ -1,0 +1,61 @@
+/* Shared surfaces for rooms, equipment, inventory, pastoral inbox and teaching resources. */
+body[data-app-layout=operations]{font-family:var(--app-font-body,system-ui,sans-serif)!important;line-height:1.65}
+html body[data-app-layout=operations] main.member-page{width:100%;max-width:1440px;margin-inline:auto;padding:24px 32px 120px}
+html body[data-app-layout=operations] .page-header .admin-identity span{color:#fff!important}
+body[data-app-layout=operations] :is(h1,h2,h3,p,strong,label,small,time,button){overflow-wrap:anywhere}
+body[data-app-layout=operations] :is(input,textarea,select,button){font-family:inherit;min-width:0;max-width:100%}
+body[data-app-layout=operations] :is(input:not([type=checkbox]),textarea,select){font-size:max(16px,1rem)}
+body[data-app-layout=operations] :is(button,summary){min-height:44px;line-height:1.5;white-space:normal}
+body[data-app-layout=operations] .module-bar{position:static}
+body[data-app-layout=operations] .page-nav{display:flex;flex-wrap:wrap;position:static;gap:8px;margin:16px 0;padding:0;border:0;background:none;box-shadow:none}
+body[data-app-layout=operations] .page-nav a{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border-radius:12px;font-size:.9rem}
+body[data-app-layout=operations] :is(.operations-query,.prayer-toolbar,.editor-panel,.member-card,.amenity-card,.audit-card,.panel){min-width:0;background:var(--app-surface);border:1px solid var(--app-border);border-radius:var(--app-radius-card);padding:22px;box-shadow:var(--app-shadow)}
+body[data-app-layout=operations] :is(.operations-query,.prayer-toolbar){display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) auto auto;gap:16px;align-items:end;margin:18px 0}
+body[data-app-layout=operations] :is(.operations-query,.prayer-toolbar)>p{grid-column:1/-1;margin:0;color:var(--app-secondary);font-size:.9rem}
+body[data-app-layout=operations] label{display:grid;min-width:0;gap:6px;align-content:start}
+body[data-app-layout=operations] label :is(input,select,textarea){margin:0;width:100%;box-sizing:border-box}
+body[data-app-layout=operations] .operations-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+body[data-app-layout=operations] :is(.operations-results,.operations-workspace>*,.cms>*){min-width:0}
+body[data-app-layout=operations] .editor-panel{margin:0}
+body[data-app-layout=operations] .edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body[data-app-layout=operations] :is(.editor-panel form>label,.check-row){margin:18px 0}
+body[data-app-layout=operations] label.check-row{display:flex;align-items:center;gap:12px;min-height:44px;padding:12px;background:var(--app-surface-muted);border-radius:12px}
+body[data-app-layout=operations] .check-row input{width:22px;height:22px;flex:0 0 22px}
+body[data-app-layout=operations] :is(.editor-actions,.actions){display:flex;flex-wrap:wrap;gap:10px;position:static!important;margin-top:20px;padding:0;border:0;background:none;box-shadow:none}
+body[data-app-layout=operations] .editor-actions>button{flex:1;margin:0}
+body[data-app-layout=operations] :is(.member-grid,.amenity-grid){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body[data-app-layout=operations] .audit-list{display:grid;gap:16px}
+body[data-app-layout=operations] .audit-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+body[data-app-layout=operations] :is(.member-card,.amenity-card,.audit-card)>button{margin:8px 8px 0 0}
+body[data-app-layout=operations] .section-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+body[data-app-layout=operations] :is(.prayer-content,.prayer-original p,.pastoral-note p){white-space:pre-wrap}
+body[data-app-layout=operations] :is(.pastoral-note,.prayer-original){background:var(--app-surface-muted);border-radius:12px;padding:14px;margin-block:14px}
+body[data-app-layout=operations] .prayer-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px}
+body[data-app-layout=operations] .prayer-summary article{min-width:0;padding:14px;border:1px solid var(--app-border);border-radius:14px;background:var(--app-surface)}
+body[data-app-layout=operations] .prayer-summary :is(strong,span){display:block}
+body[data-app-layout=operations] .prayer-summary strong{font-size:1.45rem}
+body[data-app-layout=operations] .cms{display:grid;grid-template-columns:minmax(260px,.7fr) minmax(0,1.5fr);gap:24px;align-items:start}
+body[data-app-layout=operations] .cms .actions{align-items:center;justify-content:space-between;margin:0 0 18px}
+body[data-app-layout=operations] .cms :is(.items,.form){display:grid;gap:14px;min-width:0}
+body[data-app-layout=operations] .cms .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body[data-app-layout=operations] .cms .item{display:grid;gap:6px;text-align:left;width:100%;padding:16px;background:var(--app-surface-muted);color:var(--app-ink);border:1px solid var(--app-border);border-radius:14px}
+body[data-app-layout=operations] .cms .item.active{border:2px solid var(--app-accent)}
+body[data-app-layout=operations] .cms .item small{color:var(--app-secondary);font-weight:400}
+body[data-app-layout=operations] .cms textarea{min-height:300px;resize:vertical}
+body[data-app-layout=operations] #editor textarea{min-height:160px;resize:vertical}
+body[data-app-layout=operations] .inventory-scope{position:static}
+body[data-app-layout=operations] .filter-panel{grid-template-columns:repeat(3,minmax(0,1fr))}
+body[data-app-layout=operations] .inventory-dialog :is(input,select,textarea){font-size:max(16px,1rem)}
+body[data-app-layout=operations] select:not([multiple]){appearance:none;-webkit-appearance:none;height:auto;min-height:46px;padding:11px 32px 11px 12px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2352665a' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px}
+body[data-app-layout=operations] [hidden]{display:none!important}
+@media(min-width:1100px){body[data-app-layout=operations] .operations-workspace:has(>#editor:not([hidden])){grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}body[data-app-layout=operations] .operations-workspace:has(>#editor:not([hidden])) .member-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:800px){html body[data-app-layout=operations] main.member-page{padding:16px 16px 120px}body[data-app-layout=operations] :is(.operations-query,.prayer-toolbar,.cms,.cms .row,.edit-grid,.filter-panel){grid-template-columns:minmax(0,1fr)}body[data-app-layout=operations] :is(.member-grid,.amenity-grid){grid-template-columns:minmax(0,1fr)}body[data-app-layout=operations] :is(.operations-query,.prayer-toolbar,.editor-panel,.member-card,.amenity-card,.audit-card,.panel){padding:16px;border-radius:18px}body[data-app-layout=operations] .prayer-summary{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-app-layout=operations] .editor-actions{display:grid;grid-template-columns:minmax(0,1fr)}}
+
+body[data-app-layout=operations] .inventory-category,body[data-app-layout=operations] .cms .item small{color:var(--app-ink)!important}
+
+body[data-app-layout=operations] .inventory-dialog .eyebrow{color:var(--app-ink)!important}
+html body[data-app-layout=operations] #editor.editor-panel{background:var(--app-surface)!important;border:1px solid var(--app-border)!important;border-radius:var(--app-radius-card)!important;box-shadow:var(--app-shadow)!important}
+body[data-operations-page=pastoral-inbox] main[data-private-paused] > :not(.page-header):not(#status){visibility:hidden}
+/* The private inbox follows each church's tokens, including secondary surfaces. */
+html body[data-operations-page=pastoral-inbox] :is(.prayer-content,.prayer-original,.pastoral-note,.status-message){background:var(--app-surface-muted)!important;border-color:var(--app-border)!important;color:var(--app-ink)!important}
+html body[data-operations-page=pastoral-inbox] .status-badge{background:var(--app-surface-muted)!important;border:1px solid var(--app-border)!important;color:var(--app-accent)!important}

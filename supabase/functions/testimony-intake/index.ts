@@ -14,14 +14,14 @@ Deno.serve(async req=>{
  if(req.method==='OPTIONS')return new Response(null,{status:allowed?204:403,headers:{...headers,'access-control-allow-methods':'POST,GET,OPTIONS','access-control-allow-headers':'content-type,authorization,apikey'}});
  try{
   const requestUrl=new URL(req.url);
-  if(req.method==='GET'&&requestUrl.searchParams.get('media')){
+  if(['GET','HEAD'].includes(req.method)&&requestUrl.searchParams.get('media')){
    const id=requestUrl.searchParams.get('id'),slot=requestUrl.searchParams.get('media');
    if(!UUID.test(id||'')||!/^\d$/.test(slot||''))return reply(404,{error:'not_found'});
    const result=await rpc('public',{}),story=result.items.find((x:any)=>x.id===id),media=story?.media?.find((x:any)=>String(x.slot)===slot);
    if(!media)return reply(404,{error:'not_found'});
    const signed=await db.storage.from(bucket).createSignedUrl(media.path,60);
    if(signed.error)throw Error('media_unavailable');
-   return new Response(null,{status:302,headers:{...noStore,location:signed.data.signedUrl}});
+   return new Response(null,{status:302,headers:{...noStore,...(allowed?{'access-control-allow-origin':origin,'vary':'Origin'}:{}),location:signed.data.signedUrl}});
   }
   if(req.method==='GET'&&requestUrl.searchParams.get('action')==='public'){
    const result=await rpc('public',{});

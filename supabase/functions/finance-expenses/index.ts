@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {recognizeReceiptImage,OCR_MODEL} from './ocr.mjs';
 import {receiptMime} from './receipt.mjs';
 import { financeAccounts } from '../finance-cash/accounts.ts';
 
@@ -55,6 +56,31 @@ Deno.serve(async request => {
   let input;try{input=JSON.parse(raw);}catch{return reply(origin,400,{ok:false,code:'invalid_request'});}
   if(!input||typeof input!=='object'||Array.isArray(input))return reply(origin,400,{ok:false,code:'invalid_request'});
   const action=String(input.action||'');
+  if(action==='recognize_receipt'||action==='receipt_ocr_result'){
+   if(!UUID.test(String(input.id||''))||!UUID.test(String(input.receiptId||'')))return reply(origin,400,{ok:false,code:'invalid_request'});
+   const key=Deno.env.get('GEMINI_API_KEY')||'';
+   if(action==='recognize_receipt'&&!key)return reply(origin,503,{ok:false,code:'ocr_not_configured'});
+   const claimId=crypto.randomUUID(),values={id:input.id,receiptId:input.receiptId,claimId};
+   const claimed=await admin.rpc('finance_expense_ocr_api',{p_actor:checked.data.user.id,p_action:action==='receipt_ocr_result'?'get':'claim',p_input:values});
+   if(claimed.error){const code=claimed.error.message.includes('ocr_rate_limited')?'ocr_rate_limited':'forbidden';return reply(origin,code==='ocr_rate_limited'?429:403,{ok:false,code});}
+   if(claimed.data.status!=='claimed')return reply(origin,200,{ok:true,ocr:claimed.data});
+   const model=Deno.env.get('FINANCE_RECEIPT_OCR_MODEL')||OCR_MODEL;
+   const job=(async()=>{try{
+    const downloaded=await admin.storage.from('finance-expense-receipts').download(claimed.data.path);
+    if(downloaded.error||!downloaded.data||downloaded.data.size>8388608)throw Error('ocr_photo_unavailable');
+    const result=await recognizeReceiptImage({bytes:new Uint8Array(await downloaded.data.arrayBuffer()),mimeType:claimed.data.mimeType,key,model});
+    const saved=await admin.rpc('finance_expense_ocr_api',{p_actor:checked.data.user.id,p_action:'finish',p_input:{...values,result,model}});
+    if(saved.error)throw Error('ocr_save_failed');
+
+   }catch(error){
+    const allowed=['ocr_rate_limited','ocr_provider_failed','ocr_photo_unavailable','ocr_invalid_result','ocr_incomplete','ocr_save_failed'];
+    const code=error instanceof Error&&allowed.includes(error.message)?error.message:'ocr_timeout';
+    await admin.rpc('finance_expense_ocr_api',{p_actor:checked.data.user.id,p_action:'fail',p_input:{...values,error:code,model}});
+
+   }})();
+   EdgeRuntime.waitUntil(job.catch(()=>undefined));
+   return reply(origin,200,{ok:true,ocr:{status:'processing'}});
+  }
   if(action==='receipt_view'){
    const receipt=await admin.rpc('finance_expense_receipt_api',{p_actor:checked.data.user.id,p_action:'view',p_input:input});
    if(receipt.error)return reply(origin,403,{ok:false,code:'forbidden'});

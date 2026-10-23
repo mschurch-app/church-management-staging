@@ -9,6 +9,7 @@ async function setup(){
  await db.exec(await read('supabase/migrations/20261021054456_finance_cash_foundation.sql'));
  await db.exec(await read('supabase/migrations/20261021132134_cash_counter_confirmations.sql'));
  await db.exec(await read('supabase/migrations/20261021135307_cash_bag_auto_totals_and_confirmation.sql'));
+ await db.exec(await read('supabase/migrations/20261023080455_finance_single_counter_confirmation.sql'));
  for(const id of ids){await db.query('insert into auth.users values($1)',[id]);await db.query('insert into church_auth.accounts values($1,true)',[id]);await db.query("insert into church_auth.grants values($1,'M+','members')",[id]);}
  for(const id of ids.slice(0,3))await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'entry',$1)",[id]);
  await db.query("insert into public.finance_staff_roles(user_id,role_key,assigned_by) values($1,'cash_verify',$1),($2,'approve',$2)",[ids[3],ids[4]]);
@@ -21,10 +22,21 @@ const move=async(db,state,actor,action,total=null,reason=null)=>(await db.query(
 
 const saveAs=async(db,actor,state,data)=>(await db.query('select public.finance_save_cash_batch($1,$2,$3,$4::jsonb) as result',[actor,state?.id||null,state?.version||null,JSON.stringify(data)])).rows[0].result;
 const getBag=async(db,s)=>(await db.query('select * from public.finance_cash_bags where batch_id=$1',[s.id])).rows[0];
-test('each bag and batch derive from line amounts; first counter checks and saves, second checks and submits',async()=>{const db=await setup();try{
+test('one counter can submit; late second confirmation never changes review or booked status',async()=>{const db=await setup();try{
  const data=payload();data.counterConfirmed=true;let s=await save(db,null,data);let bag=await getBag(db,s);assert.equal(Number(bag.declared_total),1500);assert.equal(bag.confirmed_by,ids[0]);assert(bag.confirmed_at);
  const batch=(await db.query('select * from finance_cash_batches where id=$1',[s.id])).rows[0];assert.equal(Number(batch.counted_cash),1500);assert.equal(batch.counter_1_confirmed_by,ids[0]);assert.equal(batch.counter_2_confirmed_at,null);
- await assert.rejects(move(db,s,ids[0],'submit'),/counter_confirmations_required/);s=await confirm(db,s,ids[1]);s=await move(db,s,ids[1],'submit');assert.equal(s.status,'spouse_review');
+ s=await move(db,s,ids[0],'submit');assert.equal(s.status,'spouse_review');
+ const queue=(await db.query('select * from finance_cash_confirmation_notifications where batch_id=$1',[s.id])).rows;
+ assert.equal(queue.length,1);assert.equal(queue[0].recipient_user_id,ids[1]);assert.equal(Number(queue[0].total),1500);assert.deepEqual(queue[0].category_totals,{'十一奉獻':1000,'感恩奉獻':500});
+ await assert.rejects(confirm(db,s,ids[0],false),/batch_locked/);
+ s=await move(db,s,ids[3],'verify_cash',1500);s=await move(db,s,ids[4],'approve');assert.equal(s.status,'booked');
+ const before=(await db.query('select * from finance_cash_batches where id=$1',[s.id])).rows[0];
+ s=await confirm(db,s,ids[1]);assert.equal(s.status,'booked');
+ const after=(await db.query('select * from finance_cash_batches where id=$1',[s.id])).rows[0];
+ assert.equal(after.counter_2_confirmed_by,ids[1]);assert.equal(after.pastor_approved_by,before.pastor_approved_by);assert.deepEqual(after.spouse_verified_cash,before.spouse_verified_cash);
+ await assert.rejects(confirm(db,s,ids[1],false),/batch_locked/);
+ await assert.rejects(save(db,s,data),/batch_locked/);
+ assert.equal((await db.query('select count(*)::int n from finance_cash_confirmation_notifications where batch_id=$1',[s.id])).rows[0].n,1);
  assert.equal((await getBag(db,s)).confirmed_by,ids[0],'individual bag needs only one person');
  const event=(await db.query("select snapshot from finance_cash_events where batch_id=$1 and action='created'",[s.id])).rows[0].snapshot;assert.equal(event.bagConfirmations[0].confirmedBy,ids[0]);assert.equal(event.counterConfirmedBy,ids[0]);
 }finally{await db.close();}});
@@ -42,4 +54,14 @@ test('invalid or repeated bag references roll back; confirmation permissions rem
  let s=await save(db);const bag=await getBag(db,s);const bad=payload();bad.bags[0].id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';await assert.rejects(save(db,s,bad),/invalid_bag_confirmation/);
  const duplicate=payload();duplicate.bags[0].id=bag.id;duplicate.bags.push({...duplicate.bags[0]});await assert.rejects(save(db,s,duplicate),/invalid_bag_confirmation/);assert.equal((await getBag(db,s)).id,bag.id);
  await db.exec('set role authenticated');await assert.rejects(db.query('select public.finance_save_cash_batch($1,null,null,$2::jsonb)',[ids[0],JSON.stringify(payload())]),/permission denied/);await db.exec('reset role');
+}finally{await db.close();}});
+
+test('zero confirmations block; edits/return reset; either counter alone qualifies; both need no invitation',async()=>{const db=await setup();try{
+ let s=await save(db);await assert.rejects(move(db,s,ids[0],'submit'),/counter_confirmations_required/);
+ s=await confirm(db,s,ids[1]);s=await move(db,s,ids[1],'submit');assert.equal(s.status,'spouse_review');
+ s=await move(db,s,ids[3],'return',null,'需修正');await assert.rejects(move(db,s,ids[0],'submit'),/counter_confirmations_required/);
+ s=await confirm(db,s,ids[0]);s=await confirm(db,s,ids[1]);s=await move(db,s,ids[0],'submit');
+ assert.equal((await db.query('select count(*)::int n from finance_cash_confirmation_notifications where batch_id=$1',[s.id])).rows[0].n,1,'second submission with both checked does not enqueue');
+ s=await move(db,s,ids[3],'return',null,'重新核對');s=await confirm(db,s,ids[0]);s=await save(db,s);await assert.rejects(move(db,s,ids[0],'submit'),/counter_confirmations_required/);
+ await db.exec('set role authenticated');await assert.rejects(db.query('select * from finance_cash_confirmation_notifications'),/permission denied/);await db.exec('reset role');
 }finally{await db.close();}});

@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import {deliverPendingCounterInvitations} from './delivery.mjs';
 import { financeAccounts, financeCanonicalTarget, financeWorkers } from './accounts.ts';
 
 const APP_ORIGIN = 'https://mscos.mchurch.online';
@@ -150,7 +151,8 @@ Deno.serve(async request => {
     if (lines.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
     const events = await admin.from('finance_cash_events').select('version,action,from_status,to_status,actor_user_id,reason,created_at').eq('batch_id', input.batchId).order('version');
     if (events.error) return reply(origin, 503, { ok: false, code: 'service_unavailable' });
-    return reply(origin, 200, { ok: true, batch: batch.data, bags: (bags.data || []).map(bag => ({ ...bag, lines: (lines.data || []).filter(line => line.bag_id === bag.id) })), events: events.data });
+    const notifications=await admin.from('finance_cash_confirmation_notifications').select('submitted_version,status,attempt_count,last_error,sent_at').eq('batch_id',input.batchId).order('submitted_version',{ascending:false}).limit(1);
+    return reply(origin, 200, { ok: true, notifications:notifications.data||[], batch: batch.data, bags: (bags.data || []).map(bag => ({ ...bag, lines: (lines.data || []).filter(line => line.bag_id === bag.id) })), events: events.data });
   }
 
   if (action === 'save') {
@@ -181,7 +183,12 @@ Deno.serve(async request => {
       p_action: input.step, p_verified_cash: input.verifiedCash ?? null, p_reason: input.reason ?? null
     });
     if (result.error) { const error = resultError(result.error.message); return reply(origin, error.status, { ok: false, code: error.code }); }
-    return reply(origin, 200, { ok: true, batch: result.data });
+    let notification=null;
+    if(input.step==='submit'){
+      try{notification=await deliverPendingCounterInvitations(admin,Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'',String(input.batchId));}
+      catch{notification={sent:0,failed:1};}
+    }
+    return reply(origin, 200, { ok: true, batch: result.data, notification });
   }
   return reply(origin, 400, { ok: false, code: 'invalid_request' });
 });

@@ -7,7 +7,7 @@ const categories = ['十一奉獻','感恩奉獻','宣教奉獻','建堂奉獻',
 const labels = { entry: '同工登錄', cash_verify: '師母對現金', approve: '牧師複審' };
 const errors = {
   bag_confirmations_required: '請先由一位同工核對並確認每筆奉獻，再儲存。', invalid_bag_confirmation: '逐筆確認資料已變更，請重新讀取。',
-  counter_confirmations_required: '兩位點收同工都須親自確認後，才能送複審。', counter_confirmation_forbidden: '只能由指定的點收同工本人確認。', invalid_confirmation: '確認狀態不正確。',
+  counter_confirmations_required: '請由任一位指定點收同工確認後，再送複審。', counter_confirmation_forbidden: '只能由指定的點收同工本人確認。', invalid_confirmation: '確認狀態不正確。',
   forbidden: '沒有此操作權限。', login_required: '登入已過期，請重新登入。',
   version_conflict: '資料已由其他人修改，請重新載入。', batch_locked: '當週奉獻紀錄已送審，不能直接修改。',
   invalid_counters: '請選兩位不同且有登錄權限的點收同工。', member_code_mismatch: '會友與奉獻編號不一致。',
@@ -79,7 +79,7 @@ function clearEditor() {
   $('#offering-date').value = mostRecentSunday();
   $('#counted-cash').value = '';
   $('#editor-title').textContent = '新增當週奉獻紀錄';
-  $('#editor-state').textContent = '儲存後，由兩位點收同工各自確認，再送師母複審。';
+  $('#editor-state').textContent = '儲存後，任一位指定點收同工確認，即可送師母複審。';
   $('#review-panel').hidden = true;
   $('#cash-form').querySelectorAll('input,select,button').forEach(control => { control.disabled = false; });
   $('#add-donor').disabled = false; $('#add-anonymous').disabled = false;
@@ -270,9 +270,9 @@ function makePayload() {
 }
 
 function markDirty(){state.dirty=true;$('#cash-form').dataset.unsavedChanges='true';state.pendingCounterUserId=null;drawConfirmations();}
-function bothConfirmed(){
+function oneCounterConfirmed(){
   const b=state.batch;
-  return !!b&&!!b.counter_1_confirmed_at&&!!b.counter_2_confirmed_at&&b.counter_1_confirmed_by===b.counter_1&&b.counter_2_confirmed_by===b.counter_2;
+  return !!b&&((!!b.counter_1_confirmed_at&&b.counter_1_confirmed_by===b.counter_1)||(!!b.counter_2_confirmed_at&&b.counter_2_confirmed_by===b.counter_2));
 }
 function drawConfirmations(){
   const b=state.batch,clean=!!b&&!state.dirty,editable=!state.needsRefresh&&state.roles.has('entry')&&(!b||['draft','returned'].includes(b.status)),bagsConfirmed=state.groups.length>0&&state.groups.every(group=>group.bags.length>0&&group.bags.every(bag=>bag.confirmed===true));
@@ -281,14 +281,15 @@ function drawConfirmations(){
     const userId=$('#counter-'+key).value,confirmed=clean&&!!b?.['counter_'+n+'_confirmed_at'],pending=state.pendingCounterUserId===userId;
     const worker=state.workers.find(worker=>worker.userId===userId);
     input.checked=confirmed||pending;
-    input.disabled=!editable||state.busy||userId!==state.userId||!bagsConfirmed;
+    const late=clean&&['spouse_review','pastor_review','booked'].includes(b?.status)&&!confirmed;
+    input.disabled=state.busy||state.needsRefresh||!state.roles.has('entry')||userId!==state.userId||!bagsConfirmed||(!editable&&!late);
     const time=confirmed?new Date(b['counter_'+n+'_confirmed_at']).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'';
     $('#confirm-counter-'+key+'-label').textContent='點收同工 '+n+'：'+(worker?.name||'尚未選擇')+(confirmed?' · 已確認 '+time:pending?' · 已勾選，請儲存草稿':' · 我已核對整批明細與總額（本人勾選）');
   }
   $('#save-draft').disabled=state.busy||!editable;
-  $('#submit-batch').disabled=!clean||!editable||state.busy||!bagsConfirmed||!bothConfirmed();
+  $('#submit-batch').disabled=!clean||!editable||state.busy||!bagsConfirmed||!oneCounterConfirmed();
   $('#reload-confirmations').disabled=!clean||state.busy;
-  $('#counter-confirm-note').textContent=!bagsConfirmed?'請先完成各筆奉獻的單人確認。':!clean?'第一位同工可勾選本人確認後儲存；第二位以自己的帳號核對、勾選後送審。修改明細後需重新確認。':bothConfirmed()?'兩位點收同工已確認，可送師母複審。':'請由兩位點收同工各自登入核對並勾選，不能代勾。另一位完成後，按「重新讀取確認」。';
+  $('#counter-confirm-note').textContent=!bagsConfirmed?'請先完成各筆奉獻的單人確認。':!clean?'任一位指定點收同工可勾選本人確認後儲存，即可送審。修改明細後需重新確認。':oneCounterConfirmed()?(b&&['spouse_review','pastor_review','booked'].includes(b.status)?'已送審；另一位可閱覽明細並補勾，不影響審核進度。':'已有一位點收同工確認，可送師母複審；系統會以 LINE 邀請另一位閱覽補勾。'):'請由任一位指定點收同工以自己的帳號核對並勾選，即可送審，不需另一位登入。';
 }
 async function confirmCounter(confirmed){
   if(!state.batch||state.dirty){state.pendingCounterUserId=confirmed?state.userId:null;status(confirmed?'已勾選本人確認，請儲存草稿。':'已取消本次本人確認勾選。');return;}
@@ -312,7 +313,7 @@ async function save() {
 
 async function transition(step) {
   if (!state.batch) throw new Error('請先儲存草稿。');
-  if (step === 'submit' && (state.dirty || !bothConfirmed())) throw new Error(errors.counter_confirmations_required);
+  if (step === 'submit' && (state.dirty || !oneCounterConfirmed())) throw new Error(errors.counter_confirmations_required);
   let verifiedCash = null, reason = null;
   if (step === 'verify_cash') {
     const value = prompt('請輸入師母現場實點金額');
@@ -326,7 +327,7 @@ async function transition(step) {
     if (!reason.trim()) throw new Error(errors.reason_required);
   }
   const result = await api('transition', { batchId: state.batch.id, version: state.batch.version, step, verifiedCash, reason });
-  await readAfterWrite(result.batch,'狀態已更新。');
+  await readAfterWrite(result.batch,result.notification?.failed?'已送審；LINE 邀請暫未送達，系統將重試，不影響審核。':result.notification?.sent?'已送師母審核，LINE 已受理另一位同工的補勾邀請。':'狀態已更新。');
 }
 
 async function openBatch(id) {
@@ -357,6 +358,8 @@ async function openBatch(id) {
   $('#editor-title').textContent = `${batch.offering_date} 主日現金`;
   $('#editor-state').textContent = `狀態：${statusLabel(batch.status)} · 版本 ${batch.version}${state.roles.has('entry')?'':' · 您可查看並依權限複審，不能修改奉獻明細。'}`;
   drawGroups(); totals(); drawReview(response.events);
+  const delivery=response.notifications?.[0];
+  $('#counter-line-status').textContent=delivery?({pending:'LINE 補勾邀請待傳送。',processing:'LINE 補勾邀請傳送中。',sent:'LINE 已受理補勾邀請；另一位可登入閱覽補勾。',failed:delivery.attempt_count>=5?'LINE 邀請傳送未完成，請洽管理員確認 LINE 綁定；不影響審核。':'LINE 邀請暫未完成，系統將重試；不影響審核。',cancelled:'補勾邀請已結束（已確認或資料已退回修正）。'}[delivery.status]||''):'';
   const writable = state.roles.has('entry') && ['draft','returned'].includes(batch.status);
   $('#cash-form').querySelectorAll('input,select,button').forEach(control => { control.disabled = !writable; });
   $('#add-donor').disabled = !writable; $('#add-anonymous').disabled = !writable;
@@ -514,7 +517,7 @@ $('#submit-batch').addEventListener('click', () => void work(() => transition('s
 
 await work(async () => {
   const checked = await db.auth.getUser();
-  if (checked.error || !checked.data?.user) throw new Error('請先登入教會 OS。');
+  if (checked.error || !checked.data?.user) { const link=$('#finance-login');link.href='admin-login.html?church=M%2B&next='+encodeURIComponent(location.pathname+location.search);link.hidden=false;throw new Error('請先登入教會 OS，登入後會返回這筆奉獻紀錄。'); }
   const profile = await api('profile'); state.roles = new Set(profile.roles); state.owner = profile.owner; state.userId = profile.actorUserId || checked.data.user.id;
   if (!state.owner && !state.roles.size) throw new Error('此帳號尚未獲授權使用財務模組。');
   $('#finance-app').hidden = false; $('#roles-tab').hidden = !state.owner;
@@ -528,6 +531,8 @@ await work(async () => {
     $('#review-only-message').textContent=state.roles.has('approve')?'同工建立紀錄、師母核對現金後，狀態為「待牧師複審」時，請點下方的「查看當週紀錄」完成審核。您目前沒有新增奉獻的權限。':'同工建立紀錄後，請點下方的「查看當週紀錄」，依您的權限核對。您目前沒有新增奉獻的權限。';
   }
   await workers(); await batches();
+  const requestedBatch=new URLSearchParams(location.search).get('batch');
+  if(requestedBatch&&/^[0-9a-f-]{36}$/i.test(requestedBatch))await openBatch(requestedBatch);
   status(state.roles.has('entry')?'已載入主日奉獻工作區。':'已載入主日奉獻工作區。此帳號未授權「同工登錄」，可依現有權限查看或複審。');
 });
 

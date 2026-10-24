@@ -1,3 +1,4 @@
+import {websiteHostFilter} from './website-hosts.mjs';
 import { shiftDate, websiteSeries, youtubeSeries, snapshot, message } from './report.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 
@@ -16,6 +17,27 @@ const json = (data: unknown, status = 200) => new Response(JSON.stringify(data),
   headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
 });
 const unb64 = (v: string) => Uint8Array.from(atob(v.replaceAll('-', '+').replaceAll('_', '/') + '='.repeat((4 - v.length % 4) % 4)), x => x.charCodeAt(0));
+
+async function sendReportLine(userId:string,noticeId:string,day:string,body:string){
+  const person=await db.from('pastoral_staff').select('id,line_subject').eq('app_user_id',userId).eq('is_active',true).limit(1);
+  const staff=person.data?.[0],token=Deno.env.get('LINE_MESSAGING_CHANNEL_ACCESS_TOKEN')||Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN')||'';
+  const key=`daily-traffic-line:${day}:${staff?.id||userId}`;
+  const previous=await db.from('pastoral_notification_deliveries').select('line_status').eq('idempotency_key',key).maybeSingle();
+  if(previous.data?.line_status==='sent')return true;
+  let lineStatus='not_configured';
+  if(person.error||previous.error)lineStatus='lookup_failed';
+  else if(!/^U[0-9a-f]{32}$/i.test(String(staff?.line_subject||'')))lineStatus='identity_missing';
+  else if(token){
+    try{
+      const response=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),headers:{authorization:'Bearer '+token,'content-type':'application/json','X-Line-Retry-Key':noticeId},body:JSON.stringify({to:staff.line_subject,messages:[{type:'text',text:'📊 M+ 每日數位牧養報告\n'+body+'\nhttps://mscos.mchurch.online/admin-dashboard.html'}]})});
+      lineStatus=response.ok||(response.status===409&&Boolean(response.headers.get('x-line-accepted-request-id')))?'sent':'http_'+response.status;
+    }catch{lineStatus='unavailable';}
+  }
+  const now=new Date().toISOString();
+  const saved=await db.from('pastoral_notification_deliveries').upsert({entity_key:'mplus',notification_type:'daily_traffic_report',recipient_staff_id:staff?.id||null,related_id:noticeId,idempotency_key:key,status:lineStatus==='sent'?'sent':'failed',error_code:lineStatus==='sent'?null:lineStatus,app_status:'disabled',line_status:lineStatus,sent_at:lineStatus==='sent'?now:null,updated_at:now},{onConflict:'idempotency_key'});
+  if(saved.error)throw saved.error;
+  return lineStatus==='sent';
+}
 
 async function decryptGoogle(ciphertext: string, iv: string) {
   const digest = await crypto.subtle.digest('SHA-256', enc.encode(`${SERVICE_KEY}:youtube-oauth-token:v1`));
@@ -105,7 +127,7 @@ async function getWebsite(token: string, propertyId: string, start: string, end:
   if (!/^\d+$/.test(propertyId)) throw new Error('ga4_property_invalid');
   const response = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
     method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ dateRanges: [{ startDate: start, endDate: end }], dimensions: [{ name: 'date' }], metrics: [
+    body: JSON.stringify({ dimensionFilter: websiteHostFilter(), dateRanges: [{ startDate: start, endDate: end }], dimensions: [{ name: 'date' }], metrics: [
       { name: 'activeUsers' }, { name: 'sessions' }, { name: 'screenPageViews' }
     ], orderBys: [{ dimension: { dimensionName: 'date' } }] }), signal: AbortSignal.timeout(20000)
   });
@@ -178,7 +200,7 @@ Deno.serve(async (req) => {
     const notifications = await db.from('app_notifications').select('id,source_key').eq('user_id', settings.recipient_user_id).eq('event_key', 'daily_traffic_report').eq('church_id', 'M+').in('source_key', Array.from({length:7}, (_,i) => 'daily-traffic-report:' + shiftDate(date, -i)));
     if (notifications.error) throw notifications.error;
     const noticeByKey = new Map((notifications.data || []).map(row => [row.source_key, row.id]));
-    let updated = 0, notificationUpdates = 0, reportId = '', currentStatus: any = {}, pushSent = false;
+    let updated = 0, notificationUpdates = 0, reportId = '', currentStatus: any = {}, lineSent = false;
     for (let i = 6; i >= 0; i--) {
       const day = shiftDate(date, -i), old: any = existing.get(day);
       if (!old && (day !== date || refreshOnly)) continue;
@@ -194,22 +216,19 @@ Deno.serve(async (req) => {
       const sourceKey = 'daily-traffic-report:' + day, body = message(day, website, youtube, instagram, status);
       const noticeId = noticeByKey.get(sourceKey);
       if (noticeId) {
-        const result = await db.from('app_notifications').update({ body }).eq('id', noticeId).eq('user_id', settings.recipient_user_id).eq('event_key', 'daily_traffic_report');
+        const result = await db.from('app_notifications').update({ body, push_suppressed_at:new Date().toISOString() }).eq('id', noticeId).eq('user_id', settings.recipient_user_id).eq('event_key', 'daily_traffic_report');
         if (result.error) throw result.error;
         notificationUpdates++;
+        if(day===date&&!refreshOnly)lineSent=await sendReportLine(settings.recipient_user_id,noticeId,day,body);
       } else if (day === date && !refreshOnly) {
-        const result = await db.from('app_notifications').insert({ user_id: settings.recipient_user_id, church_id: 'M+', event_key: 'daily_traffic_report', source_key: sourceKey, title: '網站與社群每日流量報告', body, target_url: '/admin-dashboard.html' }).select('id').single();
+        const result = await db.from('app_notifications').insert({ user_id: settings.recipient_user_id, church_id: 'M+', event_key: 'daily_traffic_report', source_key: sourceKey, title: '網站與社群每日流量報告', body, target_url: '/admin-dashboard.html', push_suppressed_at:new Date().toISOString() }).select('id').single();
         if (result.error && result.error.code !== '23505') throw result.error;
-        // Only the process that created the new notification sends a push.
-        if (!result.error) {
-          const response = await fetch(SUPABASE_URL + '/functions/v1/app-push-delivery', { method: 'POST', headers: { 'content-type': 'application/json', 'x-cron-secret': secret }, body: JSON.stringify({ user_id: settings.recipient_user_id, title: '📊 M+ 每日數位牧養報告', body, url: '/admin-dashboard.html', tag: 'daily-traffic-' + day }), signal: AbortSignal.timeout(30000) });
-          pushSent = response.ok;
-          if (!response.ok) console.error('push_delivery_' + response.status);
-        }
+        const currentId=result.data?.id||(await db.from('app_notifications').select('id').eq('user_id',settings.recipient_user_id).eq('event_key','daily_traffic_report').eq('source_key',sourceKey).maybeSingle()).data?.id;
+        if(currentId)lineSent=await sendReportLine(settings.recipient_user_id,currentId,day,body);
       }
       if (day === date) { reportId = report.data.id; currentStatus = status; }
     }
-    return json({ ok: true, date, report_id: reportId, source_status: currentStatus, updated_reports: updated, updated_notifications: notificationUpdates, push_sent: pushSent });
+    return json({ ok: true, date, report_id: reportId, source_status: currentStatus, updated_reports: updated, updated_notifications: notificationUpdates, line_sent: lineSent });
   } catch (error) {
     console.error('traffic_report_failed', errorCode(error));
     return json({ error: errorCode(error) }, 500);

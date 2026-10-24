@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,rm} from 'node:fs/promises';
 import {stripTypeScriptTypes} from 'node:module';
-let handler,allowed=true,responseData={},requestUrl='';
+let handler,allowed=true,responseData={},requestUrl='',requestBody={};
 globalThis.Deno={env:{get:()=>''},serve:fn=>handler=fn};
 globalThis.__recentDb={rpc:async()=>({data:allowed})};
-globalThis.fetch=async url=>{requestUrl=String(url);return new Response(JSON.stringify(responseData));};
+globalThis.fetch=async(url,options)=>{requestUrl=String(url);requestBody=options?.body?JSON.parse(options.body):{};return new Response(JSON.stringify(responseData));};
 const file=new URL('../../supabase/functions/recent-traffic-report/index.ts',import.meta.url),temp=new URL('../../supabase/functions/recent-traffic-report/.test.mjs',import.meta.url);
 const source=(await readFile(file,'utf8')).replace(/import \{ createClient \} from [^;]+;/,'const createClient=()=>globalThis.__recentDb;');
 await writeFile(temp,stripTypeScriptTypes(source)+'\nexport {ga,yt};\n');
@@ -17,3 +17,5 @@ test('aggregate malformed values and invalid property fail',async()=>{responseDa
 const headers=['day','views','estimatedMinutesWatched','subscribersGained','subscribersLost'].map(name=>({name}));
 test('empty YouTube aggregate is unavailable and not zero',async()=>{responseData={columnHeaders:headers};const result=await yt('mock','2026-10-01','2026-10-11');assert.equal(result.status,'awaiting_data');assert.equal(result.views,null);});
 test('YouTube aggregate declares actual latest data date',async()=>{responseData={columnHeaders:headers,rows:[['2026-10-07',21,260,0,0],['2026-10-08',36,297,1,0]]};const result=await yt('mock','2026-10-01','2026-10-11');assert.equal(result.views,57);assert.equal(result.data_through,'2026-10-08');assert.equal(result.provisional,true);});
+
+test('recent website query is scoped to the real website, excluding localhost',async()=>{responseData={rows:[{metricValues:['9','5','11','46'].map(value=>({value}))}]};const result=await ga('mock','123','2026-10-01','2026-10-11');assert.deepEqual(requestBody.dimensionFilter,{filter:{fieldName:'hostName',inListFilter:{values:['mchurch.online','www.mchurch.online'],caseSensitive:false}}});assert.equal(result.page_views,46);});

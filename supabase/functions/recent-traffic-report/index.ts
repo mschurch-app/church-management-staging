@@ -1,3 +1,4 @@
+import {websiteHostFilter} from '../daily-traffic-report/website-hosts.mjs';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import { diagnostics } from './diagnostics.ts';
 import { shiftDate, youtubeSeries } from '../daily-traffic-report/report.mjs';
@@ -34,7 +35,7 @@ async function instagramToken() {
 }
 async function ga(token: string, property: string, start: string, end: string) {
   if (!/^\d+$/.test(property)) throw new Error('ga4_property_missing');
-  const data = await read('https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':runReport', token, { dateRanges: [{ startDate: start, endDate: end }], metrics: ['activeUsers', 'newUsers', 'sessions', 'screenPageViews'].map(name => ({ name })) });
+  const data = await read('https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':runReport', token, { dimensionFilter: websiteHostFilter(), dateRanges: [{ startDate: start, endDate: end }], metrics: ['activeUsers', 'newUsers', 'sessions', 'screenPageViews'].map(name => ({ name })) });
   const values = data.rows?.[0]?.metricValues;
   if (!values) return { status: 'awaiting_data', active_users: null, new_users: null, sessions: null, page_views: null, provisional: true };
   if (!Array.isArray(values) || values.length !== 4 || values.some((x: any) => x.value == null || x.value === '' || !Number.isFinite(Number(x.value)) || Number(x.value) < 0)) throw new Error('invalid_website_metrics');

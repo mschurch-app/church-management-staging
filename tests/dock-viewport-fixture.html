@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>共用底部導覽測試 · 合成資料</title>
+<link rel="stylesheet" href="../mplus-navigation.css"><link rel="stylesheet" href="../mplus-function-nav.css"><style>body{margin:0;background:#f2f6f1;color:#173f34;font:16px system-ui;padding:18px 16px 130px}main{max-width:720px;margin:auto}button{min-height:44px;margin:4px;padding:9px 12px}article{margin:16px 0;padding:24px;background:white;border:1px solid #dbe5dd;border-radius:20px}textarea{width:100%;box-sizing:border-box;font:16px system-ui}nav[hidden]{display:none!important}.mplus-function-dock{position:fixed;bottom:0;inset-inline:10px;background:white;display:flex;padding:12px;gap:5px}.mplus-function-dock a{flex:1;text-align:center;padding:12px 0;color:inherit;text-decoration:none}.mplus-dock{z-index:50}h1{font-size:26px}label{display:block;margin:16px 0}</style>
+<main><p>版面與事件測試，全部使用合成資料</p><h1>共用底部導覽穩定性</h1><div><button id="home">首頁樣式</button><button id="function">一般功能頁</button><button id="school">課輔頁</button><button id="drift">模擬上移 240px</button><button id="restore">恢復正常</button></div><p id="status" role="status">目前：首頁樣式</p><label>測試輸入欄位<textarea placeholder="測試鍵盤焦點與收合"></textarea></label><section id="rows"></section><button id="back-top">返回頂端</button></main>
+<nav class="mobile-app-nav mplus-dock" aria-label="首頁五大入口"></nav><nav hidden class="mplus-function-dock" aria-label="功能頁五大入口"></nav>
+<script type="module">
+import '../dock-viewport.mjs?v=20261026-dock1';
+const docks=[...document.querySelectorAll('nav')],names=['教會','課輔','行政','服事','網站'];
+for(const [i,dock]of docks.entries())for(const name of names){const n=document.createElement(i?'a':'button');n.textContent=name;if(i)n.href='#';else n.type='button';dock.append(n);}
+for(const [id,label]of [['home','首頁樣式'],['function','一般功能頁'],['school','課輔頁']])document.getElementById(id).onclick=()=>{const functional=id!=='home';document.documentElement.dataset.mplusFunctionNav=String(functional);docks[0].hidden=functional;docks[1].hidden=!functional;document.getElementById('status').textContent='目前：'+label;window.dispatchEvent(new Event('resize'));};
+document.getElementById('rows').innerHTML=Array.from({length:30},(_,i)=>'<article><h2>合成紀錄 '+(i+1)+'</h2><p>用於確認長清單捲動時，導覽列保持在視窗底端。</p></article>').join('');
+document.getElementById('drift').onclick=()=>{for(const dock of docks)dock.style.marginBottom='240px';window.dispatchEvent(new Event('resize'));};
+document.getElementById('restore').onclick=()=>{for(const dock of docks)dock.style.marginBottom='0px';window.dispatchEvent(new Event('pageshow'));};
+document.getElementById('back-top').onclick=()=>window.scrollTo({top:0,behavior:'instant'});
+</script></html>

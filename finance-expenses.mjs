@@ -1,7 +1,7 @@
 import {scanInvoiceQr,mergeInvoiceRecognition} from './finance/receipt-qr.mjs?v=20261023-qr1';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {element as node} from './app-ui.mjs?v=20261019-workflow1';
-import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261021-finance-admin1';
+import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261026-dock1';
 import {expenseCategories,expenseRoles,expenseStatuses,validateExpense,expenseActions,expenseTotals} from './finance/expenses.mjs?v=20261023-expenses1';
 import {receiptOcrSuggestions} from './finance/receipt-ocr.mjs?v=20261023-ocr1';
 const $=s=>document.querySelector(s),form=$('#expense-form');

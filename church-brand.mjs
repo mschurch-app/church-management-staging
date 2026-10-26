@@ -1,4 +1,4 @@
-import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261020-dock1';
+import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261026-dock1';
 import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261023-expenses1';
 import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261022-experience5';
 import './action-feedback.mjs?v=20261022-experience1';

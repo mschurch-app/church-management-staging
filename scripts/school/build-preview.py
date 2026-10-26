@@ -29,6 +29,6 @@ window.SchoolUI.sync(window.schoolInterface.state().user);window.schoolInterface
 });
 </script>'''
 s=s[:a]+stub+s[b:]
-s=re.sub(r'<script[^>]+src="(?!https://cdn.tailwindcss.com|school-icons.js|church-os-ui.js|school-staff-people.js)[^"]+"[^>]*></script>','',s)
+s=re.sub(r'<script[^>]+src="(?!https://cdn.tailwindcss.com|school-icons.js|church-os-ui.js|school-staff-people.js|../dock-viewport.mjs)[^"]+"[^>]*></script>','',s)
 s=s.replace('<head>','<head><base href="../school/">',1).replace('<title>課輔工作台｜M＋教會 OS</title>','<title>課輔工作台預覽（合成資料）</title>')
 (root/'tests/school-os-preview.html').write_text(s)

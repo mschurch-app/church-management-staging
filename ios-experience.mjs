@@ -1,4 +1,4 @@
-import './app-runtime.mjs?v=20261022-experience5';
+import './app-runtime.mjs?v=20261026-dock1';
 import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
@@ -35,7 +35,7 @@ if(!window.__churchIosExperience){
   const resetTransient=()=>{transition.classList.remove('is-loading');pressed?.classList.remove('ios-pressed');pressed=null;};
   window.addEventListener('pageshow',resetTransient);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)resetTransient();});
-  if(window.visualViewport){const resize=()=>{const inset=Math.max(0,innerHeight-window.visualViewport.height-window.visualViewport.offsetTop);document.documentElement.style.setProperty('--ios-keyboard-inset',`${inset}px`);document.documentElement.classList.toggle('ios-keyboard-open',inset>100);};window.visualViewport.addEventListener('resize',resize);window.visualViewport.addEventListener('scroll',resize);resize();}
+  // Keyboard and fixed dock geometry are coordinated by dock-viewport.mjs.
   let edgeStart=null,edgeHint;
   document.addEventListener('touchstart',event=>{edgeStart=null;const touch=event.touches[0];if(event.touches.length!==1||touch.clientX>22||document.querySelector('[data-unsaved-changes="true"],[aria-busy="true"]')||document.querySelector('dialog[open],[role=dialog]:not([hidden])')||event.target.closest('[role=dialog],dialog,input,textarea,select,[contenteditable],.app-hub-grid,.module-bar'))return;edgeStart={x:touch.clientX,y:touch.clientY};},{passive:true});
   document.addEventListener('touchmove',event=>{if(!edgeStart)return;if(event.touches.length!==1){edgeStart=null;edgeHint?.classList.remove('show');return;}const touch=event.touches[0],dx=touch.clientX-edgeStart.x,dy=Math.abs(touch.clientY-edgeStart.y);if(dx<18||dy>70)return;if(!edgeHint){edgeHint=document.createElement('div');edgeHint.className='ios-back-hint';edgeHint.textContent='‹';document.body.append(edgeHint);}edgeHint.style.setProperty('--back-progress',Math.min(1,dx/110));edgeHint.classList.add('show');},{passive:true});

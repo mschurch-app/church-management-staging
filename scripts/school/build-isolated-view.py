@@ -29,6 +29,7 @@ source=source.replace('使用教會 OS 的 LINE 或 Email 帳號登入，再選�
 source=source.replace('  <a href="#school-main"', (ROOT/'scripts/school/dock.html').read_text()+'\n  <a href="#school-main"',1)
 source=source.replace('href="church-os-dock.css?v=20261020-os1"','href="../mplus-function-nav.css?v=20261020-dock1"').replace('src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"','src="../vendor/supabase-2.102.0.js"').replace('href="enrollment.html"','href="https://school.mchurch.online/enrollment.html"')
 source=source.replace('{ global: { fetch: mschoolApiFetch } }','{ auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, global: { fetch: mschoolApiFetch } }')
+source=source.replace('  <link rel="stylesheet" href="../mplus-function-nav.css?v=20261020-dock1">','  <link rel="stylesheet" href="../mplus-function-nav.css?v=20261020-dock1">\n  <script type="module" src="../dock-viewport.mjs?v=20261026-dock1"></script>')
 source=redesign(source)
 (OUT/'index.html').write_text(source)
 ui=(SOURCE/'school-ui.js').read_text().replace('launcher.hidden=!user;','launcher.hidden=true;')

@@ -5,8 +5,11 @@ root=Path(__file__).resolve().parents[2]
 s=(root/'school/index.html').read_text();i=s.index('const SUPABASE_URL');a=s.rfind('<script',0,i);b=s.index('</script>',i)+9
 stub='''<script>
 // Synthetic view only: no school API, camera, persistence or external writes.
+const demoRole=new URLSearchParams(location.search).get('role')==='teacher'?'老師':'同工';
+let demoPeople=[{id:'2026PDEMO',name:'示範工讀生',role_type:'工讀生',status:'在職',version:'1',editable:true},{id:'2026TDEMO',name:'示範老師',role_type:'老師',status:'在職',version:'1',editable:true}];
 let demoRoute=new URLSearchParams(location.search).get('tab')||'schedules';
-window.schoolInterface={state:()=>({user:{name:'示範同工',role_type:'同工'},busy:false}),navigate:tab=>{demoRoute=tab;for(const panel of document.querySelectorAll('main > [id^="tab-"]'))panel.classList.toggle('hidden',panel.id!=='tab-'+tab);window.SchoolUI?.onNavigate(tab);},roster:scope=>{document.getElementById('user-role-scope').value=scope;window.schoolInterface.navigate('students');}};
+window.openSchoolStaffPeople=()=>window.SchoolStaffPeople.open();
+window.schoolInterface={staffPeople:{allowed:()=>demoRole==='同工',refresh:async()=>{},request:async(path,options)=>{if(!options)return structuredClone(demoPeople);const p=JSON.parse(options.body);if(p.action==='create'){const person={...p.input,id:'2026PDEMO'+demoPeople.length,version:'1',editable:true};demoPeople.push(person);return {ok:true,person};}const person=demoPeople.find(r=>r.id===p.id);if(p.action==='delete')person.status='離職';else Object.assign(person,p.input);person.version=String(Number(person.version)+1);return {ok:true,person};}},state:()=>({user:{name:'示範同工',role_type:demoRole},busy:Boolean(window.SchoolStaffPeople?.busy)}),navigate:tab=>{demoRoute=tab;for(const panel of document.querySelectorAll('main > [id^="tab-"]'))panel.classList.toggle('hidden',panel.id!=='tab-'+tab);window.SchoolUI?.onNavigate(tab);},roster:scope=>{document.getElementById('user-role-scope').value=scope;window.schoolInterface.navigate('students');}};
 window.addEventListener('DOMContentLoaded',()=>{
 const $=id=>document.getElementById(id);
 $('auth-logged').classList.remove('hidden');$('auth-logged').classList.add('flex');$('logged-user-tag').textContent='示範同工';$('clock-display').textContent='版面預覽 · 合成資料';
@@ -26,6 +29,6 @@ window.SchoolUI.sync(window.schoolInterface.state().user);window.schoolInterface
 });
 </script>'''
 s=s[:a]+stub+s[b:]
-s=re.sub(r'<script[^>]+src="(?!https://cdn.tailwindcss.com|school-icons.js|church-os-ui.js)[^"]+"[^>]*></script>','',s)
+s=re.sub(r'<script[^>]+src="(?!https://cdn.tailwindcss.com|school-icons.js|church-os-ui.js|school-staff-people.js)[^"]+"[^>]*></script>','',s)
 s=s.replace('<head>','<head><base href="../school/">',1).replace('<title>課輔工作台｜M＋教會 OS</title>','<title>課輔工作台預覽（合成資料）</title>')
 (root/'tests/school-os-preview.html').write_text(s)

@@ -15,4 +15,4 @@ const api=async(action,payload={})=>{calls.push({action,...payload});log.textCon
  throw Error('Fixture action not supported: '+action);
 };
 document.querySelector('#welcome').textContent='示範同工｜合成資料';document.querySelector('#status').hidden=true;
-mountWeekCalendar({allowed:true,loadPlanner:()=>api('routine-status'),plannerApi:api,loadData:async()=>({problems:[],tasks:[{id:'10000000-0000-4000-8000-000000000001',title:'預備主日場地（示範）',description:'設備與座位確認',workflow:'mplus_assignment',assignedToMe:true,createdByMe:true,status:'pending',assigneeName:'示範同工',dueAt:taipeiDate()+'T17:00:00+08:00',canApprove:true}],events:[]})});
+mountWeekCalendar({allowed:true,autoPromptRoutineSetup:!params.has('spouse'),loadPlanner:()=>api('routine-status'),plannerApi:api,loadData:async()=>({problems:[],tasks:[{id:'10000000-0000-4000-8000-000000000001',title:'預備主日場地（示範）',description:'設備與座位確認',workflow:'mplus_assignment',assignedToMe:true,createdByMe:true,status:'pending',assigneeName:'示範同工',dueAt:taipeiDate()+'T17:00:00+08:00',canApprove:true}],events:[]})});

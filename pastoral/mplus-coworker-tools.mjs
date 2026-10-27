@@ -43,7 +43,7 @@ async function api(action, payload = {}) {
   const response = await fetch(PASTORAL_TOOLS_ENDPOINT, {
     method: 'POST',
     headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    credentials: 'omit', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(20000),
+    credentials: 'omit', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(action==='review-leave'?45000:20000),
     body: JSON.stringify({ action, entityKey, ...payload }),
   });
   const result = await response.json().catch(() => ({}));
@@ -165,6 +165,18 @@ async function loadLeave() {
       meta(card, leaveStatus[item.status] || item.status);
       meta(card,item.deputy_staff_id?`職務代理人：${item.deputy_name||'教會同工'}${item.deputy_response==='accepted'?'（已確認）':item.deputy_response==='declined'?'（無法代理）':'（待確認）'}`:'職務代理人：未指定（舊申請）');
       if (item.review_note) meta(card, `核准回覆：${item.review_note}`);
+      if(item.status==='approved'&&entityKey==='mplus'){
+        const sync=item.calendar_sync_status;
+        meta(card,sync==='synced'?'已顯示於教會 OS 與共用 Google 行事曆':sync==='failed'?'行事曆同步失敗，請主管重試':'行事曆尚未同步');
+        if(sync!=='synced'&&['pastor','admin'].includes(staff.role)){
+          const retry=document.createElement('button');retry.className='button secondary';retry.type='button';retry.textContent='重試同步行事曆';
+          retry.addEventListener('click',async()=>{retry.disabled=true;toolMessage('#leave-status','正在同步共用行事曆…','busy');
+            try{const result=await api('sync-leave-calendar',{leaveId:item.id});await loadLeave();toolMessage('#leave-status',result.calendar?.status==='synced'?'已同步至共用 Google 行事曆。':'同步仍未完成，請確認 Google 行事曆連線後再試。',result.calendar?.status==='synced'?'success':'warning');}
+            catch(error){toolMessage('#leave-status',error.message,'error');retry.disabled=false;}
+          });card.append(retry);
+        }
+      }
+
       if(item.deputy_staff_id===staff.id&&item.status==='pending_substitute'){
         const actions=document.createElement('div');actions.className='record-actions';
         for(const [decision,label] of [['accepted','確認可以代理'],['declined','無法代理']]){
@@ -183,7 +195,7 @@ async function loadLeave() {
           const button = document.createElement('button'); button.className = 'button secondary'; button.type = 'button'; button.textContent = label;
           button.addEventListener('click', async () => {
             if(actions.getAttribute('aria-busy')==='true')return;const unlock=lockControls(actions);let saved=false;toolMessage('#leave-status','正在儲存請假審核結果…','busy');
-            try{const result=await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'審核結果已儲存，請重新整理紀錄，勿再次審核。':notified?'請假審核結果已儲存並通知相關同工。':'審核結果已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&notified?'success':'warning');}
+            try{const result=await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'審核結果已儲存，請重新整理紀錄，勿再次審核。':decision==='approved'&&entityKey==='mplus'&&result.calendar?.status!=='synced'?'請假已核准；Google 行事曆同步未完成，請按「重試同步行事曆」。':notified?'請假審核結果已儲存並通知相關同工。':'審核結果已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&notified&&(decision!=='approved'||entityKey!=='mplus'||result.calendar?.status==='synced')?'success':'warning');}
             catch(error){toolMessage('#leave-status',error.message,'error');}
             finally{unlock();if(saved&&actions.isConnected)actions.querySelectorAll('button').forEach(node=>node.disabled=true);}
           }); actions.append(button);

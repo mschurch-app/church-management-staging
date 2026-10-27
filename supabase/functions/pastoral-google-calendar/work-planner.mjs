@@ -24,7 +24,8 @@ export function routineDefinition(b,now=Date.now()){
 export function eventPermissions(staff,item){
  const p=item.extendedProperties?.private||{},participants=String(p.pastoralParticipantIds||'').split(',');
  const privateEvent=['private','confidential'].includes(item.visibility);
- return {canReport:!privateEvent&&p.mplusPrimary===staff.id,canCancel:!privateEvent&&(manager(staff)||p.mplusCreator===staff.id||p.mplusPrimary===staff.id)};
+ const leaveEvent=Boolean(p.mplusLeaveId);
+ return {canReport:!privateEvent&&!leaveEvent&&p.mplusPrimary===staff.id,canCancel:!privateEvent&&!leaveEvent&&(manager(staff)||p.mplusCreator===staff.id||p.mplusPrimary===staff.id)};
 }
 export function stoppedRecurrence(event,now=Date.now()){
  if(Date.parse(event.start?.dateTime||(event.start?.date?event.start.date+'T00:00:00+08:00':''))>=now)return {status:'cancelled'};

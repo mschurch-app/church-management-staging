@@ -2,4 +2,4 @@
 
 .albums-shell svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.album-toolbar #upload-photos{background:#244b3c;color:#fff}.album-categories button{min-height:172px}@media(max-width:600px){.album-toolbar>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.album-toolbar button{white-space:nowrap}}
 
-#google-setup{padding:20px;border:1px solid #c8d5bf;border-radius:16px;background:#f2f6eb;margin:20px 0}#google-setup p{line-height:1.6}#google-setup .dialog-actions{justify-content:flex-start}
+#google-setup,#api-setup{padding:20px;border:1px solid #c8d5bf;border-radius:16px;background:#f2f6eb;margin:20px 0}#google-setup p,#api-setup p{line-height:1.6}#google-setup .dialog-actions{justify-content:flex-start}

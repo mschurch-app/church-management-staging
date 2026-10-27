@@ -48,6 +48,7 @@ function fixture(){
   .replace(/^import .*;\s*$/gm,'')+'\nglobalThis.testHandleJson=handleJson;';
  const scope={Deno:{serve(){}},console,Date,Intl,URLSearchParams,Response,AbortSignal,
   createClient(){throw Error('not used')},
+  leaveCalendarId:'mbot@tcsc.org.tw',leaveCalendarEvent:leave=>({id:'l'+leave.id.replaceAll('-','')}),leaveEventId:id=>'l'+id.replaceAll('-',''),
   notifyStaffDual:async args=>{sent.push(args);return {status:'sent',appStatus:'sent',lineStatus:'sent'};},
  };
  runInNewContext(stripTypeScriptTypes(source),scope);

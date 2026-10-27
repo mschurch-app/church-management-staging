@@ -6,3 +6,11 @@
 
 /* Dark navigation labels need their own foreground after the shared theme. */
 body.collab-app .collab-sidebar .collab-brand small,body.collab-app .collab-sidebar .collab-nav>p,body.collab-app .collab-topbar>div>p{color:#dcebe5}
+
+/* Keep iOS form controls and nested grids inside the visual viewport. */
+@media(max-width:900px){
+  html,body,body.collab-app{max-width:100%;overflow-x:clip}
+  .collab-shell,.collab-page,.collab-main,.tool-panel,.tool-panel>.card,.tool-panel form,.tool-panel .form-row,.tool-panel label{min-width:0;max-width:100%}
+  .collab-main .tool-panel,.collab-main #panel-attendance,.collab-main #panel-photos,.tool-panel .form-row{grid-template-columns:minmax(0,1fr)}
+  .tool-panel input,.tool-panel select,.tool-panel textarea{box-sizing:border-box;min-width:0;max-width:100%;font-size:16px}
+}

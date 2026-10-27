@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
 import { notifyStaffDual } from '../_shared/dual-notification.mjs';
+import {leaveCalendarId,leaveCalendarEvent,leaveEventId} from '../_shared/leave-calendar.mjs';
 
 const CHANNEL_ID = '2011645391';
 const APP_ORIGIN = 'https://mscos.mchurch.online';
@@ -151,6 +152,34 @@ async function googleAccessToken() {
   if (typeof result.access_token !== 'string') throw new ApiError('drive_not_connected', 409);
   return result.access_token as string;
 }
+async function syncLeaveCalendar(db: ReturnType<typeof adminClient>, leaveId: string) {
+  const lookup=await db.from('pastoral_staff_leave_requests').select('id,entity_key,staff_id,deputy_staff_id,start_date,end_date,period,status')
+    .eq('id',leaveId).eq('entity_key','mplus').eq('status','approved').maybeSingle();
+  if(lookup.error||!lookup.data)throw new ApiError('leave_not_approved',409);
+  const leave=lookup.data,ids=[leave.staff_id,leave.deputy_staff_id].filter(Boolean);
+  const people=await db.from('pastoral_staff').select('id,display_name').in('id',ids);
+  if(people.error)throw new ApiError('unavailable',503);
+  const names=new Map((people.data||[]).map(person=>[person.id,person.display_name]));
+  const event=leaveCalendarEvent(leave,names.get(leave.staff_id),names.get(leave.deputy_staff_id));
+  try {
+    const token=await googleAccessToken();
+    const root=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(leaveCalendarId)}/events`;
+    const response=await fetch(root+'?sendUpdates=none',{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),
+      headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(event)});
+    if(response.status===409){
+      const existing=await fetch(root+'/'+leaveEventId(leaveId),{headers:{authorization:'Bearer '+token},redirect:'error',signal:AbortSignal.timeout(12000)});
+      const data=existing.ok?await existing.json():null;
+      if(data?.extendedProperties?.private?.mplusLeaveId!==leaveId)throw Error('calendar_event_conflict');
+    }else if(!response.ok)throw Error('calendar_write_failed');
+    const saved=await db.from('pastoral_staff_leave_requests').update({calendar_sync_status:'synced',calendar_event_id:event.id,calendar_synced_at:new Date().toISOString()}).eq('id',leaveId).eq('status','approved');
+    if(saved.error)throw Error('calendar_receipt_failed');
+    return {status:'synced',eventId:event.id};
+  }catch(error){
+    console.error('Leave calendar sync failed',error instanceof Error?error.message:'unknown');
+    await db.from('pastoral_staff_leave_requests').update({calendar_sync_status:'failed'}).eq('id',leaveId).eq('status','approved');
+    return {status:'failed'};
+  }
+}
 async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body: Body) {
   const action = cleanText(body.action, 40);
   const entityKey = requireEntity(staff, body.entityKey);
@@ -233,7 +262,7 @@ async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body
     return {ok:true,items:people.filter(person=>person.id!==staff.id).map(person=>({id:person.id,name:person.display_name}))};
   }
   if (action === 'list-leave') {
-    let query = db.from('pastoral_staff_leave_requests').select('id,staff_id,deputy_staff_id,deputy_response,deputy_responded_at,start_date,end_date,period,leave_type,reason,status,review_note,created_at,reviewed_at')
+    let query = db.from('pastoral_staff_leave_requests').select('id,staff_id,deputy_staff_id,deputy_response,deputy_responded_at,start_date,end_date,period,leave_type,reason,status,review_note,created_at,reviewed_at,calendar_sync_status,calendar_synced_at')
       .eq('entity_key', entityKey).order('created_at', { ascending: false }).limit(100);
     if (!canManage(staff)) query = query.or(`staff_id.eq.${staff.id},deputy_staff_id.eq.${staff.id}`);
     const result = await query;
@@ -305,14 +334,21 @@ async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body
     const saved = await db.from('pastoral_staff_leave_requests').update({
       status: body.decision, reviewed_by: staff.id, reviewed_at: new Date().toISOString(),
       review_note: cleanText(body.reviewNote, 500), updated_at: new Date().toISOString(),
+      calendar_sync_status:body.decision==='approved'&&entityKey==='mplus'?'pending':'not_applicable',
     }).eq('id', body.leaveId).eq('entity_key', entityKey).eq('status', 'pending').select('id').maybeSingle();
     if (saved.error) throw new ApiError('unavailable', 503);
     if (!saved.data) throw new ApiError('leave_not_pending', 409);
     const recipients=[existing.data.staff_id,existing.data.deputy_staff_id].filter(Boolean);
-    const notifications=await notifyLeave(db,entityKey,saved.data.id,recipients,'leave_result',
+    const [notifications,calendar]=await Promise.all([notifyLeave(db,entityKey,saved.data.id,recipients,'leave_result',
       body.decision==='approved'?'請假已核准':'請假未核准',
-      `${existing.data.start_date} 至 ${existing.data.end_date} 的請假申請${body.decision==='approved'?'已核准':'未獲核准'}。`);
-    return { ok: true,notifications };
+      `${existing.data.start_date} 至 ${existing.data.end_date} 的請假申請${body.decision==='approved'?'已核准':'未獲核准'}。`),
+      body.decision==='approved'&&entityKey==='mplus'?syncLeaveCalendar(db,saved.data.id):Promise.resolve(null)]);
+    return { ok: true,notifications,calendar };
+  }
+  if(action==='sync-leave-calendar'){
+    if(!canManage(staff)||entityKey!=='mplus')throw new ApiError('forbidden',403);
+    if(typeof body.leaveId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(body.leaveId))throw new ApiError('invalid_leave');
+    return {ok:true,calendar:await syncLeaveCalendar(db,body.leaveId)};
   }
   if (action === 'picker-config') {
     if (!canManage(staff)) throw new ApiError('forbidden', 403);

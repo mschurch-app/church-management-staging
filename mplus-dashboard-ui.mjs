@@ -5,12 +5,12 @@ import {loadChurchCustomizations} from './church-customizations.mjs?v=20261023-s
 import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261023-expenses1';
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261012-readable2';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261019-workflow1';
-import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261023-expenses1';
+import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261027-album1';
 import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261027-spouse-routine1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
-function hrefFor(key,file){const url=new URL(file||FUNCTION_CATALOG[key].file,location.href);url.searchParams.set('church','M+');return url.href;}
+function hrefFor(key,file){const url=new URL(file||FUNCTION_CATALOG[key].file,location.href);if(url.origin===location.origin)url.searchParams.set('church','M+');return url.href;}
 function renderCounts(counts){const area=$('#summary');area.replaceChildren();for(const [key,label]of [['members','會友'],['groups','小組與聚會'],['prayers','待關懷代禱']]){if(counts[key]===undefined)continue;const card=make('article');card.append(make('strong',counts[key]===null?'—':String(counts[key])),make('span',label));area.append(card);}area.hidden=!area.children.length;}
 async function financeExpenseAccess(){try{const r=await db.functions.invoke('finance-expenses',{body:{action:'profile'}});return !r.error&&r.data?.ok===true&&(r.data.owner===true||r.data.roles?.length>0);}catch{return false;}}
 async function financeAccess(){

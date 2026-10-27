@@ -7,3 +7,5 @@
 church-albums Edge Function 自行驗證 Supabase／LINE 登入與在職 M+ 同工範圍，verify_jwt=false 僅用於相容既有雙登入方式。每次 API 驗證目標位於核定類別根資料夾內，拒絕捷徑／外部資料夾越界，新增與上傳另檢查 canAddChildren。Google 憑證僅在後端，原檔只寫 Google Drive；照片預覽僅經記憶體傳送，不建立 SSD、資料庫或本機原檔副本。沒有變更分享權限、既有資料夾結構或出勤協作工具。
 
 驗證：導航 5 項、功能目錄 20 項、後端 6 項通過。393／1440 px 隔離瀏覽器均通過分類、建立資料夾、多選兩張照片與空白說明上傳流程及橫向溢出檢查。正式 API 未登入請求回應 401。Google 真實帳號端對端上傳與 iPhone 照片選擇器尚未驗收，不以模擬結果代替實機驗收。
+
+共用 quality-gate：231 個前端模組語法檢查通過，15 組回歸中 14 組通過；phase4/browser 的 update never displays unsolicited banner 在未修改基準 533865e 也同樣失敗，已隔離確認為既有問題，不宣稱全套通過。

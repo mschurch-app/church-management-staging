@@ -14,3 +14,10 @@ church-albums Edge Function 自行驗證 Supabase／LINE 登入與在職 M+ 同�
 2026-10-27 唯讀連線診斷確認：連線帳號為 mbot@tcsc.org.tw，兩個相簿 API 均回應 403 insufficientPermissions（Request had insufficient authentication scopes），並非可斷言的資料夾分享問題。新增管理者 status 與獨立相簿 connect-albums OAuth 流程；OAuth 增加 drive.readonly 用於讀取既有相簿、drive.file 用於建立本應用程式檔案，保留既有 calendar scopes。Google 的 read-only 授權範圍比兩個資料夾廣，授權前的介面清楚告知；後端仍逐次限制只存取兩個核定根目錄。未設定 Google Picker 的環境不要求使用 Picker。授權成功、取消及缺少 scopes 均返回獨立相簿，不跳協作平台。Google 新增授權必須由帳號持有人在 Google 確認，尚未完成前不宣稱實際上傳成功。
 
 本次驗證：8 個相簿後端測試、4 個 OAuth 回呼測試、5 個導航測試通過，手機及桌面批次上傳回歸通過；新增缺少 scope 的手機管理者設定與失敗重試流程測試通過。暫時後端診斷程式已移除。
+
+## 隔離相簿與 YouTube OAuth（取代上述合併行事曆權限方式）
+使用者實際 Google 授權頁回覆 invalid_request，列出 drive.file、youtube.force-ssl、yt-analytics.readonly 不可合併。connect-albums 現在只請求 openid、email、drive.file、drive.readonly，明確設定 include_granted_scopes=false，不合併先前 Google 權限。既有 calendar 與 drive 舊流程維持原權限。
+
+相簿獨立使用 Vault 的 church-albums-google-refresh-token。只有 service_role 可呼叫公開的 SECURITY INVOKER 包裝函式，實際 Vault 操作在未對 Data API 曝露的 church_album_private schema，並驗證 JWT role。原 pastoral-google-refresh-token 的 updated_at 在遷移前後一致，沒有覆寫、撤銷或複製既有憑證；相簿只有完成新授權後才有自己的憑證。
+
+驗證：19 項相簿後端／OAuth／導航檢查通過，含不得合併 YouTube／行事曆、相簿憑證專用儲存、原行事曆 callback 相容；手機連線錯誤重試檢查通過。資料庫權限查核確認 anon／authenticated 不能執行憑證存取；安全 advisors 對照無新增 finding。新 Google 同意仍須由帳號持有人完成，未宣稱真實 Google 授權或相簿上傳成功。

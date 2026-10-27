@@ -21,3 +21,8 @@ church-albums Edge Function 自行驗證 Supabase／LINE 登入與在職 M+ 同�
 相簿獨立使用 Vault 的 church-albums-google-refresh-token。只有 service_role 可呼叫公開的 SECURITY INVOKER 包裝函式，實際 Vault 操作在未對 Data API 曝露的 church_album_private schema，並驗證 JWT role。原 pastoral-google-refresh-token 的 updated_at 在遷移前後一致，沒有覆寫、撤銷或複製既有憑證；相簿只有完成新授權後才有自己的憑證。
 
 驗證：19 項相簿後端／OAuth／導航檢查通過，含不得合併 YouTube／行事曆、相簿憑證專用儲存、原行事曆 callback 相容；手機連線錯誤重試檢查通過。資料庫權限查核確認 anon／authenticated 不能執行憑證存取；安全 advisors 對照無新增 finding。新 Google 同意仍須由帳號持有人完成，未宣稱真實 Google 授權或相簿上傳成功。
+
+## 已授權但 Drive API 未啟用
+2026-10-27 09:28:19 UTC 相簿專用 Vault 憑證已由 Google callback 保存。之後唯讀後端探測確認 mbot@tcsc.org.tw 對兩個核定根資料夾均回應 403 accessNotConfigured：Cloud 專案 817689019280 尚未啟用 drive.googleapis.com。這是 Google API 服務設定，不是缺少 OAuth 同意或已證明的資料夾權限問題。前端現在獨立顯示 API 啟用說明與指定專案設定連結，不要求重複相簿授權；啟用後原重新讀取按鈕即可重試。Google Cloud 本機頁面要求帳號本人通過密碼金鑰驗證，啟用與實際讀寫驗證尚待使用者完成此步驟。
+
+測試：後端將 accessNotConfigured 分類為 drive_api_disabled（503）；手機模擬驗證顯示設定連結、隱藏重複 OAuth 控制及保留重新讀取。15 項後端／OAuth、5 項導航、23 項 Worker 檢查通過。臨時連線探測碼已移除，未下載照片或暴露憑證。

@@ -92,7 +92,7 @@ const ROOTS={church:'1oSq-xNtJXRJ23Qp96ptRQTWNNDkk7yiN',school:'1iEPAzqEizJseq8B
 const FOLDER='application/vnd.google-apps.folder';
 async function drive(token:string,path:string,init:RequestInit={}){
  const response=await fetch('https://www.googleapis.com/drive/v3/'+path,{...init,headers:{authorization:'Bearer '+token,...init.headers},redirect:'error',signal:AbortSignal.timeout(20000)});
- if(!response.ok){const error=await response.json().catch(()=>({}));const scopeMissing=response.status===403&&(error.error?.errors||[]).some((item:{reason?:string})=>item.reason==='insufficientPermissions');throw new ApiError(scopeMissing?'drive_scope_required':response.status===403||response.status===404?'drive_access_required':'drive_request_failed',response.status===403||response.status===404?409:502);}
+ if(!response.ok){const error=await response.json().catch(()=>({}));const apiDisabled=response.status===403&&(error.error?.errors||[]).some((item:{reason?:string})=>item.reason==='accessNotConfigured');if(apiDisabled)throw new ApiError('drive_api_disabled',503);const scopeMissing=response.status===403&&(error.error?.errors||[]).some((item:{reason?:string})=>item.reason==='insufficientPermissions');throw new ApiError(scopeMissing?'drive_scope_required':response.status===403||response.status===404?'drive_access_required':'drive_request_failed',response.status===403||response.status===404?409:502);}
  return response.json();
 }
 function id(value:unknown){if(typeof value!=='string'||!/^[a-zA-Z0-9_-]{10,120}$/.test(value))throw new ApiError('invalid_folder');return value;}

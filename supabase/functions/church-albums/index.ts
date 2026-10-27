@@ -72,7 +72,7 @@ function requireEntity(staff: Staff, value: unknown) {
 const canManage = (staff: Staff) => staff.role === 'pastor' || staff.role === 'admin';
 async function googleAccessToken() {
   const db = adminClient();
-  const saved = await db.rpc('pastoral_get_google_refresh_token');
+  const saved = await db.rpc('church_albums_get_google_refresh_token');
   if (saved.error || typeof saved.data !== 'string' || !saved.data) throw new ApiError('drive_not_connected', 409);
   const clientId = Deno.env.get('GOOGLE_CLIENT_ID') || '';
   const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET') || '';

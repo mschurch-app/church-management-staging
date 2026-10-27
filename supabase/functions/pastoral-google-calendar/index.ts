@@ -15,7 +15,7 @@ const CALENDAR_SCOPES=[
   'https://www.googleapis.com/auth/calendar.events.freebusy',
 ];
 const DRIVE_SCOPES=[...CALENDAR_SCOPES,'https://www.googleapis.com/auth/drive.file'];
-const ALBUM_SCOPES=[...DRIVE_SCOPES,'https://www.googleapis.com/auth/drive.readonly'];
+const ALBUM_SCOPES=['openid','email','https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/drive.readonly'];
 const encoder=new TextEncoder();
 
 function headers(origin:string, html=false){return {
@@ -110,13 +110,13 @@ async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>,scopes
   authUrl.searchParams.set('scope',scopes.join(' '));
   authUrl.searchParams.set('access_type','offline');
   authUrl.searchParams.set('prompt','consent');
-  authUrl.searchParams.set('include_granted_scopes','true');
+  authUrl.searchParams.set('include_granted_scopes',scopes===ALBUM_SCOPES?'false':'true');
   authUrl.searchParams.set('login_hint',CALENDAR_EMAIL);
   authUrl.searchParams.set('state',await makeState(staff.id,clientSecret,scopes.includes('https://www.googleapis.com/auth/drive.readonly')?'albums':scopes.includes('https://www.googleapis.com/auth/drive.file')?'drive':'calendar'));
   return json(APP_ORIGIN,{ok:true,authorizationUrl:authUrl.toString()});
 }
-async function storeRefreshToken(db:ReturnType<typeof adminClient>,token:string){
-  const result=await db.rpc('pastoral_store_google_refresh_token',{p_token:token});
+async function storeRefreshToken(db:ReturnType<typeof adminClient>,token:string,flow:'calendar'|'drive'|'albums'='calendar'){
+  const result=await db.rpc(flow==='albums'?'church_albums_store_google_refresh_token':'pastoral_store_google_refresh_token',{p_token:token});
   if(result.error)throw new Error('vault');
 }
 async function getRefreshToken(db:ReturnType<typeof adminClient>){
@@ -146,7 +146,7 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
   const tokens=await tokenResponse.json();
   if(typeof tokens.refresh_token!=='string'||tokens.refresh_token.length>8192||typeof tokens.access_token!=='string')return safePage(false,'token',stateData.flow);
   const granted=new Set(String(tokens.scope||'').split(' '));
-  const requiredCalendarScopes=CALENDAR_SCOPES.filter(scope=>scope.startsWith('https://www.googleapis.com/auth/calendar.'));
+  const requiredCalendarScopes=stateData.flow==='albums'?[]:CALENDAR_SCOPES.filter(scope=>scope.startsWith('https://www.googleapis.com/auth/calendar.'));
   if(stateData.flow!=='calendar')requiredCalendarScopes.push('https://www.googleapis.com/auth/drive.file');
   if(stateData.flow==='albums')requiredCalendarScopes.push('https://www.googleapis.com/auth/drive.readonly');
   if(typeof tokens.scope==='string'&&!requiredCalendarScopes.every(scope=>granted.has(scope)))return safePage(false,'token',stateData.flow);
@@ -155,7 +155,7 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
   if(!profileResponse.ok)return safePage(false,'account',stateData.flow);
   const profile=await profileResponse.json();
   if(profile.email!==CALENDAR_EMAIL||profile.email_verified!==true)return safePage(false,'account',stateData.flow);
-  try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false,'store',stateData.flow);}
+  try{await storeRefreshToken(db,tokens.refresh_token,stateData.flow);}catch{return safePage(false,'store',stateData.flow);}
   return Response.redirect(stateData.flow!=='calendar'?`${APP_ORIGIN}/church-albums.html?church=M%2B&google=connected`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=connected`,303);
 }
 async function scheduleTarget(db:ReturnType<typeof adminClient>,actor:Staff,requested:unknown){

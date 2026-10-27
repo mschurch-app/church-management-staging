@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.102.0';
+import { notifyStaffDual } from '../_shared/dual-notification.mjs';
 
 const CHANNEL_ID = '2011645391';
 const APP_ORIGIN = 'https://mscos.mchurch.online';
@@ -71,6 +72,42 @@ function requireEntity(staff: Staff, value: unknown) {
   return value;
 }
 const canManage = (staff: Staff) => staff.role === 'pastor' || staff.role === 'admin';
+const leaveChurch = (entityKey: string) => entityKey === 'shine' ? 'SHiNE' : 'M+';
+const leaveUrl = (entityKey: string) => entityKey === 'mplus'
+  ? '/pastoral/mplus-coworker-tools.html?church=M%2B&tab=attendance#leave-list'
+  : `/pastoral/coworker-tools.html?church=${encodeURIComponent(entityKey === 'shine' ? 'SHiNE' : '台灣基督教社會關懷協會')}&tab=attendance#leave-list`;
+async function activeEntityStaff(db: ReturnType<typeof adminClient>, entityKey: string) {
+  const access = await db.from('pastoral_staff_access').select('staff_id').eq('entity_key', entityKey);
+  if (access.error) throw new ApiError('unavailable', 503);
+  const ids = [...new Set((access.data || []).map(row => row.staff_id))];
+  if (!ids.length) return [];
+  const people = await db.from('pastoral_staff').select('id,display_name,role').in('id', ids).eq('is_active', true);
+  if (people.error) throw new ApiError('unavailable', 503);
+  return people.data || [];
+}
+async function notifyLeave(db: ReturnType<typeof adminClient>, entityKey: string, leaveId: string,
+  recipients: string[], eventKey: 'leave_substitute' | 'leave_review' | 'leave_result', title: string, body: string) {
+  const url = leaveUrl(entityKey), churchId = leaveChurch(entityKey), delivered = [];
+  for (const staffId of [...new Set(recipients.filter(Boolean))]) {
+    const key = `leave:${leaveId}:${eventKey}:${staffId}`;
+    try {
+      const result = await notifyStaffDual({db,staffId,churchId,eventKey,sourceKey:key,title,body,url,
+        lineMessage:`${title}\n${body}\n${APP_ORIGIN}${url}`,idempotencyKey:key});
+      const bothConfirmed=result.appStatus==='sent'&&result.lineStatus==='sent';
+      const receipt = await db.from('pastoral_notification_deliveries').upsert({
+        entity_key:entityKey,notification_type:eventKey,recipient_staff_id:staffId,related_id:leaveId,
+        idempotency_key:key,status:result.status,error_code:bothConfirmed?null:`app:${result.appStatus};line:${result.lineStatus}`,
+        app_status:result.appStatus,line_status:result.lineStatus,sent_at:result.status==='sent'?new Date().toISOString():null,
+        updated_at:new Date().toISOString(),
+      },{onConflict:'idempotency_key'});
+      delivered.push(!receipt.error && bothConfirmed);
+    } catch (error) {
+      console.error('Leave notification failed',error instanceof Error?error.message:'unknown');
+      delivered.push(false);
+    }
+  }
+  return {recipients:delivered.length,confirmed:delivered.filter(Boolean).length};
+}
 function cleanText(value: unknown, max: number) {
   return typeof value === 'string' ? value.trim().slice(0, max) : '';
 }
@@ -191,18 +228,27 @@ async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body
     if (saved.error) throw new ApiError('unavailable', 503);
     return { ok: true };
   }
+  if (action === 'list-leave-deputies') {
+    const people = await activeEntityStaff(db, entityKey);
+    return {ok:true,items:people.filter(person=>person.id!==staff.id).map(person=>({id:person.id,name:person.display_name}))};
+  }
   if (action === 'list-leave') {
-    let query = db.from('pastoral_staff_leave_requests').select('id,staff_id,start_date,end_date,period,leave_type,reason,status,review_note,created_at,reviewed_at')
+    let query = db.from('pastoral_staff_leave_requests').select('id,staff_id,deputy_staff_id,deputy_response,deputy_responded_at,start_date,end_date,period,leave_type,reason,status,review_note,created_at,reviewed_at')
       .eq('entity_key', entityKey).order('created_at', { ascending: false }).limit(100);
-    if (!canManage(staff)) query = query.eq('staff_id', staff.id);
+    if (!canManage(staff)) query = query.or(`staff_id.eq.${staff.id},deputy_staff_id.eq.${staff.id}`);
     const result = await query;
     if (result.error) throw new ApiError('unavailable', 503);
     const items = result.data || [];
-    const staffIds = [...new Set(items.map(item => item.staff_id))];
+    const staffIds = [...new Set(items.flatMap(item => [item.staff_id,item.deputy_staff_id]).filter(Boolean))];
     const people = staffIds.length ? await db.from('pastoral_staff').select('id,display_name').in('id', staffIds) : { data: [], error: null };
     if (people.error) throw new ApiError('unavailable', 503);
     const names = new Map((people.data || []).map(person => [person.id, person.display_name]));
-    return { ok: true, items: items.map(item => ({ ...item, staff_name: names.get(item.staff_id) || '教會同工' })) };
+    return { ok: true, items: items.map(item => ({ ...item,
+      reason:canManage(staff)||item.staff_id===staff.id?item.reason:'',
+      review_note:canManage(staff)||item.staff_id===staff.id?item.review_note:'',
+      staff_name: names.get(item.staff_id) || '教會同工',
+      deputy_name:item.deputy_staff_id?names.get(item.deputy_staff_id)||'已停用同工':null,
+    })) };
   }
   if (action === 'create-leave') {
     if (!validDate(body.startDate) || !validDate(body.endDate) || body.endDate < body.startDate ||
@@ -211,28 +257,62 @@ async function handleJson(db: ReturnType<typeof adminClient>, staff: Staff, body
     const leaveType = ['annual', 'personal', 'sick', 'family', 'other'].includes(String(body.leaveType)) ? String(body.leaveType) : '';
     const reason = cleanText(body.reason, 1000);
     if (!period || !leaveType) throw new ApiError('invalid_leave');
+    const deputyId = typeof body.deputyStaffId === 'string' ? body.deputyStaffId : '';
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(deputyId) || deputyId === staff.id) throw new ApiError('invalid_deputy');
+    const people = await activeEntityStaff(db, entityKey), deputy = people.find(person=>person.id===deputyId);
+    if (!deputy) throw new ApiError('invalid_deputy');
     const overlap = await db.from('pastoral_staff_leave_requests').select('id')
-      .eq('entity_key', entityKey).eq('staff_id', staff.id).in('status', ['pending', 'approved'])
+      .eq('entity_key', entityKey).eq('staff_id', staff.id).in('status', ['pending_substitute', 'pending', 'approved'])
       .lte('start_date', body.endDate).gte('end_date', body.startDate).limit(1);
     if (overlap.error) throw new ApiError('unavailable', 503);
     if (overlap.data?.length) throw new ApiError('leave_overlap', 409);
     const saved = await db.from('pastoral_staff_leave_requests').insert({
       entity_key: entityKey, staff_id: staff.id, start_date: body.startDate, end_date: body.endDate,
-      period, leave_type: leaveType, reason,
+      period, leave_type: leaveType, reason,deputy_staff_id:deputyId,status:'pending_substitute',
     }).select('id').single();
     if (saved.error) throw new ApiError('unavailable', 503);
-    return { ok: true, id: saved.data.id };
+    const requester=people.find(person=>person.id===staff.id)?.display_name||'同工';
+    const notifications=await notifyLeave(db,entityKey,saved.data.id,[deputyId],'leave_substitute','請確認職務代理',
+      `${requester} 提出 ${body.startDate} 至 ${body.endDate} 的請假，指定你代理；請先確認是否能代理。`);
+    return { ok: true, id: saved.data.id, notifications };
+  }
+  if (action === 'respond-leave-deputy') {
+    if (typeof body.leaveId !== 'string' || !['accepted','declined'].includes(String(body.decision))) throw new ApiError('invalid_leave');
+    const accepted=body.decision==='accepted',saved=await db.from('pastoral_staff_leave_requests').update({
+      status:accepted?'pending':'substitute_declined',deputy_response:body.decision,
+      deputy_responded_at:new Date().toISOString(),updated_at:new Date().toISOString(),
+    }).eq('id',body.leaveId).eq('entity_key',entityKey).eq('deputy_staff_id',staff.id)
+      .eq('status','pending_substitute').select('id,staff_id,start_date,end_date').maybeSingle();
+    if (saved.error) throw new ApiError('unavailable',503);
+    if (!saved.data) throw new ApiError('leave_not_pending',409);
+    const people=await activeEntityStaff(db,entityKey);
+    const requester=people.find(person=>person.id===saved.data.staff_id)?.display_name||'同工';
+    const recipients=accepted?people.filter(person=>['pastor','admin'].includes(person.role)).map(person=>person.id):[saved.data.staff_id];
+    const notifications=await notifyLeave(db,entityKey,saved.data.id,recipients,accepted?'leave_review':'leave_result',
+      accepted?'請核准請假申請':'職務代理未能確認',
+      accepted?`${requester} 的 ${saved.data.start_date} 至 ${saved.data.end_date} 請假已由代理人確認，等待主管核准。`:
+        `${saved.data.start_date} 至 ${saved.data.end_date} 的職務代理人無法代理，請重新提出申請。`);
+    return {ok:true,notifications};
   }
   if (action === 'review-leave') {
     if (!canManage(staff)) throw new ApiError('forbidden', 403);
     if (typeof body.leaveId !== 'string' || !['approved', 'rejected'].includes(String(body.decision))) throw new ApiError('invalid_leave');
+    const existing=await db.from('pastoral_staff_leave_requests').select('id,staff_id,deputy_staff_id,deputy_response,start_date,end_date')
+      .eq('id',body.leaveId).eq('entity_key',entityKey).eq('status','pending').maybeSingle();
+    if(existing.error)throw new ApiError('unavailable',503);
+    if(!existing.data)throw new ApiError('leave_not_pending',409);
+    if(existing.data.deputy_staff_id&&existing.data.deputy_response!=='accepted')throw new ApiError('deputy_confirmation_required',409);
     const saved = await db.from('pastoral_staff_leave_requests').update({
       status: body.decision, reviewed_by: staff.id, reviewed_at: new Date().toISOString(),
       review_note: cleanText(body.reviewNote, 500), updated_at: new Date().toISOString(),
     }).eq('id', body.leaveId).eq('entity_key', entityKey).eq('status', 'pending').select('id').maybeSingle();
     if (saved.error) throw new ApiError('unavailable', 503);
     if (!saved.data) throw new ApiError('leave_not_pending', 409);
-    return { ok: true };
+    const recipients=[existing.data.staff_id,existing.data.deputy_staff_id].filter(Boolean);
+    const notifications=await notifyLeave(db,entityKey,saved.data.id,recipients,'leave_result',
+      body.decision==='approved'?'請假已核准':'請假未核准',
+      `${existing.data.start_date} 至 ${existing.data.end_date} 的請假申請${body.decision==='approved'?'已核准':'未獲核准'}。`);
+    return { ok: true,notifications };
   }
   if (action === 'picker-config') {
     if (!canManage(staff)) throw new ApiError('forbidden', 403);

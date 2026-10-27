@@ -23,8 +23,10 @@ const errorText = {
   clock_in_required: '請先完成上班打卡，再下班打卡。',
   already_clocked_out: '今天已經完成下班打卡。',
   invalid_leave: '請確認請假日期、時段與類別。',
+  invalid_deputy: '請選擇同單位、在職且不是自己的職務代理人。',
   leave_overlap: '這段日期已有一筆待處理或已核准的請假。',
   leave_not_pending: '這筆申請已處理。',
+  deputy_confirmation_required: '職務代理人尚未確認，不能送主管核准。',
   drive_not_connected: 'Google 雲端硬碟尚未授權，請先按「授權 Google 雲端硬碟」。',
   drive_not_configured: '雲端硬碟服務尚未完成設定。',
   drive_permission_required: 'Google 授權尚未包含雲端硬碟，請重新授權後再試。',
@@ -94,7 +96,7 @@ function activateTab(name) {
   document.querySelectorAll('[data-tool-nav]').forEach(link=>link.classList.toggle('is-active',link.dataset.toolNav===name));
   const url = new URL(location.href); url.searchParams.set('tab', name); history.replaceState(null, '', url);
   if (name === 'memo') loadMemos();
-  if (name === 'attendance') { loadAttendance(); loadLeave(); if (['pastor', 'admin'].includes(staff?.role)) loadAttendanceAdmin(); }
+  if (name === 'attendance') { loadAttendance(); loadLeave(); loadLeaveDeputies(); if (['pastor', 'admin'].includes(staff?.role)) loadAttendanceAdmin(); }
   if (name === 'photos') { loadToolsStatus(); loadPhotos(); }
 }
 const tabs = [...document.querySelectorAll('[data-tab]')];
@@ -166,17 +168,27 @@ async function clock(action){
 $('#clock-in').addEventListener('click',()=>void clock('clock-in'));
 $('#clock-out').addEventListener('click',()=>void clock('clock-out'));
 $('#refresh-clock').addEventListener('click',async()=>{if(clockBusy)return;clockBusy=true;$('#refresh-clock').disabled=true;try{if(await loadAttendance())toolMessage('#attendance-message','已重新讀取打卡狀態。','success');}finally{clockBusy=false;$('#refresh-clock').disabled=false;}});
+async function loadLeaveDeputies(){
+ const select=$('#leave-deputy'),submit=$('#leave-form button[type="submit"]'),previous=select.value,key=entityKey;
+ select.disabled=true;submit.disabled=true;
+ try{const {items}=await api('list-leave-deputies');if(key!==entityKey)return;
+  select.replaceChildren(new Option('請選擇職務代理人',''),...items.map(person=>new Option(person.name,person.id)));
+  if(items.some(person=>person.id===previous))select.value=previous;
+  select.disabled=false;submit.disabled=!items.length;
+  if(!items.length)toolMessage('#leave-status','此單位目前沒有其他可代理的在職同工，請先聯絡管理者。','warning');
+ }catch{if(key!==entityKey)return;select.replaceChildren(new Option('代理人名單暫時無法讀取',''));toolMessage('#leave-status','代理人名單暫時無法讀取，請重新整理頁面。','warning');}
+}
 $('#leave-form').addEventListener('submit',async event=>{
  event.preventDefault();const form=event.currentTarget;if(leaveBusy||!form.reportValidity())return;
  if($('#leave-end').value<$('#leave-start').value){$('#leave-end').setCustomValidity('結束日期不可早於開始日期。');$('#leave-end').reportValidity();return;}
  leaveBusy=true;const unlock=lockControls(form);toolMessage('#leave-status','正在送出請假申請，請勿重複送出…','busy');
- try{await api('create-leave',{startDate:$('#leave-start').value,endDate:$('#leave-end').value,period:$('#leave-period').value,leaveType:$('#leave-type').value,reason:$('#leave-reason').value});form.reset();leaveDraft.clear();const loaded=await loadLeave();toolMessage('#leave-status',loaded?'申請已送出，原因只有你和核准同工可看。':'請假申請已送出，但紀錄尚未讀回；請重新整理請假紀錄，勿再送出。',loaded?'success':'warning');}
+ try{const result=await api('create-leave',{startDate:$('#leave-start').value,endDate:$('#leave-end').value,period:$('#leave-period').value,leaveType:$('#leave-type').value,deputyStaffId:$('#leave-deputy').value,reason:$('#leave-reason').value});form.reset();leaveDraft.clear();const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'請假申請已送出，但紀錄尚未讀回；請重新整理請假紀錄，勿再送出。':notified?'申請已送出，等待代理人確認。':'申請已送出，通知尚未確認送達；請自行告知代理人並查看紀錄。',loaded&&notified?'success':'warning');}
  catch(error){toolMessage('#leave-status',error.message,'error');}
  finally{unlock();leaveBusy=false;}
 });
 for(const id of ['leave-start','leave-end'])$('#'+id).addEventListener('input',()=>$('#leave-end').setCustomValidity(''));
 const leaveLabels = { annual: '休假', personal: '事假', sick: '病假', family: '家庭照顧', other: '其他' };
-const leaveStatus = { pending: '等候核准', approved: '已核准', rejected: '未核准', cancelled: '已取消' };
+const leaveStatus = { pending_substitute:'等候代理人確認',pending: '等候主管核准', approved: '已核准', rejected: '未核准', substitute_declined:'代理人無法代理',cancelled: '已取消' };
 const periodLabels = { full_day: '全天', morning: '上午', afternoon: '下午' };
 async function loadLeave() {
   const list = $('#leave-list'),ticket=++leaveGeneration;list.setAttribute('aria-busy','true');$('#refresh-leave').disabled=true;$('#refresh-leave').setAttribute('aria-busy','true');
@@ -184,17 +196,31 @@ async function loadLeave() {
     const { items } = await api('list-leave');if(ticket!==leaveGeneration)return false;list.replaceChildren();
     showItems(list, items, '還沒有請假申請。');
     for (const item of items) {
-      const card = newCard(`${item.staff_name ? item.staff_name + ' · ' : ''}${item.start_date}${item.end_date === item.start_date ? '' : ' 至 ' + item.end_date}`, item.reason || '（未填寫原因）');
+      const canSeeReason=item.staff_id===staff.id||['pastor','admin'].includes(staff.role);
+      const card = newCard(`${item.staff_name ? item.staff_name + ' · ' : ''}${item.start_date}${item.end_date === item.start_date ? '' : ' 至 ' + item.end_date}`, canSeeReason?(item.reason || '（未填寫原因）'):'原因僅供申請人與主管查看');
       meta(card, `${leaveLabels[item.leave_type] || item.leave_type} · ${periodLabels[item.period] || item.period}`);
       meta(card, leaveStatus[item.status] || item.status);
+      meta(card,item.deputy_staff_id?`職務代理人：${item.deputy_name||'教會同工'}${item.deputy_response==='accepted'?'（已確認）':item.deputy_response==='declined'?'（無法代理）':'（待確認）'}`:'職務代理人：未指定（舊申請）');
       if (item.review_note) meta(card, `核准回覆：${item.review_note}`);
+      if(item.deputy_staff_id===staff.id&&item.status==='pending_substitute'){
+        const actions=document.createElement('div');actions.className='record-actions';
+        for(const [decision,label] of [['accepted','確認可以代理'],['declined','無法代理']]){
+          const button=document.createElement('button');button.className='button secondary';button.type='button';button.textContent=label;
+          button.addEventListener('click',async()=>{if(actions.getAttribute('aria-busy')==='true')return;const unlock=lockControls(actions);let saved=false;toolMessage('#leave-status','正在儲存代理確認…','busy');
+            try{const result=await api('respond-leave-deputy',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'代理回覆已儲存，請重新整理紀錄確認。':notified?'代理回覆已儲存，相關同工已收到通知。':'代理回覆已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&notified?'success':'warning');}
+            catch(error){toolMessage('#leave-status',error.message,'error');}
+            finally{unlock();if(saved&&actions.isConnected)actions.querySelectorAll('button').forEach(node=>node.disabled=true);}
+          });actions.append(button);
+        }
+        card.append(actions);
+      }
       if (['pastor', 'admin'].includes(staff.role) && item.status === 'pending') {
         const actions = document.createElement('div'); actions.className = 'record-actions';
         for (const [decision, label] of [['approved', '核准'], ['rejected', '暫不核准']]) {
           const button = document.createElement('button'); button.className = 'button secondary'; button.type = 'button'; button.textContent = label;
           button.addEventListener('click', async () => {
             if(actions.getAttribute('aria-busy')==='true')return;const unlock=lockControls(actions);let saved=false;toolMessage('#leave-status','正在儲存請假審核結果…','busy');
-            try{await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave();toolMessage('#leave-status',loaded?'請假審核結果已儲存。':'審核結果已儲存，請重新整理紀錄，勿再次審核。',loaded?'success':'warning');}
+            try{const result=await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'審核結果已儲存，請重新整理紀錄，勿再次審核。':notified?'請假審核結果已儲存並通知相關同工。':'審核結果已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&notified?'success':'warning');}
             catch(error){toolMessage('#leave-status',error.message,'error');}
             finally{unlock();if(saved&&actions.isConnected)actions.querySelectorAll('button').forEach(node=>node.disabled=true);}
           }); actions.append(button);

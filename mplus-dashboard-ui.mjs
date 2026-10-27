@@ -6,7 +6,7 @@ import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261012-readable2';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261019-workflow1';
 import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261023-expenses1';
-import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261022-home-resume1';
+import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261027-spouse-routine1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
@@ -27,7 +27,7 @@ async function load(){try{
  ]);
  home.system_monitor_access=!monitor.error&&monitor.data===true;home.is_owner=capabilities.data?.is_owner===true;home.financeCashAccess=canUseFinance;home.financeExpenseAccess=canUseExpenses;
  const allowed=availableFunctionKeys(access,church,home,settings);$('#welcome').textContent=access.user.name+'｜'+access.user.title;
- if(church==='M+'){mountMplusNavigation({allowed,hrefFor,openSchool});mountWeekCalendar({allowed:allowed.includes('pastoral_workspace')});}
+ if(church==='M+'){mountMplusNavigation({allowed,hrefFor,openSchool});mountWeekCalendar({allowed:allowed.includes('pastoral_workspace'),autoPromptRoutineSetup:access.user.title!=='師母'});}
  void mountWorkProfile({db,allowed,openSchool});
  wireSearch(allowed);$('#function-search').disabled=false;$('#status').hidden=true;
  void dashboardCounts(db,church,access.grants).then(renderCounts).catch(()=>{});

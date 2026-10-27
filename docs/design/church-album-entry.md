@@ -9,3 +9,8 @@ church-albums Edge Function 自行驗證 Supabase／LINE 登入與在職 M+ 同�
 驗證：導航 5 項、功能目錄 20 項、後端 6 項通過。393／1440 px 隔離瀏覽器均通過分類、建立資料夾、多選兩張照片與空白說明上傳流程及橫向溢出檢查。正式 API 未登入請求回應 401。Google 真實帳號端對端上傳與 iPhone 照片選擇器尚未驗收，不以模擬結果代替實機驗收。
 
 共用 quality-gate：231 個前端模組語法檢查通過，15 組回歸中 14 組通過；phase4/browser 的 update never displays unsolicited banner 在未修改基準 533865e 也同樣失敗，已隔離確認為既有問題，不宣稱全套通過。
+
+## Google 授權讀取修正
+2026-10-27 唯讀連線診斷確認：連線帳號為 mbot@tcsc.org.tw，兩個相簿 API 均回應 403 insufficientPermissions（Request had insufficient authentication scopes），並非可斷言的資料夾分享問題。新增管理者 status 與獨立相簿 connect-albums OAuth 流程；OAuth 增加 drive.readonly 用於讀取既有相簿、drive.file 用於建立本應用程式檔案，保留既有 calendar scopes。Google 的 read-only 授權範圍比兩個資料夾廣，授權前的介面清楚告知；後端仍逐次限制只存取兩個核定根目錄。未設定 Google Picker 的環境不要求使用 Picker。授權成功、取消及缺少 scopes 均返回獨立相簿，不跳協作平台。Google 新增授權必須由帳號持有人在 Google 確認，尚未完成前不宣稱實際上傳成功。
+
+本次驗證：8 個相簿後端測試、4 個 OAuth 回呼測試、5 個導航測試通過，手機及桌面批次上傳回歸通過；新增缺少 scope 的手機管理者設定與失敗重試流程測試通過。暫時後端診斷程式已移除。

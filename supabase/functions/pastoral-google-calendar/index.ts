@@ -15,6 +15,7 @@ const CALENDAR_SCOPES=[
   'https://www.googleapis.com/auth/calendar.events.freebusy',
 ];
 const DRIVE_SCOPES=[...CALENDAR_SCOPES,'https://www.googleapis.com/auth/drive.file'];
+const ALBUM_SCOPES=[...DRIVE_SCOPES,'https://www.googleapis.com/auth/drive.readonly'];
 const encoder=new TextEncoder();
 
 function headers(origin:string, html=false){return {
@@ -29,11 +30,11 @@ function headers(origin:string, html=false){return {
   'referrer-policy':'no-referrer',
 };}
 function json(origin:string,value:unknown,status=200){return new Response(JSON.stringify(value),{status,headers:headers(origin)});}
-function safePage(ok:boolean,reason='unknown',flow:'calendar'|'drive'='calendar'){
+function safePage(ok:boolean,reason='unknown',flow:'calendar'|'drive'|'albums'='calendar'){
   const failures:Record<string,string>={denied:'Google 授權已取消，尚未連接行事曆。',config:'Google 授權設定尚未完成，請聯絡系統管理者。',account:'請使用 mbot@tcsc.org.tw 完成授權。',token:'Google 沒有提供可長期使用的授權，請重新連接並允許存取。',state:'授權連結已過期，請回到工作台重新開始。',store:'授權資料無法儲存，請聯絡系統管理者。'};
-  const message=ok?'M+ 共用行事曆已連接，可以返回同工協作空間。':(failures[reason]||'Google 行事曆授權未完成，請回到工作台重新嘗試。');
-  const target=flow==='drive'?`${APP_ORIGIN}/pastoral/coworker-tools.html?tab=photos&google=${ok?'connected':'error'}`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=${ok?'connected':'error'}`;
-  return new Response(`<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>教會同工行事曆</title><body style="font-family:-apple-system,BlinkMacSystemFont,'PingFang TC',sans-serif;background:#f4f6f1;color:#203b39;margin:0;padding:24px"><main style="max-width:520px;margin:12vh auto;background:#fff;border:1px solid #dfe7e1;border-radius:24px;padding:28px"><h1>${ok?'連接完成':'無法完成連接'}</h1><p style="line-height:1.8">${message}</p><a style="display:inline-block;margin-top:12px;padding:12px 18px;border-radius:12px;background:#286659;color:#fff;text-decoration:none" href="${target}">返回同工協作空間</a></main></body></html>`,{status:ok?200:400,headers:headers('',true)});
+  const message=flow!=='calendar'?(ok?'Google 相簿已連接，可以返回相簿。':reason==='denied'?'Google 授權已取消，相簿尚未連接。':(failures[reason]||'Google 相簿授權未完成，請返回相簿重新嘗試。')):(ok?'M+ 共用行事曆已連接，可以返回同工協作空間。':(failures[reason]||'Google 行事曆授權未完成，請回到工作台重新嘗試。'));
+  const target=flow!=='calendar'?`${APP_ORIGIN}/church-albums.html?church=M%2B&google=${ok?'connected':'error'}`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=${ok?'connected':'error'}`;
+  return new Response(`<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>教會同工行事曆</title><body style="font-family:-apple-system,BlinkMacSystemFont,'PingFang TC',sans-serif;background:#f4f6f1;color:#203b39;margin:0;padding:24px"><main style="max-width:520px;margin:12vh auto;background:#fff;border:1px solid #dfe7e1;border-radius:24px;padding:28px"><h1>${ok?'連接完成':'無法完成連接'}</h1><p style="line-height:1.8">${message}</p><a style="display:inline-block;margin-top:12px;padding:12px 18px;border-radius:12px;background:#286659;color:#fff;text-decoration:none" href="${target}">${flow!=='calendar'?'返回相簿':'返回同工協作空間'}</a></main></body></html>`,{status:ok?200:400,headers:headers('',true)});
 }
 function adminClient(){
   const url=Deno.env.get('SUPABASE_URL')||'';
@@ -76,7 +77,7 @@ function fromBase64url(value:string){
   return Uint8Array.from(binary,c=>c.charCodeAt(0));
 }
 async function stateKey(clientSecret:string){return crypto.subtle.importKey('raw',encoder.encode(clientSecret),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);}
-async function makeState(staffId:string,clientSecret:string,flow:'calendar'|'drive'){
+async function makeState(staffId:string,clientSecret:string,flow:'calendar'|'drive'|'albums'){
   const payload=base64url(encoder.encode(JSON.stringify({staffId,flow,exp:Math.floor(Date.now()/1000)+600,nonce:base64url(crypto.getRandomValues(new Uint8Array(24)))})));
   const signature=await crypto.subtle.sign('HMAC',await stateKey(clientSecret),encoder.encode(payload));
   return `${payload}.${base64url(new Uint8Array(signature))}`;
@@ -88,8 +89,8 @@ async function readState(value:string,clientSecret:string){
   if(!valid)throw new Error('state');
   const data=JSON.parse(new TextDecoder().decode(fromBase64url(payload)));
   const now=Math.floor(Date.now()/1000);
-  if(typeof data.staffId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.staffId)||!['calendar','drive'].includes(data.flow)||!Number.isSafeInteger(data.exp)||data.exp<=now||data.exp>now+610||typeof data.nonce!=='string'||fromBase64url(data.nonce).length!==24)throw new Error('state');
-  return data as {staffId:string;flow:'calendar'|'drive';exp:number;nonce:string};
+  if(typeof data.staffId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.staffId)||!['calendar','drive','albums'].includes(data.flow)||!Number.isSafeInteger(data.exp)||data.exp<=now||data.exp>now+610||typeof data.nonce!=='string'||fromBase64url(data.nonce).length!==24)throw new Error('state');
+  return data as {staffId:string;flow:'calendar'|'drive'|'albums';exp:number;nonce:string};
 }
 function redirectUri(){
   const base=Deno.env.get('SUPABASE_URL');
@@ -111,7 +112,7 @@ async function startConnect(staff:Staff,db:ReturnType<typeof adminClient>,scopes
   authUrl.searchParams.set('prompt','consent');
   authUrl.searchParams.set('include_granted_scopes','true');
   authUrl.searchParams.set('login_hint',CALENDAR_EMAIL);
-  authUrl.searchParams.set('state',await makeState(staff.id,clientSecret,scopes.includes('https://www.googleapis.com/auth/drive.file')?'drive':'calendar'));
+  authUrl.searchParams.set('state',await makeState(staff.id,clientSecret,scopes.includes('https://www.googleapis.com/auth/drive.readonly')?'albums':scopes.includes('https://www.googleapis.com/auth/drive.file')?'drive':'calendar'));
   return json(APP_ORIGIN,{ok:true,authorizationUrl:authUrl.toString()});
 }
 async function storeRefreshToken(db:ReturnType<typeof adminClient>,token:string){
@@ -126,12 +127,13 @@ async function getRefreshToken(db:ReturnType<typeof adminClient>){
 async function callback(request:Request,db:ReturnType<typeof adminClient>){
   const query=new URL(request.url).searchParams;
   const code=query.get('code')||'',state=query.get('state')||'';
-  if(query.has('error')||!code||!state)return safePage(false,'denied');
+  if(!state)return safePage(false,'denied');
   const clientId=Deno.env.get('GOOGLE_CLIENT_ID')||'';
   const clientSecret=Deno.env.get('GOOGLE_CLIENT_SECRET')||'';
   if(!clientId||!clientSecret)return safePage(false,'config');
-  let stateData:{staffId:string;flow:'calendar'|'drive';exp:number;nonce:string};
+  let stateData:{staffId:string;flow:'calendar'|'drive'|'albums';exp:number;nonce:string};
   try{stateData=await readState(state,clientSecret);}catch{return safePage(false,'state');}
+  if(query.has('error')||!code)return safePage(false,'denied',stateData.flow);
   const lookup=await db.from('pastoral_staff').select('id,role,is_active').eq('id',stateData.staffId).maybeSingle();
   if(lookup.error||!lookup.data?.is_active||(lookup.data.role!=='pastor'&&lookup.data.role!=='admin'))return safePage(false,'state',stateData.flow);
   const access=await db.from('pastoral_staff_access').select('entity_key').eq('staff_id',stateData.staffId).eq('entity_key','mplus').maybeSingle();
@@ -145,6 +147,8 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
   if(typeof tokens.refresh_token!=='string'||tokens.refresh_token.length>8192||typeof tokens.access_token!=='string')return safePage(false,'token',stateData.flow);
   const granted=new Set(String(tokens.scope||'').split(' '));
   const requiredCalendarScopes=CALENDAR_SCOPES.filter(scope=>scope.startsWith('https://www.googleapis.com/auth/calendar.'));
+  if(stateData.flow!=='calendar')requiredCalendarScopes.push('https://www.googleapis.com/auth/drive.file');
+  if(stateData.flow==='albums')requiredCalendarScopes.push('https://www.googleapis.com/auth/drive.readonly');
   if(typeof tokens.scope==='string'&&!requiredCalendarScopes.every(scope=>granted.has(scope)))return safePage(false,'token',stateData.flow);
   let profileResponse:Response;
   try{profileResponse=await fetch('https://openidconnect.googleapis.com/v1/userinfo',{headers:{authorization:`Bearer ${tokens.access_token}`},redirect:'error',signal:AbortSignal.timeout(8000)});}catch{return safePage(false,'account',stateData.flow);}
@@ -152,7 +156,7 @@ async function callback(request:Request,db:ReturnType<typeof adminClient>){
   const profile=await profileResponse.json();
   if(profile.email!==CALENDAR_EMAIL||profile.email_verified!==true)return safePage(false,'account',stateData.flow);
   try{await storeRefreshToken(db,tokens.refresh_token);}catch{return safePage(false,'store',stateData.flow);}
-  return Response.redirect(stateData.flow==='drive'?`${APP_ORIGIN}/pastoral/coworker-tools.html?tab=photos&google=connected`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=connected`,303);
+  return Response.redirect(stateData.flow!=='calendar'?`${APP_ORIGIN}/church-albums.html?church=M%2B&google=connected`:`${APP_ORIGIN}/pastoral/workspace.html?tab=calendar&calendar=connected`,303);
 }
 async function scheduleTarget(db:ReturnType<typeof adminClient>,actor:Staff,requested:unknown){
   const staffId=typeof requested==='string'?requested:actor.id;
@@ -411,6 +415,7 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   }
   if(body.action==='connect')return await startConnect(staff,db);
   if(body.action==='connect-drive')return await startConnect(staff,db,DRIVE_SCOPES);
+  if(body.action==='connect-albums')return await startConnect(staff,db,ALBUM_SCOPES);
   if(body.action==='list-schedule-staff'){
     const canManageSchedule=staff.role==='pastor'||staff.role==='admin';
     const access=await db.from('pastoral_staff_access').select('staff_id').eq('entity_key','mplus');

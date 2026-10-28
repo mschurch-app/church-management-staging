@@ -263,6 +263,19 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "daily-devotional",
     "settingsGroup": "content"
   },
+  "bibletree_players": {
+    "permission": "tree_reading_admin",
+    "church": "M+",
+    "file": "bibletree-players.html",
+    "icon": "👥",
+    "title": "讀經樹玩家列表",
+    "description": "玩家資料、讀經進度與公測參與",
+    "key": "bibletree_players",
+    "group": "events",
+    "symbol": "people",
+    "configurableHome": false,
+    "searchTerms": ["玩家", "遊戲帳號", "讀經樹", "公測", "回饋"]
+  },
   "life_tree_festivals": {
     "permission": "tree_reading_admin",
     "church": "M+",
@@ -659,6 +672,7 @@ export const FUNCTION_CATALOG=freezeTree({
   }
 });
 export const FUNCTION_GROUPS=freezeTree([
+  {"key":"events","title":"活動","note":"活動參與及遊戲玩家管理","keys":["bibletree_players"]},
   {
     "key": "pastoral",
     "title": "人與關懷",
@@ -1009,7 +1023,8 @@ export const NAVIGATION_MODULES=freezeTree([
     "key": "tree_reading_admin",
     "functionKey": "tree_reading_admin",
     "also": [
-      "tree-reading-admin.html"
+      "tree-reading-admin.html",
+      "bibletree-players.html"
     ]
   },
   {

@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261027-albums1';
-export * from './app-function-definitions.mjs?v=20261027-albums1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261028-players1';
+export * from './app-function-definitions.mjs?v=20261028-players1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const configured=new Map((settings.feature_modules||[]).map(item=>[canonicalFunctionKey(item.key),item]));
  const assigned=new Set((home.home_modules||[]).map(canonicalFunctionKey));

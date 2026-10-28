@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-28",
+  "entry": "行政 → 活動與其他 → 讀經樹玩家列表",
+  "game_project": "loscejilzfdwhmogkuwf",
+  "church_os_project": "aqanuwilmvdtlzuqlrau",
+  "edge_function": {
+    "name": "bibletree-players-admin",
+    "version": 1,
+    "verify_jwt": false,
+    "authentication": "OS Auth getUser + current members/tree_reading_admin grants + verified LINE or OS work identity"
+  },
+  "database_migration": "20261028021203_bibletree_players_admin",
+  "checks": {
+    "directory_handler_and_navigation": 16,
+    "metadata_contract": 20,
+    "database_transaction": 15,
+    "sql_fixtures": "rolled back",
+    "changed_js_syntax": 19,
+    "worker": 23
+  },
+  "device_qa": "pending: managed browser access restrictions remain; no browser or device visual pass claimed",
+  "publication": "pending"
+}

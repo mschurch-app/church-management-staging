@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>讀經樹玩家列表｜教會 OS</title><link rel="icon" href="assets/app/church-os-icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="auth.css"><link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css"><link rel="stylesheet" href="apple-ui.css"><link rel="stylesheet" href="app-design-tokens.css?v=20261009-stage2"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4"><script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"><link rel="stylesheet" href="bibletree-players.css?v=20261028-players1">
+</head><body data-action-feedback="off"><main class="member-page bt-players">
+<header class="page-header"><div><p class="eyebrow">THE READING TREE · 教會 OS</p><h1>讀經樹玩家列表</h1><p class="muted">認識加入旅程的玩家，了解讀經與公測參與情形。</p></div><button id="reload" type="button" class="secondary">重新載入</button></header>
+<nav class="page-nav" aria-label="管理導覽"><a href="admin-dashboard.html?church=M%2B">管理首頁</a><a href="daily-devotional-admin.html?church=M%2B">靈修管理</a><a href="https://bibletree.mchurch.online" target="_blank" rel="noopener">開啟讀經樹 ↗</a></nav>
+<p id="status" class="status-message" role="status" aria-live="polite">正在確認教會 OS 帳號…</p><a id="login" href="admin-login.html" hidden>登入教會 OS</a>
+<section id="workspace" hidden>
+<section id="metrics" class="bt-player-metrics" aria-label="玩家總覽"></section>
+<section class="bt-player-panel" aria-labelledby="list-title">
+<div class="section-heading"><div><p class="eyebrow">TRAVELERS</p><h2 id="list-title">玩家名冊</h2></div><p id="updated" class="muted"></p></div>
+<form id="filters" class="bt-player-filters"><label for="query">搜尋暱稱或教會<input id="query" name="query" type="search" maxlength="80" autocomplete="off" placeholder="輸入暱稱、教會名稱"></label><label for="filter">參與狀態<select id="filter" name="filter"><option value="all">全部玩家</option><option value="active">近 7 天登入</option><option value="beta">公測參與帳號</option><option value="feedback">已提交回饋</option><option value="no_profile">尚未建立角色</option></select></label><button type="submit">查詢</button><button id="reset" type="button" class="secondary">清除篩選</button></form>
+<p id="result-count" role="status" aria-live="polite"></p><div id="players" class="bt-player-list"></div>
+<nav class="bt-player-pages" aria-label="玩家列表分頁"><button id="prev" type="button" class="secondary">上一頁</button><span id="page" aria-live="polite"></span><button id="next" type="button" class="secondary">下一頁</button></nav>
+</section>
+<p class="muted bt-player-note">讀經與等級顯示最近一次雲端存檔的紀錄；未同步存檔會另行標示。近 7 天登入依 Google 登入時間計算。未登入試玩的訪客不建立玩家帳號。</p>
+</section></main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="bibletree-players.mjs?v=20261028-players1"></script><script type="module" src="church-brand.mjs?v=20261028-players1"></script></body></html>

@@ -89,19 +89,20 @@ async function activeEntityStaff(db: ReturnType<typeof adminClient>, entityKey: 
 async function notifyLeave(db: ReturnType<typeof adminClient>, entityKey: string, leaveId: string,
   recipients: string[], eventKey: 'leave_substitute' | 'leave_review' | 'leave_result', title: string, body: string) {
   const url = leaveUrl(entityKey), churchId = leaveChurch(entityKey), delivered = [];
+  if(churchId==='SHiNE')return {recipients:0,confirmed:0,disabled:true};
   for (const staffId of [...new Set(recipients.filter(Boolean))]) {
     const key = `leave:${leaveId}:${eventKey}:${staffId}`;
     try {
       const result = await notifyStaffDual({db,staffId,churchId,eventKey,sourceKey:key,title,body,url,
         lineMessage:`${title}\n${body}\n${APP_ORIGIN}${url}`,idempotencyKey:key});
-      const bothConfirmed=result.appStatus==='sent'&&result.lineStatus==='sent';
+      const lineConfirmed=result.lineStatus==='sent';
       const receipt = await db.from('pastoral_notification_deliveries').upsert({
         entity_key:entityKey,notification_type:eventKey,recipient_staff_id:staffId,related_id:leaveId,
-        idempotency_key:key,status:result.status,error_code:bothConfirmed?null:`app:${result.appStatus};line:${result.lineStatus}`,
-        app_status:result.appStatus,line_status:result.lineStatus,sent_at:result.status==='sent'?new Date().toISOString():null,
+        idempotency_key:key,status:lineConfirmed?'sent':'failed',error_code:lineConfirmed?null:`app:${result.appStatus};line:${result.lineStatus}`,
+        app_status:result.appStatus,line_status:result.lineStatus,sent_at:lineConfirmed?new Date().toISOString():null,
         updated_at:new Date().toISOString(),
       },{onConflict:'idempotency_key'});
-      delivered.push(!receipt.error && bothConfirmed);
+      delivered.push(!receipt.error && lineConfirmed);
     } catch (error) {
       console.error('Leave notification failed',error instanceof Error?error.message:'unknown');
       delivered.push(false);

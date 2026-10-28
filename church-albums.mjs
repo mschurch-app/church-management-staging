@@ -1,6 +1,6 @@
 import {authenticateStaff,staffLineIdToken} from './pastoral/auth.mjs?v=20261009-stage4';
 import {createAppIcon} from './app-icons.mjs?v=20261020-shell2';
-import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261026-dock1';
+import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261028-receipts1';
 const $=s=>document.querySelector(s),FOLDER='application/vnd.google-apps.folder';
 const categories={church:{name:'教會相簿',root:'1oSq-xNtJXRJ23Qp96ptRQTWNNDkk7yiN'},school:{name:'課輔相簿',root:'1iEPAzqEizJseq8BgIa7z-V0DRtbED6K1'}};
 const endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/church-albums';

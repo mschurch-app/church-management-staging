@@ -16,7 +16,7 @@
   <a id="finance-login" class="finance-home-link" hidden>登入後返回這筆奉獻紀錄</a>
   <button type="button" id="recover-finance" class="secondary" hidden>重新讀取已儲存紀錄</button>
   <section id="finance-app" hidden>
-    <nav class="finance-tabs" aria-label="主日奉獻工作區"><a class="finance-home-link" href="finance-expenses.html?church=M%2B">支出記帳</a><button type="button" data-tab="batches" aria-current="page">當週奉獻紀錄</button><button type="button" data-tab="editor">逐筆登錄奉獻</button><button type="button" data-tab="roles" id="roles-tab" hidden>人員權限</button></nav>
+    <a class="finance-home-link" href="finance-receipts.html?church=M%2B">收據開立 · 金錢／物品</a><nav class="finance-tabs" aria-label="主日奉獻工作區"><a class="finance-home-link" href="finance-expenses.html?church=M%2B">支出記帳</a><button type="button" data-tab="batches" aria-current="page">當週奉獻紀錄</button><button type="button" data-tab="editor">逐筆登錄奉獻</button><button type="button" data-tab="roles" id="roles-tab" hidden>人員權限</button></nav>
     <section id="batches-panel" class="finance-panel"><div class="finance-section-head"><div><h2>當週奉獻紀錄</h2><p>可查看草稿、待核對、待複審與已入帳紀錄。</p></div><button type="button" id="new-batch">＋ 新增當週紀錄</button></div><div id="review-only-notice" class="finance-review-only" hidden><strong id="review-only-title">您的工作是審核奉獻紀錄</strong><p id="review-only-message"></p><button type="button" id="review-only-roles" class="secondary" hidden>查看人員權限</button></div><div id="batch-list" class="finance-list"></div></section>
     <section id="editor-panel" class="finance-panel" hidden>
       <div class="finance-section-head"><div><h2 id="editor-title">新增當週奉獻紀錄</h2><p id="editor-state">先輸入日期、點收同工及每筆奉獻資料。</p></div><button type="button" id="back-to-list" class="secondary">返回當週紀錄</button></div>
@@ -32,4 +32,4 @@
     </section>
     <section id="roles-panel" class="finance-panel" hidden><h2>財務人員權限</h2><p>「教會 → 財務會計」主責／共同參與者繼承同工登錄權限；移除分工即撤除繼承權限。師母現金核對與牧師複審另外指定，既有個別授權保留。</p><p class="finance-role-help">勾選或取消後會立即儲存，不需另按儲存鈕；每張卡片會顯示儲存結果。</p><button type="button" id="reload-roles" class="secondary">重新讀取權限</button><div id="role-list" class="finance-list"></div></section>
   </section>
-</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="finance-cash.mjs?v=20261023-children1"></script><script type="module" src="church-brand.mjs?v=20261028-players1"></script><script type="module">import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261021-finance-admin1';mountMplusFunctionNavigation({church:'M+',center:'admin'});</script></body></html>
+</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="finance-cash.mjs?v=20261023-children1"></script><script type="module" src="church-brand.mjs?v=20261028-players1"></script><script type="module">import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261028-receipts1';mountMplusFunctionNavigation({church:'M+',center:'admin'});</script></body></html>

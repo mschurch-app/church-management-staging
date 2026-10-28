@@ -4,7 +4,10 @@ const {FUNCTION_CATALOG,FUNCTION_GROUPS,availableFunctionKeys,favoriteKeys}=awai
 const {canOpen}=await import('../admin-access.mjs?v=20261009-app-audit2');
 const permissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp'];
 const full={grants:permissions.map(permission=>({church_id:'M+',permission})),featurePermissions:[]};
-const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,home_modules:Object.keys(FUNCTION_CATALOG)};
+const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,financeReceiptAccess:true,home_modules:Object.keys(FUNCTION_CATALOG)};
+assert(!availableFunctionKeys(full,'M+',{}).includes('finance_receipts'));
+assert(availableFunctionKeys(full,'M+',{financeReceiptAccess:true}).includes('finance_receipts'));
+assert(!availableFunctionKeys(full,'SHiNE',{financeReceiptAccess:true}).includes('finance_receipts'));
 const all=availableFunctionKeys(full,'M+',home),grouped=FUNCTION_GROUPS.flatMap(g=>g.keys);
 assert.equal(new Set(grouped).size,grouped.length);assert.deepEqual(new Set(grouped),new Set(Object.keys(FUNCTION_CATALOG)));assert.equal(all.length,Object.keys(FUNCTION_CATALOG).length);
 assert(canOpen(full,'M+','private_prayers'));assert(canOpen(full,'M+','pastoral_chats'));
@@ -26,4 +29,4 @@ assert(shineKeys.includes('members'));assert(!shineKeys.includes('service_signup
 const saved=favoriteKeys(['members','school_students','members'],[],all);assert.deepEqual(saved,['members','school_students']);
 assert.equal(favoriteKeys([],['members'],all).length,0);
 const removed=saved.filter(k=>k!=='school_students');assert(all.includes('school_students'));assert(!removed.includes('school_students'));assert(favoriteKeys([...removed,'school_students'],[],all).includes('school_students'));
-console.log(JSON.stringify({checks:18,catalog:all.length,groups:FUNCTION_GROUPS.length,status:'passed'}));
+console.log(JSON.stringify({checks:21,catalog:all.length,groups:FUNCTION_GROUPS.length,status:'passed'}));

@@ -6,7 +6,7 @@
 <p id="expense-status" class="finance-status" role="status" aria-live="polite">正在確認支出權限…</p><a id="expense-login" hidden>登入後返回支出記帳</a>
 <div class="finance-actions"><button type="button" id="retry-mutation" hidden>重試剛才的操作</button><button type="button" id="recover-expense" class="secondary" hidden>重新讀取已儲存紀錄</button></div>
 <section id="expense-app" hidden>
-<nav class="finance-tabs" aria-label="財務工作區"><a href="finance-cash.html?church=M%2B">奉獻收入</a><button type="button" data-panel="list" aria-current="page">支出紀錄</button><button type="button" data-panel="roles" id="expense-roles" hidden>支出人員權限</button></nav>
+<a class="finance-home-link" href="finance-receipts.html?church=M%2B">收據開立 · 金錢／物品</a><nav class="finance-tabs" aria-label="財務工作區"><a href="finance-cash.html?church=M%2B">奉獻收入</a><button type="button" data-panel="list" aria-current="page">支出紀錄</button><button type="button" data-panel="roles" id="expense-roles" hidden>支出人員權限</button></nav>
 <section id="list-panel" class="finance-panel"><div class="finance-section-head"><div><h2>支出紀錄</h2><p>依支出日期篩選；已付款金額與待付款核准額分開呈現。</p></div><button type="button" id="new-expense" hidden>＋ 新增支出</button></div>
 <form id="filter-form" class="finance-grid"><label>起日<input type="date" id="from-date" required></label><label>迄日<input type="date" id="to-date" required></label><label>狀態<select id="status-filter"><option value="">全部狀態</option></select></label><button type="submit" class="secondary">查詢支出</button></form>
 <div class="expense-metrics"><div><span>篩選內已付款</span><strong id="paid-total">0 元</strong></div><div><span>核准待付款</span><strong id="pending-total">0 元</strong></div></div><p id="expense-count" class="finance-note"></p><div id="expense-list" class="finance-list"></div></section>

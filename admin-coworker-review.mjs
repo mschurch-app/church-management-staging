@@ -1,5 +1,5 @@
 import {applicationRPC} from './coworker-application-api.mjs?v=20261022-coworker-review1';
-import {PERMISSION_LABELS,ROLE_TEMPLATES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261028-players1';
+import {PERMISSION_LABELS,ROLE_TEMPLATES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261028-receipts1';
 const el=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 const labeled=(text,input)=>{const n=el('label',text);n.append(input);return n;};
 const churchName=key=>key==='M+'?'M＋大雅教會':'火樂教會';

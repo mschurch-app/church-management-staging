@@ -1,5 +1,5 @@
 import {FUNCTION_CATALOG} from '/app-function-definitions.mjs';
-import {mountMplusNavigation,MPLUS_CENTERS} from '/mplus-navigation.mjs?v=20261020-shell2';
+import {mountMplusNavigation,MPLUS_CENTERS} from '/mplus-navigation.mjs?v=20261028-receipts1';
 import {mountWeekCalendar} from '/mplus-week-calendar.mjs?v=20261020-shell2';
 import {taipeiDate} from '/mplus-week-model.mjs';
 import {openCalendarEditor} from '/mplus-google-calendar.mjs';

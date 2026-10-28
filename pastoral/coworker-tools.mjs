@@ -182,7 +182,7 @@ $('#leave-form').addEventListener('submit',async event=>{
  event.preventDefault();const form=event.currentTarget;if(leaveBusy||!form.reportValidity())return;
  if($('#leave-end').value<$('#leave-start').value){$('#leave-end').setCustomValidity('結束日期不可早於開始日期。');$('#leave-end').reportValidity();return;}
  leaveBusy=true;const unlock=lockControls(form);toolMessage('#leave-status','正在送出請假申請，請勿重複送出…','busy');
- try{const result=await api('create-leave',{startDate:$('#leave-start').value,endDate:$('#leave-end').value,period:$('#leave-period').value,leaveType:$('#leave-type').value,deputyStaffId:$('#leave-deputy').value,reason:$('#leave-reason').value});form.reset();leaveDraft.clear();const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'請假申請已送出，但紀錄尚未讀回；請重新整理請假紀錄，勿再送出。':notified?'申請已送出，等待代理人確認。':'申請已送出，通知尚未確認送達；請自行告知代理人並查看紀錄。',loaded&&notified?'success':'warning');}
+ try{const result=await api('create-leave',{startDate:$('#leave-start').value,endDate:$('#leave-end').value,period:$('#leave-period').value,leaveType:$('#leave-type').value,deputyStaffId:$('#leave-deputy').value,reason:$('#leave-reason').value});form.reset();leaveDraft.clear();const loaded=await loadLeave(),quiet=result.notifications?.disabled===true,notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'請假申請已送出，但紀錄尚未讀回；請重新整理請假紀錄，勿再送出。':quiet?'申請已送出，等待代理人確認；本單位不發送通知。':notified?'申請已送出，等待代理人確認。':'申請已送出，通知尚未確認送達；請自行告知代理人並查看紀錄。',loaded&&(notified||quiet)?'success':'warning');}
  catch(error){toolMessage('#leave-status',error.message,'error');}
  finally{unlock();leaveBusy=false;}
 });
@@ -219,7 +219,7 @@ async function loadLeave() {
         for(const [decision,label] of [['accepted','確認可以代理'],['declined','無法代理']]){
           const button=document.createElement('button');button.className='button secondary';button.type='button';button.textContent=label;
           button.addEventListener('click',async()=>{if(actions.getAttribute('aria-busy')==='true')return;const unlock=lockControls(actions);let saved=false;toolMessage('#leave-status','正在儲存代理確認…','busy');
-            try{const result=await api('respond-leave-deputy',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'代理回覆已儲存，請重新整理紀錄確認。':notified?'代理回覆已儲存，相關同工已收到通知。':'代理回覆已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&notified?'success':'warning');}
+            try{const result=await api('respond-leave-deputy',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),quiet=result.notifications?.disabled===true,notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'代理回覆已儲存，請重新整理紀錄確認。':quiet?'代理回覆已儲存；本單位不發送通知。':notified?'代理回覆已儲存，相關同工已收到通知。':'代理回覆已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&(notified||quiet)?'success':'warning');}
             catch(error){toolMessage('#leave-status',error.message,'error');}
             finally{unlock();if(saved&&actions.isConnected)actions.querySelectorAll('button').forEach(node=>node.disabled=true);}
           });actions.append(button);
@@ -232,7 +232,7 @@ async function loadLeave() {
           const button = document.createElement('button'); button.className = 'button secondary'; button.type = 'button'; button.textContent = label;
           button.addEventListener('click', async () => {
             if(actions.getAttribute('aria-busy')==='true')return;const unlock=lockControls(actions);let saved=false;toolMessage('#leave-status','正在儲存請假審核結果…','busy');
-            try{const result=await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'審核結果已儲存，請重新整理紀錄，勿再次審核。':decision==='approved'&&entityKey==='mplus'&&result.calendar?.status!=='synced'?'請假已核准；Google 行事曆同步未完成，請按「重試同步行事曆」。':notified?'請假審核結果已儲存並通知相關同工。':'審核結果已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&notified&&(decision!=='approved'||entityKey!=='mplus'||result.calendar?.status==='synced')?'success':'warning');}
+            try{const result=await api('review-leave',{leaveId:item.id,decision});saved=true;const loaded=await loadLeave(),quiet=result.notifications?.disabled===true,notified=result.notifications?.recipients>0&&result.notifications.confirmed===result.notifications.recipients;toolMessage('#leave-status',!loaded?'審核結果已儲存，請重新整理紀錄，勿再次審核。':decision==='approved'&&entityKey==='mplus'&&result.calendar?.status!=='synced'?'請假已核准；Google 行事曆同步未完成，請按「重試同步行事曆」。':quiet?'請假審核結果已儲存；本單位不發送通知。':notified?'請假審核結果已儲存並通知相關同工。':'審核結果已儲存，通知尚未確認送達；請自行告知相關同工。',loaded&&(notified||quiet)&&(decision!=='approved'||entityKey!=='mplus'||result.calendar?.status==='synced')?'success':'warning');}
             catch(error){toolMessage('#leave-status',error.message,'error');}
             finally{unlock();if(saved&&actions.isConnected)actions.querySelectorAll('button').forEach(node=>node.disabled=true);}
           }); actions.append(button);

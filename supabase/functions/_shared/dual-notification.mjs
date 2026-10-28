@@ -1,6 +1,9 @@
 import {notifyChurchApp,notifyStaffApp} from './app-push-notification.mjs';
 
+const leaveEvents=new Set(['leave_substitute','leave_review','leave_result']);
 export async function notificationRoute(db,churchId,eventKey){
+ // Leave policy overrides legacy saved routes and database-read fallback.
+ if(leaveEvents.has(eventKey))return {app:false,line:churchId!=='SHiNE'};
  const result=await db.from('notification_channel_routes').select('app_enabled,line_enabled').eq('church_id',churchId).eq('event_key',eventKey).maybeSingle();
  return result.error||!result.data?{app:true,line:true}:{app:result.data.app_enabled!==false,line:result.data.line_enabled!==false};
 }

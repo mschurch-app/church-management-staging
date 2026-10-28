@@ -9,9 +9,9 @@ const B='00000000-0000-4000-8000-000000000002';
 const C='00000000-0000-4000-8000-000000000003';
 const D='00000000-0000-4000-8000-000000000004';
 
-function fixture(){
+function fixture({lineStatus='sent',entityKey='mplus'}={}){
  const tables={
-  pastoral_staff_access:[A,B,C,D].map(staff_id=>({staff_id,entity_key:'mplus'})),
+  pastoral_staff_access:[A,B,C,D].map(staff_id=>({staff_id,entity_key:entityKey})),
   pastoral_staff:[
    {id:A,display_name:'合成申請人',role:'secretary',is_active:true},
    {id:B,display_name:'合成代理人',role:'secretary',is_active:true},
@@ -49,10 +49,10 @@ function fixture(){
  const scope={Deno:{serve(){}},console,Date,Intl,URLSearchParams,Response,AbortSignal,
   createClient(){throw Error('not used')},
   leaveCalendarId:'mbot@tcsc.org.tw',leaveCalendarEvent:leave=>({id:'l'+leave.id.replaceAll('-','')}),leaveEventId:id=>'l'+id.replaceAll('-',''),
-  notifyStaffDual:async args=>{sent.push(args);return {status:'sent',appStatus:'sent',lineStatus:'sent'};},
+  notifyStaffDual:async args=>{sent.push(args);return {status:lineStatus==='sent'?'sent':'failed',appStatus:'disabled',lineStatus};},
  };
  runInNewContext(stripTypeScriptTypes(source),scope);
- return {run:(actor,body)=>scope.testHandleJson(db,{id:actor,role:actor===C?'pastor':'secretary',entityKeys:['mplus']},{entityKey:'mplus',...body}),tables,sent};
+ return {run:(actor,body)=>scope.testHandleJson(db,{id:actor,role:actor===C?'pastor':'secretary',entityKeys:[entityKey]},{entityKey,...body}),tables,sent};
 }
 
 test('deputy must confirm before manager review; unrelated staff cannot confirm; reason stays private',async()=>{
@@ -79,4 +79,28 @@ test('deputy decline closes that request and returns it to applicant',async()=>{
  assert.equal(h.tables.pastoral_staff_leave_requests[0].status,'substitute_declined');
  assert.equal(h.sent.at(-1).staffId,A);
  await assert.rejects(h.run(C,{action:'review-leave',leaveId:created.id,decision:'approved'}),{code:'leave_not_pending'});
+});
+
+
+test('LINE alone confirms leave delivery with App disabled',async()=>{
+ const h=fixture(),created=await h.run(A,{action:'create-leave',startDate:'2026-11-12',endDate:'2026-11-12',period:'full_day',leaveType:'annual',deputyStaffId:B});
+ assert.equal(created.notifications.confirmed,1);
+ const receipt=h.tables.pastoral_notification_deliveries[0];
+ assert.equal(receipt.app_status,'disabled');assert.equal(receipt.line_status,'sent');
+ assert.equal(receipt.status,'sent');assert.equal(receipt.error_code,null);assert(receipt.sent_at);
+});
+test('failed LINE delivery preserves request and records an unconfirmed notification',async()=>{
+ const h=fixture({lineStatus:'http_429'}),created=await h.run(A,{action:'create-leave',startDate:'2026-11-13',endDate:'2026-11-13',period:'full_day',leaveType:'annual',deputyStaffId:B});
+ assert.equal(created.notifications.confirmed,0);assert.equal(created.notifications.recipients,1);
+ assert.equal(h.tables.pastoral_staff_leave_requests[0].status,'pending_substitute');
+ const receipt=h.tables.pastoral_notification_deliveries[0];
+ assert.equal(receipt.status,'failed');assert.equal(receipt.sent_at,null);assert.match(receipt.error_code,/line:http_429/);
+});
+test('SHiNE leave requests preserve workflow without sending notifications',async()=>{
+ const h=fixture({entityKey:'shine'}),created=await h.run(A,{action:'create-leave',startDate:'2026-11-14',endDate:'2026-11-14',period:'full_day',leaveType:'annual',deputyStaffId:B});
+ await h.run(B,{action:'respond-leave-deputy',leaveId:created.id,decision:'accepted'});
+ await h.run(C,{action:'review-leave',leaveId:created.id,decision:'rejected'});
+ assert.equal(created.notifications.disabled,true);assert.equal(h.sent.length,0);
+ assert.equal(h.tables.pastoral_notification_deliveries.length,0);
+ assert.equal(h.tables.pastoral_staff_leave_requests[0].status,'rejected');
 });

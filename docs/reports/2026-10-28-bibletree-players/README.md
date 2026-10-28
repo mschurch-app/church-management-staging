@@ -17,7 +17,11 @@
 
 - 16 項 handler／資料呈現／權限／入口測試通過。
 - 共用 metadata 20 項、Service Worker 回歸通過；修改 JS 語法檢查通過。
-- 遊戲資料庫 15 項交易驗證通過：30 個合成帳號測分頁與排序、篩選、缺少角色、完整一天經文摘要、手札不外洩、公測與回饋資格、唯讀不啟動獎勵；全部 rollback。
+- 遊戲資料庫 16 項交易驗證通過：30 個合成帳號測分頁與排序、篩選、缺少角色、完整一天經文摘要、手札不外洩、公測與回饋資格、唯讀不啟動獎勵；包含實際切換 service_role 呼叫的執行權與 schema lookup 驗證，全部 rollback。
 - 正式 Edge 已驗證無權杖／無效權杖／錯誤 Origin 拒絕讀取。
 - 安全 advisor 與變更前相同，無新增警告。私有表無 policy 為既有 server-only 設計；既有 Auth 密碼外洩防護提醒未在此唯讀功能修改：https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 - 瀏覽器存取限制仍存在，未做 iPhone／Mac 真機或登入後畫面驗收，不宣稱 99% 或完整視覺通過。
+
+## 發布
+
+PR #282 已合併，GitHub Pages run 40620672332 的 build/deploy 均 success。正式 HTML 與活動入口已核對 HTTP 200 及新版本。最後實際角色驗證補上 service_role 對私有 schema 的 USAGE（20261028022624），一般玩家及 anon 仍無 RPC 執行權。

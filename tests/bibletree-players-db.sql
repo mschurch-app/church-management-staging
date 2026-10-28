@@ -3,7 +3,7 @@ begin;
 do $$
 declare uid uuid; u1 uuid; u2 uuid; result jsonb; first_page jsonb; second_page jsonb; read_keys jsonb; before_count integer;
 begin
- if has_function_privilege('anon','public.game_players_admin(text,text,integer,integer)','EXECUTE')
+ if not has_schema_privilege('service_role','game_private','USAGE') or has_function_privilege('anon','public.game_players_admin(text,text,integer,integer)','EXECUTE')
  or has_function_privilege('authenticated','public.game_players_admin(text,text,integer,integer)','EXECUTE')
  or has_function_privilege('authenticated','game_private.players_admin(text,text,integer,integer)','EXECUTE')
  or not has_function_privilege('service_role','public.game_players_admin(text,text,integer,integer)','EXECUTE') then raise exception 'role boundary failed';end if;
@@ -38,5 +38,9 @@ begin
  if (public.game_players_admin()->'stats'->>'accounts')::integer<>before_count+30 then raise exception 'account total failed';end if;
  begin perform public.game_players_admin('','invalid');raise exception 'invalid query accepted';exception when raise_exception then if sqlerrm<>'INVALID_PLAYER_QUERY' then raise;end if;end;
 end $$;
+set local role service_role;
+do $$ begin
+ if (public.game_players_admin('QA玩家名冊')->>'total')::integer<>29 then raise exception 'service role RPC failed';end if;
+end $$;
 rollback;
-select jsonb_build_object('ok',true,'checks',15,'fixtures','rolled back') as player_directory_validation;
+select jsonb_build_object('ok',true,'checks',16,'fixtures','rolled back') as player_directory_validation;

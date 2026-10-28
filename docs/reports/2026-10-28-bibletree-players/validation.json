@@ -9,15 +9,32 @@
     "verify_jwt": false,
     "authentication": "OS Auth getUser + current members/tree_reading_admin grants + verified LINE or OS work identity"
   },
-  "database_migration": "20261028021203_bibletree_players_admin",
   "checks": {
     "directory_handler_and_navigation": 16,
     "metadata_contract": 20,
-    "database_transaction": 15,
+    "database_transaction": 16,
     "sql_fixtures": "rolled back",
     "changed_js_syntax": 19,
-    "worker": 23
+    "worker": 23,
+    "local_page_resource_references": 17,
+    "edge_live_denials": {
+      "no_token": 401,
+      "bad_token": 403,
+      "bad_origin": 403
+    }
   },
   "device_qa": "pending: managed browser access restrictions remain; no browser or device visual pass claimed",
-  "publication": "pending"
+  "publication": {
+    "pull_request": 282,
+    "merge_sha": "36f2a38c18caa671b53fe975f3ee25aec9748478",
+    "pages_run": 40620672332,
+    "build": "success",
+    "deploy": "success",
+    "live_html": 200,
+    "activity_entry": true
+  },
+  "database_migrations": [
+    "20261028021203_bibletree_players_admin",
+    "20261028022624_bibletree_players_service_schema"
+  ]
 }

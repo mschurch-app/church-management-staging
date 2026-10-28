@@ -4,3 +4,7 @@ export function receiptCsv(rows){
  const records=rows.filter(r=>r.amount!==null&&r.amount!==undefined).map(r=>[r.receipt_number,r.category,r.record_date,r.project,r.payer,r.title,r.amount,r.status==='issued'?'已開立':'已作廢',r.status==='issued'?r.amount:0,r.source_ref,(r.items||[]).map(i=>`${i.name} ${i.quantity}${i.unit}`).join('；')]);
  return '\ufeff'+[header,...records].map(row=>row.map(safe).join(',')).join('\r\n')+'\r\n';
 }
+export async function receiptPayload(response){
+ if(response.data)return response.data;
+ try{return await response.error?.context?.json()||null;}catch{return null;}
+}

@@ -1,4 +1,4 @@
-import {receiptCsv} from './finance/receipts.mjs?v=20261028-receipts1';
+import {receiptCsv,receiptPayload} from './finance/receipts.mjs?v=20261028-receipts2';
 import {db} from './admin-db.mjs?v=20261012-readable2';
 import {draftGuard,lockControls,reviewDialog} from './app-workflow.mjs?v=20261022-experience2';
 const $=s=>document.querySelector(s),form=$('#receipt-form'),issuerForm=$('#issuer-form'),draft=draftGuard(form),issuerDraft=draftGuard(issuerForm);
@@ -7,7 +7,7 @@ const errors={forbidden:'沒有收據操作權限。',login_required:'請重新�
 let kind=new URLSearchParams(location.search).get('kind')==='goods'?'goods':'money',profile=null,row=null,rows=[],campRows=[],selected=new Map(),busy=false,pending=null,draftId=null,epoch=0,authUser=null;
 const node=(tag,text='',cls='')=>Object.assign(document.createElement(tag),{textContent:text,className:cls});
 function status(text,tone=''){const el=$('#receipt-status');el.textContent=text;el.dataset.tone=tone;}
-async function api(action,input={}){const ticket=epoch,res=await db.functions.invoke('finance-receipts',{body:{action,...input}});if(ticket!==epoch)throw Error('登入狀態已變更，請重新登入。');if(res.data?.ok!==true){if(res.data?.code)throw Object.assign(Error(errors[res.data.code]||'操作未完成，請重新讀取確認。'),{code:res.data.code});throw Object.assign(Error('連線中斷或結果未確認。請重試相同操作，或重新讀取已儲存紀錄。'),{uncertain:true});}return res.data;}
+async function api(action,input={}){const ticket=epoch,response=await db.functions.invoke('finance-receipts',{body:{action,...input}}),res={data:await receiptPayload(response)};if(ticket!==epoch)throw Error('登入狀態已變更，請重新登入。');if(res.data?.ok!==true){if(res.data?.code)throw Object.assign(Error(errors[res.data.code]||'操作未完成，請重新讀取確認。'),{code:res.data.code,uncertain:res.data.code==='unavailable'});throw Object.assign(Error('連線中斷或結果未確認。請重試相同操作，或重新讀取已儲存紀錄。'),{uncertain:true});}return res.data;}
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
 function canLeave(){return !busy&&!pending&&draft.canLeave()&&issuerDraft.canLeave();}
 function viewMode(){const saved=!!row,editable=profile?.canEdit&&(!row||row.state==='draft')&&!pending;$('#receipt-fields').disabled=!editable;$('#save-receipt').hidden=!editable;$('#issue-controls').hidden=!saved||row.state!=='draft'||!profile?.canIssue;$('#issue-receipt').disabled=!!pending;$('#preview-receipt').hidden=!saved;$('#void-receipt').hidden=!saved||row.state!=='issued'||!profile?.canIssue;$('#new-receipt').hidden=!profile?.canEdit;$('#receipt-retry').hidden=!pending;}

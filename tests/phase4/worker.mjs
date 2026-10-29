@@ -26,6 +26,28 @@ await test('not found navigation keeps actual response',async()=>{h.network(asyn
 await test('recovery cache missing still returns a readable response',async()=>{const isolated=harness();isolated.network(async()=>{throw new Error('offline');});const {response}=await isolated.event('fetch',{request:isolated.request('/members.html',{mode:'navigate'})});assert.equal(response.status,503);assert.match(await response.text(),/重新整理/);});
 await test('POST and external API requests are never handled or queued',async()=>{for(const request of [h.request('/functions',{method:'POST'}),{...h.request('/auth'),url:'https://backend.supabase.co/auth/v1/user'}])assert.equal((await h.event('fetch',{request})).response,undefined);});
 await test('same-origin API data is not cached',async()=>assert.equal((await h.event('fetch',{request:h.request('/api/private')})).response,undefined));
+await test('release-listed versioned assets use current release cache without network',async()=>{
+ const isolated=harness();await isolated.event('install');
+ const path=isolated.log.shell.find(path=>path.startsWith('/church-albums.mjs?v='));
+ const current=[...isolated.stores.keys()][0];isolated.stores.get(current).set('https://app.example.invalid'+path,new Response('pinned'));
+ isolated.network(async()=>{throw new Error('must not use network');});
+ assert.equal(await(await isolated.event('fetch',{request:isolated.request(path,{destination:'script'})})).response.text(),'pinned');assert.equal(isolated.log.fetch.length,0);
+});
+await test('missing pinned asset fetches once, then uses cache',async()=>{
+ const isolated=harness();await isolated.event('install');const path=isolated.log.shell.find(path=>path.startsWith('/church-albums.mjs?v='));
+ isolated.network(async()=>new Response('downloaded'));
+ for(let i=0;i<2;i++)assert.equal(await(await isolated.event('fetch',{request:isolated.request(path,{destination:'script'})})).response.text(),'downloaded');
+ assert.equal(isolated.log.fetch.length,1);
+});
+await test('pinned lookup never reads stale copies from previous release caches',async()=>{
+ const isolated=harness();await isolated.event('install');const path=isolated.log.shell.find(path=>path.startsWith('/church-albums.mjs?v='));
+ isolated.stores.set('church-os-shell-old',new Map([['https://app.example.invalid'+path,new Response('stale')]]));isolated.network(async()=>new Response('current'));
+ assert.equal(await(await isolated.event('fetch',{request:isolated.request(path,{destination:'script'})})).response.text(),'current');assert.equal(isolated.log.fetch.length,1);
+});
+await test('unversioned assets continue checking the network',async()=>{
+ const isolated=harness();await isolated.event('install');isolated.network(async()=>new Response('updated'));
+ assert.equal(await(await isolated.event('fetch',{request:isolated.request('/admin-auth-config.mjs',{destination:'script'})})).response.text(),'updated');assert.equal(isolated.log.fetch.length,1);
+});
 await test('scripts revalidate browser cache and remember fresh assets',async()=>{h.network(async()=>new Response('fresh'));const req=h.request('/app-runtime.mjs?v=4',{destination:'script'});assert.equal(await(await h.event('fetch',{request:req})).response.text(),'fresh');assert.equal(h.log.fetch.at(-1).cache,'no-cache');assert(h.log.put.includes(req.url));});
 await test('network failure serves previously fetched script',async()=>{h.network(async()=>{throw new Error('offline');});const req=h.request('/app-runtime.mjs?v=4',{destination:'script'});assert.equal(await(await h.event('fetch',{request:req})).response.text(),'fresh');});
 await test('server failure serves cached script without replacing it',async()=>{h.network(async()=>new Response('down',{status:503}));const req=h.request('/app-runtime.mjs?v=4',{destination:'script'});assert.equal(await(await h.event('fetch',{request:req})).response.text(),'fresh');});

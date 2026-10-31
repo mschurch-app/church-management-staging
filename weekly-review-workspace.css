@@ -16,3 +16,25 @@ html body[data-workflow-page=weekly-review] :is(#review-search,#review-filter,#r
 .review-actions button{font-size:1rem;min-height:44px}
 .review-choice[aria-pressed=true]{border-color:var(--app-accent,#a83d2e);background:#fff4ef}
 @media(max-width:780px){.review-toolbar{display:flex;flex-wrap:wrap}.review-toolbar label{flex-basis:100%}.review-toolbar button{flex:1 1 140px}.review-list-items{grid-template-columns:1fr}.review-buttons button{flex:1 1 180px}}
+
+.bulletin-reader-mode .review-layout{display:block;max-width:1000px;margin:auto}
+.bulletin-reader-mode .review-list{position:static;margin-bottom:18px}
+
+.bulletin-reader-mode #preview{padding:0;overflow:hidden}
+.bulletin-reader{background:#fff;color:#203c35;font:17px/1.85 -apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif}
+.bulletin-reader-header{padding:40px 28px;background:#173f34;color:white;text-align:center}
+.bulletin-reader-header h2{font-size:clamp(1.8rem,5vw,2.7rem);margin:8px 0}
+.bulletin-reader-brand{letter-spacing:.15em;font-weight:700}
+.bulletin-reader-hero{display:block;width:100%;height:auto}
+.bulletin-reader-section{margin:0 28px;padding:26px 0;border-bottom:1px solid #dce7df}
+.bulletin-reader-section h3{color:#286659;font-size:1.5rem;margin:0 0 18px}
+.bulletin-reader-section h4{font-size:1.15rem;margin:0 0 6px}
+.bulletin-reader-section p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 16px}
+.bulletin-reader-entry{margin:0 0 22px}
+.bulletin-reader-section dl{display:grid;grid-template-columns:minmax(90px,1fr) 2fr;gap:10px 20px}
+.bulletin-reader-section dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:500px){.bulletin-reader-header{padding:26px 18px}.bulletin-reader-section{margin:0 18px}}
+
+html body .bulletin-reader-header :is(h2,p){color:#fff!important}
+.bulletin-reader-mode[data-preview-direct=true] .review-list{display:none}
+.bulletin-reader-mode[data-preview-direct=true] .page-header .muted{display:none}

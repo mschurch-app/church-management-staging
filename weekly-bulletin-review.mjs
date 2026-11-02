@@ -2,7 +2,7 @@ import {bulletinReader} from './weekly-bulletin-reader.mjs?v=20261031-preview1';
 import {reviewQueue} from './weekly-review-queue.mjs?v=20261022-experience22';
 import {initWeeklyYoutube} from './weekly-youtube.mjs?v=20261022-experience21';
 import {weeklyMetadata} from './weekly-youtube-content.mjs?v=20261021-weekly-link1';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 
 import {workflowSummary,apiResult,uncertainWrite,lockControls,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';

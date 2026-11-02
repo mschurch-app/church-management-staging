@@ -1,5 +1,5 @@
 import {createFieldGuidance,FieldValidationError} from './form-guidance.mjs?v=20261022-experience8';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {apiResult,reviewDialog,uncertainWrite} from './app-workflow.mjs?v=20261009-stage4';
 
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/weekly-promo-review';

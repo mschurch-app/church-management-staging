@@ -1,5 +1,5 @@
 import {createStoryArticle,bindStoryDialog} from './testimony-story-layout.mjs?v=20261024-story2';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 const endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/testimony-intake',$=s=>document.querySelector(s);
 const openPreview=bindStoryDialog(document.querySelector('#testimony-preview'));
 const labels={pending:'待審核',published:'已公開',needs_changes:'待補充',unpublished:'已下架'};

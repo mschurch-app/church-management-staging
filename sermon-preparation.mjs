@@ -1,8 +1,8 @@
 import {createSermonDraftRecovery} from './sermon-draft-recovery.mjs?v=20261022-experience14';
 import {createSermonJobProgress} from './sermon-job-progress.mjs?v=20261022-experience1';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
-import {setStatus} from './app-ui.mjs?v=20261014-sermon3';
+import {setStatus} from './app-ui.mjs?v=20261102-bibletree-admin1';
 import {STEPS,emptyDraft,validateDraft,generationReady,applyGenerated,characterCount,videoUrl} from './sermon-preparation-contract.mjs?v=20261014-directuse1';
 import {createFieldGuidance,FieldValidationError} from './form-guidance.mjs?v=20261022-experience8';
 

@@ -1,5 +1,5 @@
 import {draftGuard,lockControls} from '../app-workflow.mjs?v=20261022-experience2';
-import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261009-stage4';
+import { authenticateStaff, signOut, staffLineIdToken } from './auth.mjs?v=20261102-bibletree-admin1';
 import { PASTORAL_CALENDAR_ENDPOINT, PASTORAL_TOOLS_ENDPOINT } from './config.mjs?v=20260930-1';
 
 const $ = selector => document.querySelector(selector);

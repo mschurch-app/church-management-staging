@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
 import {operationsWorkflow} from './operations-workflow.mjs?v=20261023-operations1';
 const $=s=>document.querySelector(s),church='M+',labels={draft:'草稿',published:'公開',archived:'封存但公開'};

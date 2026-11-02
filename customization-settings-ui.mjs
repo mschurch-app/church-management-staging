@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
-import {loadChurchCustomizations,saveChurchCustomizations} from './church-customizations.mjs?v=20261023-settings1';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
+import {loadChurchCustomizations,saveChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
 import {getOptions,GROUPS} from './welcome-options.mjs';
 import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20261023-settings1';
 

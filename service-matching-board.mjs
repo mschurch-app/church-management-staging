@@ -1,4 +1,4 @@
-import {createAppIcon} from './app-icons.mjs?v=20261010-match-board1';
+import {createAppIcon} from './app-icons.mjs?v=20261102-bibletree-admin1';
 
 const node=(tag,text='',className='')=>Object.assign(document.createElement(tag),{textContent:text,className});
 const names=value=>String(value||'').split(/[、,，;；\n]+/u).map(name=>name.trim()).filter(Boolean);

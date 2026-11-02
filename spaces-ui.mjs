@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {
   listRooms, saveRoom, listBookings, createBooking, updateBooking,
   setBookingStatus, setRoomActive

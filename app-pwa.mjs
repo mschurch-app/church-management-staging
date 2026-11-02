@@ -1,6 +1,6 @@
 let installPrompt=null,registrationTask=null;
 import {watchAppRegistration} from './app-runtime.mjs?v=20261026-dock1';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {VAPID_PUBLIC_KEY} from './app-push-config.mjs';
 const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);

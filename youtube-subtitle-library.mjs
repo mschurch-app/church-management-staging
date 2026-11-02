@@ -1,6 +1,6 @@
 import {contentWorkflow} from './content-workflow.mjs?v=20261023-content1';
 import {apiResult} from './app-workflow.mjs?v=20261022-experience2';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 const ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/subtitle-knowledge-admin',q=new URLSearchParams(location.search),$=s=>document.querySelector(s);let data={drafts:[],items:[]};
 function message(text){flow.message(text);}

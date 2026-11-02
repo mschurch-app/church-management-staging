@@ -1,0 +1,29 @@
+✔ authorization needs OS grants, verified work identity and explicit approval permission (1.142208ms)
+✔ server verified actor replaces spoofed payload actor and secret is only sent to game RPC (43.528458ms)
+✔ unauthorized approval cannot reach the game database (0.925667ms)
+✔ origin and missing auth are rejected before any upstream call (0.34275ms)
+✔ 400, conflict and upstream errors remain business failures (1.296458ms)
+✔ body count excludes punctuation and golden verse, accepts complete long form (0.460209ms)
+✔ date, month and references filter without changing source order (0.8485ms)
+✔ uncertain saves are reconciled by content and revision without resending (0.423041ms)
+✔ existing tree view grants reach all three registered tools without granting new capabilities or preferences (3.949584ms)
+✔ missing grants, explicit view denial, other church and disabled directory never expose the management shortcut (2.286041ms)
+✔ only bounded read-only list arguments cross into the game RPC (3.69075ms)
+✔ untrusted origins, missing bearers and write actions cannot query records (41.5415ms)
+✔ invalid or game-project token is rejected by OS Auth, regardless of payload role (0.903708ms)
+✔ both current OS grants are necessary; client role cannot restore revoked access (1.534625ms)
+✔ view denial and missing trusted identity block player information (0.657083ms)
+✔ confirmed OS work identity can read, without an unnecessary LINE requirement (0.325958ms)
+✔ successful read checks fresh grants on every request and keeps service credentials server-side (0.5675ms)
+✔ preflight does not require login and GET never returns data (0.127209ms)
+✔ optional profile fields and future reward timers have honest labels (0.2475ms)
+✔ directory appears only for authorized M+ tree administrators and is searchable (4.149541ms)
+✔ personal content never enters the approved SQL response projection (4.017458ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.396916

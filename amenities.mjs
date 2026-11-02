@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {listAmenities,saveAmenity,setAmenityActive} from './space-management.mjs';
 
 import {operationsWorkflow} from './operations-workflow.mjs?v=20261023-operations1';

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {listGroups,listGroupMembers,assignMemberToGroup,setGroupLeader} from './group-management.mjs';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s),term=church==='SHiNE'?'小家':'小組',leaderTerm=church==='SHiNE'?'小家長':'小組長';
 let groups=[],members=[],busy=false,loading=false,recovery=true,generation=0;

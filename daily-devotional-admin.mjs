@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {readAccess,canOpen,canAction} from './admin-access.mjs?v=20261022-experience5';
 import {node as el,lockControls,workflowSummary,apiResult,uncertainWrite,draftGuard,reviewDialog} from './app-workflow.mjs?v=20261009-stage4';
 import {createDevotionalConflict} from './devotional-conflict.mjs?v=20261022-experience19';

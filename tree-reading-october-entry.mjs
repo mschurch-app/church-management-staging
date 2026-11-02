@@ -2,7 +2,7 @@
 const params = new URLSearchParams(location.search);
 const legacy = params.get('legacy') === '1' || params.get('view') === 'devotional';
 if (legacy) {
-  await import('./tree-reading-october-test.mjs?v=20261012-musicload1');
+  await import('./tree-reading-october-test.mjs?v=20261102-bibletree-admin1');
 } else {
   const root = new URL('.', location.href);
   const game = new URL('prototypes/reading-tree-game/', root);

@@ -1,5 +1,5 @@
 import {contentWorkflow} from './content-workflow.mjs?v=20261023-content1';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {listPastoralContent,saveTemplate,saveSpiritualCard,saveJourneyStep,saveGreeting,setContentActive,uploadGreetingImage,greetingPreview} from './pastoral-content-management.mjs?v=20261023-content1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s);
 const config={templates:{title:'祝禱範本',table:'pastoral_templates'},cards:{title:'金句小卡',table:'spiritual_cards'},journey:{title:'新朋友旅程',table:'newcomer_journey_steps'},greetings:{title:'祝福圖卡',table:'share_greeting_cards'}};

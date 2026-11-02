@@ -1,5 +1,5 @@
 import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261022-line-sso1';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {readAccess,hasVerifiedLine} from './admin-access.mjs?v=20261022-experience5';
 
 const status=document.querySelector('#status');

@@ -1,0 +1,33 @@
+✔ overview retains only its anonymous versioned contract, never extra player payloads (0.575417ms)
+✔ unknown timestamps, missing metrics, non-integers and impossible population subsets are unavailable rather than healthy (0.113833ms)
+✔ authorization needs OS grants, verified work identity and explicit approval permission (0.427708ms)
+✔ server verified actor replaces spoofed payload actor and secret is only sent to game RPC (10.84575ms)
+✔ unauthorized approval cannot reach the game database (0.615709ms)
+✔ origin and missing auth are rejected before any upstream call (0.24125ms)
+✔ 400, conflict and upstream errors remain business failures (1.100208ms)
+✔ body count excludes punctuation and golden verse, accepts complete long form (0.495708ms)
+✔ date, month and references filter without changing source order (0.286542ms)
+✔ uncertain saves are reconciled by content and revision without resending (0.057917ms)
+✔ existing tree view grants reach all three registered tools without granting new capabilities or preferences (0.734042ms)
+✔ missing grants, explicit view denial, other church and disabled directory never expose the management shortcut (0.6445ms)
+✔ only bounded read-only list arguments cross into the game RPC (0.5345ms)
+✔ untrusted origins, missing bearers and write actions cannot query records (10.392625ms)
+✔ invalid or game-project token is rejected by OS Auth, regardless of payload role (0.732417ms)
+✔ both current OS grants are necessary; client role cannot restore revoked access (1.038125ms)
+✔ view denial and missing trusted identity block player information (0.429ms)
+✔ confirmed OS work identity can read, without an unnecessary LINE requirement (0.199916ms)
+✔ successful read checks fresh grants on every request and keeps service credentials server-side (0.29175ms)
+✔ preflight does not require login and GET never returns data (0.076791ms)
+✔ optional profile fields and future reward timers have honest labels (0.188083ms)
+✔ directory appears only for authorized M+ tree administrators and is searchable (1.815583ms)
+✔ personal content never enters the approved SQL response projection (1.093458ms)
+✔ overview uses the same fresh grants and service-only RPC but forwards only bounded anonymous statistics (0.657209ms)
+✔ overview cannot accept injected actor, filters, write commands, revoked permissions or malformed counts (0.525625ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 59.737833

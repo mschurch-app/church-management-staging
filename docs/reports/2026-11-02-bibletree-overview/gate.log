@@ -1,0 +1,6 @@
+START phase4/worker.mjs
+PASS phase4/worker.mjs
+START app-catalog.mjs
+PASS app-catalog.mjs
+START phase2/definitions.mjs
+PASS phase2/definitions.mjs

@@ -7,6 +7,7 @@ const origin='https://mscos.mchurch.online';
 const user={id:'os-user',email_confirmed_at:'2026-01-01',identities:[]};
 const grants=['members','tree_reading_admin'].map(permission=>({church_id:'M+',permission}));
 const rows={ok:true,players:[],total:0,offset:0,limit:25,stats:{accounts:0}};
+const overview={ok:true,version:1,generated_at:'2026-11-02T12:00:00Z',stats:{accounts:29,journeys:22,signins_7d:12,beta:20,feedback:4},players:[{private:'never forward'}],raw_notes:'never forward'};
 function harness(overrides={}){
  const calls=[],data={user,grants,permissions:[],capabilities:{has_line:true},workProfile:{profile:{id:'staff'}},...overrides};
  const fetcher=async(url,options)=>{
@@ -16,6 +17,7 @@ function harness(overrides={}){
   else if(url.endsWith('get_my_feature_permissions'))value=data.permissions;
   else if(url.endsWith('get_my_app_capabilities'))value=data.capabilities;
   else if(url.endsWith('get_work_profile'))value=data.workProfile;
+  else if(url.endsWith('game_players_admin_overview'))value=data.overview??overview;
   else if(url.endsWith('game_players_admin'))value=rows;
   else throw Error('unexpected request');
   return Response.json(value);
@@ -73,4 +75,14 @@ test('directory appears only for authorized M+ tree administrators and is search
 test('personal content never enters the approved SQL response projection',()=>{
  const file=fs.readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(s=>s.endsWith('_bibletree_players_admin.sql'));
  const sql=fs.readFileSync(new URL('../supabase/migrations/'+file,import.meta.url),'utf8');assert(!sql.includes('game_private_journals'));assert(!sql.includes('snapshot,annual,notes'));assert(sql.includes('security invoker'));assert(sql.includes('from public,anon,authenticated'));
+});
+
+test('overview uses the same fresh grants and service-only RPC but forwards only bounded anonymous statistics',async()=>{
+ const h=harness();for(let i=0;i<2;i++){const r=await h.request({action:'overview'});assert.equal(r.status,200);const body=await r.json();assert.deepEqual(Object.keys(body).sort(),['generated_at','ok','stats','version']);assert.deepEqual(body.stats,overview.stats);assert(!JSON.stringify(body).includes('never forward'));}
+ assert.equal(h.calls.filter(c=>c.url.endsWith('get_my_church_access')).length,2);const calls=h.calls.filter(c=>c.url.endsWith('game_players_admin_overview'));assert.equal(calls.length,2);assert.deepEqual(JSON.parse(calls[0].options.body),{});
+});
+test('overview cannot accept injected actor, filters, write commands, revoked permissions or malformed counts',async()=>{
+ for(const body of [{action:'overview',actor:'forged'},{action:'overview',query:'other'},{action:'overview',operation:'grant'}]){const h=harness();assert.equal((await h.request(body)).status,400);assert.equal(h.calls.length,0);}
+ const revoked=harness({grants:[]});assert.equal((await revoked.request({action:'overview'})).status,403);assert(!revoked.calls.some(c=>c.url.endsWith('game_players_admin_overview')));
+ for(const stats of [{...overview.stats,journeys:30},{...overview.stats,accounts:-1},{...overview.stats,feedback:0.5},{accounts:29}]){const h=harness({overview:{...overview,stats}});assert.equal((await h.request({action:'overview'})).status,503);}
 });

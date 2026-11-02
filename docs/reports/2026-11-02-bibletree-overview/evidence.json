@@ -1,0 +1,39 @@
+{
+  "base": "2091cb61f54dfa80fa93a26c814518f61839e8fb",
+  "scope": "anonymous administrative overview via existing OS bridge",
+  "formal_backend": {
+    "project": "loscejilzfdwhmogkuwf",
+    "migration": "20261102124702_service_only_readonly_admin_overview",
+    "edge": "bibletree-players-admin",
+    "edge_version": 2,
+    "preserves_original_list": true,
+    "new_rpc": "game_players_admin_overview()",
+    "private_reader": "players_admin_overview()",
+    "source_sql": "original reading-tree-public-release/db/admin-overview.sql",
+    "private_source_md5": "7f51e5798592226fc1071a4d920a50a9",
+    "public_source_md5": "4019e77c8ee9d1eeae16e8f02d601856",
+    "acl": {
+      "anon": false,
+      "authenticated": false,
+      "service_role": true
+    },
+    "player_data_writes": false,
+    "flag_changes": false,
+    "new_tables": false,
+    "existing_party_source_guard": true
+  },
+  "tests": {
+    "node": {
+      "passed": 25,
+      "failed": 0
+    },
+    "worker": 27,
+    "catalog": 21,
+    "definitions": 20,
+    "formal_negative_http": 3,
+    "formal_aggregate_projection": "passed; counts only, no private player values",
+    "real_os_viewer": "pending original tester"
+  },
+  "meaning": "7-day Auth sign-in is not online count, DAU or retention; successful aggregate read is not a universal game-health assertion",
+  "front_cache": "bibletree-admin2; manual refresh; result marked stale after180seconds"
+}

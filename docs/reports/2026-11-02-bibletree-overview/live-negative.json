@@ -1,0 +1,26 @@
+[
+  {
+    "origin": "https://mscos.mchurch.online",
+    "action": "overview",
+    "status": 401,
+    "expected": 401,
+    "passed": true,
+    "body": "{\"ok\":false,\"error\":\"login_required\"}"
+  },
+  {
+    "origin": "https://untrusted.invalid",
+    "action": "overview",
+    "status": 403,
+    "expected": 403,
+    "passed": true,
+    "body": "{\"ok\":false,\"error\":\"forbidden\"}"
+  },
+  {
+    "origin": "https://mscos.mchurch.online",
+    "action": "list",
+    "status": 401,
+    "expected": 401,
+    "passed": true,
+    "body": "{\"ok\":false,\"error\":\"login_required\"}"
+  }
+]

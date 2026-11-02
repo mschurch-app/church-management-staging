@@ -1,4 +1,4 @@
-import {createFunctionEntry} from './app-ui.mjs?v=20261019-workflow1';
+import {createFunctionEntry} from './app-ui.mjs?v=20261102-bibletree-admin1';
 if(typeof document!=='undefined'&&!document.querySelector('#work-profile-style')){const l=document.createElement('link');l.id='work-profile-style';l.rel='stylesheet';l.href=new URL('./work-profile.css?v=20261021-work-roles1',import.meta.url).href;document.head.append(l);}
 export const WORK_ROLES=['主任牧師','牧師','師母','傳道','輔導','事工領袖','小組長'];
 export const WORK_DOMAINS={church:'教會',school:'課輔',team:'籃球球隊',camp:'熱火籃球營'};

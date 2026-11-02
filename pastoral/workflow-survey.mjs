@@ -1,4 +1,4 @@
-import { authenticateStaff, staffLineIdToken } from './auth.mjs?v=20261009-stage4';
+import { authenticateStaff, staffLineIdToken } from './auth.mjs?v=20261102-bibletree-admin1';
 import { PASTORAL_WORKFLOW_SURVEY_ENDPOINT } from './config.mjs?v=20261019-workflow1';
 
 const $ = selector => document.querySelector(selector);

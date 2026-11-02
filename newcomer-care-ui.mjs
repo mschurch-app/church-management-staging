@@ -1,5 +1,5 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
-import {dashboardAccess} from './dashboard-management.mjs?v=20261009-stage2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
+import {dashboardAccess} from './dashboard-management.mjs?v=20261102-bibletree-admin1';
 import {loadCareCases,saveCareUpdate} from './newcomer-care-management.mjs?v=20261003-access-guard1';
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
 const $=s=>document.querySelector(s),params=new URLSearchParams(location.search),editor=$('#care-editor'),draft=editorDraft(editor);

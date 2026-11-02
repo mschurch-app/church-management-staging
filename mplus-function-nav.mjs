@@ -1,5 +1,5 @@
 import './dock-viewport.mjs?v=20261026-dock1';
-import {createAppIcon} from './app-icons.mjs?v=20261020-shell2';
+import {createAppIcon} from './app-icons.mjs?v=20261102-bibletree-admin1';
 export const FUNCTION_CENTERS=[['church','教會','home'],['school','課輔','mplus-book'],['admin','行政','mplus-box'],['service','服事','mplus-calendar'],['website','網站','mplus-globe']];
 const base=new URL('.',import.meta.url);
 export function centerForPage(path=location.pathname){

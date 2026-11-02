@@ -1,9 +1,9 @@
 import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20261022-experience5';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs?v=20261023-settings1';
-import {loadChurchCustomizations} from './church-customizations.mjs?v=20261023-settings1';
-import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261028-receipts1';
-import {createSettingsEntry,element} from './app-ui.mjs?v=20261009-stage2';
+import {loadChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
+import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261102-bibletree-admin1';
+import {createSettingsEntry,element} from './app-ui.mjs?v=20261102-bibletree-admin1';
 import {settingsWorkflow} from './settings-workflow.mjs?v=20261023-settings1';
 const $=s=>document.querySelector(s),params=new URLSearchParams(location.search);
 let church=params.get('church')||'M+',current=null,canEdit=false;

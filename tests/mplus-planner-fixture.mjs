@@ -1,5 +1,5 @@
 // Isolated browser fixture. No calendar, database or notification request leaves this page.
-import {mountWeekCalendar} from '/mplus-week-calendar.mjs?v=20261021-work1';
+import {mountWeekCalendar} from '/mplus-week-calendar.mjs?v=20261102-bibletree-admin1';
 import {taipeiDate,addDay} from '/mplus-week-model.mjs';
 const A='00000000-0000-4000-8000-000000000001',B='00000000-0000-4000-8000-000000000002';
 const params=new URLSearchParams(location.search),calls=[],routines=[];let finished=false,failed=false;

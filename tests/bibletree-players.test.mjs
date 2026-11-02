@@ -68,7 +68,7 @@ test('directory appears only for authorized M+ tree administrators and is search
  const a={grants,featurePermissions:[]};assert(availableFunctionKeys(a,'M+').includes('bibletree_players'));
  assert(!availableFunctionKeys({...a,grants:[]},'M+').includes('bibletree_players'));assert(!availableFunctionKeys(a,'SHiNE').includes('bibletree_players'));
  assert(matchesFunction('bibletree_players','玩家'));assert(FUNCTION_GROUPS.find(g=>g.key==='events').keys.includes('bibletree_players'));assert.equal(FUNCTION_CATALOG.bibletree_players.configurableHome,false);
- const {MPLUS_CENTERS}=await import('../mplus-navigation.mjs');assert(MPLUS_CENTERS.admin.cards.find(([label])=>label==='活動與其他')[1].some(([,key])=>key==='bibletree_players'));assert(!JSON.stringify(MPLUS_CENTERS.church).includes('bibletree_players'));
+ const {MPLUS_CENTERS}=await import('../mplus-navigation.mjs');assert(MPLUS_CENTERS.admin.cards.find(([label])=>label==='活動與其他')[1].some(([,key])=>key==='bibletree_admin'));assert.equal(FUNCTION_CATALOG.bibletree_admin.file,'bibletree-admin.html');assert.equal(FUNCTION_CATALOG.bibletree_devotional.file,'bibletree-devotional-admin.html');assert(!JSON.stringify(MPLUS_CENTERS.church).includes('bibletree_players'));
 });
 test('personal content never enters the approved SQL response projection',()=>{
  const file=fs.readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(s=>s.endsWith('_bibletree_players_admin.sql'));

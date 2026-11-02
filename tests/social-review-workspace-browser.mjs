@@ -17,7 +17,7 @@ const server=createServer(async(req,res)=>{try{
  const target=path.resolve(root,'.'+file);assert(target.startsWith(root+path.sep));
  let data=mode==='before'&&['/sermon-social-review.html','/sermon-social-review.mjs','/sermon-social-review.css'].includes(file)?execFileSync('git',['show',base+':'+file.slice(1)],{cwd:root}):await readFile(target);
  if(file==='/church-brand.mjs')data=data.toString().replace('await readAccess(db)',JSON.stringify({user:{name:'合成同工',title:'測試審核'},churches:['M+'],grants:[],featurePermissions:[]})).replace('await loadChurchCustomizations(db,selected)','null');
- if(file==='/sermon-social-review.mjs')data=data.toString().replace("import {db} from './admin-db.mjs?v=20261012-readable2';",`const db={auth:{getSession:async()=>({data:{session:{access_token:'isolated-fixture'}}})},storage:{from:()=>({uploadToSignedUrl:async()=>({error:null})})}};`);
+ if(file==='/sermon-social-review.mjs')data=data.toString().replace("import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';",`const db={auth:{getSession:async()=>({data:{session:{access_token:'isolated-fixture'}}})},storage:{from:()=>({uploadToSignedUrl:async()=>({error:null})})}};`);
  res.setHeader('content-type',file.endsWith('.html')?'text/html;charset=utf-8':/\.(mjs|js)$/.test(file)?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.png')?'image/png':file.endsWith('.jpg')?'image/jpeg':'image/svg+xml');res.end(data);
  }catch(e){res.writeHead(404).end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;

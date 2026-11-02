@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>讀經樹・365 天靈修｜教會 OS</title><link rel="icon" href="assets/app/church-os-icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="auth.css"><link rel="stylesheet" href="church-brand.css?v=20261008-header1"><link rel="stylesheet" href="theme-vitality.css"><link rel="stylesheet" href="apple-ui.css"><link rel="stylesheet" href="app-design-tokens.css?v=20261009-stage2"><link rel="stylesheet" href="church-palette.css?v=20261012-readable2"><link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4"><link rel="stylesheet" href="app-workflow.css?v=20261022-experience3"><script src="mplus-theme.js?v=20261020-flat1"></script><link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4"><link rel="stylesheet" href="app-workspace-layout.css?v=20261022-visual1"><link rel="stylesheet" href="bibletree-devotional-admin.css?v=20261102-bibletree-admin1">
+</head><body data-app-layout="workspace" data-action-feedback="off">
+<main class="member-page bt-admin">
+<header class="page-header"><div><p class="eyebrow">THE READING TREE · 教會 OS</p><h1>讀經樹・365 天靈修</h1><p class="muted">逐日閱讀、修改，陪伴每一段旅程。</p></div><a href="https://bibletree.mchurch.online" target="_blank" rel="noopener">開啟讀經樹 ↗</a></header>
+<nav class="page-nav" aria-label="管理導覽"><a href="admin-dashboard.html?church=M%2B">管理首頁</a><a href="bibletree-admin.html?church=M%2B">讀經樹管理</a><a href="daily-devotional-admin.html?church=M%2B">原每日靈修管理</a></nav>
+<p id="status" class="status-message" role="status" aria-live="polite">正在確認教會 OS 帳號…</p>
+<div class="bt-recovery"><a id="login" href="admin-login.html" hidden>登入教會 OS</a><button id="retry" type="button" class="secondary" hidden>重新連線</button></div>
+<section id="workspace" hidden>
+<div class="bt-overview"><div><p class="eyebrow">365-DAY CONTENT PLAN</p><h2>全年靈修編輯室</h2><p>此處使用固定內容計畫索引，各玩家從首次正式入營開始自己的旅程。可逐篇檢視；具核准權限者儲存後會更新遊戲靈修內容。</p></div><strong id="summary">365 天</strong></div>
+<div class="bt-layout">
+<aside class="bt-sidebar" aria-label="選擇靈修日期">
+<label for="month">內容月份</label><select id="month"><option value="">全年</option></select>
+<label for="search">尋找靈修</label><input id="search" type="search" placeholder="日期、標題或經文">
+<label for="date">內容計畫日期</label><input id="date" type="date" min="2027-01-01" max="2027-12-31">
+<p id="result-count" class="muted"></p><div id="days" class="bt-days"></div>
+</aside>
+<section class="bt-detail" aria-label="當日靈修">
+<div class="bt-day-heading"><div><p id="day-label" class="eyebrow"></p><h2 id="day-title">選擇一天開始閱讀</h2><p id="revision" class="muted"></p></div><div class="bt-nav"><button id="prev" type="button" class="secondary">前一天</button><button id="next" type="button" class="secondary">後一天</button></div></div>
+<p id="editor-status" role="status" aria-live="polite"></p>
+<div class="bt-actions"><button id="reload" type="button" class="secondary">重新載入此日</button><button id="history" type="button" class="secondary">修訂紀錄</button><button id="reconcile" type="button" class="secondary" hidden>確認儲存結果</button></div>
+<details class="bt-scripture"><summary>當日經文全文 <span id="references"></span></summary><div id="scripture"></div></details>
+<form id="editor"><fieldset id="fields" disabled></fieldset>
+<label for="note">本次修改說明（選填）</label><input id="note" name="note" maxlength="500" placeholder="例如：調整生活應用，使文字更貼近青年">
+<div class="bt-save"><p id="counter" aria-live="polite"></p><div class="bt-actions"><button id="save" type="submit">儲存並發布</button><button id="save-next" type="button" class="secondary">儲存，閱讀下一天</button></div></div>
+</form>
+</section></div></section></main>
+<dialog id="history-dialog" aria-labelledby="history-title"><div class="bt-dialog-heading"><h2 id="history-title">修訂紀錄</h2><button id="close-history" type="button" class="secondary" aria-label="關閉修訂紀錄">×</button></div><p>選擇舊版本可帶回編輯區；按「儲存並發布」後才會更新讀經樹。</p><div id="history-list"></div></dialog>
+<script src="vendor/supabase-2.102.0.js"></script><script type="module" src="bibletree-devotional-admin.mjs?v=20261102-bibletree-admin1"></script><script type="module" src="church-brand.mjs?v=20261102-bibletree-admin1"></script>
+</body></html>

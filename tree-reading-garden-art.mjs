@@ -1,5 +1,5 @@
 import {festivalScene} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
-import {createAppIcon} from './app-icons.mjs?v=20261010-playful-care1';
+import {createAppIcon} from './app-icons.mjs?v=20261102-bibletree-admin1';
 
 // Presentation only: all progress, care and journal records come from the existing API.
 function flowers(points,id){return points.map(([x,y],i)=>`<g transform="translate(${x} ${y})"><g class="flower-reveal" style="animation-delay:${i*.09}s"><g fill="#fff9d9" stroke="#f0d5b1" stroke-width="1"><ellipse cy="-7" rx="5" ry="7"/><ellipse cx="7" rx="7" ry="5"/><ellipse cy="7" rx="5" ry="7"/><ellipse cx="-7" rx="7" ry="5"/></g><circle r="4" fill="url(#gold-${id})"/></g></g>`).join('');}

@@ -1,4 +1,4 @@
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {settingsWorkflow,invalidResult} from './settings-workflow.mjs?v=20261023-settings1';
 const $=s=>document.querySelector(s),endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/system-monitor';
 const el=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};

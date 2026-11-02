@@ -1,5 +1,5 @@
 import './app-runtime.mjs?v=20261026-dock1';
-import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
+import {ICON_PATHS as paths,SYMBOL_NAMES as symbolNames,iconSymbol,applyAppIcon} from './app-icons.mjs?v=20261102-bibletree-admin1';
 if(!window.__churchIosExperience){
   window.__churchIosExperience=true;
   // Standalone M+ owns its first-paint styles; retain shared device behavior only.

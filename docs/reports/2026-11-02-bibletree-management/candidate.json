@@ -1,0 +1,47 @@
+{
+  "base_commit": "cf663381e22112102bd35fce657a1d61d6e86178",
+  "environment": "existing Church OS worktree on GitHub main source; no new project",
+  "frontend_scope": [
+    "existing administrative home -> reading tree management center",
+    "existing 365-day editorial frontend recovered and connected to deployed bridge",
+    "existing player list navigation",
+    "shared versioned resource graph"
+  ],
+  "formal_backend_changed": false,
+  "new_database_or_role_grant": false,
+  "reuse_edge": {
+    "project": "loscejilzfdwhmogkuwf",
+    "slug": "bibletree-devotional-admin",
+    "formal_version": 1,
+    "verify_jwt": false,
+    "auth": "Each request verifies cross-project OS Auth and current members/tree_reading_admin grants; saving additionally requires approve",
+    "files": [
+      {
+        "file": "supabase/functions/bibletree-devotional-admin/index.ts",
+        "sha256": "d2b5cd120083f766452a98cf6fe988ba48da4b6700b35c125b7155669ed2b010"
+      },
+      {
+        "file": "supabase/functions/bibletree-devotional-admin/handler.mjs",
+        "sha256": "992a3229f1aada5288458bfeaabf737679bfcaa599151bc19f99fd66acdd379e"
+      }
+    ]
+  },
+  "tests": {
+    "unit": {
+      "passed": 21,
+      "failed": 0
+    },
+    "worker_checks": 27,
+    "catalog_checks": 21,
+    "definition_checks": 20,
+    "javascript_syntax_files": 239,
+    "browser": "NOT_RUN; original tester after publication",
+    "physical_devices": "NOT_RUN"
+  },
+  "not_claimed": [
+    "complete operations control plane",
+    "200 dungeon management",
+    "live metrics or online counts",
+    "all OS device quality or 99% acceptance"
+  ]
+}

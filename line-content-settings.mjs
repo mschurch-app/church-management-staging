@@ -1,5 +1,5 @@
 import {contentWorkflow} from './content-workflow.mjs?v=20261023-content1';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {listTodaysMessages,listLoveShareCards,listLoveShareScenarios,saveSpiritualCard,saveGreeting,saveLoveShareScenario,setLoveShareScenarioActive,setContentActive,uploadGreetingImage,greetingPreview} from './pastoral-content-management.mjs?v=20261023-content1';
 
 const $=selector=>document.querySelector(selector);

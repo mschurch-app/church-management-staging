@@ -1,4 +1,4 @@
-import {db,church,authorizePublishing,publishingApi,invalidResult} from './publishing-settings-api.mjs?v=20261023-closeout1';
+import {db,church,authorizePublishing,publishingApi,invalidResult} from './publishing-settings-api.mjs?v=20261102-bibletree-admin1';
 import {settingsWorkflow} from './settings-workflow.mjs?v=20261023-settings1';
 const $=s=>document.querySelector(s),form=$('#form');
 const fields={sermon_analysis_enabled:'#sermon-analysis',youtube_captions_enabled:'#youtube-captions',instagram_sermon_enabled:'#instagram-sermon',instagram_weekly_reel_enabled:'#instagram-weekly',instagram_weekday_reel_enabled:'#instagram-weekday',instagram_holiday_reel_enabled:'#instagram-holiday'};

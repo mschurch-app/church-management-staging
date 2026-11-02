@@ -263,6 +263,18 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "daily-devotional",
     "settingsGroup": "content"
   },
+  "bibletree_admin": {
+    "permission": "tree_reading_admin", "church": "M+", "file": "bibletree-admin.html",
+    "icon": "🌳", "title": "讀經樹管理", "description": "玩家進度與365日靈修內容",
+    "key": "bibletree_admin", "group": "events", "symbol": "tree", "configurableHome": false,
+    "searchTerms": ["讀經樹", "RPG", "遊戲管理", "玩家", "365", "靈修"]
+  },
+  "bibletree_devotional": {
+    "permission": "tree_reading_admin", "church": "M+", "file": "bibletree-devotional-admin.html",
+    "icon": "🌳", "title": "讀經樹365日靈修", "description": "逐日檢視、修訂與發布靈修內容",
+    "key": "bibletree_devotional", "group": "events", "symbol": "tree", "configurableHome": false,
+    "searchTerms": ["讀經樹", "365", "全年靈修", "經文", "內容審查"]
+  },
   "bibletree_players": {
     "permission": "tree_reading_admin",
     "church": "M+",
@@ -678,7 +690,7 @@ export const FUNCTION_CATALOG=freezeTree({
   }
 });
 export const FUNCTION_GROUPS=freezeTree([
-  {"key":"events","title":"活動","note":"活動參與及遊戲玩家管理","keys":["bibletree_players"]},
+  {"key":"events","title":"活動","note":"活動參與及遊戲玩家管理","keys":["bibletree_admin","bibletree_players","bibletree_devotional"]},
   {
     "key": "pastoral",
     "title": "人與關懷",

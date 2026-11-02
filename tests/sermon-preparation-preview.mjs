@@ -25,7 +25,7 @@ http.createServer(async(req,res)=>{
   res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,...data}));
  }
  if(!file.startsWith(root+'/'))return res.writeHead(403).end();
- try{let data=fs.readFileSync(file);if(url.pathname==='/sermon-preparation.mjs')data=Buffer.from(data.toString().replace("'./admin-db.mjs?v=20261012-readable2'","'./fixture-db.mjs'").replace("'./admin-access.mjs?v=20261009-stage1'","'./fixture-access.mjs'").replace('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-preparation','/fixture-api'));
+ try{let data=fs.readFileSync(file);if(url.pathname==='/sermon-preparation.mjs')data=Buffer.from(data.toString().replace("'./admin-db.mjs?v=20261102-bibletree-admin1'","'./fixture-db.mjs'").replace("'./admin-access.mjs?v=20261009-stage1'","'./fixture-access.mjs'").replace('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/sermon-preparation','/fixture-api'));
  res.setHeader('Content-Type',({'.html':'text/html; charset=utf-8','.mjs':'application/javascript','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png'})[path.extname(file)]||'application/octet-stream');res.setHeader('Cache-Control','no-store');res.end(data);
  }catch{res.writeHead(404).end();}
 }).listen(8770,'127.0.0.1',()=>console.log('Isolated sermon preview http://127.0.0.1:8770/sermon-preparation.html?church=M%2B&project='+id));

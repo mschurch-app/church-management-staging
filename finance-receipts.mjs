@@ -1,5 +1,5 @@
 import {receiptCsv,receiptPayload} from './finance/receipts.mjs?v=20261028-receipts2';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {draftGuard,lockControls,reviewDialog} from './app-workflow.mjs?v=20261022-experience2';
 const $=s=>document.querySelector(s),form=$('#receipt-form'),issuerForm=$('#issuer-form'),draft=draftGuard(form),issuerDraft=draftGuard(issuerForm);
 const labels={money:'金錢',goods:'物品'},states={draft:'草稿',issued:'已開立',voided:'已作廢'};

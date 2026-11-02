@@ -1,4 +1,4 @@
-import {calendarApi} from './mplus-google-calendar.mjs?v=20261021-repeat-choice1';
+import {calendarApi} from './mplus-google-calendar.mjs?v=20261102-bibletree-admin1';
 import {taipeiDate,addDay} from './mplus-week-model.mjs?v=20261021-work-timeline1';
 const node=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 export const plannerStatus=()=>calendarApi('routine-status');

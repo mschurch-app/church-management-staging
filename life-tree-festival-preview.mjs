@@ -2,7 +2,7 @@ import {SceneMusicPlayer} from './life-tree-music-player.mjs?v=20261012-musicloa
 import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-musicload1';
 import {FESTIVALS,MONSTERS,festivalById,festivalForDate,decorationForDate,festivalDay} from './life-tree-festivals.mjs?v=20261011-spring-joy1';
 import {festivalSymbol,festivalScene,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
-import {applyAppIcon} from './app-icons.mjs?v=20261009-stage2';
+import {applyAppIcon} from './app-icons.mjs?v=20261102-bibletree-admin1';
 
 // Standalone, public visual preview. All actions and collections are memory only.
 const $=id=>document.getElementById('festival-'+id);

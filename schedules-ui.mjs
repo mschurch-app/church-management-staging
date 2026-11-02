@@ -1,6 +1,6 @@
 import {createScheduleDraftRecovery,scheduleDraftFingerprint} from './schedule-draft-recovery.mjs?v=20261022-experience15';
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
-import {db} from './admin-db.mjs?v=20261012-readable2';
+import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {COMMON,M_PLUS,SHINE,listSchedules,listScheduleMembers,saveSchedule,listRolePreferences,saveRolePreferences} from './schedule-management.mjs?v=20261003-access-guard1';
 
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;

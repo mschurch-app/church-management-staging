@@ -1,4 +1,4 @@
-import {authenticateStaff, loginConfigured} from './auth.mjs?v=20261009-stage4';
+import {authenticateStaff, loginConfigured} from './auth.mjs?v=20261102-bibletree-admin1';
 const button=document.querySelector('#line-login');
 const status=document.querySelector('#login-status');
 const codeInput=document.querySelector('#enrollment-code');

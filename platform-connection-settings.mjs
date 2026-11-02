@@ -1,4 +1,4 @@
-import {db,church,authorizePublishing,publishingApi,checkedConnection,invalidResult} from './publishing-settings-api.mjs?v=20261023-closeout1';
+import {db,church,authorizePublishing,publishingApi,checkedConnection,invalidResult} from './publishing-settings-api.mjs?v=20261102-bibletree-admin1';
 import {settingsWorkflow} from './settings-workflow.mjs?v=20261023-settings1';
 export function connectionSettings(kind){
   const $=s=>document.querySelector(s),instagram=kind==='instagram',label=instagram?'Instagram':'YouTube',endpoint=instagram?'instagram-publishing':'youtube-oauth',box=$('#connection'),form=instagram?$('#connect-form'):$('.yt-actions'),token=$('#access-token');

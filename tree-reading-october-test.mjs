@@ -2,8 +2,8 @@ import {festivalMusicURL} from './life-tree-festival-audio.mjs?v=20261012-musicl
 import {festivalSymbol,festivalEquipment} from './life-tree-festival-art.mjs?v=20261011-spring-lights1';
 import {festivalTestForDate} from './life-tree-festival-test-schedule.mjs?v=20261011-spring-joy1';
 import { loadScheduledChapters } from './bible-scripture-loader.mjs?v=20261010-deadline1';
-import { renderLifeTree, growthStage } from './tree-reading-garden-art.mjs?v=20261011-spring-lights1';
-import { createAppIcon } from './app-icons.mjs?v=20261010-playful-care1';
+import { renderLifeTree, growthStage } from './tree-reading-garden-art.mjs?v=20261102-bibletree-admin1';
+import { createAppIcon } from './app-icons.mjs?v=20261102-bibletree-admin1';
 import { OCTOBER_TEST_API, OCTOBER_TEST_LIFF_ID, OCTOBER_TEST_WINDOW } from './tree-reading-october-test-config.mjs?v=20260929-login-fallback';
 
 const $ = (selector) => document.querySelector(selector);

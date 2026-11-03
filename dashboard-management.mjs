@@ -1,8 +1,8 @@
-import {readAccess,chooseChurch} from './admin-access.mjs?v=20261022-experience5';
-export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261102-bibletree-admin1';
-import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261102-bibletree-admin1';
+import {readAccess,chooseChurch} from './admin-access.mjs?v=20261103-unifiedpermissions1';
+export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
+import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}
-export async function dashboardHomePreferences(db,church){const [home,features]=await Promise.all([db.rpc('get_my_home_preferences',{p_church:church}),db.rpc('get_my_feature_permissions',{p_church:church})]);const data=home.data||{};return {role_key:data.role_key||'custom',home_modules:Array.isArray(data.home_modules)?data.home_modules:(HOME_TEMPLATES[data.role_key]||HOME_TEMPLATES.custom),feature_permissions:Array.isArray(features.data)?features.data:[]};}
+export async function dashboardHomePreferences(db,church){const {data,error}=await db.rpc('get_my_permission_navigation',{p_church:church});if(error||!data)throw new Error('無法確認功能權限，請重新載入。');return data;}
 export async function dashboardCounts(db,church,grants){
  const has=p=>grants.some(g=>g.church_id===church&&g.permission===p),jobs=[];
  const add=(key,table,permission,apply=q=>q)=>{if(!has(permission))return;jobs.push(apply(db.from(table).select('*',{count:'exact',head:true}).eq('church_id',church)).then(({count,error})=>[key,error?null:count]));};
@@ -22,3 +22,4 @@ export async function dashboardTodos(db,church,grants){
  if(counts.prayers>0)items.push({tone:'normal',icon:'🙏',count:counts.prayers,title:'待關懷代禱',detail:'來源：目前公開代禱牆＋教牧私密代禱',file:'prayers.html?state=pending&scope=current'});
  return items;
 }
+

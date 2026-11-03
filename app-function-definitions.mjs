@@ -1,8 +1,8 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
-  "finance_permission_settings":{"file":"finance-permissions.html","title":"財務人員權限","description":"分別設定奉獻、金錢收據、物品收據與會計權限","key":"finance_permission_settings","group":"finance","church":"M+","owner":true,"symbol":"mplus-box","configurableHome":false},
-  "finance_accounting_reports":{"file":"finance-permissions.html#reports","title":"會計報表","description":"查閱與匯出已核准財務資料","key":"finance_accounting_reports","group":"finance","church":"M+","accountingReportAccess":true,"symbol":"mplus-box","configurableHome":false},
+  "finance_permission_settings":{"file":"admin-accounts.html?church=M%2B","title":"同工權限設定","description":"統一勾選教會功能、操作與財務權限","key":"finance_permission_settings","group":"finance","church":"M+","owner":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["授權","同工權限"]},
+  "finance_accounting_reports":{"file":"finance-permissions.html#reports","title":"會計報表","description":"查閱與匯出已核准財務資料","key":"finance_accounting_reports","group":"finance","church":"M+","accountingReportAccess":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["會計","報表","匯出"]},
   "school_payroll": {"file":"school-payroll.html?month=current","title":"課輔薪資結算","description":"時薪設定、月底結算、簽到表與逐級審核","key":"school_payroll","group":"finance","church":"M+","symbol":"mplus-box","configurableHome":false,"payrollAccess":true,"searchTerms":["老師薪資","工讀生薪水","每月簽到表","結算審核"]},
 
   "testimony_review": {
@@ -571,8 +571,8 @@ export const FUNCTION_CATALOG=freezeTree({
     "permission": "pastoral",
     "file": "customization-settings.html",
     "icon": "⚙️",
-    "title": "首頁與表單",
-    "description": "功能名稱、迎新表單與選項",
+    "title": "名稱與表單",
+    "description": "功能名稱、順序、迎新表單與選項",
     "key": "customization",
     "group": "system",
     "symbol": "sliders",
@@ -586,7 +586,7 @@ export const FUNCTION_CATALOG=freezeTree({
     "file": "admin-accounts.html",
     "icon": "👥",
     "title": "同工帳號與權限",
-    "description": "邀請、帳號與堂會權限",
+    "description": "選同工、勾選功能與操作權限",
     "key": "admin_accounts",
     "group": "system",
     "symbol": "people",
@@ -727,7 +727,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "key": "finance",
     "title": "教會財務",
     "note": "M＋奉獻收入、支出記帳與核對",
-    "keys": ["finance_cash", "finance_expenses", "finance_receipts"]
+    "keys": ["finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_payroll"]
   },
   {
     "key": "media",
@@ -1134,4 +1134,5 @@ export function functionHref(key,church){const item=FUNCTION_CATALOG[canonicalFu
 export const LEGACY_FEATURE_FILES=Object.freeze(Object.fromEntries([
   'members','newcomer_care','tree_reading_admin','binding_review','notification_settings','groups','attendance','schedules','prayers','spaces','pastoral_inbox','pastoral_content','website_weekly','website_group_resources'
 ].map(key=>[key,FUNCTION_CATALOG[canonicalFunctionKey(key)].file])));
+
 

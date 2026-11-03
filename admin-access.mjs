@@ -6,7 +6,7 @@ export const TAB_PERMISSIONS = Object.freeze({
   website_weekly: ['pastoral_chats','website_weekly'], website_group_resources: ['pastoral_chats','website_group_resources'], inventory: ['inventory'], heat_camp: ['heat_camp']
 });
 const churches = new Set(['M+', 'SHiNE']);
-const permissions = new Set(['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp']);
+const permissions = new Set(['portal','members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp']);
 
 const cleanLabel = value => String(value || '').trim().replace(/\s+/g, ' ').slice(0, 60);
 export function profileFromUser(user) {
@@ -137,3 +137,4 @@ export function canAction(access,church,feature,action){const granted=access.gra
 export function chooseChurch(access, preference) {
   return access.churches.includes(preference) ? preference : access.churches[0];
 }
+

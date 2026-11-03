@@ -4,7 +4,7 @@ const {FUNCTION_CATALOG,FUNCTION_GROUPS,availableFunctionKeys,favoriteKeys}=awai
 const {canOpen}=await import('../admin-access.mjs?v=20261009-app-audit2');
 const permissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp'];
 const full={grants:permissions.map(permission=>({church_id:'M+',permission})),featurePermissions:[]};
-const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,financeReceiptAccess:true,home_modules:Object.keys(FUNCTION_CATALOG)};
+const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,financeReceiptAccess:true,module_permissions:['school','basketball','pastoral_workspace'],schoolRole:'同工',payrollAccess:true,accountingReportAccess:true,financeExpenseAccess:true};
 assert(!availableFunctionKeys(full,'M+',{}).includes('finance_receipts'));
 assert(availableFunctionKeys(full,'M+',{financeReceiptAccess:true}).includes('finance_receipts'));
 assert(!availableFunctionKeys(full,'SHiNE',{financeReceiptAccess:true}).includes('finance_receipts'));
@@ -17,12 +17,12 @@ assert.equal(FUNCTION_CATALOG.service_quick_match.file,'service-signup-admin.htm
 assert.equal(availableFunctionKeys(full,'SHiNE',home).includes('members'),false);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('school_students'),false);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('pastoral_workflow_survey'),false);
-assert.equal(availableFunctionKeys(full,'M+',{home_modules:['pastoral_workspace']}).includes('pastoral_workflow_survey'),true);
+assert.equal(availableFunctionKeys(full,'M+',{module_permissions:['pastoral_workspace']}).includes('pastoral_workflow_survey'),true);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('admin_accounts'),false);
 assert.equal(availableFunctionKeys(full,'M+',{}).includes('finance_cash'),false);
 assert.equal(availableFunctionKeys(full,'SHiNE',home).includes('finance_cash'),false);
 assert.equal(availableFunctionKeys({...full,featurePermissions:[{church_id:'M+',feature_key:'members',view:false}]},'M+',home).includes('members'),false);
-assert.equal(availableFunctionKeys(full,'M+',home,{feature_modules:[{key:'members',enabled:false}]}).includes('members'),false);
+assert.equal(availableFunctionKeys(full,'M+',home,{feature_modules:[{key:'members',enabled:false}]}).includes('members'),true);
 const shine={...full,grants:permissions.map(permission=>({church_id:'SHiNE',permission}))};
 const shineKeys=availableFunctionKeys(shine,'SHiNE',home);
 assert(shineKeys.includes('members'));assert(!shineKeys.includes('service_signups'));assert(!shineKeys.includes('heat_camp'));assert(!shineKeys.includes('subtitle_library'));
@@ -30,3 +30,4 @@ const saved=favoriteKeys(['members','school_students','members'],[],all);assert.
 assert.equal(favoriteKeys([],['members'],all).length,0);
 const removed=saved.filter(k=>k!=='school_students');assert(all.includes('school_students'));assert(!removed.includes('school_students'));assert(favoriteKeys([...removed,'school_students'],[],all).includes('school_students'));
 console.log(JSON.stringify({checks:21,catalog:all.length,groups:FUNCTION_GROUPS.length,status:'passed'}));
+

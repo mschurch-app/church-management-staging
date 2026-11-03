@@ -4,7 +4,7 @@ import { normalizeOfferingCode } from './finance/bulletin.mjs';
 
 const $ = selector => document.querySelector(selector);
 const categories = ['十一奉獻','感恩奉獻','宣教奉獻','建堂奉獻','慈惠奉獻','兒童主日學奉獻','指定奉獻'];
-const labels = { entry: '同工登錄', cash_verify: '師母對現金', approve: '牧師複審' };
+const labels = { counter:'點收確認',read:'查看',entry: '同工登錄', cash_verify: '師母對現金', approve: '牧師複審' };
 const errors = {
  client_update_required:'此紀錄包含新版奉獻資料，請重新整理頁面後再編輯。',invalid_payment_method:'請確認收款方式。',
   bag_confirmations_required: '請先由一位同工核對並確認每筆奉獻，再儲存。', invalid_bag_confirmation: '逐筆確認資料已變更，請重新讀取。',
@@ -289,7 +289,7 @@ function drawConfirmations(){
     const worker=state.workers.find(worker=>worker.userId===userId);
     input.checked=confirmed||pending;
     const late=clean&&['spouse_review','pastor_review','booked'].includes(b?.status)&&!confirmed;
-    input.disabled=state.busy||state.needsRefresh||!state.roles.has('entry')||userId!==state.userId||!bagsConfirmed||(!editable&&!late);
+    input.disabled=state.busy||state.needsRefresh||!state.roles.has('counter')||userId!==state.userId||!bagsConfirmed||(!(['draft','returned'].includes(b?.status))&&!late);
     const time=confirmed?new Date(b['counter_'+n+'_confirmed_at']).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}):'';
     $('#confirm-counter-'+key+'-label').textContent='點收同工 '+n+'：'+(worker?.name||'尚未選擇')+(confirmed?' · 已確認 '+time:pending?' · 已勾選，請儲存草稿':' · 我已核對整批明細與總額（本人勾選）');
   }
@@ -547,3 +547,6 @@ await work(async () => {
 
 $('#recover-finance').addEventListener('click',()=>void work(async()=>{if(!state.batch)return;await openBatch(state.batch.id);status('已重新讀取已儲存紀錄。','success');}));
 window.addEventListener('beforeunload',event=>{if($('#cash-form').dataset.unsavedChanges==='true'){event.preventDefault();event.returnValue='';}});
+
+$('#roles-tab').onclick=()=>{if(canLeaveEditor())location.assign('finance-permissions.html');};
+

@@ -1,6 +1,8 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
+  "finance_permission_settings":{"file":"finance-permissions.html","title":"財務人員權限","description":"分別設定奉獻、金錢收據、物品收據與會計權限","key":"finance_permission_settings","group":"finance","church":"M+","owner":true,"symbol":"mplus-box","configurableHome":false},
+  "finance_accounting_reports":{"file":"finance-permissions.html#reports","title":"會計報表","description":"查閱與匯出已核准財務資料","key":"finance_accounting_reports","group":"finance","church":"M+","accountingReportAccess":true,"symbol":"mplus-box","configurableHome":false},
   "school_payroll": {"file":"school-payroll.html?month=current","title":"課輔薪資結算","description":"時薪設定、月底結算、簽到表與逐級審核","key":"school_payroll","group":"finance","church":"M+","symbol":"mplus-box","configurableHome":false,"payrollAccess":true,"searchTerms":["老師薪資","工讀生薪水","每月簽到表","結算審核"]},
 
   "testimony_review": {

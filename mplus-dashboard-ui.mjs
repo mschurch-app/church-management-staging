@@ -1,12 +1,12 @@
-import {mountWorkProfile} from './work-profile.mjs?v=20261103-payroll1';
-import {db} from './admin-db.mjs?v=20261103-payroll1';
-import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261103-payroll1';
-import {loadChurchCustomizations} from './church-customizations.mjs?v=20261103-payroll1';
-import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261103-payroll1';
-import {loadNotificationCenter} from './app-notifications.mjs?v=20261103-payroll1';
-import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261103-payroll1';
-import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261103-payroll1';
-import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261103-payroll1';
+import {mountWorkProfile} from './work-profile.mjs?v=20261103-financepermissions1';
+import {db} from './admin-db.mjs?v=20261103-financepermissions1';
+import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261103-financepermissions1';
+import {loadChurchCustomizations} from './church-customizations.mjs?v=20261103-financepermissions1';
+import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261103-financepermissions1';
+import {loadNotificationCenter} from './app-notifications.mjs?v=20261103-financepermissions1';
+import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261103-financepermissions1';
+import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261103-financepermissions1';
+import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261103-financepermissions1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
@@ -22,11 +22,11 @@ async function financeAccess(){
 function wireSearch(allowed){const centers=visibleCenters(new Set(allowed)),items=Object.values(centers).flatMap(c=>c.cards.flatMap(([,links])=>links)),seen=new Set();for(const key of allowed){if(key!=='pastoral_workspace'&&!items.some(([,k])=>k===key))items.push([FUNCTION_CATALOG[key].title,key]);}$('#function-search').oninput=()=>{const term=$('#function-search').value.trim().toLocaleLowerCase('zh-TW'),area=$('#function-search-results');area.replaceChildren();area.hidden=!term;if(!term)return;seen.clear();for(const [label,key,file]of items){const href=hrefFor(key,file),id=label+href;if(seen.has(id)||!label.toLocaleLowerCase('zh-TW').includes(term))continue;seen.add(id);const a=make('a',label+' ›');a.href=href;if(key.startsWith('school'))a.onclick=e=>openSchool(e,href);area.append(a);}if(!area.children.length)area.append(make('p','找不到符合的可用功能。','muted'));};}
 async function load(){try{
  const {access,church:selected}=await dashboardAccess(db,preferred);if(selected!=='M+')throw Error('此入口僅適用 M+，請返回所屬堂會。');church=selected;
- const [settings,home,monitor,capabilities,canUseFinance,canUseExpenses,canUseReceipts,canUsePayroll]=await Promise.all([
+ const [settings,home,monitor,capabilities,canUseFinance,canUseExpenses,canUseReceipts,canUsePayroll,reportProfile]=await Promise.all([
   loadChurchCustomizations(db,church),dashboardHomePreferences(db,church),
-  db.rpc('get_my_system_monitor_access'),db.rpc('get_my_app_capabilities'),financeAccess(),financeExpenseAccess(),financeReceiptAccess(),db.rpc('school_payroll_dashboard_access')
+  db.rpc('get_my_system_monitor_access'),db.rpc('get_my_app_capabilities'),financeAccess(),financeExpenseAccess(),financeReceiptAccess(),db.rpc('school_payroll_dashboard_access'),db.functions.invoke('finance-permissions',{body:{action:'profile'}})
  ]);
- home.system_monitor_access=!monitor.error&&monitor.data===true;home.is_owner=capabilities.data?.is_owner===true;home.payrollAccess=!canUsePayroll.error&&canUsePayroll.data===true;home.financeReceiptAccess=canUseReceipts;home.financeCashAccess=canUseFinance;home.financeExpenseAccess=canUseExpenses;
+ home.system_monitor_access=!monitor.error&&monitor.data===true;home.is_owner=capabilities.data?.is_owner===true;home.accountingReportAccess=!reportProfile.error&&reportProfile.data?.canReport===true;home.payrollAccess=!canUsePayroll.error&&canUsePayroll.data===true;home.financeReceiptAccess=canUseReceipts;home.financeCashAccess=canUseFinance;home.financeExpenseAccess=canUseExpenses;
  const allowed=availableFunctionKeys(access,church,home,settings);$('#welcome').textContent=access.user.name+'｜'+access.user.title;
  if(church==='M+'){mountMplusNavigation({allowed,hrefFor,openSchool});mountWeekCalendar({allowed:allowed.includes('pastoral_workspace'),autoPromptRoutineSetup:access.user.title!=='師母'});}
  void mountWorkProfile({db,allowed,openSchool});

@@ -948,8 +948,8 @@
     // 1. 排班管理與動態互動排班
     // =============================================================
     function scheduleAccessRole() { return currentUser?.role_type || ''; }
-    function canManageSchedules() { return ['同工', '老師'].includes(scheduleAccessRole()); }
-    function canDeleteSchedules() { return scheduleAccessRole() === '同工'; }
+    function canManageSchedules() { return scheduleAccessRole() === '同工' && ['2026M0004', '2026M0003'].includes(currentUser?.id); }
+    function canDeleteSchedules() { return canManageSchedules(); }
     function setScheduleStatus(message = '') {
       const status = document.getElementById('schedule-status');
       if (!status) return;
@@ -1183,7 +1183,7 @@
       finally { scheduleSaving = false; }
     }
     async function deleteSchedule(scheduleId) {
-      if (!canDeleteSchedules()) { schoolNotice('只有同工可以刪除排班。'); return; }
+      if (!canDeleteSchedules()) { schoolNotice('排班僅開放鈺庭、恩茹管理，其他帳號可查看。'); return; }
       if (scheduleSaving) return;
       try {
         scheduleSaving = true;

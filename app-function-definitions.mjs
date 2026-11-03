@@ -1,6 +1,8 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
+  "school_payroll": {"file":"school-payroll.html?month=current","title":"課輔薪資結算","description":"時薪設定、月底結算、簽到表與逐級審核","key":"school_payroll","group":"finance","church":"M+","symbol":"mplus-box","configurableHome":false,"payrollAccess":true,"searchTerms":["老師薪資","工讀生薪水","每月簽到表","結算審核"]},
+
   "testimony_review": {
     "permission":"website_weekly","file":"testimony-admin.html","church":"M+",
     "icon":"☁","title":"雲彩見證","description":"文字、影片與照片投稿審核",
@@ -1130,3 +1132,4 @@ export function functionHref(key,church){const item=FUNCTION_CATALOG[canonicalFu
 export const LEGACY_FEATURE_FILES=Object.freeze(Object.fromEntries([
   'members','newcomer_care','tree_reading_admin','binding_review','notification_settings','groups','attendance','schedules','prayers','spaces','pastoral_inbox','pastoral_content','website_weekly','website_group_resources'
 ].map(key=>[key,FUNCTION_CATALOG[canonicalFunctionKey(key)].file])));
+

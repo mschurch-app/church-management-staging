@@ -191,6 +191,7 @@
   <link rel="icon" href="school-mark.svg" type="image/svg+xml">
   <script defer src="school-icons.js?v=20261009-stage3"></script>
   <script defer src="school-staff-people.js?v=20261026-staff1"></script>
+  <script defer src="school-payroll.js?v=20261103-payroll1"></script>
   <script defer src="church-os-ui.js?v=20261026-staff1"></script>
 </head>
 <body class="school-app min-h-screen flex flex-col antialiased">
@@ -296,7 +297,7 @@
       <section class="os-workspace" data-os-workspace="schedules"><div class="os-workspace-intro"><h2 class="sr-only"> 教職員排班行事曆</h2><p>查看月曆或清單；需要固定時段時，可一次安排多週。</p></div><div class="os-toolbar"><div class="os-filters"><div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
               <button onclick="setScheduleView('calendar')" id="btn-view-cal" class="px-3 py-1.5 rounded-lg bg-white text-indigo-600 font-bold shadow-xs"><i class="fa-solid fa-calendar mr-1"></i>月曆</button>
               <button onclick="setScheduleView('list')" id="btn-view-list" class="px-3 py-1.5 rounded-lg text-slate-600 font-bold"><i class="fa-solid fa-list-ul mr-1"></i>清單</button>
-            </div><label class="os-field"><span>查看同工</span><select id="schedule-worker-filter" onchange="renderActiveScheduleView()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"></select></label></div><div class="os-actions"><button type="button" id="btn-school-staff-people" hidden onclick="openSchoolStaffPeople()" class="school-secondary">老師與工讀生管理</button><button id="btn-batch-schedule" onclick="openBatchScheduleModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-calendar-plus"></i><span>安排多週班表</span></button><button id="btn-add-schedule" onclick="openScheduleModal('add')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-plus"></i><span>單日排班</span></button></div></div><section class="os-metrics" aria-label="資料摘要"><div class="os-metric"><span class="text-[11px] font-bold text-indigo-600 block">本月總班次</span><span class="text-lg sm:text-xl font-black text-indigo-950 mt-0.5 block" id="total-count-badge">0 班</span></div><div class="os-metric"><span class="text-[11px] font-bold text-blue-600 block">排定總工時</span><span class="text-lg sm:text-xl font-black text-blue-950 mt-0.5 block" id="total-shift-badge">0 小時</span></div><div class="os-metric"><span class="text-[11px] font-bold text-emerald-600 block">出勤同工</span><span class="text-lg sm:text-xl font-black text-emerald-950 mt-0.5 block" id="total-workers-badge">0 人</span></div><div class="os-metric"><span class="text-[11px] font-bold text-amber-600 block">預估薪資支出</span><span class="text-lg sm:text-xl font-black text-amber-950 mt-0.5 block" id="total-wage-badge">$0</span></div></section><div id="schedule-calendar-view" class="space-y-2.5">
+            </div><label class="os-field"><span>查看同工</span><select id="schedule-worker-filter" onchange="renderActiveScheduleView()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"></select></label></div><div class="os-actions"><button type="button" hidden data-school-payroll-open class="school-secondary">薪資結算與審核</button><button type="button" id="btn-school-staff-people" hidden onclick="openSchoolStaffPeople()" class="school-secondary">老師與工讀生管理</button><button id="btn-batch-schedule" onclick="openBatchScheduleModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-calendar-plus"></i><span>安排多週班表</span></button><button id="btn-add-schedule" onclick="openScheduleModal('add')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 shadow-sm transition active:scale-95"><i class="fa-solid fa-plus"></i><span>單日排班</span></button></div></div><section class="os-metrics" aria-label="資料摘要"><div class="os-metric"><span class="text-[11px] font-bold text-indigo-600 block">本月總班次</span><span class="text-lg sm:text-xl font-black text-indigo-950 mt-0.5 block" id="total-count-badge">0 班</span></div><div class="os-metric"><span class="text-[11px] font-bold text-blue-600 block">排定總工時</span><span class="text-lg sm:text-xl font-black text-blue-950 mt-0.5 block" id="total-shift-badge">0 小時</span></div><div class="os-metric"><span class="text-[11px] font-bold text-emerald-600 block">出勤同工</span><span class="text-lg sm:text-xl font-black text-emerald-950 mt-0.5 block" id="total-workers-badge">0 人</span></div><div class="os-metric"><span class="text-[11px] font-bold text-amber-600 block">預估薪資支出</span><span class="text-lg sm:text-xl font-black text-amber-950 mt-0.5 block" id="total-wage-badge">$0</span></div></section><div id="schedule-calendar-view" class="space-y-2.5">
           <div class="flex justify-between items-center bg-slate-50 px-3.5 py-2 rounded-2xl border border-slate-200">
             <div class="flex items-center space-x-2">
               <button aria-label="上一個月" onclick="prevMonth()" class="w-7 h-7 flex items-center justify-center bg-white rounded-lg border border-slate-200 hover:bg-slate-100 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
@@ -959,6 +960,7 @@
     function openSchoolStaffPeople() { window.SchoolStaffPeople?.open(); }
     function updateScheduleActionUI() {
       window.SchoolStaffPeople?.sync();
+      window.SchoolPayroll?.sync();
       const canManage = canManageSchedules();
       document.getElementById('btn-batch-schedule')?.classList.toggle('hidden', !canManage);
       document.getElementById('btn-add-schedule')?.classList.toggle('hidden', !canManage);
@@ -972,7 +974,7 @@
     async function loadScheduleStaffOptions() {
       const { data, error } = await db.from('users').select('id,name,role_type,status').order('id');
       if (error) throw error;
-      staffList = (data || []).filter(u => ['同工', '老師', '工讀生'].includes(u.role_type) && (!u.status || ['在班','在職'].includes(u.status)));
+      staffList = (data || []).filter(u => ['老師', '工讀生'].includes(u.role_type) && (!u.status || ['在班','在職'].includes(u.status)));
       populateScheduleStaffOptions();
       return staffList;
     }
@@ -1029,7 +1031,7 @@
       const end = document.getElementById('batch-end-time').value;
       const [sH, sM] = start.split(':').map(Number); const [eH, eM] = end.split(':').map(Number);
       let diff = (eH * 60 + eM) - (sH * 60 + sM); if (diff < 0) diff += 1440;
-      const hours = Math.round((diff / 60) * 10) / 10;
+      const hours = Math.round((diff / 60) * 10000) / 10000;
       const payload = activeBatchDates.map(i => ({ date: i.date, worker_id: workerId, worker_name: workerName, shift: `${start} - ${end}`, hours: hours, job_desc: document.getElementById('batch-job').value.trim() }));
       try {
         if (scheduleSaving) return; scheduleSaving = true;
@@ -1066,7 +1068,7 @@
       if (!s || !e) return;
       const [sH, sM] = s.split(':').map(Number), [eH, eM] = e.split(':').map(Number);
       let diff = (eH * 60 + eM) - (sH * 60 + sM); if (diff < 0) diff += 1440;
-      const hrs = Math.round((diff / 60) * 10) / 10;
+      const hrs = Math.round((diff / 60) * 10000) / 10000;
       document.getElementById('sch-hours-val').value = hrs; document.getElementById('sch-hours-display').textContent = `${hrs} 小時`;
     }
     function onWorkerSelectChange() { autoCalcHours(); }
@@ -2983,6 +2985,7 @@
       finally { button.disabled = false; button.textContent = '儲存權限'; }
     }
     function updateAuthUI() {
+      window.SchoolPayroll?.sync();
       window.SchoolUI?.sync(currentUser);
       document.getElementById('roster-add-button')?.classList.toggle('hidden', !['同工','老師'].includes(currentUser?.role_type));
       document.getElementById('roster-print-button')?.classList.toggle('hidden', currentUser?.role_type !== '同工');
@@ -3003,6 +3006,7 @@
     }
 
     window.schoolInterface = {
+      payroll: {allowed: () => currentUser?.role_type === '同工' && ['2026M0001','2026M0002','2026M0003','2026M0004'].includes(currentUser?.id), request: callMschoolApi, login: openLoginModal, user:()=>currentUser, photo:async(id,month)=>{const response=await nativeFetch(MSCHOOL_API_URL+'/payroll/photo-view?month='+encodeURIComponent(month)+'&photo_id='+encodeURIComponent(id),{headers:{'x-mschool-session':mschoolSessionToken||''},cache:'no-store',signal:AbortSignal.timeout(60000)});if(!response.ok)throw new Error('簽到表照片暫時無法讀取，請重新載入。');return response.blob();}},
       staffPeople: {allowed: () => currentUser?.role_type === '同工', request: callMschoolApi, refresh: async () => { await loadScheduleStaffOptions(); await loadSchedules(); }},
       state: () => ({user: currentUser, rollCallDate: rollCallLoadedDate, busy: userSaving || scheduleSaving || rollCallSaving || csvImportBusy || kioskDeviceBusy || Boolean(window.SchoolStaffPeople?.busy)}),
       reloadRollCall: async (day) => { document.getElementById('rollcall-date-picker').value=day; return loadRollCallsForDate(); },
@@ -3025,3 +3029,4 @@
   </script>
 </body>
 </html>
+

@@ -1,10 +1,10 @@
-import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20261022-experience5';
-import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
-import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs?v=20261023-settings1';
-import {loadChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
-import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261102-bibletree-admin1';
-import {createSettingsEntry,element} from './app-ui.mjs?v=20261102-bibletree-admin1';
-import {settingsWorkflow} from './settings-workflow.mjs?v=20261023-settings1';
+import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20261103-unifiedpermissions1';
+import {db} from './admin-db.mjs?v=20261103-unifiedpermissions1';
+import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs?v=20261103-unifiedpermissions1';
+import {loadChurchCustomizations} from './church-customizations.mjs?v=20261103-unifiedpermissions1';
+import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261103-unifiedpermissions1';
+import {createSettingsEntry,element} from './app-ui.mjs?v=20261103-unifiedpermissions1';
+import {settingsWorkflow} from './settings-workflow.mjs?v=20261103-unifiedpermissions1';
 const $=s=>document.querySelector(s),params=new URLSearchParams(location.search);
 let church=params.get('church')||'M+',current=null,canEdit=false;
 const publicInfoPanel=$('#church-public-info'),info=s=>publicInfoPanel.querySelector(s),fields={brand_color:'#brand-color',logo_url:'#logo-url',service_info:'#service-info',address:'#address',map_url:'#map-url'};
@@ -38,3 +38,4 @@ info('#form').onsubmit=event=>{event.preventDefault();if(!current||!canEdit)retu
 info('#color-picker').oninput=()=>info('#brand-color').value=info('#color-picker').value.toUpperCase();
 info('#brand-color').oninput=()=>{if(/^#[0-9A-Fa-f]{6}$/.test(info('#brand-color').value))info('#color-picker').value=info('#brand-color').value;};
 info('#reload').onclick=load;$('#hub-reload').onclick=load;$('#settings-search').addEventListener('input',filterSettings);void load();
+

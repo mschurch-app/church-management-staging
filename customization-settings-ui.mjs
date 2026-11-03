@@ -1,9 +1,9 @@
-import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
-import {loadChurchCustomizations,saveChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
+import {db} from './admin-db.mjs?v=20261103-unifiedpermissions1';
+import {loadChurchCustomizations,saveChurchCustomizations} from './church-customizations.mjs?v=20261103-unifiedpermissions1';
 import {getOptions,GROUPS} from './welcome-options.mjs';
-import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20261023-settings1';
+import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20261103-unifiedpermissions1';
 
-import {settingsWorkflow,accessibleSorter} from './settings-workflow.mjs?v=20261023-settings1';
+import {settingsWorkflow,accessibleSorter} from './settings-workflow.mjs?v=20261103-unifiedpermissions1';
 const church=new URLSearchParams(location.search).get('church'),$=selector=>document.querySelector(selector);
 const catalogTitles={growth_progress:'會友聚會狀況',faith_status:'信仰階段',group_types:'小組／小家類型',meeting_types:'聚會類型',prayer_categories:'代禱分類',prayer_statuses:'關懷狀態',newcomer_stages:'新朋友跟進階段',notification_rules:'通知項目'};
 let current,draft,welcomeOptions,welcomeVersion,ministries=[],ministryAvailable=false;
@@ -28,8 +28,7 @@ function renderFeatures(){
   const icon=textInput(base.icon,'功能圖示',value=>{for(const target of ['M+','SHiNE']){const item=featureItem(target,key);if(item)item.icon=value;}},'icon-field','features');
   const name=textInput(base.label,'功能名稱',value=>{for(const target of ['M+','SHiNE']){const item=featureItem(target,key);if(item)item.label=value;}},'','features');
   const identity=el('div','','feature-identity');identity.append(icon,name);
-  const churchControls=target=>{const item=featureItem(target,key),group=el('fieldset','','feature-church-controls');group.append(el('legend',target==='M+'?'M+':'火樂'));if(!item){group.append(el('span','此帳號無法管理','muted'));return group;}group.append(toggle('開放',item.enabled,value=>{item.enabled=value;if(!value){item.dashboard=false;item.navigation=false;}renderFeatures();},'features'),toggle('首頁',item.dashboard,value=>{item.dashboard=value;if(value)item.enabled=true;renderFeatures();},'features'),toggle('功能列',item.navigation,value=>{item.navigation=value;if(value)item.enabled=true;renderFeatures();},'features'));return group;};
-  row.append(handle(),identity,churchControls('M+'),churchControls('SHiNE'));area.append(row);
+  row.append(handle(),identity,el('p','依同工權限自動開放','muted'));area.append(row);
  }
  accessibleSorter(area,keys=>{for(const state of featureStates.values()){const map=new Map(state.draft.feature_modules.map(item=>[item.key,item]));state.draft.feature_modules=[...keys,...map.keys()].filter((key,index,all)=>all.indexOf(key)===index).map(key=>map.get(key)).filter(Boolean);}mark('features');});
 }
@@ -70,8 +69,9 @@ $('#save').onclick=()=>{if(!dirty.size)return;void flow.write($('.customization-
  if(dirty.has('welcome')){await saveWelcome();if(!active())return;dirty.delete('welcome');completed++;}
  if(dirty.has('ministry')){const saved=await saveMinistryOptions(db,church,ministries);if(!active())return;ministries=saved;dirty.delete('ministry');completed++;}
  }catch(error){if(completed||featureSaved.size)error.message='部分設定已儲存；其餘修改仍保留。'+error.message;throw error;}
-},'已儲存全部修改。兩個堂會會依各自設定顯示。',()=>render());};
+},'名稱、順序及表單設定已儲存。功能依同工權限自動開放。',()=>render());};
 $('#reload').onclick=load;$('#add-ministry').onclick=()=>{if(flow.busy||!flow.ready||!ministryAvailable)return;ministries.push('新服事恩賜');mark('ministry');renderMinistries();requestAnimationFrame(()=>$('#ministry-option-list').lastElementChild?.querySelector('input')?.focus());};
 document.querySelectorAll('.custom-tabs button').forEach(button=>button.onclick=()=>{document.querySelectorAll('.custom-tabs button').forEach(item=>{item.classList.toggle('active',item===button);item.setAttribute('aria-pressed',String(item===button));});document.querySelectorAll('.custom-panel').forEach(panel=>panel.hidden=panel.id!==button.dataset.tab);});
 const requestedTab=new URLSearchParams(location.search).get('tab'),initialTab=document.querySelector('.custom-tabs button[data-tab=\"'+requestedTab+'\"]');if(initialTab)initialTab.click();
-$('#title').textContent=(church==='M+'?'M＋大雅教會':'火樂教會')+' · 功能與表單呈現';$('#back').href='church-settings.html?church='+encodeURIComponent(church||'');$('#preview-form').href='newcomer.html?church='+encodeURIComponent(church||'');load();
+$('#title').textContent=(church==='M+'?'M＋大雅教會':'火樂教會')+' · 名稱與表單設定';$('#back').href='church-settings.html?church='+encodeURIComponent(church||'');$('#preview-form').href='newcomer.html?church='+encodeURIComponent(church||'');load();
+

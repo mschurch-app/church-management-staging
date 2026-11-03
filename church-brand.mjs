@@ -1,8 +1,8 @@
-import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261102-bibletree-admin1';
-import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261102-bibletree-admin1';
-import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261022-experience5';
+import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261103-unifiedpermissions1';
+import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
+import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261103-unifiedpermissions1';
 import './action-feedback.mjs?v=20261022-experience1';
-import './ios-experience.mjs?v=20261102-bibletree-admin1';
+import './ios-experience.mjs?v=20261103-unifiedpermissions1';
 const validChurches=new Set(['M+','SHiNE']);
 const requested=new URLSearchParams(location.search).get('church');
 const church=validChurches.has(requested)?requested:null;
@@ -70,9 +70,9 @@ function mountModuleBar(access,selected,settings){
   const nav=document.createElement('nav');nav.className='module-bar module-bar--contextual';nav.setAttribute('aria-label','目前功能相關操作');
   const defaults=modules.slice(1,-1).map((module,index)=>({...module,enabled:true,navigation:true,navigation_order:(index+1)*10}));
   const configuredItems=Array.isArray(settings?.feature_modules)?settings.feature_modules:defaults;
-  const configured=new Map(configuredItems.filter(item=>item.enabled&&item.navigation).map(item=>[item.key,item]));
+  const configured=new Map(configuredItems.map(item=>[item.key,item]));
   const current=modules.find(moduleIsCurrent),related=contextualModules[current?.key]||[current?.key].filter(Boolean);
-  const visible=[modules[0],...related.map(key=>modules.find(module=>module.key===key)).filter(Boolean).filter(module=>module===current||module.key==='settings'||configuredItems.find(item=>item.key===module.key)?.enabled!==false)];
+  const visible=[modules[0],...related.map(key=>modules.find(module=>module.key===key)).filter(Boolean)];
   for(const module of visible.filter(item=>allowed(access,selected,item))){const setting=configured.get(module.key),link=document.createElement('a'),icon=document.createElement('span'),label=document.createElement('span');link.href=moduleUrl(module.file,selected);link.className=moduleIsCurrent(module)?'current':'';link.dataset.iosIcon=module.key;icon.className='module-bar-icon';icon.textContent=setting?.icon||module.icon;icon.setAttribute('aria-hidden','true');label.textContent=friendlyLabel(setting?.label||module.label);link.append(icon,label);nav.append(link);}
   anchor.after(nav);
 }
@@ -94,7 +94,7 @@ async function mountManagement(){
   const managementRoot=document.querySelector('.member-page,.ministry-app');if(!managementRoot)return;
   try{
     const localPreview=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('preview')==='1';
-    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261102-bibletree-admin1'),import('./admin-access.mjs?v=20261022-experience5'),import('./church-customizations.mjs?v=20261102-bibletree-admin1')]);
+    const [{db},{readAccess,chooseChurch},{loadChurchCustomizations}]=await Promise.all([import('./admin-db.mjs?v=20261103-unifiedpermissions1'),import('./admin-access.mjs?v=20261103-unifiedpermissions1'),import('./church-customizations.mjs?v=20261103-unifiedpermissions1')]);
     const allPermissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces'];
     const access=localPreview?{user:{name:'吳俊璋',title:'牧師'},churches:['M+','SHiNE'],grants:['M+','SHiNE'].flatMap(church_id=>allPermissions.map(permission=>({church_id,permission})))}:await readAccess(db),selected=chooseChurch(access,church);
     const settings=localPreview?null:await loadChurchCustomizations(db,selected);document.documentElement.dataset.church=selected;window.applyMplusTheme?.(selected);updateManagementBrand(managementRoot,selected);
@@ -105,3 +105,4 @@ async function mountManagement(){
   }catch{}
 }
 mountManagement();
+

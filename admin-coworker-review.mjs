@@ -1,5 +1,6 @@
+import {createPermissionControls} from './account-permission-controls.mjs?v=20261103-unifiedpermissions1';
 import {applicationRPC} from './coworker-application-api.mjs?v=20261022-coworker-review1';
-import {PERMISSION_LABELS,ROLE_TEMPLATES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261102-bibletree-admin1';
+import {PERMISSION_LABELS,ROLE_TEMPLATES,HOME_TEMPLATES,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
 const el=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 const labeled=(text,input)=>{const n=el('label',text);n.append(input);return n;};
 const churchName=key=>key==='M+'?'M＋大雅教會':'火樂教會';
@@ -19,29 +20,11 @@ export async function mountCoworkerApplications(db,area,{accounts=[],application
    el('p',row.applicant_note||'無補充說明','muted'));
   const form=el('form','','application-review-form'),decision=el('select'),note=el('textarea'),newArea=el('section'),linkArea=el('section');
   decision.required=true;for(const [key,label] of [['','請選擇審核方式'],['approve','建立新同工並指定權限'],['link','確認為既有同工，連結原有權限'],['reject','退回補充資料']])decision.append(new Option(label,key));
-  const name=el('input'),title=el('input'),role=el('select'),permissionArea=el('div');name.value=row.full_name;name.maxLength=title.maxLength=60;title.value='同工';
-  for(const [key,template] of Object.entries(ROLE_TEMPLATES))role.append(new Option(template.label,key));role.value='custom';
-  const permissions=[],roleHelp=el('p','選擇角色可帶入建議功能；增減功能後會自動改為自訂權限，只儲存目前勾選的功能。','muted');
-  role.dataset.applicationRole='';roleHelp.id='application-role-help-'+row.user_id;roleHelp.setAttribute('aria-live','polite');role.setAttribute('aria-describedby',roleHelp.id);
-  const reconcileRole=()=>{
-   const expected=new Set(ROLE_TEMPLATES[role.value]?.permissions||[]),chosen=permissions.filter(p=>p.enabled.checked);
-   if(role.value!=='custom'&&(chosen.length!==expected.size||chosen.some(p=>!expected.has(p.key)))){
-    role.value='custom';roleHelp.textContent='已調整功能，角色已改為「自訂權限」；目前勾選的功能與操作均保留。';
-   }
-  };
-  for(const [key,label] of Object.entries(PERMISSION_LABELS)){
-   const group=el('section','','application-permission'),enabled=el('input');enabled.type='checkbox';enabled.dataset.applicationPermission=key;
-   group.append(labeled(label,enabled));const operationDetails=el('details','','application-operation-details'),operationSummary=el('summary','操作權限 · 查看'),actions=el('div','','application-operation-grid'),boxes={};operationDetails.hidden=true;operationDetails.append(operationSummary,actions);
-   for(const [action,label] of Object.entries(FEATURE_ACTIONS)){const box=el('input');box.type='checkbox';box.checked=action==='view';box.disabled=true;box.dataset.applicationAction=key+':'+action;boxes[action]=box;box.onchange=()=>{operationSummary.textContent='操作權限 · '+(Object.entries(boxes).filter(([,b])=>b.checked).map(([key])=>FEATURE_ACTIONS[key]).join('、')||'尚未選擇');};actions.append(labeled(label,box));}
-   const sync=()=>{for(const box of Object.values(boxes))box.disabled=!enabled.checked;operationDetails.hidden=!enabled.checked;if(!enabled.checked)operationDetails.open=false;};enabled.onchange=()=>{sync();reconcileRole();};
-   permissions.push({key,enabled,boxes,sync});group.append(operationDetails);permissionArea.append(group);
-  }
-  role.onchange=()=>{
-   if(role.value==='custom'){roleHelp.textContent='已選擇自訂權限；目前勾選的功能與操作均保留。';return;}
-   const allowed=new Set(ROLE_TEMPLATES[role.value]?.permissions||[]);for(const p of permissions){p.enabled.checked=allowed.has(p.key);p.sync();}
-   roleHelp.textContent='已套用角色建議；增減功能會自動改為自訂權限。請逐項確認需要的操作權限。';
-  };
-  const profileGrid=el('div','','edit-grid');profileGrid.append(labeled('核准使用姓名',name),labeled('職稱',title));newArea.append(el('h3','2 · 基本資料'),profileGrid,labeled('角色範本',role),roleHelp,el('h3','3 · 可使用的功能'),el('p','預設未勾選任何功能；操作預設只查看，請逐項確認需要新增、修改或審核的權限。','muted'),permissionArea);
+  const name=el('input'),title=el('input');name.value=row.full_name;name.maxLength=title.maxLength=60;title.value='同工';
+  const controls=createPermissionControls({grants:[],feature_permissions:[],home_preferences:[{church_id:row.church_id,home_modules:[]}]},()=>row.church_id,[]);
+  // A new LINE applicant has no canonical active finance identity yet. Finance is configured immediately after approval in the same coworker settings page.
+  [...controls.section.querySelectorAll('.permission-group')].find(g=>g.querySelector('legend')?.textContent==='財務')?.remove();
+  const profileGrid=el('div','','edit-grid');profileGrid.append(labeled('核准使用姓名',name),labeled('職稱',title));newArea.append(el('h3','2 · 基本資料'),profileGrid,el('h3','3 · 勾選權限'),el('p','預設不開放任何功能。勾選查看與所需操作；核准後可在同工設定中勾選財務權限。','muted'),controls.section);
   const existing=el('select');existing.append(new Option('請選擇確認為同一人的既有同工',''));
   for(const account of accounts.filter(a=>a.is_active&&a.user_id!==row.user_id&&(a.is_owner||a.grants?.some(g=>g.church_id===row.church_id))))existing.append(new Option((account.display_name||account.email||'未命名同工')+'｜'+(account.job_title||'同工'),account.user_id));
   const confirmed=el('input');confirmed.type='checkbox';linkArea.append(labeled('既有同工',existing),labeled('我已核對，這個 LINE 與所選同工是同一人',confirmed));
@@ -53,14 +36,11 @@ export async function mountCoworkerApplications(db,area,{accounts=[],application
    event.preventDefault();if(submit.disabled||!form.reportValidity())return;
    let input=null;
    if(decision.value==='approve'){
-    reconcileRole();
-    const chosen=permissions.filter(p=>p.enabled.checked);
-    if(!chosen.length){feedback.dataset.tone='error';feedback.textContent='至少選擇一項功能權限後，才能核准新同工。';return;}
-    if(chosen.some(p=>!p.boxes.view.checked)){feedback.dataset.tone='error';feedback.textContent='已選功能需具備查看權限，請逐項確認。';return;}
+    const chosen=controls.features();
+    if(!chosen.length&&!controls.moduleValues().length){feedback.dataset.tone='error';feedback.textContent='至少勾選一項功能權限後，才能核准同工。';return;}
     input={display_name:name.value.trim(),job_title:title.value.trim(),active:true,
-     grants:chosen.map(p=>({church_id:row.church_id,permission:p.key})),roles:[{church_id:row.church_id,role_key:role.value}],
-     features:chosen.map(p=>({feature_key:p.key,...Object.fromEntries(Object.entries(p.boxes).map(([action,box])=>[action,box.checked]))})),
-     home_modules:HOME_TEMPLATES[role.value]||[],notification_topics:[],ministries:[]};
+     grants:chosen.length?chosen.map(p=>({church_id:row.church_id,permission:p.feature_key})):[{church_id:row.church_id,permission:'portal'}],roles:[{church_id:row.church_id,role_key:'custom'}],
+     features:chosen,home_modules:controls.homeValues(),notification_topics:[],ministries:[]};
    }
    submit.disabled=true;submit.setAttribute('aria-busy','true');delete feedback.dataset.tone;feedback.textContent='正在儲存審核結果，請稍候…';
    try{
@@ -74,3 +54,4 @@ export async function mountCoworkerApplications(db,area,{accounts=[],application
   details.append(summary,form);card.append(details);area.append(card);
  }
 }
+

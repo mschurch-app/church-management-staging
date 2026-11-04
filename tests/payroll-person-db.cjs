@@ -1,0 +1,53 @@
+const fs=require('fs'),assert=require('assert/strict');
+const {PGlite}=require(process.env.PAYROLL_PGLITE_PATH||(fs.existsSync('/Volumes/MPLUS-DATA/mplus-ai/tools/payroll-sql-tests/node_modules/@electric-sql/pglite')?'/Volumes/MPLUS-DATA/mplus-ai/tools/payroll-sql-tests/node_modules/@electric-sql/pglite':'./payroll-sql/node_modules/@electric-sql/pglite'));
+const root=require('path').resolve(__dirname,'fixtures'),out=root;
+(async()=>{const db=new PGlite();await db.exec(fs.readFileSync(out+'/payroll-sql-fixture.sql','utf8'));
+const defs=JSON.parse(fs.readFileSync(root+'/payroll-live-definitions.json','utf8')),extra=JSON.parse(fs.readFileSync(root+'/payroll-extra-definitions.json','utf8'));
+for(const f of extra)await db.exec(f.definition);
+for(const f of defs)await db.exec(f.definition);
+await db.exec('create trigger payroll_schedule_guard before insert or update or delete on mschool.schedules for each row execute function mschool.payroll_schedule_guard()');
+await db.exec(fs.readFileSync(out+'/payroll-person-core.sql','utf8'));
+const q=async(sql,args=[])=>{const r=await db.query(sql,args);return r.rows[0];};
+const rpc=async(name,args)=>{const params=args.map((_,i)=>'$'+(i+1)).join(',');return (await q('select public.'+name+'('+params+') as value',args)).value;};
+const get=actor=>rpc('school_payroll_action',[actor,'get','2026-11-01']);
+const revision=async actor=>(await get(actor)).batch.revision;
+const action=async(actor,act,payload={})=>rpc('school_payroll_action',[actor,act,'2026-11-01',await revision(actor),payload]);
+const expectFail=async(fn,error)=>{try{await fn();}catch(e){if(e.message.includes(error))return;console.error({expected:error,actual:e.message,where:e.where});throw e;}throw Error('Expected failure did not occur: '+error);};
+let state=await get('2026M0004');assert.equal(state.snapshot.workers.length,3);assert.equal(state.snapshot.total_hours,8);assert.equal(state.snapshot.total_amount,1600);assert.equal(state.snapshot.workers.find(w=>w.worker_id==='2026T9001').role_type,'老師');assert.deepEqual(state.snapshot.workers.find(w=>w.worker_id==='2026T9001').required_uploaders.sort(),['2026M0003','2026M0004']);assert.equal(state.banks.length,0);
+await expectFail(async()=>get('outsider'),'school_access_denied');await expectFail(async()=>rpc('school_payroll_prepare_month',['2026M0001','2026-11-01']),'school_schedule_manager_required');
+await rpc('school_payroll_prepare_month',['2026M0004','2026-11-01']);
+await action('2026M0004','save');await expectFail(async()=>action('2026M0004','submit'),'month_not_settled_yet');
+await expectFail(async()=>rpc('school_payroll_person_review',['2026M0004','2026-11-01',await revision('2026M0004'),'2026T9001']),'own_attendance_photo_required');
+// Date gate is set only in this isolated fixture to exercise downstream monthly workflow.
+await db.exec("update mschool.payroll_months set settled_at=now()where month='2026-11-01'");
+let serial=0;const photo=async(actor,worker)=>rpc('school_payroll_worker_photo',[actor,'2026-11-01',await revision(actor),worker,'00000000-0000-4000-8000-'+String(++serial).padStart(12,'0'),'fixture_drive_'+serial,'測試簽到表.png']);
+for(const actor of['2026M0004','2026M0003']){
+ state=await get(actor);for(const w of state.snapshot.workers)if(w.required_uploaders.includes(actor))await photo(actor,w.worker_id);
+ await action(actor,'save');await expectFail(async()=>action(actor,'submit'),'all_workers_must_be_reviewed');
+ for(const w of state.snapshot.workers)await rpc('school_payroll_person_review',[actor,'2026-11-01',await revision(actor),w.worker_id]);
+ const oldRevision=await revision(actor);await action(actor,'submit');await expectFail(async()=>rpc('school_payroll_person_review',[actor,'2026-11-01',oldRevision,state.snapshot.workers[0].worker_id]),'wrong_review_stage');
+ if(actor==='2026M0004'){const enru=await get('2026M0003');assert.equal(enru.photos.length,2);await action('2026M0003','save');await expectFail(async()=>rpc('school_payroll_person_review',['2026M0003','2026-11-01',await revision('2026M0003'),'2026T9001']),'own_attendance_photo_required');}
+}
+state=await get('2026M0002');assert.equal(state.batch.stage,'wife');assert.equal(state.photos.length,4);await expectFail(async()=>action('2026M0002','submit'),'all_workers_must_be_reviewed');
+await expectFail(async()=>rpc('school_payroll_bank_save',['2026M0003','2026T9001','測試銀行','001234567890']),'wage_owner_required');
+for(const w of state.snapshot.workers)await rpc('school_payroll_person_review',['2026M0002','2026-11-01',await revision('2026M0002'),w.worker_id]);
+await expectFail(async()=>rpc('school_payroll_transfer',['2026M0002','2026-11-01',await revision('2026M0002')]),'bank_accounts_incomplete');
+for(const w of state.snapshot.workers)await rpc('school_payroll_bank_save',['2026M0002',w.worker_id,'測試銀行','001234567890']);
+state=await get('2026M0002');assert(state.worker_states.every(s=>!s.stage_confirmed));
+for(const w of state.snapshot.workers)await rpc('school_payroll_person_review',['2026M0002','2026-11-01',await revision('2026M0002'),w.worker_id]);
+await expectFail(async()=>action('2026M0002','submit'),'transfer_chart_required');
+const transfer=await rpc('school_payroll_transfer',['2026M0002','2026-11-01',await revision('2026M0002')]);assert(transfer.data.workers.every(w=>w.bank_name==='測試銀行'&&w.account_number==='001234567890'));
+const hash='a'.repeat(64),path='M+/payroll/'+transfer.batch_id+'/'+hash+'.png';await rpc('school_payroll_transfer',['2026M0002','2026-11-01',await revision('2026M0002'),path,hash,transfer.data_hash]);await action('2026M0002','submit');
+const pastor=await get('2026M0001');assert.equal(pastor.batch.stage,'pastor');assert.equal(pastor.transfer.workers.length,3);assert.equal(pastor.batch.transfer_snapshot,undefined);
+const sched=await get('2026M0004');assert.equal(sched.banks.length,0);assert.equal(sched.transfer,null);assert.equal(sched.batch.transfer_snapshot,undefined);
+await expectFail(async()=>rpc('school_payroll_bank_save',['2026M0002','2026T9001','另一銀行','00999999999']),'bank_affects_pending_transfer_return_first');
+await action('2026M0001','return',{comment:'測試退回重新核對'});state=await get('2026M0002');assert(state.worker_states.every(w=>!w.stage_confirmed));assert.equal(state.batch.transfer_chart_path,null);
+await expectFail(async()=>rpc('school_payroll_bank_save',['2026M0002','2026T9001','測試銀行','001234567890']),'bank_data_changed_reload');
+await action('2026M0002','return',{comment:'測試回恩茹'});await action('2026M0003','return',{comment:'測試回鈺庭'});await action('2026M0004','save');
+state=await get('2026M0004');for(const w of state.snapshot.workers)await rpc('school_payroll_person_review',['2026M0004','2026-11-01',await revision('2026M0004'),w.worker_id]);
+state=await get('2026M0004');assert(state.worker_states.every(w=>w.stage_confirmed));
+await rpc('school_mutate_schedules',['2026M0004','PATCH',1,[{shift:'16:00 - 18:30'}],'00000000-0000-4000-8000-999999999999',false]);
+state=await get('2026M0004');assert(state.worker_states.every(w=>!w.stage_confirmed));assert.equal(state.batch.saved,false);assert.equal(state.snapshot.total_amount,1700);assert.equal(state.snapshot.total_hours,8.5);
+console.log('PASS actual PostgreSQL migration and 3-person flow: teacher included, 200/hour, contributor provenance, staged uploads, individual and all-person gates, not-before-month-end, missing/changed banks, chart freshness, account isolation, return invalidation. Local fake identities only.');
+fs.writeFileSync(require('path').resolve(__dirname,'phase4/results/payroll-db-test-result.json'),JSON.stringify({passed:true,engine:'PGlite 0.5.15',fixture_only:true,production_write:false,checked_at:new Date().toISOString()},null,2));await db.close();
+})().catch(e=>{console.error({message:e.message,detail:e.detail,where:e.where,position:e.position,query:e.query?.slice(0,300)});process.exit(1)});

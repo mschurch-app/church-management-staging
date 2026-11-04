@@ -191,7 +191,7 @@
   <link rel="icon" href="school-mark.svg" type="image/svg+xml">
   <script defer src="school-icons.js?v=20261009-stage3"></script>
   <script defer src="school-staff-people.js?v=20261026-staff1"></script>
-  <script defer src="school-payroll.js?v=20261103-payroll1"></script>
+  <script defer src="school-payroll.js?v=20261104-person-payroll1"></script>
   <script defer src="church-os-ui.js?v=20261026-staff1"></script>
 </head>
 <body class="school-app min-h-screen flex flex-col antialiased">
@@ -974,7 +974,7 @@
     async function loadScheduleStaffOptions() {
       const { data, error } = await db.from('users').select('id,name,role_type,status').order('id');
       if (error) throw error;
-      staffList = (data || []).filter(u => ['老師', '工讀生'].includes(u.role_type) && (!u.status || ['在班','在職'].includes(u.status)));
+      staffList = (data || []).filter(u => (['老師', '工讀生'].includes(u.role_type) || u.role_type==='同工'&&/^20[0-9]{2}T[0-9]+$/.test(u.id)) && (!u.status || ['在班','在職'].includes(u.status)));
       populateScheduleStaffOptions();
       return staffList;
     }
@@ -3006,7 +3006,7 @@
     }
 
     window.schoolInterface = {
-      payroll: {allowed: () => currentUser?.role_type === '同工' && ['2026M0001','2026M0002','2026M0003','2026M0004'].includes(currentUser?.id), request: callMschoolApi, login: openLoginModal, user:()=>currentUser, photo:async(id,month)=>{const response=await nativeFetch(MSCHOOL_API_URL+'/payroll/photo-view?month='+encodeURIComponent(month)+'&photo_id='+encodeURIComponent(id),{headers:{'x-mschool-session':mschoolSessionToken||''},cache:'no-store',signal:AbortSignal.timeout(60000)});if(!response.ok)throw new Error('簽到表照片暫時無法讀取，請重新載入。');return response.blob();}},
+      payroll: {allowed: () => currentUser?.role_type === '同工' && ['2026M0001','2026M0002','2026M0003','2026M0004'].includes(currentUser?.id), request: callMschoolApi, login: openLoginModal, user:()=>currentUser, chart:async(month)=>{const response=await nativeFetch(MSCHOOL_API_URL+'/payroll/transfer-chart-view?month='+encodeURIComponent(month),{headers:{'x-mschool-session':mschoolSessionToken||''},cache:'no-store',signal:AbortSignal.timeout(60000)});if(!response.ok)throw new Error('撥款圖表暫時無法讀取。');return response.blob();}, photo:async(id,month)=>{const response=await nativeFetch(MSCHOOL_API_URL+'/payroll/photo-view?month='+encodeURIComponent(month)+'&photo_id='+encodeURIComponent(id),{headers:{'x-mschool-session':mschoolSessionToken||''},cache:'no-store',signal:AbortSignal.timeout(60000)});if(!response.ok)throw new Error('簽到表照片暫時無法讀取，請重新載入。');return response.blob();}},
       staffPeople: {allowed: () => currentUser?.role_type === '同工', request: callMschoolApi, refresh: async () => { await loadScheduleStaffOptions(); await loadSchedules(); }},
       state: () => ({user: currentUser, rollCallDate: rollCallLoadedDate, busy: userSaving || scheduleSaving || rollCallSaving || csvImportBusy || kioskDeviceBusy || Boolean(window.SchoolStaffPeople?.busy)}),
       reloadRollCall: async (day) => { document.getElementById('rollcall-date-picker').value=day; return loadRollCallsForDate(); },

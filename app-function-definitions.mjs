@@ -3,6 +3,7 @@ function freezeTree(value){if(value&&typeof value==='object'){Object.values(valu
 export const FUNCTION_CATALOG=freezeTree({
   "finance_permission_settings":{"file":"admin-accounts.html?church=M%2B","title":"同工權限設定","description":"統一勾選教會功能、操作與財務權限","key":"finance_permission_settings","group":"finance","church":"M+","owner":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["授權","同工權限"]},
   "finance_accounting_reports":{"file":"finance-permissions.html#reports","title":"會計報表","description":"查閱與匯出已核准財務資料","key":"finance_accounting_reports","group":"finance","church":"M+","accountingReportAccess":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["會計","報表","匯出"]},
+  "school_staff_scheduling": {"file":"https://school.mchurch.online/?tab=schedules","title":"班表安排","description":"安排老師與工讀生班表，僅限鈺庭與恩茹操作","key":"school_staff_scheduling","group":"finance","church":"M+","symbol":"mplus-calendar","configurableHome":false,"scheduleAccess":true,"searchTerms":["排班","老師班表","工讀生班表"]},
   "school_payroll": {"file":"school-payroll.html?month=current","title":"課輔薪資結算","description":"時薪設定、月底結算、簽到表與逐級審核","key":"school_payroll","group":"finance","church":"M+","symbol":"mplus-box","configurableHome":false,"payrollAccess":true,"searchTerms":["老師薪資","工讀生薪水","每月簽到表","結算審核"]},
 
   "testimony_review": {
@@ -727,7 +728,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "key": "finance",
     "title": "教會財務",
     "note": "M＋奉獻收入、支出記帳與核對",
-    "keys": ["finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_payroll"]
+    "keys": ["finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
   },
   {
     "key": "media",

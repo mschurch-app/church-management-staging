@@ -4,7 +4,7 @@ const {FUNCTION_CATALOG,FUNCTION_GROUPS,availableFunctionKeys,favoriteKeys}=awai
 const {canOpen}=await import('../admin-access.mjs?v=20261009-app-audit2');
 const permissions=['members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp'];
 const full={grants:permissions.map(permission=>({church_id:'M+',permission})),featurePermissions:[]};
-const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,financeReceiptAccess:true,module_permissions:['school','basketball','pastoral_workspace'],schoolRole:'同工',payrollAccess:true,accountingReportAccess:true,financeExpenseAccess:true};
+const home={is_owner:true,system_monitor_access:true,financeCashAccess:true,financeReceiptAccess:true,module_permissions:['school','basketball','pastoral_workspace'],schoolRole:'同工',payrollAccess:true,schoolScheduleAccess:true,accountingReportAccess:true,financeExpenseAccess:true};
 assert(!availableFunctionKeys(full,'M+',{}).includes('finance_receipts'));
 assert(availableFunctionKeys(full,'M+',{financeReceiptAccess:true}).includes('finance_receipts'));
 assert(!availableFunctionKeys(full,'SHiNE',{financeReceiptAccess:true}).includes('finance_receipts'));

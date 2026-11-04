@@ -1,5 +1,5 @@
 import {mountMplusFunctionNavigation} from './mplus-function-nav.mjs?v=20261103-unifiedpermissions1';
-import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
+import {NAVIGATION_MODULES as modules,friendlyLabel} from './app-function-definitions.mjs?v=20261104-school-scheduling1';
 import {TAB_PERMISSIONS} from './admin-access.mjs?v=20261103-unifiedpermissions1';
 import './action-feedback.mjs?v=20261022-experience1';
 import './ios-experience.mjs?v=20261103-unifiedpermissions1';

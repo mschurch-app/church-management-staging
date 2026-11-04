@@ -1,6 +1,6 @@
 import {readAccess,chooseChurch} from './admin-access.mjs?v=20261103-unifiedpermissions1';
-export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
-import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261103-unifiedpermissions1';
+export {LEGACY_DASHBOARD_MODULES as MODULES,HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261104-school-scheduling1';
+import {HOME_TEMPLATES} from './app-function-definitions.mjs?v=20261104-school-scheduling1';
 export async function dashboardAccess(db,preferred){const access=await readAccess(db),church=chooseChurch(access,preferred);return {access,church};}
 export async function dashboardHomePreferences(db,church){const {data,error}=await db.rpc('get_my_permission_navigation',{p_church:church});if(error||!data)throw new Error('無法確認功能權限，請重新載入。');return data;}
 export async function dashboardCounts(db,church,grants){

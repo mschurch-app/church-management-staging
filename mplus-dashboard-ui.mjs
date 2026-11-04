@@ -2,10 +2,10 @@ import {mountWorkProfile} from './work-profile.mjs?v=20261103-unifiedpermissions
 import {db} from './admin-db.mjs?v=20261103-unifiedpermissions1';
 import {dashboardAccess,dashboardCounts,dashboardHomePreferences} from './dashboard-management.mjs?v=20261103-unifiedpermissions1';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261103-unifiedpermissions1';
-import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261103-unifiedpermissions1';
+import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261104-school-scheduling1';
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261103-unifiedpermissions1';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261103-unifiedpermissions1';
-import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261103-unifiedpermissions1';
+import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261104-school-scheduling1';
 import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261103-unifiedpermissions1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';

@@ -1,6 +1,7 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
+  "potluck":{"file":"potluck-admin.html","title":"互動料理募集","description":"活動設定、料理名單與感恩餐桌統計","key":"potluck","group":"events","church":"M+","owner":true,"symbol":"heart","configurableHome":false,"searchTerms":["感恩節","料理","活動管理"]},
   "finance_permission_settings":{"file":"admin-accounts.html?church=M%2B","title":"同工權限設定","description":"統一勾選教會功能、操作與財務權限","key":"finance_permission_settings","group":"finance","church":"M+","owner":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["授權","同工權限"]},
   "finance_accounting_reports":{"file":"finance-permissions.html#reports","title":"會計報表","description":"查閱與匯出已核准財務資料","key":"finance_accounting_reports","group":"finance","church":"M+","accountingReportAccess":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["會計","報表","匯出"]},
   "school_staff_scheduling": {"file":"https://school.mchurch.online/?tab=schedules","title":"班表安排","description":"安排老師與工讀生班表，僅限鈺庭與恩茹操作","key":"school_staff_scheduling","group":"finance","church":"M+","symbol":"mplus-calendar","configurableHome":false,"scheduleAccess":true,"searchTerms":["排班","老師班表","工讀生班表"]},
@@ -695,7 +696,7 @@ export const FUNCTION_CATALOG=freezeTree({
   }
 });
 export const FUNCTION_GROUPS=freezeTree([
-  {"key":"events","title":"活動","note":"活動參與及遊戲玩家管理","keys":["bibletree_admin","bibletree_players","bibletree_devotional"]},
+  {"key":"events","title":"活動","note":"活動參與及遊戲玩家管理","keys":["potluck","bibletree_admin","bibletree_players","bibletree_devotional"]},
   {
     "key": "pastoral",
     "title": "人與關懷",

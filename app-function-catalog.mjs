@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261103-unifiedpermissions1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261104-school-scheduling1';
-export * from './app-function-definitions.mjs?v=20261104-school-scheduling1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261104-potluck1';
+export * from './app-function-definitions.mjs?v=20261104-potluck1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const assigned=new Set((home.module_permissions||[]).map(canonicalFunctionKey));
  return Object.keys(FUNCTION_CATALOG).filter(key=>{

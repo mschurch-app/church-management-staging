@@ -1,0 +1,36 @@
+const fs=require('fs'),assert=require('assert/strict');
+(async()=>{
+ const {PGlite}=require('@electric-sql/pglite');const db=new PGlite();
+ await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema church_auth;create schema storage;
+ create table public.camps(id uuid primary key default gen_random_uuid(),entity_key text,name text,starts_on date,ends_on date,registration_open boolean,metadata jsonb);
+ create table public.members(id bigint primary key,church_id text,family text);
+ create table church_auth.accounts(user_id uuid primary key,is_active boolean);
+ create table church_auth.owners(user_id uuid primary key);
+ create table church_auth.account_feature_permissions(user_id uuid,church_id text,feature_key text,can_view boolean,can_export boolean,can_manage boolean);
+ create table church_auth.member_bindings(church_id text,login_channel_id text,line_subject text,member_id bigint,active boolean);
+ create table storage.buckets(id text,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+ grant usage on schema church_auth to service_role;grant select on public.members,church_auth.member_bindings to service_role;grant all on public.camps to service_role;`);
+ const path=require('path').resolve(__dirname,'../supabase/migrations/20261104090907_thanksgiving_potluck_event.sql');await db.exec(fs.readFileSync(path,'utf8'));
+ const u=n=>'U'+String(n).repeat(32),owner='00000000-0000-4000-8000-000000000001',other='00000000-0000-4000-8000-000000000002';
+ await db.exec(`insert into church_auth.accounts values('${owner}',true),('${other}',true);insert into church_auth.owners values('${owner}');`);
+ const call=async(action,data={},subject=u(1),admin=null)=>{await db.exec('set role service_role');try{return (await db.query('select public.potluck_action($1,$2,$3,$4::jsonb,$5::uuid) as data',['thanksgiving-2026',subject,action,JSON.stringify(data),admin])).rows[0].data;}finally{await db.exec('reset role');}};
+ const rejected=async(fn,pattern)=>{let error;try{await fn();}catch(e){error=e;}assert(error,'Expected rejection');assert.match(error.message,pattern);};let passes=[];const pass=x=>{passes.push(x);console.log('PASS',x);};
+ let initial=await call('public',{},null);assert.equal(initial.categories.length,6);assert.equal(initial.categories.reduce((n,c)=>n+c.target_dishes,0),28);assert.equal(initial.event.date,'2026-11-22');assert.equal(initial.event.default_servings,10);pass('existing activity master; correct Sunday, six categories and 28-dish targets');
+ const cat=initial.categories[0].id;const body={request_id:crypto.randomUUID(),display_name:'測試家庭',dish_name:'測試料理',servings:20,category_id:cat,notes:'私密同工備註'};
+ const saved=await call('save',body);assert(saved.saved);assert.equal((await call('save',body)).id,saved.id);assert.equal((await call('get')).mine.length,1);pass('servings above ten and exact idempotent replay');
+ await rejected(()=>call('save',{...body,servings:25}),/request_conflict/);await rejected(()=>call('save',{...body,request_id:crypto.randomUUID()}),/household_limit/);pass('payload replay conflict and one active dish per household');
+ const own=(await call('get')).mine[0];await rejected(()=>call('save',{...body,id:own.id,version:own.version,request_id:crypto.randomUUID()},u(2)),/not_found/);await rejected(()=>call('save',{...body,id:own.id,version:0,request_id:crypto.randomUUID()}),/stale_version/);await rejected(()=>call('save',{...body,id:own.id,request_id:crypto.randomUUID()}),/stale_version/);pass('cross-owner edits and stale/missing versions rejected');
+ const pub=await call('public',{},null);assert(!JSON.stringify(pub).includes(u(1)));assert(!JSON.stringify(pub).includes('私密同工備註'));assert(!JSON.stringify(pub).includes('household_id'));assert.equal(pub.mine.length,0);pass('public projection omits LINE identity, household and private notes');
+ await call('save',{...body,request_id:crypto.randomUUID()},u(2));pass('same public nickname never identifies a household');
+ await db.exec(`insert into public.members values(1,'M+','fixture-family'),(2,'M+','fixture-family');insert into church_auth.member_bindings values('M+','2011645391','${u(3)}',1,true),('M+','2011645391','${u(4)}',2,true);`);
+ await call('save',{...body,request_id:crypto.randomUUID()},u(3));await rejected(()=>call('save',{...body,request_id:crypto.randomUUID()},u(4)),/household_limit/);pass('approved roster household is shared across two verified LINE accounts');
+ let admin=await call('admin_get',{},null,owner);const household=admin.admin_dishes.find(d=>d.id===saved.id).household_id;await rejected(()=>call('admin_get',{},null,other),/forbidden/);await call('admin_allow_extra',{household_id:household,request_id:crypto.randomUUID()},null,owner);await call('save',{...body,request_id:crypto.randomUUID()});pass('owner RBAC and explicitly approved additional dish');
+ const revised=await call('save',{...body,id:own.id,version:own.version,servings:30,request_id:crypto.randomUUID()});await rejected(()=>call('cancel',{id:own.id,version:own.version,request_id:crypto.randomUUID()}),/stale_version/);
+ const before=(await call('public',{},null)).categories[0].dish_count;await call('cancel',{id:own.id,version:revised.version,request_id:crypto.randomUUID()});assert.equal((await call('public',{},null)).categories[0].dish_count,before-1);pass('edit/version/cancel immediately update active counts');
+ // The goal is a progress target, never a registration capacity.
+ admin=await call('admin_get',{},null,owner);await call('admin_settings',{version:admin.event.version,registration_open:true,allow_user_edit:true,targets:[{id:cat,target:1}],request_id:crypto.randomUUID()},null,owner);await call('save',{...body,request_id:crypto.randomUUID()},u(5));assert((await call('public',{},null)).categories[0].dish_count>1);pass('target overflow remains open');
+ admin=await call('admin_get',{},null,owner);await call('admin_settings',{version:admin.event.version,registration_open:true,allow_user_edit:false,registration_deadline:'2000-01-01T00:00:00Z',request_id:crypto.randomUUID()},null,owner);await rejected(()=>call('save',{...body,request_id:crypto.randomUUID()},u(6)),/registration_closed/);const mine=(await call('get')).mine[0];await rejected(()=>call('cancel',{id:mine.id,version:mine.version,request_id:crypto.randomUUID()}),/editing_closed/);pass('server enforces closing and editing settings');
+ await db.exec('set role anon');await rejected(()=>db.query("select public.potluck_action('thanksgiving-2026',null,'public')"),/permission denied/);await db.exec('reset role');await db.exec('set role authenticated');await rejected(()=>db.query('select * from potluck.dishes'),/permission denied/);await db.exec('reset role');pass('anon/authenticated cannot call service RPC or read private tables');
+ assert((await db.query("select count(*)::int n from potluck.audit")).rows[0].n>0);pass('mutations have audit receipts');
+ console.log(JSON.stringify({passed:passes.length,failed:0,checks:passes}));await db.close();
+})().catch(e=>{console.error(e);process.exit(1);});

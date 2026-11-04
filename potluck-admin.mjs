@@ -1,6 +1,6 @@
 import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
 import {element,setStatus} from './app-ui.mjs?v=20261104-potluck1';
-import {POTLUCK_LINK} from './potluck.mjs?v=20261104-potluck1';
+import {POTLUCK_LINK} from './potluck.mjs?v=20261104-potluck-copy2';
 const root=document.querySelector('#pk-admin'),status=document.querySelector('#pk-status');
 let data,busy=false,dirty=false,uncertain=false;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

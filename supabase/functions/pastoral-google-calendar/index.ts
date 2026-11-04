@@ -254,24 +254,24 @@ async function eventAlreadyCreated(token:string,requestId:string,eventId:string,
   const privateProps=event.extendedProperties?.private||{};
   return privateProps.pastoralRequestId===requestId&&privateProps.pastoralParticipantIds===[...participants].map(person=>person.id).sort().join(',')&&[appointment.summary,calendarEventTitle(appointment.summary,participants[0].display_name)].includes(event.summary)&&(event.location||'')===appointment.location&&Date.parse(event.start?.dateTime||(event.start?.date?event.start.date+'T00:00:00+08:00':''))===appointment.start&&Date.parse(event.end?.dateTime||(event.end?.date?event.end.date+'T00:00:00+08:00':''))===appointment.end;
 }
-async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number;allDay?:boolean},participants:Array<{id:string;display_name:string;line_subject:string|null}>,creatorId:string){
+async function createCalendarEvent(token:string,requestId:string,appointment:{summary:string;location:string;start:number;end:number;allDay?:boolean},participants:Array<{id:string;display_name:string;line_subject:string|null}>,creatorId:string,allowConflict=false){
   const eventId=requestId.toLowerCase().replaceAll('-','');
   const base=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`;
   if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
   const busy=appointment.allDay?[]:await freeBusy(token,new Date(appointment.start-BUFFER_MS).toISOString(),new Date(appointment.end+BUFFER_MS).toISOString());
-  if(busy.length)return {created:false,conflict:true};
+  if(busy.length&&!allowConflict)return {created:false,conflict:true,busy};
   const event={id:eventId,summary:calendarEventTitle(appointment.summary,participants[0].display_name),...(appointment.location?{location:appointment.location}:{}),
     start:appointment.allDay?{date:new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(appointment.start))}:{dateTime:new Date(appointment.start).toISOString(),timeZone:'Asia/Taipei'},
     end:appointment.allDay?{date:new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(appointment.end))}:{dateTime:new Date(appointment.end).toISOString(),timeZone:'Asia/Taipei'},
     description:`共同參與同工：${participants.map(person=>person.display_name).join('、')}`,
-    extendedProperties:{private:{pastoralRequestId:requestId,mplusCreator:creatorId,mplusPrimary:participants[0].id,pastoralParticipantIds:participants.map(person=>person.id).sort().join(',')}}};
+    extendedProperties:{private:{pastoralRequestId:requestId,mplusCreator:creatorId,mplusPrimary:participants[0].id,pastoralParticipantIds:participants.map(person=>person.id).sort().join(','),...(allowConflict?{mplusConflictOverride:'confirmed',mplusConflictConfirmedAt:new Date().toISOString()}:{} )}}};
   const response=await fetch(`${base}?sendUpdates=none`,{method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(event)});
   if(response.status===409){
     if(await eventAlreadyCreated(token,requestId,eventId,appointment,participants))return {created:false,conflict:false};
-    return {created:false,conflict:true};
+    return {created:false,conflict:true,idCollision:true,busy:[]};
   }
   if(!response.ok)throw new Error('calendar_api');
-  return {created:true,conflict:false};
+  return {created:true,conflict:false,conflictOverride:allowConflict&&busy.length>0};
 }
 
 
@@ -390,7 +390,7 @@ async function listSharedEvents(token:string,start:string,end:string,staff:Staff
   const url=new URL('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CALENDAR_ID)+'/events');
   for(const [k,v]of Object.entries({timeMin:new Date(first).toISOString(),timeMax:new Date(last).toISOString(),singleEvents:'true',orderBy:'startTime',timeZone:'Asia/Taipei',maxResults:'250'}))url.searchParams.set(k,v);if(page)url.searchParams.set('pageToken',page);
   const r=await fetch(url,{headers:{authorization:'Bearer '+token},redirect:'error',signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('calendar_api');const data=await r.json();
-  for(const item of data.items||[]){if(item.status==='cancelled')continue;const hidden=item.visibility==='private'||item.visibility==='confidential';rows.push({id:String(item.id),summary:hidden?'私人行程':String(item.summary||'未命名行程').slice(0,200),start:item.start?.dateTime||item.start?.date,end:item.end?.dateTime||item.end?.date,allDay:!!item.start?.date,workOutcome:hidden?null:item.extendedProperties?.private?.mplusOutcome||null,routineId:hidden?null:item.extendedProperties?.private?.mplusRoutine||null,leaveId:hidden?null:item.extendedProperties?.private?.mplusLeaveId||null,...eventPermissions(staff,item),location:hidden?'':String(item.location||'').slice(0,500),coworkerNames:hidden?'':String(item.description||'').split('共同參與同工：')[1]?.split('\n')[0]?.slice(0,500)||'',deputyName:hidden?'':String(item.description||'').split('職務代理人：')[1]?.split('\n')[0]?.slice(0,80)||''});}
+  for(const item of data.items||[]){if(item.status==='cancelled')continue;const hidden=item.visibility==='private'||item.visibility==='confidential';rows.push({id:String(item.id),summary:hidden?'私人行程':String(item.summary||'未命名行程').slice(0,200),start:item.start?.dateTime||item.start?.date,end:item.end?.dateTime||item.end?.date,allDay:!!item.start?.date,blocking:item.transparency!=='transparent',workOutcome:hidden?null:item.extendedProperties?.private?.mplusOutcome||null,routineId:hidden?null:item.extendedProperties?.private?.mplusRoutine||null,leaveId:hidden?null:item.extendedProperties?.private?.mplusLeaveId||null,...eventPermissions(staff,item),location:hidden?'':String(item.location||'').slice(0,500),coworkerNames:hidden?'':String(item.description||'').split('共同參與同工：')[1]?.split('\n')[0]?.slice(0,500)||'',deputyName:hidden?'':String(item.description||'').split('職務代理人：')[1]?.split('\n')[0]?.slice(0,80)||''});}
   page=data.nextPageToken||'';if(!page)return rows;
  }throw Error('calendar_too_many_events');
 }
@@ -482,6 +482,8 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
   }
   if(body.action==='create-event'){
     if(body.confirmed!==true)return json(APP_ORIGIN,{ok:false,error:'confirmation_required'},400);
+    if(body.allowConflict!==undefined&&typeof body.allowConflict!=='boolean')return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
+    if(body.allowConflict===true&&body.conflictConfirmed!==true)return json(APP_ORIGIN,{ok:false,error:'confirmation_required'},400);
     const appointment=readAppointment(body);
     if(!appointment||typeof body.requestId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(body.requestId))return json(APP_ORIGIN,{ok:false,error:'invalid_request'},400);
     const targetStaffId=await scheduleTarget(db,staff,body.staffId);
@@ -495,10 +497,21 @@ async function handleAction(request:Request,db:ReturnType<typeof adminClient>,st
     const token=await accessToken(db);
     if(!token)return json(APP_ORIGIN,{ok:false,error:'calendar_not_connected'},503);
     try{
-      const result=await createCalendarEvent(token,body.requestId,appointment,participants,staff.id);
-      if(result.conflict)return json(APP_ORIGIN,{ok:false,error:'calendar_conflict'},409);
+      const result=await createCalendarEvent(token,body.requestId,appointment,participants,staff.id,body.allowConflict===true&&body.conflictConfirmed===true);
+      if(result.conflict){
+        if(result.idCollision)return json(APP_ORIGIN,{ok:false,error:'idempotency_conflict'},409);
+        const first=appointment.start-BUFFER_MS,last=appointment.end+BUFFER_MS;
+        let conflicts:Array<{summary:string;start:string;end:string}>=[];
+        try{
+          const events=await listSharedEvents(token,new Date(first).toISOString(),new Date(last).toISOString(),staff);
+          conflicts=events.filter(event=>event.blocking!==false&&Date.parse(String(event.start).length===10?event.start+'T00:00:00+08:00':String(event.start))<last&&Date.parse(String(event.end).length===10?event.end+'T00:00:00+08:00':String(event.end))>first)
+            .map(event=>({summary:String(event.summary||'未命名行程'),start:String(event.start),end:String(event.end)}));
+        }catch{}
+        if(!conflicts.length)conflicts=(result.busy||[]).map(period=>({summary:'已佔用時段（暫時無法讀取名稱）',start:period.start,end:period.end}));
+        return json(APP_ORIGIN,{ok:false,error:'calendar_conflict',conflicts,bufferMinutes:BUFFER_MS/60000,canOverride:true},409);
+      }
       const notifications=body.notifyParticipants===false?{status:'not_requested',sent:0,total:participants.length}:await notifyMeetingParticipants(db,participants,body.requestId,appointment);
-      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID,eventId:body.requestId.toLowerCase().replaceAll('-',''),notifications});
+      return json(APP_ORIGIN,{ok:true,created:result.created,calendarId:CALENDAR_ID,eventId:body.requestId.toLowerCase().replaceAll('-',''),conflictOverride:result.conflictOverride===true,notifications});
     }catch{return json(APP_ORIGIN,{ok:false,error:'calendar_unavailable'},503);}
   }
   return json(APP_ORIGIN,{ok:false,error:'invalid_action'},400);

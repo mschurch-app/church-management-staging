@@ -6,7 +6,7 @@ import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261103-unifiedpermissions1';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261103-unifiedpermissions1';
 import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261104-potluck1';
-import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261103-unifiedpermissions1';
+import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261104-calendar-overlap1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};

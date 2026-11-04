@@ -1,4 +1,4 @@
-import {FUNCTION_CATALOG,PERMISSION_LABELS,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261104-school-scheduling1';
+import {FUNCTION_CATALOG,PERMISSION_LABELS,FEATURE_ACTIONS} from './app-function-definitions.mjs?v=20261104-potluck1';
 const make=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;n.className=cls;return n;};
 export const DEPENDENCIES={groups:['members'],newcomer_care:['members'],tree_reading_admin:['members'],binding_review:['members'],notification_settings:['members'],website_weekly:['pastoral_chats'],website_group_resources:['pastoral_chats']};
 export const MODULE_GROUPS={pastoral_workspace:{title:'同工工作與相簿',keys:['pastoral_workspace'],note:'工作行事曆、相簿、工作流程調查；各人仍依本人身分及負責範圍使用。'},school:{title:'課輔系統',keys:['school','school_checkin','school_schedules','school_rollcall','school_students','school_counseling','school_reports'],note:'開放課輔工具；須先連結課輔人員身分。可操作資料依老師、工讀生或同工身分決定。'},basketball:{title:'籃球隊系統',keys:['basketball','basketball_gamecenter','basketball_tactics','basketball_assignments','basketball_schedule','basketball_daily'],note:'籃球工具使用權；球隊系統仍核對本人帳號與隊內身分。'}};

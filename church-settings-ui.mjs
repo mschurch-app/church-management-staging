@@ -2,7 +2,7 @@ import {readAccess,canOpen,canAction,chooseChurch} from './admin-access.mjs?v=20
 import {db} from './admin-db.mjs?v=20261103-unifiedpermissions1';
 import {loadChurchSettings,saveChurchSettings} from './church-settings-management.mjs?v=20261103-unifiedpermissions1';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261103-unifiedpermissions1';
-import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261104-school-scheduling1';
+import {availableSettingsGroups,matchesFunction} from './app-function-catalog.mjs?v=20261104-potluck1';
 import {createSettingsEntry,element} from './app-ui.mjs?v=20261103-unifiedpermissions1';
 import {settingsWorkflow} from './settings-workflow.mjs?v=20261103-unifiedpermissions1';
 const $=s=>document.querySelector(s),params=new URLSearchParams(location.search);

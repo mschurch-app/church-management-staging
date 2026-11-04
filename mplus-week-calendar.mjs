@@ -1,6 +1,6 @@
 import {renderWorkFocus} from './mplus-work-focus.mjs?v=20261022-home-resume1';
 import {plannerStatus,openRoutineWizard,openRoutineCenter,openWorkAssignment,openTaskDetails} from './mplus-work-planner.mjs?v=20261102-bibletree-admin1';
-import {calendarApi,readCalendar,openCalendarEditor,showCalendarEvent} from './mplus-google-calendar.mjs?v=20261102-bibletree-admin1';
+import {calendarApi,readCalendar,openCalendarEditor,showCalendarEvent} from './mplus-google-calendar.mjs?v=20261104-calendar-overlap1';
 import {staffLineIdToken} from './pastoral/auth.mjs?v=20261102-bibletree-admin1';
 import {PASTORAL_TASKS_ENDPOINT} from './pastoral/config.mjs?v=20260924-4';
 import {taipeiDate,addDay,weekStart,calendarTasks,tasksOn,workTime} from './mplus-week-model.mjs?v=20261021-work-timeline1';

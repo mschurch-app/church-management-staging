@@ -655,6 +655,7 @@ export const FUNCTION_CATALOG=freezeTree({
     "configurableHome": false,
     "searchTerms": []
   },
+  "finance_projects":{"file":"finance-projects.html","title":"專案與事工設定","description":"專案、事工項目、收入科目與線上捐款對應","key":"finance_projects","group":"finance","church":"M+","owner":true,"symbol":"clipboard","configurableHome":false,"settingsGroup":"church","settingsId":"finance-projects","searchTerms":["專案","事工","收入科目","捐款項目"]},
   "finance_receipts": {
     "church":"M+", "receiptAccess":true, "file":"finance-receipts.html",
     "title":"收據開立", "description":"金錢與物品收據、開立及作廢紀錄",
@@ -729,7 +730,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "key": "finance",
     "title": "教會財務",
     "note": "M＋奉獻收入、支出記帳與核對",
-    "keys": ["finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
+    "keys": ["finance_projects", "finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
   },
   {
     "key": "media",
@@ -839,6 +840,7 @@ export const SETTINGS_GROUPS=freezeTree([
     "title": "堂會與場地",
     "note": "公開資訊、聚會位置、空間與物品",
     "keys": [
+      "finance_projects",
       "spaces",
       "inventory"
     ]

@@ -3,7 +3,7 @@ import {mountLineIdentityReview} from './admin-line-identity-review.mjs?v=202611
 import {mountCoworkerApplications} from './admin-coworker-review.mjs?v=20261103-unifiedpermissions1';
 import {applicationRPC} from './coworker-application-api.mjs?v=20261103-unifiedpermissions1';
 import {createWorkProfileEditor} from './work-profile.mjs?v=20261103-unifiedpermissions1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS} from './app-function-definitions.mjs?v=20261105-albumrights1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS} from './app-function-definitions.mjs?v=20261105-projects1';
 import {db} from './admin-db.mjs?v=20261103-unifiedpermissions1';
 import {PERMISSIONS,ROLE_TEMPLATES,HOME_MODULES,HOME_TEMPLATES,FEATURE_ACTIONS,permissionsForRole,listAdminAccounts,removeAdminAccount,saveAdminBundle} from './admin-accounts-management.mjs?v=20261105-albumrights1';
 const search=new URLSearchParams(location.search),church=search.get('church')||'M+',localPreview=['127.0.0.1','localhost'].includes(location.hostname)&&search.get('preview')==='1',$=s=>document.querySelector(s);let rows=[],busy=false,reviewUser=/^[0-9a-f-]{36}$/i.test(search.get('review_user')||'')?search.get('review_user'):'';

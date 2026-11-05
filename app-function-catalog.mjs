@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261105-albumrights1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261105-albumrights1';
-export * from './app-function-definitions.mjs?v=20261105-albumrights1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261105-projects1';
+export * from './app-function-definitions.mjs?v=20261105-projects1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const assigned=new Set((home.module_permissions||[]).map(canonicalFunctionKey));
  return Object.keys(FUNCTION_CATALOG).filter(key=>{

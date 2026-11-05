@@ -111,6 +111,12 @@ async function handle(request:Request,staff:Staff){
  const multipart=(request.headers.get('content-type')||'').includes('multipart/form-data');
  const form=multipart?await request.formData():null;
  const body=form?Object.fromEntries(form):await request.json();
+ const rightsResult=await adminClient().rpc('church_album_staff_permissions',{p_staff:staff.id});
+ if(rightsResult.error||!rightsResult.data)throw new ApiError('unavailable',503);
+ const rights=rightsResult.data;
+ if(rights.canView!==true)throw new ApiError('album_view_forbidden',403);
+ if(body.action==='create-folder'&&rights.canCreateFolder!==true)throw new ApiError('album_create_forbidden',403);
+ if(body.action==='upload'&&rights.canUpload!==true)throw new ApiError('album_upload_forbidden',403);
  if(body.action==='status')return {ok:true,canManage:canManage(staff)};
  const category=body.category;
  if(category!=='church'&&category!=='school')throw new ApiError('invalid_category');
@@ -122,7 +128,7 @@ async function handle(request:Request,staff:Staff){
   const query=new URLSearchParams({q:`'${folderId}' in parents and trashed = false`,supportsAllDrives:'true',includeItemsFromAllDrives:'true',pageSize:'100',orderBy:'folder,name',fields:'nextPageToken,files(id,name,mimeType,size,description,hasThumbnail)'});
   if(body.pageToken){if(typeof body.pageToken!=='string'||body.pageToken.length>4096)throw new ApiError('invalid_page');query.set('pageToken',body.pageToken);}
   const result=await drive(token,'files?'+query);
-  return {ok:true,items:result.files||[],nextPageToken:result.nextPageToken||null,canAdd:folder.capabilities?.canAddChildren===true};
+  return {ok:true,items:result.files||[],nextPageToken:result.nextPageToken||null,canAdd:folder.capabilities?.canAddChildren===true&&(rights.canCreateFolder===true||rights.canUpload===true),canCreateFolder:folder.capabilities?.canAddChildren===true&&rights.canCreateFolder===true,canUpload:folder.capabilities?.canAddChildren===true&&rights.canUpload===true};
  }
  if(body.action==='preview'){
   const fileId=id(body.fileId);await within(token,fileId,root);

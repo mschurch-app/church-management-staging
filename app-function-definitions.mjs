@@ -59,7 +59,7 @@ export const FUNCTION_CATALOG=freezeTree({
       "新朋友關懷"
     ]
   },
-  "church_albums": {"file":"church-albums.html","title":"相簿","description":"教會與課輔照片、資料夾及檔案上傳","key":"church_albums","group":"pastoral","church":"M+","symbol":"mplus-box","configurableHome":false,"searchTerms":["教會相簿","課輔相簿","照片","上傳"]},
+  "church_albums": {"file":"church-albums.html","title":"相簿","description":"教會與課輔照片、資料夾及檔案上傳","key":"church_albums","permission":"church_albums","group":"pastoral","church":"M+","symbol":"mplus-box","configurableHome":false,"searchTerms":["教會相簿","課輔相簿","照片","上傳"]},
   "pastoral_workspace": {
     "file": "pastoral/workspace.html",
     "icon": "🤝",
@@ -845,6 +845,7 @@ export const SETTINGS_GROUPS=freezeTree([
   }
 ]);
 export const PERMISSION_LABELS=freezeTree({
+  church_albums: '相簿',
   "members": "會友",
   "attendance": "出席登記",
   "groups": "小組與小家",

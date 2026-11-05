@@ -1,6 +1,6 @@
-import {canOpen,canAction} from './admin-access.mjs?v=20261103-unifiedpermissions1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261104-potluck1';
-export * from './app-function-definitions.mjs?v=20261104-potluck1';
+import {canOpen,canAction} from './admin-access.mjs?v=20261105-albumrights1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261105-albumrights1';
+export * from './app-function-definitions.mjs?v=20261105-albumrights1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const assigned=new Set((home.module_permissions||[]).map(canonicalFunctionKey));
  return Object.keys(FUNCTION_CATALOG).filter(key=>{
@@ -21,7 +21,6 @@ export function availableFunctionKeys(access,church,home={},settings={}) {
   if(key==='school_reports'&&home.schoolRole!=='同工')return false;
   if(key.startsWith('basketball')&&!assigned.has('basketball'))return false;
   if(key==='pastoral_workspace'&&!assigned.has('pastoral_workspace'))return false;
-  if(key==='church_albums'&&!assigned.has('pastoral_workspace'))return false;
   if(key==='pastoral_workflow_survey'&&!assigned.has('pastoral_workspace'))return false;
   return true;
  });

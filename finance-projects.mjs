@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
-import {receiptPayload} from './finance/receipts.mjs?v=20261105-projects1';
+import {receiptPayload} from './finance/receipts.mjs?v=20261105-incomemethods1';
 const $=s=>document.querySelector(s),form=$('#edit-form'),node=(tag,text='',cls='')=>Object.assign(document.createElement(tag),{textContent:text,className:cls});
 const errors={forbidden:'只有系統擁有者可以設定專案與事工。',login_required:'請先登入。',version_conflict:'項目已由其他頁面更新，請重新讀取後再修改。',request_conflict:'請求內容不一致，請重新讀取。',duplicate_name:'名稱或收入科目代碼已使用，請核對後修改。',invalid_request:'請確認名稱、科目及必填欄位。',project_inactive:'所屬專案已停用，請先啟用專案。',project_locked:'事工已有固定歸屬，請在原專案內編輯。'};
 let catalog={projects:[],ministries:[]},view='projects',mode='project',record=null,id=null,busy=false,pending=null,epoch=0,actor=null,dirty=false;

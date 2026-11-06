@@ -8,13 +8,13 @@ SET LOCAL request.jwt.claims='{"sub":"10000000-0000-4000-8000-000000000001","ses
 SET LOCAL ROLE authenticated;
 DO $$ DECLARE r jsonb; BEGIN
  r:=public.personal_mail_get_state(null,1);
- IF r#>>'{pagination,total}' <> '2' OR r#>>'{pagination,hasMore}' <> 'true'
-   OR r#>>'{accounts,0,email}' <> 'a@example.invalid' OR r#>>'{settings,time}' <> '07:00'
-   OR r#>>'{settings,deliveryEnabled}' <> 'false' THEN RAISE EXCEPTION 'own_state_failed'; END IF;
+ IF r#>>'{pagination,total}' IS DISTINCT FROM '2' OR r#>>'{pagination,hasMore}' IS DISTINCT FROM 'true'
+   OR r#>>'{accounts,0,email}' IS DISTINCT FROM 'a@example.invalid' OR r#>>'{settings,time}' IS DISTINCT FROM '07:00'
+   OR r#>>'{settings,deliveryEnabled}' IS DISTINCT FROM 'false' THEN RAISE EXCEPTION 'own_state_failed'; END IF;
  r:=public.personal_mail_get_state((r#>>'{pagination,nextCursor}')::uuid,1);
- IF r#>>'{accounts,0,email}' <> 'apple@example.invalid' OR r#>>'{pagination,hasMore}' <> 'false' THEN RAISE EXCEPTION 'pagination_failed'; END IF;
+ IF r#>>'{accounts,0,email}' IS DISTINCT FROM 'apple@example.invalid' OR r#>>'{pagination,hasMore}' IS DISTINCT FROM 'false' THEN RAISE EXCEPTION 'pagination_failed'; END IF;
  r:=public.personal_mail_set_time('08:15',0);
- IF r#>>'{settings,revision}' <> '1' THEN RAISE EXCEPTION 'revision_failed'; END IF;
+ IF r#>>'{settings,revision}' IS DISTINCT FROM '1' THEN RAISE EXCEPTION 'revision_failed'; END IF;
  BEGIN PERFORM public.personal_mail_set_time('09:00',0); RAISE EXCEPTION 'stale_write_accepted'; EXCEPTION WHEN SQLSTATE '40001' THEN NULL; END;
  BEGIN PERFORM public.personal_mail_set_time('24:00',1); RAISE EXCEPTION 'invalid_time_accepted'; EXCEPTION WHEN SQLSTATE '22023' THEN NULL; END;
  BEGIN PERFORM public.personal_mail_pause_account('30000000-0000-4000-8000-000000000003'); RAISE EXCEPTION 'cross_owner_write_accepted'; EXCEPTION WHEN SQLSTATE 'P0002' THEN NULL; END;
@@ -28,14 +28,14 @@ SET LOCAL request.jwt.claims='{"sub":"10000000-0000-4000-8000-000000000002","ses
 SET LOCAL ROLE authenticated;
 DO $$ DECLARE r jsonb; BEGIN
  r:=public.personal_mail_get_state();
- IF r#>>'{pagination,total}' <> '1' OR r#>>'{accounts,0,email}' <> 'b@example.invalid' OR r#>>'{accounts,0,status}' <> 'connected' THEN RAISE EXCEPTION 'cross_owner_read'; END IF;
+ IF r#>>'{pagination,total}' IS DISTINCT FROM '1' OR r#>>'{accounts,0,email}' IS DISTINCT FROM 'b@example.invalid' OR r#>>'{accounts,0,status}' IS DISTINCT FROM 'connected' THEN RAISE EXCEPTION 'cross_owner_read'; END IF;
 END $$;
 RESET ROLE;
 SET LOCAL request.jwt.claims='{"sub":"10000000-0000-4000-8000-000000000003","session_id":"40000000-0000-4000-8000-000000000003","role":"authenticated"}';
 SET LOCAL ROLE authenticated;
 DO $$ DECLARE r jsonb; BEGIN
  r:=public.personal_mail_get_state();
- IF r#>>'{pagination,total}' <> '2' OR r#>>'{settings,time}' <> '08:15' THEN RAISE EXCEPTION 'alias_owner_failed'; END IF;
+ IF r#>>'{pagination,total}' IS DISTINCT FROM '2' OR r#>>'{settings,time}' IS DISTINCT FROM '08:15' THEN RAISE EXCEPTION 'alias_owner_failed'; END IF;
 END $$;
 RESET ROLE;
 -- Ambiguous historical staff mappings must fail rather than select one by name.

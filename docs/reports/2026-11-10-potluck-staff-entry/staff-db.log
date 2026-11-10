@@ -1,0 +1,13 @@
+PASS backend projects actual can_manage separately from view/export access
+PASS manual registration creates no LINE identity or participant; stores staff source
+PASS same request is idempotent across dish, household, audit and detects altered replay
+PASS view-only, inactive, wrong-church, LINE-only and anonymous actors cannot create
+PASS public counts include manual dishes; private notes/identity stay private and no LINE ownership is invented
+PASS authorized export includes manual rows and source without widening export permission
+PASS a LINE user cannot edit a staff-created row even when display names match
+PASS invalid fields roll back the provisional household and dish together
+PASS cross-event categories and non-Mplus activity targets are denied
+PASS existing admin edit/cancel and active-only statistics work for manual dishes
+PASS staff can supplement a closed public registration but cannot add to an archived event
+PASS private table and service RPC remain inaccessible to public roles
+{"passed":12,"failed":0,"real_users_used":false}

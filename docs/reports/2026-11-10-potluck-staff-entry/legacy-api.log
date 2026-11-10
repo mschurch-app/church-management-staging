@@ -1,0 +1,10 @@
+PASS verified provider identity; client identity/admin/path ignored
+PASS invalid/expired/wrong-channel credentials denied, provider outage retained
+PASS invalid input and non-JPEG uploads rejected
+PASS management requires independently verified Church OS Auth
+PASS anonymous read is projected only; unapproved origins rejected
+PASS server-owned immutable private image path excludes LINE ID
+PASS photo replacement verifies dish ownership before upload
+PASS staff create uses verified OS identity, never LINE or supplied owner/admin IDs
+PASS staff create validates names, category, positive finite servings and request UUID
+All 9 API contract checks passed; no live API calls.

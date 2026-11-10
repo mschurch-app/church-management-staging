@@ -22,16 +22,17 @@ async function lineIdentity(body:Record<string,unknown>){
 function validatedData(action:string,input:unknown){
  const source=input&&typeof input==='object'&&!Array.isArray(input)?input as Record<string,unknown>:{};
  const out:Record<string,unknown>={};
- const keys=action==='save'?['request_id','id','version','category_id','display_name','dish_name','servings','notes','allergen_info','storage_requirements']:
+ const keys=action==='admin_create'?['request_id','category_id','display_name','dish_name','servings','notes','allergen_info','storage_requirements']:action==='save'?['request_id','id','version','category_id','display_name','dish_name','servings','notes','allergen_info','storage_requirements']:
   action==='cancel'?['request_id','id','version']:['request_id','id','version','category_id','display_name','dish_name','servings','notes','allergen_info','storage_requirements','status','household_id','registration_open','registration_deadline','edit_deadline','allow_user_edit','archived','targets'];
  for(const key of keys)if(Object.hasOwn(source,key))out[key]=source[key];
  if(!['get','public','admin_get','export'].includes(action)){
   if(typeof out.request_id!=='string'||!/^([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i.test(out.request_id))throw new Error('invalid_request');
  }
- if(action==='save'||action==='admin_dish'){
+ if(action==='save'||action==='admin_dish'||action==='admin_create'){
   for(const [key,max,required]of [['display_name',60,true],['dish_name',80,true],['notes',1000,false],['allergen_info',300,false],['storage_requirements',300,false]] as const){const v=out[key]??'';if(typeof v!=='string'||v.length>max||(required&&!v.trim()))throw new Error('invalid_request');out[key]=v.trim();}
   if(typeof out.servings!=='number'||!Number.isFinite(out.servings)||out.servings<=0)throw new Error('invalid_request');
  }
+ if(action==='admin_create'&&(typeof out.category_id!=='string'||!/^([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i.test(out.category_id)))throw new Error('invalid_request');
  return out;
 }
 export async function handler(req:Request){
@@ -41,7 +42,7 @@ export async function handler(req:Request){
  if(Number(req.headers.get('content-length')||0)>3800000)return json(origin,413,{ok:false,error:'image_too_large'});
  let body:Record<string,unknown>;try{const text=await req.text();if(text.length>3800000)return json(origin,413,{ok:false,error:'image_too_large'});body=JSON.parse(text);if(!body||Array.isArray(body)||typeof body!=='object')throw 0;}catch{return json(origin,400,{ok:false,error:'invalid_request'});}
  const action=String(body.action||''),slug=String(body.slug||'thanksgiving-2026');
- if(!['public','get','save','cancel','admin_get','export','admin_settings','admin_dish','admin_allow_extra'].includes(action)||!/^[a-z0-9-]{1,80}$/.test(slug))return json(origin,400,{ok:false,error:'invalid_request'});
+ if(!['public','get','save','cancel','admin_get','export','admin_settings','admin_dish','admin_allow_extra','admin_create'].includes(action)||!/^[a-z0-9-]{1,80}$/.test(slug))return json(origin,400,{ok:false,error:'invalid_request'});
  const url=Deno.env.get('SUPABASE_URL')||'',key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||Deno.env.get('SUPABASE_SECRET_KEY')||'';
  if(!url||!key)return json(origin,503,{ok:false,error:'unavailable'});
  const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
@@ -89,3 +90,4 @@ export async function handler(req:Request){
  return json(origin,200,{ok:true,...output});
 }
 Deno.serve(handler);
+

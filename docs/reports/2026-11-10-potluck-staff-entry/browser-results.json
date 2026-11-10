@@ -1,0 +1,69 @@
+{
+  "configurations": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "form/default10",
+        "save/stats",
+        "CSV",
+        "edit/cancel",
+        "lost response/reopen/same ID",
+        "rapid double submit",
+        "saved but reload failed",
+        "read-only and archived gating",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "form/default10",
+        "save/stats",
+        "CSV",
+        "edit/cancel",
+        "lost response/reopen/same ID",
+        "rapid double submit",
+        "saved but reload failed",
+        "read-only and archived gating",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "form/default10",
+        "save/stats",
+        "CSV",
+        "edit/cancel",
+        "lost response/reopen/same ID",
+        "rapid double submit",
+        "saved but reload failed",
+        "read-only and archived gating",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "form/default10",
+        "save/stats",
+        "CSV",
+        "edit/cancel",
+        "lost response/reopen/same ID",
+        "rapid double submit",
+        "saved but reload failed",
+        "read-only and archived gating",
+        "no horizontal overflow"
+      ]
+    }
+  ],
+  "real_iphone_tested": false
+}

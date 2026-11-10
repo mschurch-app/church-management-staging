@@ -7,8 +7,8 @@ const BRANDS={
   'M+':{name:'M＋大雅教會',logo:'assets/brands/mplus-logo-white.png',accent:'#b96a40',soft:'#f8e8d8'},
   SHiNE:{name:'火樂教會',logo:'assets/brands/shine-logo.png',accent:'#c45f3e',soft:'#f9e3d7'},
 };
-const SHARED_FEATURES={today:['🌅','給今天的你','每天一句恩典與祝福'],prayer:['🙏','需要禱告時','進入即時動態禱告牆'],newcomer:['☕','歡迎新朋友','留下第一次相遇的印記'],weekly:['⛪','不見不散喔','本週聚會時間與位置'],love:['💌','把愛傳出去','製作祝福卡傳給好友']};
-function features(){return config.church==='M+'?{potluck:['🍂','感恩美食大冒險','一家一道菜，讓愛滿出來！'],today:SHARED_FEATURES.today,tree:['🌱','每日靈修生命樹','讀經、默想、回應，留下每天的成長'],service_signup:['🙌','主日服事登記','選擇服事與主日，額滿可候補'],prayer:SHARED_FEATURES.prayer,newcomer:SHARED_FEATURES.newcomer,weekly:['📰','本週週報','本週消息與主日資訊'],love:SHARED_FEATURES.love}:{today:SHARED_FEATURES.today,help:['🕊️','隨時的幫助','依此刻心情領受經文'],prayer:SHARED_FEATURES.prayer,newcomer:SHARED_FEATURES.newcomer,weekly:SHARED_FEATURES.weekly,love:SHARED_FEATURES.love};}
+const SHARED_FEATURES={today:['🌅','給今天的你','每天一句恩典與祝福'],prayer:['🙏','需要禱告時','進入即時動態禱告牆'],newcomer:['☕','會友建檔更新','會友資料建檔、補齊與更新'],weekly:['⛪','不見不散喔','本週聚會時間與位置'],love:['💌','把愛傳出去','製作祝福卡傳給好友']};
+function features(){return config.church==='M+'?{newcomer:SHARED_FEATURES.newcomer,weekly:['📰','本週週報','本週消息與主日資訊'],tree:['🌱','讀經生命樹','讀經、默想、回應，留下每天的成長'],service_signup:['🙌','服事登記','選擇服事與主日，額滿可候補'],today:SHARED_FEATURES.today,prayer:SHARED_FEATURES.prayer,love:SHARED_FEATURES.love,potluck:['🍂','感恩美食大冒險','一家一道菜，讓愛滿出來！']}:{today:SHARED_FEATURES.today,help:['🕊️','隨時的幫助','依此刻心情領受經文'],prayer:SHARED_FEATURES.prayer,newcomer:SHARED_FEATURES.newcomer,weekly:SHARED_FEATURES.weekly,love:SHARED_FEATURES.love};}
 
 let config,idToken='',accessToken='',profile={name:'主內家人'},current='menu',payload,selectedLove=0,canvasUrl='';
 

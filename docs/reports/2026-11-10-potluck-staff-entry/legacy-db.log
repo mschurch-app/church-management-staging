@@ -1,0 +1,14 @@
+PASS existing activity master; correct Sunday, six categories and 28-dish targets
+PASS servings above ten and exact idempotent replay
+PASS payload replay conflict and one active dish per household
+PASS cross-owner edits and stale/missing versions rejected
+PASS public projection omits LINE identity, household and private notes
+PASS same public nickname never identifies a household
+PASS approved roster household is shared across two verified LINE accounts
+PASS owner RBAC and explicitly approved additional dish
+PASS edit/version/cancel immediately update active counts
+PASS target overflow remains open
+PASS server enforces closing and editing settings
+PASS anon/authenticated cannot call service RPC or read private tables
+PASS mutations have audit receipts
+{"passed":13,"failed":0,"checks":["existing activity master; correct Sunday, six categories and 28-dish targets","servings above ten and exact idempotent replay","payload replay conflict and one active dish per household","cross-owner edits and stale/missing versions rejected","public projection omits LINE identity, household and private notes","same public nickname never identifies a household","approved roster household is shared across two verified LINE accounts","owner RBAC and explicitly approved additional dish","edit/version/cancel immediately update active counts","target overflow remains open","server enforces closing and editing settings","anon/authenticated cannot call service RPC or read private tables","mutations have audit receipts"]}

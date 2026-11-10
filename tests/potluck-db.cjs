@@ -10,7 +10,7 @@ const fs=require('fs'),assert=require('assert/strict');
  create table church_auth.member_bindings(church_id text,login_channel_id text,line_subject text,member_id bigint,active boolean);
  create table storage.buckets(id text,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
  grant usage on schema church_auth to service_role;grant select on public.members,church_auth.member_bindings to service_role;grant all on public.camps to service_role;`);
- const path=require('path').resolve(__dirname,'../supabase/migrations/20261104090907_thanksgiving_potluck_event.sql');await db.exec(fs.readFileSync(path,'utf8'));
+ const path=require('path').resolve(__dirname,'../supabase/migrations/20261104090907_thanksgiving_potluck_event.sql');await db.exec(fs.readFileSync(path,'utf8'));await db.exec(fs.readFileSync(require('path').resolve(__dirname,'../supabase/migrations/20261110054044_potluck_staff_manual_registration.sql'),'utf8'));
  const u=n=>'U'+String(n).repeat(32),owner='00000000-0000-4000-8000-000000000001',other='00000000-0000-4000-8000-000000000002';
  await db.exec(`insert into church_auth.accounts values('${owner}',true),('${other}',true);insert into church_auth.owners values('${owner}');`);
  const call=async(action,data={},subject=u(1),admin=null)=>{await db.exec('set role service_role');try{return (await db.query('select public.potluck_action($1,$2,$3,$4::jsonb,$5::uuid) as data',['thanksgiving-2026',subject,action,JSON.stringify(data),admin])).rows[0].data;}finally{await db.exec('reset role');}};

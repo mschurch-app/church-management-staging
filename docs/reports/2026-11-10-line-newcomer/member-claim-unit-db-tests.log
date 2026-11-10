@@ -1,0 +1,34 @@
+✔ LINE id tokens require the configured audience, expiry and subject (8.55375ms)
+✔ LINE access tokens verify channel and then retrieve subject; client subject is ignored (0.183958ms)
+✔ OAuth sessions use server-owned identities, never editable user_metadata (0.103125ms)
+✔ onboarding returns registration state only, keeps rate limits and rejects spoofed subject (0.894125ms)
+✔ registration verifies before storage and strips credentials from profile payload (0.594125ms)
+✔ invalid identity cannot silently fall back to anonymous registration (0.266541ms)
+✔ anonymous registration remains available; retry/review outcomes are explicit (0.595625ms)
+✔ claim lookup/verification outputs are allowlisted and require verified identity (0.424875ms)
+✔ existing-member claims require login and preserve proof outside editable profile payload (0.286167ms)
+✔ M+ enrollment atomically creates member, care case and verified binding; retries are idempotent (467.506ms)
+✔ church scope is independent and SHiNE enrollment never creates M+ care tasks (324.930208ms)
+✔ request id and content are bound to the verified subject; anonymous receipts cannot be claimed (314.332209ms)
+✔ revoked binding cannot be restored through either the old request or a new enrollment (306.611458ms)
+✔ potential existing members require review and are never attached by name or phone (321.515667ms)
+✔ failed binding rolls back the member, registration receipt and care task (315.4985ms)
+✔ public roles cannot self-assign subjects or access enrollment audit rows (330.095209ms)
+✔ prefix lookup is identity/church scoped and only releases names + opaque tokens (332.684125ms)
+✔ phone takes priority, full phone is required; completion fills blanks without granting staff rights (342.147833ms)
+✔ birthday fallback, scoped proofs, expiry and roster changes cannot bypass verification (347.893417ms)
+✔ verification has a durable five-attempt identity limit across new candidate tokens (464.015458ms)
+✔ missing verification fields retain submitted form for staff; only staff approval fills roster blanks (657.976542ms)
+✔ bound/revoked accounts and archived members cannot use lookup for silent rebinding (402.611833ms)
+✔ claim tables/RPCs and helper functions are inaccessible to public roles (481.828833ms)
+✔ two verified LINE identities cannot claim the same member; archive blocks completion (618.98375ms)
+✔ binding failure rolls back all completed profile changes and audit receipts (325.089167ms)
+✔ manual review reuses pending request and never applies proposal to another selected member (317.07925ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6715.401916

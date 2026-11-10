@@ -1,3 +1,4 @@
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
 import {LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS} from './line-config.mjs';
 
 const $=selector=>document.querySelector(selector);
@@ -56,6 +57,7 @@ async function start(){
     state.token=sessionStorage.getItem(`line-member-token:${church}`)||'';
     state.accessToken=sessionStorage.getItem(`line-member-access-token:${church}`)||'';
     if(!state.token&&!state.accessToken){location.replace(memberLoginUrl());return;}
+    if(await ensureMemberOnboarding({church,credentials:{...(state.token?{idToken:state.token}:{}),...(state.accessToken?{accessToken:state.accessToken}:{})}}))return;
     state.date=params.get('date')||taipeiToday();
     const data=await api('content',{feature:'devotional',date:state.date});
     if(data.launchPending){$('#status').hidden=true;$('#empty').hidden=false;return;}

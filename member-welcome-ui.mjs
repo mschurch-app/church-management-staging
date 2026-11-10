@@ -1,4 +1,5 @@
-import {makeMemberClient} from './member-client.mjs';
+import {onboardingCredentials} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {makeMemberClient} from './member-client.mjs?v=20261110-line-claim1';
 export const MEMBER_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/member-access';
 export function mountMemberPanel(){
   const form=document.querySelector('#formSection'),host=form?.parentElement;
@@ -9,10 +10,13 @@ export function mountMemberPanel(){
   const panel=document.createElement('section');
   panel.className='card-glass p-6 sm:p-8 mb-4 space-y-5';
   panel.id='memberIdentityPanel';
+  // This panel owns its loading/error/result states, including read-only refresh.
+  // The shared write watchdog cannot infer completion from a replaced status node.
+  panel.dataset.actionFeedback='off';
   host.insertBefore(panel,form);
   const text=(tag,value)=>{const el=document.createElement(tag);el.textContent=value;return el;};
   let client,newcomerMode=false;
-  const button=(label,fn,secondary=false)=>{const el=text('button',label);el.type='button';el.className=secondary?'w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black':'w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black';el.addEventListener('click',()=>Promise.resolve().then(fn).catch(()=>{}));return el;};
+  const button=(label,fn,secondary=false)=>{const el=text('button',label);el.type='button';el.className=secondary?'w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black':'w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black';el.addEventListener('click',async()=>{if(el.disabled)return;el.disabled=true;el.setAttribute('aria-busy','true');try{await fn();}catch{/* Client renders the actual error state. */}finally{el.disabled=false;el.removeAttribute('aria-busy');}});return el;};
   const field=(label,type='text')=>{const wrapper=text('label','');wrapper.className='block space-y-1.5 text-xs font-black text-stone-700';wrapper.append(text('span',label));const input=document.createElement('input');input.type=type;input.className='w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm';wrapper.append(input);return{wrapper,input};};
   const profileCard=member=>{
     const card=document.createElement('div');card.className='rounded-3xl bg-gradient-to-br from-teal-800 to-teal-950 p-5 text-white shadow-lg shadow-teal-900/10';
@@ -30,13 +34,17 @@ export function mountMemberPanel(){
   const normalizePhone=value=>{const digits=String(value||'').replace(/\D/g,'');if(/^8869\d{8}$/.test(digits))return '0'+digits.slice(3);if(/^09\d{8}$/.test(digits))return digits;return'';};
   function render(result){
     panel.replaceChildren();
-    const eyebrow=text('p','LINE MEMBER · 既有家人辨識');eyebrow.className='text-[11px] font-black tracking-[.16em] text-teal-700';
+    const eyebrow=text('p','LINE · 會友資料與新朋友登記');eyebrow.className='text-[11px] font-black tracking-[.16em] text-teal-700';
     const title=text('h2','歡迎回家');title.className='text-xl font-black text-stone-800';
     const message=text('p','');message.className='text-xs leading-relaxed text-stone-600';message.setAttribute('role','status');panel.append(eyebrow,title,message);
     const messages={signed_out:'請先登入 LINE，系統會確認是否已綁定會友資料。',loading:'正在確認你的 LINE 綁定狀態…',unbound:`如果你已經是${churchName}家人，請留下姓名與手機，由同工確認後完成綁定。`,pending:'申請已收到，正在等待同工核准；核准後會自動帶入你的資料。',approved:'已確認為教會家人。請核對下列資料，需要時可以直接修正。',rejected:'這次申請尚未通過，請確認姓名與手機後重新提出。',revoked:'原有綁定已撤銷，如需恢復請重新提出申請。',error:'目前無法確認身份，請稍後重新查詢。'};
     message.textContent=messages[result.state]||'無法確認身份。';
+    const badge=document.querySelector('#lineStatusBadge');if(badge){const verified=['unbound','pending','approved','rejected','revoked'].includes(result.state);badge.classList.toggle('hidden',!verified);if(verified){badge.querySelector('span').firstChild.textContent=result.state==='approved'?'LINE 已完成綁定：':'LINE 身分已確認，填寫後完成綁定';document.querySelector('#lineUserDisplayName').textContent=result.state==='approved'?(result.member?.name||''):'';}}
+    if(['unbound','pending','rejected','revoked'].includes(result.state)){showForm(true);message.textContent='歡迎你！目前尚未完成會友資料與 LINE 綁定，請填寫下方新朋友資料；送出後會直接完成綁定。若以前填過或綁定曾被撤銷，請由同工協助確認。';}
+    if(result.state==='approved'){newcomerMode=false;}
+    document.dispatchEvent(new CustomEvent('member-identity-state',{detail:{state:result.state}}));
     if(newcomerMode){panel.hidden=true;showForm(true);return;}
-    panel.hidden=false;showForm(false);
+    panel.hidden=false;showForm(['unbound','pending','rejected','revoked','signed_out'].includes(result.state));
     if(result.state==='signed_out')panel.append(button('使用 LINE 確認身份',()=>client.login()));
     if(['pending','error'].includes(result.state))panel.append(button('重新查詢狀態',()=>client.connect(),true));
     if(['unbound','rejected','revoked'].includes(result.state)){
@@ -63,7 +71,7 @@ export function mountMemberPanel(){
   }
   if(!MEMBER_ENDPOINT){panel.append(text('h2','既有會友資料更新'),text('p','身份綁定功能尚未開放，請聯絡教會同工。'));return;}
   try{
-    client=makeMemberClient({liff:window.liff,search:location.search,onState:render,send:async body=>{
+    client=makeMemberClient({liff:window.liff,search:location.search,credentials:()=>onboardingCredentials(selectedChurch),onState:render,send:async body=>{
       const response=await fetch(MEMBER_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(15000)});
       if(!response.ok)throw new Error('unavailable');return response.json();
     }});

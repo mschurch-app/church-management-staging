@@ -747,6 +747,8 @@
         }
         const idToken = window.liff.getIDToken() || '';
         if (!idToken) throw new Error('missing_token');
+        const {ensureMemberOnboarding}=await import('./member-onboarding.mjs?v=20261110-line-claim1');
+        if(await ensureMemberOnboarding({church,credentials:{idToken}}))return;
         await fetchTodayContent(idToken);
         liffReady = true;
         $('#lineState').textContent = `${profileName} · 今日恩典`;

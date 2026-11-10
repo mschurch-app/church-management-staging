@@ -1,0 +1,19 @@
+✔ M+ enrollment atomically creates member, care case and verified binding; retries are idempotent (476.167792ms)
+✔ church scope is independent and SHiNE enrollment never creates M+ care tasks (333.309917ms)
+✔ request id and content are bound to the verified subject; anonymous receipts cannot be claimed (324.606292ms)
+✔ revoked binding cannot be restored through either the old request or a new enrollment (310.165334ms)
+✔ potential existing members require review and are never attached by name or phone (323.636875ms)
+✔ failed binding rolls back the member, registration receipt and care task (313.691584ms)
+✔ public roles cannot self-assign subjects or access enrollment audit rows (311.084625ms)
+✔ actual service-role grants reproduce the production failure; minimal grants allow M+ care and idempotent binding (321.148166ms)
+✔ service role can complete an existing verified claim without privileged actor fields (317.697792ms)
+✔ service role can create and update a single pending review, without granting public write access (318.964209ms)
+✔ column grants cannot delete bindings, forge approvers or change identity ownership (313.165667ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3706.041667

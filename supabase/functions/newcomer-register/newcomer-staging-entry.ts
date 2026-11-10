@@ -47,16 +47,24 @@ async function notifyNewcomerCare(requestId:string){
   }
  }catch{/* Keep the public registration successful; retrying the same request retries delivery. */}
 }
+async function bestEffortNotification(work:()=>Promise<unknown>){
+ let timer:ReturnType<typeof setTimeout>|undefined;
+ try{await Promise.race([work(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('notification_timeout')),5000);})]);}
+ catch{console.warn('newcomer_notification_unavailable');}
+ finally{clearTimeout(timer);}
+}
 Deno.serve(makeNewcomerHandler({enabled,preparePhoto,verifyIdentity:makeLineVerifier({channels:LINE_LOGIN_CHANNELS,client:db}),submit:async input=>{
  if(!db)throw Error('unavailable');
  const {data,error}=await db.rpc(input.claimReview?'submit_member_claim_review':input.claimToken?'complete_verified_member_claim':input.identity?'register_verified_line_newcomer':'register_staging_newcomer',{p_id:input.request_id,p_church:input.church,p_payload:input.payload,...(input.identity?{p_channel:input.identity.channel,p_subject:input.identity.subject}:{}),...(input.claimToken?{p_claim:input.claimToken}:{})});
  if(error)throw Error('unavailable');
- if(data==='pending_review'){await notifyBindingReview({client:db,requestId:input.request_id,church:input.church,name:input.payload.name,phone:input.payload.phone}).catch(()=>{});return data;}
- if(data!=='accepted')return data;
+ if(data!=='accepted'&&data!=='pending_review')return data;
  // Register once before upload; retries use the same request and immutable path.
  // An interrupted upload stays retryable and never creates another member.
  if(input.photo)await storePhoto(db.storage,input.photo);
+ if(data==='pending_review'){await bestEffortNotification(()=>notifyBindingReview({client:db,requestId:input.request_id,church:input.church,name:input.payload.name,phone:input.payload.phone}));return data;}
  if(input.claimToken)return 'accepted';
+ // Optional delivery cannot turn a confirmed registration/photo into an error.
+ await bestEffortNotification(async()=>{
  await notifyNewcomerCare(input.request_id);
  if(input.church==='M+'){
   const receipt=await db.from('pastoral_newcomer_care_cases').select('member_id').eq('registration_request_id',input.request_id).eq('entity_key','mplus').maybeSingle();
@@ -64,5 +72,6 @@ Deno.serve(makeNewcomerHandler({enabled,preparePhoto,verifyIdentity:makeLineVeri
   const route=await notificationRoute(db,'M+','newcomer_created');
   await Promise.all([route.app?notifyNewcomerApp({db,memberId:Number(receipt.data.member_id)}):Promise.resolve({status:'disabled'}),notifyMplusNewcomer({db,memberId:Number(receipt.data.member_id)})]);
  }
+ });
  return 'accepted';
 }}));

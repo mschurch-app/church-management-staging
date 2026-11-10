@@ -1,6 +1,6 @@
 import {welcomeLiffConfig} from './staging-config.mjs';
 import {submissionState} from './submission-state.mjs';
-export function makeMemberClient({liff,send,search,createId,onState=()=>{}}){
+export function makeMemberClient({liff,send,search,createId,credentials,onState=()=>{}}){
   const config=welcomeLiffConfig(search),submission=submissionState(createId);
   let generation=0,current={state:'signed_out'},busy=false;
   const publish=value=>{current=value;onState(value);return value;};
@@ -13,15 +13,15 @@ export function makeMemberClient({liff,send,search,createId,onState=()=>{}}){
     finally{busy=false;}
   }
   async function call(action,extra={}){
-    if(!liff.isLoggedIn())throw new Error('login_required');
-    const idToken=liff.getIDToken();if(!idToken)throw new Error('login_required');
-    return send({action,church:config.church,idToken,...extra});
+    const auth=credentials?await credentials():liff.isLoggedIn()?{idToken:liff.getIDToken()}:{};
+    if(!Object.values(auth).some(Boolean))throw Error('login_required');
+    return send({action,church:config.church,...auth,...extra});
   }
   return {
     clear,
     async connect(){return run(async()=>{
-      await liff.init({liffId:config.liffId});
-      if(!liff.isLoggedIn())return {state:'signed_out'};
+      if(liff?.init)await liff.init({liffId:config.liffId});
+      if(credentials){if(!Object.values(await credentials()).some(Boolean))return {state:'signed_out'};}else if(!liff.isLoggedIn())return {state:'signed_out'};
       return call('status');
     });},
     login(){liff.login();},

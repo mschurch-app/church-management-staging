@@ -1,4 +1,4 @@
-import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261022-line-sso1';
+import {wireLineAuth,pendingHandoff} from './app-line-auth.mjs?v=20261110-line-claim1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 import {APPLICATION_PAGE,applicationRPC} from './coworker-application-api.mjs?v=20261022-coworker-review1';
 const $=s=>document.querySelector(s),form=$('#application-form'),status=$('#status'),line=$('#line-login');

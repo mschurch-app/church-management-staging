@@ -1,4 +1,4 @@
-import {notifyStaffDual,notifyLineGroup} from '../_shared/dual-notification.mjs';
+import {notifyStaffDual,notifyLineGroup} from './_shared/dual-notification.mjs';
 function phoneTail(value){const digits=String(value||'').replace(/\D/g,'');return digits.length>=3?digits.slice(-3):'未提供';}
 export async function notifyBindingReview({client,requestId,church,name,phone}){
  const configured=await client.from('line_notification_settings').select('enabled,recipient_staff_ids,group_id').eq('church_id',church).eq('event_key','binding_review').maybeSingle();

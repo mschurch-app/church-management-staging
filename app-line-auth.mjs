@@ -1,3 +1,4 @@
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';
 export const HANDOFF_STORAGE='church-os-line-handoff-v1';
 const endpoint=SUPABASE_URL+'/functions/v1/app-auth-handoff';
@@ -43,8 +44,12 @@ export function wireLineAuth(db,button,status,{flow='login',next='admin-dashboar
    handoffRequest({action:'finish',id:pending.id,secret:pending.secret}).catch(()=>{});
    try{popup?.close();}catch{}
    status.textContent='登入成功，正在開啟教會 OS…';
+   const requestedChurch=new URL(pending.next,location.origin).searchParams.get('church');
+   let church=requestedChurch;
+   if(!['M+','SHiNE'].includes(church)){const access=await db.rpc('get_my_church_access');if(access.error||!Array.isArray(access.data))throw Error('堂會資料暫時無法確認，請稍後重試。');church=access.data.find(row=>['M+','SHiNE'].includes(row.church_id))?.church_id||'M+';}
+   if(await ensureMemberOnboarding({church,credentials:{sessionToken:session.access_token},returnTo:pending.next}))return;
    if(onResume)await onResume(session);else location.replace(safeAppTarget(pending.next));
-  }catch(error){status.textContent=error.fatal?error.message:'連線暫時中斷，正在等待恢復；也可取消後重新登入。';if(error.fatal){localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);reset();}}
+  }catch(error){if(resumed){reset();status.textContent='LINE 身分已驗證，但會友資料暫時無法確認；請再按 LINE 登入重試。';return;}status.textContent=error.fatal?error.message:'連線暫時中斷，正在等待恢復；也可取消後重新登入。';if(error.fatal){localStorage.removeItem(HANDOFF_STORAGE);clearInterval(timer);reset();}}
   finally{polling=false;cancel.disabled=false;}
  }
  function watch(){clearInterval(timer);timer=setInterval(()=>{if(!pendingHandoff()){clearInterval(timer);if(!resumed){status.textContent='LINE 登入等待已結束，請再按一次登入。';reset();}return;}void resume();},2000);void resume();}

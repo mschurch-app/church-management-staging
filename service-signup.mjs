@@ -1,3 +1,4 @@
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
 import {LINE_MEMBER_ENDPOINT} from './line-config.mjs?v=20261009-plus-state1';
 import {journeyCard} from './service-signup-journey.mjs?v=20261011-serve-home1';
 import {iconMarkup} from './app-icons.mjs?v=20261102-bibletree-admin1';
@@ -303,7 +304,7 @@ async function load(){data=await api('content',{feature:'service_signup'});rende
 async function start(){
   ({idToken,accessToken}=readCredentials());
   if(idToken||accessToken){
-    try{await load();return;}
+    try{if(await ensureMemberOnboarding({church:'M+',credentials:{...(idToken?{idToken}:{}),...(accessToken?{accessToken}:{})}}))return;await load();return;}
     catch(error){
       if(error.code!=='login_required'){
         status.hidden=false;app.hidden=true;status.querySelector('.spinner')?.remove();

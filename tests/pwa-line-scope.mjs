@@ -3,7 +3,7 @@ import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const {chromium,webkit}=await import(process.env.PLAYWRIGHT_MODULE||'/Users/james-codex/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
+const {chromium,webkit}=await import(process.env.PLAYWRIGHT_MODULE||'/Volumes/MPLUS-DATA/mplus-ai/tools/mini-devkit/node_modules/playwright-core/index.mjs');
 const root=path.resolve(import.meta.dirname,'..'),out=path.join(root,'docs/reports/2026-10-22-pwa-line');
 const identity='00000000-0000-4000-8000-000000000001',otherIdentity='00000000-0000-4000-8000-000000000002';
 const authKey='church-staging-admin-v1',pendingKey='church-os-line-handoff-v1';
@@ -65,6 +65,7 @@ async function setup(browser,{standalone=true,options={},staleSession=false}={})
  const requests=[];
  await context.route('**/*',async route=>{
   const url=new URL(route.request().url());requests.push(url.pathname);
+  if(url.pathname.endsWith('/functions/v1/member-access')){await route.fulfill({json:{state:'approved',registered:true}});return;}
   if(url.origin!==origin){await route.abort();return;}
   await route.continue();
  });
@@ -80,7 +81,7 @@ async function scenario(engine,browser,name,run){try{await run();}catch(error){f
 
 try{
  for(const engine of ['chromium','webkit']){
-  const browser=await (engine==='webkit'?webkit:chromium).launch(engine==='chromium'?{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'}:{});
+  const browser=await (engine==='webkit'?webkit:chromium).launch(engine==='chromium'?{headless:true}:{headless:true,executablePath:'/Volumes/MPLUS-DATA/mplus-ai/tools/mobile-testing/playwright-browsers/webkit-2370/pw_run.sh'});
   try{
    await scenario(engine,browser,'installed account application',async()=>{
     const app=await setup(browser,{options:{noGrants:true}});try{

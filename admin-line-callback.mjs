@@ -1,4 +1,5 @@
-import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261022-line-sso1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261110-line-claim1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 
 const status=document.querySelector('#status');
@@ -124,6 +125,15 @@ async function start(){
       status.textContent='LINE 驗證已送出，正在等待原本的 App 核對登入結果。';
       return;
     }
+    const onboardingNext=standaloneNext||safeNext()||'admin-dashboard.html';
+    const requestedChurch=new URL(onboardingNext,location.origin).searchParams.get('church');
+    let inferredAccess=null;
+    if(!['M+','SHiNE'].includes(requestedChurch)){
+      inferredAccess=await db.rpc('get_my_church_access');
+      if(inferredAccess.error||!Array.isArray(inferredAccess.data))throw Error('堂會資料暫時無法確認，請稍後重試。');
+    }
+    const onboardingChurch=['M+','SHiNE'].includes(requestedChurch)?requestedChurch:(inferredAccess?.data.find(row=>['M+','SHiNE'].includes(row.church_id))?.church_id||'M+');
+    if(await ensureMemberOnboarding({church:onboardingChurch,credentials:{sessionToken:session.access_token},returnTo:onboardingNext}))return;
     // Account applications require a verified LINE identity, but no admin grants.
     const requestedTarget=standaloneNext||safeNext();
     if(requestedTarget&&new URL(requestedTarget,location.origin).pathname==='/coworker-apply.html'){
@@ -132,7 +142,7 @@ async function start(){
       status.textContent='LINE 身分已確認，正在開啟申請頁…';location.replace('/coworker-apply.html');return;
     }
     status.textContent='LINE 身分已確認，正在載入管理權限…';
-    const access=await Promise.race([db.rpc('get_my_church_access'),new Promise((_,reject)=>setTimeout(()=>reject(Error('權限載入逾時，請返回登入頁重試。')),15000))]);
+    const access=inferredAccess||await Promise.race([db.rpc('get_my_church_access'),new Promise((_,reject)=>setTimeout(()=>reject(Error('權限載入逾時，請返回登入頁重試。')),15000))]);
     if(access.error||!Array.isArray(access.data))throw Error('管理權限暫時無法讀取，請稍後重試；尚未送出權限審核通知。');
     if(!access.data.length){
       status.textContent='尚未取得同工權限，正在開啟申請頁…';

@@ -1,4 +1,4 @@
-import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261022-line-sso1';
+import {wireLineAuth,pendingHandoff,safeAppTarget} from './app-line-auth.mjs?v=20261110-line-claim1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 const status=document.querySelector('#status'),line=document.querySelector('#line-login');
 const next=safeAppTarget(new URLSearchParams(location.search).get('next'));

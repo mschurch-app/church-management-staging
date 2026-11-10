@@ -1,0 +1,18 @@
+(node:17691) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ deployed entry returns saved success even when LINE notification throws after photo upload (15.341667ms)
+✔ deployed entry does not turn a committed registration into failure when App notification throws (0.673792ms)
+✔ photo upload failure remains retryable with the same immutable request and one member (0.578208ms)
+✔ same-request retries verify existing photo bytes and do not create another member or image (0.535291ms)
+✔ unresponsive notifications cannot keep a fully saved registration pending indefinitely (1.97175ms)
+✔ pending review stores the submitted photo before acknowledging the form, without claiming binding (0.28325ms)
+✔ pending review notification timeouts do not block saved form/photo acknowledgement (1.59575ms)
+✔ pending review photo failure can retry the same proposal and save exactly one image (0.378458ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.240667

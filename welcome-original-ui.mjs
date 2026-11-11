@@ -2,7 +2,7 @@ import {mountMemberClaim} from './member-claim-ui.mjs?v=20261110-line-claim1';
 import {onboardingCredentials,continueWithoutRegistration,safeMemberReturn} from './member-onboarding.mjs?v=20261110-line-claim1';
 import {getOptions} from './welcome-options.mjs';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
-import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261110-line-claim1';
+import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261111-newcomer-entry1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus'),submitFeedback=$('submitFeedback');
@@ -80,7 +80,7 @@ $('btnSubmit').onclick=async()=>{
   const response=await fetch('https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/newcomer-register',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'omit',cache:'no-store',body:JSON.stringify({...pending,...credentials}),signal:AbortSignal.timeout(45000)});
   if(response.status===400||response.status===413){pending=null;lock(false);throw Error('資料或照片格式不正確，請檢查後再送出。');}
   if(response.status===401)throw Error('LINE 登入已過期，請重新登入後重試同一筆登記。');
-  if(response.status===409){const error=await response.json();if(error.error==='claim_expired'){pending=null;lock(false);memberClaim?.resetProof();throw Error('核對已逾時或名冊已更新，請重新核對後送出。');}if(['already_bound','review_required'].includes(error.error)){pending=null;lock(false);throw Error(error.error==='already_bound'?'這個 LINE 已有會友資料，請重新查詢身份，不需要重複登記。':'可能已有資料或綁定需要確認，請使用上方 LINE 綁定申請，交由同工核對。');}}
+  if(response.status===409){const error=await response.json();if(error.error==='claim_expired'){pending=null;lock(false);memberClaim?.resetProof();throw Error('核對已逾時或名冊已更新，請重新核對後送出。');}if(['already_bound','review_required'].includes(error.error)){pending=null;lock(false);throw Error(error.error==='already_bound'?'這個 LINE 已有會友資料，請重新查詢身份，不需要重複登記。':'可能已有資料或原綁定需要確認，請聯絡教會同工核對；已填資料仍保留，勿重複建檔。');}}
   if(response.status===429)throw Error('目前登記較多，請稍後按重試。');
   const outcome=await response.json();if(!response.ok||outcome.accepted!==true)throw Error('尚未確認完整送出，請按重試同一筆登記。');
   if(outcome.pendingReview){for(const id of ['onboarding-invitation','onboarding-later'])if($(id)){$(id).hidden=true;$(id).classList.add('hidden');}$('successMessage').textContent='資料已送請同工確認。尚未完成 LINE 綁定，確認後才能使用會友功能；不需要重複送出。';$('memberIdentityPanel')?.classList.add('hidden');}
@@ -109,3 +109,4 @@ try{
  }});
 
 }catch(e){status.textContent=e.message;}
+

@@ -1,0 +1,29 @@
+{
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "passed": true,
+      "legacy_short_requests": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "passed": true,
+      "legacy_short_requests": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "passed": true,
+      "legacy_short_requests": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "passed": true,
+      "legacy_short_requests": 0
+    }
+  ],
+  "real_phone_verified": false
+}

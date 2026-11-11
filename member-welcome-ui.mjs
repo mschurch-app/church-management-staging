@@ -5,7 +5,6 @@ export function mountMemberPanel(){
   const form=document.querySelector('#formSection'),host=form?.parentElement;
   if(!form||!host)return;
   const selectedChurch=new URLSearchParams(location.search).get('church');
-  const churchName=selectedChurch==='SHiNE'?'火樂':'M＋';
   const groupName=selectedChurch==='SHiNE'?'小家':'小組';
   const panel=document.createElement('section');
   panel.className='card-glass p-6 sm:p-8 mb-4 space-y-5';
@@ -15,7 +14,7 @@ export function mountMemberPanel(){
   panel.dataset.actionFeedback='off';
   host.insertBefore(panel,form);
   const text=(tag,value)=>{const el=document.createElement(tag);el.textContent=value;return el;};
-  let client,newcomerMode=false;
+  let client;
   const button=(label,fn,secondary=false)=>{const el=text('button',label);el.type='button';el.className=secondary?'w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black':'w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black';el.addEventListener('click',async()=>{if(el.disabled)return;el.disabled=true;el.setAttribute('aria-busy','true');try{await fn();}catch{/* Client renders the actual error state. */}finally{el.disabled=false;el.removeAttribute('aria-busy');}});return el;};
   const field=(label,type='text')=>{const wrapper=text('label','');wrapper.className='block space-y-1.5 text-xs font-black text-stone-700';wrapper.append(text('span',label));const input=document.createElement('input');input.type=type;input.className='w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm';wrapper.append(input);return{wrapper,input};};
   const profileCard=member=>{
@@ -31,33 +30,31 @@ export function mountMemberPanel(){
     return card;
   };
   const showForm=value=>{form.classList.toggle('hidden',!value);};
-  const normalizePhone=value=>{const digits=String(value||'').replace(/\D/g,'');if(/^8869\d{8}$/.test(digits))return '0'+digits.slice(3);if(/^09\d{8}$/.test(digits))return digits;return'';};
   function render(result){
     panel.replaceChildren();
     const eyebrow=text('p','LINE · 會友資料與新朋友登記');eyebrow.className='text-[11px] font-black tracking-[.16em] text-teal-700';
     const title=text('h2','歡迎回家');title.className='text-xl font-black text-stone-800';
     const message=text('p','');message.className='text-xs leading-relaxed text-stone-600';message.setAttribute('role','status');panel.append(eyebrow,title,message);
-    const messages={signed_out:'請先登入 LINE，系統會確認是否已綁定會友資料。',loading:'正在確認你的 LINE 綁定狀態…',unbound:`如果你已經是${churchName}家人，請留下姓名與手機，由同工確認後完成綁定。`,pending:'申請已收到，正在等待同工核准；核准後會自動帶入你的資料。',approved:'已確認為教會家人。請核對下列資料，需要時可以直接修正。',rejected:'這次申請尚未通過，請確認姓名與手機後重新提出。',revoked:'原有綁定已撤銷，如需恢復請重新提出申請。',error:'目前無法確認身份，請稍後重新查詢。'};
+    const messages={signed_out:'請先登入 LINE，系統會確認是否已綁定會友資料。',loading:'正在確認你的 LINE 綁定狀態…',unbound:'請填寫下方完整資料。',pending:'申請已收到，正在等待同工核准；核准後會自動帶入你的資料。',approved:'已確認為教會家人。請核對下列資料，需要時可以直接修正。',rejected:'這次申請尚未通過，請確認姓名與手機後重新提出。',revoked:'原有綁定已撤銷，如需恢復請重新提出申請。',error:'目前無法確認身份，請稍後重新查詢。'};
     message.textContent=messages[result.state]||'無法確認身份。';
     const badge=document.querySelector('#lineStatusBadge');if(badge){const verified=['unbound','pending','approved','rejected','revoked'].includes(result.state);badge.classList.toggle('hidden',!verified);if(verified){badge.querySelector('span').firstChild.textContent=result.state==='approved'?'LINE 已完成綁定：':'LINE 身分已確認，填寫後完成綁定';document.querySelector('#lineUserDisplayName').textContent=result.state==='approved'?(result.member?.name||''):'';}}
-    if(['unbound','pending','rejected','revoked'].includes(result.state)){showForm(true);message.textContent='歡迎你！目前尚未完成會友資料與 LINE 綁定，請填寫下方新朋友資料；送出後會直接完成綁定。若以前填過或綁定曾被撤銷，請由同工協助確認。';}
-    if(result.state==='approved'){newcomerMode=false;}
+    const needsRegistration=['unbound','pending','rejected','revoked'].includes(result.state);
+    if(needsRegistration){
+      title.textContent='會友建檔更新';
+      message.textContent=result.state==='pending'
+        ?'目前有一筆待核對的 LINE 綁定申請，這不代表已完成會友建檔。請繼續填寫下方完整表單；若先前已填完並送請同工確認，請聯絡同工核對，勿重複送出。'
+        :['rejected','revoked'].includes(result.state)
+          ?'請填寫下方資料；原綁定未通過或已撤銷時，仍須由同工核對，不會自動恢復權限。'
+          :'歡迎你！請填寫下方完整資料。輸入姓名時會查找既有會友；新朋友送出後完成建檔與 LINE 綁定，既有資料則先核對身分。';
+    }
     document.dispatchEvent(new CustomEvent('member-identity-state',{detail:{state:result.state}}));
-    if(newcomerMode){panel.hidden=true;showForm(true);return;}
-    panel.hidden=false;showForm(['unbound','pending','rejected','revoked','signed_out'].includes(result.state));
+    panel.hidden=false;showForm(needsRegistration||result.state==='signed_out');
     if(result.state==='signed_out')panel.append(button('使用 LINE 確認身份',()=>client.login()));
     if(['pending','error'].includes(result.state))panel.append(button('重新查詢狀態',()=>client.connect(),true));
-    if(['unbound','rejected','revoked'].includes(result.state)){
-      const name=field('會友姓名'),phone=field('手機號碼','tel');
-      name.input.placeholder='請輸入會友名冊上的姓名';name.input.maxLength=80;
-      phone.input.placeholder='0912-345-678';phone.input.inputMode='tel';phone.input.maxLength=20;
-      panel.append(name.wrapper,phone.wrapper,button('送出 LINE 綁定申請',()=>{
-        const mobile=normalizePhone(phone.input.value);
-        if(!name.input.value.trim()){message.textContent='請輸入會友姓名。';return;}
-        if(!mobile){message.textContent='請輸入正確的台灣手機號碼。';return;}
-        return client.request(name.input.value.trim(),mobile);
-      }),button('我是第一次來，填寫新朋友資料',()=>{newcomerMode=true;panel.hidden=true;showForm(true);},true));
-    }
+    if(needsRegistration)panel.append(button('填寫會友建檔更新表單',()=>{
+      showForm(true);form.scrollIntoView({block:'start',behavior:'smooth'});
+      form.querySelector('#guestName')?.focus({preventScroll:true});
+    }));
     if(result.state==='approved'){
       panel.append(profileCard(result.member||{}));
       const hint=text('p','以下是目前留存的基本資料；有變動可以直接修改。');hint.className='text-xs font-bold leading-relaxed text-stone-500';panel.append(hint);
@@ -75,8 +72,9 @@ export function mountMemberPanel(){
       const response=await fetch(MEMBER_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(15000)});
       if(!response.ok)throw new Error('unavailable');return response.json();
     }});
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)client.clear();else if(!newcomerMode)client.connect().catch(()=>{});});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)client.clear();else client.connect().catch(()=>{});});
     window.addEventListener('pagehide',()=>client.clear());
     client.connect().catch(()=>{});
   }catch{panel.replaceChildren(text('p','目前無法確認 LINE 身份，請稍後重試。'));showForm(true);}
 }
+

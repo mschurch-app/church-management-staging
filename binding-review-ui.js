@@ -33,7 +33,7 @@ async function load(success=''){
           if(busy)return;const revision=++candidateRevision;search.disabled=true;select.replaceChildren(new Option('請選擇會友',''));verified.checked=false;
           try{const candidates=await findCandidates(db,church,input.value);if(current!==generation||revision!==candidateRevision)return;
             for(const member of candidates)select.append(new Option(`${member.name} · 電話 ${member.phone||'未填'} · 編號 ${member.id}`,String(member.id)));
-            result.textContent=candidates.length?'最多顯示 30 筆；請核對姓名、電話與會友編號，系統不會自動選擇。':'查無相符會友。請確認姓名，或先到會友名冊建立資料。';
+            result.textContent=candidates.length?'最多顯示 30 筆；請核對姓名、電話與會友編號，系統不會自動選擇。':'查無相符會友。這筆綁定申請不代表已填完建檔表單；請本人重新開啟「會友建檔更新」並填寫完整資料。新朋友送出後由系統建檔及綁定；若涉及既有資料或撤銷紀錄，仍由同工核對。';
           }catch(error){if(current===generation&&revision===candidateRevision){result.textContent=error.message||'查詢未完成，請稍後再試。';}}
           finally{search.disabled=false;}
         });
@@ -73,3 +73,4 @@ db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clear();status.textCo
 load();
 
 document.querySelector('#logout').addEventListener('click',async()=>{clear();await db.auth.signOut();location.replace('admin-login.html');});
+

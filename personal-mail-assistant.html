@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'">
+<title>智慧郵件助理 · 教會 OS 開發預覽</title>
+<link rel="stylesheet" href="app-design-tokens.css?v=20261106-mail-preview1">
+<link rel="stylesheet" href="personal-mail-assistant.css?v=20261106-mail-preview1">
+</head>
+<body class="mail-preview">
+<a class="mail-skip" href="#mail-workspace">跳到設定內容</a>
+<main class="mail-shell">
+<header class="mail-header"><div><p class="mail-eyebrow">教會 OS · 個人工具</p><h1>智慧郵件助理</h1><p>你的多個信箱，每天一份重點。</p></div><a class="mail-home" href="admin-dashboard.html?church=M%2B">返回教會 OS</a></header>
+<aside class="mail-preview-notice" role="note"><strong>開發預覽，尚未啟用</strong><span>只使用虛構示範資料，不讀取郵件、不儲存帳號，也不發送 LINE。請勿輸入真實密碼。</span></aside>
+<nav aria-label="設定步驟"><ol class="mail-steps" id="mail-steps"><li>1　加入信箱</li><li>2　確認通知</li><li>3　預覽摘要</li></ol></nav>
+<section id="mail-workspace" class="mail-card" aria-labelledby="mail-step-title" data-action-feedback="off"></section>
+<p id="mail-status" class="mail-status" role="status" aria-live="polite"></p>
+<footer class="mail-footer">個人使用，自願連接。正式版不會將你的信箱或摘要分享給其他同工。</footer>
+</main>
+<script type="module" src="personal-mail-assistant.mjs?v=20261106-mail-preview1"></script>
+</body></html>

@@ -1,0 +1,22 @@
+✔ validation preserves leading zeros, requires bank last5, validates online/date/integer/contact/consent and rejects full account or unknown fields (7.085875ms)
+✔ HTTP intake enforces origin, method, size, exact input and queues atomically before acceptance (9.2135ms)
+✔ HTTP never accepts missing queue, persistence failure, wrong idempotency content or exhausted rate (0.978583ms)
+✔ admin HTTP authenticates actual actor, rejects caller actor/recipient and wrong origin (0.432ms)
+✔ LINE sends only private user IDs, fixed retry key, complete required data and treats accepted 409 as sent (0.320834ms)
+✔ LINE handles network/retryable/provider denial without leaking credentials (0.239833ms)
+✔ Google SMTP requires acceptance, stable Message-ID, plain text and fixed recipient (0.101166ms)
+✔ SMTP explicit failures can retry safely; unknown post-DATA acceptance requires manual review (0.160042ms)
+✔ LINE-only failure, email-only failure and both failures still record independent results (0.333917ms)
+(node:96171) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ real Edge entry fixes implicit TLS SMTP and validates bearer through getUser before using actor (8.207166ms)
+✔ real entry cannot activate missing SMTP and never emits raw database errors (0.835333ms)
+✔ real entry hashes network identifier and never accepts caller identity/credentials in public form (7.5135ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 59.359166

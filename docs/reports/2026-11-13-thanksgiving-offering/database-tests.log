@@ -1,0 +1,16 @@
+PASS public intake starts disabled
+PASS actual service role atomically creates one pending response and two private-channel jobs
+PASS same key/content retries idempotently; changed content conflicts
+PASS bank-transfer last five digits required in database; leading zero preserved
+PASS online donation permits absent last five digits
+PASS browser roles cannot invoke service RPC or read private response tables
+PASS finance reads allowed; strangers/inactive denied; internal hashes and credentials never listed
+PASS read-only staff cannot reconcile; amount discrepancy cannot be marked verified
+PASS reconciliation requires real transaction reference/date, locks versions and writes audit
+PASS one bank transaction cannot verify two responses
+PASS worker authenticated; private targets fixed; parallel claims cannot lease same job
+PASS independent channel results; email retry never re-sends accepted LINE job
+PASS expired SMTP lease becomes unknown; blind manual retry is denied
+PASS invalid notification recipient prevents intake; no orphan response
+PASS persistent per-network rate limit enforced
+{"passed":15,"failed":0,"production_data_changed":false}

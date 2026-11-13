@@ -1,0 +1,69 @@
+{
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "private LINE retry only",
+        "failed save preserves fields",
+        "confirmed amount/reference",
+        "double-submit lock",
+        "read-only gates",
+        "XSS escaped",
+        "LINE unknown review",
+        "signout clears and ignores stale reply",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "private LINE retry only",
+        "failed save preserves fields",
+        "confirmed amount/reference",
+        "double-submit lock",
+        "read-only gates",
+        "XSS escaped",
+        "LINE unknown review",
+        "signout clears and ignores stale reply",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "private LINE retry only",
+        "failed save preserves fields",
+        "confirmed amount/reference",
+        "double-submit lock",
+        "read-only gates",
+        "XSS escaped",
+        "LINE unknown review",
+        "signout clears and ignores stale reply",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "private LINE retry only",
+        "failed save preserves fields",
+        "confirmed amount/reference",
+        "double-submit lock",
+        "read-only gates",
+        "XSS escaped",
+        "LINE unknown review",
+        "signout clears and ignores stale reply",
+        "no overflow"
+      ]
+    }
+  ],
+  "real_device_verified": false
+}

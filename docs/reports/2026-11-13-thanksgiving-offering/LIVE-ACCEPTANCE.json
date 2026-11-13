@@ -1,0 +1,26 @@
+{
+  "intake_enabled": false,
+  "cron_enabled": false,
+  "frontend_merged": false,
+  "edge_version": 1,
+  "notification_channels": [
+    "line"
+  ],
+  "synthetic_reference": "TG26-AB3007589C044EE2",
+  "synthetic_amount_ntd": 1,
+  "last5_preserved": "00123",
+  "responses": 1,
+  "jobs": 1,
+  "line_provider_request_id": "d201d78e-c6bc-430e-a074-d2c607082ea4",
+  "line_accepted_at": "2026-11-13T06:37:01.73791Z",
+  "user_confirmed_line_received": true,
+  "isolation_sql_groups": 17,
+  "http_and_entry_tests": 12,
+  "public_browser_configurations": 4,
+  "admin_browser_configurations": 4,
+  "catalog_tests": 20,
+  "physical_iphone_verified": false,
+  "physical_mac_safari_verified": false,
+  "forward_email_sent": false,
+  "share_letter_line_sent": false
+}

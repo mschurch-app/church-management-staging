@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261105-albumrights1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261105-projects1';
-export * from './app-function-definitions.mjs?v=20261105-projects1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261113-response-live1';
+export * from './app-function-definitions.mjs?v=20261113-response-live1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const assigned=new Set((home.module_permissions||[]).map(canonicalFunctionKey));
  return Object.keys(FUNCTION_CATALOG).filter(key=>{
@@ -10,6 +10,7 @@ export function availableFunctionKeys(access,church,home={},settings={}) {
   if(item.payrollAccess&&!home.payrollAccess)return false;
   if(item.accountingReportAccess&&!home.accountingReportAccess&&!home.is_owner)return false;
   if(item.receiptAccess&&!home.financeReceiptAccess)return false;
+  if(item.offeringAccess&&!home.financeCashAccess&&!home.is_owner)return false;
   if(item.financeAccess&&!home.financeCashAccess)return false;
   if(item.expenseAccess&&!home.financeExpenseAccess&&!home.is_owner)return false;
   if(item.permission&&!canOpen(access,church,item.permission))return false;
@@ -28,5 +29,6 @@ export function availableFunctionKeys(access,church,home={},settings={}) {
 export function favoriteKeys(saved,defaults,available){const keys=Array.isArray(saved)?saved:defaults;return [...new Set(keys.map(canonicalFunctionKey))].filter(key=>available.includes(key));}
 
 export function availableSettingsGroups(access,church,home={},settings={}){const allowed=new Set(availableFunctionKeys(access,church,home,settings));return SETTINGS_GROUPS.map(group=>({...group,keys:group.keys.filter(key=>allowed.has(key))})).filter(group=>group.keys.length||group.key==='church'&&canOpen(access,church,'pastoral'));}
+
 
 

@@ -1,0 +1,74 @@
+{
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "letter greeting first; support only after complete letter",
+        "bank last5/leading zero",
+        "lost reply retains immutable payload and key",
+        "online optional last5",
+        "double submit",
+        "private data no storage",
+        "all original photos",
+        "no overflow",
+        "honeypot",
+        "honest queue acknowledgment"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "letter greeting first; support only after complete letter",
+        "bank last5/leading zero",
+        "lost reply retains immutable payload and key",
+        "online optional last5",
+        "double submit",
+        "private data no storage",
+        "all original photos",
+        "no overflow",
+        "honeypot",
+        "honest queue acknowledgment"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "letter greeting first; support only after complete letter",
+        "bank last5/leading zero",
+        "lost reply retains immutable payload and key",
+        "online optional last5",
+        "double submit",
+        "private data no storage",
+        "all original photos",
+        "no overflow",
+        "honeypot",
+        "honest queue acknowledgment"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "letter greeting first; support only after complete letter",
+        "bank last5/leading zero",
+        "lost reply retains immutable payload and key",
+        "online optional last5",
+        "double submit",
+        "private data no storage",
+        "all original photos",
+        "no overflow",
+        "honeypot",
+        "honest queue acknowledgment"
+      ]
+    }
+  ],
+  "physical_iphone_verified": false,
+  "real_line_liff_verified": false
+}

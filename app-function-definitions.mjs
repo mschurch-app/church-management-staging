@@ -655,6 +655,7 @@ export const FUNCTION_CATALOG=freezeTree({
     "configurableHome": false,
     "searchTerms": []
   },
+  "thanksgiving_offering_admin":{"file":"thanksgiving-offering-admin.html","title":"感恩節奉獻回報","description":"私人奉獻回報、通知投遞與財務核對","key":"thanksgiving_offering_admin","group":"finance","church":"M+","offeringAccess":true,"symbol":"clipboard","configurableHome":false,"searchTerms":["感恩節","奉獻回應","末五碼","匯款","對帳"]},
   "finance_projects":{"file":"finance-projects.html","title":"專案與事工設定","description":"專案、事工項目、收入科目與線上捐款對應","key":"finance_projects","group":"finance","church":"M+","owner":true,"symbol":"clipboard","configurableHome":false,"settingsGroup":"church","settingsId":"finance-projects","searchTerms":["專案","事工","收入科目","捐款項目"]},
   "finance_receipts": {
     "church":"M+", "receiptAccess":true, "file":"finance-receipts.html",
@@ -730,7 +731,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "key": "finance",
     "title": "教會財務",
     "note": "M＋奉獻收入、支出記帳與核對",
-    "keys": ["finance_projects", "finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
+    "keys": ["thanksgiving_offering_admin", "finance_projects", "finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
   },
   {
     "key": "media",
@@ -1139,5 +1140,6 @@ export function functionHref(key,church){const item=FUNCTION_CATALOG[canonicalFu
 export const LEGACY_FEATURE_FILES=Object.freeze(Object.fromEntries([
   'members','newcomer_care','tree_reading_admin','binding_review','notification_settings','groups','attendance','schedules','prayers','spaces','pastoral_inbox','pastoral_content','website_weekly','website_group_resources'
 ].map(key=>[key,FUNCTION_CATALOG[canonicalFunctionKey(key)].file])));
+
 
 

@@ -1,0 +1,22 @@
+✔ validation preserves leading zeros, requires bank last5, validates online/date/integer/contact/consent and rejects full account or unknown fields (46.159ms)
+✔ HTTP intake enforces origin, method, size, exact input and queues atomically before acceptance (13.315291ms)
+✔ HTTP never accepts missing queue, persistence failure, wrong idempotency content or exhausted rate (0.930791ms)
+✔ admin HTTP authenticates actual actor, rejects caller actor/recipient and wrong origin (0.289084ms)
+✔ LINE sends only private user IDs, fixed retry key, complete required data and treats accepted 409 as sent (0.22275ms)
+✔ LINE handles network/retryable/provider denial without leaking credentials (0.16075ms)
+✔ Email jobs are rejected and cannot invoke any mail provider (0.041834ms)
+✔ LINE worker records real acceptance or failure independently per response (0.148333ms)
+(node:99590) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ real Edge entry needs only LINE and validates bearer through getUser before using actor (20.526083ms)
+✔ real entry cannot activate missing LINE and never emits raw database errors (0.558416ms)
+✔ real entry hashes network identifier and never accepts caller identity/credentials in public form (8.612708ms)
+✔ existing LINE token permits activation without SMTP variables (0.194916ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104.516667

@@ -1,0 +1,21 @@
+PASS every registered function belongs to exactly one matching category
+PASS every function has a known SVG and stable metadata
+PASS all internal function destinations exist
+PASS settings contain unique functions in four groups
+PASS admin and dashboard share identical role recommendations
+PASS role recommendation keys remain valid preference and permission keys
+PASS server preference allowlist still exactly matches configurable home definitions
+PASS aliases preserve saved favorites without duplicate grants
+PASS search finds old names and review aliases
+PASS local destinations always preserve selected church
+PASS external destinations retain original route and query
+PASS service leader has service matching and no unrelated settings
+PASS notification coworker can find review and notification settings
+PASS facilities coworker can open settings without unrelated tools
+PASS view and approval restrictions apply equally to settings
+PASS authorized functions ignore retired presentation switches
+PASS SHiNE settings cannot show M+ only tools
+PASS personal favorites never enable unassigned external tools
+PASS navigation and legacy customization routes derive from the catalog
+PASS definitions are deeply immutable
+TOTAL 20

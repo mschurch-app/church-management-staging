@@ -1,0 +1,17 @@
+[
+  {
+    "path": "assets/thanksgiving-2026/ministry-1.jpg",
+    "bytes": 230229,
+    "sha256": "d36f219116912bf43c3064fa5fcbf673226ef4fb92879c33412f819f9119516a"
+  },
+  {
+    "path": "assets/thanksgiving-2026/ministry-2.jpg",
+    "bytes": 182631,
+    "sha256": "61f6540063974564b0941cf27f1f1f8926ddfdd370250ebaaad5f7fcc9ad675a"
+  },
+  {
+    "path": "assets/thanksgiving-2026/ministry-3.jpg",
+    "bytes": 108216,
+    "sha256": "297e4a09b0acdbfbdb2e61ff4162550206d17af22a67b8653ee213617a6da4fb"
+  }
+]

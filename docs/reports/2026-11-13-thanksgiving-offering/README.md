@@ -1,40 +1,50 @@
-# 2026 感恩節奉獻回應：隔離驗收與發布閘門
+# 2026 感恩節奉獻回應：LINE 通知與分享版本
 
-承接 Issue #315 與草稿 PR #316。公開預覽目前沒有設定正式 endpoint，新增收件設定預設為關閉。尚不可宣稱正式可送出、已完成實際雙通道投遞或已完成實機驗收。
+承接 Issue #315、草稿 PR #316。依使用者 2026-11-13 最新指示，奉獻回報只通知牧師私人 LINE，取消自動 Email 通知；原有同工邀請與 Auth SMTP 保持原狀。最後另寄一封可轉寄代禱信，使用者已同意由已連接的教會信箱代寄，無須設定 SMTP。
 
-## 實作範圍
+## 實作
 
-- 保留年度見證、官方 LOGO、三張原始真實照片與指定銀行／線上奉獻資訊。
-- 銀行匯款要求匯款人自己帳號末五碼，恰好 5 位數字，使用字串保留前導零；線上奉獻可不填。日期、整數金額、聯絡方式、同意及欄位白名單由前後端檢查。不接收完整匯款帳號、證號、卡號或上傳。
-- 私有 schema 的待核對回報、私人 LINE 與 Email 各一筆 outbox、稽核在同一交易建立。UUID 冪等鍵、內容指紋及資料庫唯一約束保護重試；前端逾時保留不可變 payload 與同一鍵，鎖定編輯並提供同筆重試。
-- 只有入庫且兩個通知任務建立成功才回 accepted。介面清楚區分已接收、已排隊、服務商受理、待核對與已核對；不宣稱已讀、信箱已投遞或款項已實收。
-- LINE 只接受已與 Auth 身分核對的 U 開頭牧師帳號，沒有群組 fallback。Email 收件由私有管理設定決定，不接收公開表單的收件人指示。SMTP 憑證只在後端，寄件設定需沿用並核對既有 Auth SMTP，不能因 Edge 環境未設 SMTP 就認定既有邀請信未配置。
-- 通知逐通道獨立 lease、嘗試次數、退避、provider ID 與結果。LINE 使用固定 retry key，超過可安全重試時限要求人工查證。SMTP 送出後失聯屬結果不明，不盲目重寄。已受理通道不因另一通道失敗而重發。
-- 後台以既有財務角色及擁有者權限檢查讀取／核對。對帳需要入帳金額、日期、唯一交易編號及說明；不符列人工確認。這些回報不寫入既有收入帳、不開立收據。
-- 回報、通知、稽核表開啟 RLS，anon/authenticated 沒有表或 RPC 權限。主要 service RPC 為 SECURITY INVOKER。兩個窄範圍私有身分 helper 為 SECURITY DEFINER，只開放 service_role 執行，用來讀取非公開 Auth／owner 資料，未擴大 service_role 對整個 Auth 表的讀取權。
+- 銀行匯款必填自己帳號末五碼，恰好 5 位數字並保留前導零；線上奉獻可不填。Email／電話是奉獻者聯絡資料，至少提供一項，不會觸發 Email 寄送。
+- 私有 schema 回報、唯一私人 LINE 任務與稽核原子入庫。UUID 同筆重試、不可變 payload、內容指紋及唯一約束防重複。沒有 Email 任務，資料庫也拒絕非 line 通道。
+- 只接受已匹配 Auth 身分的牧師私人 U 帳號，沒有群組 fallback。LINE 使用固定 retry key、獨立 lease、退避、受理 ID 與結果；超過 23 小時的已嘗試通知要求人工查證。
+- 財務以既有 owner／finance 權限讀取、核對。核對金額、日期、唯一交易編號及說明，不符轉人工確認；不寫既有收入帳、不開收據。
+- 所有新表 RLS；anon/authenticated 沒有新 schema、表及主要 RPC 權限。主 RPC 為 SECURITY INVOKER，兩個私有 service-only 身分 helper 限窄查詢 Auth。未擴大 service_role 對 Auth 的讀取權。
+- 正式開放仍需驗收閘門：實際私人 LINE 合成通知已受理且對應目前收件人、worker 已配置、後端 LINE 憑證 ready。不可手動改 sent 越過閘門。
 
-## 已完成隔離測試
+## 已通過的隔離驗收
 
-1. PGlite 真正 SET ROLE service_role：15 組，包括原子入庫／雙 outbox、冪等／衝突、末五碼、公開角色拒絕、未授權／停用帳號拒絕、財務角色讀寫分離、金額不符、交易編號重複、版本衝突、worker 身分及 lease、單通道重試、SMTP 結果不明、收件身分缺失與頻率限制。
-2. API／投遞合約：9 組，包括欄位白名單、honeypot、Origin、大小、錯誤不洩漏、受理前必有佇列、LINE 私人目的地與 409 去重、SMTP 固定 Message-ID，以及單／雙通道失敗。
-3. 真實 TypeScript entry 去型別後注入依賴：3 組，驗證 Google SMTP implicit TLS、真實 bearer actor、未配置不能啟用、錯誤遮蔽及網路來源不可逆摘要。
-4. Chromium／WebKit × 393／1440：公開表單 4 個設定、管理介面 4 個設定，驗證斷線同鍵、前導零、連按鎖定、線上奉獻、原圖、對帳失敗保留、唯讀權限、XSS、登出清除與晚到回應、手機無水平溢出。
+- 真正 SET ROLE service_role 的 PGlite SQL：17 組，包括單任務原子入庫、同鍵重試、前導零、Email 任務拒絕、未授權拒絕、核對不符、唯一銀行交易、通知 retry/lease/unknown 與啟用閘門。
+- HTTP／投遞合約 8 組、真實 TypeScript entry 依賴注入 4 組，共 12 組；確認沒有 SMTP 讀取、沒有 Email 寄送，以及公有輸入不可控制 actor/recipient。
+- 公開表單與財務後台各 4 個 Chromium／WebKit × 393／1440 設定，包含斷線同鍵重試、連按、唯讀、核對失敗保留、XSS、登出晚到回應與無水平溢出。
+- 既有功能 catalog 回歸 20 組；固定 Supabase 2.102.0，Deno check 通過，已移除 nodemailer 與 lockfile 對應項目。
+- 真正 Chrome 的 LINE 分享封面、長圖與 393 手機尺寸分享頁：原圖正常、版面不溢出、分享 URL 經 UTF-8 編碼；未代使用者選擇朋友或群組。
 
-所有案例使用合成假資料。未向正式奉獻表提交真實個資，未寄出任何奉獻通知。測試結果 JSON 和截圖在本目錄。
+## 正式主機上已執行的受控驗收
 
-## 尚待完成，未通過前禁止開放公開收件
+新 migration、僅本功能的查詢索引及 Edge version 1 已部署；公開收件仍 disabled，沒有啟用 cron，也沒有合併前端。原有程式、Auth、帳本、收據與其他排程未修改。
 
-- 2026-11-13 新接手對話已連上 Chrome，唯讀確認正式專案 Auth 的自訂 SMTP 已啟用，host 為 smtp.gmail.com、port 為 465。既有設定沒有修改。頁面明確表示已儲存密碼隱藏、輸入新值會取代；因此不能從 UI 讀回既有密碼，也不能宣稱奉獻 Edge 已取得寄信憑證。仍待使用者把原有憑證直接填入同專案的奉獻用 Secrets；不要在對話、GitHub、SQL 或日誌提供密碼，不要替換 Auth 原密碼。
-- Google SMTP 可用時採 465 implicit TLS；若既有服務為其他 SMTP，沿用其核對後的 host/from。不得變更既有邀請／登入信設定來配合本功能。
-- 正式主機的新增 schema／RPC、service_role、Edge bundle 與依賴載入驗收。
-- 對指定牧師私人 LINE、指定 Email 各寄一次合成驗收通知，取得獨立受理 ID，並確認 Email 信箱中可找到驗收信；既有邀請信回歸。
-- iPhone Safari／LINE 內開啟與 Mac Safari 人工操作驗收（桌面 WebKit 模擬不能替代）。
-- 確認後才配置正式 endpoint、開啟 worker 排程與公開收件並合併前端。
+- 真正 service_role：owner、私人收件身分與 worker ready；anon/authenticated RPC EXECUTE 均 false。
+- 一筆 is_test=true 的合成回報 TG26-AB3007589C044EE2，金額 NT$1，末五碼 00123；同鍵兩次只保留一筆回報與一筆 LINE 任務。
+- 2026-11-13 14:37:01（台北）LINE 平台受理，request ID d201d78e-c6bc-430e-a074-d2c607082ea4；worker HTTP 200，processed=1/sent=1。使用者已親自確認「已看到 LINE 測試通知」。這不是實際奉獻，禁止記帳。
+- 真正財務 RPC 的不符金額拒絕、人工核對動作經 transaction rollback 驗證，未改任何既有財務紀錄。
+- 正式 HTTP：GET 405、公開合成提交 503 unavailable、錯誤 worker key 403；保持收件關閉。
+- Advisor 無新高等級／健康問題。私有表的 RLS 無政策是預期 service-only 設計；新表的兩個外鍵已補索引。新索引尚無正式使用屬預期，並非刪除理由。
 
-## 最後交付
+## 分享與 Email
 
-預定正式頁：`https://mscos.mchurch.online/thanksgiving-2026.html`。驗收後以教會對外信箱寄出可轉寄的完整代禱信至使用者已驗證的收件信箱，信內附正式奉獻回應連結；目前尚未寄出。
+- thanksgiving-2026-line.html：手機代禱信、LINE 分享按鈕及圖卡下載。LINE 分享使用官方 https://line.me/R/share?text=，由使用者選擇對象後送出，不會自動發送。
+- assets/thanksgiving-2026/line-cover.png：1200×630 分享封面。
+- assets/thanksgiving-2026/line-letter.png：760×2851 長圖，保留三張真實照片、代禱、銀行資訊、網頁地址及 QR Code。
+- forward-email.html：可轉寄完整 Email 草稿，尚未寄出。等正式頁面可用後，使用已連接的教會信箱單次寄給使用者；不借用 Supabase 邀請／驗證信寄一般文案。
+
+## 尚待／發布
+
+真實 iPhone Safari／LINE 內頁與 Mac Safari 人工操作尚未取得證據，不能把桌面 WebKit 模擬當實機或宣稱 99%。前端仍在草稿，未設定正式 endpoint。先向使用者呈現具體結果並確認發布安排，再啟用本功能 cron、收件及前端，核對實際靜態資源與鏈結，才發送正式分享信。
+
+預定完整頁：https://mscos.mchurch.online/thanksgiving-2026.html
+預定 LINE 分享頁：https://mscos.mchurch.online/thanksgiving-2026-line.html
+以上尚非已發布證明。
 
 ## 回退
 
-先關閉 `offering_response.settings.enabled`，停止本功能自己的 cron，再還原前端 endpoint 設定或前端提交。保留全部回報、outbox、受理回條及稽核，不刪資料、不重送已受理通知。回退不更動其他排程、Auth、同工帳號或財務帳本。已受理的 Email／LINE 無法收回，應以回條判斷後續處理。
+先將 offering_response.settings.enabled=false，停止 thanksgiving-offering-dispatch 專用 cron，再還原前端 endpoint／提交。保留回報、通知受理回條、稽核與合成驗收紀錄；不刪資料、不重寄已受理 LINE、不更動 Auth／其他排程／既有帳本。尚未收到正式奉獻回報，現階段僅一筆明確標示的合成資料。

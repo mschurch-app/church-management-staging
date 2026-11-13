@@ -1,5 +1,5 @@
-import {notificationText,EMAIL} from './validation.mjs';
-export async function deliver(job,{lineToken,fetcher=fetch,sendMail,from}){
+import {notificationText} from './validation.mjs';
+export async function deliver(job,{lineToken,fetcher=fetch}){
  const text=notificationText(job);
  if(job.channel==='line'){
   if(!/^U[0-9a-f]{32}$/.test(job.recipient||''))return {status:'failed',error_code:'identity_missing'};
@@ -11,20 +11,7 @@ export async function deliver(job,{lineToken,fetcher=fetch,sendMail,from}){
    return r.ok||(r.status===409&&accepted)?{status:'sent',provider_id:accepted||r.headers.get('x-line-request-id')}:{status:r.status===429||r.status>=500?'retry':'failed',error_code:'line_http_'+r.status};
   }catch{return {status:'retry',error_code:'line_network_unavailable'};}
  }
- if(job.channel!=='email'||!EMAIL.test(job.recipient||''))return {status:'failed',error_code:'email_invalid'};
- if(!sendMail||!EMAIL.test(from||''))return {status:'retry',error_code:'smtp_not_configured'};
- try{
-  const result=await sendMail({from:{name:'M+ 大雅教會｜奉獻回報',address:from},to:job.recipient,subject:`${job.is_test?'【測試】':''}感恩節奉獻回報 ${job.reference_no}`,text,messageId:`<${job.id}@mchurch.online>`,disableFileAccess:true,disableUrlAccess:true});
-  if(!result.accepted?.includes(job.recipient))return {status:'failed',error_code:'smtp_recipient_rejected'};
-  return {status:'sent',provider_id:result.messageId||job.id};
- }catch(error){
-  const code=String(error?.code||'');
-  // A disconnect after DATA may mean the mail was accepted. Require manual investigation.
-  if(['EDNS','ECONNREFUSED','EAUTH','ETLS'].includes(code)||error?.command==='CONN'||error?.command==='AUTH')return {status:code==='EAUTH'?'failed':'retry',error_code:'smtp_'+(code||'connect_failed').toLowerCase()};
-  if(error?.responseCode>=500)return {status:'failed',error_code:'smtp_rejected_'+error.responseCode};
-  if(error?.responseCode>=400)return {status:'retry',error_code:'smtp_temporary_'+error.responseCode};
-  return {status:'unknown',error_code:'smtp_acceptance_unknown'};
- }
+ return {status:'failed',error_code:'unsupported_channel'};
 }
 export async function dispatchJobs({rpc,workerKey,...dependencies}){
  const {jobs}=await rpc('claim_jobs',{worker_key:workerKey});let processed=0;const counts={sent:0,retry:0,failed:0,unknown:0};

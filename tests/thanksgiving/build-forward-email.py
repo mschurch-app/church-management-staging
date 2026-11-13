@@ -25,7 +25,7 @@ body='''<p>親愛的弟兄姊妹、朋友們，平安！</p>
 <p><a href="https://tcsc.eoffering.org.tw/contents/project_ct?page=2&amp;p_id=3">前往線上奉獻</a></p>'''
 for photo in photos:
     body+='<p><img style="display:block;width:100%;max-width:640px;border-radius:12px" src="https://mscos.mchurch.online/'+photo['path']+'" alt="M+大雅教會2026事工真實照片"></p>'
-body+='''<p>2027 年，讓我們一同帶著信心向前：<br><strong>從 M+ 開始，成為點亮世界的光！</strong></p><p>感恩節快樂！<br>M+Church／M+大雅教會<br>主任牧師 吳俊璋 暨全體同工 敬上</p>'''
-email='<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><body style="margin:0;background:#f7f7f0;font-family:Arial,sans-serif;color:#233a33"><div style="max-width:680px;margin:auto;padding:28px;background:white;line-height:1.9"><img width="140" style="background:#123e35;padding:12px" src="https://mscos.mchurch.online/assets/brands/mplus-logo-white.png" alt="M+Church"><h1>恩典，仍在繼續。<br>2026 感恩代禱信</h1>'+body+'</div></body></html>'
+body+='''<p><a href="https://mscos.mchurch.online/thanksgiving-2026-line.html">開啟 LINE 分享版・下載轉傳圖卡</a></p><p>2027 年，讓我們一同帶著信心向前：<br><strong>從 M+ 開始，成為點亮世界的光！</strong></p><p>感恩節快樂！<br>M+Church／M+大雅教會<br>主任牧師 吳俊璋 暨全體同工 敬上</p>'''
+email='<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><body style="margin:0;background:#f7f7f0;font-family:Arial,sans-serif;color:#233a33"><div style="max-width:680px;margin:auto;padding:28px;background:white;line-height:1.9"><img width="140" style="background:#123e35;padding:12px" src="https://mscos.mchurch.online/assets/brands/mplus-logo-white.png" alt="M+Church"><h1 style="font-size:30px;line-height:1.45;color:#123e35">恩典，仍在繼續。<br>2026 感恩代禱信</h1><img style="display:block;width:100%;height:auto;border-radius:12px;margin:20px 0" src="https://mscos.mchurch.online/assets/thanksgiving-2026/line-cover.png" alt="2026感恩代禱信・M+大雅教會">'+body+'</div></body></html>'
 (report/'forward-email.html').write_text(email)
 print(json.dumps({'photos':photos,'forward_email_local_draft':True,'sent':False},ensure_ascii=False))

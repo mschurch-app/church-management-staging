@@ -21,7 +21,7 @@ form.addEventListener('submit',async event=>{
   if([400,403,415].includes(response.status)){pending=null;lock(false);throw Error(messages[result.error]||'資料未被接收，請檢查欄位後再送出。');}
   if(response.status===409){throw Error('同一筆回報內容不一致，請聯絡教會核對，勿重複建立。');}
   if(!response.ok||result.status!=='accepted'||result.notifications_queued!==true||!/^TG26-[A-F0-9]{16}$/.test(result.reference_no||''))throw Error('尚未確認送出結果。請按「重試同一筆回報」，不會重複建立。');
-  say('已收到奉獻回報，參考編號：'+result.reference_no+'。目前待財務核對，尚未確認實收；私人 LINE 與 Email 通知已排隊，投遞狀態由後台追蹤。','ok');pending=null;form.reset();$('transferDate').value=today();lock(false);method();
+  say('已收到奉獻回報，參考編號：'+result.reference_no+'。目前待財務核對，尚未確認實收；私人 LINE 通知已排隊，投遞狀態由後台追蹤。','ok');pending=null;form.reset();$('transferDate').value=today();lock(false);method();
  }catch(error){say(error.name==='TimeoutError'?'連線逾時，請重試同一筆回報；已填資料仍保留。':error.message||'連線異常，請重試同一筆回報。','error');}
  finally{busy=false;button.disabled=false;button.textContent=pending?'重試同一筆回報':'送出奉獻回應 →';}
 });

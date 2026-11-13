@@ -5,13 +5,13 @@
       "width": 393,
       "passed": true,
       "checks": [
-        "private channel retry only",
+        "private LINE retry only",
         "failed save preserves fields",
         "confirmed amount/reference",
         "double-submit lock",
         "read-only gates",
         "XSS escaped",
-        "SMTP unknown review",
+        "LINE unknown review",
         "signout clears and ignores stale reply",
         "no overflow"
       ]
@@ -21,13 +21,13 @@
       "width": 1440,
       "passed": true,
       "checks": [
-        "private channel retry only",
+        "private LINE retry only",
         "failed save preserves fields",
         "confirmed amount/reference",
         "double-submit lock",
         "read-only gates",
         "XSS escaped",
-        "SMTP unknown review",
+        "LINE unknown review",
         "signout clears and ignores stale reply",
         "no overflow"
       ]
@@ -37,13 +37,13 @@
       "width": 393,
       "passed": true,
       "checks": [
-        "private channel retry only",
+        "private LINE retry only",
         "failed save preserves fields",
         "confirmed amount/reference",
         "double-submit lock",
         "read-only gates",
         "XSS escaped",
-        "SMTP unknown review",
+        "LINE unknown review",
         "signout clears and ignores stale reply",
         "no overflow"
       ]
@@ -53,13 +53,13 @@
       "width": 1440,
       "passed": true,
       "checks": [
-        "private channel retry only",
+        "private LINE retry only",
         "failed save preserves fields",
         "confirmed amount/reference",
         "double-submit lock",
         "read-only gates",
         "XSS escaped",
-        "SMTP unknown review",
+        "LINE unknown review",
         "signout clears and ignores stale reply",
         "no overflow"
       ]

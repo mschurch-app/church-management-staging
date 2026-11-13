@@ -3,7 +3,7 @@ create schema if not exists offering_response;
 revoke all on schema offering_response from public,anon,authenticated;
 create table offering_response.settings(
  id boolean primary key default true check(id),enabled boolean not null default false,
- recipient_staff_id uuid references public.pastoral_staff(id),recipient_email text not null default '',
+ recipient_staff_id uuid references public.pastoral_staff(id),
  worker_hash text check(worker_hash is null or worker_hash ~ '^[0-9a-f]{64}$'),
  updated_at timestamptz not null default now()
 );
@@ -31,7 +31,7 @@ create index offering_response_rate_idx on offering_response.responses(ip_hash,c
 create unique index offering_response_verified_bank_ref_idx on offering_response.responses(bank_reference)where status='verified' and bank_reference is not null;
 create table offering_response.deliveries(
  id uuid primary key default gen_random_uuid(),response_id uuid not null references offering_response.responses(id),
- channel text not null check(channel in ('line','email')),recipient text not null,
+ channel text not null check(channel='line'),recipient text not null,
  status text not null default 'queued' check(status in ('queued','sending','sent','retry','failed','unknown')),
  attempts integer not null default 0,next_attempt_at timestamptz not null default now(),lease_token uuid,leased_until timestamptz,
  provider_id text,error_code text,accepted_at timestamptz,created_at timestamptz not null default now(),unique(response_id,channel)
@@ -62,12 +62,11 @@ $$;
 revoke all on function offering_response.owner(uuid),offering_response.can_manage(uuid),offering_response.can_read(uuid) from public,anon,authenticated;
 grant execute on function offering_response.owner(uuid),offering_response.can_manage(uuid),offering_response.can_read(uuid) to service_role;
 
-create function offering_response.recipient()returns table(line_id text,email text) language sql stable security definer set search_path='' as $$
- select s.line_subject,c.recipient_email from offering_response.settings c
+create function offering_response.recipient()returns table(line_id text) language sql stable security definer set search_path='' as $$
+ select s.line_subject from offering_response.settings c
  join public.pastoral_staff s on s.id=c.recipient_staff_id and s.is_active
  join church_auth.accounts a on a.user_id=church_auth.canonical_account(s.app_user_id) and a.is_active
  where c.id and s.line_subject ~ '^U[0-9a-f]{32}$'
- and c.recipient_email ~ '^[^[:space:]<>]+@[^[:space:]<>]+\.[^[:space:]<>]+$'
  and exists(select 1 from auth.identities i where i.user_id=a.user_id and i.provider='custom:line-web' and i.identity_data->>'sub'=s.line_subject)
 $$;
 revoke all on function offering_response.recipient() from public,anon,authenticated;
@@ -93,21 +92,21 @@ begin
   select * into r from offering_response.responses where idempotency_key=(p_input->>'key')::uuid;
   if found then
    if r.fingerprint<>fingerprint then raise exception 'idempotency_conflict';end if;
-   if (select count(*)from offering_response.deliveries where response_id=r.id)<>2 then raise exception 'queue_incomplete';end if;
+   if (select count(*)from offering_response.deliveries where response_id=r.id and channel='line')<>1 then raise exception 'queue_incomplete';end if;
    return jsonb_build_object('status','accepted','reference_no',r.reference_no,'notifications_queued',true);
   end if;
   select target.line_id into line_id from offering_response.recipient() target;
   if not found then raise exception 'recipient_unavailable';end if;
   insert into offering_response.responses(idempotency_key,payload,fingerprint,ip_hash,is_test)values((p_input->>'key')::uuid,v_payload,fingerprint,p_input->>'ip_hash',coalesce((p_input->>'is_test')::boolean,false))returning * into r;
-  insert into offering_response.deliveries(response_id,channel,recipient)values(r.id,'line',line_id),(r.id,'email',cfg.recipient_email);
+  insert into offering_response.deliveries(response_id,channel,recipient)values(r.id,'line',line_id);
   insert into offering_response.audit(response_id,action)values(r.id,'received');
   return jsonb_build_object('status','accepted','reference_no',r.reference_no,'notifications_queued',true);
  end if;
  if p_action in ('claim_jobs','finish_job') then
   if cfg.worker_hash is null or length(coalesce(p_input->>'worker_key',''))<>64 or cfg.worker_hash<>encode(sha256(convert_to(p_input->>'worker_key','UTF8')),'hex')then raise exception 'forbidden';end if;
   if p_action='claim_jobs' then
-   -- Never silently repeat an SMTP send whose acceptance is unknown.
-   update offering_response.deliveries set status=case when channel='email' or created_at<now()-interval '23 hours' then 'unknown' else 'retry' end,error_code='lease_expired',lease_token=null,leased_until=null
+   -- Reuse the stable LINE retry key only within the provider's deduplication window.
+   update offering_response.deliveries set status=case when created_at<now()-interval '23 hours' then 'unknown' else 'retry' end,error_code='lease_expired',lease_token=null,leased_until=null
     where status='sending' and leased_until<now();
    with due as(select d.id from offering_response.deliveries d join offering_response.responses rsp on rsp.id=d.response_id
     where d.status in ('queued','retry') and d.attempts<6 and d.next_attempt_at<=now() and (cfg.enabled or rsp.is_test)
@@ -132,7 +131,7 @@ begin
  if p_action='admin_list' then
   select coalesce(jsonb_agg(to_jsonb(listing)||jsonb_build_object('deliveries',(select coalesce(jsonb_agg(jsonb_build_object('id',d.id,'channel',d.channel,'status',d.status,'attempts',d.attempts,'error_code',d.error_code,'accepted_at',d.accepted_at,'provider_id',d.provider_id)),'[]')from offering_response.deliveries d where d.response_id=listing.id))order by listing.created_at desc),'[]')into result
    from(select id,reference_no,payload,status,version,created_at,is_test,reconciled_at,reconciliation_note,confirmed_amount,confirmed_date,bank_reference from offering_response.responses where is_test=coalesce((p_input->>'tests')::boolean,false)order by created_at desc limit 200) listing;
-  return jsonb_build_object('items',result,'can_manage',can_manage,'owner',owner,'settings',case when owner then jsonb_build_object('enabled',cfg.enabled,'recipient_staff_id',cfg.recipient_staff_id,'recipient_email',cfg.recipient_email,'worker_configured',cfg.worker_hash is not null)else null end);
+  return jsonb_build_object('items',result,'can_manage',can_manage,'owner',owner,'settings',case when owner then jsonb_build_object('enabled',cfg.enabled,'recipient_staff_id',cfg.recipient_staff_id,'worker_configured',cfg.worker_hash is not null)else null end);
  end if;
  if not can_manage then raise exception 'forbidden';end if;
  if p_action='reconcile' then
@@ -153,7 +152,7 @@ begin
  if p_action='settings' then
   if not owner then raise exception 'forbidden';end if;
   if jsonb_typeof(p_input->'enabled')is distinct from 'boolean' then raise exception 'invalid_input';end if;
-  if p_input->>'enabled'='true' and (cfg.worker_hash is null or not exists(select 1 from offering_response.recipient()) or not exists(select 1 from offering_response.responses test where test.is_test and (select count(*)from offering_response.deliveries d where d.response_id=test.id and d.status='sent')=2)) then raise exception 'acceptance_required';end if;
+  if p_input->>'enabled'='true' and (cfg.worker_hash is null or not exists(select 1 from offering_response.recipient()) or not exists(select 1 from offering_response.responses test where test.is_test and exists(select 1 from offering_response.deliveries d join offering_response.recipient() current_target on current_target.line_id=d.recipient where d.response_id=test.id and d.channel='line' and d.status='sent'))) then raise exception 'acceptance_required';end if;
   update offering_response.settings set enabled=(p_input->>'enabled')::boolean,updated_at=now()where id;
   insert into offering_response.audit(actor,action,details)values(actor,'set_enabled',jsonb_build_object('enabled',p_input->'enabled'));return jsonb_build_object('ok',true);
  end if;

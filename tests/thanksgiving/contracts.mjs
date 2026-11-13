@@ -37,18 +37,11 @@ test('LINE handles network/retryable/provider denial without leaking credentials
  assert.equal((await deliver(job('line'),{lineToken:'fixture',fetcher:async()=>{throw Error('secret fixture');}})).status,'retry');
  assert.equal((await deliver({...job('line'),attempts:2,created_at:'2020-01-01T00:00:00Z'},{lineToken:'fixture'})).status,'unknown');
 });
-test('Google SMTP requires acceptance, stable Message-ID, plain text and fixed recipient',async()=>{
- const item=job('email');let mail;const result=await deliver(item,{from:'church@example.invalid',sendMail:async m=>{mail=m;return {accepted:[item.recipient],messageId:'fixture-mail'};}});assert.equal(result.status,'sent');assert.equal(mail.to,item.recipient);assert.equal(mail.messageId,`<${item.id}@mchurch.online>`);assert(mail.text.includes('00123'));assert.equal(mail.disableFileAccess,true);assert.equal(mail.html,undefined);
- assert.equal((await deliver(item,{from:'church@example.invalid',sendMail:async()=>({accepted:[]})})).status,'failed');
+test('Email jobs are rejected and cannot invoke any mail provider',async()=>{
+ let sent=false;const result=await deliver(job('email'),{lineToken:'fixture',sendMail:async()=>{sent=true;},fetcher:async()=>{throw Error('must not contact LINE for Email');}});assert.equal(result.status,'failed');assert.equal(result.error_code,'unsupported_channel');assert.equal(sent,false);
 });
-test('SMTP explicit failures can retry safely; unknown post-DATA acceptance requires manual review',async()=>{
- for(const [error,status]of [[{code:'EAUTH'},'failed'],[{code:'EDNS'},'retry'],[{command:'CONN'},'retry'],[{responseCode:451},'retry'],[{responseCode:550},'failed'],[{code:'ETIMEDOUT',command:'DATA'},'unknown']]){
-  const result=await deliver(job('email'),{from:'church@example.invalid',sendMail:async()=>{throw error;}});assert.equal(result.status,status);assert(!JSON.stringify(result).includes('password'));
- }
-});
-test('LINE-only failure, email-only failure and both failures still record independent results',async()=>{
- for(const [lineOK,emailOK]of [[true,false],[false,true],[false,false],[true,true]]){
-  const records=[],jobs=[job('line'),job('email')];const result=await dispatchJobs({workerKey:'synthetic',rpc:async(action,input)=>{if(action==='claim_jobs')return {jobs};records.push(input);return {ok:true};},lineToken:'synthetic',from:'church@example.invalid',fetcher:async()=>new Response('{}',{status:lineOK?200:503}),sendMail:async m=>{if(!emailOK)throw {code:'EDNS'};return {accepted:[m.to],messageId:'synthetic'};}});
-  assert.equal(records.length,2);assert.equal(records[0].status,lineOK?'sent':'retry');assert.equal(records[1].status,emailOK?'sent':'retry');assert.equal(result.processed,2);
+test('LINE worker records real acceptance or failure independently per response',async()=>{
+ for(const success of [false,true]){
+  const records=[],jobs=[job('line')];const result=await dispatchJobs({workerKey:'synthetic',rpc:async(action,input)=>{if(action==='claim_jobs')return {jobs};records.push(input);return {ok:true};},lineToken:'synthetic',fetcher:async()=>new Response('{}',{status:success?200:503})});assert.equal(records.length,1);assert.equal(records[0].status,success?'sent':'retry');assert.equal(result.processed,1);
  }
 });

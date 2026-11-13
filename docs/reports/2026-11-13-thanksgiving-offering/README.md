@@ -24,7 +24,7 @@
 
 ## 尚待完成，未通過前禁止開放公開收件
 
-- 讀取／核對現有 Supabase Auth SMTP 服務、寄件帳號及可安全沿用的設定。本機瀏覽器存取目前關閉、CLI 沒有管理登入；現有 MCP 沒有 Auth config 讀取能力。這是設定存取待解決，不是已證實原有 SMTP 未配置。
+- 2026-11-13 新接手對話已連上 Chrome，唯讀確認正式專案 Auth 的自訂 SMTP 已啟用，host 為 smtp.gmail.com、port 為 465。既有設定沒有修改。頁面明確表示已儲存密碼隱藏、輸入新值會取代；因此不能從 UI 讀回既有密碼，也不能宣稱奉獻 Edge 已取得寄信憑證。仍待使用者把原有憑證直接填入同專案的奉獻用 Secrets；不要在對話、GitHub、SQL 或日誌提供密碼，不要替換 Auth 原密碼。
 - Google SMTP 可用時採 465 implicit TLS；若既有服務為其他 SMTP，沿用其核對後的 host/from。不得變更既有邀請／登入信設定來配合本功能。
 - 正式主機的新增 schema／RPC、service_role、Edge bundle 與依賴載入驗收。
 - 對指定牧師私人 LINE、指定 Email 各寄一次合成驗收通知，取得獨立受理 ID，並確認 Email 信箱中可找到驗收信；既有邀請信回歸。

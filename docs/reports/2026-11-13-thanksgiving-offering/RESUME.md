@@ -16,7 +16,14 @@
 
 瀏覽器阻礙：使用者已在一般瀏覽器開啟頁面並回覆已開啟本機瀏覽器存取，但 CUA getBrowser/getState 仍回報 `Local browser use is disabled in Work settings`。reset 後仍相同，已完成 CUA completion_summary。CLI projects list 回報沒有管理 access token。MCP 未提供 Auth config 讀取，因此目前還沒讀到 SMTP host/user/pass，不能宣稱 SMTP 不存在或沿用已完成。使用者表示這種權限未刷新問題以前常發生，可能需關閉 App 重開。
 
-重開後：
+最新接續（2026-11-13）：
+- 已分支到接手對話 01a1d392-1404-7522-8778-8614c6eecd26，不要再建立其他對話。本對話的 Chrome 連線成功，已唯讀查看正式專案 Auth SMTP。
+- 自訂 SMTP 開關為 true；host=smtp.gmail.com，port=465。寄件者名稱 M+大雅教會／火樂教會。未修改任何 Auth 設定。
+- 密碼欄位明示 Stored password is hidden. Enter a new password to replace it. 不可假定可由 UI 讀回或已沿用成功，也不可用隱藏頁面狀態、瀏覽器登入資料或 session 取得憑證。
+- 已詢問使用者是否仍保留原有 Google 應用程式密碼，僅需回答是否，不在對話提供密碼。可由使用者在 Supabase Edge Secrets 直接輸入 OFFERING_SMTP_USER 及 OFFERING_SMTP_PASSWORD，讓既有 Auth 邀請設定保持原狀；新增奉獻密碼 Secret 不代表需要重設教會信箱或 Auth。
+- PR #316 仍為 draft，head 1a5008113afb15d872b9a50a13ca5c2ffe0d0391，base bf71a905613d46e3b366194d5039425a0b518e88。尚未新增正式 migration/Edge/cron，也尚未寄出奉獻驗收通知或代禱信。
+
+後續：
 1. 重新取得 CUA 文件與目前瀏覽器狀態；讀取已登入 Supabase 專案 aqanuwilmvdtlzuqlrau 的 Auth SMTP 設定。不要用 shell 或額外自動化繞過瀏覽器停用設定，也不要讀取瀏覽器 cookies/profile。
 2. 核對既有設定如何安全提供給新 Edge（OFFERING_SMTP_USER/PASSWORD/可選 HOST/FROM）；憑證不進 chat/GitHub/log。涉及憑證輸入或權限擴大時遵循 CUA 交接／確認要求。
 3. 先審查本次 migration/Edge/回退，保持 intake disabled；按 release-runbook 分階段測試真實 service_role、雙通道合成通知、收件匣與實機。不手動把通知狀態改為 sent 來越過啟用閘門。

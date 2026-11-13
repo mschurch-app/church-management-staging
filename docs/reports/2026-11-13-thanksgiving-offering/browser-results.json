@@ -5,6 +5,7 @@
       "width": 393,
       "passed": true,
       "checks": [
+        "letter greeting first; support only after complete letter",
         "bank last5/leading zero",
         "lost reply retains immutable payload and key",
         "online optional last5",
@@ -21,6 +22,7 @@
       "width": 1440,
       "passed": true,
       "checks": [
+        "letter greeting first; support only after complete letter",
         "bank last5/leading zero",
         "lost reply retains immutable payload and key",
         "online optional last5",
@@ -37,6 +39,7 @@
       "width": 393,
       "passed": true,
       "checks": [
+        "letter greeting first; support only after complete letter",
         "bank last5/leading zero",
         "lost reply retains immutable payload and key",
         "online optional last5",
@@ -53,6 +56,7 @@
       "width": 1440,
       "passed": true,
       "checks": [
+        "letter greeting first; support only after complete letter",
         "bank last5/leading zero",
         "lost reply retains immutable payload and key",
         "online optional last5",

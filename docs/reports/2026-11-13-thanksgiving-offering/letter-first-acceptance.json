@@ -1,0 +1,16 @@
+{
+  "main_top_link": "#letter",
+  "main_greeting_first": true,
+  "main_signature_before_giving": true,
+  "line_signature_before_giving": true,
+  "email_signature_before_giving": true,
+  "read_links_open_letter_start": true,
+  "chrome_mobile_emulation_width": 393,
+  "first_screen_giving_form": false,
+  "line_image_dimensions": [
+    760,
+    3015
+  ],
+  "real_iphone_verified": false,
+  "published": false
+}

@@ -34,7 +34,7 @@
 
 - thanksgiving-2026-line.html：手機代禱信、LINE 分享按鈕及圖卡下載。LINE 分享使用官方 https://line.me/R/share?text=，由使用者選擇對象後送出，不會自動發送。
 - assets/thanksgiving-2026/line-cover.png：1200×630 分享封面。
-- assets/thanksgiving-2026/line-letter.png：760×2851 長圖，保留三張真實照片、代禱、銀行資訊、網頁地址及 QR Code。
+- assets/thanksgiving-2026/line-letter.png：760×3015 長圖，保留三張真實照片、代禱、銀行資訊、網頁地址及 QR Code。
 - forward-email.html：可轉寄完整 Email 草稿，尚未寄出。等正式頁面可用後，使用已連接的教會信箱單次寄給使用者；不借用 Supabase 邀請／驗證信寄一般文案。
 
 ## 尚待／發布
@@ -48,3 +48,7 @@
 ## 回退
 
 先將 offering_response.settings.enabled=false，停止 thanksgiving-offering-dispatch 專用 cron，再還原前端 endpoint／提交。保留回報、通知受理回條、稽核與合成驗收紀錄；不刪資料、不重寄已受理 LINE、不更動 Auth／其他排程／既有帳本。尚未收到正式奉獻回報，現階段僅一筆明確標示的合成資料。
+
+## 使用者修正：先閱讀信件，再邀請支持
+
+2026-11-13 已移除頁首「奉獻支持」及閱讀入口的 #giving，第一畫面有問候、信件開頭及閱讀／代禱按鈕。網頁與 LINE 長圖的完整結語、署名移到支持資訊之前；Email 的照片、代禱與全文結語也在銀行資訊之前。「閱讀完整版」一律從信件開頭進入，僅末尾明確標示的匯款回報連結可直達表單。新增四個瀏覽器設定下的閱讀順序驗證並通過；Chrome 手機尺寸的首屏與長圖人工檢視完成。這些是桌面／模擬驗收，不是實體 iPhone 驗收。尚未公開發布或寄送分享信。

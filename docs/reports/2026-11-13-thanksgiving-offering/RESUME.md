@@ -29,3 +29,5 @@ https://mscos.mchurch.online/thanksgiving-2026.html
 https://mscos.mchurch.online/thanksgiving-2026-line.html
 
 回退依 release-runbook.sql。先關閉本功能／專用 cron，保留全部資料與受理回條，不全面還原、不刪 session、不改 auth.json。
+
+最新修正：使用者認為先看到奉獻、尚未讀信。已改頁首為閱讀代禱信、補問候；所有閱讀連結進入信件開頭；網頁／LINE／Email 的支持、銀行及回報放在完整結語與署名之後。LINE 長圖更新為760×3015。公開收件仍關閉，尚未核准發布預覽，不能把這次設計修正當發布核准。

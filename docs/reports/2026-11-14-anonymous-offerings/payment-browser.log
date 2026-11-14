@@ -1,0 +1,46 @@
+PASS 390: per-entry total is automatic and read-only
+PASS 390: individual and batch confirmation labels are distinct
+PASS 390: total is automatic and read-only
+PASS 390: submit disabled before saved confirmations
+PASS 390: electronic offerings do not inflate cash
+PASS 390: counter confirmation waits for first save
+PASS 390: no confirmation before saving
+PASS 390: confirmed write with failed read locks duplicate submission
+PASS 390: write occurred only once
+PASS 390: methods, names and optional codes sent to API
+PASS 390: recovery reads without resaving
+PASS 390: only own checkbox enabled
+PASS 390: first save does not fabricate a counter confirmation
+PASS 390: saved batch accepts the actual counter confirmation
+PASS 390: one confirmation enables submit
+PASS 390: single counter enters review
+PASS 390: missing second checkbox available during review
+PASS 390: amounts locked during late confirmation
+PASS 390: late confirmation leaves review unchanged
+PASS 390: late confirmation cannot be withdrawn
+PASS 390: no resubmission for second confirmation
+PASS 390: methods and totals survive reload
+PASS 390: no horizontal overflow
+PASS 1440: per-entry total is automatic and read-only
+PASS 1440: individual and batch confirmation labels are distinct
+PASS 1440: total is automatic and read-only
+PASS 1440: submit disabled before saved confirmations
+PASS 1440: electronic offerings do not inflate cash
+PASS 1440: counter confirmation waits for first save
+PASS 1440: no confirmation before saving
+PASS 1440: confirmed write with failed read locks duplicate submission
+PASS 1440: write occurred only once
+PASS 1440: methods, names and optional codes sent to API
+PASS 1440: recovery reads without resaving
+PASS 1440: only own checkbox enabled
+PASS 1440: first save does not fabricate a counter confirmation
+PASS 1440: saved batch accepts the actual counter confirmation
+PASS 1440: one confirmation enables submit
+PASS 1440: single counter enters review
+PASS 1440: missing second checkbox available during review
+PASS 1440: amounts locked during late confirmation
+PASS 1440: late confirmation leaves review unchanged
+PASS 1440: late confirmation cannot be withdrawn
+PASS 1440: no resubmission for second confirmation
+PASS 1440: methods and totals survive reload
+PASS 1440: no horizontal overflow

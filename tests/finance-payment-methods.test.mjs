@@ -39,3 +39,16 @@ test('invalid method, malformed code and forged member roll back; direct RPC sta
  for(const override of [{paymentMethod:'card'},{paymentMethod:'online',reportedOfferingCode:'abc'},{paymentMethod:'online',memberId:999},{paymentMethod:'online',anonymous:true}]){const data=payload();Object.assign(data.bags[0],override);await assert.rejects(save(db,null,data),/invalid_payment_method|invalid_code|member_not_found/);}
  assert.equal((await db.query('select count(*)::integer n from finance_cash_batches')).rows[0].n,0);await db.exec('set role authenticated');await assert.rejects(save(db,null,payload()),/permission denied/);await db.exec('reset role');
 }finally{await db.close();}});
+
+test('multiple 主知名 cash entries persist independently and survive the full review flow',async()=>{const db=await setup();try{
+ const data=payload();data.counterConfirmed=true;data.bags=[16800,400,600].map((amount,index)=>({bagName:['主知名一','主知名二','主知名三'][index],anonymous:true,confirmed:true,paymentMethod:'cash',publicChoice:'anonymous',receiptPreference:'none',declaredTotal:amount,lines:[{category:'一般／不具名奉獻',amount}]}));
+ let s=await save(db,null,data);
+ const read=async()=> (await db.query('select * from finance_cash_bags where batch_id=$1 order by bag_no',[s.id])).rows;
+ let bags=await read();assert.deepEqual(bags.map(b=>b.bag_name),['主知名一','主知名二','主知名三']);assert.deepEqual(bags.map(b=>Number(b.declared_total)),[16800,400,600]);assert.equal(new Set(bags.map(b=>b.id)).size,3);
+ data.bags=data.bags.map((bag,i)=>({...bag,id:bags[i].id}));
+ data.bags.push({...data.bags[0],id:null,bagName:'主知名四',declaredTotal:700,lines:[{category:'一般／不具名奉獻',amount:700}]});
+ s=await save(db,s,data);bags=await read();assert.equal(bags.length,4);assert.equal(bags[3].bag_name,'主知名四');assert.equal(Number(s.enteredTotal),18500);
+ const row=(await db.query('select counted_cash from finance_cash_batches where id=$1',[s.id])).rows[0];assert.equal(Number(row.counted_cash),18500);
+ await db.exec('set role authenticated');await assert.rejects(save(db,s,data),/permission denied/);await db.exec('reset role');
+ s=await move(db,s,ids[0],'submit');s=await move(db,s,ids[3],'verify_cash',18500);s=await move(db,s,ids[4],'approve');assert.equal(s.status,'booked');assert.deepEqual((await read()).map(b=>b.bag_name),['主知名一','主知名二','主知名三','主知名四']);
+}finally{await db.close();}});

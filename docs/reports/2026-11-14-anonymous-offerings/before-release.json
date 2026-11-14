@@ -1,0 +1,17 @@
+[
+  {
+    "path": "finance-cash.html",
+    "status": 200,
+    "sha256": "6a3f850f2bc102cfab6d284051de3c660498e9bffc16b89e2021dc47c20654b6"
+  },
+  {
+    "path": "finance-cash.mjs",
+    "status": 200,
+    "sha256": "946e2c74facbd06d34a37db37918a8e7adc70a7955caa6bc9d56eb9c65c9b226"
+  },
+  {
+    "path": "church-os-sw.js",
+    "status": 200,
+    "sha256": "c6cf7a3f8f43776f67feb7242ee17f8b751a9acefca68beef3a73bd68451944d"
+  }
+]

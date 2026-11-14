@@ -1,0 +1,86 @@
+{
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "multiple entries",
+        "independent cash totals",
+        "mixed online method",
+        "failed save retains amounts",
+        "save and reload preserve names",
+        "append after reload",
+        "delete without renumbering survivors",
+        "legacy view no writes",
+        "legacy explicit save retains money",
+        "saved batch counter confirmation and submit",
+        "review lock",
+        "read-only permission",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "multiple entries",
+        "independent cash totals",
+        "mixed online method",
+        "failed save retains amounts",
+        "save and reload preserve names",
+        "append after reload",
+        "delete without renumbering survivors",
+        "legacy view no writes",
+        "legacy explicit save retains money",
+        "saved batch counter confirmation and submit",
+        "review lock",
+        "read-only permission",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "multiple entries",
+        "independent cash totals",
+        "mixed online method",
+        "failed save retains amounts",
+        "save and reload preserve names",
+        "append after reload",
+        "delete without renumbering survivors",
+        "legacy view no writes",
+        "legacy explicit save retains money",
+        "saved batch counter confirmation and submit",
+        "review lock",
+        "read-only permission",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "multiple entries",
+        "independent cash totals",
+        "mixed online method",
+        "failed save retains amounts",
+        "save and reload preserve names",
+        "append after reload",
+        "delete without renumbering survivors",
+        "legacy view no writes",
+        "legacy explicit save retains money",
+        "saved batch counter confirmation and submit",
+        "review lock",
+        "read-only permission",
+        "no overflow"
+      ]
+    }
+  ],
+  "physical_iphone_verified": false,
+  "real_authenticated_save_verified": false
+}

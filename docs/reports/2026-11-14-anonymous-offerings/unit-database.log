@@ -1,0 +1,23 @@
+✔ 主知名 uses Chinese sequence numbers including ten and larger values (0.370917ms)
+✔ ordinary and electronic donors do not consume anonymous sequence numbers (0.174625ms)
+✔ old anonymous records get safe labels without changing raw records or amounts (0.612959ms)
+✔ duplicate persisted names are separated without colliding with reserved numbers (0.068333ms)
+✔ 奉獻編號固定四位，姓名只留首尾 (0.364458ms)
+✔ M+ 所有來源均計入，非 M+ 排除；不露出者仍計總額 (0.401292ms)
+✔ 同一會員跨袋跨管道合併；遮蔽姓名相同的未建檔者不合併 (0.098917ms)
+✔ 未核准奉獻阻擋週報；無公開意願的臨時捐款人只進總額 (0.063792ms)
+✔ 已建檔會友明確選匿名時不公開奉獻編號 (0.0645ms)
+✔ 逐袋、批次與現金三方金額必須相符 (0.466708ms)
+✔ 同工、師母、牧師依序核准；退回後重新核對並留版本紀錄 (0.718459ms)
+✔ mixed methods persist names and optional codes, cash is isolated throughout full review (376.153875ms)
+✔ electronic-only batch supports zero cash, return and edit keep method and audit history (226.979416ms)
+✔ invalid method, malformed code and forged member roll back; direct RPC stays denied (224.197625ms)
+✔ multiple 主知名 cash entries persist independently and survive the full review flow (222.928334ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1090.630709

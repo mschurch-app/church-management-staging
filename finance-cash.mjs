@@ -1,6 +1,7 @@
 import {createFieldGuidance,FieldValidationError} from './form-guidance.mjs?v=20261022-experience8';
 import { db } from './admin-db.mjs?v=20261102-bibletree-admin1';
 import { normalizeOfferingCode } from './finance/bulletin.mjs';
+import { anonymousOfferingNames, nextAnonymousOfferingName } from './finance/anonymous-offerings.mjs?v=20261114-known1';
 
 const $ = selector => document.querySelector(selector);
 const categories = ['十一奉獻','感恩奉獻','宣教奉獻','建堂奉獻','慈惠奉獻','兒童主日學奉獻','指定奉獻'];
@@ -56,7 +57,7 @@ function tab(name) {
 
 const paymentLabels={cash:'現金',transfer:'轉帳奉獻',online:'線上奉獻'};
 function newGroup(anonymous = false, paymentMethod = 'cash') {
-  return { key: nextGroupId++, anonymous, paymentMethod, reportedOfferingCode:'', memberId: null, offeringCode: '', name: anonymous ? '匿名' : '',
+  return { key: nextGroupId++, anonymous, paymentMethod, reportedOfferingCode:'', memberId: null, offeringCode: '', name: anonymous ? nextAnonymousOfferingName(state.groups) : '',
     phone: '', address: '', publicChoice: 'public', hideFromBulletin: false, receiptPreference: 'annual',
     bags: [{ declaredTotal: '', amounts: {}, designation: '' }] };
 }
@@ -156,10 +157,10 @@ function drawBag(group, bag, index) {
   details.append(footer,textNode('strong','本筆確認（1 位同工即可）','finance-bag-confirm-title'),checkLabel,textNode('small','每筆由一位有登錄權限的同工確認；儲存時記錄確認人與時間。','finance-note'));refresh();return details;
 }
 
-function drawGroup(group, index) {
+function drawGroup(group, index, anonymousName) {
   const card = document.createElement('section'); card.className = 'finance-group'; card.dataset.groupKey=group.key;
   const head = document.createElement('div'); head.className = 'finance-group-head';
-  head.append(textNode('h4', group.anonymous ? '匿名現金' : `${paymentLabels[group.paymentMethod||'cash']} · 奉獻者 ${index + 1}`));
+  head.append(textNode('h4', group.anonymous ? anonymousName : `${paymentLabels[group.paymentMethod||'cash']} · 奉獻者 ${index + 1}`));
   const remove = textNode('button', '移除奉獻者'); remove.type = 'button'; remove.className = 'secondary';
   remove.addEventListener('click', () => { state.groups.splice(index, 1); markDirty(); drawGroups(); totals(); });
   head.append(remove); card.append(head);
@@ -202,7 +203,7 @@ function drawGroup(group, index) {
     fields.append(codeNote);
     phoneInput=field('tel',group.phone,value=>{group.phone=value;},{maxLength:60});const contact=document.createElement('details');contact.className='finance-contact-options';contact.append(textNode('summary','聯絡資料（選填）'),labelFor('電話（選填）',phoneInput),labelFor('地址（選填）',field('text',group.address,value=>{group.address=value;},{maxLength:300})));fields.append(contact);
   }
-  fields.append(labelFor('週報顯示', select([['public','顯示編號／遮蔽姓名'],['anonymous','匿名'],['unlisted','只計入總額']], group.publicChoice, value => { group.publicChoice = value; })));
+  fields.append(labelFor('週報顯示', select([['public','顯示編號／遮蔽姓名'],['anonymous','主知名'],['unlisted','只計入總額']], group.publicChoice, value => { group.publicChoice = value; })));
   fields.append(labelFor('收據偏好', select([['annual','年度收據'],['single','單次收據'],['none','不開收據']], group.receiptPreference, value => { group.receiptPreference = value; })));
   const hideLabel = document.createElement('label'); hideLabel.className = 'finance-check';
   const hide = document.createElement('input'); hide.type = 'checkbox'; hide.checked = group.hideFromBulletin;
@@ -218,7 +219,7 @@ function drawGroup(group, index) {
   return card;
 }
 
-function drawGroups() { fieldGuidance.clear();$('#donor-groups').replaceChildren(...state.groups.map(drawGroup)); }
+function drawGroups() { const names=anonymousOfferingNames(state.groups);fieldGuidance.clear();$('#donor-groups').replaceChildren(...state.groups.map((group,index)=>drawGroup(group,index,names.get(group)))); }
 function totals() {
   const entered = state.groups.reduce((sum,group)=>sum+group.bags.reduce((n,bag)=>n+bagTotal(group,bag),0),0);
   const amounts={cash:0,transfer:0,online:0};for(const group of state.groups)amounts[group.paymentMethod||'cash']+=group.bags.reduce((n,bag)=>n+bagTotal(group,bag),0);
@@ -229,16 +230,16 @@ function totals() {
 }
 
 function validateEditor(){
- const issues=[],add=(control,message,anchor)=>issues.push({control,message,anchor});
+ const issues=[],names=anonymousOfferingNames(state.groups),add=(control,message,anchor)=>issues.push({control,message,anchor});
  const date=$('#offering-date'),one=$('#counter-one'),two=$('#counter-two');
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date.value)||!date.validity.valid)add(date,'奉獻日期：請選擇正確日期。');
  if(!one.value)add(one,'點收同工 1：請選擇一位點收同工。');
  if(!two.value)add(two,'點收同工 2：請選擇另一位點收同工。');else if(one.value===two.value)add(two,'點收同工 2：須與第一位不同。');
- if(!state.groups.length)add($('#add-donor'),'請先新增一位奉獻者或一筆匿名現金。',$('#donor-groups'));
+ if(!state.groups.length)add($('#add-donor'),'請先新增一位奉獻者或一筆主知名奉獻。',$('#donor-groups'));
  for(const [groupIndex,group]of state.groups.entries()){
-  const card=[...$('#donor-groups').children].find(node=>node.dataset.groupKey===String(group.key)),who=group.anonymous?'匿名現金 '+(groupIndex+1):'奉獻者 '+(groupIndex+1);
+  const card=[...$('#donor-groups').children].find(node=>node.dataset.groupKey===String(group.key)),who=group.anonymous?names.get(group):'奉獻者 '+(groupIndex+1);
   if(group.reportedOfferingCode&&!/^\d{4}$/.test(group.reportedOfferingCode))add(card.querySelector('[data-reported-code]'),who+'：奉獻編號請填四位數，或留白。');
-  if(!group.name.trim())add(card.querySelector('.finance-member-query'),who+'：請填寫姓名。');
+  if(!group.anonymous&&!group.name.trim())add(card.querySelector('.finance-member-query'),who+'：請填寫姓名。');
   if(!group.bags.length)add(card.querySelector(':scope > button')||card.querySelector('.finance-group-head button'),who+'：請新增一筆明細，或移除空白資料。',card.querySelector('.finance-bags'));
   if(group.memberId&&!group.offeringCode&&(group.paymentMethod||'cash')==='cash')add(card.querySelector('.finance-code-assignment input'),who+'：請先補上四位奉獻編號。');
   for(const [bagIndex,bag]of group.bags.entries()){
@@ -254,20 +255,21 @@ function validateEditor(){
 }
 
 function makePayload() {
-  if (!state.groups.length) throw new Error('請至少登錄一位奉獻者或一筆匿名現金。');
+  if (!state.groups.length) throw new Error('請至少登錄一位奉獻者或一筆主知名奉獻。');
   const counters = [$('#counter-one').value, $('#counter-two').value];
   if (!counters[0] || !counters[1] || counters[0] === counters[1]) throw new Error(errors.invalid_counters);
+  const names = anonymousOfferingNames(state.groups);
   const bags = state.groups.flatMap(group => group.bags.map(bag => {
     const lines = (group.anonymous ? ['一般／不具名奉獻'] : categories).filter(category => number(bag.amounts[category]) > 0).map(category => ({
       category, amount: number(bag.amounts[category]), ...(category === '指定奉獻' ? { designation: bag.designation.trim() } : {})
     }));
-    if (!group.name.trim()) throw new Error('每位奉獻者須填姓名。');
+    if (!group.anonymous && !group.name.trim()) throw new Error('每位奉獻者須填姓名。');
     if (group.memberId && !group.offeringCode && (group.paymentMethod||'cash')==='cash') throw new Error('已選會友仍缺奉獻編號，請先補編號。');
     if (!lines.length) throw new Error('每筆至少填一項奉獻分類。');
     if (lines.some(line => line.category === '指定奉獻' && !line.designation)) throw new Error('指定奉獻須填用途。');
     const declaredTotal = bagTotal(group,bag);
     if (declaredTotal !== lines.reduce((sum, line) => sum + line.amount, 0)) throw new Error(errors.bag_total_mismatch);
-    return { paymentMethod:group.paymentMethod||'cash',reportedOfferingCode:group.reportedOfferingCode||null,id:bag.id||null,confirmed:bag.confirmed===true,bagName: group.name.trim(), bagPhone: group.phone.trim(), bagAddress: group.address.trim(), memberId: group.memberId, offeringCode: group.offeringCode || null,
+    return { paymentMethod:group.paymentMethod||'cash',reportedOfferingCode:group.reportedOfferingCode||null,id:bag.id||null,confirmed:bag.confirmed===true,bagName: group.anonymous ? names.get(group) : group.name.trim(), bagPhone: group.phone.trim(), bagAddress: group.address.trim(), memberId: group.memberId, offeringCode: group.offeringCode || null,
       anonymous: group.anonymous, publicChoice: group.publicChoice, hideFromBulletin: group.hideFromBulletin,
       receiptPreference: group.receiptPreference, declaredTotal, lines };
   }));
@@ -505,7 +507,7 @@ $('#back-to-list').addEventListener('click', () => void work(async () => { await
 for(const method of ['transfer','online'])$('#add-'+method).addEventListener('click',()=>{state.groups.push(newGroup(false,method));markDirty();drawGroups();totals();});
 $('#add-children').addEventListener('click',()=>{const group=newGroup();group.name='兒童主日學';state.groups.push(group);markDirty();drawGroups();totals();$('#donor-groups').lastElementChild.querySelector('[data-offering-category="兒童主日學奉獻"]').focus();});
 $('#add-donor').addEventListener('click', () => { state.groups.push(newGroup()); markDirty(); drawGroups(); totals(); });
-$('#add-anonymous').addEventListener('click', () => { if (!state.groups.some(group => group.anonymous)) state.groups.push(newGroup(true)); markDirty(); drawGroups(); totals(); });
+$('#add-anonymous').addEventListener('click', () => { state.groups.push(newGroup(true)); markDirty(); drawGroups(); totals(); });
 function editorChanged(event){
   if(event.target.id.startsWith('confirm-counter-'))return;
   if(event.target.id==='offering-date'){state.groups.forEach(invalidateGroup);$('#donor-groups').querySelectorAll('.finance-bag-confirm').forEach(input=>{input.checked=false;});$('#donor-groups').querySelectorAll('.finance-bag-check span').forEach(span=>{span.textContent='奉獻日期已修改，請重新核對本筆並勾選。';});}

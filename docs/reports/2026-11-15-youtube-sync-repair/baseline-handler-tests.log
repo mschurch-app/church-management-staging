@@ -1,0 +1,42 @@
+(node:94625) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ approved promo before bulletin publication resumes at publication with promo version 1, not bulletin version 8 (10.120042ms)
+✔ legacy publication keeps the original version and source (0.72975ms)
+✔ unapproved or disabled promos cannot trigger YouTube, even if the editable bulletin flag is true (0.749625ms)
+✔ initial approval and return never publish YouTube (0.71475ms)
+✔ wrong church, stale version and unauthorized approvals never queue YouTube (1.901417ms)
+✖ delivery failure is recorded for the actual approved source and does not fake a successful sync (0.838458ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 4
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58.498
+
+✖ failing tests:
+
+test at tests/weekly-youtube-repair.test.mjs:30:1
+✖ approved promo before bulletin publication resumes at publication with promo version 1, not bulletin version 8 (10.120042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/james-codex/Documents/Codex/2026-11-10/new-chat/church-os-weekly-youtube-repair-20261115/tests/weekly-youtube-repair.test.mjs:31:96)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/weekly-youtube-repair.test.mjs:44:1
+✖ delivery failure is recorded for the actual approved source and does not fake a successful sync (0.838458ms)
+  TypeError: Cannot read properties of null (reading 'status')
+      at TestContext.<anonymous> (file:///Users/james-codex/Documents/Codex/2026-11-10/new-chat/church-os-weekly-youtube-repair-20261115/tests/weekly-youtube-repair.test.mjs:44:215)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

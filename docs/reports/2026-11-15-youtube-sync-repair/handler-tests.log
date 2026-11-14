@@ -1,0 +1,16 @@
+(node:94668) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ approved promo before bulletin publication resumes at publication with promo version 1, not bulletin version 8 (9.951833ms)
+✔ legacy publication keeps the original version and source (0.563666ms)
+✔ unapproved or disabled promos cannot trigger YouTube, even if the editable bulletin flag is true (0.947292ms)
+✔ initial approval and return never publish YouTube (0.815375ms)
+✔ wrong church, stale version and unauthorized approvals never queue YouTube (1.963625ms)
+✔ delivery failure is recorded for the actual approved source and does not fake a successful sync (0.300208ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.897875

@@ -1,0 +1,66 @@
+{
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "approved-source version 1 instead of editable bulletin 8",
+        "saved approval fields locked",
+        "read failure prevents write and restores retry",
+        "double click once",
+        "changed context cancels pending sync",
+        "reviewer permission preserved",
+        "no external calls",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "approved-source version 1 instead of editable bulletin 8",
+        "saved approval fields locked",
+        "read failure prevents write and restores retry",
+        "double click once",
+        "changed context cancels pending sync",
+        "reviewer permission preserved",
+        "no external calls",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "passed": true,
+      "checks": [
+        "approved-source version 1 instead of editable bulletin 8",
+        "saved approval fields locked",
+        "read failure prevents write and restores retry",
+        "double click once",
+        "changed context cancels pending sync",
+        "reviewer permission preserved",
+        "no external calls",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "passed": true,
+      "checks": [
+        "approved-source version 1 instead of editable bulletin 8",
+        "saved approval fields locked",
+        "read failure prevents write and restores retry",
+        "double click once",
+        "changed context cancels pending sync",
+        "reviewer permission preserved",
+        "no external calls",
+        "no overflow"
+      ]
+    }
+  ],
+  "real_youtube_writes": false,
+  "physical_iphone_verified": false
+}

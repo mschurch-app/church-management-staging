@@ -129,7 +129,8 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
     const date=String(result.data.service_date),next=new Date(`${date}T12:00:00Z`);next.setUTCDate(next.getUTCDate()+7);const nextDate=next.toISOString().slice(0,10);
     const [scheduleResult,roleResult]=await Promise.all([db.from('service_schedules').select('*').eq('church_id',church).in('service_date',[date,date.replaceAll('-','/'),nextDate,nextDate.replaceAll('-','/')]),db.from('schedule_role_preferences').select('role_key,label,sort_order').eq('church_id',church).eq('is_visible',true).order('sort_order')]);
     if(scheduleResult.error||roleResult.error)throw new Error('db');
-    const week=(day:string,which:'current'|'next')=>{const record=(scheduleResult.data||[]).find(row=>String(row.service_date).replaceAll('/','-')===day)||{},override=result.data.schedule_overrides?.[which]||{};return (roleResult.data||[]).map(role=>({label:role.label,value:String(override[role.role_key]??record.custom_assignments?.[role.role_key]??record[role.role_key]??'').trim()})).filter(item=>item.value);};
+    const scheduleOverrides=result.data.schedule_overrides||{};
+    const week=(day:string,which:'current'|'next')=>{const record=(scheduleResult.data||[]).find(row=>String(row.service_date).replaceAll('/','-')===day)||{},override=scheduleOverrides[which]||{};return (roleResult.data||[]).map(role=>({label:role.label,value:String(override[role.role_key]??record.custom_assignments?.[role.role_key]??record[role.role_key]??'').trim()})).filter(item=>item.value);};
     const promo=await db.from('website_weekly_promos').select('bulletin_id').eq('bulletin_id',result.data.id).maybeSingle();if(promo.error)throw new Error('db');
     return json(APP_ORIGIN,{ok:true,bulletin:{...result.data,legacy:!promo.data,weekly_schedule:{current:week(date,'current'),next:week(nextDate,'next')}},canDecide:result.data.submitted_by!==user.id&&(result.data.status==='pending_initial'?isInitial:profile.reviewer)});
   }
@@ -143,7 +144,7 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
     if(!stage||Number(body.version)!==found.data.version)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
     if(found.data.submitted_by===user.id)return json(APP_ORIGIN,{ok:false,error:'self_review_forbidden'},403);
     if(stage==='initial'&&!isInitial||stage==='final'&&!profile.reviewer)return json(APP_ORIGIN,{ok:false,error:'reviewer_required'},403);
-    const promo=await db.from('website_weekly_promos').select('bulletin_id').eq('bulletin_id',found.data.id).maybeSingle();if(promo.error)throw new Error('db');
+    const promo=await db.from('website_weekly_promos').select('bulletin_id,status,version,snapshot').eq('bulletin_id',found.data.id).eq('church_id',church).maybeSingle();if(promo.error)throw new Error('db');
     const legacy=!promo.data,approved=body.action==='approve',now=new Date().toISOString(),nextStatus=approved?(stage==='initial'?'pending_review':'published'):'changes_requested';
     const saved=await db.from('website_weekly_bulletins').update({status:nextStatus,reviewed_by:user.id,reviewed_at:now,review_comment:comment||null,updated_by:user.id,updated_at:now,published_at:nextStatus==='published'?now:null}).eq('id',found.data.id).eq('status',found.data.status).eq('version',found.data.version).select('id').maybeSingle();
     if(saved.error||!saved.data)return json(APP_ORIGIN,{ok:false,error:'conflict'},409);
@@ -152,8 +153,11 @@ async function handle(request:Request,db:ReturnType<typeof adminClient>,user:{id
     let notificationPending=false;
     if(nextStatus==='pending_review')try{await notifyReviewers(db,church,found.data,profile.staff?.id||null);}catch{notificationPending=true;}
     if(nextStatus==='published'||nextStatus==='changes_requested')try{await notifyEditor(db,church,found.data,nextStatus==='published',comment);}catch{notificationPending=true;}
-    const youtubeQueued=nextStatus==='published'&&legacy&&church==='M+'&&found.data.youtube_sync_enabled===true;
-    if(youtubeQueued)EdgeRuntime.waitUntil(syncYoutube(db,request.headers.get('authorization')||'',found.data.id,found.data.version));
+    // The approved promo can precede the bulletin by several days. Publishing
+    // the bulletin must resume the same approved YouTube source, using its version.
+    const youtubeSource=legacy?found.data:promo.data?.status==='approved'?{...promo.data.snapshot,version:promo.data.version}:null;
+    const youtubeQueued=nextStatus==='published'&&church==='M+'&&youtubeSource?.youtube_sync_enabled===true;
+    if(youtubeQueued)EdgeRuntime.waitUntil(syncYoutube(db,request.headers.get('authorization')||'',found.data.id,youtubeSource.version));
     let instagramQueued=false;
     if(nextStatus==='published'&&legacy&&church==='M+'){
       const setting=await db.from('media_publishing_settings').select('instagram_weekly_reel_enabled').eq('church_id',church).maybeSingle();

@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "preview": true,
+      "approvalGate": true,
+      "scheduledOnce": true,
+      "cancel": true,
+      "overflow": false
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "preview": true,
+      "approvalGate": true,
+      "scheduledOnce": true,
+      "cancel": true,
+      "overflow": false
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "preview": true,
+      "approvalGate": true,
+      "scheduledOnce": true,
+      "cancel": true,
+      "overflow": false
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "preview": true,
+      "approvalGate": true,
+      "scheduledOnce": true,
+      "cancel": true,
+      "overflow": false
+    }
+  ],
+  "scope": "synthetic isolated fixture only; physical iPhone and logged-in production admin not verified"
+}

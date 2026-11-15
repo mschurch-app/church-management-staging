@@ -1,0 +1,66 @@
+name: Personal mail isolation
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '.github/workflows/personal-mail-isolation.yml'
+      - 'personal-mail-assistant-core.mjs'
+      - 'supabase/functions/personal-mail-assistant-api/**'
+      - 'supabase/isolated/personal-mail-assistant/**'
+      - 'tests/personal-mail-assistant/**'
+  workflow_dispatch:
+
+# Tests only: no deploy key, mail credentials, LINE token, or production URL.
+permissions:
+  contents: read
+
+concurrency:
+  group: personal-mail-isolation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  isolated-postgres:
+    name: Synthetic owner isolation (PostgreSQL 17)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:17.6@sha256:00bc86618629af00d2937fdc5a5d63db3ff8450acf52f0636ec813c7f4902929
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: isolated-ci-only
+          POSTGRES_DB: mail_assistant_test_ci
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mail_assistant_test_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - name: Checkout proposed code without persistent credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Set up tested Node version
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22.16.0'
+      - name: Run policy, HTTP contract and local connection tests
+        run: node --test tests/personal-mail-assistant/*.test.mjs
+      - name: Check PostgreSQL client
+        run: psql --version
+      - name: Run real PostgreSQL isolation assertions
+        env:
+          MAIL_ASSISTANT_TEST_DB: postgresql://postgres:isolated-ci-only@127.0.0.1:55432/mail_assistant_test_ci
+        run: node tests/personal-mail-assistant/run-postgres.mjs
+      - name: Verify fixture transaction rolled back
+        env:
+          PGPASSWORD: isolated-ci-only
+        run: |
+          set -euo pipefail
+          remaining="$(psql --no-psqlrc -h 127.0.0.1 -p 55432 -U postgres -d mail_assistant_test_ci -Atc "SELECT count(*) FROM pg_namespace WHERE nspname IN ('auth','church_auth','personal_mail')")"
+          test "$remaining" = '0'
+          printf '%s\n' 'PASS: synthetic schemas were rolled back; no persistent fixture data.'

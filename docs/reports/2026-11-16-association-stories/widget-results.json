@@ -4,36 +4,24 @@
     {
       "engine": "chromium",
       "width": 393,
-      "newsReadOnlyPublished": true,
-      "originalSitePreserved": true,
-      "noMarkupExecution": true,
       "hubSeparated": true,
       "noOverflow": true
     },
     {
       "engine": "chromium",
       "width": 1440,
-      "newsReadOnlyPublished": true,
-      "originalSitePreserved": true,
-      "noMarkupExecution": true,
       "hubSeparated": true,
       "noOverflow": true
     },
     {
       "engine": "webkit",
       "width": 393,
-      "newsReadOnlyPublished": true,
-      "originalSitePreserved": true,
-      "noMarkupExecution": true,
       "hubSeparated": true,
       "noOverflow": true
     },
     {
       "engine": "webkit",
       "width": 1440,
-      "newsReadOnlyPublished": true,
-      "originalSitePreserved": true,
-      "noMarkupExecution": true,
       "hubSeparated": true,
       "noOverflow": true
     }

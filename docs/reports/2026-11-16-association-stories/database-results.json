@@ -9,6 +9,8 @@
     "return needs comment and informs author; resubmission creates new review version",
     "approval locks a complete snapshot and repeated approval is rejected",
     "one-time connection capability denies ordinary clients and commits encrypted connection atomically",
-    "inactive mother cannot approve; private media bucket never public"
+    "inactive mother cannot approve; private media bucket never public",
+    "association-only grant enables authoring without church materials or reviewer access",
+    "association-only news RLS accepts owned writes and scoped images; rejects spoofed authors and other folders"
   ]
 }

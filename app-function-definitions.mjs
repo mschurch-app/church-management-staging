@@ -219,10 +219,10 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "website-maintenance",
     "settingsGroup": "content"
   },
-  "association_stories": {"church":"M+","permission":"website_group_resources","file":"association-stories.html","title":"協會照片說故事","description":"照片與故事產生 FB 文案，送師母審核後發布，可同步協會最新消息","key":"association_stories","group":"media","symbol":"globe","configurableHome":false,"searchTerms":["協會","FB","Facebook","照片說故事","師母審核"],"settingsId":"association-stories","settingsGroup":"content"},
+  "association_stories": {"church":"M+","permission":"association_content","file":"association-stories.html","title":"協會照片說故事","description":"照片與故事產生 FB 文案，送師母審核後發布，可同步協會最新消息","key":"association_stories","group":"media","symbol":"globe","configurableHome":false,"searchTerms":["協會","FB","Facebook","照片說故事","師母審核"],"settingsId":"association-stories","settingsGroup":"content"},
   "association_news": {
     "church": "M+",
-    "permission": "website_group_resources",
+    "permission": "association_content",
     "file": "association-news.html",
     "icon": "📰",
     "title": "協會網站",
@@ -851,6 +851,7 @@ export const SETTINGS_GROUPS=freezeTree([
   }
 ]);
 export const PERMISSION_LABELS=freezeTree({
+  association_content: '協會內容（照片說故事／網站消息）',
   church_albums: '相簿',
   "members": "會友",
   "attendance": "出席登記",

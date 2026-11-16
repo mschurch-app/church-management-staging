@@ -11,6 +11,11 @@
     "one-time connection capability denies ordinary clients and commits encrypted connection atomically",
     "inactive mother cannot approve; private media bucket never public",
     "association-only grant enables authoring without church materials or reviewer access",
-    "association-only news RLS accepts owned writes and scoped images; rejects spoofed authors and other folders"
+    "association-only news RLS accepts owned writes and scoped images; rejects spoofed authors and other folders",
+    "all eight layouts and twelve themes persist; existing draft content is unchanged",
+    "ten bright palettes persist and new stories default to sunshine without recoloring existing drafts",
+    "only configured additional reviewer can approve or return; both reviewers receive one notice",
+    "fresh design lock is author-only, rejects duplicate work, and protects deleted or submitted drafts",
+    "approval snapshot retains visible key points and subject direction"
   ]
 }

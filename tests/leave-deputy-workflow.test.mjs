@@ -23,6 +23,7 @@ function fixture({lineStatus='sent',entityKey='mplus'}={}){
  class Query{
   constructor(table){this.table=table;this.filters=[];this.mode='read';this.value=null;this.max=Infinity;}
   select(){return this;}
+  neq(field,value){this.filters.push(row=>row[field]!==value);return this;}
   eq(field,value){this.filters.push(row=>row[field]===value);return this;}
   in(field,values){this.filters.push(row=>values.includes(row[field]));return this;}
   lte(field,value){this.filters.push(row=>row[field]<=value);return this;}
@@ -43,16 +44,16 @@ function fixture({lineStatus='sent',entityKey='mplus'}={}){
   maybeSingle(){return Promise.resolve(this.resolve(true));}
   then(resolve,reject){return Promise.resolve(this.resolve()).then(resolve,reject);}
  }
- const db={from:table=>new Query(table)};
+ const db={from:table=>new Query(table),rpc:async(name,args)=>({data:name==='pastoral_validate_care_cron_secret'&&args.p_secret==='SYNTHETIC-INTERNAL',error:null})};
  const source=readFileSync(new URL('../supabase/functions/pastoral-coworker-tools/index.ts',import.meta.url),'utf8')
   .replace(/^import .*;\s*$/gm,'')+'\nglobalThis.testHandleJson=handleJson;';
- const scope={Deno:{serve(){}},console,Date,Intl,URLSearchParams,Response,AbortSignal,
-  createClient(){throw Error('not used')},
+ const scope={Deno:{serve(handler){scope.http=handler;},env:{get(name){return name==='SUPABASE_URL'?'https://example.invalid':'SYNTHETIC';}}},console,Date,Intl,URLSearchParams,Response,AbortSignal,
+  createClient(){return db;},
   leaveCalendarId:'mbot@tcsc.org.tw',leaveCalendarEvent:leave=>({id:'l'+leave.id.replaceAll('-','')}),leaveEventId:id=>'l'+id.replaceAll('-',''),
   notifyStaffDual:async args=>{sent.push(args);return {status:lineStatus==='sent'?'sent':'failed',appStatus:'disabled',lineStatus};},
  };
  runInNewContext(stripTypeScriptTypes(source),scope);
- return {run:(actor,body)=>scope.testHandleJson(db,{id:actor,role:actor===C?'pastor':'secretary',entityKeys:[entityKey]},{entityKey,...body}),tables,sent};
+ return {http:request=>scope.http(request),run:(actor,body)=>scope.testHandleJson(db,{id:actor,role:actor===C?'pastor':'secretary',entityKeys:[entityKey]},{entityKey,...body}),tables,sent};
 }
 
 test('deputy must confirm before manager review; unrelated staff cannot confirm; reason stays private',async()=>{
@@ -104,3 +105,15 @@ test('SHiNE leave requests preserve workflow without sending notifications',asyn
  assert.equal(h.tables.pastoral_notification_deliveries.length,0);
  assert.equal(h.tables.pastoral_staff_leave_requests[0].status,'rejected');
 });
+
+ test('administrative queue respects entity, applicant/deputy/manager scope and excludes reasons',async()=>{
+ const h=fixture();await h.run(A,{action:'create-leave',startDate:'2026-11-11',endDate:'2026-11-11',period:'full_day',leaveType:'annual',deputyStaffId:B,reason:'機密原因'});
+ assert.equal((await h.run(D,{action:'admin-leave-queue'})).items.length,0);
+ for(const actor of [A,B,C]){const r=await h.run(actor,{action:'admin-leave-queue'});assert.equal(r.items.length,1);assert.equal(r.actor,actor);assert(!JSON.stringify(r).includes('機密原因'));assert(!('reason' in r.items[0]));assert.equal(r.manage,actor===C);}
+ await assert.rejects(h.run(A,{action:'admin-leave-queue',entityKey:'tcsc'}),{code:'entity_forbidden'});
+ });
+
+test('calendar repair requires internal secret even for approved ordinary app requests',async()=>{
+ const h=fixture();for(const secret of ['', 'WRONG']){const response=await h.http(new Request('https://example.invalid',{method:'POST',headers:{origin:'https://mscos.mchurch.online','content-type':'application/json',...(secret?{'x-cron-secret':secret}:{})},body:JSON.stringify({action:'repair-leave-calendar'})}));assert.equal(response.status,403);}
+ const response=await h.http(new Request('https://example.invalid',{method:'POST',headers:{origin:'https://mscos.mchurch.online','content-type':'application/json','x-cron-secret':'SYNTHETIC-INTERNAL'},body:JSON.stringify({action:'repair-leave-calendar'})}));assert.equal(response.status,200);assert.equal((await response.json()).results.length,0);
+ });

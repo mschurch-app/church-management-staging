@@ -1,4 +1,4 @@
-import {FUNCTION_CATALOG,functionHref} from './app-function-definitions.mjs?v=20261116-auth-hub1';
+import {FUNCTION_CATALOG,functionHref} from './app-function-definitions.mjs?v=20261116-admin1';
 import {createAppIcon} from './app-icons.mjs?v=20261116-memberline1';
 
 export function element(tag,text='',className=''){const node=document.createElement(tag);node.textContent=text;node.className=className;return node;}

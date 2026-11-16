@@ -1,0 +1,46 @@
+{
+  "synthetic": true,
+  "physicalDevices": false,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "queue": true,
+      "originalRecordLinks": true,
+      "sourceFailureNotEmpty": true,
+      "noUnauthorizedFetch": true,
+      "accountSwitchClears": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "queue": true,
+      "originalRecordLinks": true,
+      "sourceFailureNotEmpty": true,
+      "noUnauthorizedFetch": true,
+      "accountSwitchClears": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "queue": true,
+      "originalRecordLinks": true,
+      "sourceFailureNotEmpty": true,
+      "noUnauthorizedFetch": true,
+      "accountSwitchClears": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "queue": true,
+      "originalRecordLinks": true,
+      "sourceFailureNotEmpty": true,
+      "noUnauthorizedFetch": true,
+      "accountSwitchClears": true,
+      "noOverflow": true
+    }
+  ]
+}

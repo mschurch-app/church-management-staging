@@ -161,6 +161,7 @@ async function loadLeave() {
     for (const item of items) {
       const canSeeReason=item.staff_id===staff.id||['pastor','admin'].includes(staff.role);
       const card = newCard(`${item.staff_name ? item.staff_name + ' · ' : ''}${item.start_date}${item.end_date === item.start_date ? '' : ' 至 ' + item.end_date}`, canSeeReason?(item.reason || '（未填寫原因）'):'原因僅供申請人與主管查看');
+      card.id='leave-'+item.id;if(params.get('record')===item.id)requestAnimationFrame(()=>card.scrollIntoView({block:'center'}));
       meta(card, `${leaveLabels[item.leave_type] || item.leave_type} · ${periodLabels[item.period] || item.period}`);
       meta(card, leaveStatus[item.status] || item.status);
       meta(card,item.deputy_staff_id?`職務代理人：${item.deputy_name||'教會同工'}${item.deputy_response==='accepted'?'（已確認）':item.deputy_response==='declined'?'（無法代理）':'（待確認）'}`:'職務代理人：未指定（舊申請）');

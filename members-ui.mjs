@@ -1,3 +1,5 @@
+import {memberLineCall} from './member-line-api.mjs?v=20261116-memberline1';
+import {openMemberLineComposer,closeMemberLineComposer} from './member-line-composer.mjs?v=20261116-memberline1';
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
 import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
@@ -13,7 +15,8 @@ const selected=new Map();
 let visibleRows=[];
 let memberGroups=[];
 let faithOptions=[...FAITH_OPTIONS],attendanceOptions=[...ATTENDANCE_OPTIONS],newcomerStages=['新朋友','已聯絡','持續關懷','加入小組／小家','穩定聚會'];
-let compactView=false;
+let compactView=false,lineCanSend=false;
+function lineButton(row){const button=text('button','傳送 LINE','secondary member-line-trigger');button.type='button';button.disabled=!row.line_bound||!!row.archived_at;button.title=button.disabled?'尚未完成 LINE 綁定或資料已封存':'撰寫給 '+row.name+' 的私人訊息';button.onclick=()=>{if(!privateSuspended)void openMemberLineComposer(db,row,button);};return button;}
 const text=(tag,value,cls='')=>{const el=document.createElement(tag);el.textContent=value;el.className=cls;return el;};
 async function memberPhotoUrl(row){
  const value=String(row?.photo_url||'');
@@ -61,6 +64,7 @@ async function edit(row=null,isNewcomer=false){
   const form=document.createElement('form'),grid=text('div','','edit-grid'),inputs={},getters={},supplement=document.createElement('details');let memoWrap;
   supplement.className='registration-details';supplement.append(text('summary','迎新跟進資料'));const extraGrid=text('div','','edit-grid');supplement.append(extraGrid);
   const heading=text('h2',row?'編輯會友資料':'新增會友資料');heading.tabIndex=-1;
+  if(row&&lineCanSend&&church==='M+')form.append(lineButton(row));
   form.append(heading,text('p','保留原版欄位；日期可填完整年月日，原有月日資料也能保留。','muted'));
   for(const [key,[label,max]] of Object.entries(FIELDS)){
    if(['growth_progress','ministry'].includes(key))continue;
@@ -125,7 +129,7 @@ function memberCard(row){
  loadMemberAvatar(row,avatar);
  const nameBox=text('div');nameBox.append(text('h3',row.name),text('p',(row.gender||'未填性別')+' · '+(row.group_name||'未編組'),'muted'));
  const statusRow=text('div','','member-status-row');statusRow.append(text('span',row.faith_status||'未填信仰階段','status-badge'),text('span',row.growth_progress||'未填聚會近況','status-badge attendance-badge'),text('span',row.line_bound?'已綁定 LINE':'尚未綁定 LINE','status-badge '+(row.line_bound?'line-bound-badge':'line-unbound-badge')));
- head.append(avatar,nameBox);card.append(head,statusRow);
+ head.append(avatar,nameBox);if(lineCanSend&&church==='M+')head.append(lineButton(row));card.append(head,statusRow);
  const dl=document.createElement('dl');
  for(const [label,value] of [['電話',row.phone],['居住區域',row.district],['服事恩賜',row.ministry]]){dl.append(text('dt',label),text('dd',value||'未填寫'));}
  card.append(dl);
@@ -136,7 +140,7 @@ async function load({preserveEditor=false}={}){
  if(!preserveEditor&&!draft.canLeave())return false;
  clear({preserveEditor});list.setAttribute('aria-busy','true');const ticket=generation;message('正在載入…','busy');
  try{
-  const result=await listMembers(db,church,search,page,newcomersOnly,{groupName,sort,archivedOnly});if(ticket!==generation||document.hidden)return false;viewerId=(await readAccess(db)).user.id;if(ticket!==generation||document.hidden)return false;visibleRows=result.rows;if(typeof exportButton!=='undefined')exportButton.disabled=!visibleRows.length;
+  const [result,lineAccess]=await Promise.all([listMembers(db,church,search,page,newcomersOnly,{groupName,sort,archivedOnly}),church==='M+'?memberLineCall(db,'access').catch(()=>({can_send:false})):Promise.resolve({can_send:false})]);lineCanSend=lineAccess.can_send===true;let logLink=document.querySelector('#member-line-log-link');if(lineCanSend&&!logLink){logLink=text('a','LINE 訊息發送紀錄');logLink.id='member-line-log-link';logLink.href='member-line-history.html?church=M%2B';$('.page-nav').append(logLink);}if(logLink)logLink.hidden=!lineCanSend;if(ticket!==generation||document.hidden)return false;viewerId=(await readAccess(db)).user.id;if(ticket!==generation||document.hidden)return false;visibleRows=result.rows;if(typeof exportButton!=='undefined')exportButton.disabled=!visibleRows.length;
   $('#new').disabled=false;$('#newcomer').disabled=false;$('#prev').disabled=page===0;$('#next').disabled=!result.hasNext;
   $('#page-label').textContent='第 '+(page+1)+' 頁';
   message(result.rows.length?'本頁顯示 '+result.rows.length+' 位會友。':'沒有符合條件的會友，請調整查詢條件。');
@@ -177,7 +181,7 @@ async function resume(){
 }
 $('#resume-editor').onclick=resume;
 document.addEventListener('visibilitychange',()=>{if(document.hidden){privateSuspended=true;$('#resume-editor').hidden=false;restoreEditor=restoreEditor||(!editor.hidden&&!!editor.querySelector('form'));clear({preserveEditor:true});editor.hidden=true;}else void resume();});
-db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){privateSuspended=true;clear();selected.clear();updateBatchBar();status.textContent='已登出，請重新登入。';}});
+db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){closeMemberLineComposer(true);lineCanSend=false;privateSuspended=true;clear();selected.clear();updateBatchBar();status.textContent='已登出，請重新登入。';}});
 exportButton.onclick=exportAllCsv;
 const selectPageButton=text('button','選取本頁','secondary');selectPageButton.type='button';selectPageButton.onclick=()=>{const boxes=[...list.querySelectorAll('input[data-member-id]')],allSelected=boxes.length&&boxes.every(box=>box.checked);setPageSelection(!allSelected);selectPageButton.textContent=allSelected?'選取本頁':'取消本頁選取';};$('.toolbar-actions').append(selectPageButton);
 Promise.all([listMemberGroups(db,church),loadChurchCustomizations(db,church)]).then(([groups,settings])=>{memberGroups=groups;faithOptions=catalog(settings,'faith_status',FAITH_OPTIONS);attendanceOptions=catalog(settings,'growth_progress',ATTENDANCE_OPTIONS);newcomerStages=catalog(settings,'newcomer_stages',newcomerStages);const select=$('#group-filter');for(const name of groups)select.append(new Option(name,name));updateBatchValues();}).catch(()=>{}).finally(load);

@@ -94,3 +94,7 @@ verify_jwt = false
 # Verified LINE or Church OS Auth inside handler.
 [functions.potluck-event]
 verify_jwt = false
+
+# Verifies the authenticated Church OS user and live session before any operation.
+[functions.member-line-message]
+verify_jwt = true

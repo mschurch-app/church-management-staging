@@ -5,3 +5,10 @@
 .story-swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0}.story-panel .story-swatch{display:flex;align-items:center;gap:8px;justify-content:flex-start;padding:10px;font-size:.88rem;min-width:0;overflow-wrap:anywhere}.story-swatch::before{content:'';width:22px;height:22px;border-radius:50%;background:var(--swatch);border:1px solid #93a79c;flex:none}.story-swatch[aria-pressed=true]{outline:2px solid #24594b;outline-offset:1px}@media(max-width:480px){.story-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .story-original{margin:18px 0;padding:16px;border:1px solid #cbd8ce;border-radius:14px}.story-original summary{cursor:pointer;font-weight:600;min-height:28px}.story-original pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.8}
+
+/* Keep real in-flight feedback visible while the author scrolls through the story. */
+.story-spinner{display:none;width:22px;height:22px;flex:0 0 22px;border:3px solid #b8cfc3;border-top-color:#194e3e;border-radius:50%;box-sizing:border-box}
+.story-status[data-busy=true]{position:sticky;top:max(12px,env(safe-area-inset-top));z-index:20;display:flex;align-items:center;gap:12px;box-shadow:0 6px 22px #183e3420}
+.story-status[data-busy=true] .story-spinner{display:inline-block;animation:story-spinner-turn .85s linear infinite}
+@keyframes story-spinner-turn{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.story-status[data-busy=true] .story-spinner{animation:none}}

@@ -1,0 +1,20 @@
+{
+  "testJobId": "4c65e57e-29d5-4d96-8406-3576d9023234",
+  "syntheticOnly": true,
+  "provider": "canva",
+  "status": "ready",
+  "dimensions": [
+    1080,
+    1350
+  ],
+  "bytes": 321704,
+  "sha256": "39fa392f64b7b4021e001f77201ca077568bc43915f6a32d6d62a8434ad9cc9c",
+  "generationRequests": 1,
+  "designId": "DAHbEKuMNb4",
+  "liveBusinessStoriesChanged": false,
+  "postsPublished": 0,
+  "credentialsAdded": false,
+  "scopesExpanded": false,
+  "backendVersion": 5,
+  "acceptanceActionsRemoved": true
+}

@@ -1,14 +1,16 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.102.0';
 import {UUID,cleanStory,validateManifest,validateSubmission,validateCover,composeMessage,generationPrompt,validateGeneratedFacts,freshDesignPrompt} from '../../../association-story-model.mjs';
 import {jpegSize} from '../../../testimony-carousel-model.mjs';
+import {canvaStoryJobs,publicCanvaJob} from '../_shared/association-canva-jobs.mjs';
 const TARGET_PAGE='311251732221816';
 // Facebook exposes both a public profile ID and the Page API ID for this same tcsca Page.
 const TARGET_PAGE_IDS=[TARGET_PAGE,'100064745854212'];
 const APP='https://mscos.mchurch.online',BUCKET='association-story-private',TABLE='association_stories',SETTINGS='association_story_settings';
 const hash=async(bytes:Uint8Array)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes.slice().buffer))].map(x=>x.toString(16).padStart(2,'0')).join('');
 const fail=(code:string):never=>{throw Error(code);};
-const known=new Set(['forbidden','not_found','version_conflict','invalid_state','invalid_input','invalid_image','photo_count','content_required','consent_required','upload_incomplete','reviewer_unavailable','comment_required','facebook_not_connected','channel_mismatch','generation_changed_facts','generation_unavailable','design_unavailable','design_quota_exhausted','design_in_progress','ai_photo_consent_required','design_photos_too_large','invalid_key_points','publication_unknown','configuration_failed','cover_outdated']);
+const known=new Set(['forbidden','not_found','version_conflict','invalid_state','invalid_input','invalid_image','photo_count','content_required','consent_required','upload_incomplete','reviewer_unavailable','comment_required','facebook_not_connected','channel_mismatch','generation_changed_facts','generation_unavailable','design_unavailable','design_quota_exhausted','design_in_progress','ai_photo_consent_required','design_photos_too_large','invalid_key_points','publication_unknown','configuration_failed','cover_outdated','canva_cutout_not_supported','canva_configuration_required','canva_connection_required','canva_connection_busy','canva_permission_required','canva_quota_exhausted','canva_rate_limited','canva_unavailable','canva_creation_unknown','canva_generation_failed','canva_single_page_required','canva_invalid_export','canva_image_save_failed','canva_receipt_failed']);
 export function createHandler(db:any,serviceKey:string,env:Record<string,string>={},fetcher:typeof fetch=fetch){
+ const legacy=env.ASSOCIATION_IMAGE_PROVIDER==='legacy_gemini',canva=canvaStoryJobs({db,env,fetcher,jpegSize});
  async function rights(actor:string){const r=await db.rpc('association_story_access',{p_actor:actor});if(r.error||!r.data)fail('forbidden');return r.data;}
  async function config(){const r=await db.from(SETTINGS).select('*').eq('id',true).single();if(r.error)fail('configuration_failed');return r.data;}
  async function key(){return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',new TextEncoder().encode(serviceKey+':association-facebook:v1')),{name:'AES-GCM'},false,['encrypt','decrypt']);}
@@ -23,7 +25,7 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
  async function imagesReady(row:any){validateManifest(row.images);for(const image of row.images)await photoBytes(image);}
  async function coverReady(row:any){const cover=validateCover(row),bytes=await photoBytes(cover),size=jpegSize(bytes);if(size.width!==1080||size.height!==1350)fail('invalid_image');}
  async function load(id:string,actor:string,access:any){const r=await db.from(TABLE).select('*').eq('id',id).maybeSingle();if(r.error||!r.data)fail('not_found');if(!access.reviewer&&r.data.created_by!==actor)fail('forbidden');return r.data;}
- async function present(row:any){const urls=await Promise.all(row.images.map(async(image:any)=>{const r=await db.storage.from(BUCKET).createSignedUrl(image.path,900);return r.error?null:r.data.signedUrl;}));const safe={...row};delete safe.attempt_id;delete safe.approved_snapshot;delete safe.facebook_photo_ids;let cover_url=null;if(row.cover){const r=await db.storage.from(BUCKET).createSignedUrl(row.cover.path,900);if(!r.error)cover_url=r.data.signedUrl;}let design_url=null;if(row.design_art?.path){const r=await db.storage.from('association-story-art').createSignedUrl(row.design_art.path,900);if(!r.error)design_url=r.data.signedUrl;}return {...safe,photo_urls:urls,cover_url,design_url};}
+ async function present(row:any){const urls=await Promise.all(row.images.map(async(image:any)=>{const r=await db.storage.from(BUCKET).createSignedUrl(image.path,900);return r.error?null:r.data.signedUrl;}));const safe={...row};delete safe.attempt_id;delete safe.approved_snapshot;delete safe.facebook_photo_ids;let cover_url=null;if(row.cover){const r=await db.storage.from(BUCKET).createSignedUrl(row.cover.path,900);if(!r.error)cover_url=r.data.signedUrl;}let design_url=null;if(row.design_art?.path){const r=await db.storage.from('association-story-art').createSignedUrl(row.design_art.path,900);if(!r.error)design_url=r.data.signedUrl;}return {...safe,photo_urls:urls,cover_url,design_url,...(!legacy?{canva_job:publicCanvaJob(await canva.latest(row.id))}:{})};}
  async function transition(row:any,actor:string,action:string,comment=''){const r=await db.rpc('association_story_transition',{p_actor:actor,p_id:row.id,p_version:row.version,p_action:action,p_comment:comment});if(r.error)fail(known.has(r.error.message)?r.error.message:'version_conflict');return r.data;}
  async function checkpoint(row:any,patch:any){const r=await db.from(TABLE).update({...patch,updated_at:new Date().toISOString()}).eq('id',row.id).eq('attempt_id',row.attempt_id).select('*').maybeSingle();if(r.error||!r.data)fail('checkpoint_failed');Object.assign(row,r.data);}
  async function syncNews(row:any){
@@ -89,7 +91,7 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
    }
    const bearer=req.headers.get('authorization')?.match(/^Bearer (\S+)$/)?.[1];if(!bearer)return reply(401,{ok:false,error:'login_required'});const auth=await db.auth.getUser(bearer);if(auth.error||!auth.data.user)return reply(401,{ok:false,error:'login_required'});const access=await rights(auth.data.user.id),actor=access.actor_id||auth.data.user.id;if(!access.reader&&!access.reviewer)return reply(403,{ok:false,error:'forbidden'});
 
-   if(b.action==='profile'){const c=await config();return reply(200,{ok:true,user_id:actor,access,connection:{connected:Boolean(c.page_id&&c.token_ciphertext),page_id:c.page_id,page_name:c.page_name,page_url:c.page_url,target_page_id:TARGET_PAGE},generation_ready:Boolean(env.GEMINI_API_KEY),news_sync_ready:Boolean(c.news_widget_verified_at)});}
+   if(b.action==='profile'){const c=await config(),designConnection=legacy?null:await canva.client.connection();return reply(200,{ok:true,user_id:actor,access,connection:{connected:Boolean(c.page_id&&c.token_ciphertext),page_id:c.page_id,page_name:c.page_name,page_url:c.page_url,target_page_id:TARGET_PAGE},generation_ready:Boolean(env.GEMINI_API_KEY),image_provider:legacy?'legacy_gemini':'canva',design_ready:legacy?Boolean(env.GEMINI_API_KEY):Boolean(designConnection?.configured&&designConnection?.connected),news_sync_ready:Boolean(c.news_widget_verified_at)});}
    if(b.action==='connect'){
     if(!access.reviewer)fail('forbidden');if(!/^\d{5,30}$/.test(b.pageId||'')||typeof b.pageToken!=='string'||b.pageToken.length<20||b.pageToken.length>2000)fail('invalid_input');
     const me=await graph('me',b.pageToken,'GET',{fields:'id,name'});if(!TARGET_PAGE_IDS.includes(String(b.pageId))||!TARGET_PAGE_IDS.includes(String(me.id)))fail('channel_mismatch');
@@ -105,7 +107,7 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
     const r=await db.from(TABLE).insert({id:b.id,created_by:actor}).select('*').single();if(r.error)fail('version_conflict');return reply(200,{ok:true,story:await present(r.data)});
    }
    let row=await load(b.id,actor,access);if(b.action==='get')return reply(200,{ok:true,story:await present(row)});
-   if(!Number.isInteger(b.version)||row.version!==b.version)fail('version_conflict');
+   if(b.action!=='design_status'&&(!Number.isInteger(b.version)||row.version!==b.version))fail('version_conflict');
    if(['trash','restore','delete_cover','restore_cover'].includes(b.action)){
     if(!access.writer||row.created_by!==actor||!['draft','changes_requested'].includes(row.status))fail('forbidden');
     const patch:any={version:row.version+1,updated_at:new Date().toISOString()};
@@ -118,6 +120,18 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
     const saved=await db.from(TABLE).update(patch).eq('id',row.id).eq('version',row.version).select('*').maybeSingle();if(saved.error||!saved.data)fail('version_conflict');return reply(200,{ok:true,story:await present(saved.data)});
    }
    if(row.deleted_at)fail('invalid_state');
+   if(!legacy&&['design','design_status'].includes(b.action)){
+    if(!access.writer||row.created_by!==actor||!['draft','changes_requested'].includes(row.status))fail('forbidden');
+    if(b.action==='design'&&b.aiPhotoConsent!==true)fail('ai_photo_consent_required');
+    if(!row.title.trim())fail('content_required');await imagesReady(row);
+    let job;if(b.action==='design'){
+      if(!UUID.test(b.requestId||''))fail('invalid_input');job=await canva.start(row,actor,b.requestId);
+    }else{if(!UUID.test(b.jobId||''))fail('invalid_input');const r=await db.from('association_story_canva_jobs').select('*').eq('id',b.jobId).eq('story_id',row.id).eq('actor_id',actor).maybeSingle();if(r.error)fail('canva_unavailable');if(!r.data)fail('not_found');job=r.data;}
+    job=await canva.advance(job);
+    // Re-read the author draft after any remote work, then attach with its current version.
+    if(job.status==='ready'){const current=await db.from(TABLE).select('*').eq('id',row.id).single();if(current.error||!current.data)fail('not_found');row=await canva.attach(current.data,job,actor);}
+    return reply(200,{ok:true,story:await present(row)});
+   }
    if(b.action==='design'){
     if(!access.writer||row.created_by!==actor||!['draft','changes_requested'].includes(row.status))fail('forbidden');if(b.aiPhotoConsent!==true)fail('ai_photo_consent_required');if(!env.GEMINI_API_KEY)fail('design_unavailable');if(!row.title.trim())fail('content_required');
     const job=crypto.randomUUID(),claim=await db.rpc('association_story_design_claim',{p_actor:actor,p_id:row.id,p_version:row.version,p_job:job});if(claim.error)fail(String(claim.error.message||'').includes('design_in_progress')?'design_in_progress':'version_conflict');
@@ -159,4 +173,4 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
   }catch(e){const code=e instanceof Error?e.message:'unavailable';return reply(code==='forbidden'?403:known.has(code)?400:503,{ok:false,error:known.has(code)?code:'unavailable'});}
  };
 }
-if(typeof Deno!=='undefined'){const url=Deno.env.get('SUPABASE_URL')!,key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;Deno.serve(createHandler(createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}),key,{GEMINI_API_KEY:Deno.env.get('GEMINI_API_KEY')||''}));}
+if(typeof Deno!=='undefined'){const url=Deno.env.get('SUPABASE_URL')!,key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;Deno.serve(createHandler(createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}),key,{GEMINI_API_KEY:Deno.env.get('GEMINI_API_KEY')||'',CANVA_CLIENT_ID:Deno.env.get('CANVA_CLIENT_ID')||'',CANVA_CLIENT_SECRET:Deno.env.get('CANVA_CLIENT_SECRET')||'',CANVA_TOKEN_ENCRYPTION_KEY:Deno.env.get('CANVA_TOKEN_ENCRYPTION_KEY')||''}));}

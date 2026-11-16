@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "tests": 5,
+  "passed": 5,
+  "failed": 0,
+  "cases": [
+    "GET-only fixed-page verification",
+    "token invalidation vs missing permission",
+    "rate-limit/network/page-mismatch handling",
+    "authentication and scheduler-secret gates",
+    "cross-origin gate"
+  ]
+}

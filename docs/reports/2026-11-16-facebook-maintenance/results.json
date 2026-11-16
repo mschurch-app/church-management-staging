@@ -1,0 +1,58 @@
+{
+  "synthetic": true,
+  "realDevices": false,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "connectedState": true,
+      "secretCleared": true,
+      "noBrowserStorage": true,
+      "maintenanceStatus": true,
+      "manualHealthCheck": true,
+      "lookupFailureNotDisconnected": true,
+      "reviewerGate": true,
+      "authorizationGate": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "connectedState": true,
+      "secretCleared": true,
+      "noBrowserStorage": true,
+      "maintenanceStatus": true,
+      "manualHealthCheck": true,
+      "lookupFailureNotDisconnected": true,
+      "reviewerGate": true,
+      "authorizationGate": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "connectedState": true,
+      "secretCleared": true,
+      "noBrowserStorage": true,
+      "maintenanceStatus": true,
+      "manualHealthCheck": true,
+      "lookupFailureNotDisconnected": true,
+      "reviewerGate": true,
+      "authorizationGate": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "connectedState": true,
+      "secretCleared": true,
+      "noBrowserStorage": true,
+      "maintenanceStatus": true,
+      "manualHealthCheck": true,
+      "lookupFailureNotDisconnected": true,
+      "reviewerGate": true,
+      "authorizationGate": true,
+      "noOverflow": true
+    }
+  ]
+}

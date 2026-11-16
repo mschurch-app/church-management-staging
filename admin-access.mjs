@@ -3,10 +3,10 @@ export const TAB_PERMISSIONS = Object.freeze({
   groups: ['groups', 'members'], prayers: ['private_prayers'], spaces: ['spaces'], pastoral: ['pastoral_chats'],
   newcomer_care: ['members','newcomer_care'], tree_reading_admin: ['members','tree_reading_admin'],
   binding_review: ['members','binding_review'], notification_settings: ['members','notification_settings'],
-  website_weekly: ['pastoral_chats','website_weekly'], website_group_resources: ['pastoral_chats','website_group_resources'], inventory: ['inventory'], heat_camp: ['heat_camp'], church_albums: ['church_albums']
+  website_weekly: ['pastoral_chats','website_weekly'], website_group_resources: ['pastoral_chats','website_group_resources'], inventory: ['inventory'], heat_camp: ['heat_camp'], church_albums: ['church_albums'], association_content: ['association_content']
 });
 const churches = new Set(['M+', 'SHiNE']);
-const permissions = new Set(['portal','members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp','church_albums']);
+const permissions = new Set(['portal','members','attendance','groups','schedules','private_prayers','pastoral_chats','spaces','newcomer_care','tree_reading_admin','binding_review','notification_settings','website_weekly','website_group_resources','inventory','heat_camp','church_albums','association_content']);
 
 const cleanLabel = value => String(value || '').trim().replace(/\s+/g, ' ').slice(0, 60);
 export function profileFromUser(user) {
@@ -127,13 +127,14 @@ export async function readAccess(db, options = {}) {
   state.request=request;return request;
 }
 export function canOpen(access, church, tab) {
+  if(tab==='association_content'&&!access.grants.some(row=>row.church_id===church&&row.permission==='association_content'))return canOpen(access,church,'website_group_resources');
   const canonical=({private_prayers:'prayers',pastoral_chats:'pastoral'})[tab]||tab;
   const required = TAB_PERMISSIONS[canonical];
   return Boolean(required && required.every(permission =>
     access.grants.some(row => row.church_id === church && row.permission === permission)
     && access.featurePermissions?.find(row => row.church_id === church && row.feature_key === permission)?.view !== false));
 }
-export function canAction(access,church,feature,action){const granted=access.grants.some(row=>row.church_id===church&&row.permission===feature);if(!granted)return false;const row=access.featurePermissions?.find(item=>item.church_id===church&&item.feature_key===feature);return row?row[action]!==false:true;}
+export function canAction(access,church,feature,action){if(feature==='association_content'&&!access.grants.some(row=>row.church_id===church&&row.permission===feature))return canAction(access,church,'website_group_resources',action);const granted=access.grants.some(row=>row.church_id===church&&row.permission===feature);if(!granted)return false;const row=access.featurePermissions?.find(item=>item.church_id===church&&item.feature_key===feature);return row?row[action]!==false:true;}
 export function chooseChurch(access, preference) {
   return access.churches.includes(preference) ? preference : access.churches[0];
 }

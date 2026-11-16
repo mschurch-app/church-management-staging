@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {canOpen,canAction} from '../../admin-access.mjs';
+import {availableFunctionKeys} from '../../app-function-catalog.mjs';
+const access={grants:[{church_id:'M+',permission:'association_content'}],featurePermissions:[]};
+assert(canOpen(access,'M+','association_content'));
+assert(canAction(access,'M+','association_content','create'));
+assert(!canOpen(access,'M+','website_group_resources'));
+assert(!canOpen(access,'M+','pastoral_chats'));
+const keys=availableFunctionKeys(access,'M+');assert(keys.includes('association_stories')&&keys.includes('association_news'));assert(!keys.includes('website_group_resources')&&!keys.includes('pastoral_chats'));
+const denied={...access,featurePermissions:[{church_id:'M+',feature_key:'association_content',view:false,create:false}]};assert(!canOpen(denied,'M+','association_content'));assert(!canAction(denied,'M+','association_content','create'));
+const legacy={grants:['pastoral_chats','website_group_resources'].map(permission=>({church_id:'M+',permission})),featurePermissions:[]};assert(canOpen(legacy,'M+','association_content'));assert(canAction(legacy,'M+','association_content','create'));
+console.log(JSON.stringify({passed:9,associationOnly:true,legacyPreserved:true}));

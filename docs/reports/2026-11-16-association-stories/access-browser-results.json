@@ -1,0 +1,29 @@
+{
+  "synthetic": true,
+  "results": [
+    {
+      "browser": "Chromium",
+      "width": 393,
+      "associationOnly": true,
+      "motherReviewPreserved": true
+    },
+    {
+      "browser": "Chromium",
+      "width": 1440,
+      "associationOnly": true,
+      "motherReviewPreserved": true
+    },
+    {
+      "browser": "WebKit",
+      "width": 393,
+      "associationOnly": true,
+      "motherReviewPreserved": true
+    },
+    {
+      "browser": "WebKit",
+      "width": 1440,
+      "associationOnly": true,
+      "motherReviewPreserved": true
+    }
+  ]
+}

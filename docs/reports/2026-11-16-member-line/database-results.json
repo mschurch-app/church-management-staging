@@ -1,0 +1,102 @@
+{
+  "isolated": true,
+  "no_provider_calls": true,
+  "checks": [
+    {
+      "name": "exactly four explicitly approved senders seeded",
+      "passed": true
+    },
+    {
+      "name": "all approved users can send and only owner manages",
+      "passed": true
+    },
+    {
+      "name": "non-owner cannot modify settings",
+      "passed": true
+    },
+    {
+      "name": "permission grants do not give default send access",
+      "passed": true
+    },
+    {
+      "name": "cross-church member and archived member denied",
+      "passed": true
+    },
+    {
+      "name": "unbound recipient cannot send",
+      "passed": true
+    },
+    {
+      "name": "sender stores frozen request and server-resolved recipient",
+      "passed": true
+    },
+    {
+      "name": "parallel same-id request is refused while sending",
+      "passed": true
+    },
+    {
+      "name": "new UUID cannot bypass duplicate payload protection",
+      "passed": true
+    },
+    {
+      "name": "request payload and actor remain immutable",
+      "passed": true
+    },
+    {
+      "name": "wrong attempt token cannot finish delivery",
+      "passed": true
+    },
+    {
+      "name": "accepted provider receipt strips LINE identifier",
+      "passed": true
+    },
+    {
+      "name": "accepted retry returns prior receipt without another send",
+      "passed": true
+    },
+    {
+      "name": "recent history is scoped and excludes recipient subject",
+      "passed": true
+    },
+    {
+      "name": "history preserves who, whom, full content and send/accept dates",
+      "passed": true
+    },
+    {
+      "name": "history filters sender/recipient/date without exposing other churches",
+      "passed": true
+    },
+    {
+      "name": "sender snapshot stays unchanged after profile renamed",
+      "passed": true
+    },
+    {
+      "name": "owner can switch own send permission off without implicit bypass",
+      "passed": true
+    },
+    {
+      "name": "stale permission version fails without overwriting",
+      "passed": true
+    },
+    {
+      "name": "removing members access disables send despite enabled switch",
+      "passed": true
+    },
+    {
+      "name": "explicit members view denial blocks sending",
+      "passed": true
+    },
+    {
+      "name": "disabled account cannot use stale permission",
+      "passed": true
+    },
+    {
+      "name": "revoked session is denied",
+      "passed": true
+    },
+    {
+      "name": "anonymous/authenticated cannot call service RPC or private tables",
+      "passed": true
+    }
+  ]
+}

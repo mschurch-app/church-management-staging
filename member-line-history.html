@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<link rel="icon" type="image/svg+xml" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<link rel="shortcut icon" href="assets/app/church-os-icon.svg?v=20261003-glass1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<title>LINE 訊息發送紀錄｜教會 OS</title>
+<link rel="stylesheet" href="auth.css?v=20260923-aurora1">
+<link rel="stylesheet" href="church-brand.css?v=20261008-header1">
+<link rel="stylesheet" href="theme-vitality.css?v=20261003-blue1">
+<link rel="stylesheet" href="apple-ui.css?v=20260924-app1">
+<link rel="stylesheet" href="church-palette.css?v=20261012-readable2">
+<link data-app-consistency="1" rel="stylesheet" href="app-consistency.css?v=20261022-experience4">
+<script src="mplus-theme.js?v=20261020-flat1">
+</script>
+<link data-mplus-theme rel="stylesheet" href="mplus-theme.css?v=20261022-experience4">
+<link rel="stylesheet" href="care-workspace.css?v=20261023-care1">
+<link rel="stylesheet" href="member-line.css?v=20261116-memberline1">
+</head><body data-app-layout="care" data-action-feedback="off"><main class="member-page">
+<header class="page-header"><div><p class="eyebrow">CHURCH OS · 系統管理</p><h1>LINE 訊息發送紀錄</h1><p class="muted">查看誰發送、發給誰、完整內容、日期與傳送狀態。</p></div></header>
+<nav class="page-nav"><a href="church-settings.html?church=M%2B">返回系統設定</a><a href="members.html?church=M%2B">會友名冊</a><a href="member-line-history.html?church=M%2B">LINE 訊息發送紀錄</a></nav>
+<section><form id="history-filters" class="member-line-history-filters"><label>收件會友<input id="member-search" maxlength="80" placeholder="姓名關鍵字"></label><label>發送人<input id="sender-search" maxlength="80" placeholder="同工姓名關鍵字"></label><label>起始日期<input id="date-from" type="date"></label><label>結束日期<input id="date-to" type="date"></label><button type="submit">查詢紀錄</button></form><p id="status" role="status"></p><p class="muted">日期以台灣時間顯示。LINE 平台受理不代表對方已讀；未受理與待確認的紀錄也會保留。</p><div id="history-list"></div><nav class="member-line-actions"><button type="button" id="history-prev" class="secondary" disabled>上一頁</button><span id="history-page">第 1 頁</span><button type="button" id="history-next" class="secondary" disabled>下一頁</button></nav></section>
+</main><script src="vendor/supabase-2.102.0.js"></script><script type="module" src="member-line-history.mjs?v=20261116-memberline1"></script><script type="module" src="church-brand.mjs?v=20261103-unifiedpermissions1"></script></body></html>

@@ -1,6 +1,8 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
+  "member_line_history":{"file":"member-line-history.html","title":"LINE 訊息發送紀錄","description":"查詢發送人、收件人、全文、時間與受理狀態","key":"member_line_history","group":"system","church":"M+","owner":true,"symbol":"chat","configurableHome":false,"searchTerms":["LINE","紀錄","誰發的","訊息"],"settingsId":"member-line-history","settingsGroup":"people"},
+  "member_line_settings":{"file":"member-line-settings.html","title":"會友 LINE 傳送權限","description":"開關個別同工的會友私人訊息傳送權","key":"member_line_settings","group":"system","church":"M+","owner":true,"symbol":"chat","configurableHome":false,"searchTerms":["LINE","訊息","傳送","權限"],"settingsId":"member-line-settings","settingsGroup":"people"},
   "potluck":{"file":"potluck-admin.html","title":"互動料理募集","description":"活動設定、料理名單與感恩餐桌統計","key":"potluck","group":"events","church":"M+","owner":true,"symbol":"heart","configurableHome":false,"searchTerms":["感恩節","料理","活動管理"]},
   "finance_permission_settings":{"file":"admin-accounts.html?church=M%2B","title":"同工權限設定","description":"統一勾選教會功能、操作與財務權限","key":"finance_permission_settings","group":"finance","church":"M+","owner":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["授權","同工權限"]},
   "finance_accounting_reports":{"file":"finance-permissions.html#reports","title":"會計報表","description":"查閱與匯出已核准財務資料","key":"finance_accounting_reports","group":"finance","church":"M+","accountingReportAccess":true,"symbol":"mplus-box","configurableHome":false,"searchTerms":["會計","報表","匯出"]},
@@ -793,6 +795,8 @@ export const FUNCTION_GROUPS=freezeTree([
       "notification_settings",
       "customization",
       "admin_accounts",
+      "member_line_settings",
+      "member_line_history",
       "church_settings",
       "system_monitor"
     ]
@@ -805,6 +809,8 @@ export const SETTINGS_GROUPS=freezeTree([
     "note": "邀請同工、確認 LINE 身分與使用權限",
     "keys": [
       "admin_accounts",
+      "member_line_settings",
+      "member_line_history",
       "binding_review"
     ]
   },

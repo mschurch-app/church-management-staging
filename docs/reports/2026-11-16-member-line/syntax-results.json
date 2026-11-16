@@ -1,0 +1,58 @@
+[
+  {
+    "file": "admin-dashboard-ui.mjs",
+    "passed": true
+  },
+  {
+    "file": "app-function-catalog.mjs",
+    "passed": true
+  },
+  {
+    "file": "app-function-definitions.mjs",
+    "passed": true
+  },
+  {
+    "file": "app-icons.mjs",
+    "passed": true
+  },
+  {
+    "file": "app-ui.mjs",
+    "passed": true
+  },
+  {
+    "file": "church-os-sw.js",
+    "passed": true
+  },
+  {
+    "file": "church-settings-ui.mjs",
+    "passed": true
+  },
+  {
+    "file": "members-ui.mjs",
+    "passed": true
+  },
+  {
+    "file": "mplus-dashboard-ui.mjs",
+    "passed": true
+  },
+  {
+    "file": "member-line-templates.mjs",
+    "passed": true
+  },
+  {
+    "file": "member-line-settings.mjs",
+    "passed": true
+  },
+  {
+    "file": "member-line-history.mjs",
+    "passed": true
+  },
+  {
+    "file": "member-line-api.mjs",
+    "passed": true
+  },
+  {
+    "file": "member-line-composer.mjs",
+    "passed": true
+  }
+]

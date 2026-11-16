@@ -1,0 +1,14 @@
+[
+  {
+    "status": 401,
+    "body": "{\"code\":\"UNAUTHORIZED_NO_AUTH_HEADER\",\"message\":\"Missing authorization header\"}"
+  },
+  {
+    "status": 401,
+    "body": "{\"code\":\"UNAUTHORIZED_NO_AUTH_HEADER\",\"message\":\"Missing authorization header\"}"
+  },
+  {
+    "status": 401,
+    "body": "{\"code\":\"UNAUTHORIZED_INVALID_JWT_FORMAT\",\"message\":\"Invalid JWT\"}"
+  }
+]

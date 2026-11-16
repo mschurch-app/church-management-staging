@@ -1,0 +1,53 @@
+{
+  "mock_provider_only": true,
+  "checks": [
+    {
+      "name": "rejects anonymous and untrusted origins before provider",
+      "passed": true
+    },
+    {
+      "name": "verifies bearer user rather than client actor",
+      "passed": true
+    },
+    {
+      "name": "uses server-frozen body and recipient with stable LINE retry UUID",
+      "passed": true
+    },
+    {
+      "name": "accepted duplicates never call LINE",
+      "passed": true
+    },
+    {
+      "name": "LINE retry conflict keeps original accepted receipt",
+      "passed": true
+    },
+    {
+      "name": "provider timeout remains uncertain and safely retryable",
+      "passed": true
+    },
+    {
+      "name": "definitive provider failure is not reported as accepted",
+      "passed": true
+    },
+    {
+      "name": "clients cannot call service-only finish transition",
+      "passed": true
+    },
+    {
+      "name": "client cannot include hidden fields in permission operation",
+      "passed": true
+    },
+    {
+      "name": "history forwards only supported filters",
+      "passed": true
+    },
+    {
+      "name": "missing verified session claim is denied",
+      "passed": true
+    },
+    {
+      "name": "invalid/oversize message rejected before send",
+      "passed": true
+    }
+  ]
+}

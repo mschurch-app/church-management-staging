@@ -28,7 +28,7 @@ export function validateGeneratedFacts(description,body){
  if([...source].some(x=>!output.has(x))||[...output].some(x=>!source.has(x)))throw Error('generation_changed_facts');
 }
 
-export function validateCover(row){const cover=row.cover;if(!cover||(cover.key_points||'')!==(row.key_points||'')||(cover.subject_mode||'auto')!==(row.subject_mode||'auto')||(cover.layout_notes||'')!==(row.layout_notes||'')||cover.title!==row.title||cover.layout_key!==row.layout_key||cover.theme_key!==row.theme_key||JSON.stringify(cover.source_hashes)!==JSON.stringify(row.images.map(x=>x.sha256)))throw Error('cover_outdated');validateManifest([cover]);return cover;}
+export function validateCover(row){const cover=row.cover;if(!cover||(row.design_art?.job_id&&row.design_art.job_id!==cover.design_id)||(cover.key_points||'')!==(row.key_points||'')||(cover.subject_mode||'auto')!==(row.subject_mode||'auto')||(cover.layout_notes||'')!==(row.layout_notes||'')||cover.title!==row.title||cover.layout_key!==row.layout_key||cover.theme_key!==row.theme_key||JSON.stringify(cover.source_hashes)!==JSON.stringify(row.images.map(x=>x.sha256)))throw Error('cover_outdated');validateManifest([cover]);return cover;}
 
 export function freshDesignPrompt(row,nonce){return `你是協會社群的資深視覺設計師。依本次照片與真實故事，全新設計一張4:5直式完整圖像，每次重新構圖，禁止使用固定網格套版或把每張照片機械地放進矩形框。
 整體有陽光、繽紛、溫暖、細膩的設計感，融合真實照片、原創手繪或剪紙插圖、層次留白、優秀的字級與閱讀動線。配色依指定色系但可自然搭配。照片可以去背、裁切場景、調整明暗或融合背景；人物五官、年齡、膚色、肢體、衣著、身分和實際事件必須保持忠實，不新增人物或改造人物，不將照片中的真人畫成別人。不能為了設計截斷臉部或主要人物。

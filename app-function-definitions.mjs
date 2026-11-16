@@ -219,6 +219,7 @@ export const FUNCTION_CATALOG=freezeTree({
     "settingsId": "website-maintenance",
     "settingsGroup": "content"
   },
+  "association_stories": {"church":"M+","permission":"website_group_resources","file":"association-stories.html","title":"協會照片說故事","description":"照片與故事產生 FB 文案，送師母審核後發布，可同步協會最新消息","key":"association_stories","group":"media","symbol":"globe","configurableHome":false,"searchTerms":["協會","FB","Facebook","照片說故事","師母審核"],"settingsId":"association-stories","settingsGroup":"content"},
   "association_news": {
     "church": "M+",
     "permission": "website_group_resources",
@@ -743,6 +744,7 @@ export const FUNCTION_GROUPS=freezeTree([
       "life_tree_festivals",
       "website_weekly",
       "association_news",
+      "association_stories",
       "website_group_resources",
       "pastoral_content",
       "todays_message",
@@ -823,6 +825,7 @@ export const SETTINGS_GROUPS=freezeTree([
       "testimony_review",
       "website_weekly",
       "association_news",
+      "association_stories",
       "website_group_resources",
       "tree_reading_admin",
       "life_tree_festivals",

@@ -7,3 +7,6 @@ tests/phase2/results/
 tests/phase3/results/
 tests/phase4/results/
 tests/life-tree/results/
+
+tests/payroll-sql/node_modules/
+docs/reports/2026-11-16-association-stories/*.png

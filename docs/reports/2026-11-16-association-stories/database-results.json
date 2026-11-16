@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "checks": [
+    "private tables and RPCs deny anon/authenticated direct access",
+    "canonical LINE identity uses the existing staff account",
+    "reviewer bound to active server account; writer grants and view restrictions enforced",
+    "only author can submit; submit and mother notification are atomic",
+    "staff cannot approve or return themselves; no owner bypass of mother review",
+    "return needs comment and informs author; resubmission creates new review version",
+    "approval locks a complete snapshot and repeated approval is rejected",
+    "inactive mother cannot approve; private media bucket never public"
+  ]
+}

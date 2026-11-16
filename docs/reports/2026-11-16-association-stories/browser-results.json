@@ -1,0 +1,62 @@
+{
+  "synthetic": true,
+  "physicalDevices": false,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "photoLimit": true,
+      "editableGeneration": true,
+      "singleCoverWithTitle": true,
+      "layoutRequest": true,
+      "independentOptions": true,
+      "fullPreview": true,
+      "consentGate": true,
+      "motherOnlyReview": true,
+      "approvalOnce": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "photoLimit": true,
+      "editableGeneration": true,
+      "singleCoverWithTitle": true,
+      "layoutRequest": true,
+      "independentOptions": true,
+      "fullPreview": true,
+      "consentGate": true,
+      "motherOnlyReview": true,
+      "approvalOnce": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "photoLimit": true,
+      "editableGeneration": true,
+      "singleCoverWithTitle": true,
+      "layoutRequest": true,
+      "independentOptions": true,
+      "fullPreview": true,
+      "consentGate": true,
+      "motherOnlyReview": true,
+      "approvalOnce": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "photoLimit": true,
+      "editableGeneration": true,
+      "singleCoverWithTitle": true,
+      "layoutRequest": true,
+      "independentOptions": true,
+      "fullPreview": true,
+      "consentGate": true,
+      "motherOnlyReview": true,
+      "approvalOnce": true,
+      "noOverflow": true
+    }
+  ]
+}

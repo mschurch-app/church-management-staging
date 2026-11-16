@@ -1,0 +1,49 @@
+{
+  "synthetic": true,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "consentRequired": true,
+      "fragmentCleared": true,
+      "sentOnce": true,
+      "noTokenPersisted": true,
+      "tokenFieldCleared": true,
+      "noReplayAfterReload": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "consentRequired": true,
+      "fragmentCleared": true,
+      "sentOnce": true,
+      "noTokenPersisted": true,
+      "tokenFieldCleared": true,
+      "noReplayAfterReload": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "consentRequired": true,
+      "fragmentCleared": true,
+      "sentOnce": true,
+      "noTokenPersisted": true,
+      "tokenFieldCleared": true,
+      "noReplayAfterReload": true,
+      "noOverflow": true
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "consentRequired": true,
+      "fragmentCleared": true,
+      "sentOnce": true,
+      "noTokenPersisted": true,
+      "tokenFieldCleared": true,
+      "noReplayAfterReload": true,
+      "noOverflow": true
+    }
+  ]
+}

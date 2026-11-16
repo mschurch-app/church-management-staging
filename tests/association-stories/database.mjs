@@ -13,6 +13,18 @@ try{
  await test('staff cannot approve or return themselves; no owner bypass of mother review',async()=>{await assert.rejects(()=>transition(staff,2,'approve'),/forbidden/);await q('insert into church_auth.owners values($1)',[staff]);await assert.rejects(()=>transition(staff,2,'approve'),/forbidden/);});
  await test('return needs comment and informs author; resubmission creates new review version',async()=>{await assert.rejects(()=>transition(mother,2,'return'),/comment_required/);let r=await transition(mother,2,'return','請補充活動過程');assert.equal(r.status,'changes_requested');assert.equal(await scalar('select count(*)::int from public.app_notifications where user_id=$1',[staff]),1);r=await transition(staff,3,'submit');assert.equal(r.version,4);});
  await test('approval locks a complete snapshot and repeated approval is rejected',async()=>{const r=await transition(mother,4,'approve');assert.equal(r.approved_by,mother);assert.equal(r.approved_snapshot.body,'一起完成一幅畫。');assert.equal(r.status,'approved');await assert.rejects(()=>transition(mother,5,'approve'),/invalid_state/);});
+ await db.exec(await readFile(new URL('../../supabase/migrations/20261116012459_association_story_connection_tickets.sql',import.meta.url),'utf8'));
+ await test('one-time connection capability denies ordinary clients and commits encrypted connection atomically',async()=>{
+  const ticket='a'.repeat(64);await q("insert into public.association_story_connection_tickets(ticket_hash,expires_at) values($1,now()+interval '10 minutes')",[ticket]);
+  for(const role of ['anon','authenticated']){await db.exec('set role '+role);await assert.rejects(()=>q('select * from public.association_story_connection_tickets'),/permission denied/);await assert.rejects(()=>q('select public.complete_association_story_connection($1,$2,$3,$4,$5)',[ticket,'311251732221816','合成協會','x'.repeat(100),'x'.repeat(16)]),/permission denied/);await db.exec('reset role');}
+  await assert.rejects(()=>scalar('select public.complete_association_story_connection($1,$2,$3,$4,$5)',[ticket,'123456','錯誤專頁','x'.repeat(100),'x'.repeat(16)]),/channel_mismatch/);
+  assert.equal(await scalar('select used_at is null from public.association_story_connection_tickets where ticket_hash=$1',[ticket]),true);
+  assert(await scalar('select public.complete_association_story_connection($1,$2,$3,$4,$5)',[ticket,'311251732221816','合成協會','x'.repeat(100),'x'.repeat(16)]));
+  await assert.rejects(()=>scalar('select public.complete_association_story_connection($1,$2,$3,$4,$5)',[ticket,'311251732221816','合成協會','x'.repeat(100),'x'.repeat(16)]),/forbidden/);
+  assert.equal(await scalar('select page_id from public.association_story_settings'),'311251732221816');
+  await q("insert into public.association_story_connection_tickets(ticket_hash,created_at,expires_at) values($1,now()-interval '15 minutes',now()-interval '5 minutes')",['b'.repeat(64)]);
+  await assert.rejects(()=>scalar('select public.complete_association_story_connection($1,$2,$3,$4,$5)',['b'.repeat(64),'311251732221816','合成協會','x'.repeat(100),'x'.repeat(16)]),/forbidden/);
+ });
  await test('inactive mother cannot approve; private media bucket never public',async()=>{await q('update church_auth.accounts set is_active=false where user_id=$1',[mother]);assert(!(await scalar('select public.association_story_access($1)',[mother])).reviewer);assert.equal(await scalar("select public from storage.buckets where id='association-story-private'"),false);});
  await writeFile(new URL('../../docs/reports/2026-11-16-association-stories/database-results.json',import.meta.url),JSON.stringify({synthetic:true,checks},null,2));console.log(JSON.stringify({passed:checks.length}));
 }finally{await db.close();}

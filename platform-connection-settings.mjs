@@ -13,7 +13,7 @@ export function connectionSettings(kind){
     return connected?label+' 已安全連結。':value?label+' 連線已失效，請重新連結。':'尚未連結 '+label+'。';
   }
   async function load(){await flow.load(async()=>{if(church!=='M+')throw Error(label+' 連線目前僅提供 M+ 大雅教會使用。');await authorizePublishing();return checkedConnection(await publishingApi(endpoint,'status'),kind);},render);}
-  $('#back').href='media-publishing-settings.html?church='+encodeURIComponent(church);
+  $('#back').href='authorization-settings.html?church='+encodeURIComponent(church);
   $('#reload').onclick=load;
   if(instagram)form.onsubmit=event=>{
     event.preventDefault();const accessToken=token.value.trim();if(!accessToken){token.setCustomValidity('請貼上存取權杖。');token.reportValidity();return;}

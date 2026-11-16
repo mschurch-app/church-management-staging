@@ -86,7 +86,7 @@ function render(){
     if(['待審核','已核准'].includes(row.status)){const edit=el('button','更正預約','secondary');edit.onclick=()=>bookingForm(row);card.append(edit);}
     const actions=row.status==='待審核'?[['核准','已核准'],['駁回','已駁回'],['取消','已取消']]:row.status==='已核准'?[['取消','已取消']]:[];
     for(const [label,next] of actions){const button=el('button',label,'secondary');button.onclick=()=>changeBookingState(row,next,label);card.append(button);}
-    bookingArea.append(card);
+    card.id='booking-'+row.id;bookingArea.append(card);if(new URLSearchParams(location.search).get('record')===String(row.id))requestAnimationFrame(()=>card.scrollIntoView({block:'center'}));
   }
   if(!visibleBookings.length)bookingArea.append(el('p','目前沒有預約。','muted'));
   $('#room-toggle').textContent=showInactive?'顯示使用中空間':'查看停用空間';

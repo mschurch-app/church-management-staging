@@ -1,11 +1,12 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261116-association-access1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261116-auth-hub1';
-export * from './app-function-definitions.mjs?v=20261116-auth-hub1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261116-admin1';
+export * from './app-function-definitions.mjs?v=20261116-admin1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const assigned=new Set((home.module_permissions||[]).map(canonicalFunctionKey));
  return Object.keys(FUNCTION_CATALOG).filter(key=>{
   const item=FUNCTION_CATALOG[key];
   if(item.church&&item.church!==church)return false;
+  if(key==='admin_workbench'&&!assigned.has('pastoral_workspace')&&!home.is_owner&&!home.financeCashAccess&&!home.accountingReportAccess&&!home.financeExpenseAccess&&!home.financeReceiptAccess&&!['spaces','inventory'].some(p=>canOpen(access,church,p)))return false;
   if(item.scheduleAccess&&home.schoolScheduleAccess!==true)return false;
   if(item.payrollAccess&&!home.payrollAccess)return false;
   if(item.accountingReportAccess&&!home.accountingReportAccess&&!home.is_owner)return false;

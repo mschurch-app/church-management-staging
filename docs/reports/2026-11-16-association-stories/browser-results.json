@@ -16,6 +16,9 @@
       "approvalOnce": true,
       "reversibleDraftAndArtDeletion": true,
       "freshDesign": true,
+      "failedApplyRecoversPreview": true,
+      "quotaMessage": true,
+      "previewDoesNotGenerate": true,
       "noOverflow": true
     },
     {
@@ -32,6 +35,9 @@
       "approvalOnce": true,
       "reversibleDraftAndArtDeletion": true,
       "freshDesign": true,
+      "failedApplyRecoversPreview": true,
+      "quotaMessage": true,
+      "previewDoesNotGenerate": true,
       "noOverflow": true
     },
     {
@@ -48,6 +54,9 @@
       "approvalOnce": true,
       "reversibleDraftAndArtDeletion": true,
       "freshDesign": true,
+      "failedApplyRecoversPreview": true,
+      "quotaMessage": true,
+      "previewDoesNotGenerate": true,
       "noOverflow": true
     },
     {
@@ -64,6 +73,9 @@
       "approvalOnce": true,
       "reversibleDraftAndArtDeletion": true,
       "freshDesign": true,
+      "failedApplyRecoversPreview": true,
+      "quotaMessage": true,
+      "previewDoesNotGenerate": true,
       "noOverflow": true
     }
   ]

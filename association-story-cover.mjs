@@ -1,5 +1,5 @@
 // Normalize a newly generated complete artwork; do not lay out or redraw its subjects.
-import {STORY_LAYOUTS,STORY_THEMES} from './association-story-model.mjs?v=20261116-story-options2';
+import {STORY_LAYOUTS,STORY_THEMES} from './association-story-model.mjs?v=20261116-preview-recovery1';
 export const LAYOUTS=STORY_LAYOUTS,THEMES=STORY_THEMES;
 export const PALETTES={sunshine:['#fff2bf','#ffe188','#8a4a08','#47331f'],sky:['#d9efff','#a9d8f2','#245c83','#17364b'],coral:['#ffe0d4','#ffb5a6','#963f35','#542e2c'],mint:['#dff5e6','#a9dfc4','#23624e','#234438'],lavender:['#eee3ff','#cfbaf2','#60427b','#3e3155'],peach:['#fff0dc','#f6ca9e','#885429','#4b382d'],rose:['#ffe2ed','#efb4cf','#8a3e60','#4f3040'],aqua:['#d6f6f4','#8fdfd8','#1c666b','#204348'],sungreen:['#eff5bb','#cde684','#587028','#354524'],apricot:['#ffe5ba','#ffbd70','#8c4b17','#55351f'],forest:['#102a26','#315247','#e3c89f'],charcoal:['#191f25','#38434c','#dbbf94'],earth:['#30261f','#5b493b','#ead1a8'],navy:['#101d38','#294c72','#e8c994'],wine:['#361622','#713747','#f0c9a0'],plum:['#2b203b','#625071','#e6c8d8'],teal:['#103238','#27606a','#e6ce9e'],olive:['#292f1b','#59603b','#e8d3a2'],slate:['#24313f','#516b80','#d5e3eb'],terracotta:['#3e221e','#885343','#f4d6b0'],indigo:['#201e45','#514c85','#ded4f0'],emerald:['#10382d','#287b5a','#e7d5a4']};
 export async function normalizeGeneratedDesign(url){

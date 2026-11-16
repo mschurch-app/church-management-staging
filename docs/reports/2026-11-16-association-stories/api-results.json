@@ -8,6 +8,8 @@
     "single-use setup consumes a hashed capability and returns no credential",
     "new styles survive saves; generation cannot overwrite a draft after changing numeric facts",
     "fresh AI design requires photo consent, sends actual photos and stores a private unique result",
+    "provider quota failure is explicit and retains text, old cover and releases generation lock",
+    "a newly generated but unapplied image blocks publishing the previous cover",
     "draft and cover deletion are reversible, do not delete source images or published posts, and stay author-only",
     "generation uses description and saves editable text, without publishing",
     "save cannot overwrite creator, review status, media paths, or publication receipts",

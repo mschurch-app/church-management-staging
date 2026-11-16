@@ -1,7 +1,9 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.102.0';
 import {UUID,cleanStory,validateManifest,validateSubmission,validateCover,composeMessage,generationPrompt} from '../../../association-story-model.mjs';
 import {jpegSize} from '../../../testimony-carousel-model.mjs';
-const TARGET_PAGE='100064745854212';
+const TARGET_PAGE='311251732221816';
+// Facebook exposes both a public profile ID and the Page API ID for this same tcsca Page.
+const TARGET_PAGE_IDS=[TARGET_PAGE,'100064745854212'];
 const APP='https://mscos.mchurch.online',BUCKET='association-story-private',TABLE='association_stories',SETTINGS='association_story_settings';
 const hash=async(bytes:Uint8Array)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes.slice().buffer))].map(x=>x.toString(16).padStart(2,'0')).join('');
 const fail=(code:string):never=>{throw Error(code);};
@@ -42,7 +44,7 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
   const r=await db.from(TABLE).update({status:'publishing',attempt_id:crypto.randomUUID(),lease_expires_at:new Date(Date.now()+180000).toISOString(),updated_at:new Date().toISOString()}).eq('id',row.id).eq('version',row.version).eq('status',row.status).eq('updated_at',row.updated_at).select('*').maybeSingle();if(r.error||!r.data)fail('version_conflict');row=r.data;
   try{
    if(!(await rights(row.approved_by)).reviewer)fail('forbidden');const source=row.approved_snapshot;if(!source||!source.consent_confirmed)fail('consent_required');await imagesReady(source);await coverReady(source);
-   const c=await config(),token=await decrypt(c),me=await graph('me',token,'GET',{fields:'id,name'});if(me.id!==c.page_id||me.id!==TARGET_PAGE)fail('channel_mismatch');
+   const c=await config(),token=await decrypt(c),me=await graph('me',token,'GET',{fields:'id,name'});if(me.id!==c.page_id||!TARGET_PAGE_IDS.includes(String(me.id)))fail('channel_mismatch');
    // Bind a draft permanently to the Page approved on its first publishing attempt.
    if(source.page_id&&source.page_id!==c.page_id)fail('channel_mismatch');
    if(!source.page_id){source.page_id=c.page_id;await checkpoint(row,{approved_snapshot:source});}
@@ -72,12 +74,25 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
   if(req.method==='OPTIONS')return new Response(null,{status:origin===APP?204:403,headers:{...headers,'access-control-allow-headers':'authorization,content-type,apikey','access-control-allow-methods':'POST,OPTIONS'}});
   if(req.method!=='POST'||origin!==APP)return reply(403,{ok:false,error:'forbidden'});
   try{
-   const bearer=req.headers.get('authorization')?.match(/^Bearer (\S+)$/)?.[1];if(!bearer)return reply(401,{ok:false,error:'login_required'});const auth=await db.auth.getUser(bearer);if(auth.error||!auth.data.user)return reply(401,{ok:false,error:'login_required'});const access=await rights(auth.data.user.id),actor=access.actor_id||auth.data.user.id;if(!access.reader&&!access.reviewer)return reply(403,{ok:false,error:'forbidden'});
    if(Number(req.headers.get('content-length')||0)>40000)fail('invalid_input');const reader=req.body?.getReader();if(!reader)throw Error('invalid_input');let total=0,raw='';const decoder=new TextDecoder();while(true){const r=await reader.read();if(r.done)break;total+=r.value.byteLength;if(total>40000){await reader.cancel();fail('invalid_input');}raw+=decoder.decode(r.value,{stream:true});}const b=JSON.parse(raw+decoder.decode());
+   if(b.action==='connect_ticket'){
+    if(typeof b.ticket!=='string'||!/^[a-f0-9]{64}$/.test(b.ticket))fail('forbidden');
+    const ticketHash=await hash(new TextEncoder().encode(b.ticket)),ticket=await db.from('association_story_connection_tickets').select('ticket_hash,expires_at,used_at,expected_page_id').eq('ticket_hash',ticketHash).maybeSingle();
+    if(ticket.error||!ticket.data||ticket.data.used_at||Date.parse(ticket.data.expires_at)<=Date.now()||ticket.data.expected_page_id!==TARGET_PAGE)fail('forbidden');
+    if(typeof b.pageToken!=='string'||b.pageToken.length<20||b.pageToken.length>2000)fail('invalid_input');
+    const me=await graph('me',b.pageToken,'GET',{fields:'id,name'});if(!TARGET_PAGE_IDS.includes(String(me.id)))fail('channel_mismatch');
+    await graph(me.id+'/published_posts',b.pageToken,'GET',{fields:'id',limit:'1'});
+    const iv=crypto.getRandomValues(new Uint8Array(12)),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},await key(),new TextEncoder().encode(b.pageToken));
+    const saved=await db.rpc('complete_association_story_connection',{p_hash:ticketHash,p_page_id:String(me.id),p_name:String(me.name),p_ciphertext:b64(new Uint8Array(cipher)),p_iv:b64(iv)});
+    if(saved.error||saved.data!==true)fail('forbidden');
+    return reply(200,{ok:true,page_id:me.id,page_name:me.name,encrypted:true,generation_ready:Boolean(env.GEMINI_API_KEY)});
+   }
+   const bearer=req.headers.get('authorization')?.match(/^Bearer (\S+)$/)?.[1];if(!bearer)return reply(401,{ok:false,error:'login_required'});const auth=await db.auth.getUser(bearer);if(auth.error||!auth.data.user)return reply(401,{ok:false,error:'login_required'});const access=await rights(auth.data.user.id),actor=access.actor_id||auth.data.user.id;if(!access.reader&&!access.reviewer)return reply(403,{ok:false,error:'forbidden'});
+
    if(b.action==='profile'){const c=await config();return reply(200,{ok:true,user_id:actor,access,connection:{connected:Boolean(c.page_id&&c.token_ciphertext),page_id:c.page_id,page_name:c.page_name,page_url:c.page_url,target_page_id:TARGET_PAGE},generation_ready:Boolean(env.GEMINI_API_KEY),news_sync_ready:Boolean(c.news_widget_verified_at)});}
    if(b.action==='connect'){
     if(!access.reviewer)fail('forbidden');if(!/^\d{5,30}$/.test(b.pageId||'')||typeof b.pageToken!=='string'||b.pageToken.length<20||b.pageToken.length>2000)fail('invalid_input');
-    const me=await graph('me',b.pageToken,'GET',{fields:'id,name'});if(me.id!==b.pageId||me.id!==TARGET_PAGE)fail('channel_mismatch');
+    const me=await graph('me',b.pageToken,'GET',{fields:'id,name'});if(!TARGET_PAGE_IDS.includes(String(b.pageId))||!TARGET_PAGE_IDS.includes(String(me.id)))fail('channel_mismatch');
     const iv=crypto.getRandomValues(new Uint8Array(12)),encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv},await key(),new TextEncoder().encode(b.pageToken));
     const r=await db.from(SETTINGS).update({page_id:me.id,page_name:me.name,page_url:'https://www.facebook.com/tcsca/',token_iv:b64(iv),token_ciphertext:b64(new Uint8Array(encrypted)),connected_by:actor,connected_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',true).select('page_name').single();if(r.error)fail('configuration_failed');return reply(200,{ok:true,page_name:r.data.page_name});
    }

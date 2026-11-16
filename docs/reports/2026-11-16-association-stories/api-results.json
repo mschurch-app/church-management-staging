@@ -4,6 +4,8 @@
     "one to five JPEG manifests only; checkboxes compose independently",
     "origin/login/nonstaff access is denied and drafts stay author-scoped",
     "staff cannot approve or change FB connection; source revisions checked",
+    "Page API ID and public profile ID identify only the same authorized association",
+    "single-use setup consumes a hashed capability and returns no credential",
     "generation uses description and saves editable text, without publishing",
     "save cannot overwrite creator, review status, media paths, or publication receipts",
     "prepare creates private author/draft/revision upload scope",

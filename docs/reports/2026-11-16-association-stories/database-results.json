@@ -8,6 +8,7 @@
     "staff cannot approve or return themselves; no owner bypass of mother review",
     "return needs comment and informs author; resubmission creates new review version",
     "approval locks a complete snapshot and repeated approval is rejected",
+    "one-time connection capability denies ordinary clients and commits encrypted connection atomically",
     "inactive mother cannot approve; private media bucket never public"
   ]
 }

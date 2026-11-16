@@ -1,0 +1,23 @@
+const API='https://api.canva.com/rest/v1';
+const enc=new TextEncoder(),b64=a=>btoa(String.fromCharCode(...a)),un64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+export function canvaClient({db,env,fetcher=fetch}){
+ const clientId=env.CANVA_CLIENT_ID||'',secret=env.CANVA_CLIENT_SECRET||'',key=env.CANVA_TOKEN_ENCRYPTION_KEY||'';
+ const configured=Boolean(clientId&&secret&&key.length>=32);
+ async function aes(){return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',enc.encode(key)),{name:'AES-GCM'},false,['encrypt','decrypt']);}
+ async function decrypt(value){return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:un64(value.iv),additionalData:enc.encode('canva:M+:tokens')},await aes(),un64(value.ciphertext))));}
+ async function encrypt(value){const iv=crypto.getRandomValues(new Uint8Array(12));return {iv:b64(iv),ciphertext:b64(new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:enc.encode('canva:M+:tokens')},await aes(),enc.encode(JSON.stringify(value)))))};}
+ async function connection(){const r=await db.from('weekly_canva_connections').select('connected_at').eq('church_id','M+').maybeSingle();if(r.error)throw Error('canva_unavailable');return {configured,connected:!!r.data};}
+ async function token(){
+  if(!configured)throw Error('canva_configuration_required');
+  const r=await db.from('weekly_canva_connections').select('*').eq('church_id','M+').maybeSingle();if(r.error)throw Error('canva_unavailable');if(!r.data)throw Error('canva_connection_required');
+  if(Date.parse(r.data.expires_at)>Date.now()+60000)return (await decrypt(r.data.credentials)).access_token;
+  const lease=crypto.randomUUID(),claim=await db.rpc('claim_weekly_canva_refresh',{p_church:'M+',p_lease:lease});if(claim.error)throw Error('canva_unavailable');if(claim.data!==true)throw Error('canva_connection_busy');
+  try{const fresh=await db.from('weekly_canva_connections').select('*').eq('church_id','M+').single();if(fresh.error||!fresh.data)throw Error('canva_connection_required');const old=await decrypt(fresh.data.credentials);if(Date.parse(fresh.data.expires_at)>Date.now()+60000)return old.access_token;
+   const response=await fetcher(API+'/oauth/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{authorization:'Basic '+btoa(clientId+':'+secret),'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'refresh_token',refresh_token:old.refresh_token})});const next=await response.json().catch(()=>({}));if(!response.ok||!next.access_token||!next.refresh_token||!Number.isFinite(next.expires_in))throw Error('canva_connection_required');
+   const saved=await db.from('weekly_canva_connections').update({credentials:await encrypt({access_token:next.access_token,refresh_token:next.refresh_token}),expires_at:new Date(Date.now()+next.expires_in*1000).toISOString()}).eq('church_id','M+').eq('refresh_lease',lease).select('church_id').single();if(saved.error||!saved.data)throw Error('canva_connection_required');return next.access_token;
+  }finally{await db.from('weekly_canva_connections').update({refresh_lease:null,refresh_lease_until:null}).eq('church_id','M+').eq('refresh_lease',lease);}
+ }
+ async function request(path,body,options={}){const accessToken=await token();const response=await fetcher(API+path,{method:body===undefined?'GET':'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{authorization:'Bearer '+accessToken,...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)}),...options});const value=await response.json().catch(()=>({}));if(!response.ok){if(response.status===401)throw Error('canva_connection_required');if(response.status===403)throw Error('canva_permission_required');if(response.status===402||['credit_quota_exceeded','credit_quota_cooldown'].includes(value.code))throw Error('canva_quota_exhausted');if(response.status===429)throw Error('canva_rate_limited');throw Error('canva_unavailable');}return value;}
+ async function health(){const state=await connection();if(!state.configured||!state.connected)return state;const accessToken=await token();const response=await fetcher(API+'/oauth/introspect',{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{authorization:'Basic '+btoa(clientId+':'+secret),'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({token:accessToken})});const r=await response.json().catch(()=>({}));if(!response.ok)throw Error('canva_unavailable');return {...state,active:r.active===true,scopes:String(r.scope||'').split(' ').filter(Boolean)};}
+ return {configured,connection,token,request,health};
+}

@@ -12,7 +12,7 @@ function render(profile){
 }
 async function load(){if(busy)return;const current=++revision;list.hidden=true;controls.replaceChildren();controls.hidden=true;status.textContent='正在確認管理權限…';try{await authorizePublishing();if(current!==revision)return;list.hidden=false;for(const id of ['church-facebook','association-facebook','facebook-maintenance'])document.getElementById(id).hidden=church!=='M+';status.textContent='請選擇要管理的服務；各服務的授權範圍維持獨立。';if(church!=='M+')return;connection.textContent='正在確認協會 FB 連線…';void loadChurch(current);void loadMaintenance();try{const profile=await publishingApi('association-stories','profile');if(current===revision)render(profile);}catch(error){if(current===revision)connection.textContent=message(error);}}catch(error){if(current===revision)status.textContent=message(error);}}
 document.querySelector('#back').href='church-settings.html?church='+encodeURIComponent(church);
-list.querySelectorAll('a').forEach(a=>a.href=a.getAttribute('href')+'?church='+encodeURIComponent(church));
+list.querySelectorAll('a').forEach(a=>{const url=new URL(a.getAttribute('href'),location.href);url.searchParams.set('church',church);a.href=url;});
 document.querySelector('#reload').onclick=load;
 db.auth.onAuthStateChange(event=>{if(['SIGNED_OUT','SIGNED_IN','USER_UPDATED'].includes(event)){revision++;controls.replaceChildren();document.querySelector('#church-facebook-controls').replaceChildren();list.hidden=true;status.textContent='登入或權限已變更，請重新載入。';}});
 void load();

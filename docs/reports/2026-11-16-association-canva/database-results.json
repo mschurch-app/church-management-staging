@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "checks": [
+    "RLS enabled and staff cannot directly read/write jobs",
+    "only service can claim a job lease",
+    "cannot generate another authors draft",
+    "author can start and at most one active job per story",
+    "cannot submit original story while Canva is working",
+    "wrong actor cannot take lease",
+    "single live lease prevents concurrent provider posts",
+    "expired lease can be recovered",
+    "completed job allows ordinary review transition; no new job after submission",
+    "archived draft cannot generate"
+  ]
+}

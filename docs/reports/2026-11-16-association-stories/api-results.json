@@ -19,6 +19,7 @@
     "mother explicitly approves; private photos uploaded unpublished, one FB post, then website",
     "wrong FB page blocked before external publication",
     "ambiguous FB result cannot be reposted; reconciliation verifies message and photo IDs",
-    "website failure retries independently without reposting FB"
+    "website failure retries independently without reposting FB",
+    "Canva endpoint retains author permissions, requires consent, and resumes without an obsolete version"
   ]
 }

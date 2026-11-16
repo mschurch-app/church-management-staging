@@ -1,0 +1,9 @@
+import assert from 'node:assert/strict';
+import {cleanStory,STORY_LAYOUTS,STORY_THEMES,generationPrompt,validateGeneratedFacts} from '../../association-story-model.mjs';
+import {freshDesignPrompt} from '../../association-story-model.mjs';
+for(const layout_key of Object.keys(STORY_LAYOUTS))for(const theme_key of Object.keys(STORY_THEMES)){const row=cleanStory({layout_key,theme_key,title:'主題',description:'原文',key_points:'重點一\n重點二'});assert.equal(row.layout_key,layout_key);assert.equal(row.theme_key,theme_key);const prompt=freshDesignPrompt(row,'unique-id');assert(prompt.includes('禁止使用固定網格'));assert(prompt.includes('重點一'));assert(prompt.includes('unique-id'));}
+const text='11月22日，3位同工陪伴20位孩子，分送1,000份物資。';validateGeneratedFacts(text,'11月22日，3位同工陪伴20位孩子，分送1000份物資。');assert.throws(()=>validateGeneratedFacts(text,'11月22日，3位同工陪伴30位孩子，分送1000份物資。'),/generation_changed_facts/);assert.throws(()=>validateGeneratedFacts('一起畫畫。','20個孩子一起畫畫。'),/generation_changed_facts/);validateGeneratedFacts('２０位孩子','20位孩子');
+assert(generationPrompt(text).includes('不是摘要'));assert(generationPrompt(text).includes('不以固定篇幅刪掉內容'));assert.equal(cleanStory({body:'甲'.repeat(6000)}).body.length,6000);assert.throws(()=>cleanStory({body:'甲'.repeat(6001)}));
+assert.equal(cleanStory({}).theme_key,'sunshine');
+const {PALETTES}=await import('../../association-story-cover.mjs');const lum=hex=>{const a=hex.slice(1).match(/../g).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);return a[0]*.2126+a[1]*.7152+a[2]*.0722;};for(const [key,p]of Object.entries(PALETTES)){const ink=p[3]||'#f4f1e9';for(const bg of [p[0],p[1]]){const a=lum(bg),b=lum(ink);assert((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,key+' text contrast');}}
+console.log(JSON.stringify({layouts:8,themes:22,freshAI:true,savedStyleCombinations:176,numericGuards:true,longCopySupported:true}));

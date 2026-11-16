@@ -603,10 +603,10 @@ export const FUNCTION_CATALOG=freezeTree({
   "media_publishing": {
     "permission": "website_weekly",
     "action": "approve",
-    "file": "media-publishing-settings.html",
+    "file": "authorization-settings.html",
     "icon": "▶",
-    "title": "社群發布",
-    "description": "Instagram、YouTube 與發布設定",
+    "title": "服務授權管理",
+    "description": "YouTube、Instagram、教會與協會 FB、Google 與 LINE 連線授權",
     "key": "media_publishing",
     "group": "media",
     "symbol": "play",

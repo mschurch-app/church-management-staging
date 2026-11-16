@@ -1,6 +1,6 @@
 import {canOpen,canAction} from './admin-access.mjs?v=20261116-association-access1';
-import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261116-memberline1';
-export * from './app-function-definitions.mjs?v=20261116-memberline1';
+import {FUNCTION_CATALOG,FUNCTION_GROUPS,SETTINGS_GROUPS,canonicalFunctionKey} from './app-function-definitions.mjs?v=20261116-auth-hub1';
+export * from './app-function-definitions.mjs?v=20261116-auth-hub1';
 export function availableFunctionKeys(access,church,home={},settings={}) {
  const assigned=new Set((home.module_permissions||[]).map(canonicalFunctionKey));
  return Object.keys(FUNCTION_CATALOG).filter(key=>{

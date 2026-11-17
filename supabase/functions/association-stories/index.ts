@@ -108,6 +108,11 @@ export function createHandler(db:any,serviceKey:string,env:Record<string,string>
    }
    let row=await load(b.id,actor,access);if(b.action==='get')return reply(200,{ok:true,story:await present(row)});
    if(b.action!=='design_status'&&(!Number.isInteger(b.version)||row.version!==b.version))fail('version_conflict');
+   if(b.action==='withdraw'){
+    if(!access.writer||row.created_by!==actor||row.deleted_at||row.status!=='pending_review')fail('forbidden');
+    const saved=await db.from(TABLE).update({status:'changes_requested',version:row.version+1,updated_at:new Date().toISOString()}).eq('id',row.id).eq('version',row.version).eq('status','pending_review').select('*').maybeSingle();
+    if(saved.error||!saved.data)fail('version_conflict');return reply(200,{ok:true,story:await present(saved.data)});
+   }
    if(['trash','restore','delete_cover','restore_cover'].includes(b.action)){
     if(!access.writer||row.created_by!==actor||!['draft','changes_requested'].includes(row.status))fail('forbidden');
     const patch:any={version:row.version+1,updated_at:new Date().toISOString()};

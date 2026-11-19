@@ -216,7 +216,7 @@
       *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
     }
   </style>
-</head>
+<link rel="stylesheet" href="member-prayer-form.css?v=20261119-membercare1"></head>
 <body class="font-sans antialiased">
   <div id="particles" aria-hidden="true"></div>
 
@@ -274,6 +274,7 @@
       </article>
     </section>
   </main>
+  <section id="member-daily-entry" class="member-daily-area" hidden></section>
 
   <section id="shareDialog" class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="shareTitle" hidden>
     <div class="share-panel">
@@ -749,6 +750,7 @@
         if (!idToken) throw new Error('missing_token');
         const {ensureMemberOnboarding}=await import('./member-onboarding.mjs?v=20261110-line-claim1');
         if(await ensureMemberOnboarding({church,credentials:{idToken}}))return;
+        window.memberTodayReady=true;document.dispatchEvent(new CustomEvent('member-today-ready'));
         await fetchTodayContent(idToken);
         liffReady = true;
         $('#lineState').textContent = `${profileName} · 今日恩典`;
@@ -779,5 +781,5 @@
     await initLiff();
     envelopeButton.disabled = false;
   </script>
-</body>
+<script type="module" src="member-daily-entry.mjs?v=20261119-membercare1"></script></body>
 </html>

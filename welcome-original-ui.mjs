@@ -6,6 +6,9 @@ import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261119-reconfirm1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus'),submitFeedback=$('submitFeedback');
+const defaultSubmitText='確認並送出資料';
+function feedback(message,tone='error'){status.textContent=message;submitFeedback.textContent=message;const notice=$('submitNotice');notice.textContent=message;notice.dataset.tone=tone;notice.hidden=!message;}
+$('formSection').addEventListener('input',()=>{if(!busy&&!preparing)$('submitNotice').hidden=true;});
 if(church==='SHiNE'){
  document.title='火樂教會 · 遇見你真好';
  $('pageMainTitle').textContent='火樂教會 · 歡迎回家';
@@ -43,7 +46,7 @@ async function selectPhoto(event){
 
  const file=event.target.files[0];if(!file||busy||pending)return;
  if(file.size>15000000){status.textContent='照片太大，請選擇 15 MB 以下的照片。';return;}
- busy=true;lock(true);status.textContent='正在處理照片…';
+ busy=true;lock(true);$('btnSubmitText').textContent='正在處理照片…';feedback('正在處理照片，請稍候…','busy');
  let bitmap;
  try{
   bitmap=await createImageBitmap(file);const scale=Math.min(1,960/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');
@@ -52,28 +55,28 @@ async function selectPhoto(event){
   let encoded=canvas.toDataURL('image/jpeg',0.78);
   if(encoded.length>330000)encoded=canvas.toDataURL('image/jpeg',0.5);
   if(encoded.length>330000)throw Error();
-  photo=encoded;$('photoPreview').src=photo;$('photoPreview').classList.remove('hidden');$('photoPlaceholder').classList.add('hidden');status.textContent='';
- }catch{status.textContent='無法讀取這張照片，請改用 JPG 或 PNG，或重新拍照。';}
- finally{bitmap?.close();busy=false;lock(false);}
+  photo=encoded;$('photoPreview').src=photo;$('photoPreview').classList.remove('hidden');$('photoPlaceholder').classList.add('hidden');feedback('照片已準備好，請按「確認並送出資料」。','ready');
+ }catch{feedback('無法讀取這張照片，請改用 JPG 或 PNG，或重新拍照。');}
+ finally{bitmap?.close();busy=false;lock(false);$('btnSubmitText').textContent=defaultSubmitText;}
 }
 $('cameraButton').onclick=()=>$('cameraInput').click();
 $('galleryButton').onclick=()=>$('galleryInput').click();
 $('cameraInput').onchange=selectPhoto;$('galleryInput').onchange=selectPhoto;
 $('btnClosePage').onclick=()=>{const next=new URLSearchParams(location.search).get('next');if(next){location.replace(safeMemberReturn(next));return;}$('closeTipText').classList.remove('hidden');window.close();};
-$('btnSubmit').onclick=async()=>{
- if(busy||preparing)return;if(!options){const message='表單設定尚未載入，請重新整理後再試。';status.textContent=message;submitFeedback.textContent=message;return;}
+async function submitRegistration(){
+ if(busy||preparing){feedback(preparing?'正在核對身分，請稍候…':'正在送出登記，請稍候…','busy');return;}if(!options){const message='表單設定尚未載入，請重新整理後再試。';feedback(message);return;}
  const retrying=Boolean(pending);if(!pending){
   const name=$('guestName').value.trim(),phone=$('guestPhone').value.trim();
-  const missing=requiredMissing();if(missing){status.textContent='請完成必填項目：「'+missing.label+'」。';layoutNodes()[missing.key]?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  const missing=requiredMissing();if(missing){const label=missing.key==='identity'?(!$('guestName').value.trim()?'姓名':'稱呼／性別（請選擇一項）'):missing.label;feedback('請完成必填項目：「'+label+'」。');const target=layoutNodes()[missing.key];target?.scrollIntoView({behavior:'smooth',block:'center'});target?.querySelector('input:not([type=hidden]),button')?.focus({preventScroll:true});return;}
   let source=selection.source[0]||'',faith=selection.faith[0]||'';
   if(options.source.find(x=>x.value===source)?.detail==='inviter'&&$('inviterName').value.trim())source+=' ('+$('inviterName').value.trim()+')';
   const origin=[...$('groupFaithStatus').querySelectorAll('[data-origin]')].find(x=>x.dataset.origin===faith)?.value.trim();
   if(origin)faith+=' (原屬：'+origin+')';
   const note='【新朋友初次見面】來源：'+source+'。期待：'+selection.feelings.join('、')+'。興趣：'+selection.interests.join('、')+(faith?'。信仰背景：'+faith:'');
-  let claimFields;preparing=true;lock(true);$('btnSubmit').setAttribute('aria-busy','true');try{if(!memberClaim)throw Error('姓名核對功能尚未準備好，請稍後重試。');claimFields=await memberClaim.beforeSubmit();}catch(e){status.textContent=e.message;submitFeedback.textContent=e.message;return;}finally{preparing=false;lock(false);$('btnSubmit').setAttribute('aria-busy','false');}
+  let claimFields;preparing=true;lock(true);$('btnSubmitText').textContent='正在核對身分…';feedback('正在核對姓名與 LINE 身分，請稍候…','busy');$('btnSubmit').setAttribute('aria-busy','true');try{if(!memberClaim)throw Error('姓名核對功能尚未準備好，請稍後重試。');claimFields=await memberClaim.beforeSubmit();}catch(e){feedback(e.message||'身分核對未完成，填寫內容已保留，請稍後再試。');return;}finally{preparing=false;lock(false);$('btnSubmit').setAttribute('aria-busy','false');$('btnSubmitText').textContent=defaultSubmitText;}
   pending={...claimFields,kind:'newcomer',church,request_id:crypto.randomUUID(),name,phone,birthday:$('guestBirthday').value.trim(),gender:selection.gender[0]||'',age_group:selection.age[0]||'',district:selection.district[0]||'',source,feelings:selection.feelings,interests:selection.interests,note,...(photo?{photo}:{})};
  }
- const button=$('btnSubmit'),buttonText=$('btnSubmitText'),waitMessage=retrying?'正在重送同一筆登記，請稍候…':'正在送出登記，請稍候…';busy=true;lock(true);button.setAttribute('aria-busy','true');buttonText.textContent=retrying?'正在重試…':'正在送出…';status.textContent=waitMessage;submitFeedback.textContent=waitMessage;
+ const button=$('btnSubmit'),buttonText=$('btnSubmitText'),waitMessage=retrying?'正在重送同一筆登記，請稍候…':'正在送出登記，請稍候…';busy=true;lock(true);button.setAttribute('aria-busy','true');buttonText.textContent=retrying?'正在重試…':'正在送出…';feedback(waitMessage,'busy');
  try{
   const credentials=await onboardingCredentials(church);
   if(new URLSearchParams(location.search).get('onboarding')==='1'&&!Object.keys(credentials).length)throw Error('LINE 登入已過期，請返回原功能重新登入；資料仍保留。');
@@ -85,10 +88,11 @@ $('btnSubmit').onclick=async()=>{
   const outcome=await response.json();if(!response.ok||outcome.accepted!==true)throw Error('尚未確認完整送出，請按重試同一筆登記。');
   if(outcome.pendingReview){for(const id of ['onboarding-invitation','onboarding-later'])if($(id)){$(id).hidden=true;$(id).classList.add('hidden');}$('successMessage').textContent='資料已送請同工確認。尚未完成 LINE 綁定，確認後才能使用會友功能；不需要重複送出。';$('memberIdentityPanel')?.classList.add('hidden');}
   if(outcome.lineBound){for(const id of ['onboarding-invitation','onboarding-later'])if($(id)){$(id).hidden=true;$(id).classList.add('hidden');}$('successMessage').textContent=outcome.existingMember?'既有會友資料已補齊，LINE 也已完成綁定。下次登入可直接使用會友服務。':'新朋友資料已建立，LINE 也已完成綁定。下次登入可直接使用會友服務。';$('memberIdentityPanel')?.classList.add('hidden');}
-  button.setAttribute('aria-busy','false');$('successName').textContent=pending.name;$('formSection').classList.add('hidden');$('successSection').classList.remove('hidden');status.textContent='';submitFeedback.textContent='';photo=null;pending=null;
- }catch(e){const message=e.name==='TimeoutError'?'連線逾時，請按重試同一筆登記。':e.message;status.textContent=message;submitFeedback.textContent=message;buttonText.textContent=pending?'重試同一筆登記':'✨ 很高興認識你 · 留下今日印記';button.setAttribute('aria-busy','false');button.disabled=false;}
+  button.setAttribute('aria-busy','false');$('successName').textContent=pending.name;$('formSection').classList.add('hidden');$('successSection').classList.remove('hidden');status.textContent='';submitFeedback.textContent='';$('submitNotice').hidden=true;$('successSection').scrollIntoView({block:'start',behavior:'smooth'});photo=null;pending=null;
+ }catch(e){const message=e.name==='TimeoutError'?'連線逾時，請按重試同一筆登記。':e.message;feedback(message);buttonText.textContent=pending?'重試同一筆登記':defaultSubmitText;button.setAttribute('aria-busy','false');button.disabled=false;}
  finally{busy=false;}
-};
+}
+$('btnSubmit').onclick=()=>{void submitRegistration().catch(()=>{busy=preparing=false;if(!pending)lock(false);$('btnSubmit').disabled=false;$('btnSubmit').setAttribute('aria-busy','false');$('btnSubmitText').textContent=pending?'重試同一筆登記':defaultSubmitText;feedback('送出尚未完成，填寫內容已保留。請重試；若仍無法送出，請聯絡教會同工。');});};
 for(const [id,max] of [['guestName',80],['guestPhone',40],['guestBirthday',40],['inviterName',100]])$(id).maxLength=max;
 lock(true);
 mountMemberPanel();
@@ -108,5 +112,5 @@ try{
   return ()=>{for(const [id,old]of Object.entries(previous)){const field=$(id);if(field.value===old.prefilled)field.value=old.value;field.readOnly=old.readOnly;}for(const [group,old]of Object.entries(groupPrevious)){if(JSON.stringify(selection[group])===JSON.stringify(old.prefilled))selection[group]=old.previous;renderGroup(group);}sourceDetail();};
  }});
 
-}catch(e){status.textContent=e.message;}
+}catch(e){feedback(e.message||'表單設定暫時無法載入，請保留已填文字後重新開啟。');}
 

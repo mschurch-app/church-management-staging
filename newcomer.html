@@ -125,6 +125,10 @@
     }
     #formSection button.pill-btn:active:not(:disabled) { transform: scale(0.96); }
 
+    #submitNotice{position:fixed;z-index:2147483646;left:16px;right:16px;bottom:calc(20px + env(safe-area-inset-bottom));max-width:580px;margin:0 auto;padding:14px 18px;border-radius:16px;background:#8f2e20;color:white;box-shadow:0 8px 30px #0003;font-weight:700;font-size:16px;line-height:1.5;pointer-events:none}
+    #submitNotice[hidden]{display:none}#submitNotice[data-tone="busy"],#submitNotice[data-tone="ready"]{background:#173f35}
+    #btnSubmit[aria-busy="true"]::after{content:"";width:16px;height:16px;border:2px solid #ffffff66;border-top-color:white;border-radius:50%;animation:submit-spin .8s linear infinite}@keyframes submit-spin{to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){#btnSubmit[aria-busy="true"]::after{animation:none}}
     .btn-submit {
       background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
       color: #ffffff;
@@ -141,7 +145,7 @@
   <div class="w-full max-w-md my-4">
     
     <p class="text-center text-xs mb-3">送出後由教會同工進行後續關懷</p><p id="formStatus" role="status" class="text-center text-sm"></p><!-- 表單本體 -->
-    <div id="formSection" class="card-glass p-6 sm:p-8 space-y-6">
+    <div id="formSection" data-action-feedback="off" class="card-glass p-6 sm:p-8 space-y-6">
       
       <!-- 頂部問候區 -->
       <div class="text-center space-y-2">
@@ -367,10 +371,11 @@
 
       <!-- 送出按鈕 -->
       <div class="pt-3">
-        <button disabled id="btnSubmit" class="w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg" aria-busy="false">
-          <span id="btnSubmitText">✨ 很高興認識你 · 留下今日印記</span>
+        <button type="button" disabled id="btnSubmit" class="w-full py-4 rounded-2xl btn-submit text-sm font-black tracking-wide flex items-center justify-center gap-2 shadow-lg" aria-busy="false">
+          <span id="btnSubmitText">確認並送出資料</span>
           <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
+        <p id="submitNotice" role="alert" aria-live="assertive" hidden></p>
         <p id="submitFeedback" role="status" aria-live="polite" class="mt-3 text-center text-sm leading-relaxed"></p>
       </div>
 
@@ -404,6 +409,6 @@
 
   </div>
 
-<script type="module" src="welcome-original-ui.mjs?v=20261119-reconfirm1"></script><script type="module" src="church-brand.mjs?v=20261102-bibletree-admin1"></script>
+<script type="module" src="welcome-original-ui.mjs?v=20261119-submitfeedback1"></script><script type="module" src="church-brand.mjs?v=20261102-bibletree-admin1"></script>
 </body></html>
 

@@ -1,4 +1,4 @@
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {LINE_MEMBER_ENDPOINT} from './line-config.mjs?v=20261009-plus-state1';
 import {journeyCard} from './service-signup-journey.mjs?v=20261011-serve-home1';
 import {iconMarkup} from './app-icons.mjs?v=20261102-bibletree-admin1';

@@ -1,5 +1,5 @@
-import {onboardingCredentials} from './member-onboarding.mjs?v=20261110-line-claim1';
-import {makeMemberClient} from './member-client.mjs?v=20261110-line-claim1';
+import {onboardingCredentials,safeMemberReturn} from './member-onboarding.mjs?v=20261119-reconfirm1';
+import {makeMemberClient} from './member-client.mjs?v=20261119-reconfirm1';
 export const MEMBER_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/member-access';
 export function mountMemberPanel(){
   const form=document.querySelector('#formSection'),host=form?.parentElement;
@@ -56,6 +56,9 @@ export function mountMemberPanel(){
       form.querySelector('#guestName')?.focus({preventScroll:true});
     }));
     if(result.state==='approved'){
+      if(result.confirmationId){title.textContent='請重新確認會友資料';message.textContent='同工邀請你核對以下基本資料；確認送出後會更新原有資料，LINE 綁定與歷史紀錄都會保留。';}else if(result.justConfirmed){message.textContent='會友資料已確認並儲存，現在可以繼續使用。';}
+      const later=document.querySelector('#onboarding-later');if(later)later.hidden=!!result.confirmationId;
+      if(result.errorMessage){message.textContent=result.errorMessage;panel.append(button('重新查詢確認狀態',()=>client.refresh(),true));}
       panel.append(profileCard(result.member||{}));
       const hint=text('p','以下是目前留存的基本資料；有變動可以直接修改。');hint.className='text-xs font-bold leading-relaxed text-stone-500';panel.append(hint);
       const fields={};
@@ -64,6 +67,7 @@ export function mountMemberPanel(){
         input.value=result.member?.[key]??'';panel.append(item.wrapper);fields[key]=input;
       }
       panel.append(button('確認並儲存資料',()=>client.update(Object.fromEntries(Object.entries(fields).map(([key,el])=>[key,el.value])))));
+      if(!result.confirmationId&&new URLSearchParams(location.search).get('reconfirm')==='1')panel.append(button('繼續使用',()=>location.replace(safeMemberReturn(new URLSearchParams(location.search).get('next'))),true));
     }
   }
   if(!MEMBER_ENDPOINT){panel.append(text('h2','既有會友資料更新'),text('p','身份綁定功能尚未開放，請聯絡教會同工。'));return;}

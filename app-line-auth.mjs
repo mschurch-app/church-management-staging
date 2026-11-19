@@ -1,4 +1,4 @@
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';
 export const HANDOFF_STORAGE='church-os-line-handoff-v1';
 const endpoint=SUPABASE_URL+'/functions/v1/app-auth-handoff';

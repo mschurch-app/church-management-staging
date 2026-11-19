@@ -7,6 +7,7 @@ const church='M+';
 const $=selector=>document.querySelector(selector);
 const status=$('#status'),overview=$('#overview'),tabs=$('#seasonTabs'),smartPanel=$('#smartPanel'),changePanel=$('#changePanel');
 let payload={seasons:[],slots:[]},changeQueue={requests:[],is_final_reviewer:false},active=null,busy=false,recovery=false;
+let delegateSearchVersion=0;
 let registrationView=new URLSearchParams(location.search).get('view')==='registrations';
 let matchRequested=new URLSearchParams(location.search).get('match')==='1';
 
@@ -46,11 +47,12 @@ function renderChangeRequests(){
 }
 
 function render(){
+  $('#delegate-panel').hidden=false;
   $('.signup-admin').classList.toggle('registration-mode',registrationView);
   $('#registration-list-view').setAttribute('aria-pressed',String(registrationView));
   $('#registration-slots-view').setAttribute('aria-pressed',String(!registrationView));
   $('#registration-search-label').hidden=!registrationView;
-  renderTabs();overview.replaceChildren();
+  renderDelegateSlots();renderTabs();overview.replaceChildren();
   const season=payload.seasons.find(item=>item.id===active);
   if(!season){workflowSummary($('#workflow'),{title:'準備新的雙月服事期別',description:payload.can_manage?'建立年度與期別後，系統會自動帶出主日與職務。':'目前沒有可查看的服事期別。'});overview.append(el('div','目前尚未建立期別。','empty-state'));return;}
   const head=el('header','','season-head'),copy=el('div'),actions=el('div','','season-actions');
@@ -126,7 +128,7 @@ async function openSmartMatch(button){
     smartPanel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
     message(`預排已產生：建議 ${draft.selected.size} 筆，尚缺 ${draft.stats().gaps} 位。確認套用後才會儲存。`);
   }catch(error){message(error.message||'智能配對暫時無法使用，請重新載入後再試。','error');}
-  finally{busy=false;unlock();matchingBoard?.render();}
+  finally{busy=false;unlock();restoreDelegateControls();matchingBoard?.render();}
 }
 
 const registrationStatuses={registered:'待確認',confirmed:'已確認',waitlisted:'候補',offered:'候補待回覆'};
@@ -142,6 +144,8 @@ function renderRegistrationList(slots){
     for(const {slot,person} of records.filter(row=>row.slot.service_date===date)){
       const card=el('article','','registration-person'),identity=el('div'),badge=el('span',registrationStatuses[person.status],'registration-badge');badge.dataset.status=person.status;
       identity.append(el('strong',person.name||'姓名待確認'),el('p',`${labels[slot.ministry_key]||slot.ministry_key} · ${labels[slot.role_key]||slot.role_key}`));
+      if(person.registered_by)identity.append(el('small','同工代填'));
+      if(person.status==='offered'&&person.registered_by){const accept=el('button','代為接受候補','secondary');accept.type='button';accept.disabled=recovery;accept.onclick=()=>acceptDelegateOffer(person);identity.append(accept);}
       if(person.status==='waitlisted'&&person.queue_number)identity.append(el('small',`候補第 ${person.queue_number} 位`));
       card.append(identity,badge);list.append(card);
     }
@@ -154,8 +158,8 @@ function updateFilters(){const filter=$('#service-date-filter'),value=filter.val
 async function operation(write,success='設定已儲存。'){
   if(busy||recovery)return;busy=true;const unlock=lockControls($('.signup-admin'));message('正在儲存，請稍候…');let committed=false;
   try{const text=await write();committed=true;await load();message(typeof text==='string'?text:success,'success');}
-  catch(error){if(committed||uncertainWrite(error)){recovery=true;$('.workflow-toolbar').hidden=false;render();renderChangeRequests();$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{if(control.id!=='service-reload')control.disabled=true;});message(committed?'操作已完成，但最新資料暫時無法載入。請重新載入確認結果。':'連線中斷，尚無法確認是否完成。請重新載入確認結果，再進行操作。','error');}else message(String(error.message||'').includes('ambiguous_member_name')?'有同名會友，請從搜尋結果選擇正確人選。':String(error.message||'').includes('invalid_name')?'請填寫一位同工的完整姓名，最多 80 字。':String(error.message||'').includes('registration_unavailable')?'登記資料已變更。請收起預排並重新載入，再產生建議。':String(error.message||'').includes('forbidden')?'沒有此項操作權限。':String(error.message||'').includes('unique')?'這一期已經建立，請重新載入查看。':'操作未完成，畫面保留原設定。請稍後重試。','error');}
-  finally{busy=false;unlock();if(recovery)$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{control.disabled=control.id!=='service-reload';});}
+  catch(error){if(committed||uncertainWrite(error)){recovery=true;$('.workflow-toolbar').hidden=false;render();renderChangeRequests();$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{if(control.id!=='service-reload')control.disabled=true;});message(committed?'操作已完成，但最新資料暫時無法載入。請重新載入確認結果。':'連線中斷，尚無法確認是否完成。請重新載入確認結果，再進行操作。','error');}else message(delegateError(error)||(String(error.message||'').includes('ambiguous_member_name')?'有同名會友，請從搜尋結果選擇正確人選。':String(error.message||'').includes('invalid_name')?'請填寫一位同工的完整姓名，最多 80 字。':String(error.message||'').includes('registration_unavailable')?'登記資料已變更。請收起預排並重新載入，再產生建議。':String(error.message||'').includes('forbidden')?'沒有此項操作權限。':String(error.message||'').includes('unique')?'這一期已經建立，請重新載入查看。':'操作未完成，畫面保留原設定。請稍後重試。'),'error');}
+  finally{busy=false;unlock();restoreDelegateControls();if(recovery)$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{control.disabled=control.id!=='service-reload';});}
 }
 async function saveSlot(slot,capacity,button,nextOpen=slot.is_open){
   if(busy||recovery){capacity.value=slot.capacity;return;}const count=Number(capacity.value);capacity.value=slot.capacity;
@@ -166,7 +170,7 @@ async function adminApi(body){const {data:{session}}=await db.auth.getSession();
 async function reviewRegistration(id,nextStatus){if(busy||recovery)return;if(nextStatus==='declined'){const accepted=await reviewDialog({title:'婉拒這次服事登記？',description:'將釋出本次名額；有候補時依既有規則邀請下一位。',withNote:false,confirmLabel:'確認婉拒'});if(accepted===null)return;}await operation(()=>adminApi({registrationId:id,status:nextStatus}),nextStatus==='confirmed'?'已確認服事安排。':'已婉拒並釋出名額，候補將依順序處理。');}
 async function reviewChange(request,decision){if(busy||recovery)return;const note=await reviewDialog({title:decision==='approve'?'確認服事調整':'退回服事申請',description:`${request.member_name}｜${fmt(request.service_date)}｜${labels[request.role_key]||request.role_key}`,label:decision==='approve'?'協調／核准說明（選填）':'退回原因（必填）',required:decision!=='approve',confirmLabel:decision==='approve'?'確認通過':'退回申請'});if(note===null)return;await operation(async()=>{const result=await adminApi({action:'change_review',requestId:request.id,decision,note});return result.status==='admin_review'?'初審完成，已交複審。':result.status==='approved'?'複審核准完成。':'申請已退回。';});}
 async function load(){const [next,queue]=await Promise.all([rpc('get_service_signup_admin',{p_church:church}),rpc('get_service_signup_change_requests',{p_church:church})]);payload=next;changeQueue=queue;active=payload.seasons.some(season=>season.id===active)?active:payload.seasons[0]?.id||null;recovery=false;$('#create').hidden=!payload.can_manage;if(!payload.seasons.length)$('#create').open=true;updateFilters();renderChangeRequests();render();}
-async function reload(){if(busy)return;if(matchingBoard&&!recovery&&!await leaveMatchingBoard())return;clearMatchingBoard();busy=true;const unlock=lockControls($('.signup-admin'));message('正在載入服事意願…');let loaded=false;try{await load();loaded=true;message(payload.can_manage?'全部服事類別已載入。':`已載入負責類別：${payload.scopes.map(scope=>labels[scope]||scope).join('、')}`,'success');}catch(error){recovery=true;if(error.message?.includes('forbidden')){payload={seasons:[],slots:[],scopes:[],can_manage:false};changeQueue={requests:[]};$('#create').hidden=true;overview.replaceChildren();tabs.replaceChildren();changePanel.hidden=true;smartPanel.hidden=true;}message(error.message?.includes('forbidden')?'沒有主日服事管理權限。':'無法載入服事意願，請重新載入。','error');}finally{busy=false;unlock();if(recovery)$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{control.disabled=control.id!=='service-reload';});}if(loaded&&matchRequested&&active){matchRequested=false;openSmartMatch($('.smart-match-button'));}}
+async function reload(){if(busy)return;if(matchingBoard&&!recovery&&!await leaveMatchingBoard())return;clearMatchingBoard();busy=true;const unlock=lockControls($('.signup-admin'));message('正在載入服事意願…');let loaded=false;try{await load();loaded=true;message(payload.can_manage?'全部服事類別已載入。':`已載入負責類別：${payload.scopes.map(scope=>labels[scope]||scope).join('、')}`,'success');}catch(error){recovery=true;if(error.message?.includes('forbidden')){payload={seasons:[],slots:[],scopes:[],can_manage:false};changeQueue={requests:[]};$('#create').hidden=true;overview.replaceChildren();tabs.replaceChildren();$('#delegate-form').reset();clearDelegateMember();$('#delegate-panel').hidden=true;changePanel.hidden=true;smartPanel.hidden=true;}message(error.message?.includes('forbidden')?'沒有主日服事管理權限。':'無法載入服事意願，請重新載入。','error');}finally{busy=false;unlock();restoreDelegateControls();if(recovery)$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{control.disabled=control.id!=='service-reload';});}if(loaded&&matchRequested&&active){matchRequested=false;openSmartMatch($('.smart-match-button'));}}
 $('#registration-filter-panel').open=!registrationView;
 $('#year').value=Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Taipei'}).format(new Date()))+1;$('#period').value='1';
 $('#createPeriod').onclick=()=>{const year=Number($('#year').value),period=Number($('#period').value);if(!Number.isInteger(year)||year<2026||year>2100||![1,2,3,4,5,6].includes(period)){message('請確認年度與雙月期別。','error');return;}operation(()=>rpc('create_service_signup_period',{p_church:church,p_year:year,p_period:period}),'雙月期別與所有主日職務已建立。');};
@@ -174,3 +178,23 @@ $('#service-reload').onclick=reload;for(const id of ['service-date-filter','mini
 
 async function setRegistrationView(next){if(busy||recovery)return;if(matchingBoard&&!await leaveMatchingBoard())return;registrationView=next;$('#registration-filter-panel').open=!next;const url=new URL(location.href);if(next)url.searchParams.set('view','registrations');else url.searchParams.delete('view');history.replaceState(null,'',url);render();}
 $('#registration-list-view').onclick=()=>setRegistrationView(true);$('#registration-slots-view').onclick=()=>setRegistrationView(false);$('#registration-search').oninput=()=>{if(!busy&&!recovery&&registrationView)render();};
+
+
+function delegateError(error){const text=String(error.message||'');for(const [key,label] of Object.entries({one_service_per_sunday:'這位會友當天已有另一筆服事，請先核對原登記。',member_unavailable:'會友資料已變更，請重新查詢。',slot_unavailable:'這項服事已停止登記或日期已過，請重新選擇。',offer_expired:'候補邀請已到期或狀態已改變，請重新載入確認。'}))if(text.includes(key))return label;return '';}
+function clearDelegateMember(){delegateSearchVersion++;$('#delegate-member').replaceChildren(new Option('請先查詢會友',''));}
+function renderDelegateSlots(){const select=$('#delegate-slot'),previous=select.value,choices=payload.slots.filter(slot=>slot.season_id===active&&slot.is_open&&payload.seasons.some(s=>s.id===slot.season_id&&s.status==='open'));select.replaceChildren(new Option('請選擇服事',''));for(const slot of choices)select.append(new Option(`${slot.service_date} · ${labels[slot.ministry_key]||slot.ministry_key}／${labels[slot.role_key]||slot.role_key}`,slot.id));select.value=choices.some(s=>String(s.id)===previous)?previous:'';if(select.value!==previous)clearDelegateMember();}
+async function searchDelegateMembers(){
+ if(busy||recovery)return;const slot=$('#delegate-slot').value,query=$('#delegate-query').value.trim();clearDelegateMember();
+ if(!slot||!query){$('#delegate-status').textContent='請先選擇服事並輸入會友姓名。';return;}
+ const version=delegateSearchVersion,button=$('#delegate-search');button.disabled=true;$('#delegate-status').textContent='正在查詢會友…';
+ try{const result=await rpc('get_service_signup_member_candidates',{p_church:church,p_slot:Number(slot),p_query:query});if(version!==delegateSearchVersion)return;for(const member of result.members||[])$('#delegate-member').append(new Option(`${member.name}${member.group_name?' · '+member.group_name:''}（編號 ${member.id}）`,member.id));$('#delegate-status').textContent=result.members?.length?(result.has_more?'結果較多，請輸入更完整姓名縮小範圍。':'請核對姓名與小組，再選擇正確會友。'):'查無會友，請確認姓名，或先至會友名冊建立資料。';}
+ catch(error){if(version===delegateSearchVersion)$('#delegate-status').textContent=String(error.message).includes('forbidden')?'沒有此服事項目的代填權限。':'查詢失敗，請稍後重試。';}
+ finally{button.disabled=busy||recovery;}
+}
+async function acceptDelegateOffer(person){if(busy||recovery)return;const accepted=await reviewDialog({title:'代為接受候補邀請',description:`請先聯絡 ${person.name} 並確認願意承接，再接受候補。接受後仍須由負責人確認排入。`,withNote:false,confirmLabel:'本人同意，接受候補'});if(accepted===null)return;await operation(()=>rpc('service_signup_admin_accept_offer',{p_church:church,p_registration:person.id}),'已代為接受候補，等待負責人確認。');}
+$('#open-delegate').onclick=()=>{if(busy||recovery)return;$('#delegate-panel').open=true;$('#delegate-slot').focus();$('#delegate-panel').scrollIntoView({block:'start',behavior:'auto'});};
+$('#delegate-search').onclick=searchDelegateMembers;$('#delegate-query').oninput=clearDelegateMember;$('#delegate-slot').onchange=clearDelegateMember;
+$('#delegate-form').onsubmit=async event=>{event.preventDefault();if(busy||recovery||!$('#delegate-form').reportValidity())return;const slot=Number($('#delegate-slot').value),member=Number($('#delegate-member').value);if(!slot||!member)return;
+ await operation(async()=>{const result=await rpc('service_signup_admin_register',{p_church:church,p_slot:slot,p_member:member});if(!result?.id||!registrationStatuses[result.status]){const error=new Error('尚無法確認代填結果，請重新載入確認。');error.name='InvalidResponseError';throw error;}$('#delegate-panel').open=false;$('#delegate-form').reset();clearDelegateMember();registrationView=true;const url=new URL(location.href);url.searchParams.set('view','registrations');history.replaceState(null,'',url);return result.already_registered?'這位會友已登記這項服事，原登記已保留。':result.status==='waitlisted'?`已代填候補，第 ${result.queue_number} 位；請由同工聯絡並追蹤候補結果。`:'已代填登記，等待服事負責人確認。';});};
+
+function restoreDelegateControls(){if(recovery)return;for(const selector of ['#open-delegate','#delegate-form button','#delegate-form input','#delegate-form select','#registration-list-view','#registration-slots-view','#registration-search','#service-date-filter','#ministry-filter','#registration-filter'])for(const control of document.querySelectorAll(selector))control.disabled=false;}

@@ -1,0 +1,70 @@
+{
+  "synthetic": true,
+  "physicalDevices": false,
+  "results": [
+    {
+      "delegatedWrite": true,
+      "assistedOffer": true,
+      "validationRetainsForm": true,
+      "staleSelectionCleared": true,
+      "engine": "chromium",
+      "width": 393,
+      "directEntry": true,
+      "namesAndStatuses": true,
+      "filtersAndSearch": true,
+      "seasonSwitch": true,
+      "existingArrangement": true,
+      "scopeAndRevocation": true,
+      "onlyIsolatedWrites": true,
+      "noOverflow": true
+    },
+    {
+      "delegatedWrite": true,
+      "assistedOffer": true,
+      "validationRetainsForm": true,
+      "staleSelectionCleared": true,
+      "engine": "chromium",
+      "width": 1440,
+      "directEntry": true,
+      "namesAndStatuses": true,
+      "filtersAndSearch": true,
+      "seasonSwitch": true,
+      "existingArrangement": true,
+      "scopeAndRevocation": true,
+      "onlyIsolatedWrites": true,
+      "noOverflow": true
+    },
+    {
+      "delegatedWrite": true,
+      "assistedOffer": true,
+      "validationRetainsForm": true,
+      "staleSelectionCleared": true,
+      "engine": "webkit",
+      "width": 393,
+      "directEntry": true,
+      "namesAndStatuses": true,
+      "filtersAndSearch": true,
+      "seasonSwitch": true,
+      "existingArrangement": true,
+      "scopeAndRevocation": true,
+      "onlyIsolatedWrites": true,
+      "noOverflow": true
+    },
+    {
+      "delegatedWrite": true,
+      "assistedOffer": true,
+      "validationRetainsForm": true,
+      "staleSelectionCleared": true,
+      "engine": "webkit",
+      "width": 1440,
+      "directEntry": true,
+      "namesAndStatuses": true,
+      "filtersAndSearch": true,
+      "seasonSwitch": true,
+      "existingArrangement": true,
+      "scopeAndRevocation": true,
+      "onlyIsolatedWrites": true,
+      "noOverflow": true
+    }
+  ]
+}

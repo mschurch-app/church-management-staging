@@ -1,4 +1,5 @@
-import {onboardingCredentials} from './member-onboarding.mjs?v=20261119-reconfirm1';
+import {formEventsForRequest} from './member-form-trace.mjs?v=20261119-flowtrace1';
+import {onboardingCredentials} from './member-onboarding.mjs?v=20261119-flowtrace1';
 const endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/member-access';
 // Each candidate is opaque, short-lived and scoped to a server-verified LINE identity.
 export function mountMemberClaim({church,nameInput,onPrefill=()=>()=>{}}){
@@ -11,7 +12,7 @@ export function mountMemberClaim({church,nameInput,onPrefill=()=>()=>{}}){
  const button=(text,fn)=>{const b=label('button',text);b.type='button';b.className='w-full min-h-11 rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm font-bold';b.onclick=async()=>{if(b.disabled)return;b.disabled=true;b.setAttribute('aria-busy','true');try{await fn();}catch{state='error';say('暫時無法核對，請重新查詢；已填內容仍保留。');controls.append(button('重新查詢姓名',()=>search()));}finally{b.disabled=false;b.removeAttribute('aria-busy');}};return b;};
  async function call(action,extra={}){
   const auth=await onboardingCredentials(church);if(!Object.values(auth).some(Boolean))throw Error('login_required');
-  const r=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000),body:JSON.stringify({action,church,...auth,...extra})});
+  const r=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000),body:JSON.stringify({action,church,...auth,...extra,...formEventsForRequest(church)})});
   if(!r.ok)throw Error('claim_unavailable');return r.json();
  }
  function reset(){undo();undo=()=>{};nameInput.readOnly=false;claimToken=undefined;candidate=undefined;frozenName='';}
@@ -61,12 +62,13 @@ export function mountMemberClaim({church,nameInput,onPrefill=()=>()=>{}}){
    if(nameInput.value.trim()!==lastQuery&&!nameInput.readOnly){clearTimeout(timer);pendingLookup=search();}
    if(timer){clearTimeout(timer);timer=undefined;if(state==='searching')pendingLookup=search();}
    if(pendingLookup)await pendingLookup;
-   if(['verified','review'].includes(state)&&nameInput.value.trim()!==frozenName)throw Error('姓名已變更，請重新核對。');
+   if(['verified','review'].includes(state)&&nameInput.value.trim()!==frozenName)throw Object.assign(Error('姓名已變更，請重新核對。'),{code:'name_changed'});
    if(state==='verified')return {claimToken};
    if(state==='review'&&candidate)return {claimToken:candidate,claimReview:true};
    if(state==='new')return {};
-   throw Error(state==='candidates'?'請先確認候選姓名是否是你本人，或選擇「以上都不是我」。':'請先完成身分核對，或聯絡教會同工協助。');
+   throw Object.assign(Error(state==='candidates'?'找到可能是你的名冊資料，請先在姓名核對區確認本人，或選擇「以上都不是我」。':'請先完成姓名核對區的身分確認，或聯絡教會同工協助。'),{code:({candidates:'candidate_unconfirmed',expired:'identity_expired',limited:'identity_limited',challenge:'identity_challenge_required',verifying:'identity_challenge_required',searching:'identity_pending'})[state]||'identity_unavailable'});
   },
+  focus(){box.scrollIntoView({behavior:'smooth',block:'center'});box.querySelector('input,button')?.focus({preventScroll:true});},
   resetProof(){reset();lastQuery='';state='expired';say('核對已逾時或資料已更新，請重新核對；表單內容仍保留。');controls.append(button('重新查詢姓名',()=>search()));}
  };
 }

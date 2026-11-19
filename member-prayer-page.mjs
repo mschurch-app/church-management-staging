@@ -1,5 +1,5 @@
 import {PRAYER_LIFF_IDS} from './line-config.mjs';
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-flowtrace1';
 import {memberCareCall} from './member-care-api.mjs?v=20261119-membercare1';
 import {mountMemberPrayerForm} from './member-prayer-form.mjs?v=20261119-membercare1';
 const church=new URLSearchParams(location.search).get('church'),host=document.querySelector('#request-form'),list=document.querySelector('#request-list'),status=document.querySelector('#status');

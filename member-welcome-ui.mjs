@@ -1,5 +1,5 @@
-import {onboardingCredentials,safeMemberReturn} from './member-onboarding.mjs?v=20261119-reconfirm1';
-import {makeMemberClient} from './member-client.mjs?v=20261119-reconfirm1';
+import {onboardingCredentials,safeMemberReturn} from './member-onboarding.mjs?v=20261119-flowtrace1';
+import {makeMemberClient} from './member-client.mjs?v=20261119-flowtrace1';
 export const MEMBER_ENDPOINT='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/member-access';
 export function mountMemberPanel(){
   const form=document.querySelector('#formSection'),host=form?.parentElement;

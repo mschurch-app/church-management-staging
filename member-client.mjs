@@ -1,3 +1,4 @@
+import {formEventsForRequest} from './member-form-trace.mjs?v=20261119-flowtrace1';
 import {welcomeLiffConfig} from './staging-config.mjs';
 import {submissionState} from './submission-state.mjs';
 export function makeMemberClient({liff,send,search,createId,credentials,onState=()=>{}}){
@@ -15,7 +16,7 @@ export function makeMemberClient({liff,send,search,createId,credentials,onState=
   async function call(action,extra={}){
     const auth=credentials?await credentials():liff.isLoggedIn()?{idToken:liff.getIDToken()}:{};
     if(!Object.values(auth).some(Boolean))throw Error('login_required');
-    return send({action,church:config.church,...auth,...extra});
+    return send({action,church:config.church,...auth,...extra,...formEventsForRequest(config.church)});
   }
   return {
     clear,

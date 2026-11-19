@@ -13,6 +13,7 @@ export function mountServiceDelegateFlow(root,{searchMembers,onSubmit,isLocked=(
  const locked=()=>working||isLocked();
  const slots=()=>data.slots.filter(s=>String(s.season_id)===String(period)&&s.is_open&&s.service_date>=today());
  const roleSlots=role=>slots().filter(s=>roleKey(s.role_key)===role);
+ const roleLabel=role=>{const ministry=roleSlots(role).find(s=>ministries.has(s.ministry_key))?.ministry_key;const name=labels[role]||role,domain=labels[ministry]||ministry;return domain&&domain!==name?`${domain} · ${name}`:name;};
  const choices=()=>[...roles].flatMap(role=>[...(dates.get(role)||[])].map(service_date=>({role_key:role,service_date}))).sort((a,b)=>a.service_date.localeCompare(b.service_date));
  function button(text,action,{disabled=false,selected,cls='secondary'}={}){const b=node('button',text,cls);b.type='button';b.disabled=locked()||disabled;if(selected!==undefined)b.setAttribute('aria-pressed',String(selected));b.onclick=()=>{if(!locked())action();};return b;}
  function field(text,input){const l=node('label',text);l.append(input);return l;}
@@ -41,9 +42,16 @@ export function mountServiceDelegateFlow(root,{searchMembers,onSubmit,isLocked=(
    }),field('選擇會友',memberSelect),node('h4','想參與哪些服事？可複選'));
    const grid=node('div','','delegate-choice-grid');for(const ministry of [...new Set(slots().map(s=>s.ministry_key))])grid.append(button(labels[ministry]||ministry,()=>{if(ministries.has(ministry)){ministries.delete(ministry);for(const role of [...roles])if(roleSlots(role).some(s=>s.ministry_key===ministry)){roles.delete(role);dates.delete(role);}}else ministries.add(ministry);render();},{selected:ministries.has(ministry)}));root.append(grid,next);
   }else if(step===2){
-   const grid=node('div','','delegate-choice-grid');for(const role of [...new Set(slots().filter(s=>ministries.has(s.ministry_key)).map(s=>roleKey(s.role_key)))])grid.append(button(labels[role]||role,()=>{roles.has(role)?(roles.delete(role),dates.delete(role)):roles.add(role);render();},{selected:roles.has(role)}));root.append(node('p','可複選。鍵盤、歌手及接待沿用前台方式，由系統分配編號名額。'),grid,button('上一步',()=>go(1)),button('下一步：多選日期',()=>{roleIndex=0;go(3);},{disabled:!roles.size}));
+   root.append(node('p','各服事領域分組列出，可跨領域複選。鍵盤、歌手及接待由系統分配編號名額。'));
+   for(const ministry of ministries){
+    const section=node('fieldset','','delegate-role-group');section.append(node('legend',labels[ministry]||ministry));
+    const grid=node('div','','delegate-choice-grid');
+    for(const role of [...new Set(slots().filter(s=>s.ministry_key===ministry).map(s=>roleKey(s.role_key)))])grid.append(button(labels[role]||role,()=>{roles.has(role)?(roles.delete(role),dates.delete(role)):roles.add(role);render();},{selected:roles.has(role)}));
+    section.append(grid);root.append(section);
+   }
+   root.append(button('上一步',()=>go(1)),button('下一步：多選日期',()=>{roleIndex=0;go(3);},{disabled:!roles.size}));
   }else if(step===3){
-   const role=[...roles][roleIndex],selected=dates.get(role)||new Set(),list=node('div','','delegate-dates');root.append(node('h4',`${labels[role]||role}（${roleIndex+1}／${roles.size}）`),node('p','可多選日期。同一天只登記一項服事；額滿可候補。'));
+   const role=[...roles][roleIndex],selected=dates.get(role)||new Set(),list=node('div','','delegate-dates');root.append(node('h4',`${roleLabel(role)}（${roleIndex+1}／${roles.size}）`),node('p','可多選日期。同一天只登記一項服事；額滿可候補。'));
    for(const date of [...new Set(roleSlots(role).map(s=>s.service_date))].sort()){
     const otherSelected=[...dates].some(([key,values])=>key!==role&&values.has(date));
     const existing=data.slots.some(s=>s.service_date===date&&roleKey(s.role_key)!==role&&s.registrations?.some(p=>String(p.member_id)===String(member.id)&&activeStatuses.has(p.status)));
@@ -53,7 +61,7 @@ export function mountServiceDelegateFlow(root,{searchMembers,onSubmit,isLocked=(
    }
    root.append(list,node('p',`此項已選 ${selected.size} 個主日`),button('上一步',()=>{roleIndex?roleIndex--:step=2;render();}),button(roleIndex<roles.size-1?'下一項服事':'確認全部選擇',()=>{if(roleIndex<roles.size-1){roleIndex++;render();}else go(4);},{disabled:!selected.size}));
   }else{
-   root.append(node('p',`代填會友：${member.name} · ${eligiblePeriods(data).find(s=>String(s.id)===String(period))?.title||''}`));const list=node('ul');for(const c of choices())list.append(node('li',`${c.service_date} · ${labels[c.role_key]||c.role_key}`));root.append(list,node('p',`共 ${choices().length} 個主日，將一次送出；任一筆不符條件時整批保留，請修正後再送出。`));
+   root.append(node('p',`代填會友：${member.name} · ${eligiblePeriods(data).find(s=>String(s.id)===String(period))?.title||''}`));const list=node('ul');for(const c of choices())list.append(node('li',`${c.service_date} · ${roleLabel(c.role_key)}`));root.append(list,node('p',`共 ${choices().length} 個主日，將一次送出；任一筆不符條件時整批保留，請修正後再送出。`));
    const checkbox=node('input');checkbox.type='checkbox';checkbox.checked=consent;checkbox.disabled=locked();const send=button('確認並一次代填登記',async()=>{
     working=true;notice='正在一次送出全部登記…';render();try{const result=await onSubmit({season:Number(period),member:Number(member.id),choices:choices()});if(!result){notice='尚未完成，請查看頁面上方訊息；選擇內容已保留。';return;}step=1;roles.clear();ministries.clear();dates.clear();consent=false;notice=`已完成 ${result.registrations.length} 筆；候補 ${result.registrations.filter(r=>r.status==='waitlisted').length} 筆。`;}
     catch{notice='連線或狀態已變更，請先重新載入核對；選擇內容已保留。';}finally{working=false;render();}

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#fff8e9">
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>給今天的你｜今日專屬恩典</title>
+  <title>每日讀經靈修｜今日專屬恩典</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
@@ -216,7 +216,7 @@
       *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
     }
   </style>
-<link rel="stylesheet" href="member-prayer-form.css?v=20261119-membercare1"></head>
+<link rel="stylesheet" href="member-prayer-form.css?v=20261119-dailyname1"></head>
 <body class="font-sans antialiased">
   <div id="particles" aria-hidden="true"></div>
 
@@ -244,7 +244,7 @@
 
         <header id="cardHeader" class="content-rise relative flex items-start justify-between gap-3">
           <div>
-            <div class="mb-2 flex items-center gap-2"><span class="text-xl">🌱</span><h1 class="font-serif text-xl font-black tracking-[.08em] text-grace-900">給今天的你</h1></div>
+            <div class="mb-2 flex items-center gap-2"><span class="text-xl">🌱</span><h1 class="font-serif text-xl font-black tracking-[.08em] text-grace-900">每日讀經靈修</h1></div>
             <p id="todayDate" class="text-[11px] font-bold tracking-[.16em] text-grace-700/65"></p>
           </div>
           <button id="speakButton" type="button" class="flex shrink-0 items-center gap-1.5 rounded-full border border-grace-200 bg-white/80 px-3 py-2 text-[11px] font-black text-grace-700 shadow-sm backdrop-blur" aria-label="朗讀經文與祝福">
@@ -633,7 +633,7 @@
       drawCardBackground(ctx,themeIndex);
       if(cardLogo.complete&&cardLogo.naturalWidth){const maxW=275,maxH=76,scale=Math.min(maxW/cardLogo.naturalWidth,maxH/cardLogo.naturalHeight);ctx.drawImage(cardLogo,85,65,cardLogo.naturalWidth*scale,cardLogo.naturalHeight*scale);}
       ctx.textAlign='right';ctx.fillStyle='#fff9e9';ctx.font='600 25px "Klee One",serif';ctx.fillText(todayLabel(),810,115);
-      ctx.textAlign='center';ctx.fillStyle='#ec7c45';ctx.font='600 30px "Klee One",serif';ctx.fillText('給今天的你',450,214);
+      ctx.textAlign='center';ctx.fillStyle='#ec7c45';ctx.font='600 30px "Klee One",serif';ctx.fillText('每日讀經靈修',450,214);
       const verse=`「${liveVerse}」`.slice(0,Math.ceil(`「${liveVerse}」`.length*progress));
       let fontSize=50;ctx.textAlign='left';ctx.font=`600 ${fontSize}px "Klee One", "DFKai-SB", serif`;
       let lines=wrapCanvasText(ctx,verse,660);if(lines.length>8){fontSize=42;ctx.font=`600 ${fontSize}px "Klee One", "DFKai-SB", serif`;lines=wrapCanvasText(ctx,verse,660);}
@@ -689,7 +689,7 @@
         }
         const file=new File([blob],'today-grace-card.jpg',{type:'image/jpeg'});
         if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file]});closeCardComposer();return;}
-        const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='給今天的你-經文圖卡.jpg';link.click();URL.revokeObjectURL(link.href);showToast('圖卡已下載，可以從相簿分享 ✨');
+        const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='每日讀經靈修-經文圖卡.jpg';link.click();URL.revokeObjectURL(link.href);showToast('圖卡已下載，可以從相簿分享 ✨');
       } catch(error) {
         console.error('Share card failed',error);showToast(error.message==='rate_limited'?'製作次數已達上限，請稍後再試':'圖卡分享暫時無法使用，請稍後再試');
       } finally {sendCardButton.disabled=false;sendCardButton.textContent='📤 分享給好友';}
@@ -701,9 +701,9 @@
         renderShareCard(sharePreview,currentTheme,1);
         const blob=await new Promise(resolve=>sharePreview.toBlob(resolve,'image/jpeg',.9));
         if(!blob)throw new Error('image_unavailable');
-        const file=new File([blob],'給今天的你-經文圖卡.jpg',{type:'image/jpeg'});
+        const file=new File([blob],'每日讀經靈修-經文圖卡.jpg',{type:'image/jpeg'});
         if(navigator.canShare?.({files:[file]})&&navigator.share){
-          try {await navigator.share({files:[file],title:'給今天的你'});showToast('請在分享選單選擇「儲存影像」 ✨');return;}
+          try {await navigator.share({files:[file],title:'每日讀經靈修'});showToast('請在分享選單選擇「儲存影像」 ✨');return;}
           catch(error){if(error.name==='AbortError'){showToast('已取消儲存');return;}}
         }
         const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);showToast('若沒有開始下載，請長按上方圖卡並選擇儲存影像');
@@ -781,5 +781,5 @@
     await initLiff();
     envelopeButton.disabled = false;
   </script>
-<script type="module" src="member-daily-entry.mjs?v=20261119-membercare1"></script></body>
+<script type="module" src="member-daily-entry.mjs?v=20261119-dailyname1"></script></body>
 </html>

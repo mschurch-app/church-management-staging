@@ -1,3 +1,4 @@
+import {formEventsForRequest} from './member-form-trace.mjs?v=20261119-flowtrace1';
 import {MEMBER_LIFF_IDS} from './line-config.mjs';
 const endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/member-access';
 const skipKey='church-os-newcomer-return-once-v1';
@@ -32,7 +33,7 @@ export async function ensureMemberOnboarding({church,credentials,returnTo=locati
  const scope=await credentialScope(auth);
  // One use, only for this return route; this is never a registration or authorization flag.
  let skipOnce=false;try{const skip=JSON.parse(sessionStorage.getItem(skipKey)||'null');sessionStorage.removeItem(skipKey);if(skip?.church===church&&skip.target===target&&skip.scope===scope&&skip.expires>Date.now())skipOnce=true;}catch{}
- const response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000),body:JSON.stringify({action:'onboarding',church,...auth})});
+ const response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000),body:JSON.stringify({action:'onboarding',church,...auth,...formEventsForRequest(church)})});
  const data=await response.json();if(!response.ok||typeof data.registered!=='boolean')throw Error('身份確認暫時無法完成，請稍後重試。');
  if(!data.needsConfirmation&&(data.registered||skipOnce))return false;
  for(const k of ['idToken','accessToken'])if(auth[k])sessionStorage.setItem((k==='idToken'?'line-member-token:':'line-member-access-token:')+church,auth[k]);

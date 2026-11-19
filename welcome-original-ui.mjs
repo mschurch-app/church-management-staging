@@ -3,7 +3,7 @@ import {mountMemberClaim} from './member-claim-ui.mjs?v=20261119-flowtrace1';
 import {onboardingCredentials,continueWithoutRegistration,safeMemberReturn} from './member-onboarding.mjs?v=20261119-flowtrace1';
 import {getOptions} from './welcome-options.mjs';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
-import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261119-reconfirm1';
+import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261119-offeringcode1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus'),submitFeedback=$('submitFeedback');

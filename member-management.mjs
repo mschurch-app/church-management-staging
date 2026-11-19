@@ -42,7 +42,15 @@ export async function listMembers(db,church,search='',page=0,newcomersOnly=false
  const bindingByMember=new Map(bindingStates.map(item=>[String(item.member_id),item.line_bound===true]));
  if(pageRows.some(row=>!bindingByMember.has(String(row.id))))throw new Error('LINE 綁定狀態不完整，請重新載入。');
  await authorize(db,church);
- const rows=pageRows.map(({line_id,...row})=>({...row,line_bound:bindingByMember.get(String(row.id))===true}));
+ let codeState={can_view:false,codes:[]};
+ if(church==='M+'){
+  const response=await db.rpc('list_member_offering_codes',{p_church:church,p_member_ids:pageRows.map(row=>row.id)});
+  if(response.error||typeof response.data?.can_view!=='boolean'||!Array.isArray(response.data.codes))throw new Error('無法確認奉獻編號查看權限，請重新載入。');
+  codeState=response.data;
+ }
+ const codeByMember=new Map(codeState.codes.map(item=>[String(item.member_id),item.offering_code]));
+ await authorize(db,church);
+ const rows=pageRows.map(({line_id,...row})=>({...row,line_bound:bindingByMember.get(String(row.id))===true,...(codeState.can_view?{offering_code:codeByMember.get(String(row.id))||''}:{})}));
  return {rows,hasNext:data.length>25};
 }
 

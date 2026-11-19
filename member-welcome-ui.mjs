@@ -25,7 +25,7 @@ export function mountMemberPanel(){
     const name=text('h3',member.name||'教會家人');name.className='truncate text-lg font-black';
     const group=text('p',member.group_name?`所屬${groupName}｜${member.group_name}`:'目前尚未編組');group.className='mt-0.5 text-xs font-bold text-teal-50/80';
     identity.append(name,group);head.append(avatar,identity);card.append(head);
-    const details=[['年齡層',member.age_group],['信仰近況',member.faith_status],['受洗日期',member.baptism_date],['聚會近況',member.growth_progress]].filter(([,value])=>String(value||'').trim());
+    const details=[...(selectedChurch==='M+'?[['奉獻編號',member.offering_code||'尚未設定，請洽財務同工']]:[]),['年齡層',member.age_group],['信仰近況',member.faith_status],['受洗日期',member.baptism_date],['聚會近況',member.growth_progress]].filter(([,value])=>String(value||'').trim());
     if(details.length){const grid=document.createElement('dl');grid.className='mt-4 grid grid-cols-2 gap-2';for(const [label,value] of details){const item=document.createElement('div');item.className='rounded-2xl bg-white/10 px-3 py-2.5';const term=text('dt',label);term.className='text-[10px] font-bold tracking-wide text-teal-50/65';const description=text('dd',value);description.className='mt-0.5 text-xs font-black leading-relaxed';item.append(term,description);grid.append(item);}card.append(grid);}
     return card;
   };

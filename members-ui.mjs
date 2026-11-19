@@ -3,7 +3,7 @@ import {openMemberLineComposer,closeMemberLineComposer} from './member-line-comp
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
 import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
-import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,requestMemberConfirmation,FIELDS} from './member-management.mjs?v=20261119-reconfirm1';
+import {listMembers,saveMember,listMemberGroups,setMemberArchived,batchUpdateMembers,requestMemberConfirmation,FIELDS} from './member-management.mjs?v=20261119-offeringcode1';
 import {FAITH_OPTIONS,ATTENDANCE_OPTIONS,DISTRICTS,loadMinistryOptions,preserveChoice,isInactive} from './member-options.mjs?v=20261023-settings1';
 import {loadChurchCustomizations,catalog} from './church-customizations.mjs?v=20261102-bibletree-admin1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null;
@@ -65,6 +65,7 @@ async function edit(row=null,isNewcomer=false){
   supplement.className='registration-details';supplement.append(text('summary','迎新跟進資料'));const extraGrid=text('div','','edit-grid');supplement.append(extraGrid);
   const heading=text('h2',row?'編輯會友資料':'新增會友資料');heading.tabIndex=-1;
   if(row&&lineCanSend&&church==='M+')form.append(lineButton(row));
+  if(row&&Object.hasOwn(row,'offering_code')){const code=text('p','奉獻編號：'+(row.offering_code||'尚未設定'),'member-offering-code');form.append(code);}
   form.append(heading,text('p','保留原版欄位；日期可填完整年月日，原有月日資料也能保留。','muted'));
   for(const [key,[label,max]] of Object.entries(FIELDS)){
    if(['growth_progress','ministry'].includes(key))continue;
@@ -133,6 +134,7 @@ function memberCard(row){
  head.append(avatar,nameBox);if(lineCanSend&&church==='M+')head.append(lineButton(row));card.append(head,statusRow);
  const dl=document.createElement('dl');
  for(const [label,value] of [['電話',row.phone],['居住區域',row.district],['服事恩賜',row.ministry]]){dl.append(text('dt',label),text('dd',value||'未填寫'));}
+ if(Object.hasOwn(row,'offering_code'))dl.append(text('dt','奉獻編號'),text('dd',row.offering_code||'尚未設定'));
  card.append(dl);
  if(row.memo)card.append(text('p',row.memo,'memo-preview'));
  const actions=text('div','','card-actions'),pick=document.createElement('input');pick.type='checkbox';pick.dataset.memberId=row.id;pick._memberRow=row;pick.checked=selected.has(row.id);pick.setAttribute('aria-label','選取 '+(row.name||'會友'));pick.onchange=()=>{if(pick.checked)selected.set(row.id,row);else selected.delete(row.id);updateBatchBar();};const pickLabel=text('label','','member-pick');pickLabel.append(pick,text('span','選取'));actions.append(pickLabel);const editButton=text('button','編輯資料','secondary');editButton.onclick=()=>{if(!busy)edit(row);};const archiveButton=text('button',row.archived_at?'恢復':'封存','secondary');archiveButton.onclick=async()=>{if(busy||privateSuspended||!confirm((row.archived_at?'恢復 ':'封存 ')+row.name+'？資料不會被刪除。'))return;busy=true;try{await setMemberArchived(db,church,row,!row.archived_at);await load();status.textContent=row.archived_at?'已恢復會友。':'已封存會友。';}catch(error){status.textContent=error.message;}finally{busy=false;}};if(!row.archived_at){const pending=!!row.profile_confirmation_id&&!row.profile_confirmation_completed_at;const recheck=text('button',pending?'取消重新確認':'請會友重新確認資料','secondary');recheck.type='button';recheck.onclick=async()=>{if(busy||privateSuspended)return;if(!confirm(pending?'取消這位會友的資料確認要求？':'標記後，這位會友下次開啟 LINE 服務會先確認電話、地區、生日與性別，並更新原有資料。確定標記？'))return;busy=true;recheck.disabled=true;try{await requestMemberConfirmation(db,church,row,pending);await load();status.textContent=pending?'已取消資料確認要求。':'已標記待本人確認；下次開啟 LINE 服務將顯示確認表單。';}catch(e){status.textContent=e.message;}finally{busy=false;recheck.disabled=false;}};actions.append(recheck);}actions.append(editButton,archiveButton);card.append(actions);return card;

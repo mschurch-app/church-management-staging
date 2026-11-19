@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';import {makeMemberHandler} from '../../supabase/functions/member-access/member-http.mjs';
+const origin='https://mscos.mchurch.online';let state='approved';
+const h=makeMemberHandler({enabled:true,origin,consumeEntry:async()=>true,consumeLimit:async()=>true,verifyIdentity:async()=>({church:'M+'}),status:async()=>({state,member:{name:'合成會友',offering_code:'0028'}})});
+const call=async b=>{const r=await h(new Request(origin,{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({action:'status',church:'M+',idToken:'synthetic',...b})}));return {status:r.status,data:await r.json()};};
+assert.equal((await call({})).data.member.offering_code,'0028');state='pending';assert.deepEqual((await call({})).data,{state:'pending'});assert.equal((await call({memberId:1})).status,400);state='approved';assert.equal((await call({action:'update',patch:{offering_code:'9999'}})).status,400);assert(!Object.hasOwn((await call({action:'onboarding'})).data,'member'));console.log('PASS authenticated self status only, no arbitrary member ID, no code editing, no onboarding disclosure');

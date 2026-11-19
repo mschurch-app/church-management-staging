@@ -1,0 +1,63 @@
+{
+  "synthetic_only": true,
+  "provider_intercepted": true,
+  "physical_device_verified": false,
+  "checks": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "actual_member_entry": true,
+      "unbound_disabled": true,
+      "template_edit_preview": true,
+      "no_send_before_confirm": true,
+      "accepted_once": true,
+      "same_uuid_retry": true,
+      "denied_entry_hidden": true,
+      "versioned_toggle": true,
+      "noOverflow": true,
+      "errors": []
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "actual_member_entry": true,
+      "unbound_disabled": true,
+      "template_edit_preview": true,
+      "no_send_before_confirm": true,
+      "accepted_once": true,
+      "same_uuid_retry": true,
+      "denied_entry_hidden": true,
+      "versioned_toggle": true,
+      "noOverflow": true,
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "actual_member_entry": true,
+      "unbound_disabled": true,
+      "template_edit_preview": true,
+      "no_send_before_confirm": true,
+      "accepted_once": true,
+      "same_uuid_retry": true,
+      "denied_entry_hidden": true,
+      "versioned_toggle": true,
+      "noOverflow": true,
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "actual_member_entry": true,
+      "unbound_disabled": true,
+      "template_edit_preview": true,
+      "no_send_before_confirm": true,
+      "accepted_once": true,
+      "same_uuid_retry": true,
+      "denied_entry_hidden": true,
+      "versioned_toggle": true,
+      "noOverflow": true,
+      "errors": []
+    }
+  ]
+}

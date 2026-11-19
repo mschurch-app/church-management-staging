@@ -1,5 +1,5 @@
 import {memberLineCall} from './member-line-api.mjs?v=20261116-memberline1';
-import {openMemberLineComposer,closeMemberLineComposer} from './member-line-composer.mjs?v=20261116-memberline1';
+import {openMemberLineComposer,closeMemberLineComposer} from './member-line-composer.mjs?v=20261119-templates1';
 import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience2';
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
 import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';

@@ -1,0 +1,8 @@
+{
+  "release_id": "2027-daily-devotions-fulltext-v2-20261026",
+  "source_url": "https://bibletree.mchurch.online/reading-adventure/annual-content.mjs",
+  "source_sha256": "17cdf949929fb21c3a67c0793bf407617f68fe6f7f53cd0949162b2cebd80e9b",
+  "days": 365,
+  "devotions": 365,
+  "matches_source": true
+}

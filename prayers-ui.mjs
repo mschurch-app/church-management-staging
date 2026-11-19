@@ -6,6 +6,7 @@ import {editorDraft,lockControls} from './app-workflow.mjs?v=20261022-experience
 import {createPrayerForm} from './care-prayer-compose.mjs?v=20261010-care-orbs1';
 
 const params=new URLSearchParams(location.search),values=params.getAll('church'),church=values.length===1?values[0]:null,$=selector=>document.querySelector(selector);
+const focusPrayerId=params.get('prayer_id');
 const requestedState=params.get('state'),currentScope=params.get('scope')==='current',DAY_MS=24*60*60*1000;
 let labels={pending:'待關懷',praying:'守望中',answered:'蒙應允',closed:'已結案'},categoryOptions=[];
 let rows=[],busy=false,loading=false,generation=0;const draft=editorDraft($('#editor'));
@@ -50,12 +51,13 @@ function render(){
   const area=$('#items'),visible=filteredRows();area.replaceChildren();renderSummary();
   for(const row of visible){
     const card=el('article','','audit-card prayer-card'),head=el('div','','audit-head'),badges=el('div','','prayer-badges');
-    badges.append(el('span',row.is_private?'🔒 教牧私密':'🌐 公開代禱牆','status-badge'),el('span',labels[row.status||'pending']||'待關懷','status-badge'));
-    head.append(el('strong',(row.author_name||'主內家人')+(row.group_name?' · '+row.group_name:'')),el('time',formatDate(row.created_at)));card.append(head,badges);if(row.category)card.append(el('span','＃'+row.category,'status-badge'));
+    badges.append(el('span',row.is_private?'🔒 教牧私密':'🌐 公開代禱','status-badge'),el('span',labels[row.status||'pending']||'待關懷','status-badge'));
+    card.id='prayer-'+row.id;if(String(row.id)===focusPrayerId){card.style.outline='3px solid var(--app-accent,#174d3a)';card.tabIndex=-1;}head.append(el('strong',(row.author_name||'主內家人')+(row.group_name?' · '+row.group_name:'')),el('time',formatDate(row.created_at)));card.append(head,badges);if(row.category)card.append(el('span','＃'+row.category,'status-badge'));
     if(row.title)card.append(el('h3',row.title));card.append(el('p',row.content||'','prayer-content'));
     if(row.pastoral_notes){const note=el('div','','pastoral-note');note.append(el('strong','教牧關懷備註'),el('p',row.pastoral_notes));card.append(note);}
     const meta=el('p','同心禱告 '+Number(row.hands_count||0)+' 次','muted'),button=el('button',row.pastoral_notes?'更新關懷紀錄':'新增關懷紀錄','secondary');button.onclick=()=>{if(!busy)editCare(row);};card.append(meta,button);area.append(card);
   }
+  if(focusPrayerId){const target=document.getElementById('prayer-'+focusPrayerId);if(target){target.scrollIntoView({block:'center'});target.focus({preventScroll:true});}else if(!rows.some(row=>String(row.id)===focusPrayerId)){$('#status').textContent='這筆代禱不存在、已不在目前清單，或你的帳號沒有查看權限。';return;}}
   $('#status').textContent=visible.length?'顯示 '+visible.length+' 筆'+(currentScope?'目前代禱；公開項目與代禱牆同步，另含教牧私密代禱。':'；私密內容僅限獲授權同工。'):'目前沒有符合條件的代禱事項。';
 }
 

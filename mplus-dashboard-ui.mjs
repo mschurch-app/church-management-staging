@@ -5,7 +5,7 @@ import {loadChurchCustomizations} from './church-customizations.mjs?v=20261103-u
 import {FUNCTION_CATALOG,availableFunctionKeys} from './app-function-catalog.mjs?v=20261116-admin1';
 import {loadNotificationCenter} from './app-notifications.mjs?v=20261103-unifiedpermissions1';
 import {wireInstallButton,wireNotificationButtons} from './app-pwa.mjs?v=20261103-unifiedpermissions1';
-import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261116-admin1';
+import {mountMplusNavigation,MPLUS_CENTERS,visibleCenters} from './mplus-navigation.mjs?v=20261119-roster1';
 import {mountWeekCalendar} from './mplus-week-calendar.mjs?v=20261104-calendar-overlap1';
 const preferred='M+',$=s=>document.querySelector(s);
 let church='M+';

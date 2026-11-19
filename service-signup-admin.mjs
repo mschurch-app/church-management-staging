@@ -7,6 +7,7 @@ const church='M+';
 const $=selector=>document.querySelector(selector);
 const status=$('#status'),overview=$('#overview'),tabs=$('#seasonTabs'),smartPanel=$('#smartPanel'),changePanel=$('#changePanel');
 let payload={seasons:[],slots:[]},changeQueue={requests:[],is_final_reviewer:false},active=null,busy=false,recovery=false;
+let registrationView=new URLSearchParams(location.search).get('view')==='registrations';
 let matchRequested=new URLSearchParams(location.search).get('match')==='1';
 
 const labels={media:'影音',worship:'敬拜團',welcome:'接待',children:'兒童主日學',sound:'音控',projection_director:'投影字幕／導播',lighting:'燈光',worship_leader:'主領',assistant_worship_leader:'副主領',keyboard_1:'第一鍵盤',keyboard_2:'第二鍵盤',drums:'爵士鼓',guitar:'吉他',bass:'Bass',singer_1:'歌手一',singer_2:'歌手二',singer_3:'歌手三',welcome_1:'接待一',welcome_2:'接待二',children_teacher:'老師',children_assistant:'助手'};
@@ -45,6 +46,10 @@ function renderChangeRequests(){
 }
 
 function render(){
+  $('.signup-admin').classList.toggle('registration-mode',registrationView);
+  $('#registration-list-view').setAttribute('aria-pressed',String(registrationView));
+  $('#registration-slots-view').setAttribute('aria-pressed',String(!registrationView));
+  $('#registration-search-label').hidden=!registrationView;
   renderTabs();overview.replaceChildren();
   const season=payload.seasons.find(item=>item.id===active);
   if(!season){workflowSummary($('#workflow'),{title:'準備新的雙月服事期別',description:payload.can_manage?'建立年度與期別後，系統會自動帶出主日與職務。':'目前沒有可查看的服事期別。'});overview.append(el('div','目前尚未建立期別。','empty-state'));return;}
@@ -60,6 +65,7 @@ function render(){
   const slots=payload.slots.filter(slot=>slot.season_id===active&&slotMatches(slot)),dates=[...new Set(slots.map(slot=>slot.service_date))].sort();
   const all=payload.slots.filter(slot=>slot.season_id===active),pending=all.reduce((n,slot)=>n+slot.registrations.filter(person=>person.status==='registered').length,0),waiting=all.reduce((n,slot)=>n+slot.registrations.filter(person=>['waitlisted','offered'].includes(person.status)).length,0);
   workflowSummary($('#workflow'),{title:recovery?'請確認最新狀態':`${pending} 筆待確認 · ${waiting} 位候補／待回覆`,description:recovery?'請重新載入確認最新結果，再繼續操作。':'先檢視各主日的服事意願，再確認或協調安排；配對建議會保留正式班表已有的人員。',steps:['檢視意願','協調確認','正式班表'],active:pending?1:0});
+  if(registrationView){renderRegistrationList(slots);return;}
   if(!slots.length)overview.append(el('p','沒有符合的服事，請調整日期、類別或狀態。','workflow-empty'));
   for(const date of dates){
     const section=el('section','','date-section');section.append(el('h3',fmt(date)));
@@ -123,7 +129,27 @@ async function openSmartMatch(button){
   finally{busy=false;unlock();matchingBoard?.render();}
 }
 
-function slotMatches(slot){const date=$('#service-date-filter').value,ministry=$('#ministry-filter').value,state=$('#registration-filter').value;return(!date||slot.service_date===date)&&(!ministry||slot.ministry_key===ministry)&&(!state||state==='pending'&&slot.registrations.some(person=>person.status==='registered')||state==='waiting'&&slot.registrations.some(person=>['waitlisted','offered'].includes(person.status))||state==='empty'&&!slot.registrations.some(person=>['registered','confirmed'].includes(person.status)));}
+const registrationStatuses={registered:'待確認',confirmed:'已確認',waitlisted:'候補',offered:'候補待回覆'};
+function registrationMatches(person){const state=$('#registration-filter').value;return state==='pending'?person.status==='registered':state==='confirmed'?person.status==='confirmed':state==='waiting'?['waitlisted','offered'].includes(person.status):Boolean(registrationStatuses[person.status]);}
+function renderRegistrationList(slots){
+  const query=$('#registration-search').value.trim().normalize('NFKC').toLocaleLowerCase();
+  const records=slots.flatMap(slot=>slot.registrations.filter(person=>registrationMatches(person)&&(!query||String(person.name||'').normalize('NFKC').toLocaleLowerCase().includes(query))).map(person=>({slot,person})));
+  const people=new Set(records.map(({person})=>person.member_id||person.name));
+  const summary=el('p',`共 ${records.length} 筆登記 · ${people.size} 位服事者`,'registration-summary');summary.setAttribute('role','status');overview.append(summary);
+  if(!records.length){overview.append(el('p',query?'找不到符合的登記人，請調整姓名或篩選條件。':'目前條件下沒有登記人；可切換期別、日期或狀態查看。','workflow-empty'));return;}
+  for(const date of [...new Set(records.map(({slot})=>slot.service_date))].sort()){
+    const section=el('section','','date-section'),list=el('div','','registration-roster');section.append(el('h3',fmt(date)));
+    for(const {slot,person} of records.filter(row=>row.slot.service_date===date)){
+      const card=el('article','','registration-person'),identity=el('div'),badge=el('span',registrationStatuses[person.status],'registration-badge');badge.dataset.status=person.status;
+      identity.append(el('strong',person.name||'姓名待確認'),el('p',`${labels[slot.ministry_key]||slot.ministry_key} · ${labels[slot.role_key]||slot.role_key}`));
+      if(person.status==='waitlisted'&&person.queue_number)identity.append(el('small',`候補第 ${person.queue_number} 位`));
+      card.append(identity,badge);list.append(card);
+    }
+    section.append(list);overview.append(section);
+  }
+}
+function slotMatches(slot){const date=$('#service-date-filter').value,ministry=$('#ministry-filter').value,state=$('#registration-filter').value;return(!date||slot.service_date===date)&&(!ministry||slot.ministry_key===ministry)&&(!state||state==='pending'&&slot.registrations.some(person=>person.status==='registered')||state==='confirmed'&&slot.registrations.some(person=>person.status==='confirmed')||state==='waiting'&&slot.registrations.some(person=>['waitlisted','offered'].includes(person.status))||state==='empty'&&!slot.registrations.some(person=>['registered','confirmed'].includes(person.status)));}
+
 function updateFilters(){const filter=$('#service-date-filter'),value=filter.value;filter.replaceChildren(new Option('全部主日',''));for(const date of [...new Set(payload.slots.filter(slot=>slot.season_id===active).map(slot=>slot.service_date))].sort())filter.append(new Option(fmt(date),date));filter.value=[...filter.options].some(option=>option.value===value)?value:'';const ministry=$('#ministry-filter'),selected=ministry.value;ministry.replaceChildren(new Option('全部負責類別',''));for(const key of ['media','worship','welcome','children'])if(payload.can_manage||payload.scopes?.includes('all')||payload.scopes?.includes(key))ministry.append(new Option(labels[key],key));ministry.value=[...ministry.options].some(option=>option.value===selected)?selected:'';}
 async function operation(write,success='設定已儲存。'){
   if(busy||recovery)return;busy=true;const unlock=lockControls($('.signup-admin'));message('正在儲存，請稍候…');let committed=false;
@@ -141,6 +167,10 @@ async function reviewRegistration(id,nextStatus){if(busy||recovery)return;if(nex
 async function reviewChange(request,decision){if(busy||recovery)return;const note=await reviewDialog({title:decision==='approve'?'確認服事調整':'退回服事申請',description:`${request.member_name}｜${fmt(request.service_date)}｜${labels[request.role_key]||request.role_key}`,label:decision==='approve'?'協調／核准說明（選填）':'退回原因（必填）',required:decision!=='approve',confirmLabel:decision==='approve'?'確認通過':'退回申請'});if(note===null)return;await operation(async()=>{const result=await adminApi({action:'change_review',requestId:request.id,decision,note});return result.status==='admin_review'?'初審完成，已交複審。':result.status==='approved'?'複審核准完成。':'申請已退回。';});}
 async function load(){const [next,queue]=await Promise.all([rpc('get_service_signup_admin',{p_church:church}),rpc('get_service_signup_change_requests',{p_church:church})]);payload=next;changeQueue=queue;active=payload.seasons.some(season=>season.id===active)?active:payload.seasons[0]?.id||null;recovery=false;$('#create').hidden=!payload.can_manage;if(!payload.seasons.length)$('#create').open=true;updateFilters();renderChangeRequests();render();}
 async function reload(){if(busy)return;if(matchingBoard&&!recovery&&!await leaveMatchingBoard())return;clearMatchingBoard();busy=true;const unlock=lockControls($('.signup-admin'));message('正在載入服事意願…');let loaded=false;try{await load();loaded=true;message(payload.can_manage?'全部服事類別已載入。':`已載入負責類別：${payload.scopes.map(scope=>labels[scope]||scope).join('、')}`,'success');}catch(error){recovery=true;if(error.message?.includes('forbidden')){payload={seasons:[],slots:[],scopes:[],can_manage:false};changeQueue={requests:[]};$('#create').hidden=true;overview.replaceChildren();tabs.replaceChildren();changePanel.hidden=true;smartPanel.hidden=true;}message(error.message?.includes('forbidden')?'沒有主日服事管理權限。':'無法載入服事意願，請重新載入。','error');}finally{busy=false;unlock();if(recovery)$('.signup-admin').querySelectorAll('button,input,select,textarea').forEach(control=>{control.disabled=control.id!=='service-reload';});}if(loaded&&matchRequested&&active){matchRequested=false;openSmartMatch($('.smart-match-button'));}}
+$('#registration-filter-panel').open=!registrationView;
 $('#year').value=Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Taipei'}).format(new Date()))+1;$('#period').value='1';
 $('#createPeriod').onclick=()=>{const year=Number($('#year').value),period=Number($('#period').value);if(!Number.isInteger(year)||year<2026||year>2100||![1,2,3,4,5,6].includes(period)){message('請確認年度與雙月期別。','error');return;}operation(()=>rpc('create_service_signup_period',{p_church:church,p_year:year,p_period:period}),'雙月期別與所有主日職務已建立。');};
 $('#service-reload').onclick=reload;for(const id of ['service-date-filter','ministry-filter','registration-filter'])$('#'+id).onchange=()=>{if(!busy&&!recovery)render();};reload();
+
+async function setRegistrationView(next){if(busy||recovery)return;if(matchingBoard&&!await leaveMatchingBoard())return;registrationView=next;$('#registration-filter-panel').open=!next;const url=new URL(location.href);if(next)url.searchParams.set('view','registrations');else url.searchParams.delete('view');history.replaceState(null,'',url);render();}
+$('#registration-list-view').onclick=()=>setRegistrationView(true);$('#registration-slots-view').onclick=()=>setRegistrationView(false);$('#registration-search').oninput=()=>{if(!busy&&!recovery&&registrationView)render();};

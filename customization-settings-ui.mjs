@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261103-unifiedpermissions1';
-import {loadChurchCustomizations,saveChurchCustomizations} from './church-customizations.mjs?v=20261103-unifiedpermissions1';
+import {loadChurchCustomizations,saveChurchCustomizations} from './church-customizations.mjs?v=20261119-welcomesave1';
 import {getOptions,GROUPS} from './welcome-options.mjs';
 import {loadMinistryOptions,saveMinistryOptions} from './member-options.mjs?v=20261103-unifiedpermissions1';
 
@@ -65,7 +65,7 @@ $('#save').onclick=()=>{if(!dirty.size)return;void flow.write($('.customization-
  let completed=0;
  try{
  if(dirty.has('features')){for(const [target,state] of featureStates){if(featureSaved.has(target))continue;const saved=await saveChurchCustomizations(db,target,state.draft,state.current);if(!active())return;state.current=saved;state.draft=structuredClone(saved);if(target===church){current=state.current;draft=state.draft;}featureSaved.add(target);completed++;}current=featureStates.get(church).current;draft=featureStates.get(church).draft;dirty.delete('features');featureSaved.clear();}
- if(dirty.has('custom')){const saved=await saveChurchCustomizations(db,church,draft,current);if(!active())return;current=saved;draft=structuredClone(current);featureStates.set(church,{current,draft});dirty.delete('custom');completed++;}
+ if(dirty.has('custom')){const saved=await saveChurchCustomizations(db,church,draft,current,{preserveFeatures:true});if(!active())return;current=saved;draft=structuredClone(current);featureStates.set(church,{current,draft});dirty.delete('custom');completed++;}
  if(dirty.has('welcome')){await saveWelcome();if(!active())return;dirty.delete('welcome');completed++;}
  if(dirty.has('ministry')){const saved=await saveMinistryOptions(db,church,ministries);if(!active())return;ministries=saved;dirty.delete('ministry');completed++;}
  }catch(error){if(completed||featureSaved.size)error.message='部分設定已儲存；其餘修改仍保留。'+error.message;throw error;}

@@ -1,5 +1,5 @@
 export {LEGACY_FEATURE_FILES as FEATURE_FILES} from './app-function-definitions.mjs?v=20261104-potluck1';
-import {LEGACY_FEATURE_FILES as FEATURE_FILES} from './app-function-definitions.mjs?v=20261104-potluck1';
+import {LEGACY_FEATURE_FILES as FEATURE_FILES,FUNCTION_CATALOG} from './app-function-definitions.mjs?v=20261104-potluck1';
 
 const cleanText=(value,max=100)=>String(value??'').trim().slice(0,max);
 const uniqueStrings=(values,max=50)=>[...new Set((Array.isArray(values)?values:[]).map(value=>cleanText(value,80)).filter(Boolean))].slice(0,max);
@@ -11,20 +11,20 @@ export async function loadChurchCustomizations(db,church){
   return data;
 }
 
-export async function saveChurchCustomizations(db,church,draft,previous){
+export async function saveChurchCustomizations(db,church,draft,previous,{preserveFeatures=false}={}){
   if(previous?.church_id!==church)throw new Error('設定資料範圍不正確。');
   const moduleKeys=new Set(),fieldKeys=new Set();
-  const feature_modules=(draft.feature_modules||[]).map((item,index)=>{
-    const key=cleanText(item.key,40);if(!FEATURE_FILES[key]||moduleKeys.has(key))throw new Error('功能設定含有重複或未知項目。');moduleKeys.add(key);
+  const feature_modules=preserveFeatures?previous.feature_modules:(draft.feature_modules||[]).map((item,index)=>{
+    const key=cleanText(item.key,40);if((!FEATURE_FILES[key]&&!FUNCTION_CATALOG[key])||moduleKeys.has(key))throw new Error('功能設定含有重複或未知項目。');moduleKeys.add(key);
     return{key,permission:cleanText(item.permission,40),label:cleanText(item.label,30),icon:cleanText(item.icon,12),description:cleanText(item.description,100),enabled:Boolean(item.enabled),dashboard:Boolean(item.dashboard),navigation:Boolean(item.navigation),dashboard_order:(index+1)*10,navigation_order:(index+1)*10};
   });
   const welcome_fields=(draft.welcome_fields||[]).map((item,index)=>{
     const key=cleanText(item.key,40);if(!key||fieldKeys.has(key))throw new Error('表單欄位設定重複。');fieldKeys.add(key);
     return{key,label:cleanText(item.label,80),visible:Boolean(item.visible),required:Boolean(item.required)&&Boolean(item.visible),sort_order:(index+1)*10,audience:['all','newcomer','member'].includes(item.audience)?item.audience:'all'};
   });
-  if(feature_modules.some(item=>!item.label||!item.icon)||welcome_fields.some(item=>!item.label))throw new Error('名稱與圖示不可留白。');
+  if((!preserveFeatures&&feature_modules.some(item=>!item.label||!item.icon))||welcome_fields.some(item=>!item.label))throw new Error('名稱與圖示不可留白。');
   const catalogs={};for(const [key,values] of Object.entries(draft.catalogs||{})){const clean=uniqueStrings(values);if(!clean.length)throw new Error('每組選項至少保留一項。');catalogs[key]=clean;}
-  const payload={feature_modules,welcome_fields,catalogs,version:Number(previous.version)+1,updated_at:new Date().toISOString()};
+  const payload={...(preserveFeatures?{}:{feature_modules}),welcome_fields,catalogs,version:Number(previous.version)+1,updated_at:new Date().toISOString()};
   const {data,error}=await db.from('church_customizations').update(payload).eq('church_id',church).eq('version',previous.version).select('church_id,feature_modules,welcome_fields,catalogs,version,updated_at');
   if(error)throw error;if(!Array.isArray(data))throw Object.assign(new Error('未收到儲存確認。'),{name:'InvalidResponseError'});if(data.length!==1)throw new Error('設定未儲存，可能已有其他管理員更新，請重新載入。');
   return data[0];

@@ -1,7 +1,7 @@
 import {selfPatch} from './member-identity.mjs';
 
 const MEMBER_PROFILE_FIELDS=Object.freeze([
-  'name','phone','district','birthday','gender','group_name',
+  'name','phone','district','birthday','gender','group_name','offering_code',
   'baptism_date','faith_status','age_group','growth_progress'
 ]);
 

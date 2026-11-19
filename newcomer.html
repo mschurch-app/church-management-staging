@@ -33,6 +33,23 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+    /* Safari/LINE date inputs have an intrinsic width; keep their border box
+       inside the same column as phone, district and gender. Native picker stays. */
+    #memberIdentityPanel, #memberIdentityPanel label, #memberClaimLookup { min-width: 0; }
+    #memberIdentityPanel label { display: block; width: 100%; }
+    #memberIdentityPanel input, #memberClaimLookup input {
+      box-sizing: border-box; display: block; width: 100%; max-width: 100%; min-width: 0;
+    }
+    #memberIdentityPanel input[type="date"], #memberClaimLookup input[type="date"] {
+      -webkit-appearance: none; appearance: none; min-height: 48px; text-align: left;
+    }
+    #memberIdentityPanel input[type="date"]::-webkit-date-and-time-value,
+    #memberClaimLookup input[type="date"]::-webkit-date-and-time-value {
+      min-width: 0; text-align: left;
+    }
+    #memberIdentityPanel input[type="date"]::-webkit-datetime-edit,
+    #memberClaimLookup input[type="date"]::-webkit-datetime-edit { min-width: 0; padding: 0; }
+
     body {
       background: radial-gradient(120% 80% at 50% -10%, #E8F8F5 0%, #F5FAF9 50%, #EAF3F2 100%);
       color: #173038;

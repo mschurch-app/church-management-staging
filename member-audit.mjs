@@ -1,5 +1,5 @@
 import {db} from './admin-db.mjs?v=20261102-bibletree-admin1';
-import {listMemberAudit} from './member-management.mjs?v=20261003-access-guard1';
+import {listMemberAudit} from './member-management.mjs?v=20261119-reconfirm1';
 const values=new URLSearchParams(location.search).getAll('church'),church=values.length===1?values[0]:null,$=s=>document.querySelector(s),status=$('#status'),list=$('#audit-list');
 let limit=50,busy=false,rows=[],generation=0;
 const labels={insert:'新增',update:'修改',archive:'封存',restore:'恢復'};

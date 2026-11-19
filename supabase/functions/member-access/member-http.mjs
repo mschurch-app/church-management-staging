@@ -23,7 +23,7 @@ export function makeMemberHandler({enabled=false,verifyIdentity,consumeEntry,con
       while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>16384){await reader.cancel();return reply(413,{error:'too_large'});}chunks.push(value);}
       const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
       let input;try{input=JSON.parse(new TextDecoder().decode(bytes));}catch{return reply(400,{error:'invalid_input'});}
-      const fields={lookup:['query'],claim_select:['candidate'],claim_verify:['candidate','answer'],status:[],onboarding:[],request:['request_id','name','phone'],update:['patch']};
+      const fields={lookup:['query'],claim_select:['candidate'],claim_verify:['candidate','answer'],status:[],onboarding:[],request:['request_id','name','phone'],update:['patch','confirmationId']};
       if(!input||typeof input!=='object'||Array.isArray(input)||!Object.hasOwn(fields,input.action)||Object.keys(input).some(key=>!['action','church','idToken','accessToken','sessionToken',...fields[input.action]].includes(key)))return reply(400,{error:'invalid_input'});
       let identity;try{identity=await verifyIdentity({church:input.church,idToken:input.idToken,accessToken:input.accessToken,sessionToken:input.sessionToken});}catch{return reply(401,{error:'login_required'});}
       if(!await consumeLimit(identity,['onboarding','lookup','claim_select','claim_verify'].includes(input.action)?'status':input.action))return reply(429,{error:'try_later'});
@@ -42,10 +42,10 @@ export function makeMemberHandler({enabled=false,verifyIdentity,consumeEntry,con
       if(input.action==='status'||input.action==='onboarding'){
         const result=await status(identity);
         if(!['unbound','pending','approved','rejected','revoked'].includes(result?.state))return reply(503,{error:'unavailable'});
-        if(input.action==='onboarding')return reply(200,{state:result.state,registered:result.state==='approved'});
+        if(input.action==='onboarding')return reply(200,{state:result.state,registered:result.state==='approved',...(result.member?.reconfirmation_id?{needsConfirmation:true}:{})});
         if(result.state!=='approved')return reply(200,{state:result.state});
         if(!result.member)return reply(503,{error:'unavailable'});
-        return reply(200,{state:'approved',member:Object.fromEntries(MEMBER_PROFILE_FIELDS.map(key=>[key,result.member[key]??'']))});
+        return reply(200,{state:'approved',...(result.member.reconfirmation_id?{confirmationId:result.member.reconfirmation_id}:{}),member:Object.fromEntries(MEMBER_PROFILE_FIELDS.map(key=>[key,result.member[key]??'']))});
       }
       if(input.action==='request'){
         const {action,...submission}=input;
@@ -53,7 +53,8 @@ export function makeMemberHandler({enabled=false,verifyIdentity,consumeEntry,con
         return reply(200,{received:true});
       }
       let patch;try{patch=selfPatch(input.patch);}catch{return reply(400,{error:'invalid_patch'});}
-      if(!await update(identity,patch))return reply(403,{error:'member_unavailable'});
+      if(input.confirmationId!=null&&(typeof input.confirmationId!=='string'||!(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.confirmationId))))return reply(400,{error:'invalid_input'});
+      if(!await update(identity,patch,input.confirmationId||null))return reply(403,{error:'member_unavailable'});
       return reply(200,{updated:true});
     }catch{return reply(503,{error:'unavailable'});}
   };

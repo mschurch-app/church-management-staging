@@ -1,4 +1,4 @@
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {lineConfig,LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS,PRAYER_LIFF_IDS} from './line-config.mjs?v=20261009-plus-state1';
 
 const BIBLETREE_URL='https://bibletree.mchurch.online/';

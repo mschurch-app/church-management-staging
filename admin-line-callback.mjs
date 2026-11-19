@@ -1,4 +1,4 @@
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {encryptHandoff,handoffRequest,HANDOFF_STORAGE,pendingHandoff,scopeHandoffState,safeAppTarget} from './app-line-auth.mjs?v=20261110-line-claim1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,ADMIN_AUTH_STORAGE_KEY} from './admin-auth-config.mjs';
 

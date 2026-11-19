@@ -33,7 +33,9 @@ export function makeMemberClient({liff,send,search,createId,credentials,onState=
     });},
     update(patch){
       if(current.state!=='approved')return Promise.reject(new Error('請先完成身份綁定。'));
-      return run(async()=>{const result=await call('update',{patch});if(result?.updated!==true)throw new Error();return call('status');});
+      const confirmationId=current.confirmationId||null;
+      const previous={...current,member:{...current.member,...patch}};
+      return run(async()=>{try{const result=await call('update',{patch,...(confirmationId?{confirmationId}:{})});if(result?.updated!==true)throw new Error();return {...await call('status'),...(confirmationId?{justConfirmed:true}:{})};}catch{return {...previous,errorMessage:'尚未確認儲存結果，填寫內容已保留。可重試同一筆，或重新查詢狀態。'};}});
     }
   };
 }

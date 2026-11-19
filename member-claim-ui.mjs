@@ -1,4 +1,4 @@
-import {onboardingCredentials} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {onboardingCredentials} from './member-onboarding.mjs?v=20261119-reconfirm1';
 const endpoint='https://aqanuwilmvdtlzuqlrau.supabase.co/functions/v1/member-access';
 // Each candidate is opaque, short-lived and scoped to a server-verified LINE identity.
 export function mountMemberClaim({church,nameInput,onPrefill=()=>()=>{}}){

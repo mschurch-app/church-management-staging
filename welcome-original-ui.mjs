@@ -1,8 +1,8 @@
 import {mountMemberClaim} from './member-claim-ui.mjs?v=20261110-line-claim1';
-import {onboardingCredentials,continueWithoutRegistration,safeMemberReturn} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {onboardingCredentials,continueWithoutRegistration,safeMemberReturn} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {getOptions} from './welcome-options.mjs';
 import {loadChurchCustomizations} from './church-customizations.mjs?v=20261102-bibletree-admin1';
-import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261111-newcomer-entry1';
+import {mountMemberPanel} from './member-welcome-ui.mjs?v=20261119-reconfirm1';
 const db=window.supabase.createClient('https://aqanuwilmvdtlzuqlrau.supabase.co','sb_publishable_-on9uPxVvSaERBEpkoc_xg_CYuANexJ',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const churches=new URLSearchParams(location.search).getAll('church'),church=churches.length===1?churches[0]:null;
 const $=id=>document.getElementById(id),status=$('formStatus'),submitFeedback=$('submitFeedback');
@@ -93,7 +93,7 @@ for(const [id,max] of [['guestName',80],['guestPhone',40],['guestBirthday',40],[
 lock(true);
 mountMemberPanel();
 if(new URLSearchParams(location.search).get('next'))$('btnClosePage').querySelector('span').textContent='完成，返回原功能';
-if(new URLSearchParams(location.search).get('onboarding')==='1'){
+if(new URLSearchParams(location.search).get('onboarding')==='1'&&new URLSearchParams(location.search).get('reconfirm')!=='1'){
  const invite=document.createElement('p');invite.id='onboarding-invitation';invite.textContent='歡迎你！請先留下新朋友資料，完成後會直接綁定 LINE。';invite.className='text-center text-sm mb-3';$('formSection').before(invite);
  const later=document.createElement('button');later.id='onboarding-later';later.type='button';later.textContent='稍後填寫，繼續使用';later.className='w-full py-3 rounded-2xl border border-stone-200 mb-4';later.onclick=async()=>{if(busy||pending){status.textContent=busy?'正在送出，請稍候。':'請先重試確認上一筆登記結果，再返回原功能。';return;}try{await continueWithoutRegistration(church,new URLSearchParams(location.search).get('next'));}catch{status.textContent='暫時無法返回，請稍後再試。';}};invite.after(later);
 }

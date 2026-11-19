@@ -31,12 +31,12 @@ export async function ensureMemberOnboarding({church,credentials,returnTo=locati
  const auth=credentials||await onboardingCredentials(church);if(!Object.keys(auth).length)return false;
  const scope=await credentialScope(auth);
  // One use, only for this return route; this is never a registration or authorization flag.
- try{const skip=JSON.parse(sessionStorage.getItem(skipKey)||'null');sessionStorage.removeItem(skipKey);if(skip?.church===church&&skip.target===target&&skip.scope===scope&&skip.expires>Date.now())return false;}catch{}
+ let skipOnce=false;try{const skip=JSON.parse(sessionStorage.getItem(skipKey)||'null');sessionStorage.removeItem(skipKey);if(skip?.church===church&&skip.target===target&&skip.scope===scope&&skip.expires>Date.now())skipOnce=true;}catch{}
  const response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000),body:JSON.stringify({action:'onboarding',church,...auth})});
  const data=await response.json();if(!response.ok||typeof data.registered!=='boolean')throw Error('身份確認暫時無法完成，請稍後重試。');
- if(data.registered)return false;
+ if(!data.needsConfirmation&&(data.registered||skipOnce))return false;
  for(const k of ['idToken','accessToken'])if(auth[k])sessionStorage.setItem((k==='idToken'?'line-member-token:':'line-member-access-token:')+church,auth[k]);
- const url=new URL('newcomer.html',location.href);url.searchParams.set('church',church);url.searchParams.set('onboarding','1');url.searchParams.set('identitySource',auth.sessionToken?'web':'line');url.searchParams.set('next',target);location.replace(url.href);return true;
+ const url=new URL('newcomer.html',location.href);url.searchParams.set('church',church);url.searchParams.set('onboarding','1');if(data.needsConfirmation)url.searchParams.set('reconfirm','1');url.searchParams.set('identitySource',auth.sessionToken?'web':'line');url.searchParams.set('next',target);location.replace(url.href);return true;
 }
 export async function continueWithoutRegistration(church,raw){
  const target=safeMemberReturn(raw,'/line-member.html?church='+encodeURIComponent(church));

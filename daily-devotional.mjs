@@ -1,4 +1,4 @@
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS} from './line-config.mjs';
 
 const $=selector=>document.querySelector(selector);

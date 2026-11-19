@@ -1,6 +1,6 @@
 import {readAccess,canOpen} from './admin-access.mjs?v=20261022-experience5';
 export const FIELDS={name:['會友姓名',80],gender:['性別',100],phone:['電話號碼',40],group_name:['所屬小組／小家',100],birthday:['生日（年／月／日）',40],baptism_date:['受洗日期',40],faith_status:['信仰成熟度',100],district:['居住區域',100],growth_progress:['聚會近況',100],ministry:['服事恩賜',2000],memo:['個人牧養備註 / 歷程註記',10000],welcome_status:['迎新跟進狀態',100],know_us_from:['認識教會的管道',300],age_group:['年齡層',100]};
-const columns='id,church_id,photo_url,desired_feelings,interest_tags,line_id,archived_at,archived_by,'+Object.keys(FIELDS).join(',');
+const columns='id,church_id,photo_url,desired_feelings,interest_tags,line_id,archived_at,archived_by,profile_confirmation_id,profile_confirmation_requested_at,profile_confirmation_completed_at,'+Object.keys(FIELDS).join(',');
 export function normalizeMember(input){
  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!Object.hasOwn(FIELDS,k)))throw new Error('資料欄位不正確。');
  const result={};
@@ -104,4 +104,12 @@ export async function listMemberGroups(db,church){
  const {data,error}=await db.rpc('get_member_group_names',{p_church:church});
  if(error||!Array.isArray(data))throw Error('無法載入小組／小家選項，請稍後重試。');
  return data.map(x=>x.name);
+}
+
+export async function requestMemberConfirmation(db,church,row,cancel=false){
+ await authorize(db,church);
+ if(row?.church_id!==church||row.archived_at||!/^[0-9]+$/.test(String(row.id)))throw Error('請選擇未封存的會友。');
+ const {data,error}=await db.rpc('request_member_profile_confirmation',{p_church:church,p_member_id:row.id,p_cancel:cancel});
+ if(error||data?.ok!==true)throw Error('尚未確認標記結果，請重新查詢會友狀態。');
+ return data;
 }

@@ -1,4 +1,4 @@
-import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261110-line-claim1';
+import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-reconfirm1';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './admin-auth-config.mjs';
 import {PRAYER_TEST_LIFF_IDS,PRAYER_ENDPOINT} from './prayer-wall-config.mjs';
 const params=new URLSearchParams(location.search),church=params.get('church'),liffId=PRAYER_TEST_LIFF_IDS[church],$=selector=>document.querySelector(selector);

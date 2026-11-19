@@ -1,0 +1,62 @@
+{
+  "synthetic": true,
+  "physicalDevices": false,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 393,
+      "draftFirstRegression": true,
+      "memberFirst": true,
+      "multipleMinistriesAndRoles": true,
+      "multipleDates": true,
+      "sameDayBlocked": true,
+      "oneBatchRequest": true,
+      "failedBatchRetainsChoices": true,
+      "capacityWaitlist": true,
+      "scopeRevocation": true,
+      "noProductionWrites": true
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "draftFirstRegression": true,
+      "memberFirst": true,
+      "multipleMinistriesAndRoles": true,
+      "multipleDates": true,
+      "sameDayBlocked": true,
+      "oneBatchRequest": true,
+      "failedBatchRetainsChoices": true,
+      "capacityWaitlist": true,
+      "scopeRevocation": true,
+      "noProductionWrites": true
+    },
+    {
+      "engine": "webkit",
+      "width": 393,
+      "draftFirstRegression": true,
+      "memberFirst": true,
+      "multipleMinistriesAndRoles": true,
+      "multipleDates": true,
+      "sameDayBlocked": true,
+      "oneBatchRequest": true,
+      "failedBatchRetainsChoices": true,
+      "capacityWaitlist": true,
+      "scopeRevocation": true,
+      "noProductionWrites": true
+    },
+    {
+      "engine": "webkit",
+      "width": 1440,
+      "draftFirstRegression": true,
+      "memberFirst": true,
+      "multipleMinistriesAndRoles": true,
+      "multipleDates": true,
+      "sameDayBlocked": true,
+      "oneBatchRequest": true,
+      "failedBatchRetainsChoices": true,
+      "capacityWaitlist": true,
+      "scopeRevocation": true,
+      "noProductionWrites": true
+    }
+  ]
+}

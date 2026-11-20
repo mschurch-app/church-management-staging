@@ -1841,7 +1841,7 @@
         "height": 1580
       },
       "selected": true,
-      "name": "Mplus refined 20261120 records",
+      "name": "mplus-refined-20261121-records-profile-update",
       "chatBarText": "M+ 家人選單",
       "areas": [
         {
@@ -1950,8 +1950,8 @@
         }
       ]
     },
-    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261120/records.jpg",
-    "image_sha256": "3769a96fe3f282b0e528a01bb48eb32b8d7a4378c8c3690af6874c3343e1661c",
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261121/records.jpg",
+    "image_sha256": "3d3aa565a85f6dc63e1850b86c7d82bb70fcb75a8f4bea902e5ba9a5f36b50b9",
     "alias": "mplus-refined-20261120-records"
   }
 }

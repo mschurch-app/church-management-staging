@@ -1551,5 +1551,407 @@
     "image_url": "https://mscos.mchurch.online/assets/member-menu/bright-v2-20261120/records.png",
     "image_sha256": "d082e7aee51f2059c50562f44cf1b74fdbf569c1ea6d4c6c0bcec3a94dd537db",
     "alias": "mplus-bright3-20261120-records"
+  },
+  "refined-closed": {
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 560
+      },
+      "selected": true,
+      "name": "Mplus refined 20261120 closed",
+      "chatBarText": "M+ 家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 560
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-walk",
+            "data": "menu_tab=refined-walk"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 560
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-life",
+            "data": "menu_tab=refined-life"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 560
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-records",
+            "data": "menu_tab=refined-records"
+          }
+        }
+      ]
+    },
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261120/closed.jpg",
+    "image_sha256": "2bccedf33c228daac8faae6d33c454c88a57721ce0b07fed99bb00bb7692d7fb",
+    "alias": "mplus-refined-20261120-closed"
+  },
+  "refined-walk": {
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 1580
+      },
+      "selected": true,
+      "name": "Mplus refined 20261120 walk",
+      "chatBarText": "M+ 家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-closed",
+            "data": "menu_tab=refined-closed"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-life",
+            "data": "menu_tab=refined-life"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-records",
+            "data": "menu_tab=refined-records"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "每日讀經靈修",
+            "uri": "https://liff.line.me/2011645391-Mwy3h7jm?church=M%2B&feature=today"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "讀經生命樹",
+            "uri": "https://bibletree.mchurch.online/"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "請為我禱告",
+            "uri": "https://liff.line.me/2011645391-Mwy3h7jm?church=M%2B&feature=prayer"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "雲彩見證",
+            "uri": "https://mscos.mchurch.online/member-life.html?tab=walk&item=testimony"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 1226,
+            "width": 2356,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "分享恩典卡",
+            "uri": "https://liff.line.me/2011645391-Mwy3h7jm?church=M%2B&feature=love"
+          }
+        }
+      ]
+    },
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261120/walk.jpg",
+    "image_sha256": "35246f38017ac02dd9258ea8f0e8576f054599b9c66aae94bdb6edea1a9a6b4e",
+    "alias": "mplus-refined-20261120-walk"
+  },
+  "refined-life": {
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 1240
+      },
+      "selected": true,
+      "name": "Mplus refined 20261120 life",
+      "chatBarText": "M+ 家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-walk",
+            "data": "menu_tab=refined-walk"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-closed",
+            "data": "menu_tab=refined-closed"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-records",
+            "data": "menu_tab=refined-records"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "本週週報",
+            "uri": "https://mchurch.online/weekly.html?church=M%2B"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "服事登記",
+            "uri": "https://liff.line.me/2011645391-Mwy3h7jm?church=M%2B&feature=service_signup"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "活動節慶",
+            "uri": "https://liff.line.me/2011645391-Mwy3h7jm?church=M%2B&feature=potluck"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "小組資源",
+            "uri": "https://mchurch.online/group-resources.html"
+          }
+        }
+      ]
+    },
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261120/life.jpg",
+    "image_sha256": "69ef82c2df1e8c74463c9ecdb59affdc63cc30983a0581c005a5fb24ede65c9f",
+    "alias": "mplus-refined-20261120-life"
+  },
+  "refined-records": {
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 1580
+      },
+      "selected": true,
+      "name": "Mplus refined 20261120 records",
+      "chatBarText": "M+ 家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-walk",
+            "data": "menu_tab=refined-walk"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-life",
+            "data": "menu_tab=refined-life"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "mplus-refined-20261120-closed",
+            "data": "menu_tab=refined-closed"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "資料登錄",
+            "uri": "https://liff.line.me/2011645391-Mwy3h7jm?church=M%2B&feature=newcomer"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "服事紀錄",
+            "uri": "https://mscos.mchurch.online/service-signup.html?from=line"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "靈修手札",
+            "uri": "https://mscos.mchurch.online/member-life.html?tab=records&item=journal"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "見證投稿",
+            "uri": "https://mscos.mchurch.online/member-life.html?tab=records&item=submissions"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 1226,
+            "width": 2356,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "奉獻資訊",
+            "uri": "https://mscos.mchurch.online/member-life.html?tab=records&item=offering"
+          }
+        }
+      ]
+    },
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261120/records.jpg",
+    "image_sha256": "3769a96fe3f282b0e528a01bb48eb32b8d7a4378c8c3690af6874c3343e1661c",
+    "alias": "mplus-refined-20261120-records"
   }
 }

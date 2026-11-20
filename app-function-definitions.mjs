@@ -1,6 +1,8 @@
 // Shared presentation definitions. Backend grants remain the authority for actions.
 function freezeTree(value){if(value&&typeof value==='object'){Object.values(value).forEach(freezeTree);Object.freeze(value);}return value;}
 export const FUNCTION_CATALOG=freezeTree({
+  "church_giving_preview":{"file":"church-giving.html","title":"教會奉獻頁面預覽","description":"單次與定期定額介面預覽，尚未開放收款","key":"church_giving_preview","church":"M+","group":"finance","symbol":"heart","owner":true,"configurableHome":false,"searchTerms":["奉獻","定期定額","金流預覽"]},
+  "association_donation_preview":{"file":"association-donate.html","title":"協會捐款頁面預覽","description":"協會專用捐款介面預覽，尚未開放收款","key":"association_donation_preview","church":"M+","group":"finance","symbol":"heart","owner":true,"configurableHome":false,"searchTerms":["協會","捐款","定期定額"]},
   "admin_workbench":{"file":"admin-workbench.html","title":"行政待辦","description":"待我處理、我送出的、核准待完成與異常追蹤","key":"admin_workbench","church":"M+","group":"finance","symbol":"mplus-box","configurableHome":false,"searchTerms":["行政","待辦","逾期","結案"]},
   "member_line_history":{"file":"member-line-history.html","title":"LINE 訊息發送紀錄","description":"查詢發送人、收件人、全文、時間與受理狀態","key":"member_line_history","group":"system","church":"M+","owner":true,"symbol":"chat","configurableHome":false,"searchTerms":["LINE","紀錄","誰發的","訊息"],"settingsId":"member-line-history","settingsGroup":"people"},
   "member_line_settings":{"file":"member-line-settings.html","title":"會友 LINE 傳送權限","description":"開關個別同工的會友私人訊息傳送權","key":"member_line_settings","group":"system","church":"M+","owner":true,"symbol":"chat","configurableHome":false,"searchTerms":["LINE","訊息","傳送","權限"],"settingsId":"member-line-settings","settingsGroup":"people"},
@@ -735,7 +737,7 @@ export const FUNCTION_GROUPS=freezeTree([
     "key": "finance",
     "title": "教會財務",
     "note": "M＋奉獻收入、支出記帳與核對",
-    "keys": ["admin_workbench", "thanksgiving_offering_admin", "finance_projects", "finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
+    "keys": ["church_giving_preview", "association_donation_preview", "admin_workbench", "thanksgiving_offering_admin", "finance_projects", "finance_cash", "finance_expenses", "finance_receipts", "finance_permission_settings", "finance_accounting_reports", "school_staff_scheduling", "school_payroll"]
   },
   {
     "key": "media",

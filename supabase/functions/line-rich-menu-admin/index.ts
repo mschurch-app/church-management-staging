@@ -32,7 +32,7 @@ Deno.serve(async(req:Request)=>{
     return reply(200,{ok:true,restored:after.status===404,after_status:after.status,default_changed:false});
    }
    if(before.status!==404&&!ours.some((m:any)=>m.richMenuId===linked))return reply(409,{ok:false,error:'existing_personal_menu_preserved',before_status:before.status});
-   const target=ours.find((m:any)=>m.name===config[body.action==='test-pastor-old'?'bright-closed':'bright2-closed'].menu.name);if(!target)return reply(409,{ok:false,error:'test_menu_not_ready'});
+   const target=ours.find((m:any)=>m.name===config[body.action==='test-pastor-old'?'bright2-closed':'bright3-closed'].menu.name);if(!target)return reply(409,{ok:false,error:'test_menu_not_ready'});
    for(const spec of Object.values(config)){const alias=await api('richmenu/alias/'+spec.alias);if(!ours.some((m:any)=>m.richMenuId===alias.richMenuId&&m.name===spec.menu.name))return reply(409,{ok:false,error:'test_alias_not_ready'})}
    await api('user/'+subject+'/richmenu/'+target.richMenuId,{method:'POST'});const after=await raw('user/'+subject+'/richmenu');
    return reply(200,{ok:true,test_display_name:rows[0].display_name,before_status:before.status,assigned:after.status===200&&after.data.richMenuId===target.richMenuId,richMenuId:target.richMenuId,default_changed:false});

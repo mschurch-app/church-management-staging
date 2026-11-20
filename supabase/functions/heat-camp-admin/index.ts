@@ -6,8 +6,8 @@ const cors={'access-control-allow-origin':origin,'access-control-allow-headers':
 const json=(status:number,body:unknown)=>new Response(JSON.stringify(body),{status,headers:{...cors,'content-type':'application/json; charset=utf-8'}});
 const escapeCell=(value:unknown)=>{const text=String(value??'');return /^[\s]*[=+@-]/.test(text)?`'${text}`:text;};
 const labels:Record<string,Record<string,string>>={
-  registration_status:{draft:'資料待確認',exception_review:'例外待審',awaiting_pair:'友情價配對中',awaiting_payment:'待付款',paid:'已付款',waitlisted:'候補',cancelled:'已取消',refunded:'已退款'},
-  payment_status:{paid:'已付款',awaiting_payment:'待付款',expired:'已逾期',failed:'付款失敗',unpaid:'未建立訂單',refunded:'已退款',cancelled:'已取消'},
+  registration_status:{sponsored:'新希望專案・報名完成',draft:'資料待確認',exception_review:'例外待審',awaiting_pair:'友情價配對中',awaiting_payment:'待付款',paid:'已付款',waitlisted:'候補',cancelled:'已取消',refunded:'已退款'},
+  payment_status:{sponsored:'專案補助・免繳費',paid:'已付款',awaiting_payment:'待付款',expired:'已逾期',failed:'付款失敗',unpaid:'未建立訂單',refunded:'已退款',cancelled:'已取消'},
   school_stage:{elementary_6_or_below:'國小六年級以下',junior_high:'國中',senior_high:'高中',college_plus:'大專以上'}
 };
 const displayRow=(row:Record<string,unknown>)=>Object.fromEntries(Object.entries(row).map(([key,value])=>[key,labels[key]?.[String(value)]||value]));
@@ -37,9 +37,14 @@ Deno.serve(async req=>{
   const user=verified.data.user;
   if(verified.error||!user)return json(401,{ok:false,error:'login_required'});
   const input=await req.json().catch(()=>null);
-  if(!input||!['list','excel','pdf','details','update'].includes(input.action))return json(400,{ok:false,error:'invalid_request'});
+  if(!input||!['list','excel','pdf','details','update','issue_newhope_codes'].includes(input.action))return json(400,{ok:false,error:'invalid_request'});
   const action=input.action==='list'?'view':'export';
   const admin=createClient(url,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
+  if(input.action==='issue_newhope_codes'){
+    const result=await admin.rpc('heat_camp_2027_issue_newhope_codes',{p_user:user.id,p_count:input.count});
+    if(result.error)return json(String(result.error.message||'').includes('forbidden')?403:400,{ok:false,error:String(result.error.message||'').includes('forbidden')?'forbidden':'invalid_request'});
+    return json(200,{ok:true,...result.data});
+  }
   if(input.action==='details'){
     const details=await admin.rpc('heat_camp_2027_admin_details',{p_user:user.id,p_registration_no:String(input.registration_no||'').slice(0,80)});
     if(details.error){const code=String(details.error.message||'');return json(code.includes('forbidden')?403:404,{ok:false,error:code.includes('forbidden')?'forbidden':'request_failed'});}

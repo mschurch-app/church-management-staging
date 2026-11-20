@@ -19,9 +19,10 @@
   <nav class="page-nav"><a href="admin-dashboard.html?church=M%2B">管理首頁</a><a href="https://mchurch.online/heat-camp-2027.html" target="_blank" rel="noopener">開啟報名頁</a><a href="heat-camp-volunteers-admin.html?church=M%2B">志工報名</a></nav>
   <p id="status" class="status-message" role="status" aria-live="polite">正在確認登入權限…</p>
   <div class="camp-summary-heading"><h2>全營會報名摘要</h2><span class="muted">以下數字不受清單篩選影響</span></div><section id="summary" class="camp-summary" aria-label="報名摘要"></section>
+  <section class="camp-panel" id="newhope-code-panel" hidden><h2>新希望專案折扣碼</h2><p>每位學員一組、限用一次。折扣碼僅顯示這一次，請妥善保存並個別交付。</p><label>產生組數 <input id="newhope-code-count" type="number" min="1" max="100" value="1"></label><button id="issue-newhope-codes" type="button">產生折扣碼</button><p id="newhope-code-status" role="status"></p><textarea id="newhope-code-output" readonly hidden aria-label="新產生的折扣碼" style="width:100%;min-height:120px"></textarea></section>
   <section class="camp-panel">
     <div class="camp-toolbar"><div><h2>報名清單</h2><p id="result-count" class="muted">—</p></div><div class="camp-export"><button id="export-excel" class="secondary" type="button">匯出 Excel</button><button id="export-pdf" class="secondary" type="button">匯出 PDF</button></div></div>
-    <form id="filters" class="camp-filters"><label>搜尋<input id="search" type="search" maxlength="100" placeholder="姓名、電話、Email 或報名編號"></label><label>報名狀態<select id="registration-status"><option value="">全部</option><option value="draft">資料待確認</option><option value="exception_review">例外待審</option><option value="awaiting_pair">友情價配對中</option><option value="awaiting_payment">待付款</option><option value="paid">已付款</option><option value="waitlisted">候補</option><option value="cancelled">已取消</option><option value="refunded">已退款</option></select></label><label>付款狀態<select id="payment-status"><option value="">全部</option><option value="paid">已付款</option><option value="awaiting_payment">待付款</option><option value="expired">已逾期</option><option value="failed">付款失敗</option><option value="unpaid">未建立訂單</option><option value="refunded">已退款</option><option value="cancelled">已取消</option></select></label><button type="submit">套用篩選</button><button id="reset" class="secondary" type="button">清除</button></form>
+    <form id="filters" class="camp-filters"><label>搜尋<input id="search" type="search" maxlength="100" placeholder="姓名、電話、Email 或報名編號"></label><label>報名狀態<select id="registration-status"><option value="">全部</option><option value="draft">資料待確認</option><option value="exception_review">例外待審</option><option value="awaiting_pair">友情價配對中</option><option value="awaiting_payment">待付款</option><option value="sponsored">新希望專案・免繳費</option><option value="paid">已付款</option><option value="waitlisted">候補</option><option value="cancelled">已取消</option><option value="refunded">已退款</option></select></label><label>付款狀態<select id="payment-status"><option value="">全部</option><option value="sponsored">新希望專案・免繳費</option><option value="paid">已付款</option><option value="awaiting_payment">待付款</option><option value="expired">已逾期</option><option value="failed">付款失敗</option><option value="unpaid">未建立訂單</option><option value="refunded">已退款</option><option value="cancelled">已取消</option></select></label><button type="submit">套用篩選</button><button id="reset" class="secondary" type="button">清除</button></form>
     <div class="camp-table-wrap"><table class="camp-table"><thead><tr><th>報名資料</th><th>聯絡人</th><th>學校／球衣</th><th>應繳</th><th>付款</th><th>繳費資訊</th><th>報名時間</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="8">載入中…</td></tr></tbody></table></div>
     <div class="camp-pagination"><button id="previous" class="secondary" type="button">上一頁</button><span id="page-label">第 1 頁</span><button id="next" class="secondary" type="button">下一頁</button></div>
   </section>
@@ -36,7 +37,7 @@
   </form>
 </dialog>
 <script src="vendor/supabase-2.102.0.js"></script>
-<script type="module" src="heat-camp-admin.mjs?v=20261102-bibletree-admin1"></script>
+<script type="module" src="heat-camp-admin.mjs?v=20261120-newhope1"></script>
 <script type="module" src="church-brand.mjs?v=20261102-bibletree-admin1"></script>
 </body>
 </html>

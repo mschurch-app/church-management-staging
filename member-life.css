@@ -2,3 +2,6 @@
 
 /* Match the bright LINE menu, including its illustrated icons. */
 :root{--ink:#16334b;--line:#8ab8d3}body{background:#f5faff}.test-note{background:#d7edff;color:#16334b}nav button{color:#126bc4;border-color:#8ab8d3}nav button[aria-selected=true]{background:#126bc4;color:white}#tab-life{color:#a73c1c}#tab-life[aria-selected=true]{background:#c34c28;color:white}#tab-records{color:#16795e}#tab-records[aria-selected=true]{background:#16795e;color:white}.card{flex-direction:row;align-items:center;padding:12px;gap:10px;border-radius:16px}.thumb{width:48px;height:48px;flex:0 0 48px;border-radius:10px;background:#e8f4ff}.copy{padding:0}.card strong{font-size:16px}.card small{font-size:12px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.card{padding:10px;gap:8px}.thumb{width:38px;height:38px;flex-basis:38px}.card strong{font-size:15px}.card small{font-size:12px}.copy{padding:0}}
+
+/* Larger category controls for comfortable reading and tapping. */
+nav button{min-height:64px;font-size:18px;font-weight:700}nav{gap:10px}@media(max-width:600px){nav button{font-size:17px;min-height:64px;padding:12px 4px}}

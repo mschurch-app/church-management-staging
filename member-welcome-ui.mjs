@@ -13,20 +13,21 @@ export function mountMemberPanel(){
   // The shared write watchdog cannot infer completion from a replaced status node.
   panel.dataset.actionFeedback='off';
   host.insertBefore(panel,form);
+  if(!document.querySelector('#member-profile-summary-styles')){const styles=document.createElement('style');styles.id='member-profile-summary-styles';styles.textContent='\n#memberIdentityPanel .member-profile-summary{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;background:#f1f7fd;color:#173c56;border:1px solid #a9c9df;border-radius:22px;padding:20px;box-shadow:0 5px 16px #244d6510}\n#memberIdentityPanel .member-profile-head{display:flex;align-items:center;gap:12px;min-width:0}\n#memberIdentityPanel .member-profile-avatar{display:grid;place-items:center;flex:0 0 48px;height:48px;border-radius:14px;background:#dcefff;color:#194f78;font-size:20px;font-weight:700}\n#memberIdentityPanel .member-profile-name{margin:0;color:#173c56;font-size:18px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}\n#memberIdentityPanel .member-profile-group{margin:2px 0 0;color:#36576e;font-size:14px;line-height:1.6}\n#memberIdentityPanel .member-profile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 0}\n#memberIdentityPanel .member-profile-item{background:#fff;border:1px solid #d0dfeb;border-radius:14px;padding:10px 12px;min-width:0}\n#memberIdentityPanel .member-profile-term{color:#3d5b72;font-size:12px;font-weight:600;line-height:1.6}\n#memberIdentityPanel .member-profile-value{color:#173c56;margin:3px 0 0;font-size:14px;font-weight:600;line-height:1.7;overflow-wrap:anywhere}\n';document.head.append(styles);}
   const text=(tag,value)=>{const el=document.createElement(tag);el.textContent=value;return el;};
   let client;
   const button=(label,fn,secondary=false)=>{const el=text('button',label);el.type='button';el.className=secondary?'w-full py-3 rounded-2xl border border-stone-200 bg-white text-stone-700 text-xs font-black':'w-full py-3.5 rounded-2xl btn-submit text-white text-xs font-black';el.addEventListener('click',async()=>{if(el.disabled)return;el.disabled=true;el.setAttribute('aria-busy','true');try{await fn();}catch{/* Client renders the actual error state. */}finally{el.disabled=false;el.removeAttribute('aria-busy');}});return el;};
   const field=(label,type='text')=>{const wrapper=text('label','');wrapper.className='block space-y-1.5 text-xs font-black text-stone-700';wrapper.append(text('span',label));const input=document.createElement('input');input.type=type;input.className='w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-stone-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm';wrapper.append(input);return{wrapper,input};};
   const profileCard=member=>{
-    const card=document.createElement('div');card.className='rounded-3xl bg-gradient-to-br from-teal-800 to-teal-950 p-5 text-white shadow-lg shadow-teal-900/10';
-    const head=document.createElement('div');head.className='flex items-center gap-3';
-    const avatar=text('span',String(member.name||'家').trim().slice(0,1)||'家');avatar.className='grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 text-xl font-black ring-1 ring-white/20';
+    const card=document.createElement('section');card.className='member-profile-summary';card.setAttribute('aria-label','已確認的會友資料');
+    const head=document.createElement('div');head.className='member-profile-head';
+    const avatar=text('span',String(member.name||'家').trim().slice(0,1)||'家');avatar.className='member-profile-avatar';avatar.setAttribute('aria-hidden','true');
     const identity=document.createElement('div');identity.className='min-w-0';
-    const name=text('h3',member.name||'教會家人');name.className='truncate text-lg font-black';
-    const group=text('p',member.group_name?`所屬${groupName}｜${member.group_name}`:'目前尚未編組');group.className='mt-0.5 text-xs font-bold text-teal-50/80';
+    const name=text('h3',member.name||'教會家人');name.className='member-profile-name';
+    const group=text('p',member.group_name?`所屬${groupName}｜${member.group_name}`:'目前尚未編組');group.className='member-profile-group';
     identity.append(name,group);head.append(avatar,identity);card.append(head);
     const details=[...(selectedChurch==='M+'?[['奉獻編號',member.offering_code||'尚未設定，請洽財務同工']]:[]),['年齡層',member.age_group],['信仰近況',member.faith_status],['受洗日期',member.baptism_date],['聚會近況',member.growth_progress]].filter(([,value])=>String(value||'').trim());
-    if(details.length){const grid=document.createElement('dl');grid.className='mt-4 grid grid-cols-2 gap-2';for(const [label,value] of details){const item=document.createElement('div');item.className='rounded-2xl bg-white/10 px-3 py-2.5';const term=text('dt',label);term.className='text-[10px] font-bold tracking-wide text-teal-50/65';const description=text('dd',value);description.className='mt-0.5 text-xs font-black leading-relaxed';item.append(term,description);grid.append(item);}card.append(grid);}
+    if(details.length){const grid=document.createElement('dl');grid.className='member-profile-details';for(const [label,value] of details){const item=document.createElement('div');item.className='member-profile-item';const term=text('dt',label);term.className='member-profile-term';const description=text('dd',value);description.className='member-profile-value';item.append(term,description);grid.append(item);}card.append(grid);}
     return card;
   };
   const showForm=value=>{form.classList.toggle('hidden',!value);};

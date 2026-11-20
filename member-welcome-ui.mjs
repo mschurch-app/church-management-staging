@@ -40,7 +40,7 @@ export function mountMemberPanel(){
     const badge=document.querySelector('#lineStatusBadge');if(badge){const verified=['unbound','pending','approved','rejected','revoked'].includes(result.state);badge.classList.toggle('hidden',!verified);if(verified){badge.querySelector('span').firstChild.textContent=result.state==='approved'?'LINE 已完成綁定：':'LINE 身分已確認，填寫後完成綁定';document.querySelector('#lineUserDisplayName').textContent=result.state==='approved'?(result.member?.name||''):'';}}
     const needsRegistration=['unbound','pending','rejected','revoked'].includes(result.state);
     if(needsRegistration){
-      title.textContent='會友建檔更新';
+      title.textContent=selectedChurch==='M+'?'會友資料登錄':'會友建檔更新';
       message.textContent=result.state==='pending'
         ?'目前有一筆待核對的 LINE 綁定申請，這不代表已完成會友建檔。請繼續填寫下方完整表單；若先前已填完並送請同工確認，請聯絡同工核對，勿重複送出。'
         :['rejected','revoked'].includes(result.state)
@@ -51,7 +51,7 @@ export function mountMemberPanel(){
     panel.hidden=false;showForm(needsRegistration||result.state==='signed_out');
     if(result.state==='signed_out')panel.append(button('使用 LINE 確認身份',()=>client.login()));
     if(['pending','error'].includes(result.state))panel.append(button('重新查詢狀態',()=>client.connect(),true));
-    if(needsRegistration)panel.append(button('填寫會友建檔更新表單',()=>{
+    if(needsRegistration)panel.append(button(selectedChurch==='M+'?'填寫會友資料登錄表單':'填寫會友建檔更新表單',()=>{
       showForm(true);form.scrollIntoView({block:'start',behavior:'smooth'});
       form.querySelector('#guestName')?.focus({preventScroll:true});
     }));

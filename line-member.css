@@ -2,3 +2,6 @@
 
 /* Readable action text across both church themes. */
 .state-card button,.primary{background:linear-gradient(135deg,#a84b26,#913c1b);color:#fff}
+
+/* Six shared functions use the exact artwork from the official LINE menu. */
+.feature-card .icon.menu-art{display:block;width:96px;height:76px;max-width:100%;padding:0;border-radius:14px;background:transparent;overflow:hidden;flex-shrink:0}.feature-card .shared-menu-art{display:block;width:100%;height:100%;overflow:hidden}

@@ -3,6 +3,7 @@ import {stageMenu} from './stage.mjs';
 import {setRefinedDefault} from './global.mjs';
 import {updateProfileLabel} from './profile-label.mjs';
 import {updatePrayerEntry} from './prayer-entry.mjs';
+import {removeDuplicateTestimony} from './records-clean.mjs';
 // Internal maintenance only: reuse the existing server-to-server authorization.
 const PROJECT=Deno.env.get('SUPABASE_URL')||'';
 const KEY=Deno.env.get('SUPABASE_SECRET_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
@@ -15,7 +16,7 @@ Deno.serve(async(req:Request)=>{
  const auth=await fetch(PROJECT+'/rest/v1/rpc/pastoral_validate_care_cron_secret',{method:'POST',headers:{apikey:KEY,authorization:'Bearer '+KEY,'content-type':'application/json'},body:JSON.stringify({p_secret:secret}),signal:AbortSignal.timeout(10000)});
  if(!auth.ok||(await auth.json())!==true)return reply(403,{ok:false,error:'forbidden'});
  let body;try{body=await req.json()}catch{return reply(400,{ok:false,error:'invalid_body'})}
- if(Object.keys(body).some(k=>!['action','key'].includes(k))||!['audit','stage','update-prayer-entry','prayer-entry-progress','update-profile-label','set-default-refined','test-pastor','test-pastor-old','test-pastor-refined','restore-pastor'].includes(body.action)||(body.action==='stage'&&!Object.hasOwn(config,body.key)))return reply(400,{ok:false,error:'unsupported_action'});
+ if(Object.keys(body).some(k=>!['action','key'].includes(k))||!['audit','stage','remove-duplicate-testimony','update-prayer-entry','prayer-entry-progress','update-profile-label','set-default-refined','test-pastor','test-pastor-old','test-pastor-refined','restore-pastor'].includes(body.action)||(body.action==='stage'&&!Object.hasOwn(config,body.key)))return reply(400,{ok:false,error:'unsupported_action'});
  if(!LINE)return reply(503,{ok:false,error:'line_unconfigured'});
  try{
   const raw=async(path:string)=>{const r=await fetch('https://api.line.me/v2/bot/'+path,{headers:{authorization:'Bearer '+LINE},signal:AbortSignal.timeout(15000)});return {status:r.status,data:await r.json().catch(()=>({}))}};
@@ -24,6 +25,7 @@ Deno.serve(async(req:Request)=>{
   const bot=await raw('info');if(bot.status!==200)return reply(502,{ok:false,error:'bot_read_failed',status:bot.status});
   if(bot.data.basicId!=='@505reyot')return reply(409,{ok:false,error:'wrong_bot',basicId:bot.data.basicId,displayName:bot.data.displayName});
   if(body.action==='prayer-entry-progress'){if(!/^[0-9a-f-]{36}$/i.test(body.key||''))return reply(400,{ok:false,error:'invalid_key'});return reply(200,{ok:true,progress:await raw('richmenu/progress/batch?requestId='+body.key)});}
+  if(body.action==='remove-duplicate-testimony')return reply(200,{ok:true,result:await removeDuplicateTestimony({config,api,download})});
   if(body.action==='update-prayer-entry')return reply(200,{ok:true,result:await updatePrayerEntry({config,api,download})});
   if(body.action==='update-profile-label')return reply(200,{ok:true,result:await updateProfileLabel({config,api,download})});
   if(body.action==='set-default-refined')return reply(200,{ok:true,result:await setRefinedDefault({config,api,raw,download})});

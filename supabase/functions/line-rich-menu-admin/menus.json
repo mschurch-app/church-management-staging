@@ -1838,10 +1838,10 @@
     "menu": {
       "size": {
         "width": 2500,
-        "height": 1580
+        "height": 1240
       },
       "selected": true,
-      "name": "mplus-refined-20261121-records-profile-update",
+      "name": "Mplus refined 20261121 records clean",
       "chatBarText": "M+ 家人選單",
       "areas": [
         {
@@ -1931,27 +1931,14 @@
           },
           "action": {
             "type": "uri",
-            "label": "見證投稿",
-            "uri": "https://mscos.mchurch.online/member-life.html?tab=records&item=submissions"
-          }
-        },
-        {
-          "bounds": {
-            "x": 72,
-            "y": 1226,
-            "width": 2356,
-            "height": 335
-          },
-          "action": {
-            "type": "uri",
             "label": "奉獻資訊",
             "uri": "https://mscos.mchurch.online/member-life.html?tab=records&item=offering"
           }
         }
       ]
     },
-    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261121/records.jpg",
-    "image_sha256": "3d3aa565a85f6dc63e1850b86c7d82bb70fcb75a8f4bea902e5ba9a5f36b50b9",
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/refined-20261121/records-clean.jpg",
+    "image_sha256": "33e830888b264f1e398f8553c645e7cf18be3fafc5129ad29e4169b4e1b33a75",
     "alias": "mplus-refined-20261120-records"
   }
 }

@@ -2,7 +2,7 @@ import {ensureMemberOnboarding} from './member-onboarding.mjs?v=20261119-flowtra
 import {LINE_MEMBER_ENDPOINT,MEMBER_LIFF_IDS} from './line-config.mjs';
 
 const $=selector=>document.querySelector(selector);
-const params=new URLSearchParams(location.search),church=params.get('church')==='M+'?'M+':'M+';
+const params=new URLSearchParams(location.search),church=['M+','SHiNE'].includes(params.get('church'))?params.get('church'):(!params.has('church')&&params.get('preview')==='1'?'M+':null);
 const fromOctoberTree=params.get('preview')==='1'&&params.get('from')==='october-tree';
 const state={token:'',accessToken:'',date:'',item:null,progress:[],preview:params.get('preview')==='1'};
 const escape=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
@@ -43,7 +43,7 @@ function returnToTree(event){
   // Only the known same-origin reading page may use history; never accept an arbitrary return URL.
   try{const referrer=new URL(document.referrer);if(referrer.origin===location.origin&&referrer.pathname===new URL('tree-reading-october-test.html',location.href).pathname&&history.length>1){event.preventDefault();history.back();}}catch{}
 }
-async function start(){
+async function start(){if(!church){$('#status').textContent='請從所屬教會 LINE 開啟。';return;}if(church==='SHiNE'){location.replace('https://liff.line.me/'+MEMBER_LIFF_IDS.SHiNE+'?church=SHiNE&feature=daily_reading');return;}
   if(fromOctoberTree&&location.pathname.endsWith('/daily-devotional.html')){location.replace('tree-reading-october-test.html?view=devotional&church=M%2B&preview=1&from=october-tree');return;}
   if(fromOctoberTree){const back=$('.topbar a');back.href='tree-reading-october-test.html#devotional-invitation';back.setAttribute('aria-label','返回箴言生命樹');back.onclick=returnToTree;}
 

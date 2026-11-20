@@ -1,0 +1,313 @@
+{
+  "closed": {
+    "alias": "shine-menu-20261121-closed",
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/shine-20261121/closed.jpg",
+    "image_sha256": "2bccedf33c228daac8faae6d33c454c88a57721ce0b07fed99bb00bb7692d7fb",
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 560
+      },
+      "selected": true,
+      "name": "Shine three tabs 20261121 closed",
+      "chatBarText": "火樂家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 560
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-walk",
+            "data": "shine_tab=walk"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 560
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-life",
+            "data": "shine_tab=life"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 560
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-records",
+            "data": "shine_tab=records"
+          }
+        }
+      ]
+    }
+  },
+  "walk": {
+    "alias": "shine-menu-20261121-walk",
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/shine-20261121/walk.jpg",
+    "image_sha256": "22735f871037c33d44ec5152868f5a9993b5a4e4d3880d442796d042409e506c",
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 1580
+      },
+      "selected": true,
+      "name": "Shine three tabs 20261121 walk",
+      "chatBarText": "火樂家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-closed",
+            "data": "shine_tab=closed"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-life",
+            "data": "shine_tab=life"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-records",
+            "data": "shine_tab=records"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "每日讀經靈修",
+            "uri": "https://liff.line.me/2011645391-df7KVuPS?church=SHiNE&feature=daily_reading"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "隨時的幫助",
+            "uri": "https://liff.line.me/2011645391-df7KVuPS?church=SHiNE&feature=help"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "同心代禱",
+            "uri": "https://liff.line.me/2011645391-0tHoZ8pb?entry=20261121-shine1&church=SHiNE"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 863,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "分享恩典卡",
+            "uri": "https://liff.line.me/2011645391-df7KVuPS?church=SHiNE&feature=love"
+          }
+        }
+      ]
+    }
+  },
+  "life": {
+    "alias": "shine-menu-20261121-life",
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/shine-20261121/life.jpg",
+    "image_sha256": "9afd61b7fde3a7375e0764ec7c362f23d095b3e2e7856b02e0ce19a98a37de26",
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 1240
+      },
+      "selected": true,
+      "name": "Shine three tabs 20261121 life",
+      "chatBarText": "火樂家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-walk",
+            "data": "shine_tab=walk"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-closed",
+            "data": "shine_tab=closed"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-records",
+            "data": "shine_tab=records"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "本週聚會",
+            "uri": "https://liff.line.me/2011645391-df7KVuPS?church=SHiNE&feature=weekly"
+          }
+        }
+      ]
+    }
+  },
+  "records": {
+    "alias": "shine-menu-20261121-records",
+    "image_url": "https://mscos.mchurch.online/assets/member-menu/shine-20261121/records.jpg",
+    "image_sha256": "81d0d07680b0fc82ea1f2f6695b7eb6254d2b33da1f17ca0da028a0622d8eda6",
+    "menu": {
+      "size": {
+        "width": 2500,
+        "height": 1240
+      },
+      "selected": true,
+      "name": "Shine three tabs 20261121 records",
+      "chatBarText": "火樂家人選單",
+      "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 834,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-walk",
+            "data": "shine_tab=walk"
+          }
+        },
+        {
+          "bounds": {
+            "x": 834,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-life",
+            "data": "shine_tab=life"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1667,
+            "y": 0,
+            "width": 833,
+            "height": 420
+          },
+          "action": {
+            "type": "richmenuswitch",
+            "richMenuAliasId": "shine-menu-20261121-closed",
+            "data": "shine_tab=closed"
+          }
+        },
+        {
+          "bounds": {
+            "x": 72,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "個人資料更新",
+            "uri": "https://liff.line.me/2011645391-df7KVuPS?church=SHiNE&feature=newcomer"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1264,
+            "y": 500,
+            "width": 1164,
+            "height": 335
+          },
+          "action": {
+            "type": "uri",
+            "label": "靈修手札",
+            "uri": "https://liff.line.me/2011645391-df7KVuPS?church=SHiNE&feature=daily_reading&view=journal"
+          }
+        }
+      ]
+    }
+  }
+}

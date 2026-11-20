@@ -26,3 +26,27 @@ test('issuer settings, issued receipt export and old unknown drafts retain corre
  const exported=await api('export',{from:'2026-01-01',to:'2026-12-31'});assert.equal(exported.receipts.find(x=>x.source_ref===input.data.sourceRef).income_method,'newebpay_credit');
  const old=receipt(null);old.data.incomeMethod=null;await db.query("insert into finance.donation_receipts(id,kind,donation_date,project,donor_name,recipient_name,source_ref,amount,created_by,updated_by) values($1,'money','2026-11-01','合成舊專案','合成捐贈人','合成抬頭',$2,1000,$3,$3)",[old.id,old.data.sourceRef,owner]);old.version=1;assert.equal((await api('save',old)).receipt.income_method,null);
  }finally{await db.close();}});
+
+const givingSeed=await readFile(new URL('../supabase/seeds/giving-catalog-20261120.sql',import.meta.url),'utf8');
+const givingCatalog=JSON.parse(await readFile(new URL('../finance/giving-catalog.json',import.meta.url),'utf8'));
+test('approved giving catalog seeds 50 exact mappings, is idempotent and keeps camp 172',async()=>{const db=await setup();try{
+ await db.exec(givingSeed);const before=await call(db,'projects');assert.equal(givingCatalog.length,50);
+ for(const item of givingCatalog){const p=before.projects.find(p=>p.name===item.project);const m=before.ministries.find(m=>m.project_id===p.id&&m.name===item.name);assert(m,item.name);assert.equal(m.online_item.external_item_no,item.externalItemNo);assert.equal(m.online_item.provider,'eoffering');assert(m.income_account);}
+ await db.exec(givingSeed);assert.deepEqual(await call(db,'projects'),before);
+ assert.equal(before.ministries.filter(m=>m.online_item.external_item_no===172).length,1);
+ const ministry=before.ministries.find(m=>m.online_item.external_item_no===102);
+ const saved=(await db.query("select finance.receipt_api($1,'save',$2) result",[owner,JSON.stringify(receipt(ministry.id))])).rows[0].result.receipt;
+ assert.equal(saved.classification_snapshot.projectName,'新希望基金會');assert.equal(saved.classification_snapshot.externalItemNo,102);
+ const relief=before.ministries.find(m=>m.online_item.external_item_no===144);
+ const second=(await db.query("select finance.receipt_api($1,'save',$2) result",[owner,JSON.stringify(receipt(relief.id))])).rows[0].result.receipt;
+ assert.equal(second.classification_snapshot.projectName,'基督教救助協會');assert.equal(second.classification_snapshot.ministryName,'9月1919陪讀方案補助款');
+ }finally{await db.close();}});
+test('catalog aliases keep stable IDs and old receipt snapshots unchanged',async()=>{const db=await setup();try{
+ const p=project('Ｍ＋大雅教會');await call(db,'project_save',p);const m=ministry(p.id,'青少年事工奉獻');await call(db,'ministry_save',m);const saved=(await db.query("select finance.receipt_api($1,'save',$2) result",[owner,JSON.stringify(receipt(m.id))])).rows[0].result.receipt;
+ await db.exec(givingSeed);const after=await call(db,'projects');assert.equal(after.ministries.find(x=>x.online_item.external_item_no===150).id,m.id);
+ assert.deepEqual((await db.query('select classification_snapshot from finance.donation_receipts where id=$1',[saved.id])).rows[0].classification_snapshot,saved.classification_snapshot);
+ }finally{await db.close();}});
+test('catalog rejects conflicting external identifiers instead of silently remapping',async()=>{const db=await setup();try{
+ const p=project('Ｍ＋大雅教會');await call(db,'project_save',p);const m=ministry(p.id,'十一奉獻');await call(db,'ministry_save',m);await db.query("update finance.online_donation_items set provider='eoffering',external_item_no=999 where ministry_item_id=$1",[m.id]);
+ await assert.rejects(db.exec(givingSeed),/catalog_external_conflict/);assert.equal((await db.query('select count(*)::int n from finance.projects where name=$1',['新希望基金會'])).rows[0].n,0);
+ }finally{await db.close();}});
